@@ -13,6 +13,7 @@ const PRODUCT_PRICES: Record<string, string> = {
   'scam-defender': 'price_1TREBw5HQYoJh51tItYeDOzQu',
   'money-guard': 'price_1TREUG5HQYoJh51tA3byMETJ',
   'moving-checker': 'price_1TREg65HQYoJh51tCt3YZc7B',
+  'buzz-writer': 'price_1TREu35HQYoJh51tgGd6ZmVM',
 }
 
 export async function POST(request: NextRequest) {

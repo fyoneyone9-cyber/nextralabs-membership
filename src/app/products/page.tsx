@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame } from 'lucide-react'
 
 const products = [
   {
@@ -152,6 +152,21 @@ const products = [
     color: 'from-blue-500 to-green-500',
     bgColor: 'bg-blue-500/10',
     iconColor: 'text-blue-500',
+    status: '新商品',
+  },
+  {
+    id: 'buzz-writer',
+    title: 'AIバズ文章コーチ',
+    subtitle: 'トレンドニュース × テンプレート × 画像生成',
+    description:
+      '今日のニュースをネタに、自分の言葉でバズらせる。10種類のテンプレート、バズ度診断、投稿画像ジェネレーター、ハッシュタグ辞典、投稿タイミングガイドまで。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['トレンドニュース', 'バズ度診断', '画像生成', 'ハッシュタグ'],
+    icon: Flame,
+    color: 'from-orange-500 to-red-500',
+    bgColor: 'bg-orange-500/10',
+    iconColor: 'text-orange-500',
     status: '新商品',
   },
 ]
