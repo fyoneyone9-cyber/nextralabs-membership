@@ -68,6 +68,9 @@ export function Header() {
           <Link href="/guide" className="text-sm font-medium hover:text-primary transition-colors">
             📖 ガイド
           </Link>
+          <Link href="/contact" className="text-sm font-medium hover:text-primary transition-colors">
+            📩 お問い合わせ
+          </Link>
           {user ? (
             <>
               <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
@@ -137,6 +140,9 @@ export function Header() {
           </Link>
           <Link href="/guide" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>
             📖 ガイド
+          </Link>
+          <Link href="/contact" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>
+            📩 お問い合わせ
           </Link>
           {user ? (
             <>

@@ -26,7 +26,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link href="#" className="hover:text-primary transition-colors">利用規約</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">プライバシーポリシー</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">お問い合わせ</Link></li>
+              <li><Link href="/contact" className="hover:text-primary transition-colors">お問い合わせ</Link></li>
             </ul>
           </div>
         </div>
