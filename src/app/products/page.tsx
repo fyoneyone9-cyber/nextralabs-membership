@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -235,7 +235,7 @@ export default function ProductsPage() {
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           AIを活用した業務効率化・自動化ツールのソースコードを販売しています。
           <br />
-          有料プランならすべて使い放題。単品購入も可能。
+          全ツール使い放題プランならすべて使い放題。単品購入も可能。
         </p>
       </div>
 
@@ -245,7 +245,7 @@ export default function ProductsPage() {
           🛒 販売中のツール
         </h2>
         <p className="text-muted-foreground mb-8">
-          有料プラン（¥980/月）なら全ツール使い放題 ✨ 単品購入も可能です。
+          全ツール使い放題プラン（¥980/月）なら全ツール使い放題 ✨ 単品購入も可能です。
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product) => {

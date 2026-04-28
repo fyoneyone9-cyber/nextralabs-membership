@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -82,7 +82,7 @@ const techStack = [
 const faq = [
   {
     q: 'なぜ無料なんですか？',
-    a: 'NextraLabs の全13ツールの品質を知っていただくための無料サンプルです。気に入ったら他のツールやプレミアムプランもぜひご検討ください。',
+    a: 'NextraLabs の全13ツールの品質を知っていただくための無料サンプルです。気に入ったら他のツールや全ツール使い放題プランもぜひご検討ください。',
   },
   {
     q: 'アカウント登録は必要ですか？',
@@ -350,7 +350,7 @@ export default function OfficePoliticsGraphPage() {
               🚀 他にも13のAIツールが使い放題
             </h2>
             <p className="text-gray-400 mb-6">
-              このツールが気に入ったら、プレミアムプラン（¥980/月）で全ツールをお試しください。
+              このツールが気に入ったら、全ツール使い放題プラン（¥980/月）で全ツールをお試しください。
               <br />
               詐欺対策・買い物管理・婚活・退職・文章力アップなど、生活を守る＆改善するツールが揃っています。
             </p>
@@ -363,7 +363,7 @@ export default function OfficePoliticsGraphPage() {
               </Link>
               <Link href="/pricing">
                 <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2">
-                  プレミアムプランを見る
+                  全ツール使い放題プランを見る
                 </Button>
               </Link>
             </div>

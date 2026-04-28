@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest) {
@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ hasAccess: false, reason: 'not_logged_in' })
     }
 
-    // 1. 有料プラン（サブスク active）があれば全商品アクセスOK
+    // 1. 全ツール使い放題プラン（サブスク active）があれば全商品アクセスOK
     const { data: subscription } = await supabase
       .from('subscriptions')
       .select('status')

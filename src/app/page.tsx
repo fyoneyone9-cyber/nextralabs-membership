@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Shield, Zap, Code, Download, Bot, Search, FileText, Infinity, PawPrint, Network, ShieldAlert, Store, Rocket, ExternalLink } from 'lucide-react'
@@ -31,7 +31,7 @@ export default function HomePage() {
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
             マーケティング、データ分析、業務効率化——あらゆる分野のAI自動化ツールのソースコードを販売。
-            有料プランならすべて使い放題。買い切りも選べます。
+            全ツール使い放題プランならすべて使い放題。買い切りも選べます。
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/products">
@@ -41,7 +41,7 @@ export default function HomePage() {
             </Link>
             <Link href="/pricing">
               <Button variant="outline" size="lg" className="text-lg px-8">
-                有料プランを見る
+                全ツール使い放題プランを見る
               </Button>
             </Link>
             <Link href="/guide">
@@ -120,7 +120,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="font-semibold mb-2">使い放題プラン</h3>
                 <p className="text-sm text-muted-foreground">
-                  有料プラン会員はすべてのツールを無制限に利用可能。
+                  全ツール使い放題プラン会員はすべてのツールを無制限に利用可能。
                 </p>
               </CardContent>
             </Card>
@@ -240,7 +240,7 @@ export default function HomePage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-4">🚀 全ツールを今すぐ使う</h2>
-          <p className="text-muted-foreground text-center mb-10">有料プラン会員は全ツール使い放題。各ツールに直接アクセス。</p>
+          <p className="text-muted-foreground text-center mb-10">全ツール使い放題プラン会員は全ツール使い放題。各ツールに直接アクセス。</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {[
               { id: 'vintage-hunter', name: '古着ハンター', desc: 'AI搭載メルカリ自動監視ボット', icon: 'Search', price: '¥9,800', color: 'amber', iconEl: Search },
@@ -288,14 +288,14 @@ export default function HomePage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">今すぐ始めよう</h2>
           <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-            有料プランに登録して、すべてのAIツールを使い放題に。
+            全ツール使い放題プランに登録して、すべてのAIツールを使い放題に。
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/products">
               <Button size="lg" className="text-lg px-8">ツール一覧を見る</Button>
             </Link>
             <Link href="/pricing">
-              <Button variant="outline" size="lg" className="text-lg px-8">有料プランに登録</Button>
+              <Button variant="outline" size="lg" className="text-lg px-8">全ツール使い放題プランに登録</Button>
             </Link>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -402,7 +402,7 @@ export default function ScamDefenderPage() {
                 <p className="text-muted-foreground mb-6">一度の購入でずっと使える</p>
                 <PurchaseButton productId="scam-defender" />
                 <p className="text-xs text-muted-foreground mt-4">
-                  プレミアムプラン（¥980/月）なら全ツール使い放題
+                  全ツール使い放題プラン（¥980/月）なら全ツール使い放題
                 </p>
               </CardContent>
             </Card>

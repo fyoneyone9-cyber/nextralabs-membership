@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { ArrowLeft, ArrowRight, Shirt, BarChart3, Trash2, Banknote, Palette, TrendingUp } from 'lucide-react'
 import { PurchaseButton } from '@/components/PurchaseButton'
 
@@ -117,7 +117,7 @@ export default function ClosetCoachPage() {
           <span className="text-4xl font-bold">¥4,980</span>
           <span className="text-muted-foreground">（税込・買い切り）</span>
         </div>
-        <p className="text-sm text-muted-foreground mb-6">有料プラン（¥980/月）なら全ツール使い放題 ✨</p>
+        <p className="text-sm text-muted-foreground mb-6">全ツール使い放題プラン（¥980/月）なら全ツール使い放題 ✨</p>
         <PurchaseButton productId="closet-coach" />
       </div>
 

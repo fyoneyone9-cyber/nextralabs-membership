@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { ArrowLeft, MessageCircleHeart, Brain, BarChart3, Calendar, BookOpen, HeartHandshake, ArrowRight } from 'lucide-react'
 import { PurchaseButton } from '@/components/PurchaseButton'
 
@@ -167,7 +167,7 @@ export default function CommCoachPage() {
           <span className="text-muted-foreground">（税込・買い切り）</span>
         </div>
         <p className="text-sm text-muted-foreground mb-6">
-          有料プラン（¥980/月）なら全ツール使い放題 ✨
+          全ツール使い放題プラン（¥980/月）なら全ツール使い放題 ✨
         </p>
         <PurchaseButton productId="comm-coach" />
       </div>

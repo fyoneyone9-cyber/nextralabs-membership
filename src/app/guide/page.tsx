@@ -1,4 +1,4 @@
-import { Card, CardContent } from '@/components/ui/card'
+﻿import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
 import { ArrowLeft, ExternalLink, ShoppingBag, Palette, Truck, Settings, CreditCard, CheckCircle, AlertTriangle, Store, Printer, Globe } from 'lucide-react'
@@ -495,13 +495,13 @@ export default function GuidePage() {
           
           <div className="space-y-4">
             {[
-              { q: '初期費用はかかりますか？', a: 'NextraLabsのアカウント作成は無料です。プレミアムプランは月額¥980。Printfulも登録無料で、注文が入った時のみ原価が発生します。' },
+              { q: '初期費用はかかりますか？', a: 'NextraLabsのアカウント作成は無料です。全ツール使い放題プランは月額¥980。Printfulも登録無料で、注文が入った時のみ原価が発生します。' },
               { q: '在庫を持つ必要がありますか？', a: 'いいえ。Printfulのオンデマンド印刷なので、在庫は一切不要です。注文が入ってから1枚ずつ印刷・発送されます。' },
               { q: '海外にも発送できますか？', a: 'はい。Printfulは世界中に発送対応しています。Shopifyストアの配送設定で対象国を設定できます。' },
               { q: '返品・返金はどうなりますか？', a: 'Printfulの品質保証が適用されます。印刷不良・破損の場合は無料で再印刷。ストアの返品ポリシーはShopifyで設定できます。' },
               { q: 'デザインの著作権は？', a: 'AIで生成したデザインの商用利用は可能です。ただし、既存のブランドロゴや著作物に似たデザインの使用は避けてください。' },
               { q: '原価はいくらですか？', a: 'Tシャツ1枚あたり約$10.95〜（約¥1,600〜）+ 送料（日本国内約¥500〜）。販売価格との差額が利益になります。' },
-              { q: 'プレミアムプランの解約はできますか？', a: 'はい。いつでも解約可能です。解約後も期間終了まではご利用いただけます。' },
+              { q: '全ツール使い放題プランの解約はできますか？', a: 'はい。いつでも解約可能です。解約後も期間終了まではご利用いただけます。' },
             ].map((faq, i) => (
               <Card key={i}>
                 <CardContent className="p-5">

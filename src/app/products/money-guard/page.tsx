@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -278,7 +278,7 @@ export default function MoneyGuardPage() {
                 <div className="text-5xl font-bold mb-2">¥4,980<span className="text-lg font-normal text-muted-foreground">（税込）</span></div>
                 <p className="text-muted-foreground mb-6">一度の購入でずっと使える</p>
                 <PurchaseButton productId="money-guard" />
-                <p className="text-xs text-muted-foreground mt-4">プレミアムプラン（¥980/月）なら全ツール使い放題</p>
+                <p className="text-xs text-muted-foreground mt-4">全ツール使い放題プラン（¥980/月）なら全ツール使い放題</p>
               </CardContent>
             </Card>
           </div>

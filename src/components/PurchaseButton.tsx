@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
@@ -73,7 +73,7 @@ export function PurchaseButton({
     )
   }
 
-  // 有料プランまたは単品購入済み
+  // 全ツール使い放題プランまたは単品購入済み
   if (access?.hasAccess) {
     return (
       <Button

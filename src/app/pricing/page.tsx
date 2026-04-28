@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -75,7 +75,7 @@ export default function PricingPage() {
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">料金プラン</h1>
         <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-          単品購入もできます。有料プランならすべてのツールが使い放題。
+          単品購入もできます。全ツール使い放題プランならすべてのツールが使い放題。
         </p>
       </div>
 
@@ -132,7 +132,7 @@ export default function PricingPage() {
             </Badge>
           </div>
           <CardContent className="p-8">
-            <h3 className="text-2xl font-bold mb-2">有料プラン</h3>
+            <h3 className="text-2xl font-bold mb-2">全ツール使い放題プラン</h3>
             <p className="text-muted-foreground mb-4">すべてのツールが使い放題</p>
             <div className="text-5xl font-bold mb-6">
               ¥980
@@ -161,7 +161,7 @@ export default function PricingPage() {
             ) : (
               <Button className="w-full" onClick={handleCheckout} disabled={loading}>
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                有料プランに登録
+                全ツール使い放題プランに登録
               </Button>
             )}
           </CardContent>
