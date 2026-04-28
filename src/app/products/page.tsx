@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet } from 'lucide-react'
 
 const products = [
   {
@@ -122,6 +122,21 @@ const products = [
     color: 'from-amber-500 to-red-500',
     bgColor: 'bg-amber-500/10',
     iconColor: 'text-amber-500',
+    status: '新商品',
+  },
+  {
+    id: 'money-guard',
+    title: 'AI家計防衛シミュレーター',
+    subtitle: '収支トラッカー × 期待値計算 × 依存度チェック',
+    description:
+      'ギャンブル収支を可視化し、期待値を数学的に解説。「もし貯金してたら」シミュレーター、認知バイアス診断、相談窓口ガイドまで。お金を守る力を手に入れる。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['収支トラッカー', '期待値計算', '依存度チェック', '認知バイアス'],
+    icon: Wallet,
+    color: 'from-emerald-500 to-amber-500',
+    bgColor: 'bg-emerald-500/10',
+    iconColor: 'text-emerald-500',
     status: '新商品',
   },
 ]
