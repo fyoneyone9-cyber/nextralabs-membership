@@ -173,7 +173,7 @@ export default function BuzzWriter() {
     const charCount = text.length
     const lines = text.split('\n').filter(l => l.trim())
     const hashtags = (text.match(/#\S+/g) || []).length
-    const hasEmoji = /[\u{1F300}-\u{1F9FF}]/u.test(text)
+    const hasEmoji = /[\uD83C-\uD83E]/.test(text)
     const hasQuestion = text.includes('？') || text.includes('?')
     const hasExclamation = text.includes('！') || text.includes('!')
     const hasLineBreaks = lines.length >= 3
@@ -190,7 +190,7 @@ export default function BuzzWriter() {
     const firstLine = lines[0] || ''
     if (firstLine.length <= 30) hookScore += 15 // concise hook
     if (/[！!？?]/.test(firstLine)) hookScore += 10
-    if (/[\u{1F300}-\u{1F9FF}]/u.test(firstLine)) hookScore += 5
+    if (/[\uD83C-\uD83E]/.test(firstLine)) hookScore += 5
     if (/知ってた|実は|正直|衝撃|ヤバい|驚き|まさか/.test(firstLine)) hookScore += 15
     hookScore = Math.min(100, hookScore)
 
