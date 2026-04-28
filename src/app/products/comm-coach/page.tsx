@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowLeft, MessageCircleHeart, Brain, BarChart3, Calendar, BookOpen, HeartHandshake } from 'lucide-react'
+import { ArrowLeft, MessageCircleHeart, Brain, BarChart3, Calendar, BookOpen, HeartHandshake, ArrowRight } from 'lucide-react'
 import { PurchaseButton } from '@/components/PurchaseButton'
 
 export const metadata = {
@@ -91,11 +91,14 @@ export default function CommCoachPage() {
             desc: '恋愛依存・DV相談・カウンセリング。専門機関への相談先をまとめて掲載。',
           },
         ].map((f, i) => (
-          <div key={i} className="border rounded-2xl p-5 hover:border-pink-300 transition-colors">
-            <div className="text-pink-500 mb-2">{f.icon}</div>
+          <Link key={i} href="/products/comm-coach/app" className="border rounded-2xl p-5 hover:border-pink-300 hover:bg-pink-500/5 transition-all group block">
+            <div className="flex items-start justify-between">
+              <div className="text-pink-500 mb-2">{f.icon}</div>
+              <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
             <h3 className="font-bold mb-1">{f.title}</h3>
             <p className="text-sm text-muted-foreground">{f.desc}</p>
-          </div>
+          </Link>
         ))}
       </div>
 
