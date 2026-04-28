@@ -5,7 +5,8 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Check, Crown, Loader2 } from 'lucide-react'
+import { Check, Crown, Loader2, Wrench, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 import { toast } from 'sonner'
 
 export default function PricingPage() {
@@ -79,7 +80,7 @@ export default function PricingPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
         {/* Free Plan */}
         <Card className="relative">
           <CardContent className="p-8">
@@ -164,6 +165,48 @@ export default function PricingPage() {
                 全ツール使い放題プランに登録
               </Button>
             )}
+          </CardContent>
+        </Card>
+
+        {/* Custom Development Plan */}
+        <Card className="relative border-amber-500/50">
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+            <Badge className="bg-amber-500 text-white px-4 py-1">
+              <Wrench className="h-3 w-3 mr-1" />
+              法人向け
+            </Badge>
+          </div>
+          <CardContent className="p-8">
+            <h3 className="text-2xl font-bold mb-2">カスタマイズ<br />ツール開発</h3>
+            <p className="text-muted-foreground mb-4">御社専用のAIツールを開発</p>
+            <div className="text-5xl font-bold mb-2">
+              お見積り
+            </div>
+            <p className="text-sm text-muted-foreground mb-6">ご要件に応じて個別にお見積り</p>
+            <ul className="space-y-3 mb-8">
+              {[
+                '御社業務に特化したAIツール開発',
+                '既存ツールのカスタマイズ',
+                '社内システムとのAPI連携',
+                'デザイン・UI/UXのカスタマイズ',
+                '導入サポート・研修',
+                '保守・運用サポート',
+              ].map((feature) => (
+                <li key={feature} className="flex items-center gap-2 text-sm">
+                  <Check className="h-4 w-4 text-amber-500 shrink-0" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <Link href="/contact">
+              <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white gap-2">
+                お問い合わせ
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+            <p className="text-xs text-muted-foreground text-center mt-3">
+              まずはお気軽にご相談ください
+            </p>
           </CardContent>
         </Card>
       </div>
