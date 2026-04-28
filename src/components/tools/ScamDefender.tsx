@@ -193,35 +193,88 @@ const emergencySteps = [
 ]
 
 // ─── Danger keyword analysis ─────────────────────────────
-const dangerKeywords: { word: string; level: 'critical' | 'warning' | 'suspicious'; category: string }[] = [
-  { word: '即日現金', level: 'critical', category: '闇バイト' },
-  { word: '高収入', level: 'critical', category: '闇バイト' },
-  { word: '簡単作業', level: 'critical', category: '闇バイト' },
-  { word: '面接なし', level: 'critical', category: '闇バイト' },
-  { word: '身分証', level: 'critical', category: '闇バイト/詐欺' },
-  { word: '荷物の受け取り', level: 'critical', category: '受け子' },
-  { word: 'テレグラム', level: 'warning', category: '匿名通信' },
-  { word: 'シグナル', level: 'warning', category: '匿名通信' },
-  { word: '元本保証', level: 'critical', category: '投資詐欺' },
-  { word: '必ず儲かる', level: 'critical', category: '投資詐欺' },
-  { word: '限定', level: 'suspicious', category: '焦らせ手口' },
-  { word: '今だけ', level: 'suspicious', category: '焦らせ手口' },
-  { word: '誰にも言わないで', level: 'critical', category: 'オレオレ詐欺' },
-  { word: '口座', level: 'warning', category: '金銭要求' },
-  { word: '振込', level: 'warning', category: '金銭要求' },
-  { word: 'ギフトカード', level: 'critical', category: '支払い詐欺' },
-  { word: '暗号資産', level: 'warning', category: '投資詐欺' },
-  { word: '仮想通貨', level: 'warning', category: '投資詐欺' },
-  { word: '日払い', level: 'warning', category: '闇バイト' },
-  { word: '裏バイト', level: 'critical', category: '闇バイト' },
-  { word: '掛け子', level: 'critical', category: '闇バイト' },
-  { word: '出し子', level: 'critical', category: '闇バイト' },
-  { word: '受け子', level: 'critical', category: '闘バイト' },
-  { word: '飛ばし', level: 'critical', category: '犯罪' },
-  { word: '本日中', level: 'warning', category: '焦らせ手口' },
-  { word: '法的手続き', level: 'warning', category: '架空請求' },
-  { word: '最終通告', level: 'warning', category: '架空請求' },
+// ─── Enhanced Danger Keyword DB ──────────────────────────
+// Each entry has: words (variants), level, category, weight (for scoring)
+const dangerKeywordGroups: { words: string[]; level: 'critical' | 'warning' | 'suspicious'; category: string; weight: number }[] = [
+  // ── 闇バイト・犯罪加担 (最重要) ──
+  { words: ['受け子', 'うけこ'], level: 'critical', category: '闇バイト（受け子）', weight: 25 },
+  { words: ['出し子', 'だしこ'], level: 'critical', category: '闇バイト（出し子）', weight: 25 },
+  { words: ['掛け子', 'かけこ'], level: 'critical', category: '闇バイト（掛け子）', weight: 25 },
+  { words: ['裏バイト', '闇バイト', 'やみばいと', 'ウラバイト'], level: 'critical', category: '闇バイト', weight: 25 },
+  { words: ['飛ばし', '飛ばし携帯', '飛ばしスマホ'], level: 'critical', category: '犯罪ツール', weight: 25 },
+  { words: ['タタキ', 'たたき', '叩き'], level: 'critical', category: '強盗（闇バイト用語）', weight: 25 },
+  { words: ['荷物の受け取り', '荷物を受け取', '荷物受取', '荷受け'], level: 'critical', category: '受け子', weight: 20 },
+  { words: ['荷物を届ける', '荷物の転送', '荷物転送'], level: 'critical', category: '受け子', weight: 20 },
+  { words: ['現金の回収', '現金回収', 'お金を受け取'], level: 'critical', category: '受け子/出し子', weight: 22 },
+  { words: ['口座を貸し', '口座貸し', '口座売買', '口座を売'], level: 'critical', category: '口座詐欺', weight: 25 },
+  { words: ['名義貸し', '名義を貸'], level: 'critical', category: '犯罪加担', weight: 22 },
+  { words: ['キャッシュカードを送', 'カードを郵送', 'カードを預'], level: 'critical', category: '口座詐欺', weight: 25 },
+  { words: ['telegram', 'テレグラム', 'テレグラ'], level: 'warning', category: '匿名通信（犯罪連絡に多用）', weight: 12 },
+  { words: ['signal', 'シグナル'], level: 'warning', category: '匿名通信', weight: 8 },
+  { words: ['秘密厳守', '他言無用', '誰にも言うな', '誰にも言わないで', '内密に'], level: 'critical', category: '口止め（詐欺の常套句）', weight: 18 },
+
+  // ── 高額報酬系 ──
+  { words: ['即日現金', '即金', '即日払い', '即日入金', '当日払い', '当日現金'], level: 'critical', category: '闇バイト', weight: 18 },
+  { words: ['高収入', '高額報酬', '高額バイト', '高額案件', '月収100万', '日給5万', '日給10万', '1日で5万', '1日で10万'], level: 'critical', category: '高額報酬（闇バイト）', weight: 15 },
+  { words: ['簡単作業', '簡単なお仕事', 'カンタン作業', '誰でもできる', '未経験ok', '未経験歓迎'], level: 'warning', category: '簡単×高額は危険', weight: 10 },
+  { words: ['面接なし', '面接不要', '履歴書不要', '経歴不問'], level: 'warning', category: '匿名性（闇バイト特徴）', weight: 10 },
+  { words: ['日払い', '週払い', '現金手渡し'], level: 'warning', category: '即金性', weight: 8 },
+
+  // ── 身分証要求 ──
+  { words: ['身分証', '免許証のコピー', '免許証の写真', '身分証明書を送', '本人確認書類を送', '免許証を撮影', 'マイナンバーカード'], level: 'critical', category: '個人情報搾取（脅迫材料化）', weight: 18 },
+  { words: ['顔写真を送', '自撮りを送', '顔写真付き'], level: 'critical', category: '個人情報搾取', weight: 15 },
+
+  // ── 投資詐欺 ──
+  { words: ['元本保証', '元本割れなし'], level: 'critical', category: '投資詐欺', weight: 20 },
+  { words: ['必ず儲かる', '絶対儲かる', '100%利益', '損しない', 'ノーリスク'], level: 'critical', category: '投資詐欺', weight: 20 },
+  { words: ['年利20', '年利30', '月利10', '月利5%以上'], level: 'critical', category: '投資詐欺（異常利回り）', weight: 18 },
+  { words: ['暗号資産', '仮想通貨', 'ビットコイン', 'FX自動売買'], level: 'warning', category: '投資詐欺の手段', weight: 8 },
+  { words: ['マイニング', 'NFT投資', 'バイナリーオプション'], level: 'warning', category: '投資詐欺の手段', weight: 10 },
+  { words: ['著名人も参加', '有名人も', '芸能人も'], level: 'critical', category: '権威づけ（詐欺の常套句）', weight: 15 },
+  { words: ['限定30名', '限定募集', '残りわずか', '今だけ', '本日限り', '先着'], level: 'suspicious', category: '焦らせ手口', weight: 6 },
+
+  // ── 架空請求・フィッシング ──
+  { words: ['最終通告', '最終警告', '法的手続き', '法的措置', '裁判所', '差し押さえ'], level: 'warning', category: '架空請求', weight: 12 },
+  { words: ['未納', '未払い', '滞納', '延滞'], level: 'suspicious', category: '架空請求', weight: 6 },
+  { words: ['本日中に', '24時間以内', '48時間以内', '至急', '緊急'], level: 'warning', category: '焦らせ手口', weight: 8 },
+  { words: ['アカウント異常', 'アカウントロック', '不正アクセス', '不正ログイン', 'セキュリティ警告'], level: 'warning', category: 'フィッシング', weight: 10 },
+  { words: ['こちらのリンク', '以下のurlを', 'リンクをクリック', '本人確認はこちら'], level: 'warning', category: 'フィッシング', weight: 10 },
+
+  // ── オレオレ詐欺 ──
+  { words: ['示談金', '慰謝料', '賠償金', '和解金'], level: 'critical', category: 'オレオレ詐欺', weight: 18 },
+  { words: ['会社のお金', '横領', '使い込み'], level: 'critical', category: 'オレオレ詐欺', weight: 15 },
+
+  // ── 還付金詐欺 ──
+  { words: ['還付金', '過払い金', '払い戻し'], level: 'warning', category: '還付金詐欺', weight: 10 },
+  { words: ['atmで手続き', 'atmに行って', 'コンビニatm'], level: 'critical', category: '還付金詐欺', weight: 20 },
+
+  // ── サポート詐欺 ──
+  { words: ['ウイルスに感染', 'ウイルス感染', 'マルウェア', 'pcが危険'], level: 'warning', category: 'サポート詐欺', weight: 10 },
+  { words: ['今すぐ電話', 'サポートに電話', '050-', '0570-'], level: 'warning', category: 'サポート詐欺', weight: 10 },
+  { words: ['遠隔操作', 'リモート操作', 'チームビューアー', 'teamviewer', 'anydesk'], level: 'critical', category: 'サポート詐欺', weight: 15 },
+
+  // ── ロマンス詐欺 ──
+  { words: ['会いに行きたい', '渡航費', '飛行機代', 'ビザ代'], level: 'warning', category: 'ロマンス詐欺', weight: 12 },
+  { words: ['少しだけ貸して', 'お金を貸して', '送金してほしい', '立て替えて'], level: 'critical', category: 'ロマンス詐欺/金銭要求', weight: 15 },
+
+  // ── 支払い手段（詐欺に多用） ──
+  { words: ['ギフトカード', 'amazonギフト', 'itunesカード', 'googleplayカード', 'プリペイドカード'], level: 'critical', category: '不可逆な支払い手段', weight: 18 },
+  { words: ['振込先', '振り込んで', '口座に送金', '口座番号'], level: 'warning', category: '金銭要求', weight: 8 },
+
+  // ── SNS勧誘パターン ──
+  { words: ['dm', 'ダイレクトメッセージ', 'dmください', 'dm送って'], level: 'suspicious', category: 'SNS勧誘', weight: 4 },
+  { words: ['#副業', '#高収入', '#簡単', '#稼げる', '副業紹介'], level: 'suspicious', category: 'SNS勧誘（闇バイト/投資詐欺）', weight: 6 },
+  { words: ['スマホだけで', 'スマホ1台', '在宅で月収', 'コピペだけ', 'コピペするだけ'], level: 'warning', category: '情報商材/闇バイト', weight: 10 },
+
+  // ── 個人情報要求 ──
+  { words: ['住所を教えて', '住所を送', '自宅の住所'], level: 'critical', category: '個人情報搾取', weight: 15 },
+  { words: ['クレジットカード番号', 'カード番号', '暗証番号', 'パスワードを入力'], level: 'critical', category: 'フィッシング', weight: 20 },
 ]
+
+// Flatten for display: create a flat keyword array from groups
+const dangerKeywords = dangerKeywordGroups.flatMap(group =>
+  group.words.map(word => ({ word, level: group.level, category: group.category, weight: group.weight }))
+)
 
 // ─── Simulation scenarios ─────────────────────────────
 const simScenarios = [
@@ -376,25 +429,85 @@ export default function ScamDefender() {
   }, [])
   const completedChecks = checklist.filter(c => c.done).length
 
-  // Yami check logic
+  // Yami check logic — enhanced scoring
   const analyzeYami = useCallback(() => {
     if (!yamiInput.trim()) return
     const text = yamiInput.toLowerCase()
-    const found = dangerKeywords.filter(kw => text.includes(kw.word.toLowerCase()))
-    const criticalCount = found.filter(k => k.level === 'critical').length
-    const warningCount = found.filter(k => k.level === 'warning').length
-    const suspiciousCount = found.filter(k => k.level === 'suspicious').length
-    const score = Math.min(100, criticalCount * 30 + warningCount * 15 + suspiciousCount * 5)
 
+    // Match against keyword groups (deduplicate by group)
+    const matchedGroups: { words: string[]; matchedWord: string; level: 'critical' | 'warning' | 'suspicious'; category: string; weight: number }[] = []
+    const seenCategories = new Set<string>()
+
+    for (const group of dangerKeywordGroups) {
+      for (const word of group.words) {
+        if (text.includes(word.toLowerCase())) {
+          const catKey = group.category + '|' + group.level
+          if (!seenCategories.has(catKey)) {
+            seenCategories.add(catKey)
+            matchedGroups.push({ ...group, matchedWord: word })
+          }
+          break // one match per group is enough
+        }
+      }
+    }
+
+    // Base score from weights
+    let rawScore = matchedGroups.reduce((sum, g) => sum + g.weight, 0)
+
+    // ── Combo bonuses (multiple risk signals = exponentially more dangerous) ──
+    const matchedCats = new Set(matchedGroups.map(g => g.category))
+    const hasCrimeTool = matchedGroups.some(g => ['闇バイト（受け子）', '闇バイト（出し子）', '闘バイト（掛け子）', '受け子', '受け子/出し子', '口座詐欺', '犯罪加担', '犯罪ツール', '強盗（闇バイト用語）', '闇バイト'].includes(g.category))
+    const hasHighPay = matchedGroups.some(g => g.category.includes('高額報酬') || g.category.includes('即金'))
+    const hasEasy = matchedGroups.some(g => g.category.includes('簡単'))
+    const hasAnon = matchedGroups.some(g => g.category.includes('匿名') || g.category.includes('口止め'))
+    const hasIdRequest = matchedGroups.some(g => g.category.includes('個人情報搾取'))
+    const hasUrgency = matchedGroups.some(g => g.category.includes('焦らせ'))
+
+    // "高額 × 簡単 × 匿名" triple = classic yami-baito pattern
+    if (hasHighPay && hasEasy && hasAnon) rawScore += 25
+    // "高額 × 簡単" = very suspicious
+    else if (hasHighPay && hasEasy) rawScore += 15
+    // Crime tool + any other signal
+    if (hasCrimeTool && (hasHighPay || hasIdRequest)) rawScore += 20
+    // ID request + high pay = likely extortion trap
+    if (hasIdRequest && hasHighPay) rawScore += 15
+    // Urgency amplifier
+    if (hasUrgency && matchedGroups.length >= 2) rawScore += 10
+
+    // Normalize to 0-100
+    const score = Math.min(100, Math.round(rawScore * 100 / 120))
+
+    // Convert matched groups to flat found array for display
+    const found = matchedGroups.map(g => ({
+      word: g.matchedWord,
+      level: g.level,
+      category: g.category,
+      weight: g.weight,
+    }))
+
+    // Detailed analysis
     let analysis = ''
+    const details: string[] = []
+
     if (score >= 80) {
-      analysis = '🚨 極めて危険 — 闇バイト・詐欺の可能性が非常に高いです。絶対に応募しないでください。通報をおすすめします。'
-    } else if (score >= 50) {
-      analysis = '⚠️ 要注意 — 詐欺・闇バイトの特徴が複数見られます。このような募集には応じないでください。'
+      analysis = '🚨 極めて危険 — 闇バイト・詐欺の可能性が非常に高いです。\n絶対に応募しないでください。SNSの通報機能で報告することを強くおすすめします。'
+      if (hasCrimeTool) details.push('→ 犯罪の実行役にされる可能性があります（逮捕・実刑のリスク）')
+      if (hasIdRequest) details.push('→ 身分証を送ると脅迫材料にされ、抜けられなくなります')
+    } else if (score >= 60) {
+      analysis = '⚠️ かなり危険 — 詐欺・闇バイトの特徴が複数見られます。\nこのような募集には絶対に応じないでください。'
+      if (hasHighPay && hasEasy) details.push('→ 「高額」×「簡単」の組み合わせは闇バイトの典型パターン')
+    } else if (score >= 40) {
+      analysis = '🔶 要注意 — 複数の怪しいキーワードが検出されました。\n安全な仕事かどうか、慎重に確認してください。'
     } else if (score >= 20) {
-      analysis = '🔶 注意 — 一部怪しいキーワードがあります。詳細を確認し、少しでも不安なら応募しないでください。'
+      analysis = '🔸 やや注意 — 一部気になるキーワードがあります。\n会社名・所在地・事業内容を必ず確認してください。'
+    } else if (matchedGroups.length > 0) {
+      analysis = '🟡 軽微な注意点あり — 直ちに危険とは言えませんが、注意は必要です。'
     } else {
-      analysis = '🟢 危険なキーワードは検出されませんでした。ただし、見た目だけでは判断できない場合もあります。「高額×簡単×匿名」の3要素が揃ったら要注意。'
+      analysis = '🟢 明確な危険キーワードは検出されませんでした。\nただし、テキスト分析だけでは判断できないケースもあります。\n\n💡 見分けるポイント:\n・会社名/所在地が明記されているか\n・仕事内容が具体的か\n・報酬が相場と比べて高すぎないか\n・「高額×簡単×匿名」の3要素が揃っていないか'
+    }
+
+    if (details.length > 0) {
+      analysis += '\n\n' + details.join('\n')
     }
 
     setYamiResult({ score, found, analysis })
@@ -702,7 +815,7 @@ export default function ScamDefender() {
                   }`}>
                     {yamiResult.score}%
                   </div>
-                  <p className="text-sm mt-4">{yamiResult.analysis}</p>
+                  <pre className="text-sm mt-4 whitespace-pre-wrap font-sans text-left max-w-lg mx-auto">{yamiResult.analysis}</pre>
                 </div>
 
                 {yamiResult.found.length > 0 && (
