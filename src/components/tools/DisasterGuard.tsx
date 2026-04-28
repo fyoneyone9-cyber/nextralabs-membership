@@ -556,7 +556,7 @@ export function DisasterGuard() {
             </div>
 
             <div className="flex gap-2">
-              <select value={prefecture} onChange={e => setPrefecture(e.target.value)} className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm">
+              <select value={prefecture} onChange={e => setPrefecture(e.target.value)} className="flex-1 bg-gray-900 border border-white/10 rounded-lg px-3 py-2 text-sm text-white [&>option]:bg-gray-900 [&>option]:text-white">
                 {PREFECTURES.map(p => <option key={p} value={p}>{p}</option>)}
               </select>
               <button onClick={fetchWeatherAlerts} disabled={weatherLoading} className="px-4 py-2 bg-gradient-to-r from-sky-500 to-blue-500 rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-50 shrink-0">
