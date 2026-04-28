@@ -14,6 +14,7 @@ const PRODUCT_PRICES: Record<string, string> = {
   'money-guard': 'price_1TREUG5HQYoJh51tA3byMETJ',
   'moving-checker': 'price_1TREg65HQYoJh51tCt3YZc7B',
   'buzz-writer': 'price_1TREu35HQYoJh51tgGd6ZmVM',
+  'comm-coach': 'price_1TRFcM5HQYoJh51t5AtDIqY9',
 }
 
 export async function POST(request: NextRequest) {

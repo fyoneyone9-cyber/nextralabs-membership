@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart } from 'lucide-react'
 
 const products = [
   {
@@ -167,6 +167,21 @@ const products = [
     color: 'from-orange-500 to-red-500',
     bgColor: 'bg-orange-500/10',
     iconColor: 'text-orange-500',
+    status: '新商品',
+  },
+  {
+    id: 'comm-coach',
+    title: 'AIコミュニケーション改善コーチ',
+    subtitle: '心理学ベース × メッセージ添削 × 自己診断',
+    description:
+      '心理学理論に基づいてメッセージを添削、コミュスタイルを4タイプ診断、場面別の会話プランナーでスキルアップ。恋愛もビジネスも友人関係も。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['メッセージ添削', 'コミュ診断', '心理学講座', 'NG＆OK集'],
+    icon: MessageCircleHeart,
+    color: 'from-pink-500 to-purple-500',
+    bgColor: 'bg-pink-500/10',
+    iconColor: 'text-pink-500',
     status: '新商品',
   },
 ]
