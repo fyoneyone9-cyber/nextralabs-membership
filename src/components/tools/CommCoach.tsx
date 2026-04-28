@@ -40,7 +40,7 @@ function analyzeMessage(text: string, scene: Scene): { tones: ToneResult[]; over
   const len = text.length
   const hasExclamation = text.includes('！') || text.includes('!')
   const hasQuestion = text.includes('？') || text.includes('?')
-  const hasEmoji = /[\uD83C-\uD83E]|[😀-🙏]|[♥️❤️💕💗💖✨🎉👍🙇]/.test(text)
+  const hasEmoji = /[\uD83C-\uD83E]/.test(text)
   const hasLineBreak = text.includes('\n')
   const hasFormalWords = /です|ます|ございます|いたします|存じます/.test(text)
   const hasCasualWords = /だよ|だね|じゃん|っしょ|笑|ｗ|ww|草/.test(text)

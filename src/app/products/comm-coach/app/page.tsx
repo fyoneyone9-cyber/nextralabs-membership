@@ -1,4 +1,4 @@
-import { AccessGate } from '@/components/AccessGate'
+import { AccessGate } from '@/components/tools/AccessGate'
 import { CommCoach } from '@/components/tools/CommCoach'
 
 export const metadata = {
