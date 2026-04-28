@@ -284,7 +284,7 @@ export function DisasterGuard() {
   }
 
   // Checklist helpers
-  const checklistCategories = [...new Set(checklist.map(c => c.category))]
+  const checklistCategories = Array.from(new Set(checklist.map(c => c.category)))
   const checkedCount = checklist.filter(c => c.checked).length
   const checkProgress = checklist.length > 0 ? Math.round((checkedCount / checklist.length) * 100) : 0
 
@@ -315,7 +315,7 @@ export function DisasterGuard() {
 
   // Filtered shelters
   const filteredShelters = filterType === 'すべて' ? shelters : shelters.filter(s => s.types.includes(filterType))
-  const shelterTypes = ['すべて', ...new Set(SAMPLE_SHELTERS.flatMap(s => s.types))]
+  const shelterTypes = ['すべて'].concat(Array.from(new Set(SAMPLE_SHELTERS.flatMap(s => s.types))))
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 text-white">
