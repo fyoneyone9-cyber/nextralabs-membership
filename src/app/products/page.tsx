@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home } from 'lucide-react'
 
 const products = [
   {
@@ -137,6 +137,21 @@ const products = [
     color: 'from-emerald-500 to-amber-500',
     bgColor: 'bg-emerald-500/10',
     iconColor: 'text-emerald-500',
+    status: '新商品',
+  },
+  {
+    id: 'moving-checker',
+    title: 'AI引っ越し安心チェッカー',
+    subtitle: 'エリア安全度 × 騒音リスク × トラブル予防',
+    description:
+      '物件の「見えないリスク」を事前にスコア化。治安・騒音・物件チェック30項目・トラブル対処テンプレート・引っ越しコスト計算まで。住んでから後悔しないために。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['エリア安全度', '騒音リスク', '30項目チェック', 'トラブル対処'],
+    icon: Home,
+    color: 'from-blue-500 to-green-500',
+    bgColor: 'bg-blue-500/10',
+    iconColor: 'text-blue-500',
     status: '新商品',
   },
 ]

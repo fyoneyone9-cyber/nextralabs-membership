@@ -12,6 +12,7 @@ const PRODUCT_PRICES: Record<string, string> = {
   'ai-konkatsu': 'price_1TRDwF5HQYoJh51tGfyO8RiX',
   'scam-defender': 'price_1TREBw5HQYoJh51tItYeDOzQu',
   'money-guard': 'price_1TREUG5HQYoJh51tA3byMETJ',
+  'moving-checker': 'price_1TREg65HQYoJh51tCt3YZc7B',
 }
 
 export async function POST(request: NextRequest) {
