@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, type LucideIcon } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, type LucideIcon } from 'lucide-react'
 
 // ==================== Product Type ====================
 interface Product {
@@ -234,6 +234,25 @@ const bizTools: Product[] = [
   },
 ]
 
+// 🎨 クリエイティブ — AIで創作を加速
+const creativeTools: Product[] = [
+  {
+    id: 'prompt-master',
+    title: 'AI画像プロンプトマスター',
+    subtitle: '26カテゴリ × 日本語→英語変換 × パラメータ辞典',
+    description:
+      '日本語で入力するだけで画像生成AI用の最適プロンプトを自動生成。Midjourney/DALL-E/Stable Diffusion対応。200+テンプレート搭載。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['26カテゴリ', 'プロンプト生成', 'テンプレート', '画像AI'],
+    icon: Wand2,
+    color: 'from-purple-500 to-fuchsia-500',
+    bgColor: 'bg-purple-500/10',
+    iconColor: 'text-purple-500',
+    status: 'NEW',
+  },
+]
+
 // 🐾 エンタメ・趣味
 const funTools: Product[] = [
   {
@@ -365,7 +384,7 @@ const comingSoon = [
 
 // ==================== Page ====================
 export default function ProductsPage() {
-  const totalTools = freeTools.length + defenseTools.length + commTools.length + lifeTools.length + bizTools.length + funTools.length
+  const totalTools = freeTools.length + defenseTools.length + commTools.length + lifeTools.length + bizTools.length + creativeTools.length + funTools.length
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -396,7 +415,7 @@ export default function ProductsPage() {
           </div>
           <div className="w-px h-6 bg-border" />
           <div className="flex items-center gap-1.5">
-            <span className="font-bold text-2xl text-emerald-500">5</span>
+            <span className="font-bold text-2xl text-emerald-500">6</span>
             <span className="text-muted-foreground">ジャンル</span>
           </div>
         </div>
@@ -409,6 +428,7 @@ export default function ProductsPage() {
         <a href="#comm" className="px-3 py-1.5 rounded-full bg-pink-500/10 text-pink-600 dark:text-pink-400 text-sm font-medium hover:bg-pink-500/20 transition-colors">💬 コミュニケーション</a>
         <a href="#life" className="px-3 py-1.5 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-sm font-medium hover:bg-violet-500/20 transition-colors">🏢 キャリア・ライフ</a>
         <a href="#biz" className="px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-medium hover:bg-emerald-500/20 transition-colors">🛍️ ビジネス・副業</a>
+        <a href="#creative" className="px-3 py-1.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-sm font-medium hover:bg-purple-500/20 transition-colors">🎨 クリエイティブ</a>
         <a href="#fun" className="px-3 py-1.5 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-sm font-medium hover:bg-violet-500/20 transition-colors">🐾 エンタメ・趣味</a>
       </div>
 
@@ -464,6 +484,17 @@ export default function ProductsPage() {
           subtitle="AIを使って効率よく稼ぐ"
           accentColor="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
           products={bizTools}
+        />
+      </div>
+
+      {/* CREATIVE */}
+      <div id="creative">
+        <ProductSection
+          emoji="🎨"
+          title="クリエイティブ"
+          subtitle="画像生成AI・デザイン…創作を加速する"
+          accentColor="bg-purple-500/10 text-purple-600 dark:text-purple-400"
+          products={creativeTools}
         />
       </div>
 
