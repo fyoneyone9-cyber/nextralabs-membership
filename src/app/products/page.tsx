@@ -1,10 +1,207 @@
-﻿import Link from 'next/link'
+import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, type LucideIcon } from 'lucide-react'
 
-const products = [
+// ==================== Product Type ====================
+interface Product {
+  id: string
+  title: string
+  subtitle: string
+  description: string
+  price: string
+  priceNote: string
+  tags: string[]
+  icon: LucideIcon
+  color: string
+  bgColor: string
+  iconColor: string
+  status: string
+}
+
+// ==================== Product Data ====================
+const freeTools: Product[] = [
+  {
+    id: 'office-politics-graph',
+    title: '社内政治 相関図',
+    subtitle: 'Slack × カレンダー関係性可視化ツール',
+    description:
+      '組織図には載らない「本当の人間関係」を可視化。Slackメンション傾向とカレンダー会議データから、隠れたキーマンやブリッジ役を自動検出。',
+    price: '無料',
+    priceNote: 'アカウント不要',
+    tags: ['D3.js', 'PageRank', 'データ分析', '無料サンプル'],
+    icon: Network,
+    color: 'from-indigo-500 to-purple-500',
+    bgColor: 'bg-indigo-500/10',
+    iconColor: 'text-indigo-500',
+    status: '🆓 無料',
+  },
+]
+
+// 🛡️ 防衛シリーズ — 暮らしを守る
+const defenseTools: Product[] = [
+  {
+    id: 'scam-defender',
+    title: 'AI詐欺ディフェンダー',
+    subtitle: '詐欺シミュレーション × 闇バイト判定 × 家族見守り',
+    description:
+      '詐欺電話シミュレーターで断り方を練習、闇バイト判定チェッカーで危険度を即判定。見守りチェックリストで家族のセキュリティを強化。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['詐欺クイズ', '電話シミュレーター', '闇バイト判定', '家族見守り'],
+    icon: ShieldCheck,
+    color: 'from-amber-500 to-red-500',
+    bgColor: 'bg-amber-500/10',
+    iconColor: 'text-amber-500',
+    status: '人気',
+  },
+  {
+    id: 'money-guard',
+    title: 'AI家計防衛シミュレーター',
+    subtitle: '収支トラッカー × 期待値計算 × 依存度チェック',
+    description:
+      'ギャンブル収支を可視化し、期待値を数学的に解説。「もし貯金してたら」シミュレーター、認知バイアス診断、相談窓口ガイドまで。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['収支トラッカー', '期待値計算', '依存度チェック', '認知バイアス'],
+    icon: Wallet,
+    color: 'from-emerald-500 to-amber-500',
+    bgColor: 'bg-emerald-500/10',
+    iconColor: 'text-emerald-500',
+    status: '販売中',
+  },
+  {
+    id: 'moving-checker',
+    title: 'AI引っ越し安心チェッカー',
+    subtitle: 'エリア安全度 × 騒音リスク × トラブル予防',
+    description:
+      '物件の「見えないリスク」を事前にスコア化。治安・騒音・物件チェック30項目・トラブル対処テンプレート・引っ越しコスト計算まで。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['エリア安全度', '騒音リスク', '30項目チェック', 'トラブル対処'],
+    icon: Home,
+    color: 'from-blue-500 to-green-500',
+    bgColor: 'bg-blue-500/10',
+    iconColor: 'text-blue-500',
+    status: '販売中',
+  },
+  {
+    id: 'disaster-guard',
+    title: 'AI防災パーソナルガイド',
+    subtitle: 'GPS避難所検索 × 家族防災プラン × 気象警報API',
+    description:
+      '現在地から最寄り避難所を自動検索、家族の避難プランを事前作成、気象庁APIで警報をリアルタイム確認。防災チェックリスト＆知識クイズも。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['GPS', '気象庁API', '防災', '避難所検索'],
+    icon: Shield,
+    color: 'from-sky-500 to-blue-600',
+    bgColor: 'bg-sky-500/10',
+    iconColor: 'text-sky-500',
+    status: 'NEW',
+  },
+  {
+    id: 'shopping-stopper',
+    title: 'AI買い物依存ストッパー',
+    subtitle: 'カメラ表情解析 × 衝動買い防止AI',
+    description: 'カート画面で「高揚感」を検知するとAIが冷静な判断を促し決済を一定時間ロック。衝動買いデータから後悔する確率を予測。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['TensorFlow.js', 'Canvas API', 'AI', '行動分析'],
+    icon: ShieldAlert,
+    color: 'from-red-500 to-rose-500',
+    bgColor: 'bg-red-500/10',
+    iconColor: 'text-red-500',
+    status: '販売中',
+  },
+]
+
+// 💬 コミュニケーション — 人間関係を磨く
+const commTools: Product[] = [
+  {
+    id: 'comm-coach',
+    title: 'AIコミュニケーション改善コーチ',
+    subtitle: '心理学ベース × メッセージ添削 × 自己診断',
+    description:
+      '心理学理論に基づいてメッセージを添削、コミュスタイルを4タイプ診断、場面別の会話プランナーでスキルアップ。恋愛もビジネスも友人関係も。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['メッセージ添削', 'コミュ診断', '心理学講座', 'NG＆OK集'],
+    icon: MessageCircleHeart,
+    color: 'from-pink-500 to-purple-500',
+    bgColor: 'bg-pink-500/10',
+    iconColor: 'text-pink-500',
+    status: '販売中',
+  },
+  {
+    id: 'ai-konkatsu',
+    title: 'AI婚活コーチ',
+    subtitle: 'プロフィール添削 × メッセージ練習 × 相性診断',
+    description:
+      'マッチングアプリのプロフィールをAIが添削、メッセージの練習シミュレーター、価値観診断、デートプラン提案、婚活戦略分析まで。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['プロフィール添削', 'メッセージ練習', '相性診断', 'デートプラン'],
+    icon: Heart,
+    color: 'from-pink-500 to-rose-500',
+    bgColor: 'bg-pink-500/10',
+    iconColor: 'text-pink-500',
+    status: '販売中',
+  },
+  {
+    id: 'buzz-writer',
+    title: 'AIバズ文章コーチ',
+    subtitle: 'トレンドニュース × テンプレート × 画像生成',
+    description:
+      '今日のニュースをネタに、自分の言葉でバズらせる。10種類のテンプレート、バズ度診断、投稿画像ジェネレーター、ハッシュタグ辞典。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['トレンドニュース', 'バズ度診断', '画像生成', 'ハッシュタグ'],
+    icon: Flame,
+    color: 'from-orange-500 to-red-500',
+    bgColor: 'bg-orange-500/10',
+    iconColor: 'text-orange-500',
+    status: '販売中',
+  },
+]
+
+// 🏢 キャリア・ライフ — 人生の転機をサポート
+const lifeTools: Product[] = [
+  {
+    id: 'resignation-assistant',
+    title: '退職あんしんAI',
+    subtitle: '退職届生成 × 残業代計算 × 完全チェックリスト',
+    description:
+      'AIが退職届を自動作成、未払い残業代を計算、有給・社保・年金の手続きまで完全ガイド。退職代行サービスの比較や権利Q&Aも搭載。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['退職届AI生成', '残業代計算', 'チェックリスト', '権利Q&A'],
+    icon: ClipboardCheck,
+    color: 'from-blue-500 to-indigo-500',
+    bgColor: 'bg-blue-500/10',
+    iconColor: 'text-blue-500',
+    status: '販売中',
+  },
+  {
+    id: 'closet-coach',
+    title: 'AIクローゼット断捨離コーチ',
+    subtitle: 'ワードローブ管理 × コスパ分析 × 売却ガイド',
+    description:
+      '持ってる服のコスパを可視化、断捨離候補をAI判定。売却想定価格＆プラットフォーム比較、コーデ提案まで。クローゼットを最適化。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['クローゼット管理', 'コスパ分析', '断捨離AI', '売却ガイド'],
+    icon: Shirt,
+    color: 'from-violet-500 to-fuchsia-500',
+    bgColor: 'bg-violet-500/10',
+    iconColor: 'text-violet-500',
+    status: '販売中',
+  },
+]
+
+// 🛍️ ビジネス・副業 — AIで稼ぐ
+const bizTools: Product[] = [
   {
     id: 'vintage-hunter',
     title: '古着ハンター',
@@ -21,6 +218,25 @@ const products = [
     status: '販売中',
   },
   {
+    id: 'ai-select-shop',
+    title: '「在庫ゼロ」AIセレクトショップ',
+    subtitle: 'トレンド分析 × AI自動デザイン × オンデマンド出品',
+    description:
+      'AIがバズワードを分析しTシャツデザインを自動生成。注文時にオンデマンド製造・配送。在庫リスクゼロのAIファッションビジネス。',
+    price: '¥9,800',
+    priceNote: '買い切り・税込',
+    tags: ['AI Design', 'Printful API', 'トレンド分析', 'Shopify'],
+    icon: Store,
+    color: 'from-emerald-500 to-teal-500',
+    bgColor: 'bg-emerald-500/10',
+    iconColor: 'text-emerald-500',
+    status: '販売中',
+  },
+]
+
+// 🐾 エンタメ・趣味
+const funTools: Product[] = [
+  {
     id: 'pet-translator',
     title: 'AIペット翻訳モニター',
     subtitle: 'AI搭載ペット感情リアルタイム翻訳システム',
@@ -35,187 +251,99 @@ const products = [
     iconColor: 'text-violet-500',
     status: '販売中',
   },
-  {
-    id: 'office-politics-graph',
-    title: '社内政治 相関図',
-    subtitle: 'Slack × カレンダー関係性可視化ツール',
-    description:
-      '組織図には載らない「本当の人間関係」を可視化。Slackメンション傾向とカレンダー会議データから、隠れたキーマンやブリッジ役を自動検出するインタラクティブ相関図ツール。',
-    price: '無料',
-    priceNote: 'アカウント不要',
-    tags: ['D3.js', 'PageRank', 'データ分析', '無料サンプル'],
-    icon: Network,
-    color: 'from-indigo-500 to-purple-500',
-    bgColor: 'bg-indigo-500/10',
-    iconColor: 'text-indigo-500',
-    status: '🆓 無料',
-  },
-  {
-    id: 'shopping-stopper',
-    title: 'AI買い物依存ストッパー',
-    subtitle: 'カメラ表情解析 × 衝動買い防止AI',
-    description: 'カート画面で「高揚感」を検知するとAIが冷静な判断を促し決済を一定時間ロック。過去の衝動買いデータから後悔する確率を予測。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
-    tags: ['TensorFlow.js', 'Canvas API', 'AI', '行動分析'],
-    icon: ShieldAlert,
-    color: 'from-red-500 to-rose-500',
-    bgColor: 'bg-red-500/10',
-    iconColor: 'text-red-500',
-    status: '新商品',
-  },
-  {
-    id: 'ai-select-shop',
-    title: '「在庫ゼロ」AIセレクトショップ',
-    subtitle: 'トレンド分析 × AI自動デザイン × オンデマンド出品',
-    description:
-      'AIがバズワードを分析しTシャツデザインを自動生成。注文時にオンデマンド製造・配送。在庫リスクゼロのAIファッションビジネス。',
-    price: '¥9,800',
-    priceNote: '買い切り・税込',
-    tags: ['AI Design', 'Printful API', 'トレンド分析', 'Shopify'],
-    icon: Store,
-    color: 'from-emerald-500 to-teal-500',
-    bgColor: 'bg-emerald-500/10',
-    iconColor: 'text-emerald-500',
-    status: '新商品',
-  },
-  {
-    id: 'resignation-assistant',
-    title: '退職あんしんAI',
-    subtitle: '退職届生成 × 残業代計算 × 完全チェックリスト',
-    description:
-      'AIが退職届を自動作成、未払い残業代を計算、有給・社保・年金の手続きまで完全ガイド。退職代行サービスの比較や権利Q&Aも搭載。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
-    tags: ['退職届AI生成', '残業代計算', 'チェックリスト', '権利Q&A'],
-    icon: ClipboardCheck,
-    color: 'from-blue-500 to-indigo-500',
-    bgColor: 'bg-blue-500/10',
-    iconColor: 'text-blue-500',
-    status: '新商品',
-  },
-  {
-    id: 'ai-konkatsu',
-    title: 'AI婚活コーチ',
-    subtitle: 'プロフィール添削 × メッセージ練習 × 相性診断',
-    description:
-      'マッチングアプリのプロフィールをAIが添削、メッセージの練習シミュレーター、価値観診断、デートプラン提案、婚活戦略分析まで。あなたの婚活を全力サポート。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
-    tags: ['プロフィール添削', 'メッセージ練習', '相性診断', 'デートプラン'],
-    icon: Heart,
-    color: 'from-pink-500 to-rose-500',
-    bgColor: 'bg-pink-500/10',
-    iconColor: 'text-pink-500',
-    status: '新商品',
-  },
-  {
-    id: 'scam-defender',
-    title: 'AI詐欺ディフェンダー',
-    subtitle: '詐欺シミュレーション × 闇バイト判定 × 家族見守り',
-    description:
-      '詐欺電話シミュレーターで断り方を練習、闇バイト判定チェッカーで危険度を即判定。見守りチェックリストで家族のセキュリティを強化。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
-    tags: ['詐欺クイズ', '電話シミュレーター', '闇バイト判定', '家族見守り'],
-    icon: ShieldCheck,
-    color: 'from-amber-500 to-red-500',
-    bgColor: 'bg-amber-500/10',
-    iconColor: 'text-amber-500',
-    status: '新商品',
-  },
-  {
-    id: 'money-guard',
-    title: 'AI家計防衛シミュレーター',
-    subtitle: '収支トラッカー × 期待値計算 × 依存度チェック',
-    description:
-      'ギャンブル収支を可視化し、期待値を数学的に解説。「もし貯金してたら」シミュレーター、認知バイアス診断、相談窓口ガイドまで。お金を守る力を手に入れる。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
-    tags: ['収支トラッカー', '期待値計算', '依存度チェック', '認知バイアス'],
-    icon: Wallet,
-    color: 'from-emerald-500 to-amber-500',
-    bgColor: 'bg-emerald-500/10',
-    iconColor: 'text-emerald-500',
-    status: '新商品',
-  },
-  {
-    id: 'moving-checker',
-    title: 'AI引っ越し安心チェッカー',
-    subtitle: 'エリア安全度 × 騒音リスク × トラブル予防',
-    description:
-      '物件の「見えないリスク」を事前にスコア化。治安・騒音・物件チェック30項目・トラブル対処テンプレート・引っ越しコスト計算まで。住んでから後悔しないために。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
-    tags: ['エリア安全度', '騒音リスク', '30項目チェック', 'トラブル対処'],
-    icon: Home,
-    color: 'from-blue-500 to-green-500',
-    bgColor: 'bg-blue-500/10',
-    iconColor: 'text-blue-500',
-    status: '新商品',
-  },
-  {
-    id: 'buzz-writer',
-    title: 'AIバズ文章コーチ',
-    subtitle: 'トレンドニュース × テンプレート × 画像生成',
-    description:
-      '今日のニュースをネタに、自分の言葉でバズらせる。10種類のテンプレート、バズ度診断、投稿画像ジェネレーター、ハッシュタグ辞典、投稿タイミングガイドまで。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
-    tags: ['トレンドニュース', 'バズ度診断', '画像生成', 'ハッシュタグ'],
-    icon: Flame,
-    color: 'from-orange-500 to-red-500',
-    bgColor: 'bg-orange-500/10',
-    iconColor: 'text-orange-500',
-    status: '新商品',
-  },
-  {
-    id: 'comm-coach',
-    title: 'AIコミュニケーション改善コーチ',
-    subtitle: '心理学ベース × メッセージ添削 × 自己診断',
-    description:
-      '心理学理論に基づいてメッセージを添削、コミュスタイルを4タイプ診断、場面別の会話プランナーでスキルアップ。恋愛もビジネスも友人関係も。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
-    tags: ['メッセージ添削', 'コミュ診断', '心理学講座', 'NG＆OK集'],
-    icon: MessageCircleHeart,
-    color: 'from-pink-500 to-purple-500',
-    bgColor: 'bg-pink-500/10',
-    iconColor: 'text-pink-500',
-    status: '新商品',
-  },
-  {
-    id: 'closet-coach',
-    title: 'AIクローゼット断捨離コーチ',
-    subtitle: 'ワードローブ管理 × コスパ分析 × 売却ガイド',
-    description:
-      '持ってる服のコスパを可視化、断捨離候補をAI判定。売却想定価格＆プラットフォーム比較、コーデ提案まで。クローゼットを最適化。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
-    tags: ['クローゼット管理', 'コスパ分析', '断捨離AI', '売却ガイド'],
-    icon: Shirt,
-    color: 'from-violet-500 to-fuchsia-500',
-    bgColor: 'bg-violet-500/10',
-    iconColor: 'text-violet-500',
-    status: '新商品',
-  },
-  {
-    id: 'disaster-guard',
-    title: 'AI防災パーソナルガイド',
-    subtitle: 'GPS避難所検索 × 家族防災プラン × 気象警報API',
-    description:
-      '現在地から最寄り避難所を自動検索、家族の避難プランを事前作成、気象庁APIで警報をリアルタイム確認。防災チェックリスト＆知識クイズも搭載。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
-    tags: ['GPS', '気象庁API', '防災', '避難所検索'],
-    icon: Shield,
-    color: 'from-sky-500 to-blue-600',
-    bgColor: 'bg-sky-500/10',
-    iconColor: 'text-sky-500',
-    status: '新商品',
-  },
 ]
 
+// ==================== Section Component ====================
+interface SectionProps {
+  emoji: string
+  title: string
+  subtitle: string
+  accentColor: string
+  products: Product[]
+}
+
+function ProductSection({ emoji, title, subtitle, accentColor, products }: SectionProps) {
+  if (products.length === 0) return null
+  return (
+    <section className="mb-16">
+      <div className="flex items-center gap-3 mb-2">
+        <span className="text-2xl">{emoji}</span>
+        <h2 className="text-2xl font-bold">{title}</h2>
+        <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${accentColor}`}>
+          {products.length}ツール
+        </span>
+      </div>
+      <p className="text-muted-foreground mb-6 ml-10">{subtitle}</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+// ==================== Product Card ====================
+function ProductCard({ product }: { product: Product }) {
+  const Icon = product.icon
+  return (
+    <Card className="h-full hover:shadow-xl transition-all duration-300 group border-2 hover:border-primary/50">
+      <CardContent className="p-6">
+        <div className="flex items-start justify-between mb-4">
+          <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ${product.bgColor}`}>
+            <Icon className={`h-6 w-6 ${product.iconColor}`} />
+          </div>
+          <Badge className={
+            product.status === '🆓 無料' ? 'bg-blue-500 text-white border-0' :
+            product.status === 'NEW' ? 'bg-gradient-to-r from-sky-500 to-blue-500 text-white border-0' :
+            product.status === '人気' ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0' :
+            'bg-green-500 text-white border-0'
+          }>
+            {product.status}
+          </Badge>
+        </div>
+
+        <Link href={`/products/${product.id}`}>
+          <h3 className="text-xl font-bold mb-1 hover:text-primary transition-colors cursor-pointer">
+            {product.title}
+          </h3>
+        </Link>
+        <p className="text-sm text-muted-foreground mb-3">{product.subtitle}</p>
+        <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{product.description}</p>
+
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {product.tags.map((tag) => (
+            <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
+          ))}
+        </div>
+
+        <div className="flex items-end justify-between pt-4 border-t">
+          <div>
+            <span className="text-2xl font-bold">{product.price}</span>
+            <span className="text-xs text-muted-foreground ml-1">{product.priceNote}</span>
+          </div>
+          <div className="flex gap-2">
+            <Link
+              href={`/products/${product.id}/app`}
+              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-md bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:opacity-90 transition-opacity"
+            >
+              <Rocket className="h-3 w-3" />
+              使う
+            </Link>
+            <Link href={`/products/${product.id}`}>
+              <Button variant="ghost" size="sm" className="gap-1">
+                詳細
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+// ==================== Coming Soon ====================
 const comingSoon = [
   {
     title: 'SNSオートポスター',
@@ -233,109 +361,134 @@ const comingSoon = [
     bgColor: 'bg-purple-500/10',
     iconColor: 'text-purple-500',
   },
-
 ]
 
+// ==================== Page ====================
 export default function ProductsPage() {
+  const totalTools = freeTools.length + defenseTools.length + commTools.length + lifeTools.length + bizTools.length + funTools.length
+
   return (
     <div className="container mx-auto px-4 py-16">
       {/* Hero */}
-      <div className="text-center mb-16">
+      <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
           AI ツール
           <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
             ストア
           </span>
         </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          AIを活用した業務効率化・自動化ツールのソースコードを販売しています。
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
+          AIを活用した業務効率化・自動化ツールを販売しています。
           <br />
-          全ツール使い放題プランならすべて使い放題。単品購入も可能。
+          全ツール使い放題プラン（¥980/月）なら全ツール使い放題 ✨
         </p>
+
+        {/* Quick Stats */}
+        <div className="flex items-center justify-center gap-6 text-sm">
+          <div className="flex items-center gap-1.5">
+            <span className="font-bold text-2xl bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">{totalTools}</span>
+            <span className="text-muted-foreground">ツール</span>
+          </div>
+          <div className="w-px h-6 bg-border" />
+          <div className="flex items-center gap-1.5">
+            <span className="font-bold text-2xl text-blue-500">1</span>
+            <span className="text-muted-foreground">無料サンプル</span>
+          </div>
+          <div className="w-px h-6 bg-border" />
+          <div className="flex items-center gap-1.5">
+            <span className="font-bold text-2xl text-emerald-500">5</span>
+            <span className="text-muted-foreground">ジャンル</span>
+          </div>
+        </div>
       </div>
 
-      {/* Products */}
-      <section className="mb-20">
-        <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-          🛒 販売中のツール
-        </h2>
-        <p className="text-muted-foreground mb-8">
-          全ツール使い放題プラン（¥980/月）なら全ツール使い放題 ✨ 単品購入も可能です。
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product) => {
-            const Icon = product.icon
-            return (
-              <Card key={product.id} className="h-full hover:shadow-xl transition-all duration-300 group border-2 hover:border-primary/50">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div
-                      className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ${product.bgColor}`}
-                    >
-                      <Icon className={`h-6 w-6 ${product.iconColor}`} />
-                    </div>
-                    <Badge className={product.price === '無料' ? 'bg-blue-500 text-white border-0' : 'bg-green-500 text-white border-0'}>
-                      {product.status}
-                    </Badge>
-                  </div>
+      {/* Category Nav */}
+      <div className="flex flex-wrap justify-center gap-2 mb-12">
+        <a href="#free" className="px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-sm font-medium hover:bg-blue-500/20 transition-colors">🆓 無料体験</a>
+        <a href="#defense" className="px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-sm font-medium hover:bg-amber-500/20 transition-colors">🛡️ 防衛シリーズ</a>
+        <a href="#comm" className="px-3 py-1.5 rounded-full bg-pink-500/10 text-pink-600 dark:text-pink-400 text-sm font-medium hover:bg-pink-500/20 transition-colors">💬 コミュニケーション</a>
+        <a href="#life" className="px-3 py-1.5 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-sm font-medium hover:bg-violet-500/20 transition-colors">🏢 キャリア・ライフ</a>
+        <a href="#biz" className="px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-medium hover:bg-emerald-500/20 transition-colors">🛍️ ビジネス・副業</a>
+        <a href="#fun" className="px-3 py-1.5 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-sm font-medium hover:bg-violet-500/20 transition-colors">🐾 エンタメ・趣味</a>
+      </div>
 
-                  <Link href={`/products/${product.id}`}>
-                    <h3 className="text-xl font-bold mb-1 hover:text-primary transition-colors cursor-pointer">
-                      {product.title}
-                    </h3>
-                  </Link>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    {product.subtitle}
-                  </p>
-                  <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
-                    {product.description}
-                  </p>
+      {/* FREE */}
+      <div id="free">
+        <ProductSection
+          emoji="🆓"
+          title="無料で体験"
+          subtitle="アカウント不要・すぐ使えるサンプルツール"
+          accentColor="bg-blue-500/10 text-blue-600 dark:text-blue-400"
+          products={freeTools}
+        />
+      </div>
 
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    {product.tags.map((tag) => (
-                      <Badge
-                        key={tag}
-                        variant="secondary"
-                        className="text-xs"
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
+      {/* DEFENSE SERIES */}
+      <div id="defense">
+        <ProductSection
+          emoji="🛡️"
+          title="防衛シリーズ"
+          subtitle="詐欺・お金・住まい・災害…暮らしのリスクからあなたを守る"
+          accentColor="bg-amber-500/10 text-amber-600 dark:text-amber-400"
+          products={defenseTools}
+        />
+      </div>
 
-                  <div className="flex items-end justify-between pt-4 border-t">
-                    <div>
-                      <span className="text-2xl font-bold">{product.price}</span>
-                      <span className="text-xs text-muted-foreground ml-1">
-                        {product.priceNote}
-                      </span>
-                    </div>
-                    <div className="flex gap-2">
-                      <Link
-                        href={`/products/${product.id}/app`}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-md bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:opacity-90 transition-opacity"
-                      >
-                        <Rocket className="h-3 w-3" />
-                        使う
-                      </Link>
-                      <Link href={`/products/${product.id}`}>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="gap-1"
-                        >
-                          詳細
-                          <ArrowRight className="h-4 w-4" />
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )
-          })}
-        </div>
-      </section>
+      {/* COMMUNICATION */}
+      <div id="comm">
+        <ProductSection
+          emoji="💬"
+          title="コミュニケーション"
+          subtitle="恋愛・婚活・SNS…人間関係のスキルを磨く"
+          accentColor="bg-pink-500/10 text-pink-600 dark:text-pink-400"
+          products={commTools}
+        />
+      </div>
+
+      {/* CAREER & LIFE */}
+      <div id="life">
+        <ProductSection
+          emoji="🏢"
+          title="キャリア・ライフ"
+          subtitle="退職・断捨離…人生の転機をAIがサポート"
+          accentColor="bg-violet-500/10 text-violet-600 dark:text-violet-400"
+          products={lifeTools}
+        />
+      </div>
+
+      {/* BUSINESS */}
+      <div id="biz">
+        <ProductSection
+          emoji="🛍️"
+          title="ビジネス・副業"
+          subtitle="AIを使って効率よく稼ぐ"
+          accentColor="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+          products={bizTools}
+        />
+      </div>
+
+      {/* FUN */}
+      <div id="fun">
+        <ProductSection
+          emoji="🐾"
+          title="エンタメ・趣味"
+          subtitle="AIで毎日をちょっと楽しく"
+          accentColor="bg-violet-500/10 text-violet-600 dark:text-violet-400"
+          products={funTools}
+        />
+      </div>
+
+      {/* Plan CTA */}
+      <div className="my-16 bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-red-500/10 border border-amber-500/20 rounded-3xl p-8 text-center">
+        <h2 className="text-2xl font-bold mb-2">全ツール使い放題プラン</h2>
+        <p className="text-muted-foreground mb-4">月額 <span className="text-3xl font-bold text-amber-500">¥980</span> で{totalTools}ツールすべてが使い放題</p>
+        <p className="text-sm text-muted-foreground mb-6">1ツール買うより圧倒的にお得 ✨ いつでも解約OK</p>
+        <Link href="/pricing">
+          <Button className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-8 py-3 rounded-xl text-lg font-bold hover:opacity-90">
+            プランを見る →
+          </Button>
+        </Link>
+      </div>
 
       {/* Coming Soon */}
       <section>
@@ -346,23 +499,16 @@ export default function ProductsPage() {
           {comingSoon.map((item) => {
             const Icon = item.icon
             return (
-              <Card
-                key={item.title}
-                className="h-full opacity-60 cursor-default"
-              >
+              <Card key={item.title} className="h-full opacity-60 cursor-default">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
-                    <div
-                      className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ${item.bgColor}`}
-                    >
+                    <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ${item.bgColor}`}>
                       <Icon className={`h-6 w-6 ${item.iconColor}`} />
                     </div>
                     <Badge variant="outline">Coming Soon</Badge>
                   </div>
                   <h3 className="text-xl font-bold mb-1">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {item.description}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
                 </CardContent>
               </Card>
             )
