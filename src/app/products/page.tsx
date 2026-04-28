@@ -2,7 +2,7 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield } from 'lucide-react'
 
 const products = [
   {
@@ -197,6 +197,21 @@ const products = [
     color: 'from-violet-500 to-fuchsia-500',
     bgColor: 'bg-violet-500/10',
     iconColor: 'text-violet-500',
+    status: '新商品',
+  },
+  {
+    id: 'disaster-guard',
+    title: 'AI防災パーソナルガイド',
+    subtitle: 'GPS避難所検索 × 家族防災プラン × 気象警報API',
+    description:
+      '現在地から最寄り避難所を自動検索、家族の避難プランを事前作成、気象庁APIで警報をリアルタイム確認。防災チェックリスト＆知識クイズも搭載。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['GPS', '気象庁API', '防災', '避難所検索'],
+    icon: Shield,
+    color: 'from-sky-500 to-blue-600',
+    bgColor: 'bg-sky-500/10',
+    iconColor: 'text-sky-500',
     status: '新商品',
   },
 ]
