@@ -61,7 +61,7 @@ export default function HomePage() {
               NextraLabs を30秒で知る
             </h2>
             <p className="text-center text-gray-400 mb-8">
-              AIが業務を変える未来をご覧ください
+              実際のツール画面をご覧ください
             </p>
             <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-amber-500/10 border border-gray-800">
               <video
@@ -69,11 +69,10 @@ export default function HomePage() {
                 loop
                 muted
                 playsInline
-                className="w-full aspect-video object-cover"
-                poster="https://v3b.fal.media/files/b/0a97feb0/s-FhJBTS0VS2Ta9pzF27r_output.mp4"
+                className="w-full aspect-video object-contain bg-[#0a0a14]"
               >
                 <source
-                  src="https://v3b.fal.media/files/b/0a97feb0/s-FhJBTS0VS2Ta9pzF27r_output.mp4"
+                  src="/nextralabs-demo.mp4"
                   type="video/mp4"
                 />
               </video>
