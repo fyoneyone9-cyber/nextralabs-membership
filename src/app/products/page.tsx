@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt } from 'lucide-react'
 
 const products = [
   {
@@ -182,6 +182,21 @@ const products = [
     color: 'from-pink-500 to-purple-500',
     bgColor: 'bg-pink-500/10',
     iconColor: 'text-pink-500',
+    status: '新商品',
+  },
+  {
+    id: 'closet-coach',
+    title: 'AIクローゼット断捨離コーチ',
+    subtitle: 'ワードローブ管理 × コスパ分析 × 売却ガイド',
+    description:
+      '持ってる服のコスパを可視化、断捨離候補をAI判定。売却想定価格＆プラットフォーム比較、コーデ提案まで。クローゼットを最適化。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['クローゼット管理', 'コスパ分析', '断捨離AI', '売却ガイド'],
+    icon: Shirt,
+    color: 'from-violet-500 to-fuchsia-500',
+    bgColor: 'bg-violet-500/10',
+    iconColor: 'text-violet-500',
     status: '新商品',
   },
 ]

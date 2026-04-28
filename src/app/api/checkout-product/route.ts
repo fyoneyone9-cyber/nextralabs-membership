@@ -15,6 +15,7 @@ const PRODUCT_PRICES: Record<string, string> = {
   'moving-checker': 'price_1TREg65HQYoJh51tCt3YZc7B',
   'buzz-writer': 'price_1TREu35HQYoJh51tgGd6ZmVM',
   'comm-coach': 'price_1TRFcM5HQYoJh51t5AtDIqY9',
+  'closet-coach': 'price_1TRFta5HQYoJh51tHy0EJp4C',
 }
 
 export async function POST(request: NextRequest) {
