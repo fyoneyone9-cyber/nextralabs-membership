@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart } from 'lucide-react'
 
 const products = [
   {
@@ -92,6 +92,21 @@ const products = [
     color: 'from-blue-500 to-indigo-500',
     bgColor: 'bg-blue-500/10',
     iconColor: 'text-blue-500',
+    status: '新商品',
+  },
+  {
+    id: 'ai-konkatsu',
+    title: 'AI婚活コーチ',
+    subtitle: 'プロフィール添削 × メッセージ練習 × 相性診断',
+    description:
+      'マッチングアプリのプロフィールをAIが添削、メッセージの練習シミュレーター、価値観診断、デートプラン提案、婚活戦略分析まで。あなたの婚活を全力サポート。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['プロフィール添削', 'メッセージ練習', '相性診断', 'デートプラン'],
+    icon: Heart,
+    color: 'from-pink-500 to-rose-500',
+    bgColor: 'bg-pink-500/10',
+    iconColor: 'text-pink-500',
     status: '新商品',
   },
 ]
