@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, type LucideIcon } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, Briefcase, type LucideIcon } from 'lucide-react'
 
 // ==================== Product Type ====================
 interface Product {
@@ -231,6 +231,21 @@ const bizTools: Product[] = [
     bgColor: 'bg-emerald-500/10',
     iconColor: 'text-emerald-500',
     status: '販売中',
+  },
+  {
+    id: 'ai-sidejob',
+    title: 'AI副業スタートダッシュ',
+    subtitle: '13カテゴリ × 適性診断 × ロードマップ × 収益シミュレーター',
+    description:
+      'AI副業の「何から始めればいい？」から「月10万円達成」まで完全サポート。50+のAIツール辞典、テンプレート集、活動ログ搭載。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['13カテゴリ', '適性診断', 'テンプレート', '収益計算'],
+    icon: Briefcase,
+    color: 'from-orange-500 to-amber-500',
+    bgColor: 'bg-orange-500/10',
+    iconColor: 'text-orange-500',
+    status: 'NEW',
   },
 ]
 

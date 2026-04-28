@@ -18,6 +18,7 @@ const PRODUCT_PRICES: Record<string, string> = {
   'closet-coach': 'price_1TRFta5HQYoJh51tHy0EJp4C',
   'disaster-guard': 'price_1TRGjV5HQYoJh51tjqxbF15C',
   'prompt-master': 'price_1TRHMx5HQYoJh51tI6CAvkWx',
+  'ai-sidejob': 'price_1TRI0f5HQYoJh51tFa9Vk6lK',
 }
 
 export async function POST(request: NextRequest) {
