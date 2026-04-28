@@ -10,6 +10,7 @@ const PRODUCT_PRICES: Record<string, string> = {
   'ai-select-shop': 'price_1TQzcL5HQYoJh51trjl09stO',
   'resignation-assistant': 'price_1TRDd05HQYoJh51tSzMhM8aM',
   'ai-konkatsu': 'price_1TRDwF5HQYoJh51tGfyO8RiX',
+  'scam-defender': 'price_1TREBw5HQYoJh51tItYeDOzQu',
 }
 
 export async function POST(request: NextRequest) {

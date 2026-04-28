@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck } from 'lucide-react'
 
 const products = [
   {
@@ -107,6 +107,21 @@ const products = [
     color: 'from-pink-500 to-rose-500',
     bgColor: 'bg-pink-500/10',
     iconColor: 'text-pink-500',
+    status: '新商品',
+  },
+  {
+    id: 'scam-defender',
+    title: 'AI詐欺ディフェンダー',
+    subtitle: '詐欺シミュレーション × 闇バイト判定 × 家族見守り',
+    description:
+      '詐欺電話シミュレーターで断り方を練習、闇バイト判定チェッカーで危険度を即判定。見守りチェックリストで家族のセキュリティを強化。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['詐欺クイズ', '電話シミュレーター', '闇バイト判定', '家族見守り'],
+    icon: ShieldCheck,
+    color: 'from-amber-500 to-red-500',
+    bgColor: 'bg-amber-500/10',
+    iconColor: 'text-amber-500',
     status: '新商品',
   },
 ]
