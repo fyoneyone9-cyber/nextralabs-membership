@@ -41,14 +41,14 @@ const products = [
     subtitle: 'Slack × カレンダー関係性可視化ツール',
     description:
       '組織図には載らない「本当の人間関係」を可視化。Slackメンション傾向とカレンダー会議データから、隠れたキーマンやブリッジ役を自動検出するインタラクティブ相関図ツール。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
-    tags: ['D3.js', 'JavaScript', 'データ分析', 'Slack API'],
+    price: '無料',
+    priceNote: 'アカウント不要',
+    tags: ['D3.js', 'PageRank', 'データ分析', '無料サンプル'],
     icon: Network,
     color: 'from-indigo-500 to-purple-500',
     bgColor: 'bg-indigo-500/10',
     iconColor: 'text-indigo-500',
-    status: '販売中',
+    status: '🆓 無料',
   },
   {
     id: 'shopping-stopper',
@@ -259,7 +259,7 @@ export default function ProductsPage() {
                     >
                       <Icon className={`h-6 w-6 ${product.iconColor}`} />
                     </div>
-                    <Badge className="bg-green-500 text-white border-0">
+                    <Badge className={product.price === '無料' ? 'bg-blue-500 text-white border-0' : 'bg-green-500 text-white border-0'}>
                       {product.status}
                     </Badge>
                   </div>

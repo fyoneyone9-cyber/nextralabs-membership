@@ -1,36 +1,25 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { PurchaseButton } from '@/components/PurchaseButton'
-import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 import {
   Network,
-  Crown,
   GitBranch,
   BarChart3,
   ArrowLeft,
-  ShoppingCart,
   Shield,
-  Globe,
-  FileJson,
-  Upload,
-  Download,
-  MousePointerClick,
   HelpCircle,
   AlertTriangle,
   Target,
   Users,
   Briefcase,
   Laptop,
-  ChevronRight,
   FolderTree,
-  Image as ImageIcon,
   FileText,
-  File,
+  ArrowRight,
+  Sparkles,
 } from 'lucide-react'
 
 const features = [
@@ -63,14 +52,14 @@ const features = [
 const steps = [
   {
     num: '1',
-    title: 'index.html をブラウザで開く',
-    description: 'サーバー不要。ダブルクリックで起動',
-    time: '1分',
+    title: 'ツールを開く',
+    description: 'アカウント不要。「無料で使う」ボタンから即起動',
+    time: '1秒',
   },
   {
     num: '2',
-    title: 'CSV をドラッグ＆ドロップ',
-    description: 'Slack メンション CSV とカレンダー会議 CSV をアップロード',
+    title: 'CSV をアップロード',
+    description: 'Slack メンション CSV やカレンダー会議 CSV をドラッグ＆ドロップ',
     time: '1分',
   },
   {
@@ -84,33 +73,20 @@ const steps = [
 const techStack = [
   { label: '可視化エンジン', value: 'D3.js v7（Force-Directed Graph）' },
   { label: '分析アルゴリズム', value: 'PageRank + 媒介中心性（BFS）' },
-  { label: 'フロントエンド', value: '単一 HTML ファイル（外部依存なし）' },
-  { label: 'データ入力', value: 'CSV ドラッグ＆ドロップ' },
+  { label: 'フロントエンド', value: 'Next.js + React + TypeScript' },
+  { label: 'データ入力', value: 'CSV ドラッグ＆ドロップ / 手動入力' },
   { label: 'エクスポート', value: 'PNG 画像 / JSON データ' },
-  { label: '対応ブラウザ', value: 'Chrome, Firefox, Safari, Edge' },
   { label: 'プライバシー', value: '完全ローカル処理（サーバー通信なし）' },
-  { label: 'データソース', value: 'Slack API + Google Calendar API' },
-]
-
-const fileTree = [
-  {
-    folder: '(root)',
-    files: ['index.html', 'README.md', 'LICENSE'],
-  },
-  {
-    folder: 'sample-data/',
-    files: ['slack_mentions.csv', 'calendar_meetings.csv'],
-  },
-  {
-    folder: 'screenshots/',
-    files: ['main.png', 'highlight.png'],
-  },
 ]
 
 const faq = [
   {
-    q: 'プログラミング知識は必要ですか？',
-    a: '不要です。HTML ファイルをブラウザで開いて CSV をドラッグ＆ドロップするだけで使えます。Slack API / Calendar API からのデータ取得には多少の技術知識が必要です。',
+    q: 'なぜ無料なんですか？',
+    a: 'NextraLabs の全13ツールの品質を知っていただくための無料サンプルです。気に入ったら他のツールやプレミアムプランもぜひご検討ください。',
+  },
+  {
+    q: 'アカウント登録は必要ですか？',
+    a: 'いいえ。アカウント不要で誰でもすぐに使えます。',
   },
   {
     q: 'データは外部に送信されますか？',
@@ -122,11 +98,7 @@ const faq = [
   },
   {
     q: 'Slack / Calendar 以外のデータも使えますか？',
-    a: 'CSV フォーマット（from, to, count）に合わせれば、Teams のチャットログや社内 SNS のデータなど何でも可視化できます。',
-  },
-  {
-    q: '購入後のアップデートはありますか？',
-    a: '重大なバグ修正は無償提供。機能追加は今後有料オプションとして提供予定です。',
+    a: 'CSV フォーマット（from, to, weight）に合わせれば、Teams のチャットログや社内 SNS のデータなど何でも可視化できます。',
   },
 ]
 
@@ -147,7 +119,7 @@ const audiences = [
     icon: Laptop,
     title: 'エンジニア・データアナリスト',
     description:
-      'ネットワーク分析・グラフ可視化の実践的なサンプルコードとして。ポートフォリオにも。',
+      'ネットワーク分析・グラフ可視化の実践的なサンプルとして。',
   },
 ]
 
@@ -169,9 +141,14 @@ export default function OfficePoliticsGraphPage() {
         {/* Hero */}
         <section className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <Badge variant="secondary" className="text-xs">
-              🕸️ ソースコード販売
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-sm px-3 py-1">
+                🆓 無料で使える
+              </Badge>
+              <Badge variant="secondary" className="text-xs">
+                🕸️ サンプルツール
+              </Badge>
+            </div>
             <h1 className="text-4xl font-bold tracking-tight text-white">
               社内政治 相関図
             </h1>
@@ -180,22 +157,36 @@ export default function OfficePoliticsGraphPage() {
             </p>
             <p className="text-gray-500 leading-relaxed">
               組織図には載らない「本当の人間関係」を可視化。
-              <br />
-              Slack メンション傾向とカレンダー会議データから、隠れたキーマンやブリッジ役を自動検出するインタラクティブ相関図ツール。
+              Slackメンション傾向とカレンダー会議データから、隠れたキーマンやブリッジ役を自動検出するインタラクティブ相関図ツール。
             </p>
-            <div className="flex flex-wrap gap-3 pt-2">
-              <ToolLaunchButton productId="office-politics-graph" />
-              <PurchaseButton
-                productId="office-politics-graph"
-                label="¥4,980 で購入する"
-                size="lg"
-                className="gap-2"
-              />
-              <Link href="#features">
-                <Button variant="outline" size="lg">
-                  詳しく見る
+
+            {/* Free CTA */}
+            <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles className="w-5 h-5 text-green-400" />
+                <span className="font-bold text-green-400">完全無料 — アカウント不要</span>
+              </div>
+              <p className="text-sm text-gray-400 mb-3">
+                NextraLabs のツール品質を体験していただくための無料サンプルです。会員登録なしで今すぐ使えます。
+              </p>
+              <Link href="/products/office-politics-graph/app">
+                <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white gap-2 w-full md:w-auto">
+                  <Network className="w-5 h-5" />
+                  無料で使ってみる
+                  <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
+            </div>
+
+            <div className="flex items-center gap-6 text-sm text-gray-500">
+              <span className="flex items-center gap-1">
+                <Shield className="h-4 w-4" />
+                データ送信なし
+              </span>
+              <span className="flex items-center gap-1">
+                <Users className="h-4 w-4" />
+                アカウント不要
+              </span>
             </div>
           </div>
 
@@ -215,6 +206,7 @@ export default function OfficePoliticsGraphPage() {
                       <div className="text-gray-500 text-xs">ANALYZER</div>
                     </div>
                   </div>
+                  <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs">FREE</Badge>
                 </div>
                 <div className="p-4 space-y-2">
                   <div className="text-yellow-400 text-sm font-medium">
@@ -238,9 +230,6 @@ export default function OfficePoliticsGraphPage() {
                 </div>
               </CardContent>
             </Card>
-            <div className="absolute -bottom-2 right-4 text-xs text-gray-600">
-              インタラクティブ分析
-            </div>
           </div>
         </section>
 
@@ -254,22 +243,22 @@ export default function OfficePoliticsGraphPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {features.map((f, i) => (
-              <Card
-                key={i}
-                className="bg-gray-900/50 border-gray-800 hover:border-gray-700 transition-colors"
-              >
-                <CardContent className="p-6 space-y-4">
-                  <div
-                    className={`w-12 h-12 rounded-xl ${f.bg} flex items-center justify-center`}
-                  >
-                    <f.icon className={`w-6 h-6 ${f.color}`} />
-                  </div>
-                  <h3 className="text-white font-semibold">{f.title}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">
-                    {f.description}
-                  </p>
-                </CardContent>
-              </Card>
+              <Link key={i} href="/products/office-politics-graph/app" className="group">
+                <Card className="bg-gray-900/50 border-gray-800 hover:border-indigo-500/50 transition-colors h-full">
+                  <CardContent className="p-6 space-y-4">
+                    <div className="flex items-start justify-between">
+                      <div className={`w-12 h-12 rounded-xl ${f.bg} flex items-center justify-center`}>
+                        <f.icon className={`w-6 h-6 ${f.color}`} />
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    <h3 className="text-white font-semibold">{f.title}</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">
+                      {f.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </section>
@@ -278,10 +267,10 @@ export default function OfficePoliticsGraphPage() {
         <section className="space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-3xl font-bold text-white">
-              セットアップはたったの3ステップ
+              3ステップで使える
             </h2>
             <p className="text-gray-400">
-              プログラミング不要。ブラウザで開いて CSV を入れるだけ
+              アカウント登録不要。ブラウザで開いて CSV を入れるだけ
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
@@ -329,37 +318,6 @@ export default function OfficePoliticsGraphPage() {
           </Card>
         </section>
 
-        {/* File Tree */}
-        <section className="space-y-8">
-          <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold text-white">含まれるもの</h2>
-            <p className="text-gray-400">
-              計8ファイル — ブラウザで開くだけのシンプル構成
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-4">
-            {fileTree.map((group, i) => (
-              <Card key={i} className="bg-gray-900/50 border-gray-800">
-                <CardContent className="p-4 space-y-2">
-                  <div className="flex items-center gap-2 text-yellow-400 text-sm font-medium">
-                    <FolderTree className="w-4 h-4" />
-                    {group.folder}
-                  </div>
-                  {group.files.map((f, j) => (
-                    <div
-                      key={j}
-                      className="flex items-center gap-2 text-gray-400 text-sm pl-4"
-                    >
-                      <FileText className="w-3 h-3" />
-                      {f}
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
         {/* Target Audience */}
         <section className="space-y-8">
           <h2 className="text-3xl font-bold text-white text-center">
@@ -385,6 +343,33 @@ export default function OfficePoliticsGraphPage() {
           </div>
         </section>
 
+        {/* Other tools upsell */}
+        <section className="space-y-6">
+          <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-2xl p-8 text-center">
+            <h2 className="text-2xl font-bold text-white mb-2">
+              🚀 他にも13のAIツールが使い放題
+            </h2>
+            <p className="text-gray-400 mb-6">
+              このツールが気に入ったら、プレミアムプラン（¥980/月）で全ツールをお試しください。
+              <br />
+              詐欺対策・買い物管理・婚活・退職・文章力アップなど、生活を守る＆改善するツールが揃っています。
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Link href="/products">
+                <Button variant="outline" size="lg" className="gap-2">
+                  ツール一覧を見る
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Link>
+              <Link href="/pricing">
+                <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2">
+                  プレミアムプランを見る
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* FAQ */}
         <section className="space-y-8">
           <h2 className="text-3xl font-bold text-white text-center">
@@ -407,28 +392,6 @@ export default function OfficePoliticsGraphPage() {
           </div>
         </section>
 
-        {/* Notices */}
-        <section className="space-y-4">
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-yellow-500" />
-            注意事項
-          </h2>
-          <ul className="space-y-3">
-            <li className="flex items-start gap-3 text-gray-400 text-sm">
-              <AlertTriangle className="w-4 h-4 text-yellow-500 mt-0.5 flex-shrink-0" />
-              デジタルコンテンツのため、購入後の返品・返金はお受けできません。
-            </li>
-            <li className="flex items-start gap-3 text-gray-400 text-sm">
-              <AlertTriangle className="w-4 h-4 text-yellow-500 mt-0.5 flex-shrink-0" />
-              個人利用・社内利用・商用利用 OK。再配布・転売は禁止です。
-            </li>
-            <li className="flex items-start gap-3 text-gray-400 text-sm">
-              <AlertTriangle className="w-4 h-4 text-yellow-500 mt-0.5 flex-shrink-0" />
-              Slack / Google Calendar からのデータ取得は利用者ご自身で行っていただく必要があります。
-            </li>
-          </ul>
-        </section>
-
         {/* CTA */}
         <section className="text-center space-y-6 py-12">
           <h2 className="text-3xl font-bold text-white">
@@ -437,23 +400,18 @@ export default function OfficePoliticsGraphPage() {
             本当の人間関係を可視化する
           </h2>
           <p className="text-gray-400">
-            データドリブンな組織分析をブラウザだけで。
+            データドリブンな組織分析をブラウザだけで。完全無料。
           </p>
-          <p className="text-gray-500 text-sm">
-            完全ローカル処理で社内データも安心。
+          <Link href="/products/office-politics-graph/app">
+            <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white gap-2 text-base px-8 py-6">
+              <Network className="w-5 h-5" />
+              無料で使ってみる
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </Link>
+          <p className="text-gray-600 text-xs">
+            アカウント登録不要・データ送信なし・完全ブラウザ処理
           </p>
-          <div className="flex flex-col items-center gap-3">
-            <ToolLaunchButton productId="office-politics-graph" className="text-base px-8 py-6" />
-            <PurchaseButton
-              productId="office-politics-graph"
-              label="¥4,980（税込）で購入する"
-              size="lg"
-              className="gap-2 text-base px-8 py-6"
-            />
-            <p className="text-gray-500 text-xs">
-              買い切り・ソースコード完全所有・商用利用OK
-            </p>
-          </div>
         </section>
       </div>
     </div>
