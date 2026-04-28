@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
         title: `新規お問い合わせ: ${CATEGORY_LABELS[category] || category}`,
         body: `${name} (${email})\n\n${message}`,
         read: false,
-      }).catch(() => {}) // Ignore if table doesn't exist
+      }) // Ignore if table doesn't exist
     } catch {
       // Non-critical, continue
     }
