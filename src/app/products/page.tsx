@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck } from 'lucide-react'
 
 const products = [
   {
@@ -77,6 +77,21 @@ const products = [
     color: 'from-emerald-500 to-teal-500',
     bgColor: 'bg-emerald-500/10',
     iconColor: 'text-emerald-500',
+    status: '新商品',
+  },
+  {
+    id: 'resignation-assistant',
+    title: '退職あんしんAI',
+    subtitle: '退職届生成 × 残業代計算 × 完全チェックリスト',
+    description:
+      'AIが退職届を自動作成、未払い残業代を計算、有給・社保・年金の手続きまで完全ガイド。退職代行サービスの比較や権利Q&Aも搭載。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['退職届AI生成', '残業代計算', 'チェックリスト', '権利Q&A'],
+    icon: ClipboardCheck,
+    color: 'from-blue-500 to-indigo-500',
+    bgColor: 'bg-blue-500/10',
+    iconColor: 'text-blue-500',
     status: '新商品',
   },
 ]

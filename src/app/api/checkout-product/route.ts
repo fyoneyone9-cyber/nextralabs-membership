@@ -8,6 +8,7 @@ const PRODUCT_PRICES: Record<string, string> = {
   'pet-translator': 'price_1TQxOl5HQYoJh51tljGeIR5q',
   'shopping-stopper': 'price_1TQzP85HQYoJh51t7WxcFA3R',
   'ai-select-shop': 'price_1TQzcL5HQYoJh51trjl09stO',
+  'resignation-assistant': 'price_1TRDd05HQYoJh51tSzMhM8aM',
 }
 
 export async function POST(request: NextRequest) {
