@@ -272,8 +272,8 @@ const creativeTools: Product[] = [
     subtitle: '26カテゴリ × 日本語→英語変換 × パラメータ辞典',
     description:
       '日本語で入力するだけで画像生成AI用の最適プロンプトを自動生成。Midjourney/DALL-E/Stable Diffusion対応。200+テンプレート搭載。',
-    price: '¥980/月',
-    priceNote: 'スタンダードプラン',
+    price: '¥1,980/月',
+    priceNote: 'プレミアムプラン',
     tags: ['26カテゴリ', 'プロンプト生成', 'テンプレート', '画像AI'],
     icon: Wand2,
     color: 'from-purple-500 to-fuchsia-500',
@@ -287,8 +287,8 @@ const creativeTools: Product[] = [
     subtitle: '文字起こし→台本→人物画像→サムネイル→タイトル→BGM',
     description:
       '動画・音声・テキストを取り込んで6ステップでYouTube投稿素材を全自動生成。10ジャンル対応の台本、AI人物イラスト、サムネイル、SEOタイトル、BGM作曲。',
-    price: '¥980/月',
-    priceNote: 'スタンダードプラン',
+    price: '¥1,980/月',
+    priceNote: 'プレミアムプラン',
     tags: ['6ステップ', '10ジャンル', '文字起こし', 'サムネイル'],
     icon: Clapperboard,
     color: 'from-red-500 to-pink-500',
