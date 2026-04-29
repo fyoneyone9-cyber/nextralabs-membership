@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ArrowRight, Rocket, CheckCircle2, Star, Zap, BarChart3, FileText, Wrench, BookOpen } from 'lucide-react'
-import { PurchaseButton } from '@/components/PurchaseButton'
+
 
 export const metadata = {
   title: 'AI副業スタートダッシュ | NextraLabs',
@@ -29,10 +29,9 @@ export default function AiSidejobPage() {
             「何から始めればいい？」から「月10万円達成」まで完全サポート
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <PurchaseButton productId="ai-sidejob" />
-            <Link href="/pricing">
-              <Button variant="outline">全ツール使い放題プラン ¥980/月</Button>
-            </Link>
+            <Button asChild>
+              <a href="/pricing">プランを見る →</a>
+            </Button>
           </div>
         </div>
       </section>
@@ -146,15 +145,12 @@ export default function AiSidejobPage() {
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold mb-4">料金</h2>
           <div className="inline-block bg-card border rounded-2xl p-8">
-            <div className="text-4xl font-bold mb-2">¥4,980<span className="text-base font-normal text-muted-foreground">（税込・買い切り）</span></div>
-            <p className="text-sm text-muted-foreground mb-4">一度購入すれば永久に使えます</p>
-            <p className="text-xs text-muted-foreground mb-6">💡 全ツール使い放題プラン（¥980/月）なら16ツールすべて使い放題</p>
-            <div className="flex gap-3 justify-center flex-wrap">
-              <PurchaseButton productId="ai-sidejob" />
-              <Link href="/pricing">
-                <Button variant="outline">プランを見る</Button>
-              </Link>
-            </div>
+            <Badge className="mb-4">スタンダードプラン対応</Badge>
+            <div className="text-3xl font-bold mb-2">¥980<span className="text-base font-normal text-muted-foreground">/月</span></div>
+            <p className="text-sm text-muted-foreground mb-6">全ツール使い放題</p>
+            <Button className="w-full" asChild>
+              <a href="/pricing">プランを見る →</a>
+            </Button>
           </div>
         </div>
       </section>
@@ -172,6 +168,15 @@ export default function AiSidejobPage() {
           ].map((faq, i) => (
             <div key={i} className="bg-card border rounded-xl p-5">
               <h3 className="font-bold mb-2">Q. {faq.q}</h3>
+              <p className="text-sm text-muted-foreground">{faq.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  )
+}
+2">Q. {faq.q}</h3>
               <p className="text-sm text-muted-foreground">{faq.a}</p>
             </div>
           ))}

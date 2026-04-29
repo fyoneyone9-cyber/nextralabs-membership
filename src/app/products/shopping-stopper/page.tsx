@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { PurchaseButton } from '@/components/PurchaseButton'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 import {
   Camera,
@@ -161,12 +160,9 @@ export default function ShoppingStopperPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <ToolLaunchButton productId="shopping-stopper" />
-                <PurchaseButton
-                  productId="shopping-stopper"
-                  label="¥4,980 で購入する"
-                  size="lg"
-                  className="text-lg px-8 bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600 border-0"
-                />
+                <Button asChild size="lg" className="text-lg px-8">
+                  <a href="/pricing">プランを見る →</a>
+                </Button>
                 <a href="#features">
                   <Button variant="outline" size="lg">
                     詳しく見る
@@ -434,14 +430,19 @@ export default function ShoppingStopperPage() {
           </p>
           <div className="flex flex-col items-center gap-4">
             <ToolLaunchButton productId="shopping-stopper" className="text-xl px-12 py-6 shadow-lg" />
-            <PurchaseButton
-              productId="shopping-stopper"
-              label="¥4,980（税込）で購入する"
-              size="lg"
-              className="text-xl px-12 py-6 bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600 border-0 shadow-lg"
-            />
+            <Button size="lg" className="text-xl px-12 py-6 shadow-lg" asChild>
+              <a href="/pricing">プランを見る →</a>
+            </Button>
             <p className="text-xs text-muted-foreground">
-              買い切り・ソースコード完全所有・商用利用OK・プライバシー保護
+              スタンダードプラン（¥980/月）で全ツール使い放題
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}
+プライバシー保護
             </p>
           </div>
         </div>

@@ -1,7 +1,7 @@
 ﻿import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { PurchaseButton } from '@/components/PurchaseButton'
+import { Button } from '@/components/ui/button'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 import {
   ArrowLeft,
@@ -134,7 +134,6 @@ export default function BuzzWriterPage() {
                 <Badge variant="outline" className="text-sm py-1">#️⃣ ハッシュタグ</Badge>
               </div>
               <div className="flex flex-wrap gap-4">
-                <PurchaseButton productId="buzz-writer" />
                 <ToolLaunchButton productId="buzz-writer" />
               </div>
               <div className="flex items-center gap-6 mt-6 text-sm text-muted-foreground">
@@ -232,13 +231,14 @@ export default function BuzzWriterPage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">料金</h2>
           <div className="max-w-md mx-auto">
-            <Card className="border-orange-500/30">
-              <CardContent className="pt-8 pb-8">
-                <Badge className="mb-4 bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20">買い切り</Badge>
-                <div className="text-5xl font-bold mb-2">¥4,980<span className="text-lg font-normal text-muted-foreground">（税込）</span></div>
-                <p className="text-muted-foreground mb-6">一度の購入でずっと使える</p>
-                <PurchaseButton productId="buzz-writer" />
-                <p className="text-xs text-muted-foreground mt-4">全ツール使い放題プラン（¥980/月）なら全ツール使い放題</p>
+            <Card>
+              <CardContent className="pt-8 pb-8 text-center">
+                <Badge className="mb-4">スタンダードプラン対応</Badge>
+                <div className="text-3xl font-bold mb-2">¥980<span className="text-base font-normal text-muted-foreground">/月</span></div>
+                <p className="text-muted-foreground mb-6">全ツール使い放題</p>
+                <Button className="w-full" asChild>
+                  <a href="/pricing">プランを見る →</a>
+                </Button>
               </CardContent>
             </Card>
           </div>
@@ -253,6 +253,11 @@ export default function BuzzWriterPage() {
             {faqs.map((f, i) => (<Card key={i}><CardContent className="pt-6"><h3 className="font-semibold mb-2 flex items-start gap-2"><ChevronRight className="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />{f.q}</h3><p className="text-sm text-muted-foreground pl-7">{f.a}</p></CardContent></Card>))}
           </div>
         </div>
+      </section>
+    </div>
+  )
+}
+     </div>
       </section>
     </div>
   )

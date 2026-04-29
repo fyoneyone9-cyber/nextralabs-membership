@@ -2,7 +2,6 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { PurchaseButton } from '@/components/PurchaseButton'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 import {
   ArrowLeft,
@@ -140,7 +139,6 @@ export default function MoneyGuardPage() {
                 <Badge variant="outline" className="text-sm py-1">🔒 完全ローカル処理</Badge>
               </div>
               <div className="flex flex-wrap gap-4">
-                <PurchaseButton productId="money-guard" />
                 <ToolLaunchButton productId="money-guard" />
               </div>
               <div className="flex items-center gap-6 mt-6 text-sm text-muted-foreground">
@@ -272,13 +270,14 @@ export default function MoneyGuardPage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">料金</h2>
           <div className="max-w-md mx-auto">
-            <Card className="border-emerald-500/30">
-              <CardContent className="pt-8 pb-8">
-                <Badge className="mb-4 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20">買い切り</Badge>
-                <div className="text-5xl font-bold mb-2">¥4,980<span className="text-lg font-normal text-muted-foreground">（税込）</span></div>
-                <p className="text-muted-foreground mb-6">一度の購入でずっと使える</p>
-                <PurchaseButton productId="money-guard" />
-                <p className="text-xs text-muted-foreground mt-4">全ツール使い放題プラン（¥980/月）なら全ツール使い放題</p>
+            <Card>
+              <CardContent className="pt-8 pb-8 text-center">
+                <Badge className="mb-4">スタンダードプラン対応</Badge>
+                <div className="text-3xl font-bold mb-2">¥980<span className="text-base font-normal text-muted-foreground">/月</span></div>
+                <p className="text-muted-foreground mb-6">全ツール使い放題</p>
+                <Button className="w-full" asChild>
+                  <a href="/pricing">プランを見る →</a>
+                </Button>
               </CardContent>
             </Card>
           </div>

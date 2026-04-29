@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { PurchaseButton } from '@/components/PurchaseButton'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 import {
   ArrowLeft,
@@ -69,7 +68,7 @@ const faqs = [
   { q: 'Outlook / Yahoo!メールでも使えますか？', a: 'テンプレートや日程調整メール、チェックリスト、習慣診断はメールサービスに依存しません。フィルタールールはGmail形式ですが、考え方は他サービスにも応用できます。' },
   { q: '返信テンプレートはカスタマイズできますか？', a: 'コピー後に自由に編集できます。{{変数}}部分を実際の内容に置き換えてください。' },
   { q: 'タスク整理のデータはどこに保存されますか？', a: 'ブラウザのlocalStorageに保存されます。サーバーには一切送信されません。ブラウザのデータを消去すると削除されます。' },
-  { q: '買い切りですか？月額ですか？', a: '¥4,980の買い切りです。一度購入すれば追加料金なしでずっと使えます。全ツール使い放題プラン（¥980/月）でも利用可能です。' },
+  { q: '料金はいくらですか？', a: 'Gmail AI Accelerator はプレミアムプラン（¥1,980/月）に含まれています。スタンダードプラン（¥980/月）では他の全ツールが使い放題です。詳しくは料金ページをご確認ください。' },
 ]
 
 export default function InboxOrganizerPage() {
@@ -103,7 +102,9 @@ export default function InboxOrganizerPage() {
                 <Badge variant="outline" className="text-sm py-1">🔒 完全ローカル処理</Badge>
               </div>
               <div className="flex flex-wrap gap-4">
-                <PurchaseButton productId="inbox-organizer" />
+                <Button asChild className="bg-violet-500 hover:bg-violet-600 text-white">
+                  <a href="/pricing">プレミアムプラン（¥1,980/月）→</a>
+                </Button>
                 <ToolLaunchButton productId="inbox-organizer" />
               </div>
               <div className="flex items-center gap-6 mt-6 text-sm text-muted-foreground">
@@ -206,13 +207,14 @@ export default function InboxOrganizerPage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">料金</h2>
           <div className="max-w-md mx-auto">
-            <Card className="border-teal-500/30">
-              <CardContent className="pt-8 pb-8">
-                <Badge className="mb-4 bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20">買い切り</Badge>
-                <div className="text-5xl font-bold mb-2">¥4,980<span className="text-lg font-normal text-muted-foreground">（税込）</span></div>
-                <p className="text-muted-foreground mb-6">一度の購入でずっと使える</p>
-                <PurchaseButton productId="inbox-organizer" />
-                <p className="text-xs text-muted-foreground mt-4">全ツール使い放題プラン（¥980/月）なら全ツール使い放題</p>
+            <Card className="border-violet-500/30">
+              <CardContent className="pt-8 pb-8 text-center">
+                <Badge className="mb-4 bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20">プレミアムプラン限定</Badge>
+                <div className="text-3xl font-bold mb-2">¥1,980<span className="text-base font-normal text-muted-foreground">/月</span></div>
+                <p className="text-muted-foreground mb-6">Gmail AI Accelerator を含む上位プラン</p>
+                <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white" asChild>
+                  <a href="/pricing">プレミアムプランを見る →</a>
+                </Button>
               </CardContent>
             </Card>
           </div>

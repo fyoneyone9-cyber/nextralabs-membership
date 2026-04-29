@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { PurchaseButton } from '@/components/PurchaseButton'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 import {
   Camera,
@@ -198,12 +197,9 @@ export default function PetTranslatorPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <ToolLaunchButton productId="pet-translator" />
-                <PurchaseButton
-                  productId="pet-translator"
-                  label="¥4,980 で購入する"
-                  size="lg"
-                  className="text-lg px-8 bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 border-0"
-                />
+                <Button size="lg" asChild>
+                  <a href="/pricing">プランを見る →</a>
+                </Button>
                 <a href="#features">
                   <Button variant="outline" size="lg">
                     詳しく見る
@@ -563,14 +559,19 @@ export default function PetTranslatorPage() {
           </p>
           <div className="flex flex-col items-center gap-4">
             <ToolLaunchButton productId="pet-translator" className="text-xl px-12 py-6 shadow-lg" />
-            <PurchaseButton
-              productId="pet-translator"
-              label="¥4,980（税込）で購入する"
-              size="lg"
-              className="text-xl px-12 py-6 bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 border-0 shadow-lg"
-            />
+            <Button asChild className="text-xl px-12 py-6">
+              <a href="/pricing">スタンダードプラン（¥980/月）で利用 →</a>
+            </Button>
             <p className="text-xs text-muted-foreground">
-              買い切り・ソースコード完全所有・商用利用OK・ゼロ依存
+              全ツール使い放題
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}
+��・商用利用OK・ゼロ依存
             </p>
           </div>
         </div>

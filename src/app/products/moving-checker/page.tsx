@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { PurchaseButton } from '@/components/PurchaseButton'
+
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 import {
   ArrowLeft,

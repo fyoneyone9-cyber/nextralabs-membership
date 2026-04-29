@@ -1,6 +1,6 @@
 ﻿import Link from 'next/link'
 import { ArrowLeft, MessageCircleHeart, Brain, BarChart3, Calendar, BookOpen, HeartHandshake, ArrowRight } from 'lucide-react'
-import { PurchaseButton } from '@/components/PurchaseButton'
+import { Button } from '@/components/ui/button'
 
 export const metadata = {
   title: 'AIコミュニケーション改善コーチ | NextraLabs',
@@ -160,16 +160,16 @@ export default function CommCoachPage() {
       </div>
 
       {/* Pricing */}
-      <div className="border-2 border-pink-500/30 rounded-3xl p-8 text-center mb-12">
+      <div className="border-2 rounded-3xl p-8 text-center mb-12">
         <h2 className="text-2xl font-bold mb-2">AIコミュニケーション改善コーチ</h2>
         <div className="flex items-baseline justify-center gap-1 mb-4">
-          <span className="text-4xl font-bold">¥4,980</span>
-          <span className="text-muted-foreground">（税込・買い切り）</span>
+          <span className="text-3xl font-bold">¥980</span>
+          <span className="text-base font-normal text-muted-foreground">/月</span>
         </div>
-        <p className="text-sm text-muted-foreground mb-6">
-          全ツール使い放題プラン（¥980/月）なら全ツール使い放題 ✨
-        </p>
-        <PurchaseButton productId="comm-coach" />
+        <p className="text-sm text-muted-foreground mb-6">スタンダードプラン対応 — 全ツール使い放題</p>
+        <Button className="w-full max-w-xs" asChild>
+          <a href="/pricing">プランを見る →</a>
+        </Button>
       </div>
 
       {/* FAQ */}

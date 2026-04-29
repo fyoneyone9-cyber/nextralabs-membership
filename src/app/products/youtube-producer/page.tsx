@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ArrowRight, CheckCircle2, Mic, FileText, Users, Image, Type, Music, Clapperboard } from 'lucide-react'
-import { PurchaseButton } from '@/components/PurchaseButton'
+import { Card, CardContent } from '@/components/ui/card'
 
 export const metadata = {
   title: 'AI YouTubeプロデューサー | NextraLabs',
@@ -29,10 +29,9 @@ export default function YoutubeProducerPage() {
             6ステップのパイプラインでYouTube投稿素材を全自動生成
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <PurchaseButton productId="youtube-producer" />
-            <Link href="/pricing">
-              <Button variant="outline">全ツール使い放題プラン ¥980/月</Button>
-            </Link>
+            <Button asChild>
+              <a href="/pricing">プランを見る →</a>
+            </Button>
           </div>
         </div>
       </section>
@@ -128,16 +127,17 @@ export default function YoutubeProducerPage() {
       <section className="bg-muted/30 py-16">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold mb-4">料金</h2>
-          <div className="inline-block bg-card border rounded-2xl p-8">
-            <div className="text-4xl font-bold mb-2">¥4,980<span className="text-base font-normal text-muted-foreground">（税込・買い切り）</span></div>
-            <p className="text-sm text-muted-foreground mb-4">一度購入すれば永久に使えます</p>
-            <p className="text-xs text-muted-foreground mb-6">💡 全ツール使い放題プラン（¥980/月）なら17ツールすべて使い放題</p>
-            <div className="flex gap-3 justify-center flex-wrap">
-              <PurchaseButton productId="youtube-producer" />
-              <Link href="/pricing">
-                <Button variant="outline">プランを見る</Button>
-              </Link>
-            </div>
+          <div className="max-w-md mx-auto">
+            <Card>
+              <CardContent className="pt-8 pb-8 text-center">
+                <Badge className="mb-4">スタンダードプラン対応</Badge>
+                <div className="text-3xl font-bold mb-2">¥980<span className="text-base font-normal text-muted-foreground">/月</span></div>
+                <p className="text-muted-foreground mb-6">全ツール使い放題</p>
+                <Button className="w-full" asChild>
+                  <a href="/pricing">プランを見る →</a>
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -156,6 +156,14 @@ export default function YoutubeProducerPage() {
             <div key={i} className="bg-card border rounded-xl p-5">
               <h3 className="font-bold mb-2">Q. {faq.q}</h3>
               <p className="text-sm text-muted-foreground">{faq.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  )
+}
+>
             </div>
           ))}
         </div>

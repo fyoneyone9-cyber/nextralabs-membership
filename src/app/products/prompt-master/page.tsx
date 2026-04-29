@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight, Wand2, BookOpen, SlidersHorizontal, Sparkles, ClipboardList, GraduationCap } from 'lucide-react'
-import { PurchaseButton } from '@/components/PurchaseButton'
+import { Button } from '@/components/ui/button'
 
 export const metadata = {
   title: 'AI画像プロンプトマスター | NextraLabs',
@@ -157,14 +157,14 @@ export default function PromptMasterPage() {
       </div>
 
       {/* Pricing */}
-      <div className="border-2 border-purple-500/30 rounded-3xl p-8 text-center mb-12">
+      <div className="border-2 border-primary/30 rounded-3xl p-8 text-center mb-12">
         <h2 className="text-2xl font-bold mb-2">AI画像プロンプトマスター</h2>
-        <div className="flex items-baseline justify-center gap-1 mb-4">
-          <span className="text-4xl font-bold">¥4,980</span>
-          <span className="text-muted-foreground">（税込・買い切り）</span>
-        </div>
-        <p className="text-sm text-muted-foreground mb-6">全ツール使い放題プラン（¥980/月）なら全ツール使い放題 ✨</p>
-        <PurchaseButton productId="prompt-master" />
+        <Badge className="mb-4">スタンダードプラン対応</Badge>
+        <div className="text-3xl font-bold mb-2">¥980<span className="text-base font-normal text-muted-foreground">/月</span></div>
+        <p className="text-muted-foreground mb-6">全ツール使い放題</p>
+        <Button className="w-full max-w-xs mx-auto" asChild>
+          <a href="/pricing">プランを見る →</a>
+        </Button>
       </div>
 
       {/* FAQ */}
@@ -181,6 +181,12 @@ export default function PromptMasterPage() {
             <h3 className="font-bold mb-2">Q. {faq.q}</h3>
             <p className="text-sm text-muted-foreground">{faq.a}</p>
           </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
         ))}
       </div>
     </div>

@@ -2,7 +2,6 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { PurchaseButton } from '@/components/PurchaseButton'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 import {
   ArrowLeft,
@@ -199,11 +198,9 @@ export default function ScamDefenderPage() {
               </div>
 
               <div className="flex flex-wrap gap-4">
-                <PurchaseButton productId="scam-defender" />
                 <ToolLaunchButton productId="scam-defender" />
-              </div>
-
-              <div className="flex items-center gap-6 mt-6 text-sm text-muted-foreground">
+              <ToolLaunchButton productId="scam-defender" />
+            -6 mt-6 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <Shield className="h-4 w-4" />
                   データ送信なし
@@ -257,6 +254,9 @@ export default function ScamDefenderPage() {
           </div>
         </div>
       </section>
+
+      {/* Stats Banner */}
+      <section class  </section>
 
       {/* Stats Banner */}
       <section className="py-8 bg-red-500/5 border-t border-b">
@@ -354,14 +354,13 @@ export default function ScamDefenderPage() {
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {t.description}
                   </p>
-                </CardContent>
-              </Card>
-            ))}
+      }
           </div>
         </div>
       </section>
 
       {/* Tech Stack */}
+      <section className="py-16 border-t bg-muted/3Stack */}
       <section className="py-16 border-t bg-muted/30">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-4">
@@ -390,20 +389,14 @@ export default function ScamDefenderPage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">料金</h2>
           <div className="max-w-md mx-auto">
-            <Card className="border-amber-500/30">
-              <CardContent className="pt-8 pb-8">
-                <Badge className="mb-4 bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">
-                  買い切り
-                </Badge>
-                <div className="text-5xl font-bold mb-2">
-                  ¥4,980
-                  <span className="text-lg font-normal text-muted-foreground">（税込）</span>
-                </div>
-                <p className="text-muted-foreground mb-6">一度の購入でずっと使える</p>
-                <PurchaseButton productId="scam-defender" />
-                <p className="text-xs text-muted-foreground mt-4">
-                  全ツール使い放題プラン（¥980/月）なら全ツール使い放題
-                </p>
+            <Card>
+              <CardContent className="pt-8 pb-8 text-center">
+                <Badge className="mb-4">スタンダードプラン対応</Badge>
+                <div className="text-3xl font-bold mb-2">¥980<span className="text-base font-normal text-muted-foreground">/月</span></div>
+                <p className="text-muted-foreground mb-6">全ツール使い放題</p>
+                <Button className="w-full" asChild>
+                  <a href="/pricing">プランを見る →</a>
+                </Button>
               </CardContent>
             </Card>
           </div>
@@ -435,3 +428,4 @@ export default function ScamDefenderPage() {
     </div>
   )
 }
+
