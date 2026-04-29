@@ -51,10 +51,9 @@ export default function TermsPage() {
         <section>
           <h2 className="text-xl font-bold mb-3">第4条（料金・決済）</h2>
           <ol className="list-decimal pl-5 text-muted-foreground space-y-1">
-            <li>全ツール使い放題プランの料金は、本サービス上に表示された金額とします。</li>
+            <li>各プランの料金は、本サービス上に表示された金額とします。</li>
             <li>決済はStripe社の決済システムを通じて処理されます。</li>
             <li>月額プランは毎月自動更新されます。解約はいつでも可能です。</li>
-            <li>単品購入のツールは買い切りとなり、返金は原則として行いません。</li>
             <li>当社は料金を変更する場合、事前にユーザーに通知します。</li>
           </ol>
         </section>

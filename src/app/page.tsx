@@ -10,8 +10,8 @@ const featuredProduct = {
   subtitle: 'AI搭載メルカリ自動監視ボット',
   description:
     'メルカリの新着出品を24時間自動監視し、AIが「お買い得」と判断した瞬間にDiscordへ通知。寝てる間にお宝古着を見逃さない。',
-  price: '¥9,800',
-  priceNote: '買い切り・税込',
+  price: '¥980/月',
+  priceNote: 'スタンダードプラン',
   tags: ['Python', 'AWS Lambda', 'AI', 'Discord'],
 }
 
@@ -30,8 +30,8 @@ export default function HomePage() {
             </span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            マーケティング、データ分析、業務効率化——あらゆる分野のAI自動化ツールのソースコードを販売。
-            全ツール使い放題プランならすべて使い放題。買い切りも選べます。
+            マーケティング、データ分析、業務効率化——あらゆる分野のAIツールが使い放題。
+            スタンダードプラン（¥980/月）で全ツール利用可能。
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/products">
@@ -222,8 +222,8 @@ export default function HomePage() {
                   </div>
                   <div className="flex items-end justify-between pt-4 border-t">
                     <div>
-                      <span className="text-3xl font-bold">¥4,980</span>
-                      <span className="text-sm text-muted-foreground ml-2">買い切り・税込</span>
+                      <span className="text-3xl font-bold">{featuredTool.price}</span>
+                      <span className="text-sm text-muted-foreground ml-2">{featuredTool.priceNote}</span>
                     </div>
                     <Button variant="default" className="gap-1 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
                       詳しく見る →
@@ -240,14 +240,14 @@ export default function HomePage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-4">🚀 全ツールを今すぐ使う</h2>
-          <p className="text-muted-foreground text-center mb-10">全ツール使い放題プラン会員は全ツール使い放題。各ツールに直接アクセス。</p>
+          <p className="text-muted-foreground text-center mb-10">スタンダードプラン会員は全ツール使い放題。各ツールに直接アクセス。</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {[
-              { id: 'vintage-hunter', name: '古着ハンター', desc: 'AI搭載メルカリ自動監視ボット', icon: 'Search', price: '¥9,800', color: 'amber', iconEl: Search },
-              { id: 'office-politics-graph', name: '社内政治 相関図', desc: 'Slack × カレンダー関係性可視化ツール', icon: 'Network', price: '¥4,980', color: 'indigo', iconEl: Network },
-              { id: 'pet-translator', name: 'AIペット翻訳モニター', desc: '留守中のペットの感情をAIが翻訳', icon: 'PawPrint', price: '¥4,980', color: 'violet', iconEl: PawPrint },
-              { id: 'shopping-stopper', name: 'AI買い物依存ストッパー', desc: 'カメラ表情解析 × 衝動買い防止AI', icon: 'ShieldAlert', price: '¥4,980', color: 'red', iconEl: ShieldAlert },
-              { id: 'ai-select-shop', name: '「在庫ゼロ」AIセレクトショップ', desc: 'トレンド分析 × AI自動デザイン × オンデマンド出品', icon: 'Store', price: '¥9,800', color: 'emerald', iconEl: Store },
+              { id: 'vintage-hunter', name: '古着ハンター', desc: 'AI搭載メルカリ自動監視ボット', icon: 'Search', price: '¥980/月', color: 'amber', iconEl: Search },
+              { id: 'office-politics-graph', name: '社内政治 相関図', desc: 'Slack × カレンダー関係性可視化ツール', icon: 'Network', price: '¥980/月', color: 'indigo', iconEl: Network },
+              { id: 'pet-translator', name: 'AIペット翻訳モニター', desc: '留守中のペットの感情をAIが翻訳', icon: 'PawPrint', price: '¥980/月', color: 'violet', iconEl: PawPrint },
+              { id: 'shopping-stopper', name: 'AI買い物依存ストッパー', desc: 'カメラ表情解析 × 衝動買い防止AI', icon: 'ShieldAlert', price: '¥980/月', color: 'red', iconEl: ShieldAlert },
+              { id: 'ai-select-shop', name: '「在庫ゼロ」AIセレクトショップ', desc: 'トレンド分析 × AI自動デザイン × オンデマンド出品', icon: 'Store', price: '¥980/月', color: 'emerald', iconEl: Store },
             ].map((tool) => {
               const Icon = tool.iconEl
               return (
