@@ -20,6 +20,7 @@ const PRODUCT_PRICES: Record<string, string> = {
   'prompt-master': 'price_1TRHMx5HQYoJh51tI6CAvkWx',
   'ai-sidejob': 'price_1TRI0f5HQYoJh51tFa9Vk6lK',
   'youtube-producer': 'price_1TRRuJ5HQYoJh51tn0zRAEm9',
+  'inbox-organizer': 'price_1TRVQw5HQYoJh51tMNFsIM9t',
 }
 
 export async function POST(request: NextRequest) {

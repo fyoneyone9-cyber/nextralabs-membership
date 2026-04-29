@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, Briefcase, Clapperboard, type LucideIcon } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, Briefcase, Clapperboard, Mail, type LucideIcon } from 'lucide-react'
 
 // ==================== Product Type ====================
 interface Product {
@@ -245,6 +245,21 @@ const bizTools: Product[] = [
     color: 'from-orange-500 to-amber-500',
     bgColor: 'bg-orange-500/10',
     iconColor: 'text-orange-500',
+    status: 'NEW',
+  },
+  {
+    id: 'inbox-organizer',
+    title: 'AI Inbox整理コーチ',
+    subtitle: 'フィルタ × テンプレ × タスク整理 × 習慣診断',
+    description:
+      'Gmailフィルタルール集、返信テンプレ30種、緊急×重要マトリクスでタスク自動分類、日程調整メール生成、Inbox Zeroチェックリスト、メール習慣診断。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['フィルタルール', 'テンプレ30種', 'タスク分類', 'Inbox Zero'],
+    icon: Mail,
+    color: 'from-teal-500 to-cyan-500',
+    bgColor: 'bg-teal-500/10',
+    iconColor: 'text-teal-500',
     status: 'NEW',
   },
 ]
