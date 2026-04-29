@@ -249,13 +249,13 @@ const bizTools: Product[] = [
   },
   {
     id: 'inbox-organizer',
-    title: 'AI Inbox整理コーチ',
-    subtitle: 'フィルタ × テンプレ × タスク整理 × 習慣診断',
+    title: 'Gmail Inbox AI秘書',
+    subtitle: 'Gmail連携 × 自動分類 × AI返信 × ゴミ箱整理',
     description:
-      'Gmailフィルタルール集、返信テンプレ30種、緊急×重要マトリクスでタスク自動分類、日程調整メール生成、Inbox Zeroチェックリスト、メール習慣診断。',
+      'Gmailとワンクリック接続。受信メールを緊急×重要で自動分類、AIが返信文を生成、不要メールはワンクリックでゴミ箱へ。3分でInbox Zero。',
     price: '¥4,980',
     priceNote: '買い切り・税込',
-    tags: ['フィルタルール', 'テンプレ30種', 'タスク分類', 'Inbox Zero'],
+    tags: ['Gmail連携', 'AI返信', '自動分類', 'Inbox Zero'],
     icon: Mail,
     color: 'from-teal-500 to-cyan-500',
     bgColor: 'bg-teal-500/10',

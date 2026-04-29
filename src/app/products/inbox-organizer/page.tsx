@@ -90,16 +90,16 @@ export default function InboxOrganizerPage() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <Badge className="mb-4 bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20">ビジネス効率化</Badge>
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">AI Inbox整理コーチ</h1>
-              <p className="text-xl text-muted-foreground mb-2">フィルタ × テンプレ × タスク整理 × 習慣診断</p>
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Gmail Inbox AI秘書</h1>
+              <p className="text-xl text-muted-foreground mb-2">Gmail連携 × 自動分類 × AI返信 × ゴミ箱整理</p>
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                メール処理に毎日1時間以上かけていませんか？<span className="text-foreground font-medium">Inbox Zeroを実現する6つの武器</span>で、
-                <br />メール地獄から解放されましょう。
+                メール処理に毎日1時間以上かけていませんか？<span className="text-foreground font-medium">AIがメールを分類・返信・整理</span>して、
+                <br />3分でInbox Zeroを実現します。
               </p>
               <div className="flex flex-wrap gap-3 mb-8">
-                <Badge variant="outline" className="text-sm py-1">📥 フィルタルール</Badge>
-                <Badge variant="outline" className="text-sm py-1">✉️ テンプレ30種</Badge>
-                <Badge variant="outline" className="text-sm py-1">📋 タスク自動分類</Badge>
+                <Badge variant="outline" className="text-sm py-1">🔗 Gmail連携</Badge>
+                <Badge variant="outline" className="text-sm py-1">🤖 AI返信生成</Badge>
+                <Badge variant="outline" className="text-sm py-1">📋 自動分類</Badge>
                 <Badge variant="outline" className="text-sm py-1">🔒 完全ローカル処理</Badge>
               </div>
               <div className="flex flex-wrap gap-4">
@@ -107,7 +107,7 @@ export default function InboxOrganizerPage() {
                 <ToolLaunchButton productId="inbox-organizer" />
               </div>
               <div className="flex items-center gap-6 mt-6 text-sm text-muted-foreground">
-                <span className="flex items-center gap-1"><Shield className="h-4 w-4" />Gmail連携不要</span>
+                <span className="flex items-center gap-1"><Shield className="h-4 w-4" />セキュリティ重視設計</span>
                 <span className="flex items-center gap-1"><Clock className="h-4 w-4" />即日利用可能</span>
               </div>
             </div>
