@@ -30,8 +30,7 @@ export default function HomePage() {
             </span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            マーケティング、データ分析、業務効率化——あらゆる分野のAIツールが使い放題。
-            スタンダードプラン（¥980/月）で全ツール利用可能。
+            マーケティング、データ分析、業務効率化——あらゆる分野のAIツールが使い放題。スタンダードプラン（¥980/月）で全ツール利用可能。
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/products">

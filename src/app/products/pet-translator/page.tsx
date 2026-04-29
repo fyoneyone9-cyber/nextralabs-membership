@@ -560,10 +560,10 @@ export default function PetTranslatorPage() {
           <div className="flex flex-col items-center gap-4">
             <ToolLaunchButton productId="pet-translator" className="text-xl px-12 py-6 shadow-lg" />
             <Link href="/pricing">
-              <Button className="text-xl px-12 py-6">スタンダードプラン（¥980/月）で利用 →</Button>
+              <Button className="text-xl px-12 py-6 bg-violet-500 hover:bg-violet-600 text-white">プレミアムプラン（¥1,980/月）→</Button>
             </Link>
             <p className="text-xs text-muted-foreground">
-              全ツール使い放題
+              プレミアムプラン限定ツール
             </p>
           </div>
         </div>

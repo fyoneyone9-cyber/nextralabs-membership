@@ -336,8 +336,8 @@ const funTools: Product[] = [
     subtitle: 'AI搭載ペット感情リアルタイム翻訳システム',
     description:
       '留守中のペットの動きと鳴き声をAIがリアルタイム解析。「寂しがっています」「お腹が空きました」と感情を日本語で翻訳して通知。',
-    price: '¥980/月',
-    priceNote: 'スタンダードプラン',
+    price: '¥1,980/月',
+    priceNote: 'プレミアムプラン',
     tags: ['HTML5', 'Web Audio API', 'AI', 'LINE通知'],
     icon: PawPrint,
     color: 'from-violet-500 to-pink-500',
@@ -490,7 +490,7 @@ export default function ProductsPage() {
           </div>
           <div className="w-px h-6 bg-border" />
           <div className="flex items-center gap-1.5">
-            <span className="font-bold text-2xl text-violet-500">3</span>
+            <span className="font-bold text-2xl text-violet-500">4</span>
             <span className="text-muted-foreground">プレミアム</span>
           </div>
         </div>
