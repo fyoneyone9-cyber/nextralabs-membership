@@ -567,9 +567,20 @@ export default function ProductsPage() {
 
       {/* Plan CTA */}
       <div className="my-16 bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-red-500/10 border border-amber-500/20 rounded-3xl p-8 text-center">
-        <h2 className="text-2xl font-bold mb-2">スタンダードプラン</h2>
-        <p className="text-muted-foreground mb-4">月額 <span className="text-3xl font-bold text-amber-500">¥980</span> で{totalTools}ツールすべてが使い放題</p>
-        <p className="text-sm text-muted-foreground mb-6">1ツール買うより圧倒的にお得 ✨ いつでも解約OK</p>
+        <h2 className="text-2xl font-bold mb-2">2つのプランで全ツール解放</h2>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-4">
+          <div>
+            <span className="text-amber-500 font-bold">スタンダード</span>
+            <span className="text-3xl font-bold text-amber-500 ml-2">¥980</span>
+            <span className="text-muted-foreground">/月（{totalTools - 7}ツール）</span>
+          </div>
+          <div>
+            <span className="text-violet-500 font-bold">プレミアム</span>
+            <span className="text-3xl font-bold text-violet-500 ml-2">¥1,980</span>
+            <span className="text-muted-foreground">/月（全{totalTools}ツール）</span>
+          </div>
+        </div>
+        <p className="text-sm text-muted-foreground mb-6">いつでも解約OK ✨ 無料ツールはアカウント不要</p>
         <Link href="/pricing">
           <Button className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-8 py-3 rounded-xl text-lg font-bold hover:opacity-90">
             プランを見る →
