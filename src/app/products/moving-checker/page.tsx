@@ -140,8 +140,9 @@ export default function MovingCheckerPage() {
                 <Badge variant="outline" className="text-sm py-1">🔒 完全ローカル処理</Badge>
               </div>
               <div className="flex flex-wrap gap-4">
-                <PurchaseButton productId="moving-checker" />
-                <ToolLaunchButton productId="moving-checker" />
+                <Link href="/products/moving-checker/app">
+                  <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8">🆓 無料で使ってみる</Button>
+                </Link>
               </div>
               <div className="flex items-center gap-6 mt-6 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1"><Shield className="h-4 w-4" />住所入力不要</span>
@@ -266,13 +267,15 @@ export default function MovingCheckerPage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">料金</h2>
           <div className="max-w-md mx-auto">
-            <Card className="border-blue-500/30">
+            <Card className="border-green-500/30">
               <CardContent className="pt-8 pb-8">
-                <Badge className="mb-4 bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20">買い切り</Badge>
-                <div className="text-5xl font-bold mb-2">¥4,980<span className="text-lg font-normal text-muted-foreground">（税込）</span></div>
-                <p className="text-muted-foreground mb-6">一度の購入でずっと使える</p>
-                <PurchaseButton productId="moving-checker" />
-                <p className="text-xs text-muted-foreground mt-4">全ツール使い放題プラン（¥980/月）なら全ツール使い放題</p>
+                <Badge className="mb-4 bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20">完全無料</Badge>
+                <div className="text-5xl font-bold mb-2">¥0</div>
+                <p className="text-muted-foreground mb-6">ログイン不要・制限なし</p>
+                <Link href="/products/moving-checker/app">
+                  <Button size="lg" className="w-full bg-green-600 hover:bg-green-700 text-white">🆓 無料で使ってみる</Button>
+                </Link>
+                <p className="text-xs text-muted-foreground mt-4">他の有料ツールも使うなら → 全ツール使い放題プラン（¥980/月）</p>
               </CardContent>
             </Card>
           </div>

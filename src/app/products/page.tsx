@@ -77,14 +77,14 @@ const defenseTools: Product[] = [
     subtitle: 'エリア安全度 × 騒音リスク × トラブル予防',
     description:
       '物件の「見えないリスク」を事前にスコア化。治安・騒音・物件チェック30項目・トラブル対処テンプレート・引っ越しコスト計算まで。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
+    price: '無料',
+    priceNote: 'ログイン不要',
     tags: ['エリア安全度', '騒音リスク', '30項目チェック', 'トラブル対処'],
     icon: Home,
     color: 'from-blue-500 to-green-500',
     bgColor: 'bg-blue-500/10',
     iconColor: 'text-blue-500',
-    status: '販売中',
+    status: 'FREE',
   },
   {
     id: 'disaster-guard',
