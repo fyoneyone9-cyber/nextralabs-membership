@@ -25,6 +25,7 @@ interface VintageItem {
   description: string
   category: string
   listingUrl: string
+  source?: string
 }
 
 interface SearchFilters {
@@ -516,10 +517,22 @@ export default function VintageHunter() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <div className="text-xs text-gray-400 mb-1">🔍 この商品を探す</div>
+                {selectedItem.listingUrl && selectedItem.source === 'rakuten' && (
+                  <a
+                    href={selectedItem.listingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full"
+                  >
+                    <Button className="w-full bg-rose-700 hover:bg-rose-800 text-white border-0 text-base">
+                      🛒 楽天で商品ページを見る
+                    </Button>
+                  </a>
+                )}
+                <div className="text-xs text-gray-400 mb-1">🔍 他サイトでも探す</div>
                 <div className="grid grid-cols-3 gap-2">
                   <a
-                    href={`https://jp.mercari.com/search?keyword=${encodeURIComponent(selectedItem.brand + ' ' + selectedItem.title)}`}
+                    href={`https://jp.mercari.com/search?keyword=${encodeURIComponent(selectedItem.brand + ' ' + selectedItem.title.substring(0, 30))}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -528,7 +541,7 @@ export default function VintageHunter() {
                     </Button>
                   </a>
                   <a
-                    href={`https://auctions.yahoo.co.jp/search/search?p=${encodeURIComponent(selectedItem.brand + ' ' + selectedItem.title)}&auccat=2084028463`}
+                    href={`https://auctions.yahoo.co.jp/search/search?p=${encodeURIComponent(selectedItem.brand + ' ' + selectedItem.title.substring(0, 30))}&auccat=2084028463`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -537,7 +550,7 @@ export default function VintageHunter() {
                     </Button>
                   </a>
                   <a
-                    href={`https://search.rakuten.co.jp/search/mall/${encodeURIComponent(selectedItem.brand + ' ' + selectedItem.title)}/551177/`}
+                    href={`https://search.rakuten.co.jp/search/mall/${encodeURIComponent(selectedItem.brand + ' ' + selectedItem.title.substring(0, 30))}/551177/`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
