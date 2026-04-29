@@ -485,13 +485,13 @@ export default function ProductsPage() {
           </div>
           <div className="w-px h-6 bg-border" />
           <div className="flex items-center gap-1.5">
-            <span className="font-bold text-2xl text-blue-500">1</span>
-            <span className="text-muted-foreground">無料サンプル</span>
+            <span className="font-bold text-2xl text-blue-500">{freeTools.length}</span>
+            <span className="text-muted-foreground">無料ツール</span>
           </div>
           <div className="w-px h-6 bg-border" />
           <div className="flex items-center gap-1.5">
-            <span className="font-bold text-2xl text-emerald-500">6</span>
-            <span className="text-muted-foreground">ジャンル</span>
+            <span className="font-bold text-2xl text-violet-500">3</span>
+            <span className="text-muted-foreground">プレミアム</span>
           </div>
         </div>
       </div>
@@ -511,8 +511,8 @@ export default function ProductsPage() {
       <div id="free">
         <ProductSection
           emoji="🆓"
-          title="無料で体験"
-          subtitle="アカウント不要・すぐ使えるサンプルツール"
+          title="無料ツール"
+          subtitle="アカウント不要・今すぐ使える無料AIツール"
           accentColor="bg-blue-500/10 text-blue-600 dark:text-blue-400"
           products={freeTools}
         />
