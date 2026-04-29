@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const MODELS = [
-  'gemini-2.5-flash',
-  'gemini-2.0-flash',
-  'gemini-2.0-flash-lite',
-]
+const MODELS = ['gemini-2.5-flash']
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,8 +10,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'subject or snippet required' }, { status: 400 })
     }
 
-    const apiKey = process.env.GEMINI_API_KEY
-    if (!apiKey) {
+    const apiKeys = [
+      process.env.GEMINI_API_KEY,
+      process.env.GEMINI_API_KEY_2,
+    ].filter(Boolean) as string[]
+
+    if (apiKeys.length === 0) {
       return NextResponse.json({ error: 'AI service not configured' }, { status: 500 })
     }
 
@@ -50,44 +50,44 @@ export async function POST(req: NextRequest) {
       },
     })
 
-    // Try models with fallback
-    for (const model of MODELS) {
-      try {
-        const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: requestBody,
-          }
-        )
+    // Try each API key × model combination with fallback
+    for (const apiKey of apiKeys) {
+      for (const model of MODELS) {
+        try {
+          const res = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: requestBody,
+            }
+          )
 
-        if (res.ok) {
-          const data = await res.json()
-          const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || ''
-          if (reply.trim()) {
-            return NextResponse.json({ reply: reply.trim(), model })
+          if (res.ok) {
+            const data = await res.json()
+            const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || ''
+            if (reply.trim()) {
+              return NextResponse.json({ reply: reply.trim(), model })
+            }
           }
-        }
 
-        const status = res.status
-        // If 429 (quota) or 503 (overloaded), try next model
-        if (status === 429 || status === 503) {
-          console.log(`${model} returned ${status}, trying next model...`)
+          const status = res.status
+          if (status === 429 || status === 503) {
+            console.log(`${model} (key ${apiKey.slice(-4)}) returned ${status}, trying next...`)
+            continue
+          }
+
+          const err = await res.text()
+          console.error(`Gemini ${model} error (${status}):`, err)
+          continue
+        } catch (fetchErr) {
+          console.error(`Gemini ${model} fetch error:`, fetchErr)
           continue
         }
-
-        // Other errors, log and try next
-        const err = await res.text()
-        console.error(`Gemini ${model} error (${status}):`, err)
-        continue
-      } catch (fetchErr) {
-        console.error(`Gemini ${model} fetch error:`, fetchErr)
-        continue
       }
     }
 
-    // All models failed
+    // All combinations failed
     return NextResponse.json({ error: 'AI generation failed - all models busy' }, { status: 502 })
   } catch (error) {
     console.error('AI reply error:', error)
