@@ -599,7 +599,16 @@ ${f.topic ? `${f.topic}について、` : ''}お打ち合わせのお時間を�
                   <div className="bg-white/5 border border-teal-500/30 rounded-xl p-4 space-y-3">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-bold">✏️ 下書き作成</h3>
-                      <button onClick={() => { setSelectedMessage(null); setDraftBody('') }} className="text-xs text-white/30 hover:text-white/60">✕ 閉じる</button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => { trashMessage(selectedMessage); setSelectedMessage(null); setDraftBody('') }}
+                          className="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs hover:bg-red-500/30"
+                          title="ゴミ箱に移動"
+                        >
+                          🗑️ 削除
+                        </button>
+                        <button onClick={() => { setSelectedMessage(null); setDraftBody('') }} className="text-xs text-white/30 hover:text-white/60">✕ 閉じる</button>
+                      </div>
                     </div>
                     <div className="bg-black/20 rounded-lg p-3 text-xs space-y-1.5">
                       <p className="text-white/40">From: {selectedMessage.from}</p>
