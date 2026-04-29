@@ -1,18 +1,18 @@
 ﻿import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Shield, Zap, Code, Download, Bot, Search, FileText, Infinity, PawPrint, Network, ShieldAlert, Store, Rocket, ExternalLink } from 'lucide-react'
+import { Shield, Zap, Code, Gift, Bot, Search, FileText, Infinity, PawPrint, Network, ShieldAlert, Store, Rocket, ExternalLink } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 const featuredProduct = {
-  id: 'vintage-hunter',
-  title: '古着ハンター',
-  subtitle: 'AI搭載メルカリ自動監視ボット',
+  id: 'shio-taiou',
+  title: '塩対応代行AI',
+  subtitle: '義実家・親戚からの重い連絡を角が立たずに断る',
   description:
-    'メルカリの新着出品を24時間自動監視し、AIが「お買い得」と判断した瞬間にDiscordへ通知。寝てる間にお宝古着を見逃さない。',
+    '6つのシチュエーション×3段階のトーンで最適な断り文を一瞬生成。既読タイミング提案とプロのコツ付き。完全オフライン・API不要。',
   price: '¥980/月',
   priceNote: 'スタンダードプラン',
-  tags: ['Python', 'AWS Lambda', 'AI', 'Discord'],
+  tags: ['テンプレート', '既読タイミング', '人間関係', 'NEW'],
 }
 
 export default function HomePage() {
@@ -30,7 +30,7 @@ export default function HomePage() {
             </span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            マーケティング、データ分析、業務効率化——あらゆる分野のAIツールが使い放題。スタンダードプラン（¥980/月）で全ツール利用可能。
+            あらゆる業務を加速するAIツールを、月額¥980から利用可能。
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/products">
@@ -64,7 +64,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="font-semibold mb-2">すぐ使える</h3>
                 <p className="text-sm text-muted-foreground">
-                  全ツールのソースコードを提供。自由にカスタマイズできます。
+                  ブラウザから即アクセス。インストール不要で今すぐ使えます。
                 </p>
               </CardContent>
             </Card>
@@ -86,18 +86,18 @@ export default function HomePage() {
                 </div>
                 <h3 className="font-semibold mb-2">安全な決済</h3>
                 <p className="text-sm text-muted-foreground">
-                  Stripeによるセキュアな決済。安心してお買い物できます。
+                  Stripeによるセキュアな決済。安心してご利用いただけます。
                 </p>
               </CardContent>
             </Card>
             <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
               <CardContent className="p-6 text-center">
                 <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10">
-                  <Download className="h-6 w-6 text-green-500" />
+                  <Gift className="h-6 w-6 text-green-500" />
                 </div>
-                <h3 className="font-semibold mb-2">即ダウンロード</h3>
+                <h3 className="font-semibold mb-2">無料ツールあり</h3>
                 <p className="text-sm text-muted-foreground">
-                  購入・登録後すぐにソースコードをダウンロードできます。
+                  アカウント不要で使える無料ツールも。まずは試してみてください。
                 </p>
               </CardContent>
             </Card>
