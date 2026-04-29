@@ -582,7 +582,7 @@ export default function InboxOrganizer() {
 
                 {/* Draft modal */}
                 {selectedMessage && (
-                  <div className="bg-white/5 border border-teal-500/30 rounded-xl p-4 space-y-3 sticky top-0 z-10">
+                  <div className="bg-white/5 border border-teal-500/30 rounded-xl p-4 space-y-3">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-bold">✏︁E下書き作�E</h3>
                       <div className="flex items-center gap-2">
@@ -672,8 +672,8 @@ export default function InboxOrganizer() {
                   </div>
                 )}
 
-                {/* Messages list */}
-                {gmailMessages.length > 0 && (
+                {/* Messages list (hidden when draft modal is open) */}
+                {gmailMessages.length > 0 && !selectedMessage && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-bold">📬 受信トレイ�E�EgmailMessages.length}件�E�E/h3>
