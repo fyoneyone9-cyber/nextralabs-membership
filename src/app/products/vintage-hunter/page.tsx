@@ -179,7 +179,7 @@ export default function VintageHunterPage() {
                 🔍 ソースコード販売
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-                古着ハンター
+                AI古着お買い得ハンター
               </h1>
               <p className="text-xl text-muted-foreground mb-2">
                 AI搭載メルカリ自動監視ボット
@@ -545,7 +545,7 @@ export default function VintageHunterPage() {
               <Button size="lg" className="text-xl px-12 py-6 shadow-lg">プランを見る →</Button>
             </Link>
             <p className="text-xs text-muted-foreground">
-              スタンダードプラン（¥980/月）で全ツール使い放題
+              プレミアムプラン（¥1,980/月）でプレミアムプラン限定ツール
             </p>
           </div>
         </div>

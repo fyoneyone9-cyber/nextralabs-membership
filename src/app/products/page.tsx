@@ -234,12 +234,12 @@ const lifeTools: Product[] = [
 const bizTools: Product[] = [
   {
     id: 'vintage-hunter',
-    title: '古着ハンター',
+    title: 'AI古着お買い得ハンター',
     subtitle: 'AI搭載メルカリ自動監視ボット',
     description:
       'メルカリの新着出品を24時間自動監視し、AIが「お買い得」と判断した瞬間にDiscordへ通知。寝てる間にお宝古着を見逃さない。',
-    price: '¥980/月',
-    priceNote: 'スタンダードプラン',
+    price: '¥1,980/月',
+    priceNote: 'プレミアムプラン',
     tags: ['Python', 'AWS Lambda', 'AI', 'Discord'],
     icon: Search,
     color: 'from-amber-500 to-orange-500',
@@ -473,7 +473,7 @@ export default function ProductsPage() {
           </div>
           <div className="w-px h-6 bg-border" />
           <div className="flex items-center gap-1.5">
-            <span className="font-bold text-2xl text-violet-500">5</span>
+            <span className="font-bold text-2xl text-violet-500">6</span>
             <span className="text-muted-foreground">プレミアム</span>
           </div>
         </div>

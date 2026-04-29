@@ -241,7 +241,7 @@ export default function VintageHunter() {
               VH
             </div>
             <div>
-              <h1 className="text-sm font-semibold text-white">古着ハンター</h1>
+              <h1 className="text-sm font-semibold text-white">AI古着お買い得ハンター</h1>
               <p className="text-xs text-gray-500">AI搭載ヴィンテージ検索</p>
             </div>
           </div>
