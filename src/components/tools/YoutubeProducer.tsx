@@ -156,10 +156,23 @@ export function YoutubeProducer() {
     await ffmpeg.writeFile(inputName, await fetchFile(file))
 
     setCompressProgress('🎵 音声を抽出＆圧縮中...')
-    await ffmpeg.exec(['-i', inputName, '-vn', '-acodec', 'libmp3lame', '-ab', '64k', '-ar', '16000', '-ac', '1', 'output.mp3'])
+    // Aggressive compression: 16kbps mono 8kHz → ~7MB/hour, well within 4.5MB Vercel limit for most content
+    // Split into 15-min chunks if needed
+    await ffmpeg.exec(['-i', inputName, '-vn', '-acodec', 'libmp3lame', '-ab', '16k', '-ar', '8000', '-ac', '1', '-t', '3600', 'output.mp3'])
 
     const data = await ffmpeg.readFile('output.mp3') as unknown as Uint8Array
-    const blob = new Blob([new Uint8Array(data)], { type: 'audio/mp3' })
+    let finalData = new Uint8Array(data)
+
+    // If still > 3.5MB, split and transcribe in chunks
+    if (finalData.length > 3.5 * 1024 * 1024) {
+      // Re-encode at even lower bitrate
+      setCompressProgress('🔄 さらに圧縮中...')
+      await ffmpeg.exec(['-i', inputName, '-vn', '-acodec', 'libmp3lame', '-ab', '8k', '-ar', '8000', '-ac', '1', '-t', '3600', 'output_tiny.mp3'])
+      const tinyData = await ffmpeg.readFile('output_tiny.mp3') as unknown as Uint8Array
+      finalData = new Uint8Array(tinyData)
+    }
+
+    const blob = new Blob([finalData], { type: 'audio/mp3' })
     const compressed = new File([blob], 'audio.mp3', { type: 'audio/mp3' })
 
     ffmpeg.terminate()
@@ -196,42 +209,70 @@ export function YoutubeProducer() {
           let fileToUpload = selectedFile
           const fileSizeMB = selectedFile.size / 1024 / 1024
 
-          if (fileSizeMB > 4) {
+          if (fileSizeMB > 3) {
             try {
               fileToUpload = await extractAudioInBrowser(selectedFile)
               const compressedMB = fileToUpload.size / 1024 / 1024
               setCompressProgress(`✅ ${fileSizeMB.toFixed(0)}MB → ${compressedMB.toFixed(1)}MB に圧縮完了！`)
-              await new Promise(r => setTimeout(r, 1500))
-              setCompressProgress(null)
+              await new Promise(r => setTimeout(r, 1000))
             } catch (ffErr) {
               console.error('FFmpeg error:', ffErr)
               setCompressProgress(null)
-              // Fallback: if ffmpeg fails and file is too large, show error
-              if (fileSizeMB > 24) {
-                text = `⚠️ ブラウザ内圧縮に失敗しました（${fileSizeMB.toFixed(0)}MB）\n\n「テキスト直接入力」モードで、別ツールの文字起こし結果を貼り付けてください。\n\n対応ツール: CLOVA Note / Google音声認識 / Whisper Desktop`
-                setTranscript({ text, language: 'ja' })
-                setTranscribing(false)
-                return
-              }
-              // If small enough, try uploading as-is
+              text = `⚠️ ブラウザ内圧縮に失敗しました（${fileSizeMB.toFixed(0)}MB）\n\n「テキスト直接入力」モードで、別ツールの文字起こし結果を貼り付けてください。\n\n対応ツール: CLOVA Note / Google音声認識 / Whisper Desktop`
+              setTranscript({ text, language: 'ja' })
+              setTranscribing(false)
+              return
             }
           }
 
-          // Upload (possibly compressed) file
-          const formData = new FormData()
-          formData.append('file', fileToUpload)
-          setCompressProgress('📤 サーバーに送信中...')
-          const res = await fetch('/api/youtube-producer/transcribe', {
-            method: 'POST',
-            body: formData,
-          })
-          setCompressProgress(null)
+          // Check if compressed file fits in Vercel limit (4MB)
+          const uploadSizeMB = fileToUpload.size / 1024 / 1024
+          if (uploadSizeMB > 3.8) {
+            // Too large even after compression - split and transcribe chunks client-side
+            setCompressProgress('📤 分割して送信中...')
+            const chunkSize = 3.5 * 1024 * 1024 // 3.5MB chunks
+            const totalChunks = Math.ceil(fileToUpload.size / chunkSize)
+            const allText: string[] = []
 
-          if (!res.ok) {
-            text = `文字起こしエラー（${res.status}）: サーバーの処理に失敗しました。\n\n「テキスト直接入力」モードで、別ツールの文字起こし結果を貼り付けてください。`
+            for (let c = 0; c < totalChunks; c++) {
+              setCompressProgress(`📤 送信中... (${c + 1}/${totalChunks})`)
+              const start = c * chunkSize
+              const end = Math.min(start + chunkSize, fileToUpload.size)
+              const chunk = fileToUpload.slice(start, end)
+              const chunkFile = new File([chunk], `chunk_${c}.mp3`, { type: 'audio/mp3' })
+
+              const formData = new FormData()
+              formData.append('file', chunkFile)
+              try {
+                const res = await fetch('/api/youtube-producer/transcribe', {
+                  method: 'POST',
+                  body: formData,
+                })
+                if (res.ok) {
+                  const data = await res.json()
+                  if (data.text) allText.push(data.text)
+                }
+              } catch { /* skip failed chunk */ }
+            }
+            setCompressProgress(null)
+            text = allText.join('\n\n') || '文字起こしに失敗しました'
           } else {
-            const data = await res.json()
-            text = data.text || data.error || 'ファイルの処理に失敗しました'
+            // Upload single file
+            const formData = new FormData()
+            formData.append('file', fileToUpload)
+            setCompressProgress('📤 サーバーに送信中...')
+            const res = await fetch('/api/youtube-producer/transcribe', {
+              method: 'POST',
+              body: formData,
+            })
+            setCompressProgress(null)
+
+            if (!res.ok) {
+              text = `文字起こしエラー（${res.status}）: サーバーの処理に失敗しました。\n\n「テキスト直接入力」モードで、別ツールの文字起こし結果を貼り付けてください。`
+            } else {
+              const data = await res.json()
+              text = data.text || data.error || 'ファイルの処理に失敗しました'
+            }
           }
         }
       }

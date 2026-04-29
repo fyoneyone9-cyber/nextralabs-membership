@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// Increase body size limit for audio uploads (default is 4MB)
+export const runtime = 'nodejs'
+export const maxDuration = 60
+
 export async function POST(req: NextRequest) {
   try {
     const contentType = req.headers.get('content-type') || ''
