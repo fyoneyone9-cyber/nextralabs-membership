@@ -407,12 +407,12 @@ ${mailInput}
 
   const tabs = [
     { id: 'mailcheck' as const, label: '📧 詐欺メール判定' },
+    { id: 'yamicheck' as const, label: '⚠️ 闇バイト判定' },
     { id: 'quiz' as const, label: '🔍 詐欺クイズ' },
     { id: 'sim' as const, label: '📞 電話シミュレーター' },
     { id: 'checklist' as const, label: '✅ 見守りチェック' },
     { id: 'database' as const, label: '📊 詐欺手口DB' },
     { id: 'emergency' as const, label: '🚨 緊急通報ガイド' },
-    { id: 'yamicheck' as const, label: '⚠️ 闇バイト判定' },
   ]
 
   // Quiz logic
