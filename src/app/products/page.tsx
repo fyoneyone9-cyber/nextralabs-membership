@@ -194,6 +194,21 @@ const commTools: Product[] = [
     iconColor: 'text-orange-500',
     status: '販売中',
   },
+  {
+    id: 'shio-taiou',
+    title: '塩対応代行AI',
+    subtitle: '義実家・親戚・上司からの重い連絡を角が立たずに断る',
+    description:
+      '6つのシチュエーション×3段階のトーンで最適な断り文を一瞬生成。既読タイミング提案とプロのコツ付き。完全オフライン。',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
+    tags: ['返信生成', '既読タイミング', 'テンプレート', '人間関係'],
+    icon: Shield,
+    color: 'from-amber-500 to-orange-500',
+    bgColor: 'bg-amber-500/10',
+    iconColor: 'text-amber-500',
+    status: 'NEW',
+  },
 ]
 
 // 🏢 キャリア・ライフ — 人生の転機をサポート
