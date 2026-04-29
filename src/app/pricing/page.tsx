@@ -80,20 +80,20 @@ export default function PricingPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
         {/* Free Plan */}
         <Card className="relative">
-          <CardContent className="p-8">
-            <h3 className="text-2xl font-bold mb-2">無料プラン</h3>
-            <p className="text-muted-foreground mb-4">まずはお試しで</p>
-            <div className="text-5xl font-bold mb-6">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-bold mb-2">無料プラン</h3>
+            <p className="text-muted-foreground text-sm mb-4">まずはお試しで</p>
+            <div className="text-4xl font-bold mb-6">
               ¥0
-              <span className="text-lg text-muted-foreground font-normal">/月</span>
+              <span className="text-base text-muted-foreground font-normal">/月</span>
             </div>
-            <ul className="space-y-3 mb-8">
+            <ul className="space-y-2.5 mb-8">
               {[
                 'ツールの詳細閲覧',
-                '無料ツールのダウンロード',
+                '無料ツール利用',
                 'メール通知',
               ].map((feature) => (
                 <li key={feature} className="flex items-center gap-2 text-sm">
@@ -102,9 +102,9 @@ export default function PricingPage() {
                 </li>
               ))}
               {[
-                '有料ツールのダウンロード',
+                '有料ツール利用',
+                'プレミアムツール',
                 '優先サポート',
-                '新ツールの先行アクセス',
               ].map((feature) => (
                 <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground/50">
                   <span className="h-4 w-4 shrink-0 text-center">✕</span>
@@ -124,7 +124,7 @@ export default function PricingPage() {
           </CardContent>
         </Card>
 
-        {/* Paid Plan */}
+        {/* Standard Plan */}
         <Card className="relative border-primary shadow-lg">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
             <Badge className="bg-primary text-primary-foreground px-4 py-1">
@@ -132,14 +132,14 @@ export default function PricingPage() {
               おすすめ
             </Badge>
           </div>
-          <CardContent className="p-8">
-            <h3 className="text-2xl font-bold mb-2">全ツール使い放題プラン</h3>
-            <p className="text-muted-foreground mb-4">すべてのツールが使い放題</p>
-            <div className="text-5xl font-bold mb-6">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-bold mb-2">全ツール使い放題プラン</h3>
+            <p className="text-muted-foreground text-sm mb-4">すべてのツールが使い放題</p>
+            <div className="text-4xl font-bold mb-6">
               ¥980
-              <span className="text-lg text-muted-foreground font-normal">/月</span>
+              <span className="text-base text-muted-foreground font-normal">/月</span>
             </div>
-            <ul className="space-y-3 mb-8">
+            <ul className="space-y-2.5 mb-8">
               {[
                 'すべてのツール使い放題',
                 'ソースコード完全アクセス',
@@ -150,6 +150,14 @@ export default function PricingPage() {
               ].map((feature) => (
                 <li key={feature} className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-green-500 shrink-0" />
+                  {feature}
+                </li>
+              ))}
+              {[
+                'プレミアムツール（Gmail AI等）',
+              ].map((feature) => (
+                <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground/50">
+                  <span className="h-4 w-4 shrink-0 text-center">✕</span>
                   {feature}
                 </li>
               ))}
@@ -165,6 +173,45 @@ export default function PricingPage() {
                 全ツール使い放題プランに登録
               </Button>
             )}
+          </CardContent>
+        </Card>
+
+        {/* Premium Plan */}
+        <Card className="relative border-violet-500/50 shadow-lg">
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+            <Badge className="bg-violet-500 text-white px-4 py-1">
+              <Crown className="h-3 w-3 mr-1" />
+              プレミアム
+            </Badge>
+          </div>
+          <CardContent className="p-6">
+            <h3 className="text-xl font-bold mb-2">プレミアムプラン</h3>
+            <p className="text-muted-foreground text-sm mb-4">AI API連携ツール含む</p>
+            <div className="text-4xl font-bold mb-6">
+              ¥1,980
+              <span className="text-base text-muted-foreground font-normal">/月</span>
+            </div>
+            <ul className="space-y-2.5 mb-8">
+              {[
+                '全ツール使い放題プランの全機能',
+                'Gmail AI Accelerator',
+                'Gmail連携・AI返信生成',
+                'API連携ツール（今後追加予定）',
+                '最優先サポート',
+                '機能リクエスト優先対応',
+              ].map((feature) => (
+                <li key={feature} className="flex items-center gap-2 text-sm">
+                  <Check className="h-4 w-4 text-violet-500 shrink-0" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white" onClick={() => toast.info('プレミアムプランは近日公開予定です')}>
+              近日公開
+            </Button>
+            <p className="text-xs text-muted-foreground text-center mt-3">
+              Gmail AI Accelerator を含む上位プラン
+            </p>
           </CardContent>
         </Card>
 
