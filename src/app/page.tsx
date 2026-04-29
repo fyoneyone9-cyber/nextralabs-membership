@@ -52,50 +52,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* PR Video */}
-      <section className="py-16 bg-black">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold text-center mb-2 text-white">
-              NextraLabs を30秒で知る
-            </h2>
-            <p className="text-center text-gray-400 mb-8">
-              実際のツール画面をご覧ください
-            </p>
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-amber-500/10 border border-gray-800">
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full aspect-video object-contain bg-[#0a0a14]"
-              >
-                <source
-                  src="/nextralabs-demo.mp4"
-                  type="video/mp4"
-                />
-              </video>
-              {/* Overlay with branding */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-              <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold text-sm">
-                    NL
-                  </div>
-                  <div>
-                    <div className="text-white font-bold text-lg">NextraLabs</div>
-                    <div className="text-gray-300 text-sm">AI Tool Store</div>
-                  </div>
-                </div>
-                <p className="text-gray-200 text-sm md:text-base max-w-lg">
-                  古着ハンター・ペット翻訳・社内政治相関図・買い物ストッパー・AIセレクトショップ — 5つのAIツールを月額¥980で使い放題
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Features */}
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
@@ -106,7 +62,7 @@ export default function HomePage() {
                 <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10">
                   <Code className="h-6 w-6 text-amber-500" />
                 </div>
-                <h3 className="font-semibold mb-2">ソースコード提供</h3>
+                <h3 className="font-semibold mb-2">すぐ使える</h3>
                 <p className="text-sm text-muted-foreground">
                   全ツールのソースコードを提供。自由にカスタマイズできます。
                 </p>
@@ -238,15 +194,15 @@ export default function HomePage() {
       {/* All Tools Quick Access */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-4">🚀 全ツールを今すぐ使う</h2>
-          <p className="text-muted-foreground text-center mb-10">スタンダードプラン会員は全ツール使い放題。各ツールに直接アクセス。</p>
+          <h2 className="text-3xl font-bold text-center mb-4">🚀 人気ツールをチェック</h2>
+          <p className="text-muted-foreground text-center mb-10">スタンダード・プレミアムプラン会員はツールに直接アクセス。</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {[
-              { id: 'vintage-hunter', name: '古着ハンター', desc: 'AI搭載メルカリ自動監視ボット', icon: 'Search', price: '¥980/月', color: 'amber', iconEl: Search },
+              { id: 'vintage-hunter', name: 'AI古着お買い得ハンター', desc: '楽天APIで実データ検索・3サイト比較', icon: 'Search', price: '¥1,980/月', color: 'amber', iconEl: Search },
               { id: 'office-politics-graph', name: '社内政治 相関図', desc: 'Slack × カレンダー関係性可視化ツール', icon: 'Network', price: '¥980/月', color: 'indigo', iconEl: Network },
-              { id: 'pet-translator', name: 'AIペット翻訳モニター', desc: '留守中のペットの感情をAIが翻訳', icon: 'PawPrint', price: '¥980/月', color: 'violet', iconEl: PawPrint },
+              { id: 'pet-translator', name: 'AIペット翻訳モニター', desc: '留守中のペットの感情をAIが翻訳', icon: 'PawPrint', price: '¥1,980/月', color: 'violet', iconEl: PawPrint },
               { id: 'shopping-stopper', name: 'AI買い物依存ストッパー', desc: 'カメラ表情解析 × 衝動買い防止AI', icon: 'ShieldAlert', price: '¥980/月', color: 'red', iconEl: ShieldAlert },
-              { id: 'ai-select-shop', name: '「在庫ゼロ」AIセレクトショップ', desc: 'トレンド分析 × AI自動デザイン × オンデマンド出品', icon: 'Store', price: '¥980/月', color: 'emerald', iconEl: Store },
+              { id: 'ai-select-shop', name: '「在庫ゼロ」AIセレクトショップ', desc: 'トレンド分析 × AI自動デザイン × オンデマンド出品', icon: 'Store', price: '¥1,980/月', color: 'emerald', iconEl: Store },
             ].map((tool) => {
               const Icon = tool.iconEl
               return (
@@ -287,7 +243,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">今すぐ始めよう</h2>
           <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-            全ツール使い放題プランに登録して、すべてのAIツールを使い放題に。
+            プランに登録するして、すべてのAIツールを使い放題に。
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/products">
