@@ -39,11 +39,12 @@ export async function POST(request: NextRequest) {
             session.subscription as string
           )
 
+          const plan = session.metadata?.plan || 'standard'
           await supabaseAdmin.from('subscriptions').upsert({
             user_id: userId,
             stripe_customer_id: session.customer as string,
             stripe_subscription_id: subscriptionData.id,
-            plan: 'premium',
+            plan,
             status: subscriptionData.status,
             current_period_start: new Date(subscriptionData.current_period_start * 1000).toISOString(),
             current_period_end: new Date(subscriptionData.current_period_end * 1000).toISOString(),
@@ -75,9 +76,12 @@ export async function POST(request: NextRequest) {
           .single()
 
         if (existingSub) {
+          // Determine plan from price ID
+          const priceId = subUpdated.items?.data?.[0]?.price?.id
+          const updatedPlan = priceId === process.env.STRIPE_PREMIUM_PRICE_ID ? 'premium' : 'standard'
           await supabaseAdmin.from('subscriptions').update({
             status: subUpdated.status,
-            plan: 'premium',
+            plan: updatedPlan,
             current_period_start: new Date(subUpdated.current_period_start * 1000).toISOString(),
             current_period_end: new Date(subUpdated.current_period_end * 1000).toISOString(),
           }).eq('stripe_customer_id', customerId)
