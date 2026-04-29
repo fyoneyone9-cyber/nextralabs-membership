@@ -122,7 +122,6 @@ export default function TermsPage() {
             <p><strong>事業者名:</strong> NextraLabs（個人事業）</p>
             <p><strong>代表者:</strong> 米山 文貴</p>
             <p><strong>所在地:</strong> 神奈川県海老名市</p>
-            <p><strong>メール:</strong> f.yoneyone9@gmail.com</p>
             <p><strong>お問い合わせ:</strong> <Link href="/contact" className="text-primary hover:underline">お問い合わせフォーム</Link></p>
           </div>
         </section>
