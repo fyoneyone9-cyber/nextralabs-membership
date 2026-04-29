@@ -159,7 +159,7 @@ export function YoutubeProducer() {
     await ffmpeg.exec(['-i', inputName, '-vn', '-acodec', 'libmp3lame', '-ab', '64k', '-ar', '16000', '-ac', '1', 'output.mp3'])
 
     const data = await ffmpeg.readFile('output.mp3')
-    const blob = new Blob([data], { type: 'audio/mp3' })
+    const blob = new Blob([(data as Uint8Array).buffer], { type: 'audio/mp3' })
     const compressed = new File([blob], 'audio.mp3', { type: 'audio/mp3' })
 
     ffmpeg.terminate()
