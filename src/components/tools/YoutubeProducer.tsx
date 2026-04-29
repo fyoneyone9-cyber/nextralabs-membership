@@ -242,12 +242,13 @@ export function YoutubeProducer() {
             setCompressProgress(null)
 
             text = `✅ 音声の抽出が完了しました（${compressedMB.toFixed(1)}MB）\n\n` +
-              `下の再生ボタンで音声を確認できます。\n` +
-              `「ダウンロード」で音声ファイルを保存し、以下の無料サービスで文字起こししてください：\n\n` +
-              `1. Whisper Web（無料・高精度）\n   https://huggingface.co/spaces/Xenova/whisper-web\n\n` +
-              `2. CLOVA Note（無料・日本語対応）\n   https://clovanote.line.me/\n\n` +
-              `3. Google ドキュメント音声入力（無料）\n   音声を再生しながらGoogleドキュメントの音声入力を使用\n\n` +
-              `文字起こし結果を「テキスト直接入力」モードに貼り付けてください。`
+              `下の再生ボタンで確認 → MP3をダウンロード → ChatGPTかGeminiにアップロードして文字起こし\n\n` +
+              `手順:\n` +
+              `1. 「MP3をダウンロード」をクリック\n` +
+              `2. ChatGPT or Gemini を開く\n` +
+              `3. 音声ファイルをアップロードして「文字起こしして」と入力\n` +
+              `4. 結果をコピーしてこのテキストエリアに貼り付け\n\n` +
+              `※ このテキストを消して、文字起こし結果を貼り付けてください`
           } catch (ffErr) {
             console.error('FFmpeg error:', ffErr)
             setCompressProgress(null)
@@ -607,8 +608,8 @@ export function YoutubeProducer() {
                     <audio controls className="w-full mb-2" src={extractedAudioUrl} />
                     <div className="flex gap-2">
                       <a href={extractedAudioUrl} download="extracted-audio.mp3" className="px-4 py-1.5 bg-blue-500/20 text-blue-400 rounded-lg text-xs hover:bg-blue-500/30">⬇️ MP3をダウンロード</a>
-                      <a href="https://huggingface.co/spaces/Xenova/whisper-web" target="_blank" rel="noopener noreferrer" className="px-4 py-1.5 bg-green-500/20 text-green-400 rounded-lg text-xs hover:bg-green-500/30">Whisper Web で文字起こし</a>
-                      <a href="https://clovanote.line.me/" target="_blank" rel="noopener noreferrer" className="px-4 py-1.5 bg-emerald-500/20 text-emerald-400 rounded-lg text-xs hover:bg-emerald-500/30">CLOVA Note</a>
+                      <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-1.5 bg-green-500/20 text-green-400 rounded-lg text-xs hover:bg-green-500/30">ChatGPT で文字起こし</a>
+                      <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-1.5 bg-sky-500/20 text-sky-400 rounded-lg text-xs hover:bg-sky-500/30">Gemini で文字起こし</a>
                     </div>
                     <p className="text-xs text-white/30 mt-2">文字起こし結果を上のテキストエリアに貼り付けてください</p>
                   </div>
