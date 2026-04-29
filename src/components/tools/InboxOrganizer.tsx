@@ -635,23 +635,25 @@ export default function InboxOrganizer() {
                         </button>
                         <div className="flex gap-2">
                           <a
-                            href={`https://gemini.google.com/app?q=${encodeURIComponent(buildReplyPrompt(selectedMessage))}`}
+                            href="https://gemini.google.com/app"
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={() => navigator.clipboard.writeText(buildReplyPrompt(selectedMessage))}
                             className="flex-1 py-1.5 bg-blue-500/20 border border-blue-500/30 rounded-lg text-xs font-bold text-blue-200 hover:bg-blue-500/30 text-center"
                           >
                             ✨ Geminiで作�E
                           </a>
                           <a
-                            href={`https://chatgpt.com/?q=${encodeURIComponent(buildReplyPrompt(selectedMessage))}`}
+                            href="https://chatgpt.com/"
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={() => navigator.clipboard.writeText(buildReplyPrompt(selectedMessage))}
                             className="flex-1 py-1.5 bg-green-500/20 border border-green-500/30 rounded-lg text-xs font-bold text-green-200 hover:bg-green-500/30 text-center"
                           >
                             💬 ChatGPTで作�E
                           </a>
                         </div>
-                        <p className="text-[10px] text-white/30">ↁE外部AIで返信斁E��生�E ↁEコピ�Eして下�E入力欁E��ペ�Eストしてください</p>
+                        <p className="text-[10px] text-white/30">↑ プロンプトが自動コピーされます → 外部AIに貼り付けてください</p>
                       </div>
                     )}
 
