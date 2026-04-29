@@ -1,9 +1,20 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe'
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
+    const body = await request.json().catch(() => ({}))
+    const plan = body.plan || 'standard'
+
+    const priceId = plan === 'premium'
+      ? process.env.STRIPE_PREMIUM_PRICE_ID
+      : process.env.STRIPE_STANDARD_PRICE_ID
+
+    if (!priceId) {
+      return NextResponse.json({ error: 'Price IDが設定されていません' }, { status: 500 })
+    }
+
     const supabase = createServerSupabaseClient()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -36,13 +47,13 @@ export async function POST() {
       payment_method_types: ['card'],
       line_items: [
         {
-          price: process.env.STRIPE_PREMIUM_PRICE_ID,
+          price: priceId,
           quantity: 1,
         },
       ],
       success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://membership-site-nextralabos.vercel.app'}/dashboard?checkout=success`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://membership-site-nextralabos.vercel.app'}/pricing?checkout=cancel`,
-      metadata: { user_id: user.id },
+      metadata: { user_id: user.id, plan },
     })
 
     return NextResponse.json({ url: session.url })

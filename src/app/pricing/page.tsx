@@ -32,7 +32,7 @@ export default function PricingPage() {
     check()
   }, [])
 
-  const handleCheckout = async () => {
+  const handleCheckout = async (plan: 'standard' | 'premium' = 'standard') => {
     if (!user) {
       window.location.href = '/signup'
       return
@@ -43,6 +43,7 @@ export default function PricingPage() {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan }),
       })
       const data = await res.json()
 
@@ -76,7 +77,7 @@ export default function PricingPage() {
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">料金プラン</h1>
         <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-          単品購入もできます。全ツール使い放題プランならすべてのツールが使い放題。
+          スタンダードで全ツール使い放題。プレミアムならGmail AI連携ツールも。
         </p>
       </div>
 
@@ -133,8 +134,8 @@ export default function PricingPage() {
             </Badge>
           </div>
           <CardContent className="p-6">
-            <h3 className="text-xl font-bold mb-2">全ツール使い放題プラン</h3>
-            <p className="text-muted-foreground text-sm mb-4">すべてのツールが使い放題</p>
+            <h3 className="text-xl font-bold mb-2">スタンダードプラン</h3>
+            <p className="text-muted-foreground text-sm mb-4">全ツール使い放題</p>
             <div className="text-4xl font-bold mb-6">
               ¥980
               <span className="text-base text-muted-foreground font-normal">/月</span>
@@ -168,9 +169,9 @@ export default function PricingPage() {
                 サブスクリプション管理
               </Button>
             ) : (
-              <Button className="w-full" onClick={handleCheckout} disabled={loading}>
+              <Button className="w-full" onClick={() => handleCheckout('standard')} disabled={loading}>
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                全ツール使い放題プランに登録
+                スタンダードプランに登録
               </Button>
             )}
           </CardContent>
@@ -206,9 +207,17 @@ export default function PricingPage() {
                 </li>
               ))}
             </ul>
-            <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white" onClick={() => toast.info('プレミアムプランは近日公開予定です')}>
-              近日公開
-            </Button>
+            {isPaid ? (
+              <Button variant="outline" className="w-full border-violet-500/50 text-violet-400" onClick={handleManage} disabled={loading}>
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                プラン管理
+              </Button>
+            ) : (
+              <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white" onClick={() => handleCheckout('premium')} disabled={loading}>
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                プレミアムプランに登録
+              </Button>
+            )}
             <p className="text-xs text-muted-foreground text-center mt-3">
               Gmail AI Accelerator を含む上位プラン
             </p>
