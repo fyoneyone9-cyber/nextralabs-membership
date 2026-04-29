@@ -143,6 +143,9 @@ export async function GET(request: NextRequest) {
     // Filter by condition
     if (condition && condition !== 'all' && itemCondition !== condition) continue
 
+    // Generate a mercari-style listing URL
+    const listingUrl = `https://jp.mercari.com/search?keyword=${encodeURIComponent(itemBrand + ' ' + title)}`
+
     items.push({
       id: `vh-${i}-${seedNum}`,
       title,
@@ -159,6 +162,7 @@ export async function GET(request: NextRequest) {
       initials,
       description,
       category,
+      listingUrl,
     })
   }
 

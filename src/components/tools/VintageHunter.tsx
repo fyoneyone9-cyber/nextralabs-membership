@@ -24,6 +24,7 @@ interface VintageItem {
   initials: string
   description: string
   category: string
+  listingUrl: string
 }
 
 interface SearchFilters {
@@ -188,7 +189,7 @@ export default function VintageHunter() {
                 />
                 <Button
                   size="sm"
-                  onClick={() => handleNotify({ id: 'test', title: 'テスト通知', brand: 'Test', price: 1000, marketPrice: 2000, condition: '良好', size: 'M', listedAt: new Date().toISOString(), rarity: 50, aiScore: 85, gradientFrom: '#f59e0b', gradientTo: '#ea580c', initials: 'TS', description: 'テスト通知です', category: 'トップス' })}
+                  onClick={() => handleNotify({ id: 'test', title: 'テスト通知', brand: 'Test', price: 1000, marketPrice: 2000, condition: '良好', size: 'M', listedAt: new Date().toISOString(), rarity: 50, aiScore: 85, gradientFrom: '#f59e0b', gradientTo: '#ea580c', initials: 'TS', description: 'テスト通知です', category: 'トップス', listingUrl: 'https://jp.mercari.com/search?keyword=Test' })}
                   disabled={!webhookUrl || webhookStatus === 'sending'}
                   className="bg-amber-600 hover:bg-amber-700 text-white border-0"
                 >
@@ -514,23 +515,35 @@ export default function VintageHunter() {
                 出品日時: {new Date(selectedItem.listedAt).toLocaleString('ja-JP')}
               </div>
 
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => handleNotify(selectedItem)}
-                  disabled={webhookStatus === 'sending'}
-                  className="flex-1 bg-[#5865f2] hover:bg-[#4752c4] text-white border-0"
+              <div className="flex flex-col gap-2">
+                <a
+                  href={selectedItem.listingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full"
                 >
-                  {webhookStatus === 'sending' ? '送信中...' :
-                   webhookStatus === 'success' ? '✓ Discord送信済み' :
-                   '🔔 Discordに通知'}
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setSelectedItem(null)}
-                  className="border-amber-900/30 text-gray-300 bg-transparent"
-                >
-                  閉じる
-                </Button>
+                  <Button className="w-full bg-red-500 hover:bg-red-600 text-white border-0 text-base">
+                    🔗 メルカリで探す
+                  </Button>
+                </a>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => handleNotify(selectedItem)}
+                    disabled={webhookStatus === 'sending'}
+                    className="flex-1 bg-[#5865f2] hover:bg-[#4752c4] text-white border-0"
+                  >
+                    {webhookStatus === 'sending' ? '送信中...' :
+                     webhookStatus === 'success' ? '✓ Discord送信済み' :
+                     '🔔 Discordに通知'}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setSelectedItem(null)}
+                    className="border-amber-900/30 text-gray-300 bg-transparent"
+                  >
+                    閉じる
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
