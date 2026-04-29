@@ -19,6 +19,7 @@ const PRODUCT_PRICES: Record<string, string> = {
   'disaster-guard': 'price_1TRGjV5HQYoJh51tjqxbF15C',
   'prompt-master': 'price_1TRHMx5HQYoJh51tI6CAvkWx',
   'ai-sidejob': 'price_1TRI0f5HQYoJh51tFa9Vk6lK',
+  'youtube-producer': 'price_1TRRuJ5HQYoJh51tn0zRAEm9',
 }
 
 export async function POST(request: NextRequest) {

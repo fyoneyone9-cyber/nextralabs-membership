@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, Briefcase, type LucideIcon } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, Briefcase, Clapperboard, type LucideIcon } from 'lucide-react'
 
 // ==================== Product Type ====================
 interface Product {
@@ -264,6 +264,21 @@ const creativeTools: Product[] = [
     color: 'from-purple-500 to-fuchsia-500',
     bgColor: 'bg-purple-500/10',
     iconColor: 'text-purple-500',
+    status: 'NEW',
+  },
+  {
+    id: 'youtube-producer',
+    title: 'AI YouTubeプロデューサー',
+    subtitle: '文字起こし→台本→人物画像→サムネイル→タイトル→BGM',
+    description:
+      '動画・音声・テキストを取り込んで6ステップでYouTube投稿素材を全自動生成。10ジャンル対応の台本、AI人物イラスト、サムネイル、SEOタイトル、BGM作曲。',
+    price: '¥4,980',
+    priceNote: '買い切り・税込',
+    tags: ['6ステップ', '10ジャンル', '文字起こし', 'サムネイル'],
+    icon: Clapperboard,
+    color: 'from-red-500 to-pink-500',
+    bgColor: 'bg-red-500/10',
+    iconColor: 'text-red-500',
     status: 'NEW',
   },
 ]
