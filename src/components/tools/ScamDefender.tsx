@@ -922,66 +922,63 @@ ${mailInput}
               </div>
 
               {mailInput.trim().length > 0 && (
-                <div className="space-y-4">
-                  {/* プロンプトプレビュー */}
-                  <div className="bg-[#1a1a2e] rounded-lg p-4 border border-gray-700">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs text-gray-500">📋 AI用プロンプト（自動生成）</span>
-                      <button
-                        onClick={copyMailPrompt}
-                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${
-                          mailCopied ? 'bg-green-600 text-white' : 'bg-cyan-600 hover:bg-cyan-700 text-white'
-                        }`}
-                      >
-                        {mailCopied ? '✅ コピーしました！' : '📋 プロンプトをコピー'}
-                      </button>
-                    </div>
-                    <pre className="text-xs text-gray-400 whitespace-pre-wrap max-h-40 overflow-y-auto font-sans">{buildMailPrompt()}</pre>
+                <div className="bg-[#1a1a2e] rounded-lg p-4 border border-gray-700">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs text-gray-500">📋 AI用プロンプト（自動生成）</span>
+                    <button
+                      onClick={copyMailPrompt}
+                      className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${
+                        mailCopied ? 'bg-green-600 text-white' : 'bg-cyan-600 hover:bg-cyan-700 text-white'
+                      }`}
+                    >
+                      {mailCopied ? '✅ コピーしました！' : '📋 プロンプトをコピー'}
+                    </button>
                   </div>
-
-                  {/* 外部AIリンク */}
-                  <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6">
-                    <h3 className="font-bold mb-4">🤖 コピーしたプロンプトをAIに貼り付けて判定</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-3 px-4 py-3 bg-blue-600/20 border border-blue-500/30 rounded-lg hover:bg-blue-600/30 transition-colors">
-                        <span className="text-2xl">💎</span>
-                        <div>
-                          <div className="font-bold text-sm">Gemini</div>
-                          <div className="text-xs text-gray-400">Google AI</div>
-                        </div>
-                      </a>
-                      <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-3 px-4 py-3 bg-green-600/20 border border-green-500/30 rounded-lg hover:bg-green-600/30 transition-colors">
-                        <span className="text-2xl">🟢</span>
-                        <div>
-                          <div className="font-bold text-sm">ChatGPT</div>
-                          <div className="text-xs text-gray-400">OpenAI</div>
-                        </div>
-                      </a>
-                      <a href="https://claude.ai/" target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-3 px-4 py-3 bg-orange-600/20 border border-orange-500/30 rounded-lg hover:bg-orange-600/30 transition-colors">
-                        <span className="text-2xl">🟠</span>
-                        <div>
-                          <div className="font-bold text-sm">Claude</div>
-                          <div className="text-xs text-gray-400">Anthropic</div>
-                        </div>
-                      </a>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-3">※ 上のボタンでAIを開き、コピーしたプロンプトを貼り付けてください。APIコスト0円です。</p>
-                  </div>
-
-                  {/* 注意事項 */}
-                  <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">
-                    <h4 className="font-bold text-amber-400 text-sm mb-2">⚠️ ご注意</h4>
-                    <ul className="text-xs text-gray-400 space-y-1">
-                      <li>・メール内のリンクは<strong className="text-amber-300">絶対にクリックしないで</strong>ください</li>
-                      <li>・AI判定は参考情報です。確実に詐欺と分かった場合は警察（#9110）へ相談を</li>
-                      <li>・個人情報（パスワード等）はメール内容に含めたまま貼り付けないでください</li>
-                    </ul>
-                  </div>
+                  <pre className="text-xs text-gray-400 whitespace-pre-wrap max-h-40 overflow-y-auto font-sans">{buildMailPrompt()}</pre>
                 </div>
               )}
+            </div>
+
+            {/* 外部AIリンク — 常に表示 */}
+            <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6">
+              <h3 className="font-bold mb-2">🤖 AIで判定する</h3>
+              <p className="text-xs text-gray-500 mb-4">上のフォームに入力 → プロンプトをコピー → 下のAIに貼り付けるだけ。無料で使えます。</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-3 px-4 py-3 bg-blue-600/20 border border-blue-500/30 rounded-lg hover:bg-blue-600/30 transition-colors">
+                  <span className="text-2xl">💎</span>
+                  <div>
+                    <div className="font-bold text-sm">Gemini</div>
+                    <div className="text-xs text-gray-400">Google AI — 無料</div>
+                  </div>
+                </a>
+                <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-3 px-4 py-3 bg-green-600/20 border border-green-500/30 rounded-lg hover:bg-green-600/30 transition-colors">
+                  <span className="text-2xl">🟢</span>
+                  <div>
+                    <div className="font-bold text-sm">ChatGPT</div>
+                    <div className="text-xs text-gray-400">OpenAI — 無料</div>
+                  </div>
+                </a>
+                <a href="https://claude.ai/" target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-3 px-4 py-3 bg-orange-600/20 border border-orange-500/30 rounded-lg hover:bg-orange-600/30 transition-colors">
+                  <span className="text-2xl">🟠</span>
+                  <div>
+                    <div className="font-bold text-sm">Claude</div>
+                    <div className="text-xs text-gray-400">Anthropic — 無料</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            {/* 注意事項 — 常に表示 */}
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">
+              <h4 className="font-bold text-amber-400 text-sm mb-2">⚠️ ご注意</h4>
+              <ul className="text-xs text-gray-400 space-y-1">
+                <li>・メール内のリンクは<strong className="text-amber-300">絶対にクリックしないで</strong>ください</li>
+                <li>・AI判定は参考情報です。確実に詐欺と分かった場合は警察（#9110）へ相談を</li>
+                <li>・個人情報（パスワード等）はメール内容に含めたまま貼り付けないでください</li>
+              </ul>
             </div>
           </div>
         )}
