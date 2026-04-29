@@ -14,6 +14,7 @@ export async function GET() {
   const scopes = [
     'https://www.googleapis.com/auth/gmail.readonly',   // Read email list (subject, sender)
     'https://www.googleapis.com/auth/gmail.compose',     // Create drafts
+    'https://www.googleapis.com/auth/gmail.modify',      // Trash/archive messages
   ].join(' ')
 
   const params = new URLSearchParams({
