@@ -516,17 +516,37 @@ export default function VintageHunter() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <a
-                  href={selectedItem.listingUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full"
-                >
-                  <Button className="w-full bg-red-500 hover:bg-red-600 text-white border-0 text-base">
-                    🔗 メルカリで探す
-                  </Button>
-                </a>
-                <div className="flex gap-2">
+                <div className="text-xs text-gray-400 mb-1">🔍 この商品を探す</div>
+                <div className="grid grid-cols-3 gap-2">
+                  <a
+                    href={`https://jp.mercari.com/search?keyword=${encodeURIComponent(selectedItem.brand + ' ' + selectedItem.title)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button className="w-full bg-red-500 hover:bg-red-600 text-white border-0 text-sm">
+                      メルカリ
+                    </Button>
+                  </a>
+                  <a
+                    href={`https://auctions.yahoo.co.jp/search/search?p=${encodeURIComponent(selectedItem.brand + ' ' + selectedItem.title)}&auccat=2084028463`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white border-0 text-sm">
+                      ヤフオク
+                    </Button>
+                  </a>
+                  <a
+                    href={`https://search.rakuten.co.jp/search/mall/${encodeURIComponent(selectedItem.brand + ' ' + selectedItem.title)}/551177/`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button className="w-full bg-rose-700 hover:bg-rose-800 text-white border-0 text-sm">
+                      楽天
+                    </Button>
+                  </a>
+                </div>
+                <div className="flex gap-2 mt-1">
                   <Button
                     onClick={() => handleNotify(selectedItem)}
                     disabled={webhookStatus === 'sending'}
