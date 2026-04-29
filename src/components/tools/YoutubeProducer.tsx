@@ -158,8 +158,8 @@ export function YoutubeProducer() {
     setCompressProgress('🎵 音声を抽出＆圧縮中...')
     await ffmpeg.exec(['-i', inputName, '-vn', '-acodec', 'libmp3lame', '-ab', '64k', '-ar', '16000', '-ac', '1', 'output.mp3'])
 
-    const data = await ffmpeg.readFile('output.mp3')
-    const blob = new Blob([(data as Uint8Array).buffer], { type: 'audio/mp3' })
+    const data = await ffmpeg.readFile('output.mp3') as unknown as Uint8Array
+    const blob = new Blob([new Uint8Array(data)], { type: 'audio/mp3' })
     const compressed = new File([blob], 'audio.mp3', { type: 'audio/mp3' })
 
     ffmpeg.terminate()
