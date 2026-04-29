@@ -24,62 +24,62 @@ interface Product {
 const freeTools: Product[] = [
   {
     id: 'office-politics-graph',
-    title: '社冁E��治 相関図',
-    subtitle: 'Slack ÁEカレンダー関係性可視化チE�Eル',
+    title: '社内政治 相関図',
+    subtitle: 'Slack × カレンダー関係性可視化ツール',
     description:
-      '絁E��図には載らなぁE��本当�E人間関係」を可視化。Slackメンション傾向とカレンダー会議チE�Eタから、E��れたキーマンめE��リチE��役を�E動検�E、E,
-    price: '無斁E,
-    priceNote: 'アカウント不要E,
-    tags: ['D3.js', 'PageRank', 'チE�Eタ刁E��', '無料サンプル'],
+      '組織図には載らない「本当の人間関係」を可視化。Slackメンション傾向とカレンダー会議データから、隠れたキーマンやブリッジ役を自動検出。',
+    price: '無料',
+    priceNote: 'アカウント不要',
+    tags: ['D3.js', 'PageRank', 'データ分析', '無料サンプル'],
     icon: Network,
     color: 'from-indigo-500 to-purple-500',
     bgColor: 'bg-indigo-500/10',
     iconColor: 'text-indigo-500',
-    status: '�E 無斁E,
+    status: '🆓 無料',
   },
   {
     id: 'moving-checker',
-    title: 'AI引っ越し安忁E��ェチE��ー',
-    subtitle: 'エリア安�E度 ÁE騒音リスク ÁEトラブル予防',
+    title: 'AI引っ越し安心チェッカー',
+    subtitle: 'エリア安全度 × 騒音リスク × トラブル予防',
     description:
-      '物件の「見えなぁE��スク」を事前にスコア化。治安�E騒音・物件チェチE��30頁E��・トラブル対処チE��プレート�E引っ越しコスト計算まで、E,
-    price: '無斁E,
+      '物件の「見えないリスク」を事前にスコア化。治安・騒音・物件チェック30項目・トラブル対処テンプレート・引っ越しコスト計算まで。',
+    price: '無料',
     priceNote: '登録不要で今すぐ使える',
-    tags: ['エリア安�E度', '騒音リスク', '30頁E��チェチE��', 'トラブル対処'],
+    tags: ['エリア安全度', '騒音リスク', '30項目チェック', 'トラブル対処'],
     icon: Home,
     color: 'from-blue-500 to-green-500',
     bgColor: 'bg-blue-500/10',
     iconColor: 'text-blue-500',
-    status: '�E 無斁E,
+    status: '🆓 無料',
   },
 ]
 
-// 🛡�E�E防衛シリーズ  E暮らしを守る
+// 🛡️ 防衛シリーズ — 暮らしを守る
 const defenseTools: Product[] = [
   {
     id: 'scam-defender',
-    title: 'AI詐欺チE��フェンダー',
-    subtitle: '詐欺シミュレーション ÁE闁E��イト判宁EÁE家族見守り',
+    title: 'AI詐欺ディフェンダー',
+    subtitle: '詐欺シミュレーション × 闇バイト判定 × 家族見守り',
     description:
-      '詐欺電話シミュレーターで断り方を練習、E��バイト判定チェチE��ーで危険度を即判定。見守りチェチE��リストで家族�EセキュリチE��を強化、E,
+      '詐欺電話シミュレーターで断り方を練習、闇バイト判定チェッカーで危険度を即判定。見守りチェックリストで家族のセキュリティを強化。',
     price: '¥4,980',
-    priceNote: '買ぁE�Eり�E税込',
-    tags: ['詐欺クイズ', '電話シミュレーター', '闁E��イト判宁E, '家族見守り'],
+    priceNote: '買い切り・税込',
+    tags: ['詐欺クイズ', '電話シミュレーター', '闇バイト判定', '家族見守り'],
     icon: ShieldCheck,
     color: 'from-amber-500 to-red-500',
     bgColor: 'bg-amber-500/10',
     iconColor: 'text-amber-500',
-    status: '人氁E,
+    status: '人気',
   },
   {
     id: 'money-guard',
     title: 'AI家計防衛シミュレーター',
-    subtitle: '収支トラチE��ー ÁE期征E��計箁EÁE依存度チェチE��',
+    subtitle: '収支トラッカー × 期待値計算 × 依存度チェック',
     description:
-      'ギャンブル収支を可視化し、期征E��を数学皁E��解説。「もし貯金してたら」シミュレーター、認知バイアス診断、相諁E��口ガイドまで、E,
+      'ギャンブル収支を可視化し、期待値を数学的に解説。「もし貯金してたら」シミュレーター、認知バイアス診断、相談窓口ガイドまで。',
     price: '¥4,980',
-    priceNote: '買ぁE�Eり�E税込',
-    tags: ['収支トラチE��ー', '期征E��計箁E, '依存度チェチE��', '認知バイアス'],
+    priceNote: '買い切り・税込',
+    tags: ['収支トラッカー', '期待値計算', '依存度チェック', '認知バイアス'],
     icon: Wallet,
     color: 'from-emerald-500 to-amber-500',
     bgColor: 'bg-emerald-500/10',
@@ -88,12 +88,12 @@ const defenseTools: Product[] = [
   },
   {
     id: 'disaster-guard',
-    title: 'AI防災パ�EソナルガイチE,
-    subtitle: 'GPS避難所検索 ÁE家族防災プラン ÁE気象警報API',
+    title: 'AI防災パーソナルガイド',
+    subtitle: 'GPS避難所検索 × 家族防災プラン × 気象警報API',
     description:
-      '現在地から最寁E��避難所を�E動検索、家族�E避難プランを事前作�E、気象庁APIで警報をリアルタイム確認。防災チェチE��リスト！E��識クイズも、E,
+      '現在地から最寄り避難所を自動検索、家族の避難プランを事前作成、気象庁APIで警報をリアルタイム確認。防災チェックリスト＆知識クイズも。',
     price: '¥4,980',
-    priceNote: '買ぁE�Eり�E税込',
+    priceNote: '買い切り・税込',
     tags: ['GPS', '気象庁API', '防災', '避難所検索'],
     icon: Shield,
     color: 'from-sky-500 to-blue-600',
@@ -103,12 +103,12 @@ const defenseTools: Product[] = [
   },
   {
     id: 'shopping-stopper',
-    title: 'AI買ぁE��依存ストッパ�E',
-    subtitle: 'カメラ表惁E��极EÁE衝動買ぁE��止AI',
-    description: 'カート画面で「高揚感」を検知するとAIが�E静な判断を俁E��決済を一定時間ロチE��。衝動買ぁE��ータから後悔する確玁E��予測、E,
+    title: 'AI買い物依存ストッパー',
+    subtitle: 'カメラ表情解析 × 衝動買い防止AI',
+    description: 'カート画面で「高揚感」を検知するとAIが冷静な判断を促し決済を一定時間ロック。衝動買いデータから後悔する確率を予測。',
     price: '¥4,980',
-    priceNote: '買ぁE�Eり�E税込',
-    tags: ['TensorFlow.js', 'Canvas API', 'AI', '行動刁E��'],
+    priceNote: '買い切り・税込',
+    tags: ['TensorFlow.js', 'Canvas API', 'AI', '行動分析'],
     icon: ShieldAlert,
     color: 'from-red-500 to-rose-500',
     bgColor: 'bg-red-500/10',
@@ -117,16 +117,17 @@ const defenseTools: Product[] = [
   },
 ]
 
-// 💬 コミュニケーション  E人間関係を磨ぁEconst commTools: Product[] = [
+// 💬 コミュニケーション — 人間関係を磨く
+const commTools: Product[] = [
   {
     id: 'comm-coach',
-    title: 'AIコミュニケーション改喁E��ーチE,
-    subtitle: '忁E��学ベ�Eス ÁEメチE��ージ添剁EÁE自己診断',
+    title: 'AIコミュニケーション改善コーチ',
+    subtitle: '心理学ベース × メッセージ添削 × 自己診断',
     description:
-      '忁E��学琁E��に基づぁE��メチE��ージを添削、コミュスタイルめEタイプ診断、場面別の会話プランナ�EでスキルアチE�E。恋愛もビジネスも友人関係も、E,
+      '心理学理論に基づいてメッセージを添削、コミュスタイルを4タイプ診断、場面別の会話プランナーでスキルアップ。恋愛もビジネスも友人関係も。',
     price: '¥4,980',
-    priceNote: '買ぁE�Eり�E税込',
-    tags: ['メチE��ージ添剁E, 'コミュ診断', '忁E��学講座', 'NG�E�EK雁E],
+    priceNote: '買い切り・税込',
+    tags: ['メッセージ添削', 'コミュ診断', '心理学講座', 'NG＆OK集'],
     icon: MessageCircleHeart,
     color: 'from-pink-500 to-purple-500',
     bgColor: 'bg-pink-500/10',
@@ -135,13 +136,13 @@ const defenseTools: Product[] = [
   },
   {
     id: 'ai-konkatsu',
-    title: 'AI婚活コーチE,
-    subtitle: 'プロフィール添剁EÁEメチE��ージ練翁EÁE相性診断',
+    title: 'AI婚活コーチ',
+    subtitle: 'プロフィール添削 × メッセージ練習 × 相性診断',
     description:
-      'マッチングアプリのプロフィールをAIが添削、メチE��ージの練習シミュレーター、価値観診断、デート�Eラン提案、婚活戦略刁E��まで、E,
+      'マッチングアプリのプロフィールをAIが添削、メッセージの練習シミュレーター、価値観診断、デートプラン提案、婚活戦略分析まで。',
     price: '¥4,980',
-    priceNote: '買ぁE�Eり�E税込',
-    tags: ['プロフィール添剁E, 'メチE��ージ練翁E, '相性診断', 'チE�Eト�Eラン'],
+    priceNote: '買い切り・税込',
+    tags: ['プロフィール添削', 'メッセージ練習', '相性診断', 'デートプラン'],
     icon: Heart,
     color: 'from-pink-500 to-rose-500',
     bgColor: 'bg-pink-500/10',
@@ -150,13 +151,13 @@ const defenseTools: Product[] = [
   },
   {
     id: 'buzz-writer',
-    title: 'AIバズ斁E��コーチE,
-    subtitle: 'トレンドニュース ÁEチE��プレーチEÁE画像生戁E,
+    title: 'AIバズ文章コーチ',
+    subtitle: 'トレンドニュース × テンプレート × 画像生成',
     description:
-      '今日のニュースをネタに、�E刁E�E言葉でバズらせる、E0種類�EチE��プレート、バズ度診断、投稿画像ジェネレーター、ハチE��ュタグ辞�E、E,
+      '今日のニュースをネタに、自分の言葉でバズらせる。10種類のテンプレート、バズ度診断、投稿画像ジェネレーター、ハッシュタグ辞典。',
     price: '¥4,980',
-    priceNote: '買ぁE�Eり�E税込',
-    tags: ['トレンドニュース', 'バズ度診断', '画像生戁E, 'ハッシュタグ'],
+    priceNote: '買い切り・税込',
+    tags: ['トレンドニュース', 'バズ度診断', '画像生成', 'ハッシュタグ'],
     icon: Flame,
     color: 'from-orange-500 to-red-500',
     bgColor: 'bg-orange-500/10',
@@ -165,16 +166,17 @@ const defenseTools: Product[] = [
   },
 ]
 
-// 🏢 キャリア・ライチE E人生�E転機をサポ�EチEconst lifeTools: Product[] = [
+// 🏢 キャリア・ライフ — 人生の転機をサポート
+const lifeTools: Product[] = [
   {
     id: 'resignation-assistant',
     title: '退職あんしんAI',
-    subtitle: '退職届生戁EÁE残業代計箁EÁE完�EチェチE��リスチE,
+    subtitle: '退職届生成 × 残業代計算 × 完全チェックリスト',
     description:
-      'AIが退職届を自動作�E、未払い残業代を計算、有給・社保�E年金�E手続きまで完�Eガイド。退職代行サービスの比輁E��権利Q&Aも搭載、E,
+      'AIが退職届を自動作成、未払い残業代を計算、有給・社保・年金の手続きまで完全ガイド。退職代行サービスの比較や権利Q&Aも搭載。',
     price: '¥4,980',
-    priceNote: '買ぁE�Eり�E税込',
-    tags: ['退職届AI生�E', '残業代計箁E, 'チェチE��リスチE, '権利Q&A'],
+    priceNote: '買い切り・税込',
+    tags: ['退職届AI生成', '残業代計算', 'チェックリスト', '権利Q&A'],
     icon: ClipboardCheck,
     color: 'from-blue-500 to-indigo-500',
     bgColor: 'bg-blue-500/10',
@@ -183,13 +185,13 @@ const defenseTools: Product[] = [
   },
   {
     id: 'closet-coach',
-    title: 'AIクローゼチE��断捨離コーチE,
-    subtitle: 'ワードローブ管琁EÁEコスパ�E极EÁE売却ガイチE,
+    title: 'AIクローゼット断捨離コーチ',
+    subtitle: 'ワードローブ管理 × コスパ分析 × 売却ガイド',
     description:
-      '持ってる服のコスパを可視化、断捨離候補をAI判定。売却想定価格�E�E�EラチE��フォーム比輁E��コーチE��案まで。クローゼチE��を最適化、E,
+      '持ってる服のコスパを可視化、断捨離候補をAI判定。売却想定価格＆プラットフォーム比較、コーデ提案まで。クローゼットを最適化。',
     price: '¥4,980',
-    priceNote: '買ぁE�Eり�E税込',
-    tags: ['クローゼチE��管琁E, 'コスパ�E极E, '断捨離AI', '売却ガイチE],
+    priceNote: '買い切り・税込',
+    tags: ['クローゼット管理', 'コスパ分析', '断捨離AI', '売却ガイド'],
     icon: Shirt,
     color: 'from-violet-500 to-fuchsia-500',
     bgColor: 'bg-violet-500/10',
@@ -198,15 +200,16 @@ const defenseTools: Product[] = [
   },
 ]
 
-// 🛍�E�Eビジネス・副業  EAIで稼ぁEconst bizTools: Product[] = [
+// 🛍️ ビジネス・副業 — AIで稼ぐ
+const bizTools: Product[] = [
   {
     id: 'vintage-hunter',
     title: '古着ハンター',
-    subtitle: 'AI搭載メルカリ自動監視�EチE��',
+    subtitle: 'AI搭載メルカリ自動監視ボット',
     description:
-      'メルカリの新着出品を24時間自動監視し、AIが「お買ぁE��」と判断した瞬間にDiscordへ通知。寝てる間にお宝古着を見送E��なぁE��E,
+      'メルカリの新着出品を24時間自動監視し、AIが「お買い得」と判断した瞬間にDiscordへ通知。寝てる間にお宝古着を見逃さない。',
     price: '¥9,800',
-    priceNote: '買ぁE�Eり�E税込',
+    priceNote: '買い切り・税込',
     tags: ['Python', 'AWS Lambda', 'AI', 'Discord'],
     icon: Search,
     color: 'from-amber-500 to-orange-500',
@@ -216,13 +219,13 @@ const defenseTools: Product[] = [
   },
   {
     id: 'ai-select-shop',
-    title: '「在庫ゼロ」AIセレクトショチE�E',
-    subtitle: 'トレンド�E极EÁEAI自動デザイン ÁEオンチE�Eンド�E品E,
+    title: '「在庫ゼロ」AIセレクトショップ',
+    subtitle: 'トレンド分析 × AI自動デザイン × オンデマンド出品',
     description:
-      'AIがバズワードを刁E��しTシャチE��ザインを�E動生成。注斁E��にオンチE�Eンド製造・配送。在庫リスクゼロのAIファチE��ョンビジネス、E,
+      'AIがバズワードを分析しTシャツデザインを自動生成。注文時にオンデマンド製造・配送。在庫リスクゼロのAIファッションビジネス。',
     price: '¥9,800',
-    priceNote: '買ぁE�Eり�E税込',
-    tags: ['AI Design', 'Printful API', 'トレンド�E极E, 'Shopify'],
+    priceNote: '買い切り・税込',
+    tags: ['AI Design', 'Printful API', 'トレンド分析', 'Shopify'],
     icon: Store,
     color: 'from-emerald-500 to-teal-500',
     bgColor: 'bg-emerald-500/10',
@@ -231,13 +234,13 @@ const defenseTools: Product[] = [
   },
   {
     id: 'ai-sidejob',
-    title: 'AI副業スタートダチE��ュ',
-    subtitle: '13カチE��リ ÁE適性診断 ÁEロード�EチE�E ÁE収益シミュレーター',
+    title: 'AI副業スタートダッシュ',
+    subtitle: '13カテゴリ × 適性診断 × ロードマップ × 収益シミュレーター',
     description:
-      'AI副業の「何から始めれ�EぁE���E�」から「月10丁E�E達�E」まで完�Eサポ�Eト、E0+のAIチE�Eル辞�E、テンプレート集、活動ログ搭載、E,
+      'AI副業の「何から始めればいい？」から「月10万円達成」まで完全サポート。50+のAIツール辞典、テンプレート集、活動ログ搭載。',
     price: '¥4,980',
-    priceNote: '買ぁE�Eり�E税込',
-    tags: ['13カチE��リ', '適性診断', 'チE��プレーチE, '収益計箁E],
+    priceNote: '買い切り・税込',
+    tags: ['13カテゴリ', '適性診断', 'テンプレート', '収益計算'],
     icon: Briefcase,
     color: 'from-orange-500 to-amber-500',
     bgColor: 'bg-orange-500/10',
@@ -247,12 +250,12 @@ const defenseTools: Product[] = [
   {
     id: 'inbox-organizer',
     title: 'Gmail AI Accelerator',
-    subtitle: 'Gmail連携 ÁE自動�E顁EÁEAI返信 ÁEゴミ箱整琁E,
+    subtitle: 'Gmail連携 × 自動分類 × AI返信 × ゴミ箱整理',
     description:
-      'GmailとワンクリチE��接続。受信メールを緊急×重要で自動�E類、AIが返信斁E��生�E、不要メールはワンクリチE��でゴミ箱へ、E刁E��Inbox Zero、E,
+      'Gmailとワンクリック接続。受信メールを緊急×重要で自動分類、AIが返信文を生成、不要メールはワンクリックでゴミ箱へ。3分でInbox Zero。',
     price: '¥4,980',
-    priceNote: '買ぁE�Eり�E税込',
-    tags: ['Gmail連携', 'AI返信', '自動�E顁E, 'Inbox Zero'],
+    priceNote: '買い切り・税込',
+    tags: ['Gmail連携', 'AI返信', '自動分類', 'Inbox Zero'],
     icon: Mail,
     color: 'from-teal-500 to-cyan-500',
     bgColor: 'bg-teal-500/10',
@@ -261,16 +264,17 @@ const defenseTools: Product[] = [
   },
 ]
 
-// 🎨 クリエイチE��チE EAIで創作を加送Econst creativeTools: Product[] = [
+// 🎨 クリエイティブ — AIで創作を加速
+const creativeTools: Product[] = [
   {
     id: 'prompt-master',
-    title: 'AI画像�Eロンプトマスター',
-    subtitle: '26カチE��リ ÁE日本語�E英語変換 ÁEパラメータ辞�E',
+    title: 'AI画像プロンプトマスター',
+    subtitle: '26カテゴリ × 日本語→英語変換 × パラメータ辞典',
     description:
-      '日本語で入力するだけで画像生成AI用の最適プロンプトを�E動生成、Eidjourney/DALL-E/Stable Diffusion対応、E00+チE��プレート搭載、E,
+      '日本語で入力するだけで画像生成AI用の最適プロンプトを自動生成。Midjourney/DALL-E/Stable Diffusion対応。200+テンプレート搭載。',
     price: '¥4,980',
-    priceNote: '買ぁE�Eり�E税込',
-    tags: ['26カチE��リ', 'プロンプト生�E', 'チE��プレーチE, '画像AI'],
+    priceNote: '買い切り・税込',
+    tags: ['26カテゴリ', 'プロンプト生成', 'テンプレート', '画像AI'],
     icon: Wand2,
     color: 'from-purple-500 to-fuchsia-500',
     bgColor: 'bg-purple-500/10',
@@ -279,13 +283,13 @@ const defenseTools: Product[] = [
   },
   {
     id: 'youtube-producer',
-    title: 'AI YouTubeプロチE��ーサー',
-    subtitle: '斁E��起こし→台本→人物画像�Eサムネイル→タイトル→BGM',
+    title: 'AI YouTubeプロデューサー',
+    subtitle: '文字起こし→台本→人物画像→サムネイル→タイトル→BGM',
     description:
-      '動画・音声・チE��ストを取り込んで6スチE��プでYouTube投稿素材を全自動生成、E0ジャンル対応�E台本、AI人物イラスト、サムネイル、SEOタイトル、BGM作曲、E,
+      '動画・音声・テキストを取り込んで6ステップでYouTube投稿素材を全自動生成。10ジャンル対応の台本、AI人物イラスト、サムネイル、SEOタイトル、BGM作曲。',
     price: '¥4,980',
-    priceNote: '買ぁE�Eり�E税込',
-    tags: ['6スチE��チE, '10ジャンル', '斁E��起こし', 'サムネイル'],
+    priceNote: '買い切り・税込',
+    tags: ['6ステップ', '10ジャンル', '文字起こし', 'サムネイル'],
     icon: Clapperboard,
     color: 'from-red-500 to-pink-500',
     bgColor: 'bg-red-500/10',
@@ -299,11 +303,11 @@ const funTools: Product[] = [
   {
     id: 'pet-translator',
     title: 'AIペット翻訳モニター',
-    subtitle: 'AI搭載�EチE��感情リアルタイム翻訳シスチE��',
+    subtitle: 'AI搭載ペット感情リアルタイム翻訳システム',
     description:
-      '留守中のペット�E動きと鳴き声をAIがリアルタイム解析。「寂しがってぁE��す」「お腹が空きました」と感情を日本語で翻訳して通知、E,
+      '留守中のペットの動きと鳴き声をAIがリアルタイム解析。「寂しがっています」「お腹が空きました」と感情を日本語で翻訳して通知。',
     price: '¥4,980',
-    priceNote: '買ぁE�Eり�E税込',
+    priceNote: '買い切り・税込',
     tags: ['HTML5', 'Web Audio API', 'AI', 'LINE通知'],
     icon: PawPrint,
     color: 'from-violet-500 to-pink-500',
@@ -330,7 +334,7 @@ function ProductSection({ emoji, title, subtitle, accentColor, products }: Secti
         <span className="text-2xl">{emoji}</span>
         <h2 className="text-2xl font-bold">{title}</h2>
         <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${accentColor}`}>
-          {products.length}チE�Eル
+          {products.length}ツール
         </span>
       </div>
       <p className="text-muted-foreground mb-6 ml-10">{subtitle}</p>
@@ -354,9 +358,9 @@ function ProductCard({ product }: { product: Product }) {
             <Icon className={`h-6 w-6 ${product.iconColor}`} />
           </div>
           <Badge className={
-            product.status === '�E 無斁E ? 'bg-blue-500 text-white border-0' :
+            product.status === '🆓 無料' ? 'bg-blue-500 text-white border-0' :
             product.status === 'NEW' ? 'bg-gradient-to-r from-sky-500 to-blue-500 text-white border-0' :
-            product.status === '人氁E ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0' :
+            product.status === '人気' ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0' :
             'bg-green-500 text-white border-0'
           }>
             {product.status}
@@ -388,7 +392,8 @@ function ProductCard({ product }: { product: Product }) {
               className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-md bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:opacity-90 transition-opacity"
             >
               <Rocket className="h-3 w-3" />
-              使ぁE            </Link>
+              使う
+            </Link>
             <Link href={`/products/${product.id}`}>
               <Button variant="ghost" size="sm" className="gap-1">
                 詳細
@@ -405,16 +410,16 @@ function ProductCard({ product }: { product: Product }) {
 // ==================== Coming Soon ====================
 const comingSoon = [
   {
-    title: 'SNSオート�Eスター',
-    description: 'X/Instagram/Threadsへの投稿を一括管琁E�E自動化するチE�Eル、E,
+    title: 'SNSオートポスター',
+    description: 'X/Instagram/Threadsへの投稿を一括管理・自動化するツール。',
     icon: Bot,
     color: 'from-blue-500 to-cyan-500',
     bgColor: 'bg-blue-500/10',
     iconColor: 'text-blue-500',
   },
   {
-    title: 'AIレポ�Eトジェネレーター',
-    description: 'チE�Eタを投げるだけで刁E��レポ�EトをAIが�E動生成、E,
+    title: 'AIレポートジェネレーター',
+    description: 'データを投げるだけで分析レポートをAIが自動生成。',
     icon: FileText,
     color: 'from-purple-500 to-pink-500',
     bgColor: 'bg-purple-500/10',
@@ -431,21 +436,22 @@ export default function ProductsPage() {
       {/* Hero */}
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
-          AI チE�Eル
+          AI ツール
           <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
             ストア
           </span>
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
-          AIを活用した業務効玁E��・自動化チE�Eルを販売してぁE��す、E          <br />
-          全チE�Eル使ぁE��題�Eラン�E�¥980/月）なら�EチE�Eル使ぁE��顁E✨
+          AIを活用した業務効率化・自動化ツールを販売しています。
+          <br />
+          全ツール使い放題プラン（¥980/月）なら全ツール使い放題 ✨
         </p>
 
         {/* Quick Stats */}
         <div className="flex items-center justify-center gap-6 text-sm">
           <div className="flex items-center gap-1.5">
             <span className="font-bold text-2xl bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">{totalTools}</span>
-            <span className="text-muted-foreground">チE�Eル</span>
+            <span className="text-muted-foreground">ツール</span>
           </div>
           <div className="w-px h-6 bg-border" />
           <div className="flex items-center gap-1.5">
@@ -462,21 +468,21 @@ export default function ProductsPage() {
 
       {/* Category Nav */}
       <div className="flex flex-wrap justify-center gap-2 mb-12">
-        <a href="#free" className="px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-sm font-medium hover:bg-blue-500/20 transition-colors">�E 無料体騁E/a>
-        <a href="#defense" className="px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-sm font-medium hover:bg-amber-500/20 transition-colors">🛡�E�E防衛シリーズ</a>
+        <a href="#free" className="px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-sm font-medium hover:bg-blue-500/20 transition-colors">🆓 無料体験</a>
+        <a href="#defense" className="px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-sm font-medium hover:bg-amber-500/20 transition-colors">🛡️ 防衛シリーズ</a>
         <a href="#comm" className="px-3 py-1.5 rounded-full bg-pink-500/10 text-pink-600 dark:text-pink-400 text-sm font-medium hover:bg-pink-500/20 transition-colors">💬 コミュニケーション</a>
-        <a href="#life" className="px-3 py-1.5 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-sm font-medium hover:bg-violet-500/20 transition-colors">🏢 キャリア・ライチE/a>
-        <a href="#biz" className="px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-medium hover:bg-emerald-500/20 transition-colors">🛍�E�Eビジネス・副業</a>
-        <a href="#creative" className="px-3 py-1.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-sm font-medium hover:bg-purple-500/20 transition-colors">🎨 クリエイチE��チE/a>
+        <a href="#life" className="px-3 py-1.5 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-sm font-medium hover:bg-violet-500/20 transition-colors">🏢 キャリア・ライフ</a>
+        <a href="#biz" className="px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-medium hover:bg-emerald-500/20 transition-colors">🛍️ ビジネス・副業</a>
+        <a href="#creative" className="px-3 py-1.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-sm font-medium hover:bg-purple-500/20 transition-colors">🎨 クリエイティブ</a>
         <a href="#fun" className="px-3 py-1.5 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-sm font-medium hover:bg-violet-500/20 transition-colors">🐾 エンタメ・趣味</a>
       </div>
 
       {/* FREE */}
       <div id="free">
         <ProductSection
-          emoji="�E"
-          title="無料で体騁E
-          subtitle="アカウント不要�Eすぐ使えるサンプルチE�Eル"
+          emoji="🆓"
+          title="無料で体験"
+          subtitle="アカウント不要・すぐ使えるサンプルツール"
           accentColor="bg-blue-500/10 text-blue-600 dark:text-blue-400"
           products={freeTools}
         />
@@ -485,9 +491,9 @@ export default function ProductsPage() {
       {/* DEFENSE SERIES */}
       <div id="defense">
         <ProductSection
-          emoji="🛡�E�E
+          emoji="🛡️"
           title="防衛シリーズ"
-          subtitle="詐欺・お��・住まぁE�E災害…暮らしのリスクからあなたを守る"
+          subtitle="詐欺・お金・住まい・災害…暮らしのリスクからあなたを守る"
           accentColor="bg-amber-500/10 text-amber-600 dark:text-amber-400"
           products={defenseTools}
         />
@@ -498,7 +504,7 @@ export default function ProductsPage() {
         <ProductSection
           emoji="💬"
           title="コミュニケーション"
-          subtitle="恋�E・婚活・SNS…人間関係�Eスキルを磨ぁE
+          subtitle="恋愛・婚活・SNS…人間関係のスキルを磨く"
           accentColor="bg-pink-500/10 text-pink-600 dark:text-pink-400"
           products={commTools}
         />
@@ -508,8 +514,8 @@ export default function ProductsPage() {
       <div id="life">
         <ProductSection
           emoji="🏢"
-          title="キャリア・ライチE
-          subtitle="退職・断捨離…人生�E転機をAIがサポ�EチE
+          title="キャリア・ライフ"
+          subtitle="退職・断捨離…人生の転機をAIがサポート"
           accentColor="bg-violet-500/10 text-violet-600 dark:text-violet-400"
           products={lifeTools}
         />
@@ -518,9 +524,9 @@ export default function ProductsPage() {
       {/* BUSINESS */}
       <div id="biz">
         <ProductSection
-          emoji="🛍�E�E
+          emoji="🛍️"
           title="ビジネス・副業"
-          subtitle="AIを使って効玁E��く稼ぁE
+          subtitle="AIを使って効率よく稼ぐ"
           accentColor="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
           products={bizTools}
         />
@@ -530,8 +536,8 @@ export default function ProductsPage() {
       <div id="creative">
         <ProductSection
           emoji="🎨"
-          title="クリエイチE��チE
-          subtitle="画像生成AI・チE��イン…創作を加速すめE
+          title="クリエイティブ"
+          subtitle="画像生成AI・デザイン…創作を加速する"
           accentColor="bg-purple-500/10 text-purple-600 dark:text-purple-400"
           products={creativeTools}
         />
@@ -542,7 +548,7 @@ export default function ProductsPage() {
         <ProductSection
           emoji="🐾"
           title="エンタメ・趣味"
-          subtitle="AIで毎日をちめE��と楽しく"
+          subtitle="AIで毎日をちょっと楽しく"
           accentColor="bg-violet-500/10 text-violet-600 dark:text-violet-400"
           products={funTools}
         />
@@ -550,12 +556,13 @@ export default function ProductsPage() {
 
       {/* Plan CTA */}
       <div className="my-16 bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-red-500/10 border border-amber-500/20 rounded-3xl p-8 text-center">
-        <h2 className="text-2xl font-bold mb-2">全チE�Eル使ぁE��題�Eラン</h2>
-        <p className="text-muted-foreground mb-4">月顁E<span className="text-3xl font-bold text-amber-500">¥980</span> で{totalTools}チE�Eルすべてが使ぁE��顁E/p>
-        <p className="text-sm text-muted-foreground mb-6">1チE�Eル買ぁE��り圧倒的にお征E✨ ぁE��でも解約OK</p>
+        <h2 className="text-2xl font-bold mb-2">全ツール使い放題プラン</h2>
+        <p className="text-muted-foreground mb-4">月額 <span className="text-3xl font-bold text-amber-500">¥980</span> で{totalTools}ツールすべてが使い放題</p>
+        <p className="text-sm text-muted-foreground mb-6">1ツール買うより圧倒的にお得 ✨ いつでも解約OK</p>
         <Link href="/pricing">
           <Button className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-8 py-3 rounded-xl text-lg font-bold hover:opacity-90">
-            プランを見る ↁE          </Button>
+            プランを見る →
+          </Button>
         </Link>
       </div>
 
