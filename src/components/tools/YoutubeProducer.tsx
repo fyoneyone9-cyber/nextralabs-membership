@@ -152,15 +152,31 @@ export function YoutubeProducer() {
         const data = await res.json()
         text = data.text || data.error || 'URLからの取得に失敗しました'
       } else if (selectedFile) {
-        // Upload file and transcribe
-        const formData = new FormData()
-        formData.append('file', selectedFile)
-        const res = await fetch('/api/youtube-producer/transcribe', {
-          method: 'POST',
-          body: formData,
-        })
-        const data = await res.json()
-        text = data.text || data.error || 'ファイルの処理に失敗しました'
+        const fileSizeMB = selectedFile.size / 1024 / 1024
+        const isTextFile = /\.(txt|md|srt|vtt)$/i.test(selectedFile.name)
+
+        if (isTextFile) {
+          // Read text files directly in browser
+          text = await selectedFile.text()
+        } else if (fileSizeMB > 24) {
+          // Whisper API limit: 25MB, Vercel body limit: 4.5MB
+          text = `⚠️ ファイルが大きすぎます（${fileSizeMB.toFixed(1)}MB）\n\nWhisper APIの上限は25MBです。以下の方法をお試しください：\n\n1️⃣ 別ツールで文字起こし → 「テキスト直接入力」にペースト\n   • Google音声認識（無料）\n   • Whisper Desktop（無料・ローカル）\n   • CLOVA Note（無料・高精度）\n\n2️⃣ 音声だけ抽出して軽量化\n   • ffmpegコマンド: ffmpeg -i input.avi -vn -acodec mp3 -ab 128k output.mp3\n   • オンライン変換: cloudconvert.com\n\n3️⃣ ファイルを分割（30分ごと等）`
+        } else {
+          // Upload to server for Whisper transcription
+          const formData = new FormData()
+          formData.append('file', selectedFile)
+          const res = await fetch('/api/youtube-producer/transcribe', {
+            method: 'POST',
+            body: formData,
+          })
+          if (!res.ok) {
+            const errText = await res.text()
+            text = `文字起こしエラー（${res.status}）: サーバーの処理に失敗しました。\n\n「テキスト直接入力」モードで、別ツールの文字起こし結果を貼り付けてください。`
+          } else {
+            const data = await res.json()
+            text = data.text || data.error || 'ファイルの処理に失敗しました'
+          }
+        }
       }
 
       setTranscript({ text, language: 'ja' })
@@ -450,8 +466,15 @@ export function YoutubeProducer() {
                     </div>
                   </button>
                   {selectedFile && (
-                    <div className="mt-2 text-xs text-white/40">
-                      サイズ: {(selectedFile.size / 1024 / 1024).toFixed(1)} MB ・ 種類: {selectedFile.type || '不明'}
+                    <div className="mt-2">
+                      <div className="text-xs text-white/40">
+                        サイズ: {(selectedFile.size / 1024 / 1024).toFixed(1)} MB ・ 種類: {selectedFile.type || '不明'}
+                      </div>
+                      {selectedFile.size / 1024 / 1024 > 24 && !/\.(txt|md|srt|vtt)$/i.test(selectedFile.name) && (
+                        <div className="mt-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 text-xs text-yellow-400">
+                          ⚠️ 25MBを超える動画/音声ファイルは直接処理できません。「テキスト直接入力」で別ツールの文字起こし結果を貼り付けるか、音声を抽出して軽量化してください。
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
