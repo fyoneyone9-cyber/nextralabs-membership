@@ -75,11 +75,11 @@ export default function YoutubeProducerPage() {
             { icon: <Type className="w-5 h-5" />, title: '✏️ ⑤ タイトル', desc: 'SEO最適化タイトル+代替4案+タグ15個+説明文。クリック率を最大化', color: 'text-blue-500' },
             { icon: <Music className="w-5 h-5" />, title: '🎵 ⑥ BGM作成', desc: '文字起こしの雰囲気をAI分析→最適なBGMプロンプトを自動生成', color: 'text-purple-500' },
           ].map((f, i) => (
-            <div key={i} className="bg-card border rounded-xl p-5 hover:shadow-md transition-shadow">
+            <Link key={i} href="/products/youtube-producer/app" className="bg-card border rounded-xl p-5 hover:shadow-md hover:border-red-500/30 transition-all group block">
               <div className={`${f.color} mb-2`}>{f.icon}</div>
-              <h3 className="font-bold mb-1">{f.title}</h3>
+              <h3 className="font-bold mb-1 flex items-center gap-2">{f.title}<ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-red-500" /></h3>
               <p className="text-sm text-muted-foreground">{f.desc}</p>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
