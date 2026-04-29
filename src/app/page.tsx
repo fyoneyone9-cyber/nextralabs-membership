@@ -40,7 +40,7 @@ export default function HomePage() {
             </Link>
             <Link href="/pricing">
               <Button variant="outline" size="lg" className="text-lg px-8">
-                全ツール使い放題プランを見る
+                プランを見る
               </Button>
             </Link>
             <Link href="/guide">
@@ -73,9 +73,9 @@ export default function HomePage() {
                 <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
                   <Infinity className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold mb-2">使い放題プラン</h3>
+                <h3 className="font-semibold mb-2">2つのプラン</h3>
                 <p className="text-sm text-muted-foreground">
-                  全ツール使い放題プラン会員はすべてのツールを無制限に利用可能。
+                  スタンダードとプレミアム、目的に合わせて選べる月額プラン。
                 </p>
               </CardContent>
             </Card>
@@ -243,14 +243,14 @@ export default function HomePage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">今すぐ始めよう</h2>
           <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-            プランに登録するして、すべてのAIツールを使い放題に。
+            スタンダード（¥980/月）またはプレミアム（¥1,980/月）で、AIツールを使い放題。
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/products">
               <Button size="lg" className="text-lg px-8">ツール一覧を見る</Button>
             </Link>
             <Link href="/pricing">
-              <Button variant="outline" size="lg" className="text-lg px-8">全ツール使い放題プランに登録</Button>
+              <Button variant="outline" size="lg" className="text-lg px-8">プランを見る</Button>
             </Link>
           </div>
         </div>
