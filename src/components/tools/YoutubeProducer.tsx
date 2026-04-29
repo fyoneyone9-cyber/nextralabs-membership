@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 
 // ==================== TYPES ====================
 type Tab = 'transcribe' | 'script' | 'characters' | 'thumbnail' | 'title' | 'bgm'
@@ -123,6 +123,7 @@ export function YoutubeProducer() {
   const [bgmLoading, setBgmLoading] = useState(false)
 
   const [copied, setCopied] = useState<string | null>(null)
+  const [compressProgress, setCompressProgress] = useState<string | null>(null)
 
   const handleCopy = useCallback((text: string, id: string) => {
     navigator.clipboard.writeText(text)
@@ -131,6 +132,41 @@ export function YoutubeProducer() {
   }, [])
 
   const genreInfo = GENRES.find(g => g.id === genre) || GENRES[0]
+
+  // ==================== FFMPEG AUDIO EXTRACTION ====================
+  const extractAudioInBrowser = async (file: File): Promise<File> => {
+    setCompressProgress('🔄 FFmpegを読み込み中...')
+    const { FFmpeg } = await import('@ffmpeg/ffmpeg')
+    const { fetchFile, toBlobURL } = await import('@ffmpeg/util')
+
+    const ffmpeg = new FFmpeg()
+
+    const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd'
+    await ffmpeg.load({
+      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+    })
+
+    ffmpeg.on('progress', ({ progress }) => {
+      setCompressProgress(`🎵 音声を抽出中... ${Math.round(progress * 100)}%`)
+    })
+
+    setCompressProgress('📁 ファイルを読み込み中...')
+    const inputName = 'input' + file.name.slice(file.name.lastIndexOf('.'))
+    await ffmpeg.writeFile(inputName, await fetchFile(file))
+
+    setCompressProgress('🎵 音声を抽出＆圧縮中...')
+    await ffmpeg.exec(['-i', inputName, '-vn', '-acodec', 'libmp3lame', '-ab', '64k', '-ar', '16000', '-ac', '1', 'output.mp3'])
+
+    const data = await ffmpeg.readFile('output.mp3')
+    const blob = new Blob([data], { type: 'audio/mp3' })
+    const compressed = new File([blob], 'audio.mp3', { type: 'audio/mp3' })
+
+    ffmpeg.terminate()
+    setCompressProgress(null)
+
+    return compressed
+  }
 
   // ==================== API CALLS ====================
 
@@ -143,7 +179,6 @@ export function YoutubeProducer() {
       if (inputMode === 'text') {
         text = inputText
       } else if (inputMode === 'url') {
-        // Fetch URL content
         const res = await fetch('/api/youtube-producer/transcribe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -152,25 +187,47 @@ export function YoutubeProducer() {
         const data = await res.json()
         text = data.text || data.error || 'URLからの取得に失敗しました'
       } else if (selectedFile) {
-        const fileSizeMB = selectedFile.size / 1024 / 1024
         const isTextFile = /\.(txt|md|srt|vtt)$/i.test(selectedFile.name)
 
         if (isTextFile) {
-          // Read text files directly in browser
           text = await selectedFile.text()
-        } else if (fileSizeMB > 24) {
-          // Whisper API limit: 25MB, Vercel body limit: 4.5MB
-          text = `⚠️ ファイルが大きすぎます（${fileSizeMB.toFixed(1)}MB）\n\nWhisper APIの上限は25MBです。以下の方法をお試しください：\n\n1️⃣ 別ツールで文字起こし → 「テキスト直接入力」にペースト\n   • Google音声認識（無料）\n   • Whisper Desktop（無料・ローカル）\n   • CLOVA Note（無料・高精度）\n\n2️⃣ 音声だけ抽出して軽量化\n   • ffmpegコマンド: ffmpeg -i input.avi -vn -acodec mp3 -ab 128k output.mp3\n   • オンライン変換: cloudconvert.com\n\n3️⃣ ファイルを分割（30分ごと等）`
         } else {
-          // Upload to server for Whisper transcription
+          // Auto-compress: extract audio in browser if file > 4MB
+          let fileToUpload = selectedFile
+          const fileSizeMB = selectedFile.size / 1024 / 1024
+
+          if (fileSizeMB > 4) {
+            try {
+              fileToUpload = await extractAudioInBrowser(selectedFile)
+              const compressedMB = fileToUpload.size / 1024 / 1024
+              setCompressProgress(`✅ ${fileSizeMB.toFixed(0)}MB → ${compressedMB.toFixed(1)}MB に圧縮完了！`)
+              await new Promise(r => setTimeout(r, 1500))
+              setCompressProgress(null)
+            } catch (ffErr) {
+              console.error('FFmpeg error:', ffErr)
+              setCompressProgress(null)
+              // Fallback: if ffmpeg fails and file is too large, show error
+              if (fileSizeMB > 24) {
+                text = `⚠️ ブラウザ内圧縮に失敗しました（${fileSizeMB.toFixed(0)}MB）\n\n「テキスト直接入力」モードで、別ツールの文字起こし結果を貼り付けてください。\n\n対応ツール: CLOVA Note / Google音声認識 / Whisper Desktop`
+                setTranscript({ text, language: 'ja' })
+                setTranscribing(false)
+                return
+              }
+              // If small enough, try uploading as-is
+            }
+          }
+
+          // Upload (possibly compressed) file
           const formData = new FormData()
-          formData.append('file', selectedFile)
+          formData.append('file', fileToUpload)
+          setCompressProgress('📤 サーバーに送信中...')
           const res = await fetch('/api/youtube-producer/transcribe', {
             method: 'POST',
             body: formData,
           })
+          setCompressProgress(null)
+
           if (!res.ok) {
-            const errText = await res.text()
             text = `文字起こしエラー（${res.status}）: サーバーの処理に失敗しました。\n\n「テキスト直接入力」モードで、別ツールの文字起こし結果を貼り付けてください。`
           } else {
             const data = await res.json()
@@ -181,6 +238,7 @@ export function YoutubeProducer() {
 
       setTranscript({ text, language: 'ja' })
     } catch (e) {
+      setCompressProgress(null)
       setTranscript({ text: `エラー: ${e instanceof Error ? e.message : '不明なエラー'}` })
     }
     setTranscribing(false)
@@ -470,9 +528,9 @@ export function YoutubeProducer() {
                       <div className="text-xs text-white/40">
                         サイズ: {(selectedFile.size / 1024 / 1024).toFixed(1)} MB ・ 種類: {selectedFile.type || '不明'}
                       </div>
-                      {selectedFile.size / 1024 / 1024 > 24 && !/\.(txt|md|srt|vtt)$/i.test(selectedFile.name) && (
-                        <div className="mt-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 text-xs text-yellow-400">
-                          ⚠️ 25MBを超える動画/音声ファイルは直接処理できません。「テキスト直接入力」で別ツールの文字起こし結果を貼り付けるか、音声を抽出して軽量化してください。
+                      {selectedFile.size / 1024 / 1024 > 4 && !/\.(txt|md|srt|vtt)$/i.test(selectedFile.name) && (
+                        <div className="mt-2 bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 text-xs text-blue-400">
+                          💡 大きなファイルはブラウザ内で自動的に音声抽出＆圧縮してから文字起こしします（{(selectedFile.size / 1024 / 1024).toFixed(0)}MB → 推定{Math.max(1, Math.round(selectedFile.size / 1024 / 1024 / 30)).toFixed(0)}〜{Math.max(2, Math.round(selectedFile.size / 1024 / 1024 / 15)).toFixed(0)}MB）
                         </div>
                       )}
                     </div>
@@ -487,8 +545,15 @@ export function YoutubeProducer() {
               )}
             </div>
 
+            {compressProgress && (
+              <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 text-center">
+                <div className="text-sm text-blue-400 font-medium">{compressProgress}</div>
+                <div className="text-xs text-white/40 mt-1">ブラウザ内で処理中（サーバーには送信していません）</div>
+              </div>
+            )}
+
             <button onClick={handleTranscribe} disabled={transcribing || (inputMode === 'file' && !selectedFile) || (inputMode === 'text' && !inputText.trim()) || (inputMode === 'url' && !inputUrl.trim())} className="w-full py-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl text-sm font-bold hover:opacity-90 disabled:opacity-30 transition-opacity">
-              {transcribing ? '⏳ 処理中...' : '🎙️ 文字起こし開始'}
+              {transcribing ? (compressProgress ? '🔄 音声抽出＆文字起こし中...' : '⏳ 処理中...') : '🎙️ 文字起こし開始'}
             </button>
 
             {/* Result */}
