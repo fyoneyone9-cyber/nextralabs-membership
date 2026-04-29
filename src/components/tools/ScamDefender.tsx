@@ -921,21 +921,25 @@ ${mailInput}
                 />
               </div>
 
+              <button
+                onClick={copyMailPrompt}
+                disabled={mailInput.trim().length === 0}
+                className={`w-full py-3 rounded-lg text-sm font-bold transition-colors ${
+                  mailInput.trim().length === 0
+                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                    : mailCopied
+                      ? 'bg-green-600 text-white'
+                      : 'bg-cyan-600 hover:bg-cyan-700 text-white'
+                }`}
+              >
+                {mailCopied ? '✅ コピーしました！ → 下のAIに貼り付けてください' : '📋 プロンプトをコピー'}
+              </button>
+
               {mailInput.trim().length > 0 && (
-                <div className="bg-[#1a1a2e] rounded-lg p-4 border border-gray-700">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-gray-500">📋 AI用プロンプト（自動生成）</span>
-                    <button
-                      onClick={copyMailPrompt}
-                      className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${
-                        mailCopied ? 'bg-green-600 text-white' : 'bg-cyan-600 hover:bg-cyan-700 text-white'
-                      }`}
-                    >
-                      {mailCopied ? '✅ コピーしました！' : '📋 プロンプトをコピー'}
-                    </button>
-                  </div>
-                  <pre className="text-xs text-gray-400 whitespace-pre-wrap max-h-40 overflow-y-auto font-sans">{buildMailPrompt()}</pre>
-                </div>
+                <details className="text-xs">
+                  <summary className="text-gray-500 cursor-pointer hover:text-gray-300">生成されたプロンプトを確認 ▼</summary>
+                  <pre className="mt-2 text-gray-400 whitespace-pre-wrap max-h-40 overflow-y-auto font-sans bg-[#1a1a2e] rounded-lg p-3 border border-gray-700">{buildMailPrompt()}</pre>
+                </details>
               )}
             </div>
 
