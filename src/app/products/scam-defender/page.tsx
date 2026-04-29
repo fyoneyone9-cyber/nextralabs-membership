@@ -71,6 +71,14 @@ const features = [
     color: 'text-purple-500',
     bg: 'bg-purple-500/10',
   },
+  {
+    icon: Shield,
+    title: '詐欺メールAI判定',
+    description:
+      '届いた不審なメールを貼り付けるだけでAI用判定プロンプトを自動生成。ワンクリックでGemini・ChatGPT・Claudeに送って詐欺かどうか瞬時に判定。APIコスト0円。',
+    color: 'text-cyan-500',
+    bg: 'bg-cyan-500/10',
+  },
 ]
 
 const techStack = [
@@ -171,7 +179,7 @@ export default function ScamDefenderPage() {
                 AI詐欺ディフェンダー
               </h1>
               <p className="text-xl text-muted-foreground mb-2">
-                詐欺シミュレーション × 闇バイト判定 × 家族見守り
+                詐欺メール判定 × 闇バイト判定 × 詐欺シミュレーション × 家族見守り
               </p>
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
                 高齢の親を狙う詐欺電話、SNSの闇バイト勧誘。
@@ -288,7 +296,7 @@ export default function ScamDefenderPage() {
       <section className="py-16 border-t">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-4">
-            6つの機能で家族を詐欺から守る
+            7つの機能で家族を詐欺から守る
           </h2>
           <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
             「知っている」だけで防げる詐欺がある。

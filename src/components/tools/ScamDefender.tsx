@@ -368,6 +368,33 @@ export default function ScamDefender() {
   const [yamiInput, setYamiInput] = useState('')
   const [yamiResult, setYamiResult] = useState<{ score: number; found: typeof dangerKeywords; analysis: string } | null>(null)
 
+  // Mail check state
+  const [mailInput, setMailInput] = useState('')
+  const [mailCopied, setMailCopied] = useState(false)
+
+  const buildMailPrompt = useCallback(() => {
+    return `以下のメール内容が詐欺・フィッシング・スパムかどうかを判定してください。
+
+【判定してほしいメール内容】
+${mailInput}
+
+【回答フォーマット】
+1. 判定結果: 詐欺の可能性（高/中/低/安全）
+2. 詐欺の種類: （フィッシング/架空請求/投資詐欺/ロマンス詐欺/なりすまし/その他）
+3. 危険なポイント:
+   - （具体的に列挙）
+4. 見分けるポイント:
+   - （URLの不審点、送信元、文面の特徴など）
+5. 推奨アクション: （無視/削除/通報先など）
+6. 総合コメント:`
+  }, [mailInput])
+
+  const copyMailPrompt = useCallback(() => {
+    navigator.clipboard.writeText(buildMailPrompt())
+    setMailCopied(true)
+    setTimeout(() => setMailCopied(false), 2000)
+  }, [buildMailPrompt])
+
   const tabs = [
     { id: 'quiz' as const, label: '🔍 詐欺クイズ' },
     { id: 'sim' as const, label: '📞 電話シミュレーター' },
@@ -375,6 +402,7 @@ export default function ScamDefender() {
     { id: 'database' as const, label: '📊 詐欺手口DB' },
     { id: 'emergency' as const, label: '🚨 緊急通報ガイド' },
     { id: 'yamicheck' as const, label: '⚠️ 闇バイト判定' },
+    { id: 'mailcheck' as const, label: '📧 詐欺メール判定' },
   ]
 
   // Quiz logic
@@ -520,7 +548,7 @@ export default function ScamDefender() {
         <div className="max-w-6xl mx-auto px-4 py-6">
           <div className="text-4xl mb-2">🛡️</div>
           <h1 className="text-2xl font-bold">AI詐欺ディフェンダー</h1>
-          <p className="text-gray-400 mt-1">詐欺シミュレーション × 闇バイト判定 × 家族見守り</p>
+          <p className="text-gray-400 mt-1">詐欺メール判定 × 闇バイト判定 × 詐欺シミュレーション × 家族見守り</p>
         </div>
       </div>
 
@@ -840,6 +868,86 @@ export default function ScamDefender() {
                 )}
               </div>
             )}
+          </div>
+        )}
+
+        {/* ─── Mail Check Tab ─── */}
+        {activeTab === 'mailcheck' && (
+          <div className="max-w-3xl mx-auto space-y-6">
+            <h2 className="text-xl font-bold">📧 詐欺メール判定</h2>
+            <p className="text-sm text-gray-400">届いたメールの内容を貼り付けて、AIに詐欺かどうか判定してもらいましょう。プロンプトを自動生成→外部AIにコピペするだけ。</p>
+
+            <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6 space-y-4">
+              <textarea
+                placeholder={"ここにメール本文を貼り付け...\n\n例: 「【重要】お客様のアカウントが停止されました。以下のリンクから24時間以内にご確認ください...」"}
+                value={mailInput}
+                onChange={e => setMailInput(e.target.value)}
+                rows={8}
+                className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:border-cyan-500 focus:outline-none resize-none"
+              />
+
+              {mailInput.trim().length > 0 && (
+                <div className="space-y-4">
+                  {/* プロンプトプレビュー */}
+                  <div className="bg-[#1a1a2e] rounded-lg p-4 border border-gray-700">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs text-gray-500">📋 AI用プロンプト（自動生成）</span>
+                      <button
+                        onClick={copyMailPrompt}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${
+                          mailCopied ? 'bg-green-600 text-white' : 'bg-cyan-600 hover:bg-cyan-700 text-white'
+                        }`}
+                      >
+                        {mailCopied ? '✅ コピーしました！' : '📋 プロンプトをコピー'}
+                      </button>
+                    </div>
+                    <pre className="text-xs text-gray-400 whitespace-pre-wrap max-h-40 overflow-y-auto font-sans">{buildMailPrompt()}</pre>
+                  </div>
+
+                  {/* 外部AIリンク */}
+                  <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6">
+                    <h3 className="font-bold mb-4">🤖 コピーしたプロンプトをAIに貼り付けて判定</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-3 px-4 py-3 bg-blue-600/20 border border-blue-500/30 rounded-lg hover:bg-blue-600/30 transition-colors">
+                        <span className="text-2xl">💎</span>
+                        <div>
+                          <div className="font-bold text-sm">Gemini</div>
+                          <div className="text-xs text-gray-400">Google AI</div>
+                        </div>
+                      </a>
+                      <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-3 px-4 py-3 bg-green-600/20 border border-green-500/30 rounded-lg hover:bg-green-600/30 transition-colors">
+                        <span className="text-2xl">🟢</span>
+                        <div>
+                          <div className="font-bold text-sm">ChatGPT</div>
+                          <div className="text-xs text-gray-400">OpenAI</div>
+                        </div>
+                      </a>
+                      <a href="https://claude.ai/" target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-3 px-4 py-3 bg-orange-600/20 border border-orange-500/30 rounded-lg hover:bg-orange-600/30 transition-colors">
+                        <span className="text-2xl">🟠</span>
+                        <div>
+                          <div className="font-bold text-sm">Claude</div>
+                          <div className="text-xs text-gray-400">Anthropic</div>
+                        </div>
+                      </a>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-3">※ 上のボタンでAIを開き、コピーしたプロンプトを貼り付けてください。APIコスト0円です。</p>
+                  </div>
+
+                  {/* 注意事項 */}
+                  <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">
+                    <h4 className="font-bold text-amber-400 text-sm mb-2">⚠️ ご注意</h4>
+                    <ul className="text-xs text-gray-400 space-y-1">
+                      <li>・メール内のリンクは<strong className="text-amber-300">絶対にクリックしないで</strong>ください</li>
+                      <li>・AI判定は参考情報です。確実に詐欺と分かった場合は警察（#9110）へ相談を</li>
+                      <li>・個人情報（パスワード等）はメール内容に含めたまま貼り付けないでください</li>
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
