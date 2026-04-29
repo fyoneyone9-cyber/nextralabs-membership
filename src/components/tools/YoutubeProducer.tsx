@@ -294,59 +294,18 @@ export function YoutubeProducer() {
     setScriptLoading(false)
   }
 
-  // ③ Characters — client-side text extraction
+  // ③ Characters — guide user to use ChatGPT/Gemini
   const handleExtractCharacters = async () => {
-    if (!transcript?.text) return
+    // No longer doing regex extraction — just set a guide message
     setCharLoading(true)
-    await new Promise(r => setTimeout(r, 300))
-
-    const text = transcript.text
-    const nameSet = new Set<string>()
-
-    // Pattern 1: 「」前の名前 (XX「...)
-    const quotePattern = /([^\s\n,.\u3001\u3002]{1,8})[\u300C\u300E\u201C]/g
-    let m
-    while ((m = quotePattern.exec(text)) !== null) {
-      const n = m[1].replace(/^[\u3001\u3002\u3000\s]+/, '')
-      if (n.length >= 2 && n.length <= 8) nameSet.add(n)
-    }
-
-    // Pattern 2: Xさん/氏/先生/くん/ちゃん/様
-    const suffixPattern = /([^\s\n,.\u3001\u3002]{1,6})(?:\u3055\u3093|\u6C0F|\u5148\u751F|\u304F\u3093|\u3061\u3083\u3093|\u69D8)/g
-    while ((m = suffixPattern.exec(text)) !== null) {
-      const n = m[1]
-      if (n.length >= 1 && n.length <= 6) nameSet.add(n + m[0].slice(n.length))
-    }
-
-    const names = Array.from(nameSet).slice(0, 5)
-
-    if (names.length === 0) {
-      names.push('ナレーター')
-    }
-
-    const chars: CharacterInfo[] = names.map(name => {
-      const idx = text.indexOf(name)
-      const context = idx >= 0 ? text.slice(Math.max(0, idx - 20), idx + name.length + 20) : ''
-      return {
-        name,
-        description: context ? `...${context}...` : `${name} - テキスト中の登場人物`,
-        role: '登場人物',
-        imagePrompt: `Anime style illustration, upper body portrait of a character named ${name}, simple gradient background, high quality, detailed, professional illustration`,
-      }
-    })
-
-    setCharacters(chars)
+    await new Promise(r => setTimeout(r, 200))
+    setCharacters([]) // clear any old results
     setCharLoading(false)
   }
 
-  // ③ Character IMAGE — copy prompt (no API)
-  const handleGenerateCharImage = async (idx: number) => {
-    const char = characters[idx]
-    if (!char) return
-    navigator.clipboard.writeText(char.imagePrompt)
-    const updated = [...characters]
-    updated[idx] = { ...char, imageUrl: 'copied' }
-    setCharacters(updated)
+  // ③ Character IMAGE — not used (no API)
+  const handleGenerateCharImage = async (_idx: number) => {
+    // no-op
   }
 
   // ④ Thumbnail — client-side template
@@ -695,42 +654,43 @@ export function YoutubeProducer() {
                 <button onClick={() => setTab('transcribe')} className="mt-3 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg text-xs hover:bg-red-500/30">①に戻る</button>
               </div>
             ) : (
-              <>
-                <button onClick={handleExtractCharacters} disabled={charLoading} className="w-full py-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl text-sm font-bold hover:opacity-90 disabled:opacity-30">
-                  {charLoading ? '⏳ 人物を分析中...' : '🔍 人物を抽出してイラスト設定を生成'}
-                </button>
+              <div className="space-y-4">
+                <div className="bg-white/5 rounded-xl p-6">
+                  <h3 className="text-sm font-bold text-red-400 mb-3">💡 人物画像の作り方</h3>
+                  <p className="text-sm text-white/60 mb-4">文字起こしテキストをChatGPTやGeminiに渡して、登場人物を個別にAI画像で生成しましょう。</p>
 
-                {characters.length > 0 && (
                   <div className="space-y-3">
-                    <h3 className="text-sm font-bold text-green-400">✅ {characters.length}人の人物を検出</h3>
-                    {characters.map((char, i) => (
-                      <div key={i} className="bg-white/5 rounded-xl p-4">
-                        <div className="flex gap-4">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="text-lg">👤</span>
-                              <span className="font-bold text-sm">{char.name}</span>
-                              <span className="text-xs text-white/40 bg-white/5 px-2 py-0.5 rounded">{char.role}</span>
-                            </div>
-                            <p className="text-xs text-white/50 mb-2">{char.description}</p>
-                            <div className="bg-black/20 rounded-lg p-2 mb-2">
-                              <div className="text-xs text-white/30 mb-1">画像プロンプト:</div>
-                              <p className="text-xs text-white/60">{char.imagePrompt}</p>
-                            </div>
-                            <div className="flex gap-2 flex-wrap">
-                              <button onClick={() => handleGenerateCharImage(i)} className="px-4 py-1.5 bg-red-500/20 text-red-400 rounded-lg text-xs hover:bg-red-500/30">
-                                {char.imageUrl === 'copied' ? '✅ コピー済み' : '📋 プロンプトをコピー'}
-                              </button>
-                              <a href="https://www.bing.com/images/create" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-blue-500/20 text-blue-400 rounded-lg text-xs hover:bg-blue-500/30">Bing Image Creator</a>
-                              <a href="https://leonardo.ai" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-purple-500/20 text-purple-400 rounded-lg text-xs hover:bg-purple-500/30">Leonardo AI</a>
-                            </div>
-                          </div>
-                        </div>
+                    <div className="bg-black/20 rounded-xl p-4">
+                      <div className="text-xs text-white/30 mb-1">Step 1: プロンプトをコピー</div>
+                      <div className="bg-black/30 rounded-lg p-3 text-sm text-white/70 mb-2 font-mono leading-relaxed">{`この文章に登場する人物をリストアップしてください。\nそれぞれの人物について、以下の情報を教えてください：\n・名前\n・外見の特徴や性格の描写\n・画像生成AI用の英語プロンプト（アニメ風イラスト）\n\n---\n${transcript.text.slice(0, 500)}${transcript.text.length > 500 ? '...' : ''}`}</div>
+                      <button onClick={() => { navigator.clipboard.writeText(`この文章に登場する人物をリストアップしてください。\nそれぞれの人物について、以下の情報を教えてください：\n・名前\n・外見の特徴や性格の描写\n・画像生成AI用の英語プロンプト（アニメ風イラスト）\n\n---\n${transcript.text}`); setCopied('char-prompt') }} className="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg text-xs hover:bg-red-500/30 font-bold">
+                        {copied === 'char-prompt' ? '✅ コピー済み' : '📋 全文含むプロンプトをコピー'}
+                      </button>
+                    </div>
+
+                    <div className="bg-black/20 rounded-xl p-4">
+                      <div className="text-xs text-white/30 mb-2">Step 2: AIに聞いて人物を特定</div>
+                      <div className="flex gap-2 flex-wrap">
+                        <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-xs hover:bg-green-500/30 font-bold">ChatGPT で人物抽出</a>
+                        <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-sky-500/20 text-sky-400 rounded-lg text-xs hover:bg-sky-500/30 font-bold">Gemini で人物抽出</a>
                       </div>
-                    ))}
+                    </div>
+
+                    <div className="bg-black/20 rounded-xl p-4">
+                      <div className="text-xs text-white/30 mb-2">Step 3: 生成されたプロンプトで画像を作成</div>
+                      <div className="flex gap-2 flex-wrap">
+                        <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-xs hover:bg-green-500/30 font-bold">ChatGPT（DALL-E）</a>
+                        <a href="https://www.bing.com/images/create" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg text-xs hover:bg-blue-500/30 font-bold">Bing Image Creator</a>
+                        <a href="https://leonardo.ai" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg text-xs hover:bg-purple-500/30 font-bold">Leonardo AI</a>
+                      </div>
+                    </div>
                   </div>
-                )}
-              </>
+                </div>
+
+                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
+                  <p className="text-xs text-amber-400">💡 ChatGPTならDALL-Eで人物抽出＆画像生成を一気にやってくれます。「この文章の登場人物をそれぞれイラストで描いて」と伝えてみましょう。</p>
+                </div>
+              </div>
             )}
           </div>
         )}
