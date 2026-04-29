@@ -455,7 +455,7 @@ export default function ProductsPage() {
           </span>
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
-          マーケティング、データ分析、業務効率化——あらゆる分野のAIツールが揃う。スタンダード（¥980/月）とプレミアム（¥1,980/月）の2プランで提供 ✨
+          あらゆる業務を加速するAIツールを2プランで提供
         </p>
 
         {/* Quick Stats */}
