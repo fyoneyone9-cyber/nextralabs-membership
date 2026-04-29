@@ -402,9 +402,9 @@ export default function ScamDefenderPage() {
           <div className="max-w-md mx-auto">
             <Card>
               <CardContent className="pt-8 pb-8 text-center">
-                <Badge className="mb-4">スタンダードプラン対応</Badge>
-                <div className="text-3xl font-bold mb-2">¥980<span className="text-base font-normal text-muted-foreground">/月</span></div>
-                <p className="text-muted-foreground mb-6">全ツール使い放題</p>
+                <Badge className="mb-4 bg-violet-600">プレミアムプラン限定</Badge>
+                <div className="text-3xl font-bold mb-2">¥1,980<span className="text-base font-normal text-muted-foreground">/月</span></div>
+                <p className="text-muted-foreground mb-6">プレミアム全ツール使い放題</p>
                 <Link href="/pricing">
                   <Button className="w-full">プランを見る →</Button>
                 </Link>

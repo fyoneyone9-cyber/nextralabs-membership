@@ -370,24 +370,34 @@ export default function ScamDefender() {
 
   // Mail check state
   const [mailInput, setMailInput] = useState('')
+  const [mailSender, setMailSender] = useState('')
+  const [mailSubject, setMailSubject] = useState('')
   const [mailCopied, setMailCopied] = useState(false)
 
   const buildMailPrompt = useCallback(() => {
-    return `以下のメール内容が詐欺・フィッシング・スパムかどうかを判定してください。
+    let header = ''
+    if (mailSender.trim()) header += `送信元アドレス: ${mailSender.trim()}\n`
+    if (mailSubject.trim()) header += `件名: ${mailSubject.trim()}\n`
+    return `以下のメールが詐欺・フィッシング・スパムかどうかを判定してください。
 
-【判定してほしいメール内容】
+【メール情報】
+${header}${header ? '\n' : ''}【メール本文】
 ${mailInput}
 
-【回答フォーマット】
+【判定してほしいポイント】
 1. 判定結果: 詐欺の可能性（高/中/低/安全）
-2. 詐欺の種類: （フィッシング/架空請求/投資詐欺/ロマンス詐欺/なりすまし/その他）
-3. 危険なポイント:
-   - （具体的に列挙）
-4. 見分けるポイント:
-   - （URLの不審点、送信元、文面の特徴など）
-5. 推奨アクション: （無視/削除/通報先など）
-6. 総合コメント:`
-  }, [mailInput])
+2. 詐欺の種類: （フィッシング/架空請求/投資詐欺/ロマンス詐欺/なりすまし/その他/安全）
+3. 送信元アドレスの分析:
+   - ドメインは正規のものか（例: amazon.co.jp vs amaz0n-security.xyz）
+   - フリーメール（gmail/yahoo等）から企業を名乗っていないか
+   - ドメインのスペルに不審な点はないか
+4. 危険なポイント:
+   - （URL・リンク・添付ファイル・文面の不審点を具体的に列挙）
+5. 見分けるポイント:
+   - （正規メールとの違い、確認方法）
+6. 推奨アクション: （無視/削除/通報先/正規サイトで直接確認 など）
+7. 総合コメント:`
+  }, [mailInput, mailSender, mailSubject])
 
   const copyMailPrompt = useCallback(() => {
     navigator.clipboard.writeText(buildMailPrompt())
@@ -878,13 +888,38 @@ ${mailInput}
             <p className="text-sm text-gray-400">届いたメールの内容を貼り付けて、AIに詐欺かどうか判定してもらいましょう。プロンプトを自動生成→外部AIにコピペするだけ。</p>
 
             <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6 space-y-4">
-              <textarea
-                placeholder={"ここにメール本文を貼り付け...\n\n例: 「【重要】お客様のアカウントが停止されました。以下のリンクから24時間以内にご確認ください...」"}
-                value={mailInput}
-                onChange={e => setMailInput(e.target.value)}
-                rows={8}
-                className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:border-cyan-500 focus:outline-none resize-none"
-              />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs text-gray-500 mb-1 block">📨 送信元メールアドレス</label>
+                  <input
+                    type="text"
+                    placeholder="例: support@amaz0n-security.xyz"
+                    value={mailSender}
+                    onChange={e => setMailSender(e.target.value)}
+                    className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-4 py-2.5 text-sm focus:border-cyan-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500 mb-1 block">📋 件名</label>
+                  <input
+                    type="text"
+                    placeholder="例: 【重要】アカウント停止のお知らせ"
+                    value={mailSubject}
+                    onChange={e => setMailSubject(e.target.value)}
+                    className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-4 py-2.5 text-sm focus:border-cyan-500 focus:outline-none"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs text-gray-500 mb-1 block">✉️ メール本文</label>
+                <textarea
+                  placeholder={"ここにメール本文を貼り付け...\n\n例: 「お客様のアカウントに異常なログインが検出されました。24時間以内にこちらのリンクから確認してください...」"}
+                  value={mailInput}
+                  onChange={e => setMailInput(e.target.value)}
+                  rows={8}
+                  className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:border-cyan-500 focus:outline-none resize-none"
+                />
+              </div>
 
               {mailInput.trim().length > 0 && (
                 <div className="space-y-4">
