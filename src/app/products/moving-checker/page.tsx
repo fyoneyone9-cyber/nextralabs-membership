@@ -141,7 +141,7 @@ export default function MovingCheckerPage() {
               </div>
               <div className="flex flex-wrap gap-4">
                 <Link href="/products/moving-checker/app">
-                  <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8">🆓 無料で使ってみる</Button>
+                  <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8">🆓 無料で体験する</Button>
                 </Link>
               </div>
               <div className="flex items-center gap-6 mt-6 text-sm text-muted-foreground">
@@ -269,11 +269,11 @@ export default function MovingCheckerPage() {
           <div className="max-w-md mx-auto">
             <Card className="border-green-500/30">
               <CardContent className="pt-8 pb-8">
-                <Badge className="mb-4 bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20">完全無料</Badge>
+                <Badge className="mb-4 bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20">無料体験</Badge>
                 <div className="text-5xl font-bold mb-2">¥0</div>
-                <p className="text-muted-foreground mb-6">ログイン不要・制限なし</p>
+                <p className="text-muted-foreground mb-6">登録不要で今すぐ体験できます</p>
                 <Link href="/products/moving-checker/app">
-                  <Button size="lg" className="w-full bg-green-600 hover:bg-green-700 text-white">🆓 無料で使ってみる</Button>
+                  <Button size="lg" className="w-full bg-green-600 hover:bg-green-700 text-white">🆓 無料で体験する</Button>
                 </Link>
                 <p className="text-xs text-muted-foreground mt-4">他の有料ツールも使うなら → 全ツール使い放題プラン（¥980/月）</p>
               </CardContent>
