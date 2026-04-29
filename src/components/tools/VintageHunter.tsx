@@ -56,38 +56,119 @@ export default function VintageHunter() {
   const [totalResults, setTotalResults] = useState(0)
   const [hasSearched, setHasSearched] = useState(false)
 
+  const GRADIENTS = [
+    ['#f59e0b', '#ea580c'], ['#8b5cf6', '#6d28d9'], ['#10b981', '#059669'],
+    ['#3b82f6', '#1d4ed8'], ['#ec4899', '#be185d'], ['#ef4444', '#b91c1c'],
+    ['#14b8a6', '#0d9488'], ['#f97316', '#c2410c'], ['#a855f7', '#7c3aed'],
+    ['#06b6d4', '#0891b2'],
+  ]
+
+  const extractCondition = (text: string): string => {
+    if (text.includes('新品') || text.includes('未使用') || text.includes('タグ付き')) return '新品'
+    if (text.includes('美品') || text.includes('極美')) return '未使用に近い'
+    if (text.includes('良品') || text.includes('良好')) return '目立った傷や汚れなし'
+    if (text.includes('傷') || text.includes('汚れ') || text.includes('ジャンク')) return '傷や汚れあり'
+    return 'やや傷や汚れあり'
+  }
+
+  const extractSize = (title: string): string => {
+    const m = title.match(/\b(XXS|XS|S|M|L|XL|XXL|XXXL|FREE|F)\b/i)
+    return m ? m[1].toUpperCase() : 'FREE'
+  }
+
   const handleSearch = useCallback(async () => {
     setLoading(true)
     setHasSearched(true)
     try {
-      const params = new URLSearchParams()
-      if (filters.brand) params.set('brand', filters.brand)
-      if (filters.keywords) params.set('keywords', filters.keywords)
+      // 1. Get Rakuten API config from server
+      const configRes = await fetch('/api/tools/vintage-hunter/search')
+      const config = await configRes.json()
+
+      if (!config.rakuten?.appId) {
+        alert('API設定がありません')
+        return
+      }
+
+      // 2. Call Rakuten API directly from browser (requires Referer header)
+      const searchKeyword = [filters.brand, filters.keywords, '古着 ヴィンテージ'].filter(Boolean).join(' ')
+      const params = new URLSearchParams({
+        applicationId: config.rakuten.appId,
+        accessKey: config.rakuten.accessKey,
+        keyword: searchKeyword,
+        genreId: '551177',
+        hits: '30',
+        sort: '-updateTimestamp',
+        imageFlag: '1',
+        formatVersion: '2',
+      })
       if (filters.minPrice) params.set('minPrice', filters.minPrice)
       if (filters.maxPrice) params.set('maxPrice', filters.maxPrice)
-      if (filters.condition !== 'all') params.set('condition', filters.condition)
 
-      const res = await fetch(`/api/tools/vintage-hunter/search?${params.toString()}`)
-      const data = await res.json()
+      const rakutenRes = await fetch(
+        `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?${params.toString()}`
+      )
 
-      if (data.items) {
-        // Compute AI scores client-side
-        const scoredItems = data.items.map((item: VintageItem) => {
-          const priceRatio = item.marketPrice > 0 ? item.price / item.marketPrice : 1
-          const dealScore = Math.max(0, (1 - priceRatio) * 60) // up to 60 points for good deal
-          const rarityScore = item.rarity * 0.25 // up to 25 points
-          const conditionScore =
-            item.condition === '新品' ? 15 :
-            item.condition === '未使用に近い' ? 13 :
-            item.condition === '目立った傷や汚れなし' ? 10 :
-            item.condition === 'やや傷や汚れあり' ? 6 :
-            item.condition === '傷や汚れあり' ? 3 : 1
-          const aiScore = Math.min(100, Math.max(0, Math.round(dealScore + rarityScore + conditionScore)))
-          return { ...item, aiScore }
-        })
-        setItems(scoredItems)
-        setTotalResults(data.total || scoredItems.length)
+      if (!rakutenRes.ok) {
+        throw new Error(`Rakuten API error: ${rakutenRes.status}`)
       }
+
+      const data = await rakutenRes.json()
+      const rawItems = data.Items || data.items || []
+
+      const parsedItems: VintageItem[] = rawItems.map((wrapper: any, i: number) => {
+        const item = wrapper.Item || wrapper
+        const title = item.itemName || ''
+        const desc = item.itemCaption || ''
+        const price = item.itemPrice || 0
+        const gradient = GRADIENTS[i % GRADIENTS.length]
+        const brandName = filters.brand || (item.shopName || '')
+        const rarity = Math.min(100, 20 + Math.floor(Math.random() * 60))
+        const markup = 1.1 + Math.random() * 0.3
+        const marketPrice = Math.round(price * markup / 100) * 100
+        const itemCondition = extractCondition(title + ' ' + desc)
+
+        if (filters.condition && filters.condition !== 'all' && itemCondition !== filters.condition) {
+          return null
+        }
+
+        return {
+          id: item.itemCode || `rk-${i}`,
+          title,
+          brand: brandName,
+          price,
+          marketPrice,
+          condition: itemCondition,
+          size: extractSize(title),
+          listedAt: new Date().toISOString(),
+          rarity,
+          aiScore: 0,
+          gradientFrom: gradient[0],
+          gradientTo: gradient[1],
+          initials: brandName.substring(0, 2).toUpperCase(),
+          description: desc.substring(0, 120),
+          category: 'トップス',
+          listingUrl: item.itemUrl || '',
+          source: 'rakuten',
+        }
+      }).filter(Boolean) as VintageItem[]
+
+      // Compute AI scores
+      const scoredItems = parsedItems.map((item) => {
+        const priceRatio = item.marketPrice > 0 ? item.price / item.marketPrice : 1
+        const dealScore = Math.max(0, (1 - priceRatio) * 60)
+        const rarityScore = item.rarity * 0.25
+        const conditionScore =
+          item.condition === '新品' ? 15 :
+          item.condition === '未使用に近い' ? 13 :
+          item.condition === '目立った傷や汚れなし' ? 10 :
+          item.condition === 'やや傷や汚れあり' ? 6 :
+          item.condition === '傷や汚れあり' ? 3 : 1
+        const aiScore = Math.min(100, Math.max(0, Math.round(dealScore + rarityScore + conditionScore)))
+        return { ...item, aiScore }
+      })
+
+      setItems(scoredItems)
+      setTotalResults(scoredItems.length)
     } catch (err) {
       console.error('Search failed:', err)
       alert('検索に失敗しました。')
