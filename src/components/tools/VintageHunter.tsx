@@ -525,11 +525,11 @@ export default function VintageHunter() {
                     className="w-full"
                   >
                     <Button className="w-full bg-rose-700 hover:bg-rose-800 text-white border-0 text-base">
-                      🛒 楽天で商品ページを見る
+                      🛒 楽天の商品ページを見る（実データ）
                     </Button>
                   </a>
                 )}
-                <div className="text-xs text-gray-400 mb-1">🔍 他サイトでも探す</div>
+                <div className="text-xs text-gray-400 mb-1">🔍 他サイトで同じ商品を比較する（検索結果ページが開きます）</div>
                 <div className="grid grid-cols-3 gap-2">
                   <a
                     href={`https://jp.mercari.com/search?keyword=${encodeURIComponent(selectedItem.brand + ' ' + selectedItem.title.substring(0, 30))}`}
