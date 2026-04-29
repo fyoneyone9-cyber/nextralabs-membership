@@ -698,12 +698,12 @@ export default function InboxOrganizer() {
                     </div>
 
                     {/* Message rows */}
-                    <div className="space-y-1.5">
+                    <div className="space-y-1.5" style={{ transform: 'translateZ(0)' }}>
                       {gmailMessages.map(msg => {
                         const cls = gmailClassified.get(msg.id)
                         const status = draftStatus.get(msg.id)
                         return (
-                          <div key={msg.id} className={`bg-white/5 rounded-lg p-3 space-y-1.5 cursor-pointer hover:bg-white/10 transition-colors ${msg.isUnread ? 'border-l-2 border-teal-500' : ''}`} onClick={() => openDraftModal(msg)}>
+                          <div key={msg.id} className={`bg-white/5 rounded-lg p-3 space-y-1.5 cursor-pointer hover:bg-white/10 ${msg.isUnread ? 'border-l-2 border-teal-500' : ''}`} onClick={() => openDraftModal(msg)}>
                             <div className="flex items-start justify-between gap-2">
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 mb-0.5">
