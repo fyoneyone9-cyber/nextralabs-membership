@@ -1,4 +1,4 @@
-﻿import Link from 'next/link'
+import Link from 'next/link'
 import { ArrowLeft, ArrowRight, Shirt, BarChart3, Trash2, Banknote, Palette, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
