@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, Briefcase, Clapperboard, Mail, type LucideIcon } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, type LucideIcon } from 'lucide-react'
 
 // ==================== Product Type ====================
 interface Product {
@@ -50,6 +50,36 @@ const freeTools: Product[] = [
     color: 'from-blue-500 to-green-500',
     bgColor: 'bg-blue-500/10',
     iconColor: 'text-blue-500',
+    status: '🆓 無料',
+  },
+  {
+    id: 'sns-auto-poster',
+    title: 'SNSオートポスター',
+    subtitle: 'AI × マルチプラットフォームSNS投稿生成',
+    description:
+      'トピックを入力するだけで、Twitter・Instagram・Facebook・LinkedIn向けの投稿文を自動生成。ハッシュタグ提案付き。',
+    price: '無料',
+    priceNote: 'アカウント不要',
+    tags: ['SNS', 'マーケティング', 'コピーライティング', '無料'],
+    icon: Share2,
+    color: 'from-blue-500 to-cyan-500',
+    bgColor: 'bg-blue-500/10',
+    iconColor: 'text-blue-500',
+    status: '🆓 無料',
+  },
+  {
+    id: 'ai-report-generator',
+    title: 'AIレポートジェネレーター',
+    subtitle: '箇条書き → ビジネスレポート自動生成',
+    description:
+      '箇条書きのメモからプロフェッショナルなビジネスレポートを自動生成。週次報告・月次報告・プロジェクト報告に対応。',
+    price: '無料',
+    priceNote: 'アカウント不要',
+    tags: ['レポート', 'ビジネス文書', '自動生成', '無料'],
+    icon: FileText,
+    color: 'from-green-500 to-emerald-500',
+    bgColor: 'bg-green-500/10',
+    iconColor: 'text-green-500',
     status: '🆓 無料',
   },
 ]
