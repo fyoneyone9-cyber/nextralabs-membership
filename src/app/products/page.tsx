@@ -438,24 +438,7 @@ function ProductCard({ product }: { product: Product }) {
 }
 
 // ==================== Coming Soon ====================
-const comingSoon = [
-  {
-    title: 'SNSオートポスター',
-    description: 'X/Instagram/Threadsへの投稿を一括管理・自動化するツール。',
-    icon: Bot,
-    color: 'from-blue-500 to-cyan-500',
-    bgColor: 'bg-blue-500/10',
-    iconColor: 'text-blue-500',
-  },
-  {
-    title: 'AIレポートジェネレーター',
-    description: 'データを投げるだけで分析レポートをAIが自動生成。',
-    icon: FileText,
-    color: 'from-purple-500 to-pink-500',
-    bgColor: 'bg-purple-500/10',
-    iconColor: 'text-purple-500',
-  },
-]
+const comingSoon: { title: string; description: string; icon: any; color: string; bgColor: string; iconColor: string }[] = []
 
 // ==================== Page ====================
 export default function ProductsPage() {
@@ -596,31 +579,33 @@ export default function ProductsPage() {
         </Link>
       </div>
 
-      {/* Coming Soon */}
-      <section>
-        <h2 className="text-2xl font-bold mb-8 flex items-center gap-2">
-          🚧 開発中
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {comingSoon.map((item) => {
-            const Icon = item.icon
-            return (
-              <Card key={item.title} className="h-full opacity-60 cursor-default">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ${item.bgColor}`}>
-                      <Icon className={`h-6 w-6 ${item.iconColor}`} />
+      {/* Coming Soon — 空なら非表示 */}
+      {comingSoon.length > 0 && (
+        <section>
+          <h2 className="text-2xl font-bold mb-8 flex items-center gap-2">
+            🚧 開発中
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {comingSoon.map((item) => {
+              const Icon = item.icon
+              return (
+                <Card key={item.title} className="h-full opacity-60 cursor-default">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ${item.bgColor}`}>
+                        <Icon className={`h-6 w-6 ${item.iconColor}`} />
+                      </div>
+                      <Badge variant="outline">Coming Soon</Badge>
                     </div>
-                    <Badge variant="outline">Coming Soon</Badge>
-                  </div>
-                  <h3 className="text-xl font-bold mb-1">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground">{item.description}</p>
-                </CardContent>
-              </Card>
-            )
-          })}
-        </div>
-      </section>
+                    <h3 className="text-xl font-bold mb-1">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground">{item.description}</p>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+        </section>
+      )}
     </div>
   )
 }
