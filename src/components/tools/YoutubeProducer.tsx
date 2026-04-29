@@ -183,6 +183,34 @@ export function YoutubeProducer() {
 
   // ==================== API CALLS ====================
 
+  // State for extracted audio blob
+  const [extractedAudioUrl, setExtractedAudioUrl] = useState<string | null>(null)
+
+  // ==================== CLIENT-SIDE LOGIC (NO API CALLS) ====================
+
+  // Helper: split text into sentences
+  const splitSentences = (text: string): string[] => {
+    return text.split(/(?<=[.!?\u3002\uff01\uff1f\n])\s*/).filter(s => s.trim().length > 0)
+  }
+
+  // Helper: extract frequent keywords from text
+  const extractKeywords = (text: string, count: number = 15): string[] => {
+    const cleaned = text.replace(/[^\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\u3400-\u4DBFa-zA-Z0-9]/g, ' ')
+    const chunks: string[] = []
+    const chars = cleaned.replace(/\s+/g, '')
+    for (let i = 0; i < chars.length - 1; i++) {
+      chunks.push(chars.slice(i, i + 2))
+      if (i < chars.length - 2) chunks.push(chars.slice(i, i + 3))
+    }
+    const freq = new Map<string, number>()
+    chunks.forEach(c => { if (c.length >= 2) freq.set(c, (freq.get(c) || 0) + 1) })
+    return Array.from(freq.entries())
+      .filter(([k]) => !/^[\s\u3000]+$/.test(k))
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, count)
+      .map(([k]) => k)
+  }
+
   // ① Transcribe
   const handleTranscribe = async () => {
     setTranscribing(true)
@@ -192,87 +220,38 @@ export function YoutubeProducer() {
       if (inputMode === 'text') {
         text = inputText
       } else if (inputMode === 'url') {
-        const res = await fetch('/api/youtube-producer/transcribe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: inputUrl }),
-        })
-        const data = await res.json()
-        text = data.text || data.error || 'URLからの取得に失敗しました'
+        text = '💡 URLの内容をコピーして「テキスト直接入力」モードに貼り付けてください。\n\nブラウザのセキュリティ制限により、外部URLの直接取得はできません。'
       } else if (selectedFile) {
         const isTextFile = /\.(txt|md|srt|vtt)$/i.test(selectedFile.name)
 
         if (isTextFile) {
           text = await selectedFile.text()
         } else {
-          // Auto-compress: extract audio in browser if file > 4MB
-          let fileToUpload = selectedFile
+          // Extract audio with FFmpeg in browser
           const fileSizeMB = selectedFile.size / 1024 / 1024
+          try {
+            const audioFile = await extractAudioInBrowser(selectedFile)
+            const compressedMB = audioFile.size / 1024 / 1024
 
-          if (fileSizeMB > 3) {
-            try {
-              fileToUpload = await extractAudioInBrowser(selectedFile)
-              const compressedMB = fileToUpload.size / 1024 / 1024
-              setCompressProgress(`✅ ${fileSizeMB.toFixed(0)}MB → ${compressedMB.toFixed(1)}MB に圧縮完了！`)
-              await new Promise(r => setTimeout(r, 1000))
-            } catch (ffErr) {
-              console.error('FFmpeg error:', ffErr)
-              setCompressProgress(null)
-              text = `⚠️ ブラウザ内圧縮に失敗しました（${fileSizeMB.toFixed(0)}MB）\n\n「テキスト直接入力」モードで、別ツールの文字起こし結果を貼り付けてください。\n\n対応ツール: CLOVA Note / Google音声認識 / Whisper Desktop`
-              setTranscript({ text, language: 'ja' })
-              setTranscribing(false)
-              return
-            }
-          }
+            // Create playable blob URL
+            const blobUrl = URL.createObjectURL(audioFile)
+            setExtractedAudioUrl(blobUrl)
 
-          // Check if compressed file fits in Vercel limit (4MB)
-          const uploadSizeMB = fileToUpload.size / 1024 / 1024
-          if (uploadSizeMB > 3.8) {
-            // Too large even after compression - split and transcribe chunks client-side
-            setCompressProgress('📤 分割して送信中...')
-            const chunkSize = 3.5 * 1024 * 1024 // 3.5MB chunks
-            const totalChunks = Math.ceil(fileToUpload.size / chunkSize)
-            const allText: string[] = []
-
-            for (let c = 0; c < totalChunks; c++) {
-              setCompressProgress(`📤 送信中... (${c + 1}/${totalChunks})`)
-              const start = c * chunkSize
-              const end = Math.min(start + chunkSize, fileToUpload.size)
-              const chunk = fileToUpload.slice(start, end)
-              const chunkFile = new File([chunk], `chunk_${c}.mp3`, { type: 'audio/mp3' })
-
-              const formData = new FormData()
-              formData.append('file', chunkFile)
-              try {
-                const res = await fetch('/api/youtube-producer/transcribe', {
-                  method: 'POST',
-                  body: formData,
-                })
-                if (res.ok) {
-                  const data = await res.json()
-                  if (data.text) allText.push(data.text)
-                }
-              } catch { /* skip failed chunk */ }
-            }
-            setCompressProgress(null)
-            text = allText.join('\n\n') || '文字起こしに失敗しました'
-          } else {
-            // Upload single file
-            const formData = new FormData()
-            formData.append('file', fileToUpload)
-            setCompressProgress('📤 サーバーに送信中...')
-            const res = await fetch('/api/youtube-producer/transcribe', {
-              method: 'POST',
-              body: formData,
-            })
+            setCompressProgress(`✅ 音声抽出完了！（${fileSizeMB.toFixed(0)}MB → ${compressedMB.toFixed(1)}MB）`)
+            await new Promise(r => setTimeout(r, 1500))
             setCompressProgress(null)
 
-            if (!res.ok) {
-              text = `文字起こしエラー（${res.status}）: サーバーの処理に失敗しました。\n\n「テキスト直接入力」モードで、別ツールの文字起こし結果を貼り付けてください。`
-            } else {
-              const data = await res.json()
-              text = data.text || data.error || 'ファイルの処理に失敗しました'
-            }
+            text = `✅ 音声の抽出が完了しました（${compressedMB.toFixed(1)}MB）\n\n` +
+              `下の再生ボタンで音声を確認できます。\n` +
+              `「ダウンロード」で音声ファイルを保存し、以下の無料サービスで文字起こししてください：\n\n` +
+              `1. Whisper Web（無料・高精度）\n   https://huggingface.co/spaces/Xenova/whisper-web\n\n` +
+              `2. CLOVA Note（無料・日本語対応）\n   https://clovanote.line.me/\n\n` +
+              `3. Google ドキュメント音声入力（無料）\n   音声を再生しながらGoogleドキュメントの音声入力を使用\n\n` +
+              `文字起こし結果を「テキスト直接入力」モードに貼り付けてください。`
+          } catch (ffErr) {
+            console.error('FFmpeg error:', ffErr)
+            setCompressProgress(null)
+            text = `⚠️ 音声抽出に失敗しました（${fileSizeMB.toFixed(0)}MB）\n\n「テキスト直接入力」モードで、別ツールの文字起こし結果を貼り付けてください。`
           }
         }
       }
@@ -280,195 +259,210 @@ export function YoutubeProducer() {
       setTranscript({ text, language: 'ja' })
     } catch (e) {
       setCompressProgress(null)
-      setTranscript({ text: `エラー: ${e instanceof Error ? e.message : '不明なエラー'}` })
+      setTranscript({ text: `エラー: ${e instanceof Error ? e.message : '不明'}` })
     }
     setTranscribing(false)
   }
 
-  // ② Script
+  // ② Script — client-side template generation
   const handleGenerateScript = async () => {
     if (!transcript?.text) return
     setScriptLoading(true)
-    try {
-      const res = await fetch('/api/youtube-producer/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'script',
-          transcript: transcript.text,
-          genre,
-          genrePrompt: GENRE_PROMPTS[genre],
-          customPrompt: scriptCustomPrompt,
-        }),
-      })
-      const data = await res.json()
-      setScript(data)
-    } catch (e) {
-      console.error(e)
-    }
+    await new Promise(r => setTimeout(r, 500)) // brief delay for UX
+
+    const text = transcript.text
+    const sentences = splitSentences(text)
+    const total = sentences.length
+    const openIdx = Math.max(1, Math.floor(total * 0.15))
+    const closeIdx = Math.max(openIdx + 1, Math.floor(total * 0.85))
+
+    const gp = GENRE_PROMPTS[genre]
+    const genreLabel = GENRES.find(g => g.id === genre)?.label || genre
+
+    const openSentences = sentences.slice(0, openIdx).join('\n')
+    const bodySentences = sentences.slice(openIdx, closeIdx).join('\n')
+    const closeSentences = sentences.slice(closeIdx).join('\n')
+
+    const opening = `【オープニング】\n\n皆さんこんにちは！今回は「${genreLabel}」ジャンルでお届けします。\n\n${gp}\n\nそれでは早速いきましょう！\n\n---\n${openSentences}`
+    const body = `【本編】\n\n${bodySentences}`
+    const closing = `【エンディング】\n\n${closeSentences}\n\n---\n\nいかがでしたか？\n参考になったらチャンネル登録・高評価よろしくお願いします！\n次回もお楽しみに！`
+    const fullScript = `${opening}\n\n${body}\n\n${closing}`
+    const estimatedMinutes = Math.max(1, Math.round(text.length / 300))
+
+    setScript({ opening, body, closing, fullScript, estimatedMinutes })
     setScriptLoading(false)
   }
 
-  // ③ Characters
+  // ③ Characters — client-side text extraction
   const handleExtractCharacters = async () => {
     if (!transcript?.text) return
     setCharLoading(true)
-    try {
-      const res = await fetch('/api/youtube-producer/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'characters',
-          transcript: transcript.text,
-          genre,
-        }),
-      })
-      const data = await res.json()
-      setCharacters(data.characters || [])
-    } catch (e) {
-      console.error(e)
+    await new Promise(r => setTimeout(r, 300))
+
+    const text = transcript.text
+    const nameSet = new Set<string>()
+
+    // Pattern 1: 「」前の名前 (XX「...)
+    const quotePattern = /([^\s\n,.\u3001\u3002]{1,8})[\u300C\u300E\u201C]/g
+    let m
+    while ((m = quotePattern.exec(text)) !== null) {
+      const n = m[1].replace(/^[\u3001\u3002\u3000\s]+/, '')
+      if (n.length >= 2 && n.length <= 8) nameSet.add(n)
     }
+
+    // Pattern 2: Xさん/氏/先生/くん/ちゃん/様
+    const suffixPattern = /([^\s\n,.\u3001\u3002]{1,6})(?:\u3055\u3093|\u6C0F|\u5148\u751F|\u304F\u3093|\u3061\u3083\u3093|\u69D8)/g
+    while ((m = suffixPattern.exec(text)) !== null) {
+      const n = m[1]
+      if (n.length >= 1 && n.length <= 6) nameSet.add(n + m[0].slice(n.length))
+    }
+
+    const names = Array.from(nameSet).slice(0, 5)
+
+    if (names.length === 0) {
+      names.push('ナレーター')
+    }
+
+    const chars: CharacterInfo[] = names.map(name => {
+      const idx = text.indexOf(name)
+      const context = idx >= 0 ? text.slice(Math.max(0, idx - 20), idx + name.length + 20) : ''
+      return {
+        name,
+        description: context ? `...${context}...` : `${name} - テキスト中の登場人物`,
+        role: '登場人物',
+        imagePrompt: `Anime style illustration, upper body portrait of a character named ${name}, simple gradient background, high quality, detailed, professional illustration`,
+      }
+    })
+
+    setCharacters(chars)
     setCharLoading(false)
   }
 
+  // ③ Character IMAGE — copy prompt (no API)
   const handleGenerateCharImage = async (idx: number) => {
     const char = characters[idx]
     if (!char) return
+    navigator.clipboard.writeText(char.imagePrompt)
     const updated = [...characters]
-    updated[idx] = { ...char, generating: true }
+    updated[idx] = { ...char, imageUrl: 'copied' }
     setCharacters(updated)
-
-    try {
-      const res = await fetch('/api/youtube-producer/image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: char.imagePrompt,
-          type: 'character',
-        }),
-      })
-      const data = await res.json()
-      updated[idx] = { ...char, generating: false, imageUrl: data.imageUrl }
-      setCharacters([...updated])
-    } catch {
-      updated[idx] = { ...char, generating: false }
-      setCharacters([...updated])
-    }
   }
 
-  // ④ Thumbnail
+  // ④ Thumbnail — client-side template
   const handleGenerateThumbnails = async () => {
     if (!transcript?.text) return
     setThumbLoading(true)
-    try {
-      const res = await fetch('/api/youtube-producer/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'thumbnail',
-          transcript: transcript.text,
-          genre,
-          scriptTitle: script?.opening?.slice(0, 100) || '',
-        }),
-      })
-      const data = await res.json()
-      setThumbnails(data.thumbnails || [])
-    } catch (e) {
-      console.error(e)
-    }
+    await new Promise(r => setTimeout(r, 300))
+
+    const text = transcript.text
+    const sentences = splitSentences(text)
+    const keywords = extractKeywords(text, 5)
+    const kw = keywords.slice(0, 3).join(', ')
+
+    const thumbs: ThumbnailResult[] = [
+      {
+        title: keywords[0]?.slice(0, 5) || 'IMPACT',
+        imagePrompt: `YouTube thumbnail, bold dramatic composition, 16:9, vibrant red and yellow colors, large bold Japanese text, topic about ${kw}, eye-catching, high contrast, professional`,
+      },
+      {
+        title: keywords[1]?.slice(0, 5) || 'INFO',
+        imagePrompt: `YouTube thumbnail, informative style, 16:9, clean blue and white layout, infographic elements, topic about ${kw}, professional, data visualization, modern`,
+      },
+      {
+        title: keywords[2]?.slice(0, 5) || 'EMOTION',
+        imagePrompt: `YouTube thumbnail, emotional appeal, 16:9, warm colors, expressive character face, topic about ${kw}, cinematic lighting, dramatic mood, professional`,
+      },
+    ]
+
+    setThumbnails(thumbs)
     setThumbLoading(false)
   }
 
+  // ④ Thumbnail IMAGE — copy prompt (no API)
   const handleGenerateThumbImage = async (idx: number) => {
     const thumb = thumbnails[idx]
     if (!thumb) return
+    navigator.clipboard.writeText(thumb.imagePrompt)
     const updated = [...thumbnails]
-    updated[idx] = { ...thumb, generating: true }
-    setThumbnails(updated)
-
-    try {
-      const res = await fetch('/api/youtube-producer/image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: thumb.imagePrompt,
-          type: 'thumbnail',
-        }),
-      })
-      const data = await res.json()
-      updated[idx] = { ...thumb, generating: false, imageUrl: data.imageUrl }
-      setThumbnails([...updated])
-    } catch {
-      updated[idx] = { ...thumb, generating: false }
-      setThumbnails([...updated])
-    }
+    updated[idx] = { ...thumb, imageUrl: 'copied' }
+    setThumbnails([...updated])
   }
 
-  // ⑤ Title
+  // ⑤ Title — client-side generation
   const handleGenerateTitle = async () => {
     if (!transcript?.text) return
     setTitleLoading(true)
-    try {
-      const res = await fetch('/api/youtube-producer/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'title',
-          transcript: transcript.text,
-          genre,
-          script: script?.fullScript?.slice(0, 500) || '',
-        }),
-      })
-      const data = await res.json()
-      setTitleResult(data)
-    } catch (e) {
-      console.error(e)
-    }
+    await new Promise(r => setTimeout(r, 300))
+
+    const text = transcript.text
+    const keywords = extractKeywords(text, 20)
+    const kw1 = keywords[0] || ''
+    const kw2 = keywords[1] || ''
+    const kw3 = keywords[2] || ''
+
+    const genreLabel = GENRES.find(g => g.id === genre)?.label || ''
+
+    const TITLE_TEMPLATES = [
+      `\u3010\u8870\u6483\u3011${kw1}\u304C${kw2}\u3057\u305F\u7D50\u679C\u2026`,
+      `${kw1}\u306E\u771F\u5B9F\u3092\u5FB9\u5E95\u89E3\u8AAC\uff01${kw2}\u306E\u8B0E`,
+      `\u77E5\u3089\u306A\u3044\u3068\u30E4\u30D0\u3044\u300C${kw1}\u300D\u306E\u7F60`,
+      `\u3010${genreLabel}\u3011${kw1}\u00D7${kw2}\u2015\u2015\u795E\u56DE`,
+      `${kw1}\u306B\u3064\u3044\u3066\u3001\u8AB0\u3082\u6559\u3048\u3066\u304F\u308C\u306A\u304B\u3063\u305F\u3053\u3068`,
+    ]
+
+    const main = TITLE_TEMPLATES[0]
+    const alternatives = TITLE_TEMPLATES.slice(1)
+    const tags = keywords.slice(0, 15)
+    const description = `${main}\n\n${text.slice(0, 200)}...\n\n#${tags.slice(0, 5).join(' #')}\n\n---\n\u25B6 \u30C1\u30E3\u30F3\u30CD\u30EB\u767B\u9332: [URL]\n\u25B6 SNS: [URL]\n\n\u00A9 ${new Date().getFullYear()}`
+
+    setTitleResult({ main, alternatives, tags, description })
     setTitleLoading(false)
   }
 
-  // ⑥ BGM
+  // ⑥ BGM — client-side mood analysis
   const handleGenerateBgm = async () => {
     if (!transcript?.text) return
     setBgmLoading(true)
-    try {
-      const res = await fetch('/api/youtube-producer/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'bgm',
-          transcript: transcript.text,
-          genre,
-        }),
-      })
-      const data = await res.json()
-      setBgmResult(data)
-    } catch (e) {
-      console.error(e)
+    await new Promise(r => setTimeout(r, 300))
+
+    const text = transcript.text
+    const positiveWords = ['\u697D\u3057', '\u5B09\u3057', '\u5E78\u305B', '\u6700\u9AD8', '\u7D20\u6674\u3089', '\u611F\u52D5', '\u304A\u3082\u3057\u308D', '\u304B\u308F\u3044', '\u3059\u3054\u3044', '\u3042\u308A\u304C\u3068\u3046']
+    const negativeWords = ['\u6016\u3044', '\u5371\u967A', '\u554F\u984C', '\u6CE8\u610F', '\u88AB\u5BB3', '\u8B66\u544A', '\u7DCA\u6025', '\u6DF1\u523B', '\u4E8B\u4EF6', '\u4E8B\u6545']
+    const calmWords = ['\u843D\u3061\u7740', '\u5B89\u5FC3', '\u5E73\u548C', '\u304A\u3060\u3084\u304B', '\u9759\u304B', '\u3086\u3063\u304F\u308A', '\u7A4F\u3084\u304B', '\u512A\u3057']
+
+    let posScore = 0, negScore = 0, calmScore = 0
+    positiveWords.forEach(w => { if (text.includes(w)) posScore++ })
+    negativeWords.forEach(w => { if (text.includes(w)) negScore++ })
+    calmWords.forEach(w => { if (text.includes(w)) calmScore++ })
+
+    let mood: string, bgmGenre: string, prompt: string
+
+    if (negScore > posScore && negScore > calmScore) {
+      mood = '\u7DCA\u8FEB\u611F\u30FB\u30B7\u30EA\u30A2\u30B9'
+      bgmGenre = 'Cinematic Tension'
+      prompt = 'Dark cinematic tension music, suspenseful strings, minor key, 100 BPM, dramatic orchestral, background music for YouTube video, no vocals, mysterious atmosphere'
+    } else if (calmScore > posScore) {
+      mood = '\u843D\u3061\u7740\u3044\u305F\u30FB\u77E5\u7684'
+      bgmGenre = 'Lo-fi Ambient'
+      prompt = 'Calm lo-fi ambient music, soft piano, warm pads, 80 BPM, relaxing background music for YouTube video, no vocals, cozy atmosphere'
+    } else {
+      mood = '\u660E\u308B\u304F\u524D\u5411\u304D'
+      bgmGenre = 'Upbeat Pop'
+      prompt = 'Upbeat cheerful background music, bright acoustic guitar, light drums, 120 BPM, positive energy, background music for YouTube video, no vocals, happy mood'
     }
+
+    setBgmResult({ mood, genre: bgmGenre, prompt })
     setBgmLoading(false)
   }
 
+  // ⑥ BGM Audio — no API, show links
   const handleGenerateBgmAudio = async () => {
     if (!bgmResult) return
-    const updated = { ...bgmResult, generating: true }
-    setBgmResult(updated)
-
-    try {
-      const res = await fetch('/api/youtube-producer/audio', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: bgmResult.prompt,
-          mood: bgmResult.mood,
-          genre: bgmResult.genre,
-        }),
-      })
-      const data = await res.json()
-      setBgmResult({ ...bgmResult, generating: false, audioUrl: data.audioUrl })
-    } catch {
-      setBgmResult({ ...bgmResult, generating: false })
-    }
+    navigator.clipboard.writeText(bgmResult.prompt)
+    setBgmResult({
+      ...bgmResult,
+      audioUrl: 'links',
+    })
   }
 
   // ==================== RENDER ====================
@@ -606,6 +600,20 @@ export function YoutubeProducer() {
                 </div>
                 <div className="text-xs text-white/40 mb-2">{transcript.text.length.toLocaleString()} 文字</div>
                 <textarea value={transcript.text} onChange={e => setTranscript({ ...transcript, text: e.target.value })} className="w-full h-48 bg-black/30 border border-white/5 rounded-lg p-3 text-sm text-white/70 resize-none focus:outline-none focus:border-red-500/30" />
+
+                {extractedAudioUrl && (
+                  <div className="mt-3 bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
+                    <div className="text-xs text-blue-400 font-bold mb-2">🎵 抽出された音声</div>
+                    <audio controls className="w-full mb-2" src={extractedAudioUrl} />
+                    <div className="flex gap-2">
+                      <a href={extractedAudioUrl} download="extracted-audio.mp3" className="px-4 py-1.5 bg-blue-500/20 text-blue-400 rounded-lg text-xs hover:bg-blue-500/30">⬇️ MP3をダウンロード</a>
+                      <a href="https://huggingface.co/spaces/Xenova/whisper-web" target="_blank" rel="noopener noreferrer" className="px-4 py-1.5 bg-green-500/20 text-green-400 rounded-lg text-xs hover:bg-green-500/30">Whisper Web で文字起こし</a>
+                      <a href="https://clovanote.line.me/" target="_blank" rel="noopener noreferrer" className="px-4 py-1.5 bg-emerald-500/20 text-emerald-400 rounded-lg text-xs hover:bg-emerald-500/30">CLOVA Note</a>
+                    </div>
+                    <p className="text-xs text-white/30 mt-2">文字起こし結果を上のテキストエリアに貼り付けてください</p>
+                  </div>
+                )}
+
                 <p className="text-xs text-white/30 mt-2">💡 文字起こし結果を編集してから次のステップへ進めます</p>
               </div>
             )}
@@ -708,15 +716,14 @@ export function YoutubeProducer() {
                               <div className="text-xs text-white/30 mb-1">画像プロンプト:</div>
                               <p className="text-xs text-white/60">{char.imagePrompt}</p>
                             </div>
-                            <button onClick={() => handleGenerateCharImage(i)} disabled={char.generating} className="px-4 py-1.5 bg-red-500/20 text-red-400 rounded-lg text-xs hover:bg-red-500/30 disabled:opacity-30">
-                              {char.generating ? '⏳ 生成中...' : '🎨 イラスト生成'}
-                            </button>
-                          </div>
-                          {char.imageUrl && (
-                            <div className="shrink-0">
-                              <img src={char.imageUrl} alt={char.name} className="w-32 h-32 rounded-xl object-cover border border-white/10" />
+                            <div className="flex gap-2 flex-wrap">
+                              <button onClick={() => handleGenerateCharImage(i)} className="px-4 py-1.5 bg-red-500/20 text-red-400 rounded-lg text-xs hover:bg-red-500/30">
+                                {char.imageUrl === 'copied' ? '✅ コピー済み' : '📋 プロンプトをコピー'}
+                              </button>
+                              <a href="https://www.bing.com/images/create" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-blue-500/20 text-blue-400 rounded-lg text-xs hover:bg-blue-500/30">Bing Image Creator</a>
+                              <a href="https://leonardo.ai" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-purple-500/20 text-purple-400 rounded-lg text-xs hover:bg-purple-500/30">Leonardo AI</a>
                             </div>
-                          )}
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -762,9 +769,12 @@ export function YoutubeProducer() {
                           )}
                           <div className="text-xs font-bold mb-1">{thumb.title}</div>
                           <div className="text-xs text-white/40 mb-2 line-clamp-2">{thumb.imagePrompt}</div>
-                          <button onClick={() => handleGenerateThumbImage(i)} disabled={thumb.generating} className="w-full py-1.5 bg-red-500/20 text-red-400 rounded-lg text-xs hover:bg-red-500/30 disabled:opacity-30">
-                            {thumb.generating ? '⏳ 生成中...' : thumb.imageUrl ? '🔄 再生成' : '🎨 画像生成'}
-                          </button>
+                          <div className="flex gap-1 flex-wrap">
+                            <button onClick={() => handleGenerateThumbImage(i)} className="flex-1 py-1.5 bg-red-500/20 text-red-400 rounded-lg text-xs hover:bg-red-500/30">
+                              {thumb.imageUrl === 'copied' ? '✅ コピー済み' : '📋 プロンプトコピー'}
+                            </button>
+                            <a href="https://www.bing.com/images/create" target="_blank" rel="noopener noreferrer" className="py-1.5 px-2 bg-blue-500/20 text-blue-400 rounded-lg text-xs hover:bg-blue-500/30">Bing</a>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -883,14 +893,19 @@ export function YoutubeProducer() {
                         <p className="text-sm text-white/60">{bgmResult.prompt}</p>
                       </div>
 
-                      <button onClick={handleGenerateBgmAudio} disabled={bgmResult.generating} className="w-full py-2.5 bg-red-500/20 text-red-400 rounded-lg text-sm font-bold hover:bg-red-500/30 disabled:opacity-30">
-                        {bgmResult.generating ? '⏳ BGMを生成中（30〜60秒）...' : bgmResult.audioUrl ? '🔄 再生成' : '🎵 BGM音源を生成'}
+                      <button onClick={handleGenerateBgmAudio} className="w-full py-2.5 bg-red-500/20 text-red-400 rounded-lg text-sm font-bold hover:bg-red-500/30">
+                        {bgmResult.audioUrl === 'links' ? '✅ プロンプトをコピーしました' : '📋 プロンプトをコピー＆BGMサービスへ'}
                       </button>
 
-                      {bgmResult.audioUrl && (
-                        <div className="mt-3">
-                          <audio controls className="w-full" src={bgmResult.audioUrl} />
-                          <a href={bgmResult.audioUrl} download className="block text-center mt-2 text-xs text-red-400 hover:text-red-300">⬇️ ダウンロード</a>
+                      {bgmResult.audioUrl === 'links' && (
+                        <div className="mt-3 space-y-2">
+                          <p className="text-xs text-white/40">コピーしたプロンプトを以下のサービスで使用してください：</p>
+                          <div className="flex gap-2 flex-wrap">
+                            <a href="https://suno.ai" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg text-xs hover:bg-purple-500/30 font-bold">Suno AI（無料枠あり）</a>
+                            <a href="https://udio.com" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg text-xs hover:bg-blue-500/30 font-bold">Udio</a>
+                            <a href="https://dova-s.jp/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-xs hover:bg-green-500/30 font-bold">DOVA-SYNDROME（無料BGM）</a>
+                            <a href="https://amachamusic.chagasi.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-amber-500/20 text-amber-400 rounded-lg text-xs hover:bg-amber-500/30 font-bold">甘茶の音楽工房（無料）</a>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -903,7 +918,7 @@ export function YoutubeProducer() {
       </div>
 
       <div className="max-w-5xl mx-auto px-4 py-6 border-t border-white/10 mt-8">
-        <p className="text-xs text-white/30 text-center">※ ファイルはブラウザ内で処理されます。アップロードされたデータはAPI処理後に破棄されます。</p>
+        <p className="text-xs text-white/30 text-center">※ すべての処理はブラウザ内で完結します。データはサーバーに送信されません。APIコスト0円。</p>
       </div>
     </div>
   )
