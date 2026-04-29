@@ -493,7 +493,7 @@ export default function InboxOrganizer() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-white">
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-gray-950/90 backdrop-blur border-b border-white/5">
+      <div className="sticky top-0 z-40 bg-gray-950 border-b border-white/5">
         <div className="max-w-4xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
