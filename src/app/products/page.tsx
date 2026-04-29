@@ -62,8 +62,8 @@ const defenseTools: Product[] = [
     subtitle: '詐欺シミュレーション × 闇バイト判定 × 家族見守り',
     description:
       '詐欺電話シミュレーターで断り方を練習、闇バイト判定チェッカーで危険度を即判定。見守りチェックリストで家族のセキュリティを強化。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
     tags: ['詐欺クイズ', '電話シミュレーター', '闇バイト判定', '家族見守り'],
     icon: ShieldCheck,
     color: 'from-amber-500 to-red-500',
@@ -77,8 +77,8 @@ const defenseTools: Product[] = [
     subtitle: '収支トラッカー × 期待値計算 × 依存度チェック',
     description:
       'ギャンブル収支を可視化し、期待値を数学的に解説。「もし貯金してたら」シミュレーター、認知バイアス診断、相談窓口ガイドまで。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
     tags: ['収支トラッカー', '期待値計算', '依存度チェック', '認知バイアス'],
     icon: Wallet,
     color: 'from-emerald-500 to-amber-500',
@@ -92,8 +92,8 @@ const defenseTools: Product[] = [
     subtitle: 'GPS避難所検索 × 家族防災プラン × 気象警報API',
     description:
       '現在地から最寄り避難所を自動検索、家族の避難プランを事前作成、気象庁APIで警報をリアルタイム確認。防災チェックリスト＆知識クイズも。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
     tags: ['GPS', '気象庁API', '防災', '避難所検索'],
     icon: Shield,
     color: 'from-sky-500 to-blue-600',
@@ -106,8 +106,8 @@ const defenseTools: Product[] = [
     title: 'AI買い物依存ストッパー',
     subtitle: 'カメラ表情解析 × 衝動買い防止AI',
     description: 'カート画面で「高揚感」を検知するとAIが冷静な判断を促し決済を一定時間ロック。衝動買いデータから後悔する確率を予測。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
     tags: ['TensorFlow.js', 'Canvas API', 'AI', '行動分析'],
     icon: ShieldAlert,
     color: 'from-red-500 to-rose-500',
@@ -125,8 +125,8 @@ const commTools: Product[] = [
     subtitle: '心理学ベース × メッセージ添削 × 自己診断',
     description:
       '心理学理論に基づいてメッセージを添削、コミュスタイルを4タイプ診断、場面別の会話プランナーでスキルアップ。恋愛もビジネスも友人関係も。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
     tags: ['メッセージ添削', 'コミュ診断', '心理学講座', 'NG＆OK集'],
     icon: MessageCircleHeart,
     color: 'from-pink-500 to-purple-500',
@@ -140,8 +140,8 @@ const commTools: Product[] = [
     subtitle: 'プロフィール添削 × メッセージ練習 × 相性診断',
     description:
       'マッチングアプリのプロフィールをAIが添削、メッセージの練習シミュレーター、価値観診断、デートプラン提案、婚活戦略分析まで。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
     tags: ['プロフィール添削', 'メッセージ練習', '相性診断', 'デートプラン'],
     icon: Heart,
     color: 'from-pink-500 to-rose-500',
@@ -155,8 +155,8 @@ const commTools: Product[] = [
     subtitle: 'トレンドニュース × テンプレート × 画像生成',
     description:
       '今日のニュースをネタに、自分の言葉でバズらせる。10種類のテンプレート、バズ度診断、投稿画像ジェネレーター、ハッシュタグ辞典。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
     tags: ['トレンドニュース', 'バズ度診断', '画像生成', 'ハッシュタグ'],
     icon: Flame,
     color: 'from-orange-500 to-red-500',
@@ -174,8 +174,8 @@ const lifeTools: Product[] = [
     subtitle: '退職届生成 × 残業代計算 × 完全チェックリスト',
     description:
       'AIが退職届を自動作成、未払い残業代を計算、有給・社保・年金の手続きまで完全ガイド。退職代行サービスの比較や権利Q&Aも搭載。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
     tags: ['退職届AI生成', '残業代計算', 'チェックリスト', '権利Q&A'],
     icon: ClipboardCheck,
     color: 'from-blue-500 to-indigo-500',
@@ -189,8 +189,8 @@ const lifeTools: Product[] = [
     subtitle: 'ワードローブ管理 × コスパ分析 × 売却ガイド',
     description:
       '持ってる服のコスパを可視化、断捨離候補をAI判定。売却想定価格＆プラットフォーム比較、コーデ提案まで。クローゼットを最適化。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
     tags: ['クローゼット管理', 'コスパ分析', '断捨離AI', '売却ガイド'],
     icon: Shirt,
     color: 'from-violet-500 to-fuchsia-500',
@@ -208,8 +208,8 @@ const bizTools: Product[] = [
     subtitle: 'AI搭載メルカリ自動監視ボット',
     description:
       'メルカリの新着出品を24時間自動監視し、AIが「お買い得」と判断した瞬間にDiscordへ通知。寝てる間にお宝古着を見逃さない。',
-    price: '¥9,800',
-    priceNote: '買い切り・税込',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
     tags: ['Python', 'AWS Lambda', 'AI', 'Discord'],
     icon: Search,
     color: 'from-amber-500 to-orange-500',
@@ -223,8 +223,8 @@ const bizTools: Product[] = [
     subtitle: 'トレンド分析 × AI自動デザイン × オンデマンド出品',
     description:
       'AIがバズワードを分析しTシャツデザインを自動生成。注文時にオンデマンド製造・配送。在庫リスクゼロのAIファッションビジネス。',
-    price: '¥9,800',
-    priceNote: '買い切り・税込',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
     tags: ['AI Design', 'Printful API', 'トレンド分析', 'Shopify'],
     icon: Store,
     color: 'from-emerald-500 to-teal-500',
@@ -238,8 +238,8 @@ const bizTools: Product[] = [
     subtitle: '13カテゴリ × 適性診断 × ロードマップ × 収益シミュレーター',
     description:
       'AI副業の「何から始めればいい？」から「月10万円達成」まで完全サポート。50+のAIツール辞典、テンプレート集、活動ログ搭載。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
     tags: ['13カテゴリ', '適性診断', 'テンプレート', '収益計算'],
     icon: Briefcase,
     color: 'from-orange-500 to-amber-500',
@@ -253,8 +253,8 @@ const bizTools: Product[] = [
     subtitle: 'Gmail連携 × 自動分類 × AI返信 × ゴミ箱整理',
     description:
       'Gmailとワンクリック接続。受信メールを緊急×重要で自動分類、AIが返信文を生成、不要メールはワンクリックでゴミ箱へ。3分でInbox Zero。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
+    price: '¥1,980/月',
+    priceNote: 'プレミアムプラン',
     tags: ['Gmail連携', 'AI返信', '自動分類', 'Inbox Zero'],
     icon: Mail,
     color: 'from-teal-500 to-cyan-500',
@@ -272,8 +272,8 @@ const creativeTools: Product[] = [
     subtitle: '26カテゴリ × 日本語→英語変換 × パラメータ辞典',
     description:
       '日本語で入力するだけで画像生成AI用の最適プロンプトを自動生成。Midjourney/DALL-E/Stable Diffusion対応。200+テンプレート搭載。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
     tags: ['26カテゴリ', 'プロンプト生成', 'テンプレート', '画像AI'],
     icon: Wand2,
     color: 'from-purple-500 to-fuchsia-500',
@@ -287,8 +287,8 @@ const creativeTools: Product[] = [
     subtitle: '文字起こし→台本→人物画像→サムネイル→タイトル→BGM',
     description:
       '動画・音声・テキストを取り込んで6ステップでYouTube投稿素材を全自動生成。10ジャンル対応の台本、AI人物イラスト、サムネイル、SEOタイトル、BGM作曲。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
     tags: ['6ステップ', '10ジャンル', '文字起こし', 'サムネイル'],
     icon: Clapperboard,
     color: 'from-red-500 to-pink-500',
@@ -306,8 +306,8 @@ const funTools: Product[] = [
     subtitle: 'AI搭載ペット感情リアルタイム翻訳システム',
     description:
       '留守中のペットの動きと鳴き声をAIがリアルタイム解析。「寂しがっています」「お腹が空きました」と感情を日本語で翻訳して通知。',
-    price: '¥4,980',
-    priceNote: '買い切り・税込',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
     tags: ['HTML5', 'Web Audio API', 'AI', 'LINE通知'],
     icon: PawPrint,
     color: 'from-violet-500 to-pink-500',
@@ -442,9 +442,9 @@ export default function ProductsPage() {
           </span>
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
-          AIを活用した業務効率化・自動化ツールを販売しています。
+          マーケティング、データ分析、業務効率化——あらゆる分野のAIツールが使い放題。
           <br />
-          全ツール使い放題プラン（¥980/月）なら全ツール使い放題 ✨
+          スタンダードプラン（¥980/月）で全ツール利用可能 ✨
         </p>
 
         {/* Quick Stats */}
@@ -556,7 +556,7 @@ export default function ProductsPage() {
 
       {/* Plan CTA */}
       <div className="my-16 bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-red-500/10 border border-amber-500/20 rounded-3xl p-8 text-center">
-        <h2 className="text-2xl font-bold mb-2">全ツール使い放題プラン</h2>
+        <h2 className="text-2xl font-bold mb-2">スタンダードプラン</h2>
         <p className="text-muted-foreground mb-4">月額 <span className="text-3xl font-bold text-amber-500">¥980</span> で{totalTools}ツールすべてが使い放題</p>
         <p className="text-sm text-muted-foreground mb-6">1ツール買うより圧倒的にお得 ✨ いつでも解約OK</p>
         <Link href="/pricing">
