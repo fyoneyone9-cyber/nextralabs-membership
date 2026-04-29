@@ -698,7 +698,7 @@ export default function InboxOrganizer() {
                     </div>
 
                     {/* Message rows */}
-                    <div className="space-y-1.5" style={{ transform: 'translateZ(0)' }}>
+                    <div className="space-y-1.5 max-h-[60vh] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch', willChange: 'scroll-position' }}>
                       {gmailMessages.map(msg => {
                         const cls = gmailClassified.get(msg.id)
                         const status = draftStatus.get(msg.id)
@@ -708,10 +708,10 @@ export default function InboxOrganizer() {
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 mb-0.5">
                                   {msg.isUnread && <span className="w-2 h-2 bg-teal-400 rounded-full flex-shrink-0" />}
-                                  <span className="text-xs text-white/40 truncate">{msg.from.replace(/<.*>/, '').trim()}</span>
+                                  <span className="text-xs text-white/40 line-clamp-1">{msg.from.replace(/<.*>/, '').trim()}</span>
                                 </div>
-                                <p className={`text-sm truncate ${msg.isUnread ? 'font-bold text-white/90' : 'text-white/70'}`}>{msg.subject || '(件名なぁE'}</p>
-                                <p className="text-xs text-white/30 truncate mt-0.5">{msg.snippet}</p>
+                                <p className={`text-sm line-clamp-1 ${msg.isUnread ? 'font-bold text-white/90' : 'text-white/70'}`}>{msg.subject || '(件名なぁE'}</p>
+                                <p className="text-xs text-white/30 line-clamp-1 mt-0.5">{msg.snippet}</p>
                               </div>
                               <div className="flex flex-col items-end gap-1 flex-shrink-0">
                                 <span className="text-xs text-white/30">{new Date(msg.date).toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' })}</span>
