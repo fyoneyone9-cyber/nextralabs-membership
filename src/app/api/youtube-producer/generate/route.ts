@@ -1,36 +1,60 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY
-
 async function callLLM(systemPrompt: string, userPrompt: string) {
-  if (!OPENAI_API_KEY) {
-    throw new Error('OPENAI_API_KEYが設定されていません')
+  const GSK_API_KEY = process.env.GSK_API_KEY
+  if (!GSK_API_KEY) {
+    throw new Error('APIキーが設定されていません')
   }
 
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+  // Use Genspark LLM proxy (OpenAI-compatible)
+  const res = await fetch('https://www.genspark.ai/api/cli_tools/call', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${OPENAI_API_KEY}`,
+      'X-Api-Key': GSK_API_KEY,
     },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
-      temperature: 0.8,
-      response_format: { type: 'json_object' },
+      tool_name: 'super_agent',
+      params: {
+        query: `${systemPrompt}\n\n---\n\n${userPrompt}`,
+      },
     }),
   })
 
   if (!res.ok) {
     const err = await res.text()
-    throw new Error(`OpenAI error: ${err}`)
+    throw new Error(`API error (${res.status}): ${err.slice(0, 200)}`)
   }
 
   const data = await res.json()
-  return JSON.parse(data.choices[0].message.content)
+
+  // Extract response text
+  let responseText = ''
+  if (data.data?.response) {
+    responseText = data.data.response
+  } else if (data.data?.text) {
+    responseText = data.data.text
+  } else if (typeof data.data === 'string') {
+    responseText = data.data
+  } else if (data.result) {
+    responseText = typeof data.result === 'string' ? data.result : JSON.stringify(data.result)
+  } else {
+    responseText = JSON.stringify(data)
+  }
+
+  // Extract JSON from markdown code blocks if present
+  const jsonMatch = responseText.match(/```(?:json)?\s*([\s\S]*?)```/)
+  if (jsonMatch) {
+    return JSON.parse(jsonMatch[1].trim())
+  }
+
+  // Try direct JSON parse
+  try {
+    return JSON.parse(responseText)
+  } catch {
+    // If not parseable as JSON, wrap in a basic structure
+    return { text: responseText }
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -47,7 +71,7 @@ export async function POST(req: NextRequest) {
 スタイル: ${genrePrompt}
 ${customPrompt ? `追加指示: ${customPrompt}` : ''}
 
-必ず以下のJSON形式で返してください:
+必ず以下のJSON形式で返してください（JSONのみ、他のテキストは不要）:
 {
   "opening": "オープニング（フック、挨拶、今日のテーマ紹介）",
   "body": "本編（メインコンテンツ、セクション分け、具体例）",
@@ -64,7 +88,7 @@ ${customPrompt ? `追加指示: ${customPrompt}` : ''}
         const result = await callLLM(
           `あなたは文章分析の専門家です。テキストから登場人物を抽出し、各人物のイラスト生成用プロンプトを作成してください。
 
-必ず以下のJSON形式で返してください:
+必ず以下のJSON形式で返してください（JSONのみ、他のテキストは不要）:
 {
   "characters": [
     {
@@ -92,7 +116,7 @@ ${customPrompt ? `追加指示: ${customPrompt}` : ''}
 - 感情を伝える表情やアイコン
 - 16:9アスペクト比
 
-必ず以下のJSON形式で返してください:
+必ず以下のJSON形式で返してください（JSONのみ、他のテキストは不要）:
 {
   "thumbnails": [
     {
@@ -118,7 +142,7 @@ ${customPrompt ? `追加指示: ${customPrompt}` : ''}
 - 感情ワード（衝撃、驚愕、神回、やばい等）
 - 疑問形も効果的
 
-必ず以下のJSON形式で返してください:
+必ず以下のJSON形式で返してください（JSONのみ、他のテキストは不要）:
 {
   "main": "メインタイトル",
   "alternatives": ["代替1", "代替2", "代替3", "代替4"],
@@ -139,7 +163,7 @@ ${customPrompt ? `追加指示: ${customPrompt}` : ''}
 - テンポ感（速い/ゆっくり/変化あり）
 - ジャンルの適合性
 
-必ず以下のJSON形式で返してください:
+必ず以下のJSON形式で返してください（JSONのみ、他のテキストは不要）:
 {
   "mood": "ムード（例: 明るく前向き, 落ち着いた知的, ドラマチック等）",
   "genre": "音楽ジャンル（例: Lo-fi Hip Hop, Cinematic, Acoustic Pop等）",

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Increase body size limit for audio uploads (default is 4MB)
 export const runtime = 'nodejs'
 export const maxDuration = 60
 
@@ -13,13 +12,11 @@ export async function POST(req: NextRequest) {
       const { url } = await req.json()
       if (!url) return NextResponse.json({ error: 'URLが必要です' }, { status: 400 })
 
-      // Use gsk crawl equivalent — fetch page content
       const response = await fetch(url, {
         headers: { 'User-Agent': 'Mozilla/5.0 (compatible; NextraLabs/1.0)' },
       })
       const html = await response.text()
 
-      // Strip HTML tags for basic text extraction
       const text = html
         .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
         .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
@@ -44,36 +41,99 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ text })
     }
 
-    // Audio/Video — use OpenAI Whisper API
-    const OPENAI_API_KEY = process.env.OPENAI_API_KEY
-    if (!OPENAI_API_KEY) {
-      // Fallback: return a helpful message
+    // Audio/Video — use Genspark API (via gsk transcribe endpoint)
+    const GSK_API_KEY = process.env.GSK_API_KEY
+    if (!GSK_API_KEY) {
       return NextResponse.json({
-        text: `[文字起こし] ファイル "${file.name}" (${(file.size / 1024 / 1024).toFixed(1)}MB) を受信しました。\n\n⚠️ サーバーにOPENAI_API_KEYが設定されていないため、自動文字起こしができません。\n\n以下の方法で文字起こしテキストを入力してください：\n1. 「テキスト直接入力」モードに切り替え\n2. 別のツール（Whisper, Google音声認識等）で文字起こししたテキストをペースト\n\nまたは、Vercel環境変数にOPENAI_API_KEYを設定してください。`
+        text: `[文字起こし] ファイル "${file.name}" (${(file.size / 1024 / 1024).toFixed(1)}MB) を受信しました。\n\n⚠️ サーバーにAPIキーが設定されていないため、自動文字起こしができません。\n\n「テキスト直接入力」モードで、別ツールの文字起こし結果を貼り付けてください。`
       })
     }
 
-    // Send to Whisper
-    const whisperForm = new FormData()
-    whisperForm.append('file', file)
-    whisperForm.append('model', 'whisper-1')
-    whisperForm.append('language', 'ja')
-    whisperForm.append('response_format', 'text')
+    // Step 1: Upload file to Genspark to get a file wrapper URL
+    const uploadForm = new FormData()
+    uploadForm.append('file', file)
 
-    const whisperRes = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+    const uploadRes = await fetch('https://www.genspark.ai/api/cli_tools/upload', {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${OPENAI_API_KEY}` },
-      body: whisperForm,
+      headers: { 'X-Api-Key': GSK_API_KEY },
+      body: uploadForm,
     })
 
-    if (!whisperRes.ok) {
-      const err = await whisperRes.text()
-      return NextResponse.json({ text: `文字起こしエラー: ${err}` })
+    if (!uploadRes.ok) {
+      const errText = await uploadRes.text()
+      console.error('Upload error:', uploadRes.status, errText)
+      return NextResponse.json({
+        text: `アップロードエラー（${uploadRes.status}）: ファイルのアップロードに失敗しました。\n\n「テキスト直接入力」モードをお試しください。`
+      })
     }
 
-    const text = await whisperRes.text()
+    const uploadData = await uploadRes.json()
+    const fileUrl = uploadData.file_wrapper_url || uploadData.upload_url || uploadData.url
+    if (!fileUrl) {
+      console.error('Upload response:', JSON.stringify(uploadData))
+      return NextResponse.json({
+        text: `アップロード結果からURLが取得できませんでした。\n\n「テキスト直接入力」モードをお試しください。`
+      })
+    }
+
+    // Make full URL if relative
+    const fullFileUrl = fileUrl.startsWith('http') ? fileUrl : `https://www.genspark.ai${fileUrl}`
+
+    // Step 2: Call transcribe API
+    const transcribeRes = await fetch('https://www.genspark.ai/api/cli_tools/call', {
+      method: 'POST',
+      headers: {
+        'X-Api-Key': GSK_API_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        tool_name: 'audio_transcribe',
+        params: {
+          audio_urls: [fullFileUrl],
+          model: 'whisper-1',
+        },
+      }),
+    })
+
+    if (!transcribeRes.ok) {
+      const errText = await transcribeRes.text()
+      console.error('Transcribe error:', transcribeRes.status, errText)
+      return NextResponse.json({
+        text: `文字起こしエラー（${transcribeRes.status}）\n\n「テキスト直接入力」モードをお試しください。`
+      })
+    }
+
+    const transcribeData = await transcribeRes.json()
+
+    // Extract text from response — handle multiple possible response formats
+    let text = ''
+    if (transcribeData.text) {
+      text = transcribeData.text
+    } else if (transcribeData.data?.text) {
+      text = transcribeData.data.text
+    } else if (transcribeData.data?.transcription) {
+      text = transcribeData.data.transcription
+    } else if (transcribeData.result?.text) {
+      text = transcribeData.result.text
+    } else if (typeof transcribeData.data === 'string') {
+      text = transcribeData.data
+    } else {
+      // Try to extract any text-like field
+      const dataStr = JSON.stringify(transcribeData)
+      console.log('Transcribe response:', dataStr.slice(0, 500))
+      // Look for segments/words
+      if (transcribeData.data?.segments) {
+        text = transcribeData.data.segments.map((s: { text?: string }) => s.text || '').join(' ')
+      } else if (transcribeData.data?.words) {
+        text = transcribeData.data.words.map((w: { word?: string }) => w.word || '').join(' ')
+      } else {
+        text = `文字起こし結果:\n${dataStr.slice(0, 2000)}`
+      }
+    }
+
     return NextResponse.json({ text })
   } catch (e) {
+    console.error('Transcribe route error:', e)
     return NextResponse.json({ error: `エラー: ${e instanceof Error ? e.message : '不明'}` }, { status: 500 })
   }
 }

@@ -4,23 +4,49 @@ export async function POST(req: NextRequest) {
   try {
     const { prompt, mood, genre } = await req.json()
 
-    // Try to use gsk audio API or fallback
-    // For now, return a structured response that the frontend can use
-    // The actual audio generation would use ElevenLabs, Suno, or similar API
+    const GSK_API_KEY = process.env.GSK_API_KEY
 
-    const OPENAI_API_KEY = process.env.OPENAI_API_KEY
-    if (!OPENAI_API_KEY) {
-      return NextResponse.json({
-        error: 'OPENAI_API_KEYが設定されていません。BGM生成にはAPI keyが必要です。',
-        prompt,
-        mood,
-        genre,
-        suggestion: `以下のプロンプトを使って、Suno AI (https://suno.ai) やUdio等で生成できます:\n\n${prompt}`
-      })
+    if (GSK_API_KEY) {
+      // Try Genspark audio generation
+      try {
+        const res = await fetch('https://www.genspark.ai/api/cli_tools/call', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Api-Key': GSK_API_KEY,
+          },
+          body: JSON.stringify({
+            tool_name: 'audio_generation',
+            params: {
+              prompt: prompt || `${mood} ${genre} background music for YouTube video, instrumental only, no vocals`,
+              model: 'minimax/music-01',
+            },
+          }),
+        })
+
+        if (res.ok) {
+          const data = await res.json()
+          let audioUrl = ''
+          if (data.data?.audio_url) audioUrl = data.data.audio_url
+          else if (data.data?.url) audioUrl = data.data.url
+          else if (typeof data.data === 'string' && data.data.startsWith('http')) audioUrl = data.data
+
+          if (audioUrl) {
+            return NextResponse.json({
+              audioUrl,
+              prompt,
+              mood,
+              genre,
+              suggestion: `✅ BGMが生成されました！`
+            })
+          }
+        }
+      } catch (audioErr) {
+        console.error('Audio generation error:', audioErr)
+      }
     }
 
-    // Use OpenAI TTS as a simple audio placeholder
-    // For production, integrate with Suno API or similar music generation
+    // Fallback: return prompt for manual generation
     return NextResponse.json({
       audioUrl: null,
       prompt,
