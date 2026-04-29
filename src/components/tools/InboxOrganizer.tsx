@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 // ==================== TYPES ====================
-type Tab = 'sort' | 'reply' | 'tasks' | 'schedule' | 'checklist' | 'habits'
+type Tab = 'gmail' | 'sort' | 'reply' | 'tasks' | 'schedule' | 'checklist' | 'habits'
 
 interface EmailEntry {
   id: string
@@ -18,8 +18,27 @@ interface EmailEntry {
 
 interface CheckItem { id: string; label: string; done: boolean; category: string }
 
+interface GmailMessage {
+  id: string
+  threadId: string
+  subject: string
+  from: string
+  date: string
+  snippet: string
+  labelIds: string[]
+  isUnread: boolean
+}
+
+interface GmailAuth {
+  accessToken: string
+  refreshToken: string
+  expiresAt: number
+  email: string
+}
+
 // ==================== DATA ====================
 const TABS: { id: Tab; icon: string; label: string }[] = [
+  { id: 'gmail', icon: '🔗', label: 'Gmail連携' },
   { id: 'sort', icon: '📥', label: '仕分けルール' },
   { id: 'reply', icon: '✉️', label: '返信テンプレ' },
   { id: 'tasks', icon: '📋', label: 'タスク整理' },
@@ -90,8 +109,18 @@ const SCHEDULE_SITUATIONS = [
 
 // ==================== COMPONENT ====================
 export default function InboxOrganizer() {
-  const [tab, setTab] = useState<Tab>('sort')
+  const [tab, setTab] = useState<Tab>('gmail')
   const [copied, setCopied] = useState('')
+  
+  // Gmail API state
+  const [gmailAuth, setGmailAuth] = useState<GmailAuth | null>(null)
+  const [gmailMessages, setGmailMessages] = useState<GmailMessage[]>([])
+  const [gmailLoading, setGmailLoading] = useState(false)
+  const [gmailError, setGmailError] = useState('')
+  const [gmailClassified, setGmailClassified] = useState<Map<string, { urgency: string; importance: string; category: string; action: string }>>(new Map())
+  const [draftStatus, setDraftStatus] = useState<Map<string, string>>(new Map())
+  const [selectedMessage, setSelectedMessage] = useState<GmailMessage | null>(null)
+  const [draftBody, setDraftBody] = useState('')
   
   // Reply tab
   const [replyCategory, setReplyCategory] = useState('thanks')
@@ -127,7 +156,94 @@ export default function InboxOrganizer() {
   })
   const [habitsResult, setHabitsResult] = useState<null | { score: number; level: string; tips: string[] }>(null)
 
-  // Load/save
+  // Gmail: classify messages client-side
+  const classifyMessage = useCallback((msg: GmailMessage) => {
+    const text = (msg.subject + ' ' + msg.from + ' ' + msg.snippet).toLowerCase()
+    const urgencyKeywords = ['至急', '急ぎ', '今日中', '本日', 'asap', '緊急', '締切', 'deadline', 'urgent']
+    const importanceKeywords = ['契約', '請求', '決算', '社長', '役員', 'ceo', '重要', '必須', '確認必須', 'invoice', '見積']
+    
+    const urgency = urgencyKeywords.some(k => text.includes(k)) ? '🔴 高' : '🟡 中'
+    const importance = importanceKeywords.some(k => text.includes(k)) ? '🔴 高' : '🟡 中'
+    
+    let category = '📁 その他'
+    let action = 'アーカイブ候補'
+    if (/請求|領収|invoice|見積|receipt/.test(text)) { category = '💰 経理'; action = '確認して保存' }
+    else if (/打ち合わせ|会議|ミーティング|mtg|日程|meeting|calendar/.test(text)) { category = '📅 予定'; action = 'カレンダー確認' }
+    else if (/タスク|依頼|お願い|対応|todo/.test(text)) { category = '📋 タスク'; action = 'ToDoに追加' }
+    else if (/報告|共有|fyi|周知|newsletter|ニュースレター/.test(text)) { category = '📢 情報共有'; action = '後で読む' }
+    else if (/確認|承認|レビュー|チェック|approve|review/.test(text)) { category = '✅ 承認'; action = '今すぐ対応' }
+    else if (/noreply|no-reply|配信停止|unsubscribe/.test(text)) { category = '🔕 自動通知'; action = 'アーカイブ' }
+    
+    if (urgency === '🔴 高' && importance === '🔴 高') action = '🔥 今すぐ対応！'
+    else if (urgency === '🔴 高') action = '⚡ 早めに対応'
+    
+    return { urgency, importance, category, action }
+  }, [])
+
+  // Gmail: fetch messages
+  const fetchGmailMessages = useCallback(async () => {
+    if (!gmailAuth) return
+    setGmailLoading(true)
+    setGmailError('')
+    try {
+      const res = await fetch('/api/gmail/messages?maxResults=30&q=in:inbox', {
+        headers: { Authorization: `Bearer ${gmailAuth.accessToken}` },
+      })
+      if (!res.ok) {
+        if (res.status === 401) {
+          setGmailAuth(null)
+          sessionStorage.removeItem('gmail-auth')
+          setGmailError('セッションが切れました。再ログインしてください。')
+          return
+        }
+        throw new Error('Failed to fetch')
+      }
+      const data = await res.json()
+      setGmailMessages(data.messages || [])
+      
+      // Classify all messages
+      const classified = new Map<string, { urgency: string; importance: string; category: string; action: string }>()
+      for (const msg of (data.messages || [])) {
+        classified.set(msg.id, classifyMessage(msg))
+      }
+      setGmailClassified(classified)
+    } catch {
+      setGmailError('メールの取得に失敗しました。')
+    } finally {
+      setGmailLoading(false)
+    }
+  }, [gmailAuth, classifyMessage])
+
+  // Gmail: create draft
+  const createDraft = async (msg: GmailMessage, body: string) => {
+    if (!gmailAuth || !body.trim()) return
+    setDraftStatus(prev => new Map(prev).set(msg.id, 'saving...'))
+    try {
+      const fromMatch = msg.from.match(/<(.+?)>/)
+      const to = fromMatch ? fromMatch[1] : msg.from
+      const res = await fetch('/api/gmail/draft', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${gmailAuth.accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to,
+          subject: `Re: ${msg.subject}`,
+          body,
+          threadId: msg.threadId,
+        }),
+      })
+      if (!res.ok) throw new Error('Draft creation failed')
+      setDraftStatus(prev => new Map(prev).set(msg.id, '✅ 下書き保存済み'))
+      setDraftBody('')
+      setSelectedMessage(null)
+    } catch {
+      setDraftStatus(prev => new Map(prev).set(msg.id, '❌ 失敗'))
+    }
+  }
+
+  // Load/save + Gmail auth from URL hash
   useEffect(() => {
     try {
       const saved = localStorage.getItem('inbox-organizer-emails')
@@ -135,6 +251,50 @@ export default function InboxOrganizer() {
       const savedChecklist = localStorage.getItem('inbox-organizer-checklist')
       if (savedChecklist) setChecklist(JSON.parse(savedChecklist))
     } catch {}
+
+    // Check for Gmail OAuth callback in URL hash
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash
+      if (hash.startsWith('#gmail_auth=')) {
+        const params = new URLSearchParams(hash.slice('#gmail_auth='.length))
+        const accessToken = params.get('access_token')
+        const email = params.get('email')
+        const expiresIn = parseInt(params.get('expires_in') || '3600')
+        if (accessToken) {
+          const auth: GmailAuth = {
+            accessToken,
+            refreshToken: params.get('refresh_token') || '',
+            expiresAt: Date.now() + expiresIn * 1000,
+            email: email || '',
+          }
+          setGmailAuth(auth)
+          sessionStorage.setItem('gmail-auth', JSON.stringify(auth))
+          // Clean URL hash
+          window.history.replaceState(null, '', window.location.pathname)
+        }
+      }
+
+      // Check URL for error
+      const urlParams = new URLSearchParams(window.location.search)
+      const gmailErr = urlParams.get('gmail_error')
+      if (gmailErr) {
+        setGmailError(`Gmail認証エラー: ${gmailErr}`)
+        window.history.replaceState(null, '', window.location.pathname)
+      }
+
+      // Restore session
+      try {
+        const savedAuth = sessionStorage.getItem('gmail-auth')
+        if (savedAuth) {
+          const auth = JSON.parse(savedAuth) as GmailAuth
+          if (auth.expiresAt > Date.now()) {
+            setGmailAuth(auth)
+          } else {
+            sessionStorage.removeItem('gmail-auth')
+          }
+        }
+      } catch {}
+    }
   }, [])
 
   useEffect(() => {
@@ -256,6 +416,187 @@ ${f.topic ? `${f.topic}について、` : ''}お打ち合わせのお時間を�
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+
+        {/* ⓪ Gmail連携 */}
+        {tab === 'gmail' && (
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-xl font-bold">🔗 Gmail連携</h2>
+              <p className="text-sm text-white/50">Googleアカウントでログインして受信トレイを自動分類</p>
+            </div>
+
+            {!gmailAuth ? (
+              <div className="space-y-4">
+                <div className="bg-white/5 rounded-xl p-6 text-center space-y-4">
+                  <div className="text-5xl">📬</div>
+                  <h3 className="text-lg font-bold">Gmailに接続</h3>
+                  <p className="text-sm text-white/50 max-w-md mx-auto">
+                    Googleアカウントでログインすると、受信トレイのメールを自動で
+                    <strong className="text-teal-400">緊急度×重要度マトリクス</strong>で分類します。
+                  </p>
+                  <a
+                    href="/api/auth/gmail"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl text-sm font-bold hover:opacity-90 transition-opacity"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" /><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" /><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" /><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" /></svg>
+                    Googleでログイン
+                  </a>
+                  <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 text-xs text-amber-300/70 max-w-md mx-auto">
+                    ⚠️ 読み取り専用（件名・差出人）+ 下書き作成のみ。メールの送信・削除は行いません。
+                  </div>
+                </div>
+
+                {gmailError && (
+                  <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 text-sm text-red-400">
+                    ❌ {gmailError}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {/* Connected status */}
+                <div className="bg-teal-500/10 border border-teal-500/20 rounded-xl p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">✅</span>
+                    <div>
+                      <p className="text-sm font-bold text-teal-400">Gmail接続済み</p>
+                      <p className="text-xs text-white/50">{gmailAuth.email}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={fetchGmailMessages}
+                      disabled={gmailLoading}
+                      className="px-4 py-2 bg-teal-500/20 text-teal-400 rounded-lg text-xs font-medium hover:bg-teal-500/30 disabled:opacity-50"
+                    >
+                      {gmailLoading ? '⏳ 取得中...' : '📥 メール取得'}
+                    </button>
+                    <button
+                      onClick={() => { setGmailAuth(null); sessionStorage.removeItem('gmail-auth'); setGmailMessages([]); setGmailClassified(new Map()) }}
+                      className="px-3 py-2 bg-white/5 text-white/40 rounded-lg text-xs hover:bg-white/10"
+                    >
+                      ログアウト
+                    </button>
+                  </div>
+                </div>
+
+                {gmailError && (
+                  <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 text-sm text-red-400">
+                    ❌ {gmailError}
+                  </div>
+                )}
+
+                {/* Draft modal */}
+                {selectedMessage && (
+                  <div className="bg-white/5 border border-teal-500/30 rounded-xl p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-bold">✏️ 下書き作成</h3>
+                      <button onClick={() => { setSelectedMessage(null); setDraftBody('') }} className="text-xs text-white/30 hover:text-white/60">✕ 閉じる</button>
+                    </div>
+                    <div className="bg-black/20 rounded-lg p-3 text-xs">
+                      <p className="text-white/40">To: {selectedMessage.from}</p>
+                      <p className="text-white/40">Subject: Re: {selectedMessage.subject}</p>
+                    </div>
+                    <textarea
+                      value={draftBody}
+                      onChange={e => setDraftBody(e.target.value)}
+                      placeholder="返信本文を入力...&#10;（「返信テンプレ」タブのテンプレートを参考に！）"
+                      className="w-full h-32 bg-black/20 border border-white/10 rounded-lg p-3 text-sm text-white/80 placeholder-white/30 resize-none focus:outline-none focus:border-teal-500/30"
+                    />
+                    <button
+                      onClick={() => createDraft(selectedMessage, draftBody)}
+                      disabled={!draftBody.trim()}
+                      className="w-full py-2.5 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-lg text-sm font-bold hover:opacity-90 disabled:opacity-30"
+                    >
+                      📝 Gmailの下書きに保存（送信はしません）
+                    </button>
+                  </div>
+                )}
+
+                {/* Messages list */}
+                {gmailMessages.length > 0 && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-bold">📬 受信トレイ（{gmailMessages.length}件）</h3>
+                      <div className="flex gap-2 text-xs text-white/30">
+                        <span>🔴高 🟡中</span>
+                      </div>
+                    </div>
+
+                    {/* Eisenhower summary */}
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { label: '🔥 今すぐ対応', count: Array.from(gmailClassified.values()).filter(c => c.urgency === '🔴 高' && c.importance === '🔴 高').length, bg: 'bg-red-500/10 border-red-500/20' },
+                        { label: '⚡ 早めに対応', count: Array.from(gmailClassified.values()).filter(c => c.urgency === '🔴 高' && c.importance !== '🔴 高').length, bg: 'bg-orange-500/10 border-orange-500/20' },
+                        { label: '📌 計画して対応', count: Array.from(gmailClassified.values()).filter(c => c.urgency !== '🔴 高' && c.importance === '🔴 高').length, bg: 'bg-amber-500/10 border-amber-500/20' },
+                        { label: '📂 後回しOK', count: Array.from(gmailClassified.values()).filter(c => c.urgency !== '🔴 高' && c.importance !== '🔴 高').length, bg: 'bg-white/5 border-white/10' },
+                      ].map(q => (
+                        <div key={q.label} className={`rounded-lg p-3 border ${q.bg}`}>
+                          <div className="text-xs font-bold">{q.label}</div>
+                          <div className="text-2xl font-bold mt-1">{q.count}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Message rows */}
+                    <div className="space-y-1.5">
+                      {gmailMessages.map(msg => {
+                        const cls = gmailClassified.get(msg.id)
+                        const status = draftStatus.get(msg.id)
+                        return (
+                          <div key={msg.id} className={`bg-white/5 rounded-lg p-3 space-y-1.5 ${msg.isUnread ? 'border-l-2 border-teal-500' : ''}`}>
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-0.5">
+                                  {msg.isUnread && <span className="w-2 h-2 bg-teal-400 rounded-full flex-shrink-0" />}
+                                  <span className="text-xs text-white/40 truncate">{msg.from.replace(/<.*>/, '').trim()}</span>
+                                </div>
+                                <p className={`text-sm truncate ${msg.isUnread ? 'font-bold text-white/90' : 'text-white/70'}`}>{msg.subject || '(件名なし)'}</p>
+                                <p className="text-xs text-white/30 truncate mt-0.5">{msg.snippet}</p>
+                              </div>
+                              <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                                <span className="text-xs text-white/30">{new Date(msg.date).toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' })}</span>
+                                {cls && <span className="px-2 py-0.5 bg-white/5 rounded text-xs text-white/50">{cls.category}</span>}
+                              </div>
+                            </div>
+                            {cls && (
+                              <div className="flex items-center justify-between">
+                                <div className="flex gap-2 text-xs">
+                                  <span>緊急{cls.urgency}</span>
+                                  <span>重要{cls.importance}</span>
+                                  <span className="text-teal-400 font-medium">→ {cls.action}</span>
+                                </div>
+                                <div className="flex gap-1.5">
+                                  {status ? (
+                                    <span className="text-xs text-white/40">{status}</span>
+                                  ) : (
+                                    <button
+                                      onClick={() => { setSelectedMessage(msg); setDraftBody('') }}
+                                      className="px-2 py-1 bg-teal-500/20 text-teal-400 rounded text-xs hover:bg-teal-500/30"
+                                    >
+                                      ✏️ 下書き
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {!gmailLoading && gmailMessages.length === 0 && (
+                  <div className="bg-white/5 rounded-xl p-8 text-center">
+                    <p className="text-3xl mb-2">📬</p>
+                    <p className="text-sm text-white/50">「メール取得」ボタンを押して受信トレイを取得</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* ① 仕分けルール */}
         {tab === 'sort' && (
@@ -519,7 +860,9 @@ ${f.topic ? `${f.topic}について、` : ''}お打ち合わせのお時間を�
 
         {/* Footer */}
         <div className="text-center py-8 border-t border-white/5">
-          <p className="text-xs text-white/20">すべてのデータはブラウザ内に保存されます。サーバーに送信されません。</p>
+          <p className="text-xs text-white/20">
+            {gmailAuth ? 'Gmail連携: メールデータはセッション中のみ保持。ログアウトで全消去。' : 'すべてのデータはブラウザ内に保存されます。サーバーに送信されません。'}
+          </p>
         </div>
       </div>
     </div>
