@@ -459,40 +459,46 @@ export function YoutubeProducer() {
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="bg-white/5 rounded-xl p-6">
-                  <h3 className="text-sm font-bold text-red-400 mb-3">💡 台本の作り方</h3>
-                  <p className="text-sm text-white/60 mb-4">文字起こしテキストをChatGPTやGeminiに渡して、YouTube投稿用の台本を作成してもらいましょう。</p>
-
-                  <div className="space-y-3">
-                    <div className="bg-black/20 rounded-xl p-4">
-                      <div className="text-xs text-white/30 mb-1">Step 1: プロンプトをコピー</div>
-                      <div className="bg-black/30 rounded-lg p-3 text-sm text-white/70 mb-2 font-mono leading-relaxed">{`以下の文字起こしテキストをもとに、YouTube動画の台本を作成してください。\n\n条件：\n・ジャンル: ${GENRES.find(g => g.id === genre)?.label || genre}\n・構成: オープニング → 本編 → エンディング\n・視聴者を引き込む冒頭フック付き\n・読み上げ時間の目安も記載\n${scriptCustomPrompt ? `・追加指示: ${scriptCustomPrompt}\n` : ''}\n文字起こし:\n${transcript.text.slice(0, 500)}${transcript.text.length > 500 ? '...' : ''}`}</div>
-                      <button onClick={() => { navigator.clipboard.writeText(`以下の文字起こしテキストをもとに、YouTube動画の台本を作成してください。\n\n条件：\n・ジャンル: ${GENRES.find(g => g.id === genre)?.label || genre}\n・構成: オープニング → 本編 → エンディング\n・視聴者を引き込む冒頭フック付き\n・読み上げ時間の目安も記載\n${scriptCustomPrompt ? `・追加指示: ${scriptCustomPrompt}\n` : ''}\n文字起こし:\n${transcript.text}`); setCopied('script-prompt') }} className="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg text-xs hover:bg-red-500/30 font-bold">
-                        {copied === 'script-prompt' ? '✅ コピー済み' : '📋 プロンプトをコピー'}
-                      </button>
-                    </div>
-
-                    <div className="bg-black/20 rounded-xl p-4">
-                      <div className="text-xs text-white/30 mb-2">Step 2: AIで台本生成</div>
-                      <div className="flex gap-2 flex-wrap">
-                        <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-xs hover:bg-green-500/30 font-bold">ChatGPT で台本作成</a>
-                        <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-sky-500/20 text-sky-400 rounded-lg text-xs hover:bg-sky-500/30 font-bold">Gemini で台本作成</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 <div className="bg-white/5 rounded-xl p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-lg">{genreInfo.icon}</span>
                     <span className="text-sm font-bold">{genreInfo.label}</span>
                   </div>
                   <textarea value={scriptCustomPrompt} onChange={e => setScriptCustomPrompt(e.target.value)} placeholder="追加の指示（任意）: 「10分以内に収める」「冒頭にフック入れて」「関西弁で」..." className="w-full h-16 bg-black/20 border border-white/10 rounded-lg p-2 text-xs text-white/70 resize-none focus:outline-none focus:border-red-500/30 placeholder-white/30" />
-                  <p className="text-xs text-white/30 mt-1">追加指示を入力するとプロンプトに反映されます</p>
                 </div>
 
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
-                  <p className="text-xs text-amber-400">💡 ChatGPT/Geminiは長文テキストを理解して、構造化されたYouTube台本を一発で作ってくれます。</p>
+                <div className="bg-white/5 rounded-xl p-6">
+                  <h3 className="text-sm font-bold text-red-400 mb-3">📝 プロンプトをコピーしてAIに渡してください</h3>
+                  <p className="text-xs text-white/40 mb-3">文字起こし全文（{transcript.text.length.toLocaleString()}文字）を含むプロンプトがコピーされます</p>
+
+                  <button onClick={() => { navigator.clipboard.writeText(`以下の文字起こしテキストをもとに、YouTube動画の台本を作成してください。\n\n条件：\n・ジャンル: ${GENRES.find(g => g.id === genre)?.label || genre}\n・構成: オープニング → 本編 → エンディング\n・視聴者を引き込む冒頭フック付き\n・読み上げ時間の目安も記載\n${scriptCustomPrompt ? `・追加指示: ${scriptCustomPrompt}\n` : ''}\n文字起こし:\n${transcript.text}`); setCopied('script-prompt') }} className="w-full py-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl text-sm font-bold hover:opacity-90">
+                    {copied === 'script-prompt' ? '✅ コピー済み！下のAIに貼り付けてください' : '📋 台本作成プロンプトをコピー'}
+                  </button>
+
+                  <div className="mt-4 space-y-2">
+                    <div className="text-xs text-white/30 mb-1">コピーしたら以下のAIに貼り付け：</div>
+                    <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                      <span className="text-xl">🟢</span>
+                      <div>
+                        <div className="text-sm font-bold text-green-400">ChatGPT</div>
+                        <div className="text-xs text-white/40">長文理解力が高い。構造化された台本を一発で作成。無料プランOK</div>
+                      </div>
+                    </a>
+                    <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                      <span className="text-xl">🔵</span>
+                      <div>
+                        <div className="text-sm font-bold text-sky-400">Gemini</div>
+                        <div className="text-xs text-white/40">超長文対応（100万トークン）。長い文字起こしでも全文処理可能。無料</div>
+                      </div>
+                    </a>
+                    <a href="https://claude.ai/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                      <span className="text-xl">🟠</span>
+                      <div>
+                        <div className="text-sm font-bold text-amber-400">Claude</div>
+                        <div className="text-xs text-white/40">自然な日本語表現が得意。読みやすい台本に仕上がる。無料プランOK</div>
+                      </div>
+                    </a>
+                  </div>
                 </div>
               </div>
             )}
@@ -516,39 +522,44 @@ export function YoutubeProducer() {
             ) : (
               <div className="space-y-4">
                 <div className="bg-white/5 rounded-xl p-6">
-                  <h3 className="text-sm font-bold text-red-400 mb-3">💡 人物画像の作り方</h3>
-                  <p className="text-sm text-white/60 mb-4">文字起こしテキストをChatGPTやGeminiに渡して、登場人物を個別にAI画像で生成しましょう。</p>
+                  <h3 className="text-sm font-bold text-red-400 mb-3">🎨 プロンプトをコピーしてAIに渡してください</h3>
+                  <p className="text-xs text-white/40 mb-3">文字起こし全文（{transcript.text.length.toLocaleString()}文字）を含むプロンプトがコピーされます</p>
 
-                  <div className="space-y-3">
-                    <div className="bg-black/20 rounded-xl p-4">
-                      <div className="text-xs text-white/30 mb-1">Step 1: プロンプトをコピー</div>
-                      <div className="bg-black/30 rounded-lg p-3 text-sm text-white/70 mb-2 font-mono leading-relaxed">{`この文章に登場する人物をリストアップしてください。\nそれぞれの人物について、以下の情報を教えてください：\n・名前\n・外見の特徴や性格の描写\n・画像生成AI用の英語プロンプト（アニメ風イラスト）\n\n---\n${transcript.text.slice(0, 500)}${transcript.text.length > 500 ? '...' : ''}`}</div>
-                      <button onClick={() => { navigator.clipboard.writeText(`この文章に登場する人物をリストアップしてください。\nそれぞれの人物について、以下の情報を教えてください：\n・名前\n・外見の特徴や性格の描写\n・画像生成AI用の英語プロンプト（アニメ風イラスト）\n\n---\n${transcript.text}`); setCopied('char-prompt') }} className="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg text-xs hover:bg-red-500/30 font-bold">
-                        {copied === 'char-prompt' ? '✅ コピー済み' : '📋 全文含むプロンプトをコピー'}
-                      </button>
-                    </div>
+                  <button onClick={() => { navigator.clipboard.writeText(`以下の文章に登場する人物をリストアップし、それぞれのAIイラストを生成してください。\n\n各人物について：\n・名前と役割\n・外見の特徴や性格\n・アニメ風イラスト（上半身、シンプル背景）を1枚ずつ生成\n\n---\n${transcript.text}`); setCopied('char-prompt') }} className="w-full py-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl text-sm font-bold hover:opacity-90">
+                    {copied === 'char-prompt' ? '✅ コピー済み！下のAIに貼り付けてください' : '📋 人物画像プロンプトをコピー'}
+                  </button>
 
-                    <div className="bg-black/20 rounded-xl p-4">
-                      <div className="text-xs text-white/30 mb-2">Step 2: AIに聞いて人物を特定</div>
-                      <div className="flex gap-2 flex-wrap">
-                        <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-xs hover:bg-green-500/30 font-bold">ChatGPT で人物抽出</a>
-                        <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-sky-500/20 text-sky-400 rounded-lg text-xs hover:bg-sky-500/30 font-bold">Gemini で人物抽出</a>
+                  <div className="mt-4 space-y-2">
+                    <div className="text-xs text-white/30 mb-1">コピーしたら以下のAIに貼り付け：</div>
+                    <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                      <span className="text-xl">🟢</span>
+                      <div>
+                        <div className="text-sm font-bold text-green-400">ChatGPT（DALL-E 3）</div>
+                        <div className="text-xs text-white/40">人物抽出＋画像生成を一発で実行。「イラストも描いて」で自動生成。おすすめ</div>
                       </div>
-                    </div>
-
-                    <div className="bg-black/20 rounded-xl p-4">
-                      <div className="text-xs text-white/30 mb-2">Step 3: 生成されたプロンプトで画像を作成</div>
-                      <div className="flex gap-2 flex-wrap">
-                        <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-xs hover:bg-green-500/30 font-bold">ChatGPT（DALL-E）</a>
-                        <a href="https://www.bing.com/images/create" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg text-xs hover:bg-blue-500/30 font-bold">Bing Image Creator</a>
-                        <a href="https://leonardo.ai" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg text-xs hover:bg-purple-500/30 font-bold">Leonardo AI</a>
+                    </a>
+                    <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                      <span className="text-xl">🔵</span>
+                      <div>
+                        <div className="text-sm font-bold text-sky-400">Gemini（Imagen 3）</div>
+                        <div className="text-xs text-white/40">Google製画像生成。リアル寄りのイラストが得意。無料</div>
                       </div>
-                    </div>
+                    </a>
+                    <a href="https://www.bing.com/images/create" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                      <span className="text-xl">🟣</span>
+                      <div>
+                        <div className="text-sm font-bold text-blue-400">Bing Image Creator（DALL-E 3）</div>
+                        <div className="text-xs text-white/40">Microsoftアカウントで無料。英語プロンプトで高品質な画像</div>
+                      </div>
+                    </a>
+                    <a href="https://leonardo.ai/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                      <span className="text-xl">🟤</span>
+                      <div>
+                        <div className="text-sm font-bold text-purple-400">Leonardo AI</div>
+                        <div className="text-xs text-white/40">アニメ・イラスト特化。スタイル選択が豊富。無料枠150クレジット/日</div>
+                      </div>
+                    </a>
                   </div>
-                </div>
-
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
-                  <p className="text-xs text-amber-400">💡 ChatGPTならDALL-Eで人物抽出＆画像生成を一気にやってくれます。「この文章の登場人物をそれぞれイラストで描いて」と伝えてみましょう。</p>
                 </div>
               </div>
             )}
@@ -572,32 +583,44 @@ export function YoutubeProducer() {
             ) : (
               <div className="space-y-4">
                 <div className="bg-white/5 rounded-xl p-6">
-                  <h3 className="text-sm font-bold text-red-400 mb-3">💡 サムネイル画像の作り方</h3>
-                  <p className="text-sm text-white/60 mb-4">文字起こし内容をAIに渡して、YouTube用サムネイル画像を生成してもらいましょう。</p>
+                  <h3 className="text-sm font-bold text-red-400 mb-3">🖼️ プロンプトをコピーしてAIに渡してください</h3>
+                  <p className="text-xs text-white/40 mb-3">動画内容を含むサムネイル作成プロンプトがコピーされます</p>
 
-                  <div className="space-y-3">
-                    <div className="bg-black/20 rounded-xl p-4">
-                      <div className="text-xs text-white/30 mb-1">Step 1: プロンプトをコピー</div>
-                      <div className="bg-black/30 rounded-lg p-3 text-sm text-white/70 mb-2 font-mono leading-relaxed">{`以下のYouTube動画の内容をもとに、サムネイル画像を3パターン作成してください。\n\n条件：\n・サイズ: 1280×720（16:9）\n・目を引くデザイン\n・大きな日本語テキスト入り\n・パターン: インパクト系 / 情報系 / 感情系\n\n動画内容:\n${transcript.text.slice(0, 500)}${transcript.text.length > 500 ? '...' : ''}`}</div>
-                      <button onClick={() => { navigator.clipboard.writeText(`以下のYouTube動画の内容をもとに、サムネイル画像を3パターン作成してください。\n\n条件：\n・サイズ: 1280×720（16:9）\n・目を引くデザイン\n・大きな日本語テキスト入り\n・パターン: インパクト系 / 情報系 / 感情系\n\n動画内容:\n${transcript.text}`); setCopied('thumb-prompt') }} className="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg text-xs hover:bg-red-500/30 font-bold">
-                        {copied === 'thumb-prompt' ? '✅ コピー済み' : '📋 プロンプトをコピー'}
-                      </button>
-                    </div>
+                  <button onClick={() => { navigator.clipboard.writeText(`以下のYouTube動画の内容をもとに、サムネイル画像を3パターン作成してください。\n\n条件：\n・サイズ: 1280×720（16:9）\n・目を引く大胆なデザイン\n・大きく読みやすい日本語テキスト入り\n・高コントラスト配色\n・パターン: インパクト系 / 情報系 / 感情系\n\n動画内容:\n${transcript.text}`); setCopied('thumb-prompt') }} className="w-full py-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl text-sm font-bold hover:opacity-90">
+                    {copied === 'thumb-prompt' ? '✅ コピー済み！下のAIに貼り付けてください' : '📋 サムネイル作成プロンプトをコピー'}
+                  </button>
 
-                    <div className="bg-black/20 rounded-xl p-4">
-                      <div className="text-xs text-white/30 mb-2">Step 2: AIで画像生成</div>
-                      <div className="flex gap-2 flex-wrap">
-                        <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-xs hover:bg-green-500/30 font-bold">ChatGPT（DALL-E）</a>
-                        <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-sky-500/20 text-sky-400 rounded-lg text-xs hover:bg-sky-500/30 font-bold">Gemini（Imagen）</a>
-                        <a href="https://www.bing.com/images/create" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg text-xs hover:bg-blue-500/30 font-bold">Bing Image Creator</a>
-                        <a href="https://www.canva.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg text-xs hover:bg-purple-500/30 font-bold">Canva</a>
+                  <div className="mt-4 space-y-2">
+                    <div className="text-xs text-white/30 mb-1">コピーしたら以下のAIに貼り付け：</div>
+                    <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                      <span className="text-xl">🟢</span>
+                      <div>
+                        <div className="text-sm font-bold text-green-400">ChatGPT（DALL-E 3）</div>
+                        <div className="text-xs text-white/40">内容理解→画像生成を一発で。テキスト入り画像も生成可能。おすすめ</div>
                       </div>
-                    </div>
+                    </a>
+                    <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                      <span className="text-xl">🔵</span>
+                      <div>
+                        <div className="text-sm font-bold text-sky-400">Gemini（Imagen 3）</div>
+                        <div className="text-xs text-white/40">写真風サムネイルが得意。日本語テキスト精度も向上中。無料</div>
+                      </div>
+                    </a>
+                    <a href="https://www.canva.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                      <span className="text-xl">🎨</span>
+                      <div>
+                        <div className="text-sm font-bold text-purple-400">Canva</div>
+                        <div className="text-xs text-white/40">YouTube向けテンプレート多数。テキスト配置・フォント調整が自在。無料プランOK</div>
+                      </div>
+                    </a>
+                    <a href="https://www.bing.com/images/create" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                      <span className="text-xl">🟣</span>
+                      <div>
+                        <div className="text-sm font-bold text-blue-400">Bing Image Creator</div>
+                        <div className="text-xs text-white/40">DALL-E 3搭載。Microsoftアカウントで完全無料。英語プロンプト推奨</div>
+                      </div>
+                    </a>
                   </div>
-                </div>
-
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
-                  <p className="text-xs text-amber-400">💡 ChatGPTならDALL-Eで直接画像を出力してくれます。Canvaでテキストの微調整も可能です。</p>
                 </div>
               </div>
             )}
@@ -621,30 +644,37 @@ export function YoutubeProducer() {
             ) : (
               <div className="space-y-4">
                 <div className="bg-white/5 rounded-xl p-6">
-                  <h3 className="text-sm font-bold text-red-400 mb-3">💡 タイトル・タグ・説明文の作り方</h3>
-                  <p className="text-sm text-white/60 mb-4">文字起こし内容をAIに渡して、SEO最適化されたタイトル・タグ・説明文を生成してもらいましょう。</p>
+                  <h3 className="text-sm font-bold text-red-400 mb-3">✏️ プロンプトをコピーしてAIに渡してください</h3>
+                  <p className="text-xs text-white/40 mb-3">タイトル5案 + ハッシュタグ15個 + 説明文を一括生成するプロンプトです</p>
 
-                  <div className="space-y-3">
-                    <div className="bg-black/20 rounded-xl p-4">
-                      <div className="text-xs text-white/30 mb-1">Step 1: プロンプトをコピー</div>
-                      <div className="bg-black/30 rounded-lg p-3 text-sm text-white/70 mb-2 font-mono leading-relaxed">{`以下のYouTube動画の文字起こしをもとに、以下を作成してください：\n\n1. メインタイトル（30文字以内、クリック率重視）\n2. 代替タイトル4つ\n3. ハッシュタグ15個\n4. 説明文（200文字程度、SEO対策済み）\n\nジャンル: ${GENRES.find(g => g.id === genre)?.label || genre}\n\n文字起こし:\n${transcript.text.slice(0, 500)}${transcript.text.length > 500 ? '...' : ''}`}</div>
-                      <button onClick={() => { navigator.clipboard.writeText(`以下のYouTube動画の文字起こしをもとに、以下を作成してください：\n\n1. メインタイトル（30文字以内、クリック率重視）\n2. 代替タイトル4つ\n3. ハッシュタグ15個\n4. 説明文（200文字程度、SEO対策済み）\n\nジャンル: ${GENRES.find(g => g.id === genre)?.label || genre}\n\n文字起こし:\n${transcript.text}`); setCopied('title-prompt') }} className="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg text-xs hover:bg-red-500/30 font-bold">
-                        {copied === 'title-prompt' ? '✅ コピー済み' : '📋 プロンプトをコピー'}
-                      </button>
-                    </div>
+                  <button onClick={() => { navigator.clipboard.writeText(`以下のYouTube動画の文字起こしをもとに、以下をすべて作成してください：\n\n1. メインタイトル（30文字以内、クリック率・SEO重視、【】や数字を活用）\n2. 代替タイトル4つ（異なるアプローチ）\n3. ハッシュタグ15個（検索されやすいもの）\n4. 説明文（200〜300文字、SEO対策済み、チャンネル登録誘導付き）\n\nジャンル: ${GENRES.find(g => g.id === genre)?.label || genre}\n\n文字起こし:\n${transcript.text}`); setCopied('title-prompt') }} className="w-full py-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl text-sm font-bold hover:opacity-90">
+                    {copied === 'title-prompt' ? '✅ コピー済み！下のAIに貼り付けてください' : '📋 タイトル・タグ・説明文プロンプトをコピー'}
+                  </button>
 
-                    <div className="bg-black/20 rounded-xl p-4">
-                      <div className="text-xs text-white/30 mb-2">Step 2: AIでタイトル生成</div>
-                      <div className="flex gap-2 flex-wrap">
-                        <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-xs hover:bg-green-500/30 font-bold">ChatGPT で生成</a>
-                        <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-sky-500/20 text-sky-400 rounded-lg text-xs hover:bg-sky-500/30 font-bold">Gemini で生成</a>
+                  <div className="mt-4 space-y-2">
+                    <div className="text-xs text-white/30 mb-1">コピーしたら以下のAIに貼り付け：</div>
+                    <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                      <span className="text-xl">🟢</span>
+                      <div>
+                        <div className="text-sm font-bold text-green-400">ChatGPT</div>
+                        <div className="text-xs text-white/40">SEOに強いタイトル生成。クリック率を意識した提案が得意。無料プランOK</div>
                       </div>
-                    </div>
+                    </a>
+                    <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                      <span className="text-xl">🔵</span>
+                      <div>
+                        <div className="text-sm font-bold text-sky-400">Gemini</div>
+                        <div className="text-xs text-white/40">YouTube SEOの知識が豊富（Google製）。トレンドタグの提案に強い。無料</div>
+                      </div>
+                    </a>
+                    <a href="https://claude.ai/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                      <span className="text-xl">🟠</span>
+                      <div>
+                        <div className="text-sm font-bold text-amber-400">Claude</div>
+                        <div className="text-xs text-white/40">自然で魅力的な日本語タイトルが得意。説明文の質が高い。無料プランOK</div>
+                      </div>
+                    </a>
                   </div>
-                </div>
-
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
-                  <p className="text-xs text-amber-400">💡 AIが動画の内容を理解してSEO最適化されたタイトル・タグを提案してくれます。複数パターンから選べるので効率的！</p>
                 </div>
               </div>
             )}
@@ -668,42 +698,66 @@ export function YoutubeProducer() {
             ) : (
               <div className="space-y-4">
                 <div className="bg-white/5 rounded-xl p-6">
-                  <h3 className="text-sm font-bold text-red-400 mb-3">💡 BGMの作り方</h3>
-                  <p className="text-sm text-white/60 mb-4">AIに動画の雰囲気を伝えてBGMプロンプトを生成 → AI作曲サービスで音楽を作りましょう。</p>
+                  <h3 className="text-sm font-bold text-red-400 mb-3">🎵 プロンプトをコピーしてAIに渡してください</h3>
+                  <p className="text-xs text-white/40 mb-3">Step 1: AIでBGM用の英語プロンプトを作成 → Step 2: AI作曲サービスで生成</p>
 
-                  <div className="space-y-3">
-                    <div className="bg-black/20 rounded-xl p-4">
-                      <div className="text-xs text-white/30 mb-1">Step 1: プロンプトをコピー</div>
-                      <div className="bg-black/30 rounded-lg p-3 text-sm text-white/70 mb-2 font-mono leading-relaxed">{`以下のYouTube動画のBGMを作りたいです。\n動画の雰囲気に合った音楽の英語プロンプトを作成してください。\n\n条件：\n・YouTube BGM用（ボーカルなし）\n・動画の雰囲気に合ったムード\n・Suno AI / Udio で使える英語プロンプト形式\n・BPM、楽器、雰囲気を含む\n\nジャンル: ${GENRES.find(g => g.id === genre)?.label || genre}\n\n動画内容:\n${transcript.text.slice(0, 300)}${transcript.text.length > 300 ? '...' : ''}`}</div>
-                      <button onClick={() => { navigator.clipboard.writeText(`以下のYouTube動画のBGMを作りたいです。\n動画の雰囲気に合った音楽の英語プロンプトを作成してください。\n\n条件：\n・YouTube BGM用（ボーカルなし）\n・動画の雰囲気に合ったムード\n・Suno AI / Udio で使える英語プロンプト形式\n・BPM、楽器、雰囲気を含む\n\nジャンル: ${GENRES.find(g => g.id === genre)?.label || genre}\n\n動画内容:\n${transcript.text}`); setCopied('bgm-prompt') }} className="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg text-xs hover:bg-red-500/30 font-bold">
-                        {copied === 'bgm-prompt' ? '✅ コピー済み' : '📋 プロンプトをコピー'}
-                      </button>
-                    </div>
+                  <button onClick={() => { navigator.clipboard.writeText(`以下のYouTube動画のBGMを作りたいです。\n動画の雰囲気に合った音楽の英語プロンプトを作成してください。\n\n条件：\n・YouTube BGM用（ボーカルなし、インスト）\n・動画の雰囲気・テンションに合ったムード\n・Suno AI で使える英語プロンプト形式\n・BPM、楽器構成、雰囲気、ジャンルを明記\n\nジャンル: ${GENRES.find(g => g.id === genre)?.label || genre}\n\n動画内容:\n${transcript.text}`); setCopied('bgm-prompt') }} className="w-full py-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl text-sm font-bold hover:opacity-90">
+                    {copied === 'bgm-prompt' ? '✅ コピー済み！下のAIに貼り付けてください' : '📋 BGMプロンプトをコピー'}
+                  </button>
 
-                    <div className="bg-black/20 rounded-xl p-4">
-                      <div className="text-xs text-white/30 mb-2">Step 2: AIでプロンプト生成</div>
-                      <div className="flex gap-2 flex-wrap">
-                        <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-xs hover:bg-green-500/30 font-bold">ChatGPT でプロンプト作成</a>
-                        <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-sky-500/20 text-sky-400 rounded-lg text-xs hover:bg-sky-500/30 font-bold">Gemini でプロンプト作成</a>
-                      </div>
-                    </div>
-
-                    <div className="bg-black/20 rounded-xl p-4">
-                      <div className="text-xs text-white/30 mb-2">Step 3: AI作曲サービスでBGM生成</div>
-                      <div className="flex gap-2 flex-wrap">
-                        <a href="https://suno.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg text-xs hover:bg-purple-500/30 font-bold">Suno AI（無料枠あり）</a>
-                        <a href="https://www.udio.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg text-xs hover:bg-blue-500/30 font-bold">Udio</a>
-                      </div>
-                      <div className="flex gap-2 flex-wrap mt-2">
-                        <a href="https://dova-s.jp/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-xs hover:bg-green-500/30 font-bold">DOVA-SYNDROME（無料BGM素材）</a>
-                        <a href="https://amachamusic.chagasi.com/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-amber-500/20 text-amber-400 rounded-lg text-xs hover:bg-amber-500/30 font-bold">甘茶の音楽工房（無料）</a>
-                      </div>
+                  <div className="mt-4">
+                    <div className="text-xs text-white/30 mb-2">Step 1: AIで英語プロンプトを作成</div>
+                    <div className="space-y-2">
+                      <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                        <span className="text-xl">🟢</span>
+                        <div>
+                          <div className="text-sm font-bold text-green-400">ChatGPT</div>
+                          <div className="text-xs text-white/40">動画の雰囲気を理解して最適な音楽プロンプトを生成。Suno形式に対応</div>
+                        </div>
+                      </a>
+                      <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                        <span className="text-xl">🔵</span>
+                        <div>
+                          <div className="text-sm font-bold text-sky-400">Gemini</div>
+                          <div className="text-xs text-white/40">音楽ジャンルの知識が豊富。BPM・楽器の具体的な提案が得意</div>
+                        </div>
+                      </a>
                     </div>
                   </div>
-                </div>
 
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
-                  <p className="text-xs text-amber-400">💡 Suno AIは無料枠で1日数曲作れます。ChatGPTで英語プロンプトを作成→Sunoに貼り付けるだけ！</p>
+                  <div className="mt-4">
+                    <div className="text-xs text-white/30 mb-2">Step 2: AI作曲サービスでBGM生成</div>
+                    <div className="space-y-2">
+                      <a href="https://suno.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                        <span className="text-xl">🎵</span>
+                        <div>
+                          <div className="text-sm font-bold text-purple-400">Suno AI</div>
+                          <div className="text-xs text-white/40">最高品質のAI作曲。無料で1日10曲生成可能。英語プロンプトを貼るだけ</div>
+                        </div>
+                      </a>
+                      <a href="https://www.udio.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                        <span className="text-xl">🎶</span>
+                        <div>
+                          <div className="text-sm font-bold text-blue-400">Udio</div>
+                          <div className="text-xs text-white/40">高品質AI作曲。ジャンル再現度が高い。無料枠あり</div>
+                        </div>
+                      </a>
+                      <a href="https://dova-s.jp/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                        <span className="text-xl">🎹</span>
+                        <div>
+                          <div className="text-sm font-bold text-green-400">DOVA-SYNDROME</div>
+                          <div className="text-xs text-white/40">完全無料のBGM素材サイト。商用利用OK。ジャンル検索で最適なBGMを探せる</div>
+                        </div>
+                      </a>
+                      <a href="https://amachamusic.chagasi.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
+                        <span className="text-xl">🍵</span>
+                        <div>
+                          <div className="text-sm font-bold text-amber-400">甘茶の音楽工房</div>
+                          <div className="text-xs text-white/40">日本人作曲家の無料BGM。和風・癒し系が充実。YouTube利用OK</div>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
