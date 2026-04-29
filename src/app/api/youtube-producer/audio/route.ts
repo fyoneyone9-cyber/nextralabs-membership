@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+const GSK_BASE = 'https://www.genspark.ai'
+
 export async function POST(req: NextRequest) {
   try {
     const { prompt, mood, genre } = await req.json()
@@ -7,29 +9,27 @@ export async function POST(req: NextRequest) {
     const GSK_API_KEY = process.env.GSK_API_KEY
 
     if (GSK_API_KEY) {
-      // Try Genspark audio generation
+      // Try Genspark audio generation (correct endpoint)
       try {
-        const res = await fetch('https://www.genspark.ai/api/cli_tools/call', {
+        const res = await fetch(`${GSK_BASE}/api/tool_cli/audio_generation`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'X-Api-Key': GSK_API_KEY,
           },
           body: JSON.stringify({
-            tool_name: 'audio_generation',
-            params: {
-              prompt: prompt || `${mood} ${genre} background music for YouTube video, instrumental only, no vocals`,
-              model: 'minimax/music-01',
-            },
+            prompt: prompt || `${mood} ${genre} background music for YouTube video, instrumental only, no vocals`,
+            model: 'minimax/music-01',
           }),
         })
 
         if (res.ok) {
           const data = await res.json()
+          const d = data.data
           let audioUrl = ''
-          if (data.data?.audio_url) audioUrl = data.data.audio_url
-          else if (data.data?.url) audioUrl = data.data.url
-          else if (typeof data.data === 'string' && data.data.startsWith('http')) audioUrl = data.data
+          if (d?.audio_url) audioUrl = d.audio_url
+          else if (d?.url) audioUrl = d.url
+          else if (typeof d === 'string' && d.startsWith('http')) audioUrl = d
 
           if (audioUrl) {
             return NextResponse.json({
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
               prompt,
               mood,
               genre,
-              suggestion: `✅ BGMが生成されました！`
+              suggestion: '✅ BGMが生成されました！'
             })
           }
         }

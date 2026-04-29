@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+const GSK_BASE = 'https://www.genspark.ai'
+
 export async function POST(req: NextRequest) {
   try {
     const { prompt, type } = await req.json()
@@ -11,20 +13,17 @@ export async function POST(req: NextRequest) {
 
     const aspect_ratio = type === 'thumbnail' ? '16:9' : '1:1'
 
-    // Use Genspark image generation API
-    const res = await fetch('https://www.genspark.ai/api/cli_tools/call', {
+    // Use Genspark image generation API (correct endpoint)
+    const res = await fetch(`${GSK_BASE}/api/tool_cli/image_generation`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-Api-Key': GSK_API_KEY,
       },
       body: JSON.stringify({
-        tool_name: 'image_generation',
-        params: {
-          prompt,
-          aspect_ratio,
-          image_size: '1k',
-        },
+        prompt,
+        aspect_ratio,
+        image_size: '1k',
       }),
     })
 
@@ -37,20 +36,20 @@ export async function POST(req: NextRequest) {
 
     // Extract image URL from response
     let imageUrl = ''
-    if (data.data?.image_url) {
-      imageUrl = data.data.image_url
-    } else if (data.data?.url) {
-      imageUrl = data.data.url
-    } else if (data.data?.images?.[0]?.url) {
-      imageUrl = data.data.images[0].url
-    } else if (data.data?.images?.[0]) {
-      imageUrl = typeof data.data.images[0] === 'string' ? data.data.images[0] : data.data.images[0].url
-    } else if (typeof data.data === 'string' && data.data.startsWith('http')) {
-      imageUrl = data.data
+    const d = data.data
+    if (d?.image_url) {
+      imageUrl = d.image_url
+    } else if (d?.url) {
+      imageUrl = d.url
+    } else if (d?.images?.[0]?.url) {
+      imageUrl = d.images[0].url
+    } else if (d?.images?.[0] && typeof d.images[0] === 'string') {
+      imageUrl = d.images[0]
+    } else if (typeof d === 'string' && d.startsWith('http')) {
+      imageUrl = d
     } else {
-      // Log for debugging
       console.log('Image gen response:', JSON.stringify(data).slice(0, 500))
-      return NextResponse.json({ error: '画像URLが取得できませんでした', raw: data }, { status: 500 })
+      return NextResponse.json({ error: '画像URLが取得できませんでした' }, { status: 500 })
     }
 
     return NextResponse.json({ imageUrl })

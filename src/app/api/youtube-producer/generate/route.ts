@@ -1,59 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+const LLM_BASE = 'https://www.genspark.ai/api/llm_proxy/v1'
+
 async function callLLM(systemPrompt: string, userPrompt: string) {
   const GSK_API_KEY = process.env.GSK_API_KEY
   if (!GSK_API_KEY) {
     throw new Error('APIキーが設定されていません')
   }
 
-  // Use Genspark LLM proxy (OpenAI-compatible)
-  const res = await fetch('https://www.genspark.ai/api/cli_tools/call', {
+  // Use Genspark LLM Proxy (OpenAI-compatible)
+  const res = await fetch(`${LLM_BASE}/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-Api-Key': GSK_API_KEY,
+      'Authorization': `Bearer ${GSK_API_KEY}`,
     },
     body: JSON.stringify({
-      tool_name: 'super_agent',
-      params: {
-        query: `${systemPrompt}\n\n---\n\n${userPrompt}`,
-      },
+      model: 'claude-haiku-4-5',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      temperature: 0.8,
     }),
   })
 
   if (!res.ok) {
     const err = await res.text()
-    throw new Error(`API error (${res.status}): ${err.slice(0, 200)}`)
+    throw new Error(`LLM error (${res.status}): ${err.slice(0, 200)}`)
   }
 
   const data = await res.json()
+  const content = data.choices?.[0]?.message?.content || ''
 
-  // Extract response text
-  let responseText = ''
-  if (data.data?.response) {
-    responseText = data.data.response
-  } else if (data.data?.text) {
-    responseText = data.data.text
-  } else if (typeof data.data === 'string') {
-    responseText = data.data
-  } else if (data.result) {
-    responseText = typeof data.result === 'string' ? data.result : JSON.stringify(data.result)
-  } else {
-    responseText = JSON.stringify(data)
-  }
+  // Extract JSON from response
+  const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/)
+  const jsonStr = jsonMatch ? jsonMatch[1].trim() : content.trim()
 
-  // Extract JSON from markdown code blocks if present
-  const jsonMatch = responseText.match(/```(?:json)?\s*([\s\S]*?)```/)
-  if (jsonMatch) {
-    return JSON.parse(jsonMatch[1].trim())
-  }
-
-  // Try direct JSON parse
   try {
-    return JSON.parse(responseText)
+    return JSON.parse(jsonStr)
   } catch {
-    // If not parseable as JSON, wrap in a basic structure
-    return { text: responseText }
+    // Try to find JSON object in text
+    const objMatch = jsonStr.match(/\{[\s\S]*\}/)
+    if (objMatch) {
+      try { return JSON.parse(objMatch[0]) } catch { /* fall through */ }
+    }
+    return { text: content }
   }
 }
 

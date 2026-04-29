@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from 'next/server'
 export const runtime = 'nodejs'
 export const maxDuration = 60
 
+const GSK_BASE = 'https://www.genspark.ai'
+
 export async function POST(req: NextRequest) {
   try {
     const contentType = req.headers.get('content-type') || ''
@@ -41,63 +43,81 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ text })
     }
 
-    // Audio/Video — use Genspark API (via gsk transcribe endpoint)
+    // Audio/Video — use Genspark API
     const GSK_API_KEY = process.env.GSK_API_KEY
     if (!GSK_API_KEY) {
       return NextResponse.json({
-        text: `[文字起こし] ファイル "${file.name}" (${(file.size / 1024 / 1024).toFixed(1)}MB) を受信しました。\n\n⚠️ サーバーにAPIキーが設定されていないため、自動文字起こしができません。\n\n「テキスト直接入力」モードで、別ツールの文字起こし結果を貼り付けてください。`
+        text: `⚠️ APIキーが設定されていません。\n\n「テキスト直接入力」モードで文字起こし結果を貼り付けてください。`
       })
     }
 
-    // Step 1: Upload file to Genspark to get a file wrapper URL
-    const uploadForm = new FormData()
-    uploadForm.append('file', file)
+    const headers = {
+      'X-Api-Key': GSK_API_KEY,
+      'Content-Type': 'application/json',
+    }
 
-    const uploadRes = await fetch('https://www.genspark.ai/api/cli_tools/upload', {
+    // Step 1: Get upload URL from Genspark
+    const uploadUrlRes = await fetch(`${GSK_BASE}/api/tool_cli/file/upload_url`, {
       method: 'POST',
-      headers: { 'X-Api-Key': GSK_API_KEY },
-      body: uploadForm,
+      headers,
+      body: JSON.stringify({
+        content_type: file.type || 'audio/mpeg',
+        name: file.name || 'audio.mp3',
+      }),
+    })
+
+    if (!uploadUrlRes.ok) {
+      const err = await uploadUrlRes.text()
+      console.error('Upload URL error:', uploadUrlRes.status, err)
+      return NextResponse.json({
+        text: `アップロードURLの取得に失敗しました（${uploadUrlRes.status}）\n\n「テキスト直接入力」モードをお試しください。`
+      })
+    }
+
+    const uploadUrlData = await uploadUrlRes.json()
+    const sasUrl = uploadUrlData.data?.upload_url || uploadUrlData.upload_url
+    const fileWrapperUrl = uploadUrlData.data?.file_wrapper_url || uploadUrlData.file_wrapper_url
+
+    if (!sasUrl) {
+      console.error('No SAS URL in response:', JSON.stringify(uploadUrlData))
+      return NextResponse.json({
+        text: `アップロードURLが見つかりません。\n\n「テキスト直接入力」モードをお試しください。`
+      })
+    }
+
+    // Step 2: Upload file to Azure blob storage
+    const fileBuffer = await file.arrayBuffer()
+    const uploadRes = await fetch(sasUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': file.type || 'audio/mpeg',
+        'x-ms-blob-type': 'BlockBlob',
+      },
+      body: fileBuffer,
     })
 
     if (!uploadRes.ok) {
-      const errText = await uploadRes.text()
-      console.error('Upload error:', uploadRes.status, errText)
+      const err = await uploadRes.text()
+      console.error('File upload error:', uploadRes.status, err.slice(0, 200))
       return NextResponse.json({
-        text: `アップロードエラー（${uploadRes.status}）: ファイルのアップロードに失敗しました。\n\n「テキスト直接入力」モードをお試しください。`
+        text: `ファイルアップロードに失敗しました（${uploadRes.status}）\n\n「テキスト直接入力」モードをお試しください。`
       })
     }
 
-    const uploadData = await uploadRes.json()
-    const fileUrl = uploadData.file_wrapper_url || uploadData.upload_url || uploadData.url
-    if (!fileUrl) {
-      console.error('Upload response:', JSON.stringify(uploadData))
-      return NextResponse.json({
-        text: `アップロード結果からURLが取得できませんでした。\n\n「テキスト直接入力」モードをお試しください。`
-      })
-    }
+    // Step 3: Call transcribe API with file wrapper URL
+    const fullUrl = fileWrapperUrl?.startsWith('http') ? fileWrapperUrl : `${GSK_BASE}${fileWrapperUrl}`
 
-    // Make full URL if relative
-    const fullFileUrl = fileUrl.startsWith('http') ? fileUrl : `https://www.genspark.ai${fileUrl}`
-
-    // Step 2: Call transcribe API
-    const transcribeRes = await fetch('https://www.genspark.ai/api/cli_tools/call', {
+    const transcribeRes = await fetch(`${GSK_BASE}/api/tool_cli/audio_transcribe`, {
       method: 'POST',
-      headers: {
-        'X-Api-Key': GSK_API_KEY,
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify({
-        tool_name: 'audio_transcribe',
-        params: {
-          audio_urls: [fullFileUrl],
-          model: 'whisper-1',
-        },
+        audio_urls: [fullUrl],
       }),
     })
 
     if (!transcribeRes.ok) {
-      const errText = await transcribeRes.text()
-      console.error('Transcribe error:', transcribeRes.status, errText)
+      const err = await transcribeRes.text()
+      console.error('Transcribe error:', transcribeRes.status, err.slice(0, 200))
       return NextResponse.json({
         text: `文字起こしエラー（${transcribeRes.status}）\n\n「テキスト直接入力」モードをお試しください。`
       })
@@ -105,33 +125,30 @@ export async function POST(req: NextRequest) {
 
     const transcribeData = await transcribeRes.json()
 
-    // Extract text from response — handle multiple possible response formats
+    // Extract text — handle various response formats
     let text = ''
-    if (transcribeData.text) {
-      text = transcribeData.text
-    } else if (transcribeData.data?.text) {
-      text = transcribeData.data.text
-    } else if (transcribeData.data?.transcription) {
-      text = transcribeData.data.transcription
-    } else if (transcribeData.result?.text) {
-      text = transcribeData.result.text
-    } else if (typeof transcribeData.data === 'string') {
-      text = transcribeData.data
+    const d = transcribeData.data
+    if (typeof d === 'string') {
+      text = d
+    } else if (d?.text) {
+      text = d.text
+    } else if (d?.transcription) {
+      text = d.transcription
+    } else if (d?.segments) {
+      text = d.segments.map((s: { text?: string }) => s.text || '').join(' ')
+    } else if (d?.words) {
+      text = d.words.map((w: { word?: string }) => w.word || '').join(' ')
+    } else if (d?.results) {
+      // Handle array of results (one per audio file)
+      const results = Array.isArray(d.results) ? d.results : [d.results]
+      text = results.map((r: { text?: string; transcription?: string }) =>
+        r?.text || r?.transcription || ''
+      ).join('\n\n')
     } else {
-      // Try to extract any text-like field
-      const dataStr = JSON.stringify(transcribeData)
-      console.log('Transcribe response:', dataStr.slice(0, 500))
-      // Look for segments/words
-      if (transcribeData.data?.segments) {
-        text = transcribeData.data.segments.map((s: { text?: string }) => s.text || '').join(' ')
-      } else if (transcribeData.data?.words) {
-        text = transcribeData.data.words.map((w: { word?: string }) => w.word || '').join(' ')
-      } else {
-        text = `文字起こし結果:\n${dataStr.slice(0, 2000)}`
-      }
+      text = JSON.stringify(transcribeData).slice(0, 3000)
     }
 
-    return NextResponse.json({ text })
+    return NextResponse.json({ text: text.trim() })
   } catch (e) {
     console.error('Transcribe route error:', e)
     return NextResponse.json({ error: `エラー: ${e instanceof Error ? e.message : '不明'}` }, { status: 500 })
