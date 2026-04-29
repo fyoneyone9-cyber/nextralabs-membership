@@ -145,9 +145,9 @@ export default function AiSidejobPage() {
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold mb-4">料金</h2>
           <div className="inline-block bg-card border rounded-2xl p-8">
-            <Badge className="mb-4">スタンダードプラン対応</Badge>
+            <Badge className="mb-4">プレミアムプラン限定</Badge>
             <div className="text-3xl font-bold mb-2">¥980<span className="text-base font-normal text-muted-foreground">/月</span></div>
-            <p className="text-sm text-muted-foreground mb-6">全ツール使い放題</p>
+            <p className="text-sm text-muted-foreground mb-6">プレミアムプラン限定ツール</p>
             <Link href="/pricing">
               <Button className="w-full">プランを見る →</Button>
             </Link>

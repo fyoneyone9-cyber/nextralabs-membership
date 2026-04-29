@@ -268,8 +268,8 @@ const bizTools: Product[] = [
     subtitle: '13カテゴリ × 適性診断 × ロードマップ × 収益シミュレーター',
     description:
       'AI副業の「何から始めればいい？」から「月10万円達成」まで完全サポート。50+のAIツール辞典、テンプレート集、活動ログ搭載。',
-    price: '¥980/月',
-    priceNote: 'スタンダードプラン',
+    price: '¥1,980/月',
+    priceNote: 'プレミアムプラン',
     tags: ['13カテゴリ', '適性診断', 'テンプレート', '収益計算'],
     icon: Briefcase,
     color: 'from-orange-500 to-amber-500',
@@ -473,7 +473,7 @@ export default function ProductsPage() {
           </div>
           <div className="w-px h-6 bg-border" />
           <div className="flex items-center gap-1.5">
-            <span className="font-bold text-2xl text-violet-500">6</span>
+            <span className="font-bold text-2xl text-violet-500">7</span>
             <span className="text-muted-foreground">プレミアム</span>
           </div>
         </div>

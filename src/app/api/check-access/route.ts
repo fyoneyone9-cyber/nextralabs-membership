@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ hasAccess: false, reason: 'not_logged_in' })
     }
 
-    const PREMIUM_TOOLS = ['inbox-organizer', 'prompt-master', 'youtube-producer', 'pet-translator', 'ai-select-shop', 'vintage-hunter']
+    const PREMIUM_TOOLS = ['inbox-organizer', 'prompt-master', 'youtube-producer', 'pet-translator', 'ai-select-shop', 'vintage-hunter', 'ai-sidejob']
 
     // 1. サブスクチェック
     const { data: subscription } = await supabase

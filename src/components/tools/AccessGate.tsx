@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 
-const PREMIUM_TOOLS = ['inbox-organizer', 'prompt-master', 'youtube-producer', 'pet-translator', 'ai-select-shop', 'vintage-hunter']
+const PREMIUM_TOOLS = ['inbox-organizer', 'prompt-master', 'youtube-producer', 'pet-translator', 'ai-select-shop', 'vintage-hunter', 'ai-sidejob']
 
 interface AccessGateProps {
   productId: string
