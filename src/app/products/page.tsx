@@ -449,9 +449,9 @@ export default function ProductsPage() {
       {/* Hero */}
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
-          AI ツール
+          サブスクAI ツール
           <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
-            ストア
+            一覧
           </span>
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
