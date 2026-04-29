@@ -477,6 +477,13 @@ export function YoutubeProducer() {
 
                   <div className="mt-4 space-y-2">
                     <div className="text-xs text-white/30 mb-1">コピーしたら以下のAIに貼り付け：</div>
+                    <a href="https://claude.ai/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl hover:bg-amber-500/15 transition-colors">
+                      <span className="text-xl">🟠</span>
+                      <div>
+                        <div className="text-sm font-bold text-amber-400">Claude <span className="text-xs bg-amber-500/20 px-1.5 py-0.5 rounded ml-1">おすすめ</span></div>
+                        <div className="text-xs text-white/40">自然な日本語表現が最も得意。読みやすく構成力の高い台本に仕上がる。無料プランOK</div>
+                      </div>
+                    </a>
                     <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
                       <span className="text-xl">🟢</span>
                       <div>
@@ -489,13 +496,6 @@ export function YoutubeProducer() {
                       <div>
                         <div className="text-sm font-bold text-sky-400">Gemini</div>
                         <div className="text-xs text-white/40">超長文対応（100万トークン）。長い文字起こしでも全文処理可能。無料</div>
-                      </div>
-                    </a>
-                    <a href="https://claude.ai/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-black/20 rounded-xl hover:bg-black/30 transition-colors">
-                      <span className="text-xl">🟠</span>
-                      <div>
-                        <div className="text-sm font-bold text-amber-400">Claude</div>
-                        <div className="text-xs text-white/40">自然な日本語表現が得意。読みやすい台本に仕上がる。無料プランOK</div>
                       </div>
                     </a>
                   </div>
