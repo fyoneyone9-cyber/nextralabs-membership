@@ -29,9 +29,9 @@ export default function AiSidejobPage() {
             「何から始めればいい？」から「月10万円達成」まで完全サポート
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Button asChild>
-              <a href="/pricing">プランを見る →</a>
-            </Button>
+            <Link href="/pricing">
+              <Button>プランを見る →</Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -148,9 +148,9 @@ export default function AiSidejobPage() {
             <Badge className="mb-4">スタンダードプラン対応</Badge>
             <div className="text-3xl font-bold mb-2">¥980<span className="text-base font-normal text-muted-foreground">/月</span></div>
             <p className="text-sm text-muted-foreground mb-6">全ツール使い放題</p>
-            <Button className="w-full" asChild>
-              <a href="/pricing">プランを見る →</a>
-            </Button>
+            <Link href="/pricing">
+              <Button className="w-full">プランを見る →</Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -168,15 +168,6 @@ export default function AiSidejobPage() {
           ].map((faq, i) => (
             <div key={i} className="bg-card border rounded-xl p-5">
               <h3 className="font-bold mb-2">Q. {faq.q}</h3>
-              <p className="text-sm text-muted-foreground">{faq.a}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-    </div>
-  )
-}
-2">Q. {faq.q}</h3>
               <p className="text-sm text-muted-foreground">{faq.a}</p>
             </div>
           ))}

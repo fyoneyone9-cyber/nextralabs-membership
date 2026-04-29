@@ -222,8 +222,8 @@ export default function HomePage() {
                   </div>
                   <div className="flex items-end justify-between pt-4 border-t">
                     <div>
-                      <span className="text-3xl font-bold">{featuredTool.price}</span>
-                      <span className="text-sm text-muted-foreground ml-2">{featuredTool.priceNote}</span>
+                      <span className="text-3xl font-bold">無料</span>
+                      <span className="text-sm text-muted-foreground ml-2">アカウント不要</span>
                     </div>
                     <Button variant="default" className="gap-1 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
                       詳しく見る →

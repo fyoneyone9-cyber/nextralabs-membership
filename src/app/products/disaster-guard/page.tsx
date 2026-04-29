@@ -130,9 +130,9 @@ export default function DisasterGuardPage() {
           <span className="text-base font-normal text-muted-foreground">/月</span>
         </div>
         <p className="text-sm text-muted-foreground mb-6">スタンダードプラン対応 — 全ツール使い放題</p>
-        <Button className="w-full max-w-xs" asChild>
-          <a href="/pricing">プランを見る →</a>
-        </Button>
+        <Link href="/pricing">
+          <Button className="w-full max-w-xs">プランを見る →</Button>
+        </Link>
       </div>
 
       {/* FAQ */}

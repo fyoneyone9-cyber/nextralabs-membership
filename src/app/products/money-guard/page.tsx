@@ -275,9 +275,9 @@ export default function MoneyGuardPage() {
                 <Badge className="mb-4">スタンダードプラン対応</Badge>
                 <div className="text-3xl font-bold mb-2">¥980<span className="text-base font-normal text-muted-foreground">/月</span></div>
                 <p className="text-muted-foreground mb-6">全ツール使い放題</p>
-                <Button className="w-full" asChild>
-                  <a href="/pricing">プランを見る →</a>
-                </Button>
+                <Link href="/pricing">
+                  <Button className="w-full">プランを見る →</Button>
+                </Link>
               </CardContent>
             </Card>
           </div>

@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ArrowRight, CheckCircle2, Mic, FileText, Users, Image, Type, Music, Clapperboard } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
+import { ArrowRight, CheckCircle2, Mic, FileText, Users, Image, Type, Music, Clapperboard } from 'lucide-react'
+
 
 export const metadata = {
   title: 'AI YouTubeプロデューサー | NextraLabs',
@@ -29,9 +30,9 @@ export default function YoutubeProducerPage() {
             6ステップのパイプラインでYouTube投稿素材を全自動生成
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Button asChild>
-              <a href="/pricing">プランを見る →</a>
-            </Button>
+            <Link href="/pricing">
+              <Button className="bg-violet-500 hover:bg-violet-600 text-white">プレミアムプラン（¥1,980/月）→</Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -127,18 +128,16 @@ export default function YoutubeProducerPage() {
       <section className="bg-muted/30 py-16">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold mb-4">料金</h2>
-          <div className="max-w-md mx-auto">
-            <Card className="border-violet-500/30">
-              <CardContent className="pt-8 pb-8 text-center">
-                <Badge className="mb-4 bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20">プレミアムプラン限定</Badge>
-                <div className="text-3xl font-bold mb-2">¥1,980<span className="text-base font-normal text-muted-foreground">/月</span></div>
-                <p className="text-muted-foreground mb-6">Gmail AI Accelerator を含む上位プラン</p>
-                <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white" asChild>
-                  <a href="/pricing">プレミアムプランを見る →</a>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+          <Card className="border-violet-500/30 inline-block">
+            <CardContent className="pt-8 pb-8 text-center">
+              <Badge className="mb-4 bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20">プレミアムプラン限定</Badge>
+              <div className="text-3xl font-bold mb-2">¥1,980<span className="text-base font-normal text-muted-foreground">/月</span></div>
+              <p className="text-muted-foreground mb-6">Gmail AI Accelerator を含む上位プラン</p>
+              <Link href="/pricing">
+                <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white">プレミアムプランを見る →</Button>
+              </Link>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
@@ -156,14 +155,6 @@ export default function YoutubeProducerPage() {
             <div key={i} className="bg-card border rounded-xl p-5">
               <h3 className="font-bold mb-2">Q. {faq.q}</h3>
               <p className="text-sm text-muted-foreground">{faq.a}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-    </div>
-  )
-}
->
             </div>
           ))}
         </div>

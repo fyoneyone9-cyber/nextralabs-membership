@@ -10,10 +10,10 @@ import {
   Copy,
   Check,
   Hash,
-  Twitter,
-  Instagram,
-  Facebook,
-  Linkedin,
+  MessageCircle,
+  Camera,
+  Globe,
+  Briefcase,
   RefreshCw,
   Sparkles,
   Share2,
@@ -34,10 +34,10 @@ interface GeneratedPost {
 
 // ─── Platform Config ─────────────────────────────────────
 const platformConfig: Record<Platform, { name: string; icon: React.ElementType; charLimit: number; color: string; bgColor: string; gradient: string }> = {
-  twitter: { name: 'Twitter / X', icon: Twitter, charLimit: 280, color: 'text-sky-500', bgColor: 'bg-sky-500/10', gradient: 'from-sky-500 to-blue-500' },
-  instagram: { name: 'Instagram', icon: Instagram, charLimit: 2200, color: 'text-pink-500', bgColor: 'bg-pink-500/10', gradient: 'from-pink-500 to-purple-500' },
-  facebook: { name: 'Facebook', icon: Facebook, charLimit: 63206, color: 'text-blue-600', bgColor: 'bg-blue-600/10', gradient: 'from-blue-600 to-blue-500' },
-  linkedin: { name: 'LinkedIn', icon: Linkedin, charLimit: 3000, color: 'text-blue-700', bgColor: 'bg-blue-700/10', gradient: 'from-blue-700 to-cyan-600' },
+  twitter: { name: 'Twitter / X', icon: MessageCircle, charLimit: 280, color: 'text-sky-500', bgColor: 'bg-sky-500/10', gradient: 'from-sky-500 to-blue-500' },
+  instagram: { name: 'Instagram', icon: Camera, charLimit: 2200, color: 'text-pink-500', bgColor: 'bg-pink-500/10', gradient: 'from-pink-500 to-purple-500' },
+  facebook: { name: 'Facebook', icon: Globe, charLimit: 63206, color: 'text-blue-600', bgColor: 'bg-blue-600/10', gradient: 'from-blue-600 to-blue-500' },
+  linkedin: { name: 'LinkedIn', icon: Briefcase, charLimit: 3000, color: 'text-blue-700', bgColor: 'bg-blue-700/10', gradient: 'from-blue-700 to-cyan-600' },
 }
 
 // ─── Template Patterns ───────────────────────────────────
@@ -100,7 +100,7 @@ function generateHashtags(topic: string, platform: Platform): string[] {
     ...baseKeywords.slice(0, 3).map(k => k.replace(/^#/, '')),
     ...commonTags[platform].slice(0, platform === 'instagram' ? 5 : 3),
   ]
-  return [...new Set(tags)].slice(0, platform === 'instagram' ? 8 : 5)
+  return Array.from(new Set(tags)).slice(0, platform === 'instagram' ? 8 : 5)
 }
 
 // ─── Component ───────────────────────────────────────────

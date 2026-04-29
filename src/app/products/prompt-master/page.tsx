@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight, Wand2, BookOpen, SlidersHorizontal, Sparkles, ClipboardList, GraduationCap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 export const metadata = {
   title: 'AI画像プロンプトマスター | NextraLabs',
@@ -162,9 +163,9 @@ export default function PromptMasterPage() {
         <Badge className="mb-4 bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20">プレミアムプラン限定</Badge>
         <div className="text-3xl font-bold mb-2">¥1,980<span className="text-base font-normal text-muted-foreground">/月</span></div>
         <p className="text-muted-foreground mb-6">Gmail AI Accelerator を含む上位プラン</p>
-        <Button className="w-full max-w-xs mx-auto bg-violet-500 hover:bg-violet-600 text-white" asChild>
-          <a href="/pricing">プレミアムプランを見る →</a>
-        </Button>
+        <Link href="/pricing">
+          <Button className="w-full max-w-xs mx-auto bg-violet-500 hover:bg-violet-600 text-white">プレミアムプランを見る →</Button>
+        </Link>
       </div>
 
       {/* FAQ */}
@@ -181,12 +182,6 @@ export default function PromptMasterPage() {
             <h3 className="font-bold mb-2">Q. {faq.q}</h3>
             <p className="text-sm text-muted-foreground">{faq.a}</p>
           </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
         ))}
       </div>
     </div>

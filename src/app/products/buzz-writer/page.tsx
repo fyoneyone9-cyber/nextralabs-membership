@@ -236,9 +236,9 @@ export default function BuzzWriterPage() {
                 <Badge className="mb-4">スタンダードプラン対応</Badge>
                 <div className="text-3xl font-bold mb-2">¥980<span className="text-base font-normal text-muted-foreground">/月</span></div>
                 <p className="text-muted-foreground mb-6">全ツール使い放題</p>
-                <Button className="w-full" asChild>
-                  <a href="/pricing">プランを見る →</a>
-                </Button>
+                <Link href="/pricing">
+                  <Button className="w-full">プランを見る →</Button>
+                </Link>
               </CardContent>
             </Card>
           </div>
@@ -253,11 +253,6 @@ export default function BuzzWriterPage() {
             {faqs.map((f, i) => (<Card key={i}><CardContent className="pt-6"><h3 className="font-semibold mb-2 flex items-start gap-2"><ChevronRight className="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />{f.q}</h3><p className="text-sm text-muted-foreground pl-7">{f.a}</p></CardContent></Card>))}
           </div>
         </div>
-      </section>
-    </div>
-  )
-}
-     </div>
       </section>
     </div>
   )

@@ -197,9 +197,9 @@ export default function PetTranslatorPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <ToolLaunchButton productId="pet-translator" />
-                <Button size="lg" asChild>
-                  <a href="/pricing">プランを見る →</a>
-                </Button>
+                <Link href="/pricing">
+                  <Button size="lg">プランを見る →</Button>
+                </Link>
                 <a href="#features">
                   <Button variant="outline" size="lg">
                     詳しく見る
@@ -559,19 +559,11 @@ export default function PetTranslatorPage() {
           </p>
           <div className="flex flex-col items-center gap-4">
             <ToolLaunchButton productId="pet-translator" className="text-xl px-12 py-6 shadow-lg" />
-            <Button asChild className="text-xl px-12 py-6">
-              <a href="/pricing">スタンダードプラン（¥980/月）で利用 →</a>
-            </Button>
+            <Link href="/pricing">
+              <Button className="text-xl px-12 py-6">スタンダードプラン（¥980/月）で利用 →</Button>
+            </Link>
             <p className="text-xs text-muted-foreground">
               全ツール使い放題
-            </p>
-          </div>
-        </div>
-      </section>
-    </div>
-  )
-}
-��・商用利用OK・ゼロ依存
             </p>
           </div>
         </div>

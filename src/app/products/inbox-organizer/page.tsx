@@ -102,9 +102,9 @@ export default function InboxOrganizerPage() {
                 <Badge variant="outline" className="text-sm py-1">🔒 完全ローカル処理</Badge>
               </div>
               <div className="flex flex-wrap gap-4">
-                <Button asChild className="bg-violet-500 hover:bg-violet-600 text-white">
-                  <a href="/pricing">プレミアムプラン（¥1,980/月）→</a>
-                </Button>
+                <Link href="/pricing">
+                  <Button className="bg-violet-500 hover:bg-violet-600 text-white">プレミアムプラン（¥1,980/月）→</Button>
+                </Link>
                 <ToolLaunchButton productId="inbox-organizer" />
               </div>
               <div className="flex items-center gap-6 mt-6 text-sm text-muted-foreground">
@@ -212,9 +212,9 @@ export default function InboxOrganizerPage() {
                 <Badge className="mb-4 bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20">プレミアムプラン限定</Badge>
                 <div className="text-3xl font-bold mb-2">¥1,980<span className="text-base font-normal text-muted-foreground">/月</span></div>
                 <p className="text-muted-foreground mb-6">Gmail AI Accelerator を含む上位プラン</p>
-                <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white" asChild>
-                  <a href="/pricing">プレミアムプランを見る →</a>
-                </Button>
+                <Link href="/pricing">
+                  <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white">プレミアムプランを見る →</Button>
+                </Link>
               </CardContent>
             </Card>
           </div>

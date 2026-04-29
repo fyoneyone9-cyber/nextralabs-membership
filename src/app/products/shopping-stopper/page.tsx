@@ -160,9 +160,9 @@ export default function ShoppingStopperPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <ToolLaunchButton productId="shopping-stopper" />
-                <Button asChild size="lg" className="text-lg px-8">
-                  <a href="/pricing">プランを見る →</a>
-                </Button>
+                <Link href="/pricing">
+                  <Button size="lg" className="text-lg px-8">プランを見る →</Button>
+                </Link>
                 <a href="#features">
                   <Button variant="outline" size="lg">
                     詳しく見る
@@ -430,19 +430,11 @@ export default function ShoppingStopperPage() {
           </p>
           <div className="flex flex-col items-center gap-4">
             <ToolLaunchButton productId="shopping-stopper" className="text-xl px-12 py-6 shadow-lg" />
-            <Button size="lg" className="text-xl px-12 py-6 shadow-lg" asChild>
-              <a href="/pricing">プランを見る →</a>
-            </Button>
+            <Link href="/pricing">
+              <Button size="lg" className="text-xl px-12 py-6 shadow-lg">プランを見る →</Button>
+            </Link>
             <p className="text-xs text-muted-foreground">
               スタンダードプラン（¥980/月）で全ツール使い放題
-            </p>
-          </div>
-        </div>
-      </section>
-    </div>
-  )
-}
-プライバシー保護
             </p>
           </div>
         </div>

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 import {
   ArrowLeft,
@@ -161,9 +162,9 @@ export default function AISelectShopPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <ToolLaunchButton productId="ai-select-shop" />
-                <Button asChild size="lg" className="text-lg px-8">
-                  <a href="/pricing">プランを見る →</a>
-                </Button>
+                <Link href="/pricing">
+                  <Button size="lg" className="text-lg px-8">プランを見る →</Button>
+                </Link>
                 <a href="#features">
                   <Button variant="outline" size="lg">
                     詳しく見る
@@ -375,7 +376,11 @@ export default function AISelectShopPage() {
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">
             こんな人におすすめ
-   eturn (
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {targets.map((t) => {
+              const Icon = t.icon
+              return (
                 <Card key={t.title} className="border-0 shadow-md">
                   <CardContent className="p-6 text-center">
                     <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/10 mb-4">
@@ -461,23 +466,11 @@ export default function AISelectShopPage() {
           </p>
           <div className="flex flex-col items-center gap-4">
             <ToolLaunchButton productId="ai-select-shop" className="text-xl px-12 py-6 shadow-lg" />
-            <Button asChild className="text-xl px-12 py-6">
-              <a href="/pricing">スタンダードプラン（¥980/月）で利用 →</a>
-            </Button>
+            <Link href="/pricing">
+              <Button className="text-xl px-12 py-6">スタンダードプラン（¥980/月）で利用 →</Button>
+            </Link>
             <p className="text-xs text-muted-foreground">
               全ツール使い放題
-            </p>
-          </div>
-        </div>
-      </section>
-    </div>
-  )
-}
-     </section>
-    </div>
-  )
-}
-�OK
             </p>
           </div>
         </div>
