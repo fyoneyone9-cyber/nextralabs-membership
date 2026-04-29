@@ -253,8 +253,8 @@ const bizTools: Product[] = [
     subtitle: 'トレンド分析 × AI自動デザイン × オンデマンド出品',
     description:
       'AIがバズワードを分析しTシャツデザインを自動生成。注文時にオンデマンド製造・配送。在庫リスクゼロのAIファッションビジネス。',
-    price: '¥980/月',
-    priceNote: 'スタンダードプラン',
+    price: '¥1,980/月',
+    priceNote: 'プレミアムプラン',
     tags: ['AI Design', 'Printful API', 'トレンド分析', 'Shopify'],
     icon: Store,
     color: 'from-emerald-500 to-teal-500',
@@ -490,7 +490,7 @@ export default function ProductsPage() {
           </div>
           <div className="w-px h-6 bg-border" />
           <div className="flex items-center gap-1.5">
-            <span className="font-bold text-2xl text-violet-500">4</span>
+            <span className="font-bold text-2xl text-violet-500">5</span>
             <span className="text-muted-foreground">プレミアム</span>
           </div>
         </div>

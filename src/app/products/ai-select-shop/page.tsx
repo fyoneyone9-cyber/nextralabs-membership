@@ -163,7 +163,7 @@ export default function AISelectShopPage() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <ToolLaunchButton productId="ai-select-shop" />
                 <Link href="/pricing">
-                  <Button size="lg" className="text-lg px-8">プランを見る →</Button>
+                  <Button size="lg" className="text-lg px-8">プレミアムプランを見る →</Button>
                 </Link>
                 <a href="#features">
                   <Button variant="outline" size="lg">
@@ -467,10 +467,10 @@ export default function AISelectShopPage() {
           <div className="flex flex-col items-center gap-4">
             <ToolLaunchButton productId="ai-select-shop" className="text-xl px-12 py-6 shadow-lg" />
             <Link href="/pricing">
-              <Button className="text-xl px-12 py-6">スタンダードプラン（¥980/月）で利用 →</Button>
+              <Button className="text-xl px-12 py-6">プレミアムプラン（¥1,980/月）→</Button>
             </Link>
             <p className="text-xs text-muted-foreground">
-              全ツール使い放題
+              プレミアムプラン限定ツール
             </p>
           </div>
         </div>
