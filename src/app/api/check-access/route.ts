@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       .select('status, plan')
       .eq('user_id', user.id)
       .eq('status', 'active')
-      .single()
+      .maybeSingle()
 
     if (subscription) {
       const isPremiumTool = PREMIUM_TOOLS.includes(productId)

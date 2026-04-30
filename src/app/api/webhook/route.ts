@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { createClient } from '@supabase/supabase-js'
 
@@ -34,8 +34,7 @@ export async function POST(request: NextRequest) {
         if (!userId) break
 
         if (session.mode === 'subscription') {
-          // サブスクリプション購入完了
-          const subscriptionData: any = await stripe.subscriptions.retrieve(
+          // 繧ｵ繝悶せ繧ｯ繝ｪ繝励す繝ｧ繝ｳ雉ｼ蜈･螳御ｺ・          const subscriptionData: any = await stripe.subscriptions.retrieve(
             session.subscription as string
           )
 
@@ -50,7 +49,7 @@ export async function POST(request: NextRequest) {
             current_period_end: new Date(subscriptionData.current_period_end * 1000).toISOString(),
           }, { onConflict: 'user_id' })
         } else if (session.mode === 'payment') {
-          // 単品購入完了 — purchases テーブルに記録
+          // 蜊伜刀雉ｼ蜈･螳御ｺ・窶・purchases 繝・・繝悶Ν縺ｫ險倬鹸
           const productId = session.metadata?.product_id
           if (productId) {
             await supabaseAdmin.from('purchases').upsert({
@@ -68,12 +67,12 @@ export async function POST(request: NextRequest) {
         const subUpdated: any = event.data.object
         const customerId = subUpdated.customer as string
 
-        // customer IDからユーザーを検索
+        // customer ID縺九ｉ繝ｦ繝ｼ繧ｶ繝ｼ繧呈､懃ｴ｢
         const { data: existingSub } = await supabaseAdmin
           .from('subscriptions')
           .select('user_id')
           .eq('stripe_customer_id', customerId)
-          .single()
+          .maybeSingle()
 
         if (existingSub) {
           // Determine plan from price ID

@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation'
+﻿import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 
@@ -23,7 +23,7 @@ export async function AccessGate({ productId, children }: AccessGateProps) {
     .select('status, plan')
     .eq('user_id', user.id)
     .eq('status', 'active')
-    .single()
+    .maybeSingle()
 
   if (subscription) {
     const isPremiumTool = PREMIUM_TOOLS.includes(productId)
@@ -31,31 +31,27 @@ export async function AccessGate({ productId, children }: AccessGateProps) {
     if (!isPremiumTool || subscription.plan === 'premium') {
       return <>{children}</>
     }
-    // Standard plan user trying to access premium tool → show upgrade prompt
+    // Standard plan user trying to access premium tool 竊・show upgrade prompt
     return (
       <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 flex items-center justify-center">
         <div className="max-w-md mx-auto text-center px-6 py-16">
-          <div className="text-6xl mb-6">💎</div>
+          <div className="text-6xl mb-6">虫</div>
           <h1 className="text-2xl font-bold text-white mb-4">
-            プレミアムプラン限定
-          </h1>
+            繝励Ξ繝溘い繝繝励Λ繝ｳ髯仙ｮ・          </h1>
           <p className="text-gray-400 mb-8 leading-relaxed">
-            このツールはプレミアムプラン（¥1,980/月）でご利用いただけます。<br />
-            現在のスタンダードプランからアップグレードしてください。
-          </p>
+            縺薙・繝・・繝ｫ縺ｯ繝励Ξ繝溘い繝繝励Λ繝ｳ・按･1,980/譛茨ｼ峨〒縺泌茜逕ｨ縺・◆縺縺代∪縺吶・br />
+            迴ｾ蝨ｨ縺ｮ繧ｹ繧ｿ繝ｳ繝繝ｼ繝峨・繝ｩ繝ｳ縺九ｉ繧｢繝・・繧ｰ繝ｬ繝ｼ繝峨＠縺ｦ縺上□縺輔＞縲・          </p>
           <div className="flex flex-col gap-3">
             <Link
               href="/pricing"
               className="inline-flex items-center justify-center rounded-md bg-violet-500 text-white font-semibold px-6 py-3 hover:bg-violet-600 transition-colors"
             >
-              プレミアムにアップグレード
-            </Link>
+              繝励Ξ繝溘い繝縺ｫ繧｢繝・・繧ｰ繝ｬ繝ｼ繝・            </Link>
             <Link
               href="/products"
               className="inline-flex items-center justify-center rounded-md border border-gray-700 text-gray-300 font-medium px-6 py-3 hover:border-gray-500 hover:text-white transition-colors"
             >
-              ツール一覧に戻る
-            </Link>
+              繝・・繝ｫ荳隕ｧ縺ｫ謌ｻ繧・            </Link>
           </div>
         </div>
       </div>
@@ -66,27 +62,23 @@ export async function AccessGate({ productId, children }: AccessGateProps) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 flex items-center justify-center">
       <div className="max-w-md mx-auto text-center px-6 py-16">
-        <div className="text-6xl mb-6">🔒</div>
+        <div className="text-6xl mb-6">白</div>
         <h1 className="text-2xl font-bold text-white mb-4">
-          プレミアム会員限定
-        </h1>
+          繝励Ξ繝溘い繝莨壼藤髯仙ｮ・        </h1>
         <p className="text-gray-400 mb-8 leading-relaxed">
-          このツールはプレミアム会員または単品購入者のみご利用いただけます。
-          プランに加入するか、商品を購入してください。
-        </p>
+          縺薙・繝・・繝ｫ縺ｯ繝励Ξ繝溘い繝莨壼藤縺ｾ縺溘・蜊伜刀雉ｼ蜈･閠・・縺ｿ縺泌茜逕ｨ縺・◆縺縺代∪縺吶・          繝励Λ繝ｳ縺ｫ蜉蜈･縺吶ｋ縺九∝膚蜩√ｒ雉ｼ蜈･縺励※縺上□縺輔＞縲・        </p>
         <div className="flex flex-col gap-3">
           <Link
             href="/pricing"
             className="inline-flex items-center justify-center rounded-md bg-white text-gray-900 font-semibold px-6 py-3 hover:bg-gray-200 transition-colors"
           >
-            プランを見る
+            繝励Λ繝ｳ繧定ｦ九ｋ
           </Link>
           <Link
             href={`/products/${productId}`}
             className="inline-flex items-center justify-center rounded-md border border-gray-700 text-gray-300 font-medium px-6 py-3 hover:border-gray-500 hover:text-white transition-colors"
           >
-            商品ページに戻る
-          </Link>
+            蝠・刀繝壹・繧ｸ縺ｫ謌ｻ繧・          </Link>
         </div>
       </div>
     </div>

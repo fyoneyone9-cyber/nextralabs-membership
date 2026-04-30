@@ -25,7 +25,7 @@ export default function PricingPage() {
           .select('*')
           .eq('user_id', user.id)
           .eq('status', 'active')
-          .single()
+          .maybeSingle()
         setIsPaid(!!data)
       }
     }
