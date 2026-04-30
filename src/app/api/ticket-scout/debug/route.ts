@@ -7,13 +7,13 @@ export async function GET(req: NextRequest) {
 
   // Step1: grounding
   const step1Res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: `${artist} ライブ チケット 発売日 2025 2026 eplus.jp OR l-tike.com OR t.pia.jp` }] }],
-        tools: [{ googleSearch: {} }],
+        tools: [{ google_search_retrieval: {} }],
         generationConfig: { temperature: 0.1 },
       }),
     }
