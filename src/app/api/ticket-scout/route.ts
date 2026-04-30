@@ -40,29 +40,42 @@ JSONのみ返してください（説明文・マークダウン不要）。
 見つからない場合は空配列 [] を返してください。`
 
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        tools: [{ google_search_retrieval: {} }],
+        tools: [{ googleSearch: {} }],
         generationConfig: { temperature: 0.1 },
       }),
     }
   )
 
   const data = await res.json()
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
 
-  // JSON抽出
-  const jsonMatch = text.match(/\[[\s\S]*\]/)
-  if (!jsonMatch) return []
+  // エラーチェック
+  if (data.error) {
+    console.error('Gemini API error:', JSON.stringify(data.error))
+    return []
+  }
+
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
+  console.log('Gemini response text:', text.slice(0, 500))
+
+  // JSON抽出（コードブロック対応）
+  const jsonMatch = text.match(/```(?:json)?\s*(\[[\s\S]*?\])\s*```/) ||
+                    text.match(/(\[[\s\S]*\])/)
+  if (!jsonMatch) {
+    console.log('No JSON found in response')
+    return []
+  }
 
   try {
-    const events: TicketEvent[] = JSON.parse(jsonMatch[0])
+    const events: TicketEvent[] = JSON.parse(jsonMatch[1] ?? jsonMatch[0])
     return events.filter(e => e.title)
-  } catch {
+  } catch (e) {
+    console.error('JSON parse error:', e)
     return []
   }
 }
@@ -184,6 +197,7 @@ export async function POST(req: NextRequest) {
       sitesSearched: selectedSites.map(k => ({
         eplus: 'e+', lawson: 'ローチケ', pia: 'チケットぴあ',
       }[k] ?? k)),
+      debug: process.env.NODE_ENV === 'development' ? { eventsRaw: events } : undefined,
     })
   } catch (e) {
     console.error(e)
