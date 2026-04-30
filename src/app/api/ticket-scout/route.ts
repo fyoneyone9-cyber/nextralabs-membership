@@ -19,57 +19,77 @@ async function searchTicketsWithGemini(artist: string, sites: string[]): Promise
     lawson: 'ローチケ（ローソンチケット）l-tike.com',
     pia: 'チケットぴあ t.pia.jp',
   }
-
   const targetSites = sites.map(s => siteNames[s] ?? s).join('、')
 
-  const prompt = `以下のアーティストのライブ・コンサートのチケット情報を検索してください。
+  // Step1: Google Searchグラウンディングで情報収集（自然文で返す）
+  const searchPrompt = `${artist} ライブ コンサート チケット 発売日 2025 2026 site:eplus.jp OR site:l-tike.com OR site:t.pia.jp について教えてください。公演名・会場・公演日・チケット発売日をできるだけ詳しく。`
 
-アーティスト名：${artist}
-検索対象サイト：${targetSites}
-
-各公演について以下の情報をJSON配列で返してください：
-- title: 公演名（ツアー名・会場名を含む）
-- venue: 会場名（都道府県を含む）
-- eventDate: 公演日（YYYY-MM-DD形式、複数日程ある場合は最初の日程。不明なら空文字）
-- saleDate: チケット発売日（YYYY-MM-DD形式。不明なら空文字）
-- saleStartTime: 発売開始時刻（HH:MM形式。不明なら"10:00"）
-- url: チケット購入ページのURL
-- site: 販売サイト名（e+ / ローチケ / チケットぴあ）
-
-JSONのみ返してください（説明文・マークダウン不要）。
-見つからない場合は空配列 [] を返してください。`
-
-  const res = await fetch(
+  const step1Res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
+        contents: [{ parts: [{ text: searchPrompt }] }],
         tools: [{ googleSearch: {} }],
         generationConfig: { temperature: 0.1 },
       }),
     }
   )
 
-  const data = await res.json()
-
-  // エラーチェック
-  if (data.error) {
-    console.error('Gemini API error:', JSON.stringify(data.error))
+  const step1Data = await step1Res.json()
+  if (step1Data.error) {
+    console.error('Gemini Step1 error:', JSON.stringify(step1Data.error))
     return []
   }
 
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
-  console.log('Gemini response text:', text.slice(0, 500))
+  // 全partsからテキストを結合（grounding時は複数partsに分かれることがある）
+  const parts = step1Data.candidates?.[0]?.content?.parts ?? []
+  const rawText = parts.map((p: { text?: string }) => p.text ?? '').join('\n')
+  console.log('Step1 raw text:', rawText.slice(0, 800))
 
-  // JSON抽出（コードブロック対応）
-  const jsonMatch = text.match(/```(?:json)?\s*(\[[\s\S]*?\])\s*```/) ||
-                    text.match(/(\[[\s\S]*\])/)
-  if (!jsonMatch) {
-    console.log('No JSON found in response')
-    return []
+  if (!rawText.trim()) return []
+
+  // Step2: 収集した情報をJSON変換（グラウンディングなし）
+  const convertPrompt = `以下のテキストから「${artist}」のライブ・コンサートチケット情報を抽出し、JSON配列に変換してください。
+
+テキスト：
+${rawText}
+
+出力フォーマット（JSONのみ、説明文不要）：
+[
+  {
+    "title": "公演名",
+    "venue": "会場名（都道府県含む）",
+    "eventDate": "YYYY-MM-DD（不明なら空文字）",
+    "saleDate": "YYYY-MM-DD（不明なら空文字）",
+    "saleStartTime": "HH:MM（不明なら10:00）",
+    "url": "チケットURL",
+    "site": "e+ または ローチケ または チケットぴあ"
   }
+]
+
+情報がなければ [] を返してください。`
+
+  const step2Res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: convertPrompt }] }],
+        generationConfig: { temperature: 0.0 },
+      }),
+    }
+  )
+
+  const step2Data = await step2Res.json()
+  const jsonText = step2Data.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
+  console.log('Step2 json text:', jsonText.slice(0, 500))
+
+  const jsonMatch = jsonText.match(/```(?:json)?\s*(\[[\s\S]*?\])\s*```/) ||
+                    jsonText.match(/(\[[\s\S]*\])/)
+  if (!jsonMatch) return []
 
   try {
     const events: TicketEvent[] = JSON.parse(jsonMatch[1] ?? jsonMatch[0])
