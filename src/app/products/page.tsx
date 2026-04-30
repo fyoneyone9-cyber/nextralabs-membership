@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, type LucideIcon } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, type LucideIcon } from 'lucide-react'
 
 // ==================== Product Type ====================
 interface Product {
@@ -339,6 +339,21 @@ const creativeTools: Product[] = [
     color: 'from-red-500 to-pink-500',
     bgColor: 'bg-red-500/10',
     iconColor: 'text-red-500',
+    status: 'NEW',
+  },
+  {
+    id: 'location-finder',
+    title: 'YouTuber撮影場所特定AI',
+    subtitle: 'サムネイルをVision AIで解析 → Google Mapsにピン表示',
+    description:
+      'YouTube URLを貼るだけで、サムネイル3枚をGemini AIが解析し、撮影場所をGoogle Mapsにピンポイント表示。建物・看板・地形から場所を推定。',
+    price: '¥1,980/月',
+    priceNote: 'プレミアムプラン',
+    tags: ['Gemini Vision', 'Google Maps', '場所特定', '1日1回'],
+    icon: MapPin,
+    color: 'from-blue-500 to-violet-500',
+    bgColor: 'bg-blue-500/10',
+    iconColor: 'text-blue-500',
     status: 'NEW',
   },
 ]

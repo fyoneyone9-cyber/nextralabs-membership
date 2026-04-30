@@ -17,12 +17,14 @@ function extractVideoId(url: string): string | null {
   return null
 }
 
-// YouTube サムネイル URL 一覧（3枚）
+// YouTube サムネイル URL 一覧（3枚）— 異なるタイムスタンプのフレームを取得
 function getThumbnailUrls(videoId: string): string[] {
+  // 0.jpg=先頭フレーム, 1.jpg=1/4地点, 2.jpg=2/4地点, 3.jpg=3/4地点
+  // maxresdefaultは存在しない動画では404→hqdefaultと同じ画像になるため使用しない
   return [
-    `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
-    `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
-    `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
+    `https://img.youtube.com/vi/${videoId}/1.jpg`,
+    `https://img.youtube.com/vi/${videoId}/2.jpg`,
+    `https://img.youtube.com/vi/${videoId}/3.jpg`,
   ]
 }
 
