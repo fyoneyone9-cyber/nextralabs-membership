@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, type LucideIcon } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, Ticket, type LucideIcon } from 'lucide-react'
 
 // ==================== Product Type ====================
 interface Product {
@@ -354,6 +354,21 @@ const creativeTools: Product[] = [
     color: 'from-blue-500 to-violet-500',
     bgColor: 'bg-blue-500/10',
     iconColor: 'text-blue-500',
+    status: 'NEW',
+  },
+  {
+    id: 'ticket-scout',
+    title: 'Ticket Scout',
+    subtitle: 'e+ / ローチケ / チケットぴあ 一括検索 → 発売日をカレンダーに自動登録',
+    description:
+      'アーティスト名を入力するだけで3大チケットサイトを横断検索。チケット発売日・発売時刻をGoogle Calendarに自動登録し、リマインダーまで設定。',
+    price: '¥1,980/月',
+    priceNote: 'プレミアムプラン',
+    tags: ['e+', 'ローチケ', 'チケットぴあ', 'Google Calendar'],
+    icon: Ticket,
+    color: 'from-violet-500 to-pink-500',
+    bgColor: 'bg-violet-500/10',
+    iconColor: 'text-violet-500',
     status: 'NEW',
   },
 ]
