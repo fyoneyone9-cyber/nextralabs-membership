@@ -28,7 +28,7 @@ export function Header() {
           .from('profiles')
           .select('*')
           .eq('user_id', user.id)
-          .single()
+          .maybeSingle()
         setProfile(data)
       }
     }

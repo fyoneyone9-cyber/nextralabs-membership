@@ -19,17 +19,13 @@ export async function POST(request: NextRequest) {
 
     // Try cookie-based auth first, then token-based
     let user: any = null
-    let authDebug = ''
 
     // Cookie-based (server component style)
     try {
       const supabaseServer = createServerSupabaseClient()
-      const { data, error } = await supabaseServer.auth.getUser()
+      const { data } = await supabaseServer.auth.getUser()
       user = data?.user
-      if (error) authDebug += `cookie_err:${error.message};`
-    } catch (e: any) {
-      authDebug += `cookie_ex:${e?.message};`
-    }
+    } catch {}
 
     // Fallback: token-based auth from client
     if (!user && accessToken) {
@@ -39,21 +35,13 @@ export async function POST(request: NextRequest) {
           process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
           { global: { headers: { Authorization: `Bearer ${accessToken}` } } }
         )
-        const { data, error } = await supabaseToken.auth.getUser()
+        const { data } = await supabaseToken.auth.getUser()
         user = data?.user
-        if (error) authDebug += `token_err:${error.message};`
-      } catch (e: any) {
-        authDebug += `token_ex:${e?.message};`
-      }
+      } catch {}
     }
 
     if (!user) {
-      return NextResponse.json({
-        error: '認証が必要です',
-        debug: authDebug,
-        hasToken: !!accessToken,
-        tokenPreview: accessToken ? accessToken.substring(0, 20) + '...' : null,
-      }, { status: 401 })
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
     }
 
     // 既存のStripe customerを確認（service roleで直接取得）

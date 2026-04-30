@@ -26,7 +26,8 @@ export default async function DashboardPage() {
     .maybeSingle()
 
   // ツール数は固定5本（古着ハンター、AIペット翻訳モニター、社内政治 相関図、AI買い物依存ストッパー、AIセレクトショップ）
-  const toolCount = 5
+  const plan = subscription?.plan
+  const toolCount = plan === 'premium' ? 21 : plan === 'standard' ? 14 : 4
 
   const isPremium = !!subscription
 
@@ -38,7 +39,7 @@ export default async function DashboardPage() {
         </h1>
         <div className="flex items-center gap-2">
           <Badge variant={isPremium ? 'premium' : 'free'}>
-            {isPremium ? 'プレミアム会員' : '無料会員'}
+            {plan === 'premium' ? 'プレミアム会員' : plan === 'standard' ? 'スタンダード会員' : '無料会員'}
           </Badge>
           {profile?.role === 'admin' && (
             <Badge variant="secondary">管理者</Badge>
@@ -66,7 +67,7 @@ export default async function DashboardPage() {
             <Crown className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{isPremium ? 'プレミアム' : '無料'}</div>
+            <div className="text-2xl font-bold">{plan === 'premium' ? 'プレミアム' : plan === 'standard' ? 'スタンダード' : '無料'}</div>
             {!isPremium && (
               <Link href="/pricing" className="text-xs text-primary hover:underline">
                 アップグレード →
