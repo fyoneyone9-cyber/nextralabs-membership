@@ -71,8 +71,8 @@ export async function AccessGate({ productId, children }: AccessGateProps) {
           プレミアム会員限定
         </h1>
         <p className="text-gray-400 mb-8 leading-relaxed">
-          このツールはプレミアム会員または単品購入者のみご利用いただけます。
-          プランに加入するか、商品を購入してください。
+          このツールはプレミアムプラン（¥1,980/月）でご利用いただけます。<br />
+          プランに加入してご利用ください。
         </p>
         <div className="flex flex-col gap-3">
           <Link
@@ -85,7 +85,7 @@ export async function AccessGate({ productId, children }: AccessGateProps) {
             href={`/products/${productId}`}
             className="inline-flex items-center justify-center rounded-md border border-gray-700 text-gray-300 font-medium px-6 py-3 hover:border-gray-500 hover:text-white transition-colors"
           >
-            商品ページに戻る
+            ツールの詳細を見る
           </Link>
         </div>
       </div>
