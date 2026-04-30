@@ -38,6 +38,7 @@ export default function PricingPage() {
       return
     }
 
+    if (loadingPlan) return
     setLoadingPlan(plan)
     try {
       const { data: { session } } = await supabase.auth.getSession()
@@ -61,6 +62,7 @@ export default function PricingPage() {
   }
 
   const handleManage = async () => {
+    if (loadingPlan) return
     setLoadingPlan('manage')
     try {
       const { data: { session } } = await supabase.auth.getSession()
