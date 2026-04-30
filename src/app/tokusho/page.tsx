@@ -70,7 +70,7 @@ export default function TokushoPage() {
         <Link href="/contact" className="underline hover:text-primary">
           お問い合わせフォーム
         </Link>
-        またはメール（f.yoneyone9@gmail.com）までお気軽にご連絡ください。
+        またはメール（info@marriage-road.jp）までお気軽にご連絡ください。
       </p>
     </div>
   )
