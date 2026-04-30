@@ -1,4 +1,4 @@
-﻿import Link from 'next/link'
+import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -343,13 +343,13 @@ const creativeTools: Product[] = [
   },
   {
     id: 'location-finder',
-    title: 'YouTuber謦ｮ蠖ｱ蝣ｴ謇迚ｹ螳哂I',
-    subtitle: '繧ｵ繝繝阪う繝ｫ繧歎ision AI縺ｧ隗｣譫・竊・Google Maps縺ｫ繝斐Φ陦ｨ遉ｺ',
+    title: 'AI Location Scout',
+    subtitle: 'YouTube URLを貼るだけ → Gemini AIが解析 → Google Mapsにピン表示',
     description:
-      'YouTube URL繧定ｲｼ繧九□縺代〒縲√し繝繝阪う繝ｫ3譫壹ｒGemini AI縺瑚ｧ｣譫舌＠縲∵聴蠖ｱ蝣ｴ謇繧竪oogle Maps縺ｫ繝斐Φ繝昴う繝ｳ繝郁｡ｨ遉ｺ縲ょｻｺ迚ｩ繝ｻ逵区攸繝ｻ蝨ｰ蠖｢縺九ｉ蝣ｴ謇繧呈耳螳壹・,
-    price: 'ﾂ･1,980/譛・,
-    priceNote: '繝励Ξ繝溘い繝繝励Λ繝ｳ',
-    tags: ['Gemini Vision', 'Google Maps', '蝣ｴ謇迚ｹ螳・, '1譌･1蝗・],
+      'YouTube URLを貼るだけで、サムネイル3枚をGemini AIが解析し、撮影場所をGoogle Mapsにピンポイント表示。建物・看板・地形から場所を推定。',
+    price: '¥1,980/月',
+    priceNote: 'プレミアムプラン',
+    tags: ['Gemini Vision', 'Google Maps', '場所特定', '1日1回'],
     icon: MapPin,
     color: 'from-blue-500 to-violet-500',
     bgColor: 'bg-blue-500/10',
