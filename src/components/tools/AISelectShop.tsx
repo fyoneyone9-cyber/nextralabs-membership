@@ -393,6 +393,7 @@ export default function AISelectShop() {
   const [printfulLoading, setPrintfulLoading] = useState(false)
   const [printfulPublishing, setPrintfulPublishing] = useState<string | null>(null)
   const [printfulError, setPrintfulError] = useState('')
+  const [printfulShowShopifyLink, setPrintfulShowShopifyLink] = useState(false)
   const [printfulShipping, setPrintfulShipping] = useState<string | null>(null)
 
   // --- Printful credential helper ---
@@ -504,15 +505,18 @@ export default function AISelectShop() {
           ? ` + Shopify登録済み (${data.shopify.title})`
           : ''
         setPrintfulError(`✅ Printful出品完了${shopifyInfo}`)
+        setPrintfulShowShopifyLink(true)
         setPrintfulPublishing(null)
         return true
       } else {
         setPrintfulError(data.error?.message || data.error || data.result || 'Failed to publish')
+        setPrintfulShowShopifyLink(false)
         setPrintfulPublishing(null)
         return false
       }
     } catch (err) {
       setPrintfulError(err instanceof Error ? err.message : 'Network error')
+      setPrintfulShowShopifyLink(false)
       setPrintfulPublishing(null)
       return false
     }
@@ -1175,7 +1179,15 @@ export default function AISelectShop() {
                     <li>5. 注文が入るとPrintfulが自動で製造・配送</li>
                   </ol>
                   <p className="text-xs text-gray-500 mt-4">※ この機能は情報提供のみです。実際の連携にはShopify / Printfulのアカウントが必要です。</p>
-                  <button onClick={() => setShowShopifyModal(false)} className="mt-4 w-full py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm">
+                  <a
+                    href="https://admin.shopify.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 w-full py-2 bg-[#96bf48] hover:bg-[#7da03c] text-white rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                  >
+                    🛒 Shopify管理画面を開く ↗
+                  </a>
+                  <button onClick={() => setShowShopifyModal(false)} className="mt-2 w-full py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm">
                     閉じる
                   </button>
                 </div>
@@ -1293,7 +1305,19 @@ export default function AISelectShop() {
                       </a>
 
                       {printfulError && (
-                        <p className="text-xs text-red-400 bg-red-500/10 p-2 rounded">{printfulError}</p>
+                        <div className={`text-xs p-2 rounded ${printfulError.startsWith('✅') ? 'text-emerald-400 bg-emerald-500/10' : 'text-red-400 bg-red-500/10'}`}>
+                          <p>{printfulError}</p>
+                          {printfulShowShopifyLink && (
+                            <a
+                              href="https://admin.shopify.com/"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 mt-2 px-3 py-1.5 bg-[#96bf48]/20 hover:bg-[#96bf48]/30 text-[#96bf48] rounded-lg transition-colors font-medium"
+                            >
+                              🛒 Shopify管理画面を開く ↗
+                            </a>
+                          )}
+                        </div>
                       )}
                     </div>
                   )}
