@@ -106,9 +106,9 @@ export default function TicketScoutPage() {
           <h2 className="text-2xl font-bold mb-4">料金</h2>
           <Card className="border-violet-500/30 inline-block">
             <CardContent className="pt-8 pb-8 text-center">
-              <Badge className="mb-4 bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20">プレミアムプラン限定</Badge>
-              <div className="text-3xl font-bold mb-2">¥1,980<span className="text-base font-normal text-muted-foreground">/月</span></div>
-              <p className="text-muted-foreground mb-6">プレミアム全ツールが使い放題</p>
+              <Badge className="mb-4 bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">スタンダードプラン以上</Badge>
+              <div className="text-3xl font-bold mb-2">¥980<span className="text-base font-normal text-muted-foreground">/月</span></div>
+              <p className="text-muted-foreground mb-6">スタンダード・プレミアム両プランで利用可能</p>
               <Link href="/pricing">
                 <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white">プレミアムプランを見る →</Button>
               </Link>

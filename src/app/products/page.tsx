@@ -362,8 +362,8 @@ const creativeTools: Product[] = [
     subtitle: 'e+ / ローチケ / チケットぴあ 一括検索 → 発売日をカレンダーに自動登録',
     description:
       'アーティスト名を入力するだけで3大チケットサイトを横断検索。チケット発売日・発売時刻をGoogle Calendarに自動登録し、リマインダーまで設定。',
-    price: '¥1,980/月',
-    priceNote: 'プレミアムプラン',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
     tags: ['e+', 'ローチケ', 'チケットぴあ', 'Google Calendar'],
     icon: Ticket,
     color: 'from-violet-500 to-pink-500',
