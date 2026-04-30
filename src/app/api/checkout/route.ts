@@ -22,12 +22,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
     }
 
-    // 既存のStripe customerを確認
+    // 既存のStripe customerを確認（.maybeSingle()で0件でもエラーにしない）
     const { data: subscription } = await supabase
       .from('subscriptions')
       .select('stripe_customer_id')
       .eq('user_id', user.id)
-      .single()
+      .maybeSingle()
 
     let customerId = subscription?.stripe_customer_id
 
@@ -58,10 +58,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url: session.url })
   } catch (error: any) {
-    console.error('Checkout error:', error)
+    console.error('Checkout error:', error?.message, error?.type, error?.statusCode)
     return NextResponse.json(
-      { error: 'チェックアウトセッションの作成に失敗しました' },
-      { status: 500 }
+      { error: error?.message || 'チェックアウトセッションの作成に失敗しました' },
+      { status: error?.statusCode || 500 }
     )
   }
 }
