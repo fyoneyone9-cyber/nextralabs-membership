@@ -26,7 +26,7 @@ export default function TokushoPage() {
           { label: '代表者氏名', value: '米山 文貴' },
           { label: '所在地', value: '神奈川県海老名市（詳細住所はメールにてご請求ください）' },
           { label: '電話番号', value: '080-3207-8422（平日10:00〜18:00）' },
-          { label: 'メールアドレス', value: 'f.yoneyone9@gmail.com' },
+          { label: 'メールアドレス', value: 'info@marriage-road.jp' },
           { label: 'ウェブサイト', value: 'https://membership-site-nextralabos.vercel.app' },
           {
             label: '販売価格',
@@ -70,7 +70,7 @@ export default function TokushoPage() {
         <Link href="/contact" className="underline hover:text-primary">
           お問い合わせフォーム
         </Link>
-        またはメール（f.yoneyone9@gmail.com）までお気軽にご連絡ください。
+        またはメール（info@marriage-road.jp）までお気軽にご連絡ください。
       </p>
     </div>
   )
