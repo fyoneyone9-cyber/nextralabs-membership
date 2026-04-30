@@ -147,18 +147,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'サブスクリプションが必要です' }, { status: 403 })
     }
 
-    // 全体で1日50回制限（Gemini grounding無料枠）
-    const today = new Date().toISOString().split('T')[0]
-    const { count } = await supabase
-      .from('tool_usage_logs')
-      .select('id', { count: 'exact', head: true })
-      .eq('tool_id', 'ticket-scout')
-      .gte('created_at', `${today}T00:00:00.000Z`)
-
-    if ((count ?? 0) >= 50) {
-      return NextResponse.json({ error: '本日の利用上限（全体50回）に達しました。明日またお試しください。' }, { status: 429 })
-    }
-
     const { artist, sites, accessToken, addToCalendar } = await req.json()
 
     if (!artist?.trim()) {
