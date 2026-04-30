@@ -178,12 +178,12 @@ export default function PricingPage() {
               ))}
             </ul>
             {isPaid ? (
-              <Button variant="outline" className={`w-full ${loadingPlan ? 'pointer-events-none opacity-50' : ''}`} onClick={handleManage} disabled={!!loadingPlan}>
+              <Button variant="outline" className="w-full" onClick={handleManage} disabled={loadingPlan === 'manage'}>
                 {loadingPlan === 'manage' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 サブスクリプション管理
               </Button>
             ) : (
-              <Button className={`w-full ${loadingPlan ? 'pointer-events-none opacity-50' : ''}`} onClick={() => handleCheckout('standard')} disabled={!!loadingPlan}>
+              <Button className="w-full" onClick={() => handleCheckout('standard')} disabled={loadingPlan === 'standard'}>
                 {loadingPlan === 'standard' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 スタンダードプランに登録
               </Button>
@@ -222,12 +222,12 @@ export default function PricingPage() {
               ))}
             </ul>
             {isPaid ? (
-              <Button variant="outline" className={`w-full border-violet-500/50 text-violet-400 ${loadingPlan ? 'pointer-events-none opacity-50' : ''}`} onClick={handleManage} disabled={!!loadingPlan}>
+              <Button variant="outline" className="w-full border-violet-500/50 text-violet-400" onClick={handleManage} disabled={loadingPlan === 'manage'}>
                 {loadingPlan === 'manage' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 プラン管理
               </Button>
             ) : (
-              <Button className={`w-full bg-violet-500 hover:bg-violet-600 text-white ${loadingPlan ? 'pointer-events-none opacity-50' : ''}`} onClick={() => handleCheckout('premium')} disabled={!!loadingPlan}>
+              <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white" onClick={() => handleCheckout('premium')} disabled={loadingPlan === 'premium'}>
                 {loadingPlan === 'premium' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 プレミアムプランに登録
               </Button>
