@@ -12,9 +12,10 @@ interface TrendKeyword {
   id: string
   name: string
   score: number
-  category: 'ファッション' | 'テック' | 'カルチャー' | '季節'
+  category: string
   direction: '↑' | '↗' | '→' | '↘' | '↓'
-  history: number[] // last 7 days
+  traffic: string
+  link: string
 }
 
 interface DesignRecord {
@@ -59,30 +60,7 @@ const STORAGE_KEYS = {
   trends: 'ai-select-shop-trends',
 }
 
-const CATEGORIES = ['すべて', 'ファッション', 'テック', 'カルチャー', '季節'] as const
-
-const BASE_TRENDS: Omit<TrendKeyword, 'score' | 'direction' | 'history'>[] = [
-  { id: 't1', name: 'Y2K', category: 'ファッション' },
-  { id: 't2', name: 'サイバーパンク', category: 'テック' },
-  { id: 't3', name: 'レトロ', category: 'カルチャー' },
-  { id: 't4', name: '推し活', category: 'カルチャー' },
-  { id: 't5', name: '猫ミーム', category: 'カルチャー' },
-  { id: 't6', name: 'ヴェイパーウェイブ', category: 'テック' },
-  { id: 't7', name: 'ストリートアート', category: 'ファッション' },
-  { id: 't8', name: '桜', category: '季節' },
-  { id: 't9', name: 'ネオン東京', category: 'テック' },
-  { id: 't10', name: 'ミニマリズム', category: 'ファッション' },
-  { id: 't11', name: '昭和レトロ', category: 'カルチャー' },
-  { id: 't12', name: '花火', category: '季節' },
-  { id: 't13', name: 'グランジ', category: 'ファッション' },
-  { id: 't14', name: 'AI アート', category: 'テック' },
-  { id: 't15', name: '夏祭り', category: '季節' },
-  { id: 't16', name: 'カワイイ文化', category: 'カルチャー' },
-  { id: 't17', name: 'タイダイ', category: 'ファッション' },
-  { id: 't18', name: 'ピクセルアート', category: 'テック' },
-  { id: 't19', name: '紅葉', category: '季節' },
-  { id: 't20', name: 'ゴシック', category: 'ファッション' },
-]
+const CATEGORIES = ['すべて'] as const
 
 const STYLES = [
   { id: 'minimal', name: 'ミニマル', emoji: '⬜' },
@@ -146,7 +124,19 @@ function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-function getDirection(score: number): TrendKeyword['direction'] {
+function trafficToScore(traffic: string): number {
+  const num = parseInt(traffic.replace(/[^0-9]/g, ''), 10)
+  if (!num || isNaN(num)) return 50
+  if (num >= 500000) return 98
+  if (num >= 200000) return 90
+  if (num >= 100000) return 80
+  if (num >= 50000) return 70
+  if (num >= 20000) return 60
+  if (num >= 10000) return 50
+  return 40
+}
+
+function scoreToDirection(score: number): TrendKeyword['direction'] {
   if (score >= 80) return '↑'
   if (score >= 60) return '↗'
   if (score >= 40) return '→'
@@ -154,13 +144,26 @@ function getDirection(score: number): TrendKeyword['direction'] {
   return '↓'
 }
 
-function generateTrends(): TrendKeyword[] {
-  return BASE_TRENDS.map((t) => {
-    const score = randomInt(15, 98)
-    const history = Array.from({ length: 7 }, () => randomInt(10, 95))
-    history[6] = score
-    return { ...t, score, direction: getDirection(score), history }
-  })
+async function fetchRealTrends(): Promise<TrendKeyword[]> {
+  try {
+    const res = await fetch('/api/tools/trends')
+    if (!res.ok) throw new Error('API error')
+    const data = await res.json()
+    return (data.trends || []).map((t: any, i: number) => {
+      const score = trafficToScore(t.traffic || '')
+      return {
+        id: `rt-${i}`,
+        name: t.title,
+        score,
+        category: 'トレンド',
+        direction: scoreToDirection(score),
+        traffic: t.traffic || '',
+        link: t.link || '',
+      }
+    })
+  } catch {
+    return []
+  }
 }
 
 function loadFromStorage<T>(key: string, fallback: T): T {
@@ -357,6 +360,7 @@ export default function AISelectShop() {
   // --- State ---
   const [activeTab, setActiveTab] = useState<string>('trends')
   const [trends, setTrends] = useState<TrendKeyword[]>([])
+  const [trendsLoading, setTrendsLoading] = useState(true)
   const [categoryFilter, setCategoryFilter] = useState<string>('すべて')
   const [designs, setDesigns] = useState<DesignRecord[]>([])
   const [sales, setSales] = useState<SaleRecord[]>([])
@@ -534,14 +538,17 @@ export default function AISelectShop() {
 
   // --- Initialize ---
   useEffect(() => {
-    const savedTrends = loadFromStorage<TrendKeyword[]>(STORAGE_KEYS.trends, [])
-    if (savedTrends.length > 0) {
-      setTrends(savedTrends)
-    } else {
-      const newTrends = generateTrends()
-      setTrends(newTrends)
-      saveToStorage(STORAGE_KEYS.trends, newTrends)
-    }
+    fetchRealTrends().then((realTrends) => {
+      if (realTrends.length > 0) {
+        setTrends(realTrends)
+        saveToStorage(STORAGE_KEYS.trends, realTrends)
+        setTrendsLoading(false)
+      } else {
+        const saved = loadFromStorage<TrendKeyword[]>(STORAGE_KEYS.trends, [])
+        if (saved.length > 0) setTrends(saved)
+        setTrendsLoading(false)
+      }
+    })
     setDesigns(loadFromStorage<DesignRecord[]>(STORAGE_KEYS.designs, []))
     setSales(loadFromStorage<SaleRecord[]>(STORAGE_KEYS.sales, []))
     setSettings(loadFromStorage<AppSettings>(STORAGE_KEYS.settings, DEFAULT_SETTINGS))
@@ -586,9 +593,14 @@ export default function AISelectShop() {
 
   // --- Functions ---
   const refreshTrends = useCallback(() => {
-    const newTrends = generateTrends()
-    setTrends(newTrends)
-    saveToStorage(STORAGE_KEYS.trends, newTrends)
+    setTrendsLoading(true)
+    fetchRealTrends().then((realTrends) => {
+      if (realTrends.length > 0) {
+        setTrends(realTrends)
+        saveToStorage(STORAGE_KEYS.trends, realTrends)
+      }
+      setTrendsLoading(false)
+    })
   }, [])
 
   const selectKeywordForDesign = useCallback((keyword: string) => {
@@ -772,7 +784,8 @@ export default function AISelectShop() {
           <div className="space-y-6">
             {/* Top 5 */}
             <div>
-              <h2 className="text-lg font-bold text-emerald-400 mb-3">🏆 今日のおすすめキーワード TOP5</h2>
+              <h2 className="text-lg font-bold text-emerald-400 mb-3">🏆 Googleトレンド急上昇 TOP5 <span className="text-xs text-gray-500 font-normal">（リアルタイム）</span></h2>
+              {trendsLoading && <p className="text-sm text-gray-400 animate-pulse mb-2">Googleトレンドを取得中...</p>}
               <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
                 {top5.map((kw, i) => (
                   <Card key={kw.id} className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border-emerald-500/20">
@@ -782,6 +795,7 @@ export default function AISelectShop() {
                         <span className="text-lg">{kw.direction}</span>
                       </div>
                       <p className="font-bold text-white text-sm truncate">{kw.name}</p>
+                      {kw.traffic && <p className="text-[10px] text-gray-400 truncate">{kw.traffic}+ 検索</p>}
                       <div className="flex items-center gap-2 mt-1">
                         <div className="flex-1 h-1.5 bg-gray-700 rounded-full">
                           <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full" style={{ width: `${kw.score}%` }} />
@@ -800,26 +814,15 @@ export default function AISelectShop() {
               </div>
             </div>
 
-            {/* Filter + Refresh */}
-            <div className="flex flex-wrap items-center gap-2">
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setCategoryFilter(cat)}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${
-                    categoryFilter === cat
-                      ? 'bg-emerald-500 text-white'
-                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
+            {/* Refresh */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-500">出典: Google Trends Japan（30分キャッシュ）</span>
               <button
                 onClick={refreshTrends}
-                className="ml-auto px-4 py-1.5 text-xs font-medium bg-teal-500/20 hover:bg-teal-500/30 text-teal-400 rounded-full transition-colors"
+                disabled={trendsLoading}
+                className="ml-auto px-4 py-1.5 text-xs font-medium bg-teal-500/20 hover:bg-teal-500/30 text-teal-400 rounded-full transition-colors disabled:opacity-50"
               >
-                🔄 トレンド更新
+                {trendsLoading ? '⏳ 取得中...' : '🔄 トレンド更新'}
               </button>
             </div>
 
@@ -837,19 +840,12 @@ export default function AISelectShop() {
                           </span>
                         </div>
                         <div className="flex items-center gap-2 mb-2">
-                          <Badge className="text-[10px] bg-gray-700 text-gray-300 border-0">{kw.category}</Badge>
+                          <Badge className="text-[10px] bg-gray-700 text-gray-300 border-0">Google トレンド</Badge>
+                          {kw.traffic && <span className="text-xs text-gray-500">検索数: {kw.traffic}</span>}
                           <span className="text-xs text-gray-500">スコア: {kw.score}</span>
                         </div>
-                        {/* Mini history chart */}
-                        <div className="flex items-end gap-0.5 h-6">
-                          {kw.history.map((val, i) => (
-                            <div
-                              key={i}
-                              className={`w-3 rounded-t ${i === 6 ? 'bg-emerald-400' : 'bg-gray-600'}`}
-                              style={{ height: `${Math.max(val * 0.24, 2)}px` }}
-                              title={`Day ${i + 1}: ${val}`}
-                            />
-                          ))}
+                        <div className="h-1.5 bg-gray-700 rounded-full w-full">
+                          <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full" style={{ width: `${kw.score}%` }} />
                         </div>
                       </div>
                       <button
