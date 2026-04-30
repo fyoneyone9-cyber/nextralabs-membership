@@ -1,6 +1,6 @@
 ﻿'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -14,6 +14,7 @@ export default function PricingPage() {
   const [user, setUser] = useState<any>(null)
   const [isPaid, setIsPaid] = useState(false)
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
+  const lockRef = useRef(false)
 
   useEffect(() => {
     const check = async () => {
@@ -38,7 +39,8 @@ export default function PricingPage() {
       return
     }
 
-    if (loadingPlan) return
+    if (lockRef.current) return
+    lockRef.current = true
     setLoadingPlan(plan)
     try {
       const { data: { session } } = await supabase.auth.getSession()
@@ -58,11 +60,13 @@ export default function PricingPage() {
     } catch {
       toast.error('エラーが発生しました')
     }
+    lockRef.current = false
     setLoadingPlan(null)
   }
 
   const handleManage = async () => {
-    if (loadingPlan) return
+    if (lockRef.current) return
+    lockRef.current = true
     setLoadingPlan('manage')
     try {
       const { data: { session } } = await supabase.auth.getSession()
@@ -78,6 +82,7 @@ export default function PricingPage() {
     } catch {
       toast.error('エラーが発生しました')
     }
+    lockRef.current = false
     setLoadingPlan(null)
   }
 
