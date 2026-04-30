@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
-import { Loader2, Mail } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 
 export default function ForgotPasswordPage() {
   const supabase = createClient()
@@ -25,31 +25,13 @@ export default function ForgotPasswordPage() {
     })
 
     if (error) {
-      toast.error('エラーが発生しました', { description: error.message })
+      toast.error('送信に失敗しました', { description: error.message })
       setLoading(false)
       return
     }
 
     setSent(true)
-  }
-
-  if (sent) {
-    return (
-      <div className="flex items-center justify-center min-h-[80vh] px-4">
-        <Card className="w-full max-w-md">
-          <CardContent className="p-8 text-center">
-            <Mail className="h-16 w-16 text-primary mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-2">メールを確認してください</h2>
-            <p className="text-muted-foreground mb-4">
-              パスワードリセットのリンクを{email}に送信しました。
-            </p>
-            <Link href="/login">
-              <Button variant="outline">ログインページへ戻る</Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    )
+    setLoading(false)
   }
 
   return (
@@ -57,31 +39,44 @@ export default function ForgotPasswordPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">パスワードリセット</CardTitle>
-          <CardDescription>メールアドレスを入力してリセットリンクを受け取ります</CardDescription>
+          <CardDescription>登録済みのメールアドレスを入力してください</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleReset} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">メールアドレス</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+          {sent ? (
+            <div className="text-center space-y-4">
+              <div className="text-4xl">📧</div>
+              <p className="text-sm text-muted-foreground">
+                <strong>{email}</strong> にパスワードリセット用のリンクを送信しました。
+              </p>
+              <p className="text-xs text-muted-foreground">
+                メールが届かない場合は迷惑メールフォルダをご確認ください。
+              </p>
+              <Link href="/login">
+                <Button variant="outline" className="w-full mt-4">ログインに戻る</Button>
+              </Link>
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              リセットリンクを送信
-            </Button>
-          </form>
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            <Link href="/login" className="text-primary hover:underline">
-              ログインページへ戻る
-            </Link>
-          </div>
+          ) : (
+            <form onSubmit={handleReset} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">メールアドレス</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                リセットリンクを送信
+              </Button>
+              <div className="text-center text-sm text-muted-foreground">
+                <Link href="/login" className="text-primary hover:underline">ログインに戻る</Link>
+              </div>
+            </form>
+          )}
         </CardContent>
       </Card>
     </div>
