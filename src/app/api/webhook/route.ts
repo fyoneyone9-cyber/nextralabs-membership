@@ -34,7 +34,8 @@ export async function POST(request: NextRequest) {
         if (!userId) break
 
         if (session.mode === 'subscription') {
-          // 繧ｵ繝悶せ繧ｯ繝ｪ繝励す繝ｧ繝ｳ雉ｼ蜈･螳御ｺ・          const subscriptionData: any = await stripe.subscriptions.retrieve(
+          // サブスクリプション購入完了
+          const subscriptionData: any = await stripe.subscriptions.retrieve(
             session.subscription as string
           )
 
@@ -49,7 +50,7 @@ export async function POST(request: NextRequest) {
             current_period_end: new Date(subscriptionData.current_period_end * 1000).toISOString(),
           }, { onConflict: 'user_id' })
         } else if (session.mode === 'payment') {
-          // 蜊伜刀雉ｼ蜈･螳御ｺ・窶・purchases 繝・・繝悶Ν縺ｫ險倬鹸
+          // 単品購入完了 — purchases テーブルに記録
           const productId = session.metadata?.product_id
           if (productId) {
             await supabaseAdmin.from('purchases').upsert({
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
         const subUpdated: any = event.data.object
         const customerId = subUpdated.customer as string
 
-        // customer ID縺九ｉ繝ｦ繝ｼ繧ｶ繝ｼ繧呈､懃ｴ｢
+        // customer IDからユーザーを検索
         const { data: existingSub } = await supabaseAdmin
           .from('subscriptions')
           .select('user_id')
