@@ -13,7 +13,7 @@ export default function PricingPage() {
   const supabase = createClient()
   const [user, setUser] = useState<any>(null)
   const [isPaid, setIsPaid] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
 
   useEffect(() => {
     const check = async () => {
@@ -38,7 +38,7 @@ export default function PricingPage() {
       return
     }
 
-    setLoading(true)
+    setLoadingPlan(plan)
     try {
       const { data: { session } } = await supabase.auth.getSession()
       const res = await fetch('/api/checkout', {
@@ -51,18 +51,23 @@ export default function PricingPage() {
       if (data.url) {
         window.location.href = data.url
       } else {
-        toast.error('チェックアウトの作成に失敗しました')
+        toast.error(data.error || 'チェックアウトの作成に失敗しました')
       }
     } catch {
       toast.error('エラーが発生しました')
     }
-    setLoading(false)
+    setLoadingPlan(null)
   }
 
   const handleManage = async () => {
-    setLoading(true)
+    setLoadingPlan('manage')
     try {
-      const res = await fetch('/api/portal', { method: 'POST' })
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch('/api/portal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_token: session?.access_token }),
+      })
       const data = await res.json()
       if (data.url) {
         window.location.href = data.url
@@ -70,7 +75,7 @@ export default function PricingPage() {
     } catch {
       toast.error('エラーが発生しました')
     }
-    setLoading(false)
+    setLoadingPlan(null)
   }
 
   return (
@@ -165,13 +170,13 @@ export default function PricingPage() {
               ))}
             </ul>
             {isPaid ? (
-              <Button variant="outline" className="w-full" onClick={handleManage} disabled={loading}>
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              <Button variant="outline" className="w-full" onClick={handleManage} disabled={!!loadingPlan}>
+                {loadingPlan === 'manage' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 サブスクリプション管理
               </Button>
             ) : (
-              <Button className="w-full" onClick={() => handleCheckout('standard')} disabled={loading}>
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              <Button className="w-full" onClick={() => handleCheckout('standard')} disabled={!!loadingPlan}>
+                {loadingPlan === 'standard' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 スタンダードプランに登録
               </Button>
             )}
@@ -209,13 +214,13 @@ export default function PricingPage() {
               ))}
             </ul>
             {isPaid ? (
-              <Button variant="outline" className="w-full border-violet-500/50 text-violet-400" onClick={handleManage} disabled={loading}>
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              <Button variant="outline" className="w-full border-violet-500/50 text-violet-400" onClick={handleManage} disabled={!!loadingPlan}>
+                {loadingPlan === 'manage' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 プラン管理
               </Button>
             ) : (
-              <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white" onClick={() => handleCheckout('premium')} disabled={loading}>
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white" onClick={() => handleCheckout('premium')} disabled={!!loadingPlan}>
+                {loadingPlan === 'premium' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 プレミアムプランに登録
               </Button>
             )}
