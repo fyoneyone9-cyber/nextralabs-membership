@@ -51,6 +51,7 @@ export default function PricingPage() {
       if (data.url) {
         window.location.href = data.url
       } else {
+        console.error('Checkout response:', data)
         toast.error(data.error || 'チェックアウトの作成に失敗しました')
       }
     } catch {
