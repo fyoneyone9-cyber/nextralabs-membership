@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -108,14 +108,14 @@ export default function ExamScheduler() {
   }, [])
 
   // ページロード時にURLのhashからtokenを取得
-  if (typeof window !== 'undefined') {
+  useEffect(() => {
     const hash = new URLSearchParams(window.location.hash.slice(1))
     const token = hash.get('access_token')
-    if (token && !googleToken) {
+    if (token) {
       setGoogleToken(token)
       window.history.replaceState(null, '', window.location.pathname)
     }
-  }
+  }, [])
 
   const addExam = () => {
     setExams((prev) => [...prev, { ...PRESET_EXAMS[0], id: crypto.randomUUID() }])
