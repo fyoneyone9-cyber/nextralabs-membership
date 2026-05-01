@@ -418,7 +418,7 @@ export default function ExamScheduler() {
                           ? <div className="text-sm text-muted-foreground">試験日: {r.examDate}（あと{r.daysUntil}日）</div>
                           : <div className="text-sm text-yellow-600 dark:text-yellow-400">{r.reason}</div>
                         }
-                        {r.status === 'done' && r.failed > 0 && (r as any).failedDetails?.[0] && (
+                        {r.status === 'done' && (r.failed ?? 0) > 0 && (r as any).failedDetails?.[0] && (
                           <div className="text-xs text-red-500 mt-1">⚠️ エラー: {(r as any).failedDetails[0].error}</div>
                         )}
                       </div>
@@ -426,7 +426,7 @@ export default function ExamScheduler() {
                     {r.status === 'done' && (
                       <div className="text-right">
                         <div className="text-sm font-bold text-green-600 dark:text-green-400">{r.registered}件登録</div>
-                        {r.failed && r.failed > 0 && <div className="text-xs text-destructive">{r.failed}件失敗</div>}
+                        {(r.failed ?? 0) > 0 && <div className="text-xs text-destructive">{r.failed}件失敗</div>}
                       </div>
                     )}
                   </div>
