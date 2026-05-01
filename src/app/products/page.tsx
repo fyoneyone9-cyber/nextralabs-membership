@@ -356,6 +356,10 @@ const creativeTools: Product[] = [
     iconColor: 'text-red-500',
     status: 'NEW',
   },
+]
+
+// 🐾 エンタメ・趣味
+const funTools: Product[] = [
   {
     id: 'location-finder',
     title: 'AI Location Scout',
@@ -386,10 +390,7 @@ const creativeTools: Product[] = [
     iconColor: 'text-violet-500',
     status: 'NEW',
   },
-]
 
-// 🐾 エンタメ・趣味
-const funTools: Product[] = [
   {
     id: 'pet-translator',
     title: 'AIペット翻訳モニター',

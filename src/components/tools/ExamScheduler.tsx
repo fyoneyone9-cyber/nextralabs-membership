@@ -405,7 +405,7 @@ export default function ExamScheduler() {
             </h2>
             {results.map(r => (
               <Card key={r.name} className={r.status === 'done' ? 'border-green-500/40 bg-green-500/5' : 'border-yellow-500/40 bg-yellow-500/5'}>
-                <CardContent className="p-4">
+                <CardContent className="p-4 space-y-3">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2">
                       {r.status === 'done'
@@ -430,6 +430,17 @@ export default function ExamScheduler() {
                       </div>
                     )}
                   </div>
+                  {r.status === 'done' && (r.registered ?? 0) > 0 && (
+                    <a
+                      href={`https://calendar.google.com/calendar/r/search?q=${encodeURIComponent(r.name)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-sm text-blue-500 hover:text-blue-400 hover:underline"
+                    >
+                      <Calendar className="w-4 h-4" />
+                      Googleカレンダーで確認する →
+                    </a>
+                  )}
                 </CardContent>
               </Card>
             ))}
