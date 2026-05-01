@@ -1,7 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Anthropic from '@anthropic-ai/sdk'
-
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 interface ExamConfig {
   name: string
@@ -54,7 +51,7 @@ async function fetchExamDate(rssUrl: string): Promise<string | null> {
   }
 }
 
-// AIでスケジュール生成
+// AIでスケジュール生成（Gemini Flash使用 — 1日1500回無料）
 async function generateSchedule(
   examName: string,
   examDate: string,
@@ -90,13 +87,27 @@ async function generateSchedule(
 
 学習セッションは週${sessionsPerWeek}回（火・木・土など間隔を空けて）配置。試験本番日も必ず含めてください。`
 
-  const message = await client.messages.create({
-    model: 'claude-opus-4-5',
-    max_tokens: 8192,
-    messages: [{ role: 'user', content: prompt }],
-  })
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { responseMimeType: 'application/json', maxOutputTokens: 8192 },
+      }),
+    }
+  )
 
-  const raw = (message.content[0] as { text: string }).text.trim()
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(`Gemini API エラー: ${err}`)
+  }
+
+  const data = await res.json() as {
+    candidates: Array<{ content: { parts: Array<{ text: string }> } }>
+  }
+  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ?? ''
   const match = raw.match(/\[[\s\S]*\]/)
   if (!match) throw new Error('AIのレスポンスをパースできませんでした')
   return JSON.parse(match[0]) as ScheduleEvent[]
