@@ -45,10 +45,11 @@ interface ResultItem {
   reason?: string
 }
 
+// ※ IPA試験（ITパスポート・基本情報・応用情報）はIPAがRSSを廃止済みのため手動入力が必要
 const PRESET_EXAMS: Omit<ExamConfig, 'id' | 'rssStatus' | 'rssFoundDate'>[] = [
-  { name: 'ITパスポート', rss: 'https://www.ipa.go.jp/about/press/rss.rdf', studyWeeks: 6, sessionsPerWeek: 4, sessionHours: 1, examDate: '' },
-  { name: '基本情報技術者', rss: 'https://www.ipa.go.jp/about/press/rss.rdf', studyWeeks: 12, sessionsPerWeek: 4, sessionHours: 2, examDate: '' },
-  { name: '応用情報技術者', rss: 'https://www.ipa.go.jp/about/press/rss.rdf', studyWeeks: 16, sessionsPerWeek: 4, sessionHours: 2.5, examDate: '' },
+  { name: 'ITパスポート', rss: '', studyWeeks: 6, sessionsPerWeek: 4, sessionHours: 1, examDate: '' },
+  { name: '基本情報技術者', rss: '', studyWeeks: 12, sessionsPerWeek: 4, sessionHours: 2, examDate: '' },
+  { name: '応用情報技術者', rss: '', studyWeeks: 16, sessionsPerWeek: 4, sessionHours: 2.5, examDate: '' },
   { name: 'CompTIA Security+', rss: 'https://www.comptia.org/rss/news', studyWeeks: 12, sessionsPerWeek: 3, sessionHours: 2, examDate: '' },
   { name: 'AWS Solutions Architect', rss: 'https://aws.amazon.com/blogs/aws/feed/', studyWeeks: 10, sessionsPerWeek: 3, sessionHours: 2, examDate: '' },
 ]
@@ -290,7 +291,7 @@ export default function ExamScheduler() {
                       <input type="url" value={exam.rss}
                         onChange={e => updateExam(exam.id, 'rss', e.target.value)}
                         className="flex-1 px-3 py-2 text-xs bg-background border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary font-mono"
-                        placeholder="https://..." />
+                        placeholder="https://... （ない場合は空欄のまま試験日を手動入力）" />
                       <Button variant="outline" size="sm" className="shrink-0 gap-1.5"
                         onClick={() => checkRss(exam.id)}
                         disabled={exam.rssStatus === 'checking' || !exam.rss}>
@@ -302,7 +303,12 @@ export default function ExamScheduler() {
                       </Button>
                     </div>
                     {/* RSSステータス表示 */}
-                    <div className="mt-1.5 ml-1">{getRssStatusUI(exam)}</div>
+                    <div className="mt-1.5 ml-1">
+                      {!exam.rss
+                        ? <span className="flex items-center gap-1 text-xs text-amber-500"><AlertCircle className="w-3 h-3" />IPA試験はRSS廃止済み → 下の試験日欄に手動入力してください</span>
+                        : getRssStatusUI(exam)
+                      }
+                    </div>
                   </div>
 
                   {/* 試験日（手動）*/}
