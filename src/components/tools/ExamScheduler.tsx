@@ -418,6 +418,9 @@ export default function ExamScheduler() {
                           ? <div className="text-sm text-muted-foreground">試験日: {r.examDate}（あと{r.daysUntil}日）</div>
                           : <div className="text-sm text-yellow-600 dark:text-yellow-400">{r.reason}</div>
                         }
+                        {r.status === 'done' && r.failed > 0 && (r as any).failedDetails?.[0] && (
+                          <div className="text-xs text-red-500 mt-1">⚠️ エラー: {(r as any).failedDetails[0].error}</div>
+                        )}
                       </div>
                     </div>
                     {r.status === 'done' && (

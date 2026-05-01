@@ -157,9 +157,11 @@ export async function POST(req: NextRequest) {
 
       for (const ev of schedule) {
         const startHour = ev.title.includes('本番') ? 10 : 9
+        const durationH = typeof ev.durationHours === 'number' && ev.durationHours > 0 ? ev.durationHours : 1
+        const endHour = startHour + Math.floor(durationH)
+        const endMin = Math.round((durationH % 1) * 60)
         const startTime = `${ev.date}T${String(startHour).padStart(2, '0')}:00:00+09:00`
-        const endMs = new Date(startTime).getTime() + ev.durationHours * 3600 * 1000
-        const endTime = new Date(endMs).toISOString().replace('Z', '+09:00').replace(/\.\d{3}/, '')
+        const endTime = `${ev.date}T${String(endHour).padStart(2, '0')}:${String(endMin).padStart(2, '0')}:00+09:00`
 
         try {
           const gcalRes = await fetch(
