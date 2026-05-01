@@ -458,7 +458,7 @@ export default function ExamScheduler() {
         {/* 注意事項 */}
         <Card className="bg-muted/30">
           <CardContent className="p-4 text-xs text-muted-foreground space-y-1">
-            <p>⚠️ スケジュール生成にはAI（Claude）を使用します（試験1件あたり約¥1〜3）</p>
+            <p>⚠️ スケジュール生成にはAI（Gemini Flash）を使用します（無料枠内）</p>
             <p>📡 RSSから試験日が取得できない場合は手動で試験日を入力してください</p>
             <p>🔒 Googleトークンはこのセッション中のみ使用し、サーバーには保存しません</p>
           </CardContent>
