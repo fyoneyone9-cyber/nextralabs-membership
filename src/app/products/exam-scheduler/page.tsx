@@ -374,7 +374,7 @@ export default function ExamSchedulerPage() {
                 スタンダードプラン（¥980/月）→
               </Button>
             </Link>
-            <p className="text-xs text-muted-foreground">スタンダードプラン限定ツール</p>
+            <p className="text-xs text-muted-foreground">スタンダードプラン（¥980/月）限定ツール</p>
           </div>
         </div>
       </section>
