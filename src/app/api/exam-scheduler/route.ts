@@ -88,13 +88,13 @@ async function generateSchedule(
 学習セッションは週${sessionsPerWeek}回（火・木・土など間隔を空けて）配置。試験本番日も必ず含めてください。`
 
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { responseMimeType: 'application/json', maxOutputTokens: 8192 },
+        generationConfig: { maxOutputTokens: 8192 },
       }),
     }
   )
