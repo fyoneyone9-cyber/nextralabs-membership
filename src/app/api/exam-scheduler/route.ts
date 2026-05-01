@@ -88,7 +88,7 @@ async function generateSchedule(
 学習セッションは週${sessionsPerWeek}回（火・木・土など間隔を空けて）配置。試験本番日も必ず含めてください。`
 
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -100,8 +100,11 @@ async function generateSchedule(
   )
 
   if (!res.ok) {
-    const err = await res.text()
-    throw new Error(`Gemini API エラー: ${err}`)
+    const errText = await res.text()
+    if (res.status === 429) {
+      throw new Error('Gemini API の無料枠クォータを超過しました。しばらく待ってから再試行してください（1分後〜）')
+    }
+    throw new Error(`Gemini API エラー: ${errText}`)
   }
 
   const data = await res.json() as {
