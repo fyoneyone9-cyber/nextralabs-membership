@@ -23,10 +23,10 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-amber-500/5" />
         <div className="container mx-auto px-4 text-center relative">
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
-            AIツールで
+            AIツール使い放題
             <br />
             <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
-              業務を自動化
+              メンバーシップ
             </span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">

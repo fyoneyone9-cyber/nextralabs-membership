@@ -1,8 +1,16 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
+
+export const metadata: Metadata = {
+  title: 'AIペット翻訳モニター',
+  description: '留守中のペットの行動・鳴き声をAIがリアルタイム解析。猫・犬対応。感情を日本語で通知。月額¥1,980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/pet-translator' },
+  openGraph: { title: 'AIペット翻訳モニター | NextraLabs', description: '留守中のペットの行動・鳴き声をAIがリアルタイム解析。猫・犬対応。感情を日本語で通知。', url: 'https://membership-site-nextralabos.vercel.app/products/pet-translator', type: 'website' },
+}
 import {
   Camera,
   Volume2,

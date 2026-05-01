@@ -1,13 +1,17 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
+
 import { Shield, Clock, MessageSquare, Zap, CheckCircle2, ArrowLeft, Brain, Users } from 'lucide-react'
 
-export const metadata = {
-  title: '塩対応代行AI | NextraLabs',
-  description: '義実家・親戚・上司からの重い連絡に、角が立たないが絶対に断る最適な返信を生成。既読タイミングまで計算。',
+export const metadata: Metadata = {
+  title: '塩対応代行AI',
+  description: '義実家・親戚からの重い連絡を角が立たずに断る文章を自動生成。6シチュエーション×3トーンで即生成。月額¥980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/shio-taiou' },
+  openGraph: { title: '塩対応代行AI | NextraLabs', description: '義実家・親戚からの重い連絡を角が立たずに断る文章を自動生成。6シチュエーション×3トーンで即生成。', url: 'https://membership-site-nextralabos.vercel.app/products/shio-taiou', type: 'website' },
 }
 
 const features = [

@@ -1,7 +1,15 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+
+export const metadata: Metadata = {
+  title: 'AI婚活コーチ',
+  description: 'マッチングアプリのプロフィールをAIが添削。メッセージ練習シミュレーター・相性診断・デートプラン提案。月額¥980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/ai-konkatsu' },
+  openGraph: { title: 'AI婚活コーチ | NextraLabs', description: 'マッチングアプリのプロフィールをAIが添削。メッセージ練習シミュレーター・相性診断・デートプラン提案。', url: 'https://membership-site-nextralabos.vercel.app/products/ai-konkatsu', type: 'website' },
+}
 
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 import {

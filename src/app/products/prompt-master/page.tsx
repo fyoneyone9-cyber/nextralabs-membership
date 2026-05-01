@@ -1,11 +1,14 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight, Wand2, BookOpen, SlidersHorizontal, Sparkles, ClipboardList, GraduationCap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
-export const metadata = {
-  title: 'AI画像プロンプトマスター | NextraLabs',
-  description: '26カテゴリ対応。日本語入力→画像生成AI用の最適プロンプトを自動生成。Midjourney/DALL-E/Stable Diffusion対応。',
+export const metadata: Metadata = {
+  title: 'AI画像プロンプトマスター',
+  description: '26カテゴリ対応。日本語入力→画像生成AI用の最適プロンプトを自動生成。Midjourney/DALL-E/Stable Diffusion対応。200+テンプレート搭載。月額¥1,980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/prompt-master' },
+  openGraph: { title: 'AI画像プロンプトマスター | NextraLabs', description: '26カテゴリ対応。日本語入力→画像生成AI用の最適プロンプトを自動生成。Midjourney/DALL-E/Stable Diffusion対応。', url: 'https://membership-site-nextralabos.vercel.app/products/prompt-master', type: 'website' },
 }
 
 export default function PromptMasterPage() {

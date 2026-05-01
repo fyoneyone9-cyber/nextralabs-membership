@@ -1,7 +1,15 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+
+export const metadata: Metadata = {
+  title: 'AIサイバー詐欺バスター',
+  description: '詐欺メール判定・闇バイト判定・家族見守りプラン。フィッシング・特殊詐欺から家族を守るAIツール。月額¥1,980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/scam-defender' },
+  openGraph: { title: 'AIサイバー詐欺バスター | NextraLabs', description: '詐欺メール判定・闇バイト判定・家族見守りプラン。フィッシング・特殊詐欺から家族を守る。', url: 'https://membership-site-nextralabos.vercel.app/products/scam-defender', type: 'website' },
+}
 
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 import {

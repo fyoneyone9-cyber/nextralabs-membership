@@ -1,10 +1,13 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight, Shirt, BarChart3, Trash2, Banknote, Palette, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-export const metadata = {
-  title: 'AIクローゼット断捨離コーチ | NextraLabs',
-  description: 'ワードローブ管理×コスパ分析×断捨離AI判定。持ってる服を最大限活かし、賢く手放すためのツール。',
+export const metadata: Metadata = {
+  title: 'AIクローゼット断捨離コーチ',
+  description: 'ワードローブ管理×コスパ分析×断捨離AI判定。持ってる服を最大限活かし、売却価格比較・コーデ提案まで。月額¥980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/closet-coach' },
+  openGraph: { title: 'AIクローゼット断捨離コーチ | NextraLabs', description: 'ワードローブ管理×コスパ分析×断捨離AI判定。持ってる服を最大限活かし、売却価格比較・コーデ提案まで。', url: 'https://membership-site-nextralabos.vercel.app/products/closet-coach', type: 'website' },
 }
 
 export default function ClosetCoachPage() {

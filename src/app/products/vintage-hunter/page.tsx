@@ -1,8 +1,16 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
+
+export const metadata: Metadata = {
+  title: 'AI古着ハンター',
+  description: 'メルカリ・ラクマ・ヤフオクを横断検索。AIがブランド・状態・相場を自動判定。月額¥1,980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/vintage-hunter' },
+  openGraph: { title: 'AI古着ハンター | NextraLabs', description: 'メルカリ・ラクマ・ヤフオクを横断検索。AIがブランド・状態・相場を自動判定。', url: 'https://membership-site-nextralabos.vercel.app/products/vintage-hunter', type: 'website' },
+}
 import {
   Search,
   Brain,

@@ -1,7 +1,15 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+
+export const metadata: Metadata = {
+  title: 'AIレポートジェネレーター',
+  description: '箇条書きのメモからプロフェッショナルなビジネスレポートを自動生成。週次・月次・プロジェクト報告に対応。無料。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/ai-report-generator' },
+  openGraph: { title: 'AIレポートジェネレーター | NextraLabs', description: '箇条書きのメモからプロフェッショナルなビジネスレポートを自動生成。週次・月次・プロジェクト報告に対応。', url: 'https://membership-site-nextralabos.vercel.app/products/ai-report-generator', type: 'website' },
+}
 
 import {
   ArrowLeft,

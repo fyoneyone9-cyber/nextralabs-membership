@@ -1,13 +1,18 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { ArrowRight, CheckCircle2, Ticket } from 'lucide-react'
 
-export const metadata = {
-  title: 'Ticket Scout | NextraLabs',
-  description: 'e+・ローチケ・チケットぴあを一括検索。お気に入りアーティストのチケット発売日をGoogle Calendarに自動登録。',
+export const metadata: Metadata = {
+  title: 'Ticket Scout',
+  description: 'e+・ローチケ・チケットぴあを一括検索。チケット発売日をGoogleカレンダーに自動登録しリマインダーも設定。月額¥980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/ticket-scout' },
+  openGraph: { title: 'Ticket Scout | NextraLabs', description: 'e+・ローチケ・チケットぴあを一括検索。チケット発売日をGoogleカレンダーに自動登録しリマインダーも設定。', url: 'https://membership-site-nextralabos.vercel.app/products/ticket-scout', type: 'website' },
 }
+
+
 
 export default function TicketScoutPage() {
   return (

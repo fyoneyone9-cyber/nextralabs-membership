@@ -1,14 +1,19 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { ArrowRight, CheckCircle2, Mic, FileText, Users, Image, Type, Music, Clapperboard } from 'lucide-react'
 
-
-export const metadata = {
-  title: 'AI YouTubeプロデューサー | NextraLabs',
-  description: '動画・音声・テキストを取り込んで、YouTube投稿に必要な台本・人物イラスト・サムネイル・タイトル・BGMを全自動生成',
+export const metadata: Metadata = {
+  title: 'AI YouTubeプロデューサー',
+  description: '文字起こし→台本→人物画像→サムネイル→タイトル→BGMを6ステップで全自動生成。10ジャンル対応。月額¥1,980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/youtube-producer' },
+  openGraph: { title: 'AI YouTubeプロデューサー | NextraLabs', description: '文字起こし→台本→人物画像→サムネイル→タイトル→BGMを6ステップで全自動生成。10ジャンル対応。', url: 'https://membership-site-nextralabos.vercel.app/products/youtube-producer', type: 'website' },
 }
+
+
+
 
 export default function YoutubeProducerPage() {
   return (

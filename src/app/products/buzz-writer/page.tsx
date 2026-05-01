@@ -1,8 +1,16 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
+
+export const metadata: Metadata = {
+  title: 'AIバズ文章コーチ',
+  description: '今日のトレンドニュースをネタに10種類のテンプレートでバズる文章を自動生成。バズ度診断・投稿画像生成・ハッシュタグ辞典付き。月額¥980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/buzz-writer' },
+  openGraph: { title: 'AIバズ文章コーチ | NextraLabs', description: '今日のトレンドニュースをネタに10種類のテンプレートでバズる文章を自動生成。バズ度診断・投稿画像生成・ハッシュタグ辞典付き。', url: 'https://membership-site-nextralabos.vercel.app/products/buzz-writer', type: 'website' },
+}
 import {
   ArrowLeft,
   Code2,

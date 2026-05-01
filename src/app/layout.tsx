@@ -8,31 +8,22 @@ import { Footer } from '@/components/footer'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'NextraLabs AI Tool Store - AIツールで業務を自動化',
-  description: 'AIを活用した業務効率化・自動化ツールを月額¥980で使い放題。古着ハンター、AIペット翻訳、社内政治相関図など。',
+  title: { default: 'NextraLabs | AIツール使い放題メンバーシップ — 月額¥980〜', template: '%s | NextraLabs' },
+  description: 'NextraLabsは月額¥980から使えるAIツールのメンバーシップです。資格試験スケジューラー・AIペット翻訳・古着ハンターなど20以上のAIツールが使い放題。業務効率化・副業・エンタメまで。',
+  keywords: ['AIツール', 'メンバーシップ', '月額980円', '業務効率化', '副業AI', '資格試験', 'スケジューラー', 'ペット翻訳', 'AI自動化', 'NextraLabs'],
   metadataBase: new URL('https://membership-site-nextralabos.vercel.app'),
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app' },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 } },
   openGraph: {
-    title: 'NextraLabs — AIツールで業務を自動化',
-    description: '古着ハンター・AIペット翻訳・社内政治相関図。3つのAIツールを月額¥980で使い放題。',
+    title: 'NextraLabs | AIツール使い放題メンバーシップ',
+    description: '月額¥980〜。資格試験スケジューラー・AIペット翻訳・古着ハンターなど20以上のAIツールが使い放題。',
     url: 'https://membership-site-nextralabos.vercel.app',
-    siteName: 'NextraLabs AI Tool Store',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1462,
-        height: 768,
-        alt: 'NextraLabs AI Tool Store',
-      },
-    ],
+    siteName: 'NextraLabs',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'NextraLabs AIツールメンバーシップ' }],
     locale: 'ja_JP',
     type: 'website',
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'NextraLabs — AIツールで業務を自動化',
-    description: '古着ハンター・AIペット翻訳・社内政治相関図。月額¥980で使い放題。',
-    images: ['/og-image.png'],
-  },
+  twitter: { card: 'summary_large_image', title: 'NextraLabs | AIツール使い放題', description: '月額¥980〜。20以上のAIツールが使い放題。', images: ['/og-image.png'] },
 }
 
 export default function RootLayout({
@@ -42,6 +33,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja" suppressHydrationWarning>
+      <head>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "NextraLabs",
+          "url": "https://membership-site-nextralabos.vercel.app",
+          "description": "AIツール使い放題メンバーシップ 月額¥980〜",
+          "potentialAction": { "@type": "SearchAction", "target": "https://membership-site-nextralabos.vercel.app/products?q={search_term_string}", "query-input": "required name=search_term_string" }
+        }) }} />
+      </head>
       <body className={inter.className}>
         <Providers>
           <div className="flex min-h-screen flex-col">

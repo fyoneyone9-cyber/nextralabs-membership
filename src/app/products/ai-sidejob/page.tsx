@@ -1,13 +1,18 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ArrowRight, Rocket, CheckCircle2, Star, Zap, BarChart3, FileText, Wrench, BookOpen } from 'lucide-react'
 
-
-export const metadata = {
-  title: 'AI副業スタートダッシュ | NextraLabs',
-  description: '13カテゴリのAI副業を適性診断→ロードマップ→収益シミュレーション→テンプレート→AIツール辞典→活動ログまで完全サポート',
+export const metadata: Metadata = {
+  title: 'AI副業スタートダッシュ',
+  description: '13カテゴリ×適性診断×ロードマップ×収益シミュレーター。AI副業の始め方から月10万円達成まで完全サポート。月額¥1,980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/ai-sidejob' },
+  openGraph: { title: 'AI副業スタートダッシュ | NextraLabs', description: '13カテゴリ×適性診断×ロードマップ×収益シミュレーター。AI副業の始め方から月10万円達成まで完全サポート。', url: 'https://membership-site-nextralabos.vercel.app/products/ai-sidejob', type: 'website' },
 }
+
+
+
 
 export default function AiSidejobPage() {
   return (

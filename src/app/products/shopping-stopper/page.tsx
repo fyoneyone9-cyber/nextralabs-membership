@@ -1,8 +1,16 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
+
+export const metadata: Metadata = {
+  title: 'AI買い物依存ストッパー',
+  description: '購買衝動を分析し「本当に必要か」をAIが判定。衝動買いを止めて家計を守るAIツール。月額¥980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/shopping-stopper' },
+  openGraph: { title: 'AI買い物依存ストッパー | NextraLabs', description: '購買衝動を分析し「本当に必要か」をAIが判定。衝動買いを止めて家計を守るAIツール。', url: 'https://membership-site-nextralabos.vercel.app/products/shopping-stopper', type: 'website' },
+}
 import {
   Camera,
   Timer,

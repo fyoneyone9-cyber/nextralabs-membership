@@ -1,8 +1,16 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
+
+export const metadata: Metadata = {
+  title: '退職あんしんAI',
+  description: 'AIが退職届を自動作成、未払い残業代を計算、有給・社保・年金の手続きまで完全ガイド。退職代行比較・権利Q&A搭載。月額¥980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/resignation-assistant' },
+  openGraph: { title: '退職あんしんAI | NextraLabs', description: 'AIが退職届を自動作成、未払い残業代を計算、有給・社保・年金の手続きまで完全ガイド。', url: 'https://membership-site-nextralabos.vercel.app/products/resignation-assistant', type: 'website' },
+}
 import {
   FileText,
   Calculator,

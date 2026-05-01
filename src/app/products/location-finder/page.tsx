@@ -1,13 +1,18 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { ArrowRight, CheckCircle2, MapPin } from 'lucide-react'
 
-export const metadata = {
-  title: 'AI Location Scout | NextraLabs',
-  description: 'YouTube動画のサムネイルをVision AIで解析し、撮影場所をGoogle Maps上にピンポイント特定します。',
+export const metadata: Metadata = {
+  title: 'AI Location Scout',
+  description: 'YouTube URLを貼るだけ。Gemini AIがサムネイルを解析し撮影場所をGoogle Mapsにピンポイント表示。月額¥1,980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/location-finder' },
+  openGraph: { title: 'AI Location Scout | NextraLabs', description: 'YouTube URLを貼るだけ。Gemini AIがサムネイルを解析し撮影場所をGoogle Mapsにピンポイント表示。', url: 'https://membership-site-nextralabos.vercel.app/products/location-finder', type: 'website' },
 }
+
+
 
 export default function LocationFinderPage() {
   return (

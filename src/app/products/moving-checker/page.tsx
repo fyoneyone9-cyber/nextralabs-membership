@@ -1,7 +1,15 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+
+export const metadata: Metadata = {
+  title: 'AI引っ越し安心チェッカー',
+  description: '物件の治安・騒音・トラブルリスクを30項目でスコア化。引っ越しコスト計算まで。無料。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/moving-checker' },
+  openGraph: { title: 'AI引っ越し安心チェッカー | NextraLabs', description: '物件の治安・騒音・トラブルリスクを30項目でスコア化。引っ越しコスト計算まで。無料。', url: 'https://membership-site-nextralabos.vercel.app/products/moving-checker', type: 'website' },
+}
 
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 import {

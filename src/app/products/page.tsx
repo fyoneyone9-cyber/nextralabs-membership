@@ -1,5 +1,13 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
+
+export const metadata: Metadata = {
+  title: 'AIツール一覧',
+  description: '資格試験スケジューラー・AIペット翻訳・古着ハンターなど20以上のAIツール。月額¥980のスタンダードプランまたは¥1,980のプレミアムプランで全て使い放題。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products' },
+  openGraph: { title: 'AIツール一覧 | NextraLabs', description: '20以上のAIツールが月額¥980〜使い放題。', url: 'https://membership-site-nextralabos.vercel.app/products', type: 'website' },
+}
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, Ticket, BookOpen, type LucideIcon } from 'lucide-react'

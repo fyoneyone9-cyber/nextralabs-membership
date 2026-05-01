@@ -1,10 +1,13 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight, MapPin, Users, ClipboardCheck, AlertTriangle, Phone, BookOpen } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-export const metadata = {
-  title: 'AI防災パーソナルガイド | NextraLabs',
-  description: '避難所検索×家族防災プラン×気象警報モニター。あなたの現在地に合わせたパーソナル防災ツール。',
+export const metadata: Metadata = {
+  title: 'AI防災パーソナルガイド',
+  description: '現在地から最寄り避難所を自動検索。家族の避難プランを事前作成。気象庁APIで警報をリアルタイム確認。月額¥1,980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/disaster-guard' },
+  openGraph: { title: 'AI防災パーソナルガイド | NextraLabs', description: '現在地から最寄り避難所を自動検索。家族の避難プランを事前作成。気象庁APIで警報をリアルタイム確認。', url: 'https://membership-site-nextralabos.vercel.app/products/disaster-guard', type: 'website' },
 }
 
 export default function DisasterGuardPage() {

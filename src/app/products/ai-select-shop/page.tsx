@@ -1,7 +1,15 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+
+export const metadata: Metadata = {
+  title: '在庫ゼロ AIセレクトショップ',
+  description: 'AIがバズワードを分析しTシャツデザインを自動生成。注文時にオンデマンド製造・配送。在庫リスクゼロのAIファッション副業。月額¥1,980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/ai-select-shop' },
+  openGraph: { title: '在庫ゼロ AIセレクトショップ | NextraLabs', description: 'AIがバズワードを分析しTシャツデザインを自動生成。注文時にオンデマンド製造・配送。在庫リスクゼロのAIファッション副業。', url: 'https://membership-site-nextralabos.vercel.app/products/ai-select-shop', type: 'website' },
+}
 
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 import {

@@ -1,10 +1,13 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft, MessageCircleHeart, Brain, BarChart3, Calendar, BookOpen, HeartHandshake, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-export const metadata = {
-  title: 'AIコミュニケーション改善コーチ | NextraLabs',
-  description: '心理学ベースの対人コミュニケーションスキルアップツール。メッセージ添削・自己分析・会話プランナーで人間関係を改善。',
+export const metadata: Metadata = {
+  title: 'AIコミュニケーション改善コーチ',
+  description: '心理学ベースのメッセージ添削・4タイプコミュスタイル診断・場面別会話プランナー。恋愛・ビジネス・友人関係を改善。月額¥980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/comm-coach' },
+  openGraph: { title: 'AIコミュニケーション改善コーチ | NextraLabs', description: '心理学ベースのメッセージ添削・4タイプコミュスタイル診断。恋愛・ビジネス・友人関係を改善。', url: 'https://membership-site-nextralabos.vercel.app/products/comm-coach', type: 'website' },
 }
 
 export default function CommCoachPage() {

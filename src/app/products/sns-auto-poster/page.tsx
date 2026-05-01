@@ -1,7 +1,15 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+
+export const metadata: Metadata = {
+  title: 'SNSオートポスター',
+  description: 'トピックを入力するだけでTwitter・Instagram・Facebook・LinkedIn向けの投稿文を自動生成。ハッシュタグ提案付き。無料。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/sns-auto-poster' },
+  openGraph: { title: 'SNSオートポスター | NextraLabs', description: 'トピックを入力するだけでTwitter・Instagram・Facebook・LinkedIn向けの投稿文を自動生成。ハッシュタグ提案付き。', url: 'https://membership-site-nextralabos.vercel.app/products/sns-auto-poster', type: 'website' },
+}
 
 import {
   ArrowLeft,

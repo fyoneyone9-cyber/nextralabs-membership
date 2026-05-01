@@ -1,8 +1,16 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
+
+export const metadata: Metadata = {
+  title: 'AI家計防衛シミュレーター',
+  description: 'ギャンブル収支を可視化し期待値を数学的に解説。依存度チェック・認知バイアス診断・相談窓口ガイド。月額¥980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/money-guard' },
+  openGraph: { title: 'AI家計防衛シミュレーター | NextraLabs', description: 'ギャンブル収支を可視化し期待値を数学的に解説。依存度チェック・認知バイアス診断・相談窓口ガイド。', url: 'https://membership-site-nextralabos.vercel.app/products/money-guard', type: 'website' },
+}
 import {
   ArrowLeft,
   Code2,

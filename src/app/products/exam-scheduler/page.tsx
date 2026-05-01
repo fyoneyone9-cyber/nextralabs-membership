@@ -1,8 +1,16 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
+
+export const metadata: Metadata = {
+  title: '資格試験 AIスケジューラー',
+  description: '試験日を入力するだけ。AIが学習計画を自動生成してGoogleカレンダーに一括登録。ITパスポート・基本情報・CompTIA・AWS対応。月額¥980〜。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/exam-scheduler' },
+  openGraph: { title: '資格試験 AIスケジューラー | NextraLabs', description: '試験日を入力するだけ。AIが学習計画を自動生成してGoogleカレンダーに一括登録。', url: 'https://membership-site-nextralabos.vercel.app/products/exam-scheduler', type: 'website' },
+}
 import {
   BookOpen,
   Calendar,

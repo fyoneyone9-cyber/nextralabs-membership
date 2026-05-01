@@ -1,8 +1,16 @@
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
+
+export const metadata: Metadata = {
+  title: 'Gmail AI Accelerator',
+  description: 'Gmail連携×自動分類×AI返信生成×不要メール整理。受信メールを緊急×重要で自動分類し3分でInbox Zero。月額¥1,980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/inbox-organizer' },
+  openGraph: { title: 'Gmail AI Accelerator | NextraLabs', description: 'Gmail連携×自動分類×AI返信生成×不要メール整理。受信メールを緊急×重要で自動分類し3分でInbox Zero。', url: 'https://membership-site-nextralabos.vercel.app/products/inbox-organizer', type: 'website' },
+}
 import {
   ArrowLeft,
   HelpCircle,
