@@ -114,7 +114,7 @@ const defenseTools: Product[] = [
     color: 'from-emerald-500 to-amber-500',
     bgColor: 'bg-emerald-500/10',
     iconColor: 'text-emerald-500',
-    status: '販売中',
+    status: 'NEW',
   },
   {
     id: 'disaster-guard',
@@ -143,7 +143,7 @@ const defenseTools: Product[] = [
     color: 'from-red-500 to-rose-500',
     bgColor: 'bg-red-500/10',
     iconColor: 'text-red-500',
-    status: '販売中',
+    status: 'NEW',
   },
 ]
 
@@ -162,7 +162,7 @@ const commTools: Product[] = [
     color: 'from-pink-500 to-purple-500',
     bgColor: 'bg-pink-500/10',
     iconColor: 'text-pink-500',
-    status: '販売中',
+    status: 'NEW',
   },
   {
     id: 'ai-konkatsu',
@@ -177,7 +177,7 @@ const commTools: Product[] = [
     color: 'from-pink-500 to-rose-500',
     bgColor: 'bg-pink-500/10',
     iconColor: 'text-pink-500',
-    status: '販売中',
+    status: 'NEW',
   },
   {
     id: 'buzz-writer',
@@ -192,7 +192,7 @@ const commTools: Product[] = [
     color: 'from-orange-500 to-red-500',
     bgColor: 'bg-orange-500/10',
     iconColor: 'text-orange-500',
-    status: '販売中',
+    status: 'NEW',
   },
   {
     id: 'shio-taiou',
@@ -226,7 +226,7 @@ const lifeTools: Product[] = [
     color: 'from-blue-500 to-indigo-500',
     bgColor: 'bg-blue-500/10',
     iconColor: 'text-blue-500',
-    status: '販売中',
+    status: 'NEW',
   },
   {
     id: 'exam-scheduler',
@@ -256,7 +256,7 @@ const lifeTools: Product[] = [
     color: 'from-violet-500 to-fuchsia-500',
     bgColor: 'bg-violet-500/10',
     iconColor: 'text-violet-500',
-    status: '販売中',
+    status: 'NEW',
   },
 ]
 
@@ -275,7 +275,7 @@ const bizTools: Product[] = [
     color: 'from-amber-500 to-orange-500',
     bgColor: 'bg-amber-500/10',
     iconColor: 'text-amber-500',
-    status: '販売中',
+    status: 'NEW',
   },
   {
     id: 'ai-select-shop',
@@ -290,7 +290,7 @@ const bizTools: Product[] = [
     color: 'from-emerald-500 to-teal-500',
     bgColor: 'bg-emerald-500/10',
     iconColor: 'text-emerald-500',
-    status: '販売中',
+    status: 'NEW',
   },
   {
     id: 'ai-sidejob',
@@ -404,7 +404,7 @@ const funTools: Product[] = [
     color: 'from-violet-500 to-pink-500',
     bgColor: 'bg-violet-500/10',
     iconColor: 'text-violet-500',
-    status: '販売中',
+    status: 'NEW',
   },
 ]
 
