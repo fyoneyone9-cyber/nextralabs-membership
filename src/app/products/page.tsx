@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, Ticket, type LucideIcon } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, Ticket, BookOpen, type LucideIcon } from 'lucide-react'
 
 // ==================== Product Type ====================
 interface Product {
@@ -227,6 +227,21 @@ const lifeTools: Product[] = [
     bgColor: 'bg-blue-500/10',
     iconColor: 'text-blue-500',
     status: '販売中',
+  },
+  {
+    id: 'exam-scheduler',
+    title: '資格試験 AIスケジューラー',
+    subtitle: 'RSS試験日取得 × AI学習計画生成 × Googleカレンダー自動登録',
+    description:
+      '試験日をRSSから自動取得し、AIが基礎固め→応用演習→直前対策の学習スケジュールを生成。ワンクリックでGoogleカレンダーに一括登録。',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
+    tags: ['RSS', 'Claude AI', 'Google Calendar', 'IPA/CompTIA'],
+    icon: BookOpen,
+    color: 'from-blue-500 to-purple-500',
+    bgColor: 'bg-blue-500/10',
+    iconColor: 'text-blue-500',
+    status: 'NEW',
   },
   {
     id: 'closet-coach',
