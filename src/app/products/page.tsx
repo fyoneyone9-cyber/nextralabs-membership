@@ -37,7 +37,7 @@ const freeTools: Product[] = [
     description:
       '組織図には載らない「本当の人間関係」を可視化。Slackメンション傾向とカレンダー会議データから、隠れたキーマンやブリッジ役を自動検出。',
     price: '無料',
-    priceNote: 'アカウント不要',
+    priceNote: '無料',
     tags: ['D3.js', 'PageRank', 'データ分析', '無料サンプル'],
     icon: Network,
     color: 'from-indigo-500 to-purple-500',
@@ -52,7 +52,7 @@ const freeTools: Product[] = [
     description:
       '物件の「見えないリスク」を事前にスコア化。治安・騒音・物件チェック30項目・トラブル対処テンプレート・引っ越しコスト計算まで。',
     price: '無料',
-    priceNote: '登録不要で今すぐ使える',
+    priceNote: '無料',
     tags: ['エリア安全度', '騒音リスク', '30項目チェック', 'トラブル対処'],
     icon: Home,
     color: 'from-blue-500 to-green-500',
@@ -67,7 +67,7 @@ const freeTools: Product[] = [
     description:
       'トピックを入力するだけで、Twitter・Instagram・Facebook・LinkedIn向けの投稿文を自動生成。ハッシュタグ提案付き。',
     price: '無料',
-    priceNote: 'アカウント不要',
+    priceNote: '無料',
     tags: ['SNS', 'マーケティング', 'コピーライティング', '無料'],
     icon: Share2,
     color: 'from-blue-500 to-cyan-500',
@@ -82,7 +82,7 @@ const freeTools: Product[] = [
     description:
       '箇条書きのメモからプロフェッショナルなビジネスレポートを自動生成。週次報告・月次報告・プロジェクト報告に対応。',
     price: '無料',
-    priceNote: 'アカウント不要',
+    priceNote: '無料',
     tags: ['レポート', 'ビジネス文書', '自動生成', '無料'],
     icon: FileText,
     color: 'from-green-500 to-emerald-500',
@@ -480,9 +480,25 @@ function ProductCard({ product }: { product: Product }) {
           ))}
         </div>
 
-        <div className="flex items-end justify-between pt-4 border-t">
+        <div className="flex items-center justify-between pt-4 border-t">
           <div>
-            <span className="text-sm font-semibold text-muted-foreground">{product.priceNote}</span>
+            {product.priceNote === '無料' ? (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/30">
+                🆓 無料
+              </span>
+            ) : product.priceNote === 'プレミアムプラン' ? (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-500/10 to-orange-500/10 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/30">
+                👑 プレミアム
+              </span>
+            ) : product.priceNote === 'スタンダードプラン' ? (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-sky-500/10 text-sky-600 dark:text-sky-400 ring-1 ring-sky-500/30">
+                ⚡ スタンダード
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-muted text-muted-foreground ring-1 ring-border">
+                {product.priceNote}
+              </span>
+            )}
           </div>
           <div className="flex gap-2">
             <Link
