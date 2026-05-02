@@ -94,15 +94,15 @@ export default function PricingPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-x-6 gap-y-10 max-w-7xl mx-auto">
         {/* Free Plan */}
         <Card className="relative flex flex-col">
           <CardContent className="p-6 flex flex-col flex-1">
             <h3 className="text-xl font-bold mb-2">無料プラン</h3>
             <p className="text-muted-foreground text-sm mb-4">まずはお試しで</p>
-            <div className="text-4xl font-bold mb-6">
-              ¥0
-              <span className="text-base text-muted-foreground font-normal">/月</span>
+            <div className="flex items-baseline gap-1 mb-6">
+              <span className="text-4xl font-bold">¥0</span>
+              <span className="text-base text-muted-foreground font-normal shrink-0">/月</span>
             </div>
             <ul className="space-y-2.5 flex-1 mb-8">
               {[
@@ -141,16 +141,16 @@ export default function PricingPage() {
         {/* Light Plan */}
         <Card className="relative border-cyan-500/50 shadow-lg flex flex-col">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-            <Badge className="bg-cyan-500 text-white px-4 py-1">
+            <Badge className="bg-cyan-500 text-white px-4 py-1 whitespace-nowrap">
               ⚡ ライト
             </Badge>
           </div>
           <CardContent className="p-6 flex flex-col flex-1">
             <h3 className="text-xl font-bold mb-2">ライトプラン</h3>
             <p className="text-muted-foreground text-sm mb-4">気軽に始める入門プラン</p>
-            <div className="text-4xl font-bold mb-6">
-              ¥480
-              <span className="text-base text-muted-foreground font-normal">/月</span>
+            <div className="flex items-baseline gap-1 mb-6">
+              <span className="text-4xl font-bold">¥480</span>
+              <span className="text-base text-muted-foreground font-normal shrink-0">/月</span>
             </div>
             <ul className="space-y-2.5 flex-1 mb-8">
               {[
@@ -186,7 +186,7 @@ export default function PricingPage() {
         {/* Standard Plan */}
         <Card className="relative border-primary shadow-lg flex flex-col">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-            <Badge className="bg-primary text-primary-foreground px-4 py-1">
+            <Badge className="bg-primary text-primary-foreground px-4 py-1 whitespace-nowrap">
               <Crown className="h-3 w-3 mr-1" />
               おすすめ
             </Badge>
@@ -194,9 +194,9 @@ export default function PricingPage() {
           <CardContent className="p-6 flex flex-col flex-1">
             <h3 className="text-xl font-bold mb-2">スタンダードプラン</h3>
             <p className="text-muted-foreground text-sm mb-4">プレミアム以外の全ツール使い放題</p>
-            <div className="text-4xl font-bold mb-6">
-              ¥980
-              <span className="text-base text-muted-foreground font-normal">/月</span>
+            <div className="flex items-baseline gap-1 mb-6">
+              <span className="text-4xl font-bold">¥980</span>
+              <span className="text-base text-muted-foreground font-normal shrink-0">/月</span>
             </div>
             <ul className="space-y-2.5 flex-1 mb-8">
               {[
@@ -238,7 +238,7 @@ export default function PricingPage() {
         {/* Premium Plan */}
         <Card className="relative border-violet-500/50 shadow-lg flex flex-col">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-            <Badge className="bg-violet-500 text-white px-4 py-1">
+            <Badge className="bg-violet-500 text-white px-4 py-1 whitespace-nowrap">
               <Crown className="h-3 w-3 mr-1" />
               プレミアム
             </Badge>
@@ -246,9 +246,9 @@ export default function PricingPage() {
           <CardContent className="p-6 flex flex-col flex-1">
             <h3 className="text-xl font-bold mb-2">プレミアムプラン</h3>
             <p className="text-muted-foreground text-sm mb-4">AI API連携ツール含む</p>
-            <div className="text-4xl font-bold mb-6">
-              ¥1,980
-              <span className="text-base text-muted-foreground font-normal">/月</span>
+            <div className="flex items-baseline gap-1 mb-6">
+              <span className="text-4xl font-bold">¥1,980</span>
+              <span className="text-base text-muted-foreground font-normal shrink-0">/月</span>
             </div>
             <ul className="space-y-2.5 flex-1 mb-8">
               {[
@@ -285,13 +285,13 @@ export default function PricingPage() {
         {/* Custom Development Plan */}
         <Card className="relative border-amber-500/50 flex flex-col">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-            <Badge className="bg-amber-500 text-white px-4 py-1">
+            <Badge className="bg-amber-500 text-white px-4 py-1 whitespace-nowrap">
               <Wrench className="h-3 w-3 mr-1" />
               法人向け
             </Badge>
           </div>
           <CardContent className="p-8 flex flex-col flex-1">
-            <h3 className="text-2xl font-bold mb-2">カスタマイズ<br />ツール開発</h3>
+            <h3 className="text-xl font-bold mb-2">カスタマイズ<br />ツール開発</h3>
             <p className="text-muted-foreground mb-4">御社専用のAIツールを開発</p>
             <div className="text-2xl font-bold mb-1 text-amber-400">
               お見積り
