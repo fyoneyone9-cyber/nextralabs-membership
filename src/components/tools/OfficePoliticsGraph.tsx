@@ -723,12 +723,12 @@ export default function OfficePoliticsGraph() {
       <div className="mt-8 border border-gray-700/40 rounded-xl p-4 bg-gray-900/40 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="flex-1">
           <span className="text-[10px] text-gray-600 font-medium mr-2">PR</span>
-          <span className="text-sm text-gray-300">🏢 職場の人間関係・組織論をもっと深く学びたい方へ</span>
-          <p className="text-xs text-gray-500 mt-0.5">組織行動・マネジメント・人間関係術のベストセラー本をチェック。</p>
+          <span className="text-sm text-gray-300">😌 職場ストレスを消すアイテムを見る</span>
+          <p className="text-xs text-gray-500 mt-0.5">人間関係の把握が終わったら「メンタルケア」。ストレス解消グッズ・リラックスアイテムを探そう。</p>
         </div>
-        <a href="https://www.amazon.co.jp/gp/bestsellers/books/466282?tag=nextralabs-22" target="_blank" rel="noopener noreferrer sponsored"
+        <a href="https://www.amazon.co.jp/s?k=ストレス解消+リラックス+グッズ&tag=nextralabs-22" target="_blank" rel="noopener noreferrer sponsored"
           className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold transition-colors">
-          本を探す →
+          チェックする →
         </a>
       </div>
     </div>
