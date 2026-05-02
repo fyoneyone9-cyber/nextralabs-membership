@@ -20,6 +20,9 @@ import {
   FileText,
   ArrowRight,
   Sparkles,
+  Download,
+  Upload,
+  CheckCircle2,
 } from 'lucide-react'
 
 const features = [
@@ -263,35 +266,142 @@ export default function OfficePoliticsGraphPage() {
           </div>
         </section>
 
-        {/* Setup Steps */}
+        {/* Setup Steps — 一本道フロー */}
         <section className="space-y-8">
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold text-white">
-              3ステップで使える
-            </h2>
+            <h2 className="text-3xl font-bold text-white">使い方</h2>
             <p className="text-gray-400">
-              アカウント登録不要。ブラウザで開いて CSV を入れるだけ
+              アカウント登録不要。3ステップで相関図が完成
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {steps.map((s, i) => (
-              <Card
-                key={i}
-                className="bg-gray-900/50 border-gray-800 text-center"
-              >
-                <CardContent className="p-6 space-y-3">
-                  <div className="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold text-lg flex items-center justify-center mx-auto">
-                    {s.num}
-                  </div>
-                  <h3 className="text-white font-semibold">{s.title}</h3>
-                  <p className="text-gray-400 text-sm">{s.description}</p>
-                  <Badge variant="secondary" className="text-xs">
-                    {s.time}
-                  </Badge>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+
+          {/* STEP 1 */}
+          <Card className="bg-gray-900/50 border-gray-800">
+            <CardContent className="p-8 space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold text-lg flex items-center justify-center shrink-0">1</div>
+                <div>
+                  <h3 className="text-white font-semibold text-lg">CSVファイルを準備する</h3>
+                  <p className="text-gray-400 text-sm">以下のフォーマットで3列のCSVを用意してください</p>
+                </div>
+                <Badge variant="secondary" className="ml-auto text-xs shrink-0">1〜2分</Badge>
+              </div>
+
+              {/* CSV フォーマット説明 */}
+              <div className="bg-gray-950 rounded-xl p-5 space-y-3 border border-gray-800">
+                <p className="text-gray-300 text-sm font-medium">📋 CSVフォーマット（1行目はヘッダー必須）</p>
+                <div className="overflow-x-auto">
+                  <table className="text-sm w-full">
+                    <thead>
+                      <tr className="text-left border-b border-gray-800">
+                        <th className="text-indigo-400 pb-2 pr-8">列名</th>
+                        <th className="text-indigo-400 pb-2 pr-8">意味</th>
+                        <th className="text-indigo-400 pb-2">例</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-gray-400 space-y-1">
+                      <tr>
+                        <td className="py-1.5 pr-8 font-mono text-yellow-400">from</td>
+                        <td className="pr-8">メッセージ送信者 / 会議招集者</td>
+                        <td className="font-mono">田中部長</td>
+                      </tr>
+                      <tr>
+                        <td className="py-1.5 pr-8 font-mono text-yellow-400">to</td>
+                        <td className="pr-8">メッセージ受信者 / 参加者</td>
+                        <td className="font-mono">鈴木課長</td>
+                      </tr>
+                      <tr>
+                        <td className="py-1.5 pr-8 font-mono text-yellow-400">weight</td>
+                        <td className="pr-8">やり取り回数・強度（数値）</td>
+                        <td className="font-mono">5</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div className="bg-gray-900 rounded-lg p-3 font-mono text-xs text-gray-300">
+                  <p className="text-gray-500 mb-1"># サンプル</p>
+                  <p>from,to,weight</p>
+                  <p>田中部長,鈴木課長,5</p>
+                  <p>鈴木課長,山田主任,6</p>
+                  <p>清水,伊藤,4</p>
+                </div>
+                <div className="flex flex-wrap gap-3 pt-1">
+                  <a
+                    href="/samples/office-politics-sample.csv"
+                    download
+                    className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors"
+                  >
+                    <Download className="w-4 h-4" />
+                    サンプルCSVをダウンロード
+                  </a>
+                  <p className="text-gray-500 text-xs self-center">← これを編集して使うのが一番早いです</p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2 text-xs text-gray-500">
+                <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-green-500" />Slackのメンション集計CSV</span>
+                <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-green-500" />Googleカレンダーの会議参加者CSV</span>
+                <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-green-500" />手動で作った関係性メモCSV</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* STEP 2 */}
+          <Card className="bg-gray-900/50 border-gray-800">
+            <CardContent className="p-8 space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold text-lg flex items-center justify-center shrink-0">2</div>
+                <div>
+                  <h3 className="text-white font-semibold text-lg">ツールにCSVをアップロード</h3>
+                  <p className="text-gray-400 text-sm">ドラッグ＆ドロップまたはファイル選択でOK</p>
+                </div>
+                <Badge variant="secondary" className="ml-auto text-xs shrink-0">即時</Badge>
+              </div>
+              <div className="bg-gray-950 border-2 border-dashed border-gray-700 rounded-xl p-8 text-center space-y-2">
+                <Upload className="w-8 h-8 text-gray-500 mx-auto" />
+                <p className="text-gray-400 text-sm">CSVファイルをここにドロップ</p>
+                <p className="text-gray-600 text-xs">（実際のツール画面のイメージ）</p>
+              </div>
+              <p className="text-gray-500 text-xs">※ データはすべてブラウザ内で処理されます。外部サーバーへの送信は一切ありません。</p>
+            </CardContent>
+          </Card>
+
+          {/* STEP 3 */}
+          <Card className="bg-gray-900/50 border-indigo-500/30 border">
+            <CardContent className="p-8 space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold text-lg flex items-center justify-center shrink-0">3</div>
+                <div>
+                  <h3 className="text-white font-semibold text-lg">相関図・分析結果を確認</h3>
+                  <p className="text-gray-400 text-sm">キーマンランキング・ブリッジ役・インタラクティブグラフが自動表示</p>
+                </div>
+                <Badge className="ml-auto text-xs shrink-0 bg-green-500/20 text-green-400 border-green-500/30">完了</Badge>
+              </div>
+              <div className="grid grid-cols-3 gap-3 text-center text-sm">
+                <div className="bg-gray-950 rounded-lg p-3">
+                  <p className="text-yellow-400 font-bold mb-1">👑 キーマン</p>
+                  <p className="text-gray-400 text-xs">PageRankで自動検出</p>
+                </div>
+                <div className="bg-gray-950 rounded-lg p-3">
+                  <p className="text-purple-400 font-bold mb-1">🌉 ブリッジ役</p>
+                  <p className="text-gray-400 text-xs">部門間ハブを可視化</p>
+                </div>
+                <div className="bg-gray-950 rounded-lg p-3">
+                  <p className="text-indigo-400 font-bold mb-1">🕸️ 相関図</p>
+                  <p className="text-gray-400 text-xs">ドラッグ・ズーム対応</p>
+                </div>
+              </div>
+              <div className="pt-2">
+                <Link href="/products/office-politics-graph/app">
+                  <button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors">
+                    <Network className="w-5 h-5" />
+                    無料で使ってみる（アカウント不要）
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
         </section>
 
         {/* Tech Stack */}
