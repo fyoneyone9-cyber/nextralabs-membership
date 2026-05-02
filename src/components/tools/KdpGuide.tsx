@@ -101,9 +101,31 @@ const steps: StepData[] = [
       },
       {
         id: 's2-2',
-        label: 'Kindle Createで原稿を整形する（推奨）',
-        detail: 'Kindle Createに.docxを読み込み → 左サイドバーの章リストを確認 → 「Insert → Table of Contents」で目次ページ挿入 → Previewで各章ジャンプを確認 → Exportで.kpfファイルを出力。',
+        label: 'Kindle Createに.docxを読み込む',
+        detail: 'Kindle Createを起動し、「その他の本のタイプ」→「Reflowable」を選択して.docxファイルを開きます。読み込み後、左サイドバーに章の一覧が自動表示されます。',
         link: { text: 'Kindle Createをダウンロード', url: 'https://www.amazon.co.jp/b?node=24423771051' },
+      },
+      {
+        id: 's2-3',
+        label: '左サイドバーの章リストを確認・修正する',
+        detail: '左側に章タイトルの一覧が表示されます。これがそのままKindleのインタラクティブ目次になります。\n\n【章が足りない場合】本文画面で章タイトルにしたい文字を選択 → 右側の「Elements」タブから「Chapter Title」ボタンをクリック → 自動でリストに追加されます。\n\n【余計なものが入っている場合】左側リストで対象を右クリック → 除外（リストから削除）できます。',
+        warning: '章リストが正しく設定されていないと、目次からジャンプできない電子書籍になります。必ず確認しましょう。',
+      },
+      {
+        id: 's2-4',
+        label: '目次ページ（HTML目次）を本文中に挿入する',
+        detail: '上部メニューの「Edit」または左上の「＋ Insert」ボタンをクリック → 「Table of Contents（目次）」を選択。すると現在の章リストをまとめた目次ページが自動生成され、本の最初の方に挿入されます。',
+      },
+      {
+        id: 's2-5',
+        label: 'Previewで目次と各章ジャンプを確認する',
+        detail: '右上の「Preview」ボタンを押す → スマホ・Kindle端末を模したウィンドウが開く → メニューボタンから「目次（Contents）」を選択 → 各章タイトルをタップして正しくジャンプできるか確認します。',
+        warning: 'ここで確認せずに出版すると、目次が機能しない本になる可能性があります。必ずプレビューで動作確認しましょう。',
+      },
+      {
+        id: 's2-6',
+        label: 'Exportで.kpfファイルを書き出す',
+        detail: '右上の「Save」で作業データを保存 → 「Export」ボタンをクリック → .kpfファイルが保存されます。KDPの原稿アップロードにはこの.kpfファイルを使います。',
         warning: '.kpfファイルが最も品質が安定します。.docxでも出版可能ですが、表示崩れのリスクがあります。',
       },
       {
@@ -119,6 +141,7 @@ const steps: StepData[] = [
       },
     ],
     hints: [
+      { color: 'blue', text: 'WordのヘッダースタイルをKindle Createが読み取って章リストを自動生成します。Wordで「見出し1」「見出し2」を正しく設定しておくと作業が楽になります。' },
       { color: 'yellow', text: '表紙はKindleの検索結果に小さいサムネイルで表示されます。縮小されても読めるか確認しましょう。' },
       { color: 'green', text: '内容紹介にHTMLタグ（<b>太字</b>、改行など）を使うとAmazonページが読みやすくなります。' },
     ],
