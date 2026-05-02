@@ -193,15 +193,15 @@ export default function PricingPage() {
           </div>
           <CardContent className="p-6">
             <h3 className="text-xl font-bold mb-2">スタンダードプラン</h3>
-            <p className="text-muted-foreground text-sm mb-4">全ツール使い放題</p>
+            <p className="text-muted-foreground text-sm mb-4">プレミアム以外の全ツール使い放題</p>
             <div className="text-4xl font-bold mb-6">
               ¥980
               <span className="text-base text-muted-foreground font-normal">/月</span>
             </div>
             <ul className="space-y-2.5 mb-8">
               {[
-                'すべてのツール使い放題',
-                'ソースコード完全アクセス',
+                'プレミアム以外の全ツール使い放題',
+                '無料・ライト・スタンダードツール全て',
                 '優先サポート',
                 '新ツールの先行アクセス',
                 '商用利用OK',
