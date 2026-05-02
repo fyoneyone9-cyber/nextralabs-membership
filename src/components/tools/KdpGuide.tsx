@@ -26,7 +26,39 @@ interface CheckItem {
   detail?: string
   warning?: string
   link?: { text: string; url: string }
+  coverTools?: boolean
 }
+
+const COVER_AI_TOOLS = [
+  {
+    name: 'Canva',
+    desc: '本の表紙テンプレート豊富・日本語OK・完全無料',
+    url: 'https://www.canva.com/create/book-covers/',
+    emoji: '🎨',
+    badge: 'テンプレあり',
+  },
+  {
+    name: 'Adobe Firefly',
+    desc: 'AI画像生成・商用ライセンスOK・無料枠あり',
+    url: 'https://firefly.adobe.com',
+    emoji: '🔥',
+    badge: '商用OK',
+  },
+  {
+    name: 'Leonardo.ai',
+    desc: '高品質AI生成・無料150クレジット/日',
+    url: 'https://leonardo.ai',
+    emoji: '🎭',
+    badge: '150枚/日無料',
+  },
+  {
+    name: 'Microsoft Designer',
+    desc: 'Bing Image Creator搭載・完全無料・Microsoftアカウントのみ',
+    url: 'https://designer.microsoft.com',
+    emoji: '💠',
+    badge: '完全無料',
+  },
+]
 
 interface StepData {
   stepNumber: number
@@ -130,8 +162,9 @@ const steps: StepData[] = [
       {
         id: 's2-7',
         label: '表紙画像をJPEGまたはTIFF形式で用意する',
-        detail: '推奨サイズは1,600×2,560px（縦長2:3比率）。最低でも1,000×625px以上が必要です。PNGは使用不可なので必ずJPEGまたはTIFFに変換してください。',
+        detail: '推奨サイズは1,600×2,560px（縦長2:3比率）。最低でも1,000×625px以上が必要です。PNGは使用不可なので必ずJPEGまたはTIFFに変換してください。\n\n【無料で表紙を作れるAIツール】\n以下のサービスは無料で高品質な表紙が作れます。',
         warning: 'PNGはKDPにアップロードできません。事前にJPEGまたはTIFFに変換しておきましょう。表紙は売上に直結するので、タイトル・著者名が読みやすく入っているか確認しましょう。',
+        coverTools: true,
       },
       {
         id: 's2-8',
@@ -142,6 +175,7 @@ const steps: StepData[] = [
     hints: [
       { color: 'blue', text: '💡 WordのヘッダースタイルをKindle Createが読み取って章リストを自動生成します。Wordで「見出し1」「見出し2」を正しく設定しておくと作業が楽になります。' },
       { color: 'yellow', text: '⚠️ 表紙はKindleの検索結果に小さいサムネイルで表示されます。縮小されても読めるか確認しましょう。' },
+      { color: 'orange', text: '🎨 表紙はCanva・Adobe Firefly・Leonardo.ai・Microsoft Designerなどの無料AIツールで作れます。「詳細を見る」からリンクに飛べます。' },
       { color: 'green', text: '✅ 内容紹介はHTMLタグが使えます。<b>太字</b>や改行を使うと読みやすくなります。' },
     ],
   },
@@ -445,6 +479,32 @@ export default function KdpGuide() {
                                     <ExternalLink className="h-3 w-3" />
                                     {item.link.text}
                                   </a>
+                                )}
+                                {item.coverTools && (
+                                  <div className="mt-3 space-y-2">
+                                    <p className="text-xs font-semibold text-muted-foreground">🖼️ 無料で表紙を作れるAIツール</p>
+                                    {COVER_AI_TOOLS.map(tool => (
+                                      <a
+                                        key={tool.name}
+                                        href={tool.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center justify-between gap-3 bg-muted/60 hover:bg-muted rounded-lg p-3 transition-colors group"
+                                      >
+                                        <div className="flex items-center gap-2 min-w-0">
+                                          <span className="text-lg flex-shrink-0">{tool.emoji}</span>
+                                          <div className="min-w-0">
+                                            <p className="text-xs font-bold group-hover:text-orange-500 transition-colors">{tool.name}</p>
+                                            <p className="text-[11px] text-muted-foreground leading-tight">{tool.desc}</p>
+                                          </div>
+                                        </div>
+                                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                                          <span className="text-[10px] bg-orange-500/10 text-orange-600 px-1.5 py-0.5 rounded-full whitespace-nowrap">{tool.badge}</span>
+                                          <ExternalLink className="h-3 w-3 text-muted-foreground group-hover:text-orange-500 transition-colors" />
+                                        </div>
+                                      </a>
+                                    ))}
+                                  </div>
                                 )}
                               </div>
                             )}
