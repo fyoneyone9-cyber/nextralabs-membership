@@ -483,19 +483,19 @@ function ProductCard({ product }: { product: Product }) {
         <div className="flex items-center justify-between pt-4 border-t">
           <div>
             {product.priceNote === '無料' ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/30">
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 ring-2 ring-emerald-500/40 shadow-sm">
                 🆓 無料
               </span>
             ) : product.priceNote === 'プレミアムプラン' ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-500/10 to-orange-500/10 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/30">
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-bold bg-gradient-to-r from-amber-500/15 to-orange-500/15 text-amber-600 dark:text-amber-400 ring-2 ring-amber-500/40 shadow-sm">
                 👑 プレミアム
               </span>
             ) : product.priceNote === 'スタンダードプラン' ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-sky-500/10 text-sky-600 dark:text-sky-400 ring-1 ring-sky-500/30">
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-bold bg-sky-500/15 text-sky-600 dark:text-sky-400 ring-2 ring-sky-500/40 shadow-sm">
                 ⚡ スタンダード
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-muted text-muted-foreground ring-1 ring-border">
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-bold bg-muted text-muted-foreground ring-2 ring-border shadow-sm">
                 {product.priceNote}
               </span>
             )}
