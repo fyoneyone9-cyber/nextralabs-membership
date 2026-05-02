@@ -456,6 +456,9 @@ export default function OfficePoliticsGraph() {
     img.src = url
   }, [])
 
+  const [showGuide, setShowGuide] = useState(true)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
   const sortedByPageRank = data ? [...data.nodes].sort((a, b) => b.pageRank - a.pageRank) : []
   const sortedByBetweenness = data ? [...data.nodes].sort((a, b) => b.betweenness - a.betweenness) : []
 
@@ -463,6 +466,80 @@ export default function OfficePoliticsGraph() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
+      {/* 使い方ガイド オーバーレイ */}
+      {showGuide && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-gray-900 border border-gray-700 rounded-2xl max-w-lg w-full p-6 space-y-5">
+            <div className="text-center">
+              <div className="text-4xl mb-2">🕸️</div>
+              <h2 className="text-xl font-bold text-white">社内政治 相関図の使い方</h2>
+              <p className="text-sm text-gray-400 mt-1">3ステップで組織の人間関係を可視化</p>
+            </div>
+
+            {/* STEP 1 */}
+            <div className="flex gap-4">
+              <div className="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center shrink-0 text-sm">1</div>
+              <div className="flex-1">
+                <p className="text-white font-semibold text-sm">CSVファイルを準備する</p>
+                <p className="text-gray-400 text-xs mt-0.5">以下の3列フォーマットで作成してください：</p>
+                <div className="bg-gray-950 rounded-lg p-2.5 mt-2 font-mono text-xs text-gray-300 border border-gray-800">
+                  <p className="text-gray-500">from,to,weight</p>
+                  <p>田中部長,鈴木課長,5</p>
+                  <p>鈴木課長,山田主任,3</p>
+                </div>
+                <div className="flex items-center gap-3 mt-2 flex-wrap">
+                  <a
+                    href="/samples/office-politics-sample.csv"
+                    download
+                    className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 underline"
+                  >
+                    📥 サンプルCSVをダウンロード
+                  </a>
+                  <span className="text-gray-600 text-xs">← これを編集するのが最速</span>
+                </div>
+              </div>
+            </div>
+
+            {/* STEP 2 */}
+            <div className="flex gap-4">
+              <div className="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center shrink-0 text-sm">2</div>
+              <div className="flex-1">
+                <p className="text-white font-semibold text-sm">CSVを読み込む</p>
+                <p className="text-gray-400 text-xs mt-0.5">画面にドラッグ＆ドロップ、または右上の「CSV読み込み」ボタンから選択</p>
+              </div>
+            </div>
+
+            {/* STEP 3 */}
+            <div className="flex gap-4">
+              <div className="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center shrink-0 text-sm">3</div>
+              <div className="flex-1">
+                <p className="text-white font-semibold text-sm">相関図・分析結果を確認</p>
+                <p className="text-gray-400 text-xs mt-0.5">キーマン・ブリッジ役が自動検出。ノードをクリックで接続を強調表示。ドラッグ＆ズームで操作できます。</p>
+              </div>
+            </div>
+
+            <div className="bg-gray-800/50 rounded-lg p-3 text-xs text-gray-400">
+              💡 今はサンプルデータが表示されています。自分のデータに置き換えてお試しください。
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => { setShowGuide(false); fileInputRef.current?.click() }}
+                className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition-colors"
+              >
+                📂 CSVを読み込む
+              </button>
+              <button
+                onClick={() => setShowGuide(false)}
+                className="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium py-2.5 px-4 rounded-xl text-sm transition-colors"
+              >
+                サンプルを見る
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="border-b border-gray-800 bg-gray-950/90 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-[1600px] mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-3">
@@ -476,14 +553,21 @@ export default function OfficePoliticsGraph() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowGuide(true)}
+              className="text-xs text-gray-500 hover:text-gray-300 transition-colors px-2 py-1.5"
+            >
+              ❓ 使い方
+            </button>
             <label className="cursor-pointer">
               <Input
                 type="file"
                 accept=".csv"
                 className="hidden"
                 onChange={handleFileInput}
+                ref={fileInputRef}
               />
-              <span className="inline-flex items-center justify-center text-xs font-medium bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 rounded-md px-3 py-1.5 transition-colors">
+              <span className="inline-flex items-center justify-center text-xs font-medium bg-indigo-700 hover:bg-indigo-600 text-white border border-indigo-600 rounded-md px-3 py-1.5 transition-colors cursor-pointer">
                 📂 CSV読み込み
               </span>
             </label>
