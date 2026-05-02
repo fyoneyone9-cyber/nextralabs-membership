@@ -1,27 +1,42 @@
 'use client'
 
 import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import {
+  CheckSquare,
+  Square,
+  ChevronDown,
+  ChevronUp,
+  BookOpen,
+  FileText,
+  Image,
+  DollarSign,
+  Upload,
+  Star,
+  AlertCircle,
+  ExternalLink,
+  Lightbulb,
+} from 'lucide-react'
 
 // ===================== Types =====================
 interface CheckItem {
   id: string
   label: string
   detail?: string
-  link?: { text: string; url: string }
   warning?: string
-}
-
-interface SubSection {
-  title: string
-  items: CheckItem[]
+  link?: { text: string; url: string }
 }
 
 interface StepData {
   stepNumber: number
   title: string
+  icon: React.ElementType
+  color: string
+  bg: string
   items: CheckItem[]
-  hints: { color: 'blue' | 'yellow' | 'green' | 'purple'; text: string }[]
-  subsections?: SubSection[]
+  hints: { color: 'blue' | 'yellow' | 'green' | 'orange'; text: string }[]
 }
 
 // ===================== Step Data =====================
@@ -29,452 +44,449 @@ const steps: StepData[] = [
   {
     stepNumber: 1,
     title: 'KDPアカウントの初期設定',
+    icon: BookOpen,
+    color: 'text-orange-500',
+    bg: 'bg-orange-500/10',
     items: [
       {
         id: 's1-1',
-        label: 'KDP公式サイトにAmazonアカウントでログインした',
-        detail: 'kdp.amazon.co.jp にアクセスし、既存のAmazonアカウントでサインイン。Amazonアカウントをお持ちでない場合は新規作成が必要です。',
+        label: 'KDP公式サイトにAmazonアカウントでログインする',
+        detail: 'kdp.amazon.co.jp にアクセスし、既存のAmazonアカウントでサインイン。アカウントがない場合は新規作成が必要です。',
         link: { text: 'KDP公式サイトを開く', url: 'https://kdp.amazon.co.jp' },
       },
       {
         id: 's1-2',
-        label: '著者情報（本名・住所）を登録した',
-        detail: 'ログイン後、右上のアカウント名 →「アカウント情報」をクリック。「著者/出版社情報」欄に本名と住所（日本語可）を入力して保存。',
-        warning: 'ペンネームで出版する場合も、この欄は本名を入力。ペンネームは本の登録時に「著者名」として別途設定できます。',
+        label: '著者情報（本名またはペンネーム）を登録する',
+        detail: 'ログイン後、アカウント情報から「著者/出版社情報」を入力。ペンネームで出版する場合は、ここではなく本の登録時に「著者名」として別途設定できます。',
+        warning: 'ペンネームで出版する場合も、この欄は本名で登録します。ペンネームは本の登録時に「著者名」として設定できます。',
       },
       {
         id: 's1-3',
-        label: '銀行口座（売上受取口座）を登録した',
-        detail: '「アカウント情報」→「支払い情報を取得する」をクリック。銀行名・支店名・口座番号・口座名義（カタカナ）を入力。審査に1〜3営業日かかります。',
-        warning: '口座名義はカタカナで登録してください。漢字だと登録エラーになる場合があります。',
+        label: '振込先（銀行口座）を登録する',
+        detail: 'アカウント情報から「支払い情報の取得」をクリック。銀行名・支店・口座番号・口座名義（カタカナ）を入力。確認まで1〜3営業日かかります。',
+        warning: '口座名義はカタカナで登録してください。漢字で登録するとエラーになる場合があります。',
       },
       {
         id: 's1-4',
-        label: '税務情報インタビューに回答した',
-        detail: '「アカウント情報」→「税務情報」→「インタビューを開始」をクリック。「個人」「日本居住者」を選択して進む。全質問に回答して送信します。',
-        warning: '英語画面で進む場合がありますが、選択肢は「Individual（個人）」「Japan」を選べばOKです。',
+        label: '税務インタビューに回答する',
+        detail: 'アカウント情報から「税務情報」→「インタビューを開始」をクリック。「個人」「日本在住者」を選んで進む。全項目に回答して送信します。',
+        warning: '英語で進む場合がありますが、選択肢は「Individual（個人）」「Japan」を選べばOKです。',
       },
       {
         id: 's1-5',
-        label: 'マイナンバーを入力して源泉徴収を0%にした',
-        detail: '税務情報インタビューの途中、「日本の納税者番号（マイナンバー）をお持ちですか？」の質問で「はい」を選択し、12桁のマイナンバーを入力。',
+        label: 'マイナンバーを入力して源泉税率を0%にする',
+        detail: '税務インタビューの途中、「日本の納税者番号（マイナンバー）をお持ちですか？」の質問で「はい」を選択し、12桁のマイナンバーを入力する。',
         link: { text: 'マイナポータルでマイナンバー確認', url: 'https://myna.go.jp' },
-        warning: 'ここをスキップすると売上の30%が米国に源泉徴収されます。必ず入力しましょう。',
+        warning: 'スキップすると販売収益の30%が源泉徴収されます。必ず入力しましょう。',
       },
     ],
     hints: [
-      { color: 'blue', text: '💡 マイナンバーを入力すると、米国での源泉徴収（通常30%）が0%になります。売上に直結するので必ず設定しましょう。' },
-      { color: 'blue', text: '⏱ アカウント設定は初回のみ。一度登録すれば2冊目以降はすぐ出版できます。' },
+      { color: 'blue', text: 'マイナンバーを入力すると、米国向け販売でかかる源泉税（通常30%）が0%になります。これは非常に重要な設定です。' },
+      { color: 'blue', text: 'アカウント設定は初回のみ。一度登録すれば2冊目以降はすぐ出版できます。' },
     ],
   },
   {
     stepNumber: 2,
-    title: '出版データの作成',
+    title: '原稿・表紙の作成',
+    icon: FileText,
+    color: 'text-blue-500',
+    bg: 'bg-blue-500/10',
     items: [
       {
         id: 's2-1',
-        label: '原稿をWord（.docx）またはEPUB形式で作成した',
-        detail: 'Wordの場合：見出しスタイル（見出し1/2）を使って章立てするとKindleの目次が自動生成されます。フォントはデフォルトのままでOK。EPUBの場合：Calibreなどの無料ツールで変換できます。',
+        label: '原稿をWord（.docx）形式で作成する',
+        detail: 'Wordの「見出し1」「見出し2」スタイルを使って章タイトルを設定しておくと、Kindle Createで自動的に目次が生成されます。フォントはデフォルトのままでOK。',
         link: { text: 'Kindle用Wordテンプレート（Amazon公式）', url: 'https://kdp.amazon.co.jp/ja_JP/help/topic/G200645680' },
-        warning: '画像を多用する場合はファイルサイズに注意。1ファイルあたり650MB以内が上限です。',
+        warning: '画像を多用する場合はファイルサイズに注意。1ファイル650MB以内に収める必要があります。',
       },
       {
         id: 's2-2',
-        label: '表紙画像を作成した（推奨: 2,560×1,600px）',
-        detail: 'サイズは縦2,560px × 横1,600px（比率1.6:1）が推奨。JPEGまたはTIFF形式で保存。Canva（無料）で「Kindle表紙」と検索するとテンプレートが豊富に揃っています。',
-        link: { text: 'Canvaで表紙を作る（無料）', url: 'https://www.canva.com/ja_jp/create/book-covers/' },
-        warning: 'テキストが小さすぎると縮小表示で読めなくなります。タイトルは大きめのフォントで。',
+        label: 'Kindle Createで原稿を整形する（推奨）',
+        detail: 'Kindle Createに.docxを読み込み → 左サイドバーの章リストを確認 → 「Insert → Table of Contents」で目次ページ挿入 → Previewで各章ジャンプを確認 → Exportで.kpfファイルを出力。',
+        link: { text: 'Kindle Createをダウンロード', url: 'https://www.amazon.co.jp/b?node=24423771051' },
+        warning: '.kpfファイルが最も品質が安定します。.docxでも出版可能ですが、表示崩れのリスクがあります。',
       },
       {
         id: 's2-3',
-        label: 'Kindle Previewerでスマホ表示を確認した',
-        detail: 'Amazon公式の無料ツール「Kindle Previewer 3」をPCにインストールし、原稿ファイルを読み込むとスマホ・タブレット・PC表示をシミュレートできます。文字崩れや画像ズレをここで確認しましょう。',
-        link: { text: 'Kindle Previewer 3をダウンロード（無料）', url: 'https://www.amazon.com/gp/feature.html?ie=UTF8&docId=1000765261' },
-        warning: 'Wordで作成した場合、箇条書きのインデントがズレることがあります。Previewerで必ず確認を。',
+        label: '表紙画像をJPEGまたはTIFF形式で用意する',
+        detail: '推奨サイズは1,600×2,560px（縦長2:3比率）。最低でも1,000×625px以上が必要です。PNGは使用不可なので注意。',
+        warning: '表紙はKindleの売上に直結します。タイトル・サブタイトル・著者名が読みやすく入っているか確認しましょう。',
+      },
+      {
+        id: 's2-4',
+        label: '内容紹介（商品説明）を4,000字以内で準備する',
+        detail: '①読者の共感フック → ②著者紹介 → ③各章の内容紹介 → ④こんな人に読んでほしい → ⑤著者メッセージ、という構成が効果的です。Amazonの商品ページに表示されるので、購買を左右します。',
       },
     ],
     hints: [
-      { color: 'yellow', text: '📖 文章メインの本はWordで十分。漫画・写真集はKindle Comic Creatorを使うときれいに仕上がります。' },
-      { color: 'yellow', text: '🎨 表紙クオリティは売上に直結します。Canvaの有料テンプレート（数百円）を使うのもおすすめです。' },
+      { color: 'yellow', text: '表紙はKindleの検索結果に小さいサムネイルで表示されます。縮小されても読めるか確認しましょう。' },
+      { color: 'green', text: '内容紹介にHTMLタグ（<b>太字</b>、改行など）を使うとAmazonページが読みやすくなります。' },
     ],
   },
   {
     stepNumber: 3,
-    title: '本の登録',
-    items: [],
-    subsections: [
+    title: '本の情報を登録する',
+    icon: FileText,
+    color: 'text-purple-500',
+    bg: 'bg-purple-500/10',
+    items: [
       {
-        title: '① Kindle本の詳細',
-        items: [
-          {
-            id: 's3-1',
-            label: 'タイトル・著者名を入力した',
-            detail: 'KDPダッシュボード →「新しいタイトルを作成」→「Kindle電子書籍」をクリック。タイトルは検索されやすいキーワードを含めると効果的。著者名はペンネーム可。',
-            link: { text: 'KDPダッシュボードを開く', url: 'https://kdp.amazon.co.jp/title-setup/kindle/new/details' },
-          },
-          {
-            id: 's3-2',
-            label: '内容紹介文を入力した',
-            detail: '「内容紹介」欄に本の説明文を入力（4,000文字以内）。最初の2〜3文が検索結果に表示されるので、読者の興味を引く一文から始めましょう。HTMLタグ（&lt;b&gt;、&lt;br&gt;など）も使えます。',
-            warning: '紹介文はAmazon商品ページに直接表示されます。誤字脱字は購買率に影響するので丁寧に書きましょう。',
-          },
-          {
-            id: 's3-3',
-            label: 'キーワードを最大7つ設定した',
-            detail: '検索キーワードを最大7つ登録できます。読者が検索しそうな単語（例：「副業」「在宅ワーク」「初心者」など）を具体的に入力。タイトルや著者名と重複するキーワードは登録不要です。',
-            warning: 'ブランド名・著名人名・他の商品名はキーワードに使用禁止（Amazonポリシー違反）。',
-          },
-        ],
+        id: 's3-1',
+        label: 'KDPダッシュボードから「新しいタイトルを作成」→「Kindle電子書籍」を選択',
+        detail: 'KDPにログイン後、「本棚」タブから「＋新しいタイトルを作成」→「Kindle電子書籍」をクリックします。',
       },
       {
-        title: '② Kindle本のコンテンツ',
-        items: [
-          {
-            id: 's3-4',
-            label: '原稿ファイルをアップロードした',
-            detail: '「Kindle本のコンテンツ」タブ →「原稿をアップロード」ボタンをクリック。.docx / .epub / .pdf など対応形式のファイルを選択してアップロード（数秒〜数分）。',
-            warning: 'PDFは変換精度が低く、文字崩れが起きやすいです。できるだけWordかEPUBを使いましょう。',
-          },
-          {
-            id: 's3-5',
-            label: '表紙画像をアップロードした',
-            detail: '「表紙をアップロード」ボタンから、作成したJPEGまたはTIFF画像を選択。自動的にKindle用サイズに最適化されます。',
-            warning: '表紙なしでも出版できますが、ほぼ確実に売れません。必ず作成・アップロードしてください。',
-          },
-          {
-            id: 's3-6',
-            label: 'オンラインプレビューアーで表示確認をした',
-            detail: 'アップロード後に「プレビューアーを起動」ボタンが表示されます。スマホ・タブレット・Kindle端末の各表示を確認。問題があれば原稿を修正して再アップロード。',
-          },
-        ],
+        id: 's3-2',
+        label: '言語・タイトル・サブタイトル・著者名を入力する',
+        detail: '言語：日本語 / タイトル：本のタイトル / 著者名：本名またはペンネーム（ここにペンネームを設定できます） / フリガナも必須入力です（全角カタカナで入力）。',
+        warning: 'タイトルは出版後に変更が難しいため、誤字がないかよく確認してください。',
       },
       {
-        title: '③ 価格設定',
-        items: [
-          {
-            id: 's3-7',
-            label: 'KDPセレクトへの登録を検討した',
-            detail: 'KDPセレクトに登録するとKindle Unlimited（読み放題）の対象になり、読まれたページ数に応じて報酬が発生します。ただし90日間は他のプラットフォームでの独占販売が条件です。',
-            warning: 'KDPセレクト登録中は、楽天Koboやhontoなどでの同時販売ができません。',
-          },
-          {
-            id: 's3-8',
-            label: 'ロイヤリティ率を選択した（70%推奨）',
-            detail: '価格が250円〜1,250円の場合は70%ロイヤリティを選択できます。それ以外の価格帯は35%になります。初心者は250〜500円で70%を狙うのがおすすめ。',
-            warning: '35%ロイヤリティは価格の自由度が高い分、収益が半減します。特別な理由がなければ70%を選びましょう。',
-          },
-          {
-            id: 's3-9',
-            label: '販売価格を設定した',
-            detail: '「日本」マーケットプレイスに価格を入力すると、他の国のストアに自動換算された価格が表示されます。内容に自信があれば250〜500円、専門書なら500〜1,000円が目安です。',
-          },
-        ],
+        id: 's3-3',
+        label: '内容紹介を入力する',
+        detail: '準備した商品説明文をコピー&ペーストします。KDPの入力欄にはHTMLが使えるので、<b>太字</b>や<br>改行を活用すると読みやすくなります。',
+      },
+      {
+        id: 's3-4',
+        label: 'キーワードを7枠すべて入力する',
+        detail: '1枠にスペース区切りで複数単語を入れられます（例：「副業 AI」）。タイトルに含まれる単語の繰り返しは避け、関連するが別の検索ワードを選びましょう。',
+      },
+      {
+        id: 's3-5',
+        label: 'カテゴリを2つ選択する',
+        detail: '本の内容に最も近いカテゴリを2つ選択します。カテゴリは販売後でも変更可能です。',
+      },
+      {
+        id: 's3-6',
+        label: 'KDP Selectに登録する（Kindle Unlimited対応）',
+        detail: 'KDP Selectに登録すると、Kindle Unlimited（月額読み放題）の対象になります。90日間はAmazon独占販売が条件ですが、読者に発見されやすくなるメリットがあります。90日後は解除してnoteなど他のプラットフォームでも販売できます。',
+      },
+      {
+        id: 's3-7',
+        label: 'ページの読み方向を選択する（横書き→左から右）',
+        detail: '日本語の横書きの場合は「左から右」を選択します。縦書きの場合は「右から左」を選択してください。',
       },
     ],
     hints: [
-      { color: 'green', text: '💰 70%ロイヤリティを選ぶには価格を250〜1,250円に設定する必要があります。初心者はKDPセレクト登録がおすすめ（Kindle Unlimitedの読まれたページ数に応じて報酬あり）。' },
+      { color: 'orange', text: 'キーワードは7枠すべて埋めましょう。空欄があると検索に表示されにくくなります。' },
+      { color: 'blue', text: 'KDP Selectは90日ごとに更新されます。不要になったら90日後に解除できます。' },
     ],
   },
   {
     stepNumber: 4,
-    title: '出版申請',
+    title: '原稿・表紙をアップロードして出版',
+    icon: Upload,
+    color: 'text-green-500',
+    bg: 'bg-green-500/10',
     items: [
       {
         id: 's4-1',
-        label: '「Kindle本を出版」ボタンをクリックした',
-        detail: '価格設定ページの最下部にある「Kindle本を出版」ボタンをクリック。確認画面が表示されたら「出版」を選択。これで審査に進みます。',
-        warning: '出版後72時間以内は価格変更・内容修正が反映されるまで時間がかかります。誤字があればすぐ修正申請を。',
+        label: '原稿ファイル（.kpfまたは.docx）をアップロードする',
+        detail: '「電子書籍の原稿」欄から.kpfまたは.docxをアップロードします。Kindle Createで出力した.kpfが最も安定します。アップロード後、自動で変換処理が行われます。',
       },
       {
         id: 's4-2',
-        label: '審査完了メールを確認した（通常24〜72時間）',
-        detail: '登録したAmazonアカウントのメールアドレスに審査完了通知が届きます。承認されると自動的に各国のAmazonストアに掲載されます。KDPダッシュボードで「公開済み」になったことを確認しましょう。',
-        link: { text: 'KDPダッシュボードで状況確認', url: 'https://kdp.amazon.co.jp/bookshelf' },
-        warning: '審査が通らない場合（コンテンツポリシー違反など）は却下メールが届きます。理由を確認して修正・再申請してください。',
+        label: '表紙画像（JPEG/TIFF）をアップロードする',
+        detail: '「Kindle本の表紙」欄からJPEGまたはTIFF形式の画像をアップロードします。推奨サイズ：1,600×2,560px（2:3比率）。PNGは使用不可です。',
+        warning: 'PNGはアップロードできません。事前にJPEGまたはTIFFに変換しておきましょう。',
+      },
+      {
+        id: 's4-3',
+        label: 'Kindle Previewerで表示を確認する',
+        detail: '「オンラインプレビュアーを起動」でスマホ・タブレット・Kindle端末それぞれの表示を確認します。目次が正しく機能するか、文字が崩れていないかチェックしましょう。',
+      },
+      {
+        id: 's4-4',
+        label: 'ロイヤリティを70%に設定する',
+        detail: '70%ロイヤリティは¥250〜¥1,250の価格範囲で設定できます。この範囲外だと35%になります。',
+        warning: '¥250未満または¥1,251以上に設定すると自動的に35%ロイヤリティになります。',
+      },
+      {
+        id: 's4-5',
+        label: '希望小売価格を設定する',
+        detail: '70%ロイヤリティを得るなら¥250〜¥1,250の範囲で設定します。¥499は手に取りやすい価格帯で、1冊売れるたびに約¥349の収益になります。',
+      },
+      {
+        id: 's4-6',
+        label: '「Kindle本を出版」ボタンを押して申請する',
+        detail: 'すべての設定を確認後、「Kindle本を出版」ボタンをクリックして申請します。審査完了まで通常24〜72時間かかります。審査通過後、Amazonのストアに自動的に掲載されます。',
       },
     ],
     hints: [
-      { color: 'purple', text: '🌍 審査が完了すると、日本だけでなく世界中のAmazonストアに自動で並びます。' },
-      { color: 'purple', text: '📊 出版後はKDPダッシュボードで売上・ページ読了数をリアルタイムで確認できます。' },
+      { color: 'green', text: '審査は通常24〜72時間以内に完了します。完了するとメールで通知が届きます。' },
+      { color: 'yellow', text: '価格は出版後でも変更可能です。まず¥499で出してみて、反応を見ながら調整しましょう。' },
     ],
   },
 ]
 
-// ===================== Helpers =====================
-function getHintStyle(color: 'blue' | 'yellow' | 'green' | 'purple') {
-  switch (color) {
-    case 'blue':   return 'border-blue-500 bg-blue-500/10 text-blue-300'
-    case 'yellow': return 'border-yellow-500 bg-yellow-500/10 text-yellow-300'
-    case 'green':  return 'border-green-500 bg-green-500/10 text-green-300'
-    case 'purple': return 'border-purple-500 bg-purple-500/10 text-purple-300'
-  }
-}
+// ===================== Component =====================
+export default function KdpGuide() {
+  const [checked, setChecked] = useState<Set<string>>(new Set())
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
+  const [currentStep, setCurrentStep] = useState(1)
 
-// ===================== CheckItem Row =====================
-function CheckRow({
-  item,
-  checked,
-  onToggle,
-}: {
-  item: CheckItem
-  checked: boolean
-  onToggle: () => void
-}) {
+  const toggleCheck = (id: string) => {
+    setChecked(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const toggleExpand = (id: string) => {
+    setExpandedItems(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const getStepProgress = (step: StepData) => {
+    const total = step.items.length
+    const done = step.items.filter(i => checked.has(i.id)).length
+    return { done, total, percent: Math.round((done / total) * 100) }
+  }
+
+  const totalItems = steps.flatMap(s => s.items).length
+  const totalChecked = steps.flatMap(s => s.items).filter(i => checked.has(i.id)).length
+  const totalPercent = Math.round((totalChecked / totalItems) * 100)
+
+  const hintColors = {
+    blue: 'bg-blue-500/10 border-blue-500/20 text-blue-700 dark:text-blue-300',
+    yellow: 'bg-yellow-500/10 border-yellow-500/20 text-yellow-700 dark:text-yellow-300',
+    green: 'bg-green-500/10 border-green-500/20 text-green-700 dark:text-green-300',
+    orange: 'bg-orange-500/10 border-orange-500/20 text-orange-700 dark:text-orange-300',
+  }
+
   return (
-    <li className="pb-3 border-b border-gray-800 last:border-0">
-      {/* Checkbox + Label */}
-      <div className="flex items-start gap-3 cursor-pointer" onClick={onToggle}>
-        <input
-          type="checkbox"
-          checked={checked}
-          onChange={onToggle}
-          className="w-5 h-5 mt-0.5 flex-shrink-0 accent-blue-500 cursor-pointer"
-          onClick={(e) => e.stopPropagation()}
-        />
-        <span
-          className={`text-sm leading-relaxed font-medium transition-colors ${
-            checked ? 'line-through text-gray-500' : 'text-gray-100'
-          }`}
-        >
-          {item.label}
-        </span>
+    <div className="max-w-3xl mx-auto px-4 py-8 space-y-8">
+      {/* ヘッダー */}
+      <div className="text-center space-y-2">
+        <h1 className="text-2xl font-bold">📚 Kindle出版 手順ナビ</h1>
+        <p className="text-muted-foreground text-sm">
+          Amazon KDPでの電子書籍出版を4ステップでガイドします
+        </p>
       </div>
 
-      {/* Detail / Link / Warning */}
-      {(item.detail || item.link || item.warning) && (
-        <div className="ml-8 mt-2 space-y-2">
-          {item.detail && (
-            <p className="text-xs text-gray-400 leading-relaxed">{item.detail}</p>
-          )}
-          {item.link && (
-            <a
-              href={item.link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 underline underline-offset-2"
-              onClick={(e) => e.stopPropagation()}
-            >
-              🔗 {item.link.text} →
-            </a>
-          )}
-          {item.warning && (
-            <p className="text-xs text-orange-400 leading-relaxed">⚠️ {item.warning}</p>
-          )}
-        </div>
-      )}
-    </li>
-  )
-}
-
-// ===================== Affiliate Banner =====================
-function AffiliateBanner() {
-  return (
-    <a
-      href="https://www.amazon.co.jp/s?k=副業+在宅+ツール&tag=nextralabs-22"
-      target="_blank"
-      rel="noopener noreferrer sponsored"
-      className="flex items-center gap-2 w-full mt-4 px-4 py-3 rounded-lg border border-gray-700 bg-gray-800 hover:bg-gray-750 hover:border-gray-600 transition-colors text-sm text-gray-300"
-    >
-      <span className="text-[10px] text-gray-500 mr-1">PR</span>
-      💰 副業で稼いでいる人が使っているものを見る
-      <span className="ml-auto text-gray-500 text-xs">チェックする →</span>
-    </a>
-  )
-}
-
-// ===================== Main Component =====================
-export default function KdpGuide() {
-  const [currentStep, setCurrentStep] = useState(0)
-  const [checked, setChecked] = useState<Record<string, boolean>>({})
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    's3-section-0': true,
-    's3-section-1': false,
-    's3-section-2': false,
-  })
-
-  const isDone = currentStep >= steps.length
-  const step = !isDone ? steps[currentStep] : null
-
-  function getStepItemIds(s: StepData): string[] {
-    if (s.subsections) {
-      return s.subsections.flatMap((sub) => sub.items.map((i) => i.id))
-    }
-    return s.items.map((i) => i.id)
-  }
-
-  const allChecked = step ? getStepItemIds(step).every((id) => checked[id]) : false
-
-  function toggle(id: string) {
-    setChecked((prev) => ({ ...prev, [id]: !prev[id] }))
-  }
-
-  function toggleSection(key: string) {
-    setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }))
-  }
-
-  function reset() {
-    setCurrentStep(0)
-    setChecked({})
-    setOpenSections({ 's3-section-0': true, 's3-section-1': false, 's3-section-2': false })
-  }
-
-  const progressSteps = [...steps.map((s) => s.stepNumber), '✓']
-  function stepStatus(idx: number) {
-    if (idx < currentStep) return 'done'
-    if (idx === currentStep) return 'active'
-    return 'pending'
-  }
-
-  return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 py-8 px-4">
-      <div className="max-w-2xl mx-auto">
-
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">📗 Kindle出版手順ナビ</h1>
-          <p className="text-gray-400 text-sm">Amazon Kindle出版の手順をステップ形式でガイド</p>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="flex items-center justify-center gap-1 mb-8 overflow-x-auto pb-2">
-          {progressSteps.map((label, idx) => {
-            const status = isDone && idx === progressSteps.length - 1 ? 'active' : stepStatus(idx)
-            return (
-              <div key={idx} className="flex items-center">
-                <div
-                  className={`flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all ${
-                    status === 'done'
-                      ? 'bg-green-600 border-green-500 text-white'
-                      : status === 'active'
-                      ? 'bg-blue-600 border-blue-400 text-white'
-                      : 'bg-gray-800 border-gray-600 text-gray-500'
-                  }`}
-                >
-                  {status === 'done' && idx < steps.length ? '✓' : label}
-                </div>
-                {idx < progressSteps.length - 1 && (
-                  <div className={`w-6 h-1 mx-0.5 rounded transition-all ${idx < currentStep ? 'bg-green-600' : 'bg-gray-700'}`} />
-                )}
-              </div>
-            )
-          })}
-        </div>
-
-        {/* Done Screen */}
-        {isDone ? (
-          <div className="bg-gray-900 rounded-2xl border border-gray-700 p-8 text-center">
-            <div className="text-6xl mb-4">🎉</div>
-            <h2 className="text-3xl font-bold mb-4">おめでとうございます！</h2>
-            <p className="text-gray-300 mb-6 leading-relaxed">
-              あなたの本がAmazonに並ぶまであと少し！<br />
-              審査完了メールをお待ちください。
-            </p>
-            <button
-              onClick={reset}
-              className="px-6 py-2.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium transition-colors"
-            >
-              最初からやり直す
-            </button>
-            <AffiliateBanner />
+      {/* 全体進捗 */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium">全体の進捗</span>
+            <span className="text-sm font-bold text-orange-500">{totalChecked}/{totalItems} 完了</span>
           </div>
-        ) : (
-          <div className="bg-gray-900 rounded-2xl border border-gray-700 p-6 md:p-8">
+          <div className="w-full bg-muted rounded-full h-3">
+            <div
+              className="bg-orange-500 h-3 rounded-full transition-all duration-500"
+              style={{ width: `${totalPercent}%` }}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground mt-2 text-right">{totalPercent}%</p>
+        </CardContent>
+      </Card>
 
-            {/* Step Title */}
-            <div className="flex items-center gap-3 mb-6">
-              <span className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-bold">
-                {step!.stepNumber}
-              </span>
-              <h2 className="text-xl font-bold">{step!.title}</h2>
-            </div>
+      {/* ステップナビ */}
+      <div className="grid grid-cols-4 gap-2">
+        {steps.map(step => {
+          const { done, total } = getStepProgress(step)
+          const isComplete = done === total
+          return (
+            <button
+              key={step.stepNumber}
+              onClick={() => setCurrentStep(step.stepNumber)}
+              className={`p-3 rounded-xl border text-center transition-all ${
+                currentStep === step.stepNumber
+                  ? 'border-orange-500 bg-orange-500/10'
+                  : 'border-border hover:border-orange-500/50'
+              }`}
+            >
+              <div className="text-lg font-bold">
+                {isComplete ? '✅' : `${step.stepNumber}`}
+              </div>
+              <div className="text-xs text-muted-foreground mt-1 leading-tight">
+                {done}/{total}
+              </div>
+            </button>
+          )
+        })}
+      </div>
 
-            {/* Flat checklist */}
-            {step!.items.length > 0 && (
-              <ul className="space-y-0 mb-6">
-                {step!.items.map((item) => (
-                  <CheckRow
-                    key={item.id}
-                    item={item}
-                    checked={!!checked[item.id]}
-                    onToggle={() => toggle(item.id)}
-                  />
-                ))}
-              </ul>
-            )}
-
-            {/* Subsections (Step 3) */}
-            {step!.subsections && (
-              <div className="space-y-4 mb-6">
-                {step!.subsections.map((sub, subIdx) => {
-                  const key = `s3-section-${subIdx}`
-                  const isOpen = openSections[key]
-                  const subAllChecked = sub.items.every((i) => checked[i.id])
-                  return (
-                    <div key={key} className="border border-gray-700 rounded-xl overflow-hidden">
-                      <button
-                        onClick={() => toggleSection(key)}
-                        className="w-full flex items-center justify-between px-4 py-3 bg-gray-800 hover:bg-gray-750 transition-colors text-left"
-                      >
-                        <span className="font-semibold text-sm flex items-center gap-2">
-                          {sub.title}
-                          {subAllChecked && <span className="text-green-400 text-xs">✓ 完了</span>}
-                        </span>
-                        <span className="text-gray-400 text-xs">{isOpen ? '▲' : '▼'}</span>
-                      </button>
-                      {isOpen && (
-                        <ul className="space-y-0 px-4 py-4 bg-gray-900">
-                          {sub.items.map((item) => (
-                            <CheckRow
-                              key={item.id}
-                              item={item}
-                              checked={!!checked[item.id]}
-                              onToggle={() => toggle(item.id)}
-                            />
-                          ))}
-                        </ul>
-                      )}
+      {/* 現在のステップ */}
+      {steps
+        .filter(step => step.stepNumber === currentStep)
+        .map(step => {
+          const { done, total, percent } = getStepProgress(step)
+          return (
+            <div key={step.stepNumber} className="space-y-4">
+              {/* ステップヘッダー */}
+              <div className="flex items-center gap-3">
+                <div className={`w-12 h-12 rounded-xl ${step.bg} flex items-center justify-center flex-shrink-0`}>
+                  <step.icon className={`h-6 w-6 ${step.color}`} />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h2 className="font-bold text-lg">STEP {step.stepNumber}：{step.title}</h2>
+                    {done === total && <Badge className="bg-green-500/10 text-green-600 border-green-500/20">完了 ✅</Badge>}
+                  </div>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="flex-1 bg-muted rounded-full h-2">
+                      <div
+                        className="bg-orange-500 h-2 rounded-full transition-all"
+                        style={{ width: `${percent}%` }}
+                      />
                     </div>
+                    <span className="text-xs text-muted-foreground">{done}/{total}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* チェックリスト */}
+              <div className="space-y-3">
+                {step.items.map(item => {
+                  const isChecked = checked.has(item.id)
+                  const isExpanded = expandedItems.has(item.id)
+                  const hasDetail = !!(item.detail || item.warning || item.link)
+
+                  return (
+                    <Card
+                      key={item.id}
+                      className={`transition-all ${isChecked ? 'opacity-60' : ''}`}
+                    >
+                      <CardContent className="pt-4 pb-4">
+                        <div className="flex items-start gap-3">
+                          <button
+                            onClick={() => toggleCheck(item.id)}
+                            className="mt-0.5 flex-shrink-0"
+                          >
+                            {isChecked
+                              ? <CheckSquare className="h-5 w-5 text-green-500" />
+                              : <Square className="h-5 w-5 text-muted-foreground" />
+                            }
+                          </button>
+                          <div className="flex-1 min-w-0">
+                            <p className={`text-sm font-medium leading-relaxed ${isChecked ? 'line-through text-muted-foreground' : ''}`}>
+                              {item.label}
+                            </p>
+
+                            {hasDetail && (
+                              <button
+                                onClick={() => toggleExpand(item.id)}
+                                className="flex items-center gap-1 text-xs text-orange-500 hover:text-orange-600 mt-1"
+                              >
+                                {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                                {isExpanded ? '閉じる' : '詳細を見る'}
+                              </button>
+                            )}
+
+                            {isExpanded && hasDetail && (
+                              <div className="mt-3 space-y-2">
+                                {item.detail && (
+                                  <p className="text-xs text-muted-foreground leading-relaxed bg-muted/50 rounded-lg p-3">
+                                    {item.detail}
+                                  </p>
+                                )}
+                                {item.warning && (
+                                  <div className="flex items-start gap-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3">
+                                    <AlertCircle className="h-4 w-4 text-yellow-600 flex-shrink-0 mt-0.5" />
+                                    <p className="text-xs text-yellow-700 dark:text-yellow-300 leading-relaxed">{item.warning}</p>
+                                  </div>
+                                )}
+                                {item.link && (
+                                  <a
+                                    href={item.link.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 text-xs text-blue-500 hover:text-blue-600 underline"
+                                  >
+                                    <ExternalLink className="h-3 w-3" />
+                                    {item.link.text}
+                                  </a>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
                   )
                 })}
               </div>
-            )}
 
-            {/* Hint Boxes */}
-            <div className="space-y-3 mb-6">
-              {step!.hints.map((hint, i) => (
-                <div
-                  key={i}
-                  className={`border-l-4 px-4 py-3 rounded-r-lg text-sm leading-relaxed ${getHintStyle(hint.color)}`}
-                >
-                  {hint.text}
+              {/* ヒント */}
+              {step.hints.length > 0 && (
+                <div className="space-y-2">
+                  {step.hints.map((hint, i) => (
+                    <div key={i} className={`flex items-start gap-2 border rounded-lg p-3 ${hintColors[hint.color]}`}>
+                      <Lightbulb className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                      <p className="text-xs leading-relaxed">{hint.text}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              )}
 
-            {/* Affiliate */}
-            <AffiliateBanner />
-
-            {/* Navigation */}
-            <div className="flex items-center justify-between mt-6">
-              <button
-                onClick={() => setCurrentStep((s) => Math.max(0, s - 1))}
-                disabled={currentStep === 0}
-                className="px-5 py-2.5 rounded-lg bg-gray-700 hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed text-sm font-medium transition-colors"
-              >
-                ← 前へ
-              </button>
-              <span className="text-xs text-gray-500">{currentStep + 1} / {steps.length}</span>
-              <button
-                onClick={() => setCurrentStep((s) => s + 1)}
-                disabled={!allChecked}
-                className="px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed text-sm font-medium transition-colors"
-              >
-                {currentStep === steps.length - 1 ? '完了 🎉' : '次へ →'}
-              </button>
+              {/* ナビボタン */}
+              <div className="flex justify-between pt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentStep(s => Math.max(1, s - 1))}
+                  disabled={currentStep === 1}
+                >
+                  ← 前のステップ
+                </Button>
+                <Button
+                  size="sm"
+                  className="bg-orange-600 hover:bg-orange-700 text-white"
+                  onClick={() => setCurrentStep(s => Math.min(steps.length, s + 1))}
+                  disabled={currentStep === steps.length}
+                >
+                  次のステップ →
+                </Button>
+              </div>
             </div>
+          )
+        })}
+
+      {/* 完了メッセージ */}
+      {totalChecked === totalItems && (
+        <Card className="border-green-500/30 bg-green-500/5">
+          <CardContent className="pt-6 text-center space-y-3">
+            <div className="text-4xl">🎉</div>
+            <h3 className="font-bold text-lg text-green-600 dark:text-green-400">全ステップ完了！</h3>
+            <p className="text-sm text-muted-foreground">
+              出版申請が完了しました。審査通過後、24〜72時間以内にAmazonで販売開始されます。
+            </p>
+            <div className="flex justify-center gap-2 flex-wrap pt-2">
+              <Badge className="bg-green-500/10 text-green-600 border-green-500/20">✅ 全4ステップ完了</Badge>
+              <Badge className="bg-orange-500/10 text-orange-600 border-orange-500/20">⏳ 審査待ち（24〜72時間）</Badge>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* KDPリンク */}
+      <Card className="border-dashed">
+        <CardContent className="pt-4 pb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Star className="h-4 w-4 text-orange-500" />
+              <span className="text-sm font-medium">Amazon KDP ダッシュボード</span>
+            </div>
+            <a
+              href="https://kdp.amazon.co.jp"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button size="sm" variant="outline" className="text-xs">
+                <ExternalLink className="h-3 w-3 mr-1" />
+                KDPを開く
+              </Button>
+            </a>
           </div>
-        )}
-      </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
