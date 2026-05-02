@@ -8,6 +8,7 @@ interface NewsItem {
   link: string
   category: string
   pubDate: string
+  traffic?: string
 }
 
 interface BuzzScore {
@@ -120,11 +121,11 @@ const personas = [
 ]
 
 const fallbackNews: NewsItem[] = [
-  { title: 'AIが仕事を変える？最新の活用事例', link: '', category: 'IT・テクノロジー', pubDate: '' },
-  { title: '副業で月10万円を達成するための最短ルート', link: '', category: 'ビジネス', pubDate: '' },
-  { title: 'SNSフォロワーを効率よく増やす方法', link: '', category: 'ライフスタイル', pubDate: '' },
-  { title: '時短料理で毎日の負担を減らすコツ', link: '', category: 'ライフスタイル', pubDate: '' },
-  { title: 'メンタルヘルスを守るための5つの習慣', link: '', category: '健康', pubDate: '' },
+  { title: 'AIが仕事を変える？最新の活用事例', link: '', category: 'IT・テクノロジー', pubDate: '', traffic: '' },
+  { title: '副業で月10万円を達成するための最短ルート', link: '', category: 'ビジネス', pubDate: '', traffic: '' },
+  { title: 'SNSフォロワーを効率よく増やす方法', link: '', category: 'ライフスタイル', pubDate: '', traffic: '' },
+  { title: '時短料理で毎日の負担を減らすコツ', link: '', category: 'ライフスタイル', pubDate: '', traffic: '' },
+  { title: 'メンタルヘルスを守るための5つの習慣', link: '', category: '健康', pubDate: '', traffic: '' },
 ]
 
 // ─── Component ───────────────────────────────────────────
@@ -447,8 +448,11 @@ export default function BuzzWriter() {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <h3 className="font-medium text-sm">{item.title}</h3>
-                      <div className="flex gap-2 mt-2">
+                      <div className="flex gap-2 mt-2 flex-wrap">
                         <span className="text-xs px-2 py-0.5 rounded bg-blue-500/20 text-blue-400">{item.category}</span>
+                        {item.traffic && (
+                          <span className="text-xs px-2 py-0.5 rounded bg-red-500/20 text-red-400">🔥 {item.traffic}</span>
+                        )}
                       </div>
                     </div>
                     {selectedNews?.title === item.title
