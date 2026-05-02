@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -164,6 +164,19 @@ export default function YoutubeProducerPage() {
           ))}
         </div>
       </section>
+
+      {/* Amazon アソシエイト */}
+      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+        <p className="text-sm text-muted-foreground mb-3">🛒 YouTube・動画制作本をAmazonでチェック</p>
+        <a
+          href="https://www.amazon.co.jp/s?k=YouTube%20%E5%8B%95%E7%94%BB%E5%88%B6%E4%BD%9C&tag=nextralabs-22"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+        >
+          Amazonで見る →
+        </a>
+      </div>
     </div>
   )
 }

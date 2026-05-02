@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft, MessageCircleHeart, Brain, BarChart3, Calendar, BookOpen, HeartHandshake, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -190,6 +190,19 @@ export default function CommCoachPage() {
             <p className="text-sm text-muted-foreground">{faq.a}</p>
           </div>
         ))}
+      </div>
+
+      {/* Amazon アソシエイト */}
+      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+        <p className="text-sm text-muted-foreground mb-3">🛒 コミュニケーション本をAmazonでチェック</p>
+        <a
+          href="https://www.amazon.co.jp/s?k=%E3%82%B3%E3%83%9F%E3%83%A5%E3%83%8B%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%20%E8%A9%B1%E3%81%97%E6%96%B9&tag=nextralabs-22"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+        >
+          Amazonで見る →
+        </a>
       </div>
     </div>
   )

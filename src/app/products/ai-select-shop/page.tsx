@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -483,6 +483,19 @@ export default function AISelectShopPage() {
           </div>
         </div>
       </section>
+
+      {/* Amazon アソシエイト */}
+      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+        <p className="text-sm text-muted-foreground mb-3">🛒 ファッションをAmazonでチェック</p>
+        <a
+          href="https://www.amazon.co.jp/s?k=%E3%82%BB%E3%83%AC%E3%82%AF%E3%83%88%E3%82%B7%E3%83%A7%E3%83%83%E3%83%97%20%E3%83%95%E3%82%A1%E3%83%83%E3%82%B7%E3%83%A7%E3%83%B3&tag=nextralabs-22"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+        >
+          Amazonで見る →
+        </a>
+      </div>
     </div>
   )
 }

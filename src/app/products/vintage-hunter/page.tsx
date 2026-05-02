@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -558,6 +558,19 @@ export default function VintageHunterPage() {
           </div>
         </div>
       </section>
+
+      {/* Amazon アソシエイト */}
+      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+        <p className="text-sm text-muted-foreground mb-3">🛒 古着・ヴィンテージをAmazonでチェック</p>
+        <a
+          href="https://www.amazon.co.jp/s?k=%E5%8F%A4%E7%9D%80%20%E3%83%B4%E3%82%A3%E3%83%B3%E3%83%86%E3%83%BC%E3%82%B8&tag=nextralabs-22"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+        >
+          Amazonで見る →
+        </a>
+      </div>
     </div>
   )
 }

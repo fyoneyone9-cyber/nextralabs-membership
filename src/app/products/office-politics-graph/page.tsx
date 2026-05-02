@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -413,6 +413,19 @@ export default function OfficePoliticsGraphPage() {
             アカウント登録不要・データ送信なし・完全ブラウザ処理
           </p>
         </section>
+      </div>
+
+      {/* Amazon アソシエイト */}
+      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+        <p className="text-sm text-muted-foreground mb-3">🛒 職場・人間関係本をAmazonでチェック</p>
+        <a
+          href="https://www.amazon.co.jp/s?k=%E8%81%B7%E5%A0%B4%20%E4%BA%BA%E9%96%93%E9%96%A2%E4%BF%82&tag=nextralabs-22"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+        >
+          Amazonで見る →
+        </a>
       </div>
     </div>
   )
