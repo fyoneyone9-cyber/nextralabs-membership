@@ -451,7 +451,7 @@ function ProductCard({ product }: { product: Product }) {
   const Icon = product.icon
   return (
     <Card className="h-full hover:shadow-xl transition-all duration-300 group border-2 hover:border-primary/50">
-      <CardContent className="p-6">
+      <CardContent className="p-6 flex flex-col h-full">
         <div className="flex items-start justify-between mb-4">
           <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ${product.bgColor}`}>
             <Icon className={`h-6 w-6 ${product.iconColor}`} />
@@ -480,7 +480,7 @@ function ProductCard({ product }: { product: Product }) {
           ))}
         </div>
 
-        <div className="flex items-center justify-between pt-4 border-t">
+        <div className="flex items-center justify-between pt-4 border-t mt-auto">
           <div>
             {product.priceNote === '無料' ? (
               <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 ring-2 ring-emerald-500/40 shadow-sm">
