@@ -81,17 +81,14 @@ export default function PricingPage() {
       </div>
 
       {/* コスト分解バナー */}
-      <div className="max-w-3xl mx-auto mb-12 rounded-2xl bg-gradient-to-r from-violet-950/60 to-cyan-950/60 border border-violet-500/30 p-6 text-center">
-        <p className="text-sm text-muted-foreground mb-3">💡 こう考えると、迷わなくなる</p>
-        <p className="text-2xl font-bold text-white leading-relaxed">
-          月980円。<span className="text-violet-400">チロルチョコ32個分</span>を
-          <br className="hidden sm:block" />
-          節約する気にもなれない金額で、
+      <div className="max-w-3xl mx-auto mb-12 rounded-2xl bg-gradient-to-r from-violet-950/60 to-cyan-950/60 border border-violet-500/30 p-8 text-center">
+        <p className="text-3xl font-bold text-white leading-relaxed mb-2">
+          スタバのラテ<span className="text-violet-400">1杯</span>より安い。
         </p>
-        <p className="text-2xl font-bold text-white mt-1">
-          あなたの1日から<span className="text-cyan-400">2時間の無駄</span>が消えます。
+        <p className="text-3xl font-bold text-white">
+          でも、毎日<span className="text-cyan-400">2時間</span>を取り戻せる。
         </p>
-        <div className="mt-4 flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+        <div className="mt-5 flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
           <span>🍬 ライト ¥480 = <strong className="text-cyan-400">1日16円</strong>（飴玉1個）</span>
           <span>🍫 スタンダード ¥980 = <strong className="text-violet-400">1日32円</strong>（チロルチョコ1個）</span>
           <span>☕ プレミアム ¥1,980 = <strong className="text-amber-400">コーヒー2杯/月</strong></span>
