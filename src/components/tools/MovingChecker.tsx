@@ -632,12 +632,12 @@ export default function MovingChecker() {
       <div className="mt-8 border rounded-xl p-4 bg-muted/30 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="flex-1">
           <span className="text-[10px] text-muted-foreground font-medium mr-2">PR</span>
-          <span className="text-sm">🎬 引っ越しの夜に観たい —「STILL: マイケル・J・フォックス」</span>
-          <p className="text-xs text-muted-foreground mt-0.5">人生の転機に立ち向かい続けた男のドキュメンタリー。Amazon Prime Videoで視聴できます。</p>
+          <span className="text-sm">🏠 新生活をもっとスムーズに整えたい方へ</span>
+          <p className="text-xs text-muted-foreground mt-0.5">引っ越し・新生活・暮らし整理術のベストセラー本をチェック。</p>
         </div>
-        <a href="https://amzn.to/4ejfQ5J" target="_blank" rel="noopener noreferrer sponsored"
+        <a href="https://www.amazon.co.jp/gp/bestsellers/books/466282?tag=nextralabs-22" target="_blank" rel="noopener noreferrer sponsored"
           className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold transition-colors">
-          Primeで観る →
+          本を探す →
         </a>
       </div>
       </div>

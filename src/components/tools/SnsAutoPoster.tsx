@@ -335,12 +335,12 @@ export default function SnsAutoPoster() {
       <div className="mt-8 border rounded-xl p-4 bg-muted/30 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="flex-1">
           <span className="text-[10px] text-muted-foreground font-medium mr-2">PR</span>
-          <span className="text-sm">🎬 SNS自動化で空いた時間に —「STILL: マイケル・J・フォックス」</span>
-          <p className="text-xs text-muted-foreground mt-0.5">「バック・トゥ・ザ・フューチャー」の彼が語る、リアルな人生のドキュメンタリー。Amazon Prime Videoで視聴できます。</p>
+          <span className="text-sm">📱 SNS運用・マーケティングをもっと学びたい方へ</span>
+          <p className="text-xs text-muted-foreground mt-0.5">フォロワー増加・集客・ブランディングのベストセラー本をチェック。</p>
         </div>
-        <a href="https://amzn.to/4ejfQ5J" target="_blank" rel="noopener noreferrer sponsored"
+        <a href="https://www.amazon.co.jp/gp/bestsellers/books/466282?tag=nextralabs-22" target="_blank" rel="noopener noreferrer sponsored"
           className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold transition-colors">
-          Primeで観る →
+          本を探す →
         </a>
       </div>
       </div>

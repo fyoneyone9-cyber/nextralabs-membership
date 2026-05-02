@@ -110,13 +110,13 @@ function getHintStyle(color: 'blue' | 'yellow' | 'green' | 'purple') {
 function AffiliateBanner() {
   return (
     <a
-      href="https://amzn.to/4ejfQ5J"
+      href="https://www.amazon.co.jp/gp/bestsellers/books/466282?tag=nextralabs-22"
       target="_blank"
       rel="noopener noreferrer sponsored"
       className="flex items-center gap-2 w-full mt-4 px-4 py-3 rounded-lg border border-gray-700 bg-gray-800 hover:bg-gray-750 hover:border-gray-600 transition-colors text-sm text-gray-300"
     >
       <span className="text-[10px] text-gray-500 mr-1">PR</span>
-      📚 KDP出版と並行して読んでおきたい — Amazon Kindle ストアで探す
+      📚 Kindle出版・電子書籍ビジネスのベストセラー本をチェック
       <span className="ml-auto text-gray-500">→</span>
     </a>
   )
