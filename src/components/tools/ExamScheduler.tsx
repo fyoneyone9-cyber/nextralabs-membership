@@ -16,23 +16,16 @@ import {
   ChevronDown,
   ChevronUp,
   Clock,
-  Rss,
   AlertCircle,
-  Info,
-  RefreshCw,
 } from 'lucide-react'
 
 interface ExamConfig {
   id: string
   name: string
-  rss: string
   studyWeeks: number
   sessionsPerWeek: number
   sessionHours: number
   examDate: string
-  // UI用
-  rssStatus: 'idle' | 'checking' | 'found' | 'notfound' | 'error'
-  rssFoundDate: string
 }
 
 interface ResultItem {
@@ -43,22 +36,90 @@ interface ResultItem {
   registered?: number
   failed?: number
   reason?: string
+  failedDetails?: { error: string }[]
 }
 
-// ※ IPA試験（ITパスポート・基本情報・応用情報）はIPAがRSSを廃止済みのため手動入力が必要
-const PRESET_EXAMS: Omit<ExamConfig, 'id' | 'rssStatus' | 'rssFoundDate'>[] = [
-  { name: 'ITパスポート', rss: '', studyWeeks: 6, sessionsPerWeek: 4, sessionHours: 1, examDate: '' },
-  { name: '基本情報技術者', rss: '', studyWeeks: 12, sessionsPerWeek: 4, sessionHours: 2, examDate: '' },
-  { name: '応用情報技術者', rss: '', studyWeeks: 16, sessionsPerWeek: 4, sessionHours: 2.5, examDate: '' },
-  { name: 'CompTIA Security+', rss: 'https://www.comptia.org/rss/news', studyWeeks: 12, sessionsPerWeek: 3, sessionHours: 2, examDate: '' },
-  { name: 'AWS Solutions Architect', rss: 'https://aws.amazon.com/blogs/aws/feed/', studyWeeks: 10, sessionsPerWeek: 3, sessionHours: 2, examDate: '' },
+// ─── プリセット ───────────────────────────────────────────
+const PRESET_CATEGORIES = [
+  {
+    label: '🖥️ IT・情報処理',
+    exams: [
+      { name: 'ITパスポート', studyWeeks: 6, sessionsPerWeek: 4, sessionHours: 1 },
+      { name: '基本情報技術者', studyWeeks: 12, sessionsPerWeek: 4, sessionHours: 2 },
+      { name: '応用情報技術者', studyWeeks: 16, sessionsPerWeek: 4, sessionHours: 2.5 },
+      { name: '情報処理安全確保支援士', studyWeeks: 20, sessionsPerWeek: 4, sessionHours: 3 },
+      { name: 'ネットワークスペシャリスト', studyWeeks: 24, sessionsPerWeek: 4, sessionHours: 3 },
+    ],
+  },
+  {
+    label: '🌐 ベンダー資格',
+    exams: [
+      { name: 'CompTIA A+', studyWeeks: 8, sessionsPerWeek: 3, sessionHours: 1.5 },
+      { name: 'CompTIA Network+', studyWeeks: 8, sessionsPerWeek: 3, sessionHours: 1.5 },
+      { name: 'CompTIA Security+', studyWeeks: 12, sessionsPerWeek: 3, sessionHours: 2 },
+      { name: 'AWS Solutions Architect Associate', studyWeeks: 10, sessionsPerWeek: 3, sessionHours: 2 },
+      { name: 'AWS Developer Associate', studyWeeks: 10, sessionsPerWeek: 3, sessionHours: 2 },
+      { name: 'Google Cloud Associate CE', studyWeeks: 10, sessionsPerWeek: 3, sessionHours: 2 },
+      { name: 'Azure AZ-900', studyWeeks: 6, sessionsPerWeek: 3, sessionHours: 1.5 },
+      { name: 'Oracle Java SE 17', studyWeeks: 8, sessionsPerWeek: 3, sessionHours: 2 },
+      { name: 'Cisco CCNA', studyWeeks: 16, sessionsPerWeek: 4, sessionHours: 2 },
+    ],
+  },
+  {
+    label: '📊 ビジネス・法律',
+    exams: [
+      { name: 'FP2級', studyWeeks: 12, sessionsPerWeek: 4, sessionHours: 1.5 },
+      { name: 'FP3級', studyWeeks: 8, sessionsPerWeek: 3, sessionHours: 1 },
+      { name: '簿記3級', studyWeeks: 8, sessionsPerWeek: 3, sessionHours: 1 },
+      { name: '簿記2級', studyWeeks: 16, sessionsPerWeek: 4, sessionHours: 2 },
+      { name: '宅建士', studyWeeks: 20, sessionsPerWeek: 5, sessionHours: 2 },
+      { name: '行政書士', studyWeeks: 40, sessionsPerWeek: 5, sessionHours: 3 },
+      { name: '社会保険労務士', studyWeeks: 52, sessionsPerWeek: 5, sessionHours: 3 },
+      { name: 'ビジネス実務法務3級', studyWeeks: 8, sessionsPerWeek: 3, sessionHours: 1 },
+    ],
+  },
+  {
+    label: '🔒 セキュリティ',
+    exams: [
+      { name: 'CISSP', studyWeeks: 24, sessionsPerWeek: 5, sessionHours: 3 },
+      { name: 'CISM', studyWeeks: 20, sessionsPerWeek: 4, sessionHours: 2.5 },
+      { name: 'CEH', studyWeeks: 16, sessionsPerWeek: 4, sessionHours: 2 },
+      { name: 'OSCP', studyWeeks: 24, sessionsPerWeek: 5, sessionHours: 3 },
+    ],
+  },
+  {
+    label: '🏥 医療・福祉',
+    exams: [
+      { name: '介護福祉士', studyWeeks: 20, sessionsPerWeek: 4, sessionHours: 2 },
+      { name: 'ケアマネジャー', studyWeeks: 24, sessionsPerWeek: 4, sessionHours: 2 },
+      { name: '登録販売者', studyWeeks: 16, sessionsPerWeek: 4, sessionHours: 2 },
+    ],
+  },
+  {
+    label: '🚗 生活・技能',
+    exams: [
+      { name: '普通自動車免許（学科）', studyWeeks: 4, sessionsPerWeek: 5, sessionHours: 1 },
+      { name: '危険物取扱者乙4', studyWeeks: 6, sessionsPerWeek: 4, sessionHours: 1 },
+      { name: '電気工事士2種（筆記）', studyWeeks: 12, sessionsPerWeek: 4, sessionHours: 1.5 },
+    ],
+  },
 ]
+
+// フラットなプリセットリスト（検索・表示用）
+const PRESET_EXAMS = PRESET_CATEGORIES.flatMap(c => c.exams)
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''
 const GOOGLE_SCOPES = 'https://www.googleapis.com/auth/calendar.events'
 
-function newExam(preset = PRESET_EXAMS[0]): ExamConfig {
-  return { ...preset, id: crypto.randomUUID(), rssStatus: 'idle', rssFoundDate: '' }
+function newExam(): ExamConfig {
+  return {
+    id: crypto.randomUUID(),
+    name: '',
+    studyWeeks: 8,
+    sessionsPerWeek: 3,
+    sessionHours: 1.5,
+    examDate: '',
+  }
 }
 
 export default function ExamScheduler() {
@@ -69,6 +130,7 @@ export default function ExamScheduler() {
   const [results, setResults] = useState<ResultItem[] | null>(null)
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [authLoading, setAuthLoading] = useState(false)
+  const [openCategoryId, setOpenCategoryId] = useState<string | null>(null)
 
   // OAuthトークン取得
   useEffect(() => {
@@ -92,52 +154,37 @@ export default function ExamScheduler() {
     window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`
   }, [])
 
-  // RSS確認（個別）
-  const checkRss = async (examId: string) => {
-    const exam = exams.find(e => e.id === examId)
-    if (!exam || !exam.rss) return
-
-    setExams(prev => prev.map(e => e.id === examId ? { ...e, rssStatus: 'checking', rssFoundDate: '' } : e))
-
-    try {
-      const res = await fetch(`/api/exam-scheduler/check-rss?url=${encodeURIComponent(exam.rss)}`)
-      const data = await res.json()
-      if (data.date) {
-        setExams(prev => prev.map(e => e.id === examId ? { ...e, rssStatus: 'found', rssFoundDate: data.date } : e))
-      } else {
-        setExams(prev => prev.map(e => e.id === examId ? { ...e, rssStatus: 'notfound' } : e))
-      }
-    } catch {
-      setExams(prev => prev.map(e => e.id === examId ? { ...e, rssStatus: 'error' } : e))
-    }
-  }
-
   const addExam = () => setExams(prev => [...prev, newExam()])
   const removeExam = (id: string) => setExams(prev => prev.filter(e => e.id !== id))
 
   const updateExam = (id: string, field: keyof ExamConfig, value: string | number) => {
-    setExams(prev => prev.map(e => {
-      if (e.id !== id) return e
-      const updated = { ...e, [field]: value }
-      // RSS変更時はステータスリセット
-      if (field === 'rss') updated.rssStatus = 'idle'
-      return updated
-    }))
+    setExams(prev => prev.map(e => e.id !== id ? e : { ...e, [field]: value }))
   }
 
   const applyPreset = (id: string, presetName: string) => {
     const preset = PRESET_EXAMS.find(p => p.name === presetName)
-    if (preset) setExams(prev => prev.map(e => e.id === id ? { ...e, ...preset, rssStatus: 'idle', rssFoundDate: '' } : e))
+    if (preset) {
+      setExams(prev => prev.map(e => e.id !== id ? e : {
+        ...e,
+        name: preset.name,
+        studyWeeks: preset.studyWeeks,
+        sessionsPerWeek: preset.sessionsPerWeek,
+        sessionHours: preset.sessionHours,
+      }))
+    }
+    setOpenCategoryId(null)
   }
 
   const handleSubmit = async () => {
     if (!googleToken) { alert('先にGoogleアカウントを連携してください'); return }
     if (exams.length === 0) { alert('試験を1つ以上追加してください'); return }
 
-    // 試験日の確認
-    const missingDate = exams.find(e => !e.examDate && e.rssStatus !== 'found')
+    const missing = exams.find(e => !e.name.trim())
+    if (missing) { alert('試験名を入力してください'); return }
+
+    const missingDate = exams.find(e => !e.examDate)
     if (missingDate) {
-      alert(`「${missingDate.name}」の試験日を入力するか、RSS確認ボタンで試験日を取得してください`)
+      alert(`「${missingDate.name}」の試験日を入力してください`)
       return
     }
 
@@ -145,18 +192,20 @@ export default function ExamScheduler() {
     setResults(null)
 
     try {
-      setLoadingStep('📡 RSSから試験日を取得中...')
-      await new Promise(r => setTimeout(r, 500))
       setLoadingStep('🤖 AIが学習スケジュールを生成中...')
+      await new Promise(r => setTimeout(r, 300))
 
       const res = await fetch('/api/exam-scheduler', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          exams: exams.map(({ id: _id, rssStatus: _rs, rssFoundDate: _rf, ...e }) => ({
-            name: e.name, rss: e.rss,
-            studyWeeks: e.studyWeeks, sessionsPerWeek: e.sessionsPerWeek, sessionHours: e.sessionHours,
-            examDate: e.examDate || undefined,
+          exams: exams.map(({ id: _id, ...e }) => ({
+            name: e.name,
+            rss: '',
+            studyWeeks: e.studyWeeks,
+            sessionsPerWeek: e.sessionsPerWeek,
+            sessionHours: e.sessionHours,
+            examDate: e.examDate,
           })),
           googleAccessToken: googleToken,
         }),
@@ -174,21 +223,6 @@ export default function ExamScheduler() {
     }
   }
 
-  const getRssStatusUI = (exam: ExamConfig) => {
-    switch (exam.rssStatus) {
-      case 'checking':
-        return <span className="flex items-center gap-1 text-xs text-blue-500"><Loader2 className="w-3 h-3 animate-spin" />確認中...</span>
-      case 'found':
-        return <span className="flex items-center gap-1 text-xs text-green-500"><CheckCircle2 className="w-3 h-3" />試験日取得: <strong>{exam.rssFoundDate}</strong></span>
-      case 'notfound':
-        return <span className="flex items-center gap-1 text-xs text-amber-500"><AlertCircle className="w-3 h-3" />RSSに試験日なし → 手動入力が必要</span>
-      case 'error':
-        return <span className="flex items-center gap-1 text-xs text-red-500"><XCircle className="w-3 h-3" />RSS取得失敗 → 手動入力が必要</span>
-      default:
-        return <span className="flex items-center gap-1 text-xs text-muted-foreground"><Info className="w-3 h-3" />「RSS確認」を押して試験日を自動取得</span>
-    }
-  }
-
   const canSubmit = googleToken && !loading && exams.length > 0
 
   return (
@@ -202,7 +236,7 @@ export default function ExamScheduler() {
           </div>
           <h1 className="text-3xl font-bold mb-2">資格試験 AIスケジューラー</h1>
           <p className="text-muted-foreground text-sm">
-            試験日をRSSから自動取得 → AIが学習計画を生成 → Googleカレンダーに一括登録
+            試験名と試験日を入力するだけ → AIが学習計画を生成 → Googleカレンダーに自動登録
           </p>
         </div>
 
@@ -260,77 +294,83 @@ export default function ExamScheduler() {
                 </CardHeader>
                 <CardContent className="px-4 pb-4 space-y-4">
 
-                  {/* プリセット */}
+                  {/* プリセット（カテゴリ別アコーディオン） */}
                   <div>
                     <label className="text-xs text-muted-foreground mb-1.5 block">プリセットから選ぶ</label>
-                    <div className="flex flex-wrap gap-1.5">
-                      {PRESET_EXAMS.map(p => (
-                        <button key={p.name} onClick={() => applyPreset(exam.id, p.name)}
-                          className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${exam.name === p.name ? 'bg-primary text-primary-foreground border-primary' : 'border-border hover:bg-muted'}`}>
-                          {p.name}
-                        </button>
-                      ))}
+                    <div className="space-y-1">
+                      {PRESET_CATEGORIES.map(cat => {
+                        const catKey = `${exam.id}-${cat.label}`
+                        const isOpen = openCategoryId === catKey
+                        return (
+                          <div key={cat.label} className="border border-border rounded-lg overflow-hidden">
+                            <button
+                              type="button"
+                              className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium hover:bg-muted/50 transition-colors"
+                              onClick={() => setOpenCategoryId(isOpen ? null : catKey)}
+                            >
+                              <span>{cat.label}</span>
+                              {isOpen ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                            </button>
+                            {isOpen && (
+                              <div className="px-3 pb-3 pt-1 flex flex-wrap gap-1.5 border-t border-border bg-muted/20">
+                                {cat.exams.map(p => (
+                                  <button
+                                    key={p.name}
+                                    type="button"
+                                    onClick={() => applyPreset(exam.id, p.name)}
+                                    className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${exam.name === p.name ? 'bg-primary text-primary-foreground border-primary' : 'border-border hover:bg-muted'}`}
+                                  >
+                                    {p.name}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
                     </div>
                   </div>
 
                   {/* 試験名 */}
                   <div>
-                    <label className="text-xs text-muted-foreground mb-1 block">試験名 <span className="text-destructive">*</span></label>
-                    <input type="text" value={exam.name}
+                    <label className="text-xs text-muted-foreground mb-1 block">
+                      試験名 <span className="text-destructive">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={exam.name}
                       onChange={e => updateExam(exam.id, 'name', e.target.value)}
                       className="w-full px-3 py-2 text-sm bg-background border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                      placeholder="例: 基本情報技術者" />
+                      placeholder="例: 基本情報技術者 / AWS Solutions Architect …"
+                    />
                   </div>
 
-                  {/* RSS + 確認ボタン */}
+                  {/* 試験日（手動入力） */}
                   <div>
                     <label className="text-xs text-muted-foreground mb-1 block">
-                      RSS URL <span className="text-muted-foreground font-normal">— 試験日を自動取得</span>
+                      試験日 <span className="text-destructive">*</span>
                     </label>
-                    <div className="flex gap-2">
-                      <input type="url" value={exam.rss}
-                        onChange={e => updateExam(exam.id, 'rss', e.target.value)}
-                        className="flex-1 px-3 py-2 text-xs bg-background border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary font-mono"
-                        placeholder="https://... （ない場合は空欄のまま試験日を手動入力）" />
-                      <Button variant="outline" size="sm" className="shrink-0 gap-1.5"
-                        onClick={() => checkRss(exam.id)}
-                        disabled={exam.rssStatus === 'checking' || !exam.rss}>
-                        {exam.rssStatus === 'checking'
-                          ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          : <><Rss className="w-3.5 h-3.5" /><RefreshCw className="w-3 h-3" /></>
-                        }
-                        RSS確認
-                      </Button>
-                    </div>
-                    {/* RSSステータス表示 */}
-                    <div className="mt-1.5 ml-1">
-                      {!exam.rss
-                        ? <span className="flex items-center gap-1 text-xs text-amber-500"><AlertCircle className="w-3 h-3" />IPA試験はRSS廃止済み → 下の試験日欄に手動入力してください</span>
-                        : getRssStatusUI(exam)
-                      }
-                    </div>
-                  </div>
-
-                  {/* 試験日（手動）*/}
-                  <div>
-                    <label className="text-xs mb-1 block">
-                      <span className="text-muted-foreground">試験日（手動入力）</span>
-                      {exam.rssStatus === 'notfound' || exam.rssStatus === 'error'
-                        ? <span className="text-amber-500 ml-1 font-medium">← RSSで取得できなかったため入力必須</span>
-                        : exam.rssStatus === 'found'
-                          ? <span className="text-green-500 ml-1">← RSSで取得済み（空欄でOK）</span>
-                          : <span className="text-muted-foreground ml-1">← RSS確認後に不要なら空欄でOK</span>
-                      }
-                    </label>
-                    <input type="date" value={exam.examDate}
+                    <input
+                      type="date"
+                      value={exam.examDate}
                       onChange={e => updateExam(exam.id, 'examDate', e.target.value)}
-                      className={`w-full px-3 py-2 text-sm bg-background border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${exam.rssStatus === 'notfound' || exam.rssStatus === 'error' ? 'border-amber-400' : ''}`} />
+                      className={`w-full px-3 py-2 text-sm bg-background border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${!exam.examDate ? 'border-amber-400/60' : 'border-border'}`}
+                    />
+                    {!exam.examDate && (
+                      <p className="text-xs text-amber-500 mt-1 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        試験日を入力してください
+                      </p>
+                    )}
                   </div>
 
-                  {/* 詳細設定 */}
+                  {/* 詳細設定（折りたたみ） */}
                   <div>
-                    <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-                      onClick={() => setExpandedId(expandedId === exam.id ? null : exam.id)}>
+                    <button
+                      type="button"
+                      className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                      onClick={() => setExpandedId(expandedId === exam.id ? null : exam.id)}
+                    >
                       {expandedId === exam.id ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                       学習ペースの詳細設定
                     </button>
@@ -343,9 +383,13 @@ export default function ExamScheduler() {
                         ].map(({ label, field, min, max, step }) => (
                           <div key={field}>
                             <label className="text-xs text-muted-foreground mb-1 block">{label}</label>
-                            <input type="number" min={min} max={max} step={step} value={exam[field] as number}
+                            <input
+                              type="number"
+                              min={min} max={max} step={step}
+                              value={exam[field] as number}
                               onChange={e => updateExam(exam.id, field, field === 'sessionHours' ? parseFloat(e.target.value) : parseInt(e.target.value))}
-                              className="w-full px-3 py-2 text-sm bg-background border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+                              className="w-full px-3 py-2 text-sm bg-background border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
                           </div>
                         ))}
                       </div>
@@ -392,7 +436,6 @@ export default function ExamScheduler() {
 
           <div className="mt-2 space-y-1 text-xs text-muted-foreground px-1">
             <p>⚠️ AI（Gemini Flash）で学習計画を生成します（無料枠内）</p>
-            <p>📡 RSSで試験日が取得できない場合は手動で試験日を入力してください</p>
             <p>🔒 Googleトークンはこのセッション中のみ使用し、サーバーには保存しません</p>
           </div>
         </div>
@@ -418,8 +461,8 @@ export default function ExamScheduler() {
                           ? <div className="text-sm text-muted-foreground">試験日: {r.examDate}（あと{r.daysUntil}日）</div>
                           : <div className="text-sm text-yellow-600 dark:text-yellow-400">{r.reason}</div>
                         }
-                        {r.status === 'done' && (r.failed ?? 0) > 0 && (r as any).failedDetails?.[0] && (
-                          <div className="text-xs text-red-500 mt-1">⚠️ エラー: {(r as any).failedDetails[0].error}</div>
+                        {r.status === 'done' && (r.failed ?? 0) > 0 && r.failedDetails?.[0] && (
+                          <div className="text-xs text-red-500 mt-1">⚠️ エラー: {r.failedDetails[0].error}</div>
                         )}
                       </div>
                     </div>
