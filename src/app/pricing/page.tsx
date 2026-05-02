@@ -276,9 +276,7 @@ export default function PricingPage() {
                 プレミアムプランに登録
               </Button>
             )}
-            <p className="text-xs text-muted-foreground text-center mt-3">
-              Gmail AI Accelerator を含む上位プラン
-            </p>
+
           </CardContent>
         </Card>
 
@@ -318,9 +316,7 @@ export default function PricingPage() {
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
-            <p className="text-xs text-muted-foreground text-center mt-3">
-              まずはお気軽にご相談ください
-            </p>
+
           </CardContent>
         </Card>
       </div>
