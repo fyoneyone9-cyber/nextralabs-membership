@@ -119,19 +119,34 @@ const personas = [
   { id: 'health', name: '健康・美容系', icon: '💪', style: '科学的根拠ベース。ストイックすぎない実践的アドバイス。' },
 ]
 
+const fallbackNews: NewsItem[] = [
+  { title: 'AIが仕事を変える？最新の活用事例', link: '', category: 'IT・テクノロジー', pubDate: '' },
+  { title: '副業で月10万円を達成するための最短ルート', link: '', category: 'ビジネス', pubDate: '' },
+  { title: 'SNSフォロワーを効率よく増やす方法', link: '', category: 'ライフスタイル', pubDate: '' },
+  { title: '時短料理で毎日の負担を減らすコツ', link: '', category: 'ライフスタイル', pubDate: '' },
+  { title: 'メンタルヘルスを守るための5つの習慣', link: '', category: '健康', pubDate: '' },
+]
+
 // ─── Component ───────────────────────────────────────────
 export default function BuzzWriter() {
-  const [activeTab, setActiveTab] = useState<'news' | 'template' | 'score' | 'hashtag' | 'image' | 'timing'>('news')
-
   // News state
   const [news, setNews] = useState<NewsItem[]>([])
   const [newsLoading, setNewsLoading] = useState(false)
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null)
+  const [customTopic, setCustomTopic] = useState('')
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
+
+  // Edited post state
+  const [editedPost, setEditedPost] = useState('')
 
   // Score state
   const [draftText, setDraftText] = useState('')
   const [buzzScore, setBuzzScore] = useState<BuzzScore | null>(null)
+
+  // Accordion state
+  const [showHashtag, setShowHashtag] = useState(false)
+  const [showTiming, setShowTiming] = useState(false)
+  const [showImage, setShowImage] = useState(false)
 
   // Image state
   const [imageText, setImageText] = useState('')
@@ -142,14 +157,10 @@ export default function BuzzWriter() {
   // Persona
   const [selectedPersona, setSelectedPersona] = useState('business')
 
-  const tabs = [
-    { id: 'news' as const, label: '📰 トレンドニュース' },
-    { id: 'template' as const, label: '📝 テンプレート' },
-    { id: 'score' as const, label: '🔥 バズ度診断' },
-    { id: 'hashtag' as const, label: '#️⃣ ハッシュタグ' },
-    { id: 'image' as const, label: '🖼️ 画像生成' },
-    { id: 'timing' as const, label: '📊 投稿タイミング' },
-  ]
+  // Sync editedPost → draftText for buzz score
+  useEffect(() => {
+    setDraftText(editedPost)
+  }, [editedPost])
 
   // Fetch news
   const fetchNews = useCallback(async () => {
@@ -157,14 +168,50 @@ export default function BuzzWriter() {
     try {
       const res = await fetch('/api/trending-news')
       const data = await res.json()
-      setNews(data.news || [])
+      const fetched = data.news || []
+      if (fetched.length > 0) {
+        setNews(fetched)
+      } else {
+        setNews(fallbackNews)
+      }
     } catch {
-      setNews([])
+      setNews(fallbackNews)
     }
     setNewsLoading(false)
   }, [])
 
   useEffect(() => { fetchNews() }, [fetchNews])
+
+  // Handle news selection
+  const handleNewsSelect = (item: NewsItem) => {
+    setSelectedNews(item)
+    if (selectedTemplate) {
+      const t = templates.find(x => x.id === selectedTemplate)
+      if (t) {
+        const inserted = t.format.replace('{ニュースの要約}', item.title)
+        setEditedPost(inserted)
+      }
+    }
+    setTimeout(() => {
+      document.getElementById('step2')?.scrollIntoView({ behavior: 'smooth' })
+    }, 100)
+  }
+
+  // Handle template selection
+  const handleTemplateSelect = (templateId: string) => {
+    setSelectedTemplate(templateId)
+    const t = templates.find(x => x.id === templateId)!
+    let text = t.format
+    if (selectedNews) {
+      text = text.replace('{ニュースの要約}', selectedNews.title)
+    } else if (customTopic.trim()) {
+      text = text.replace('{ニュースの要約}', customTopic.trim())
+    }
+    setEditedPost(text)
+    setTimeout(() => {
+      document.getElementById('step3')?.scrollIntoView({ behavior: 'smooth' })
+    }, 100)
+  }
 
   // Buzz score calculation
   const calcBuzzScore = useCallback(() => {
@@ -178,23 +225,20 @@ export default function BuzzWriter() {
     const hasExclamation = text.includes('！') || text.includes('!')
     const hasLineBreaks = lines.length >= 3
 
-    // Character score (sweet spot: 100-200 chars)
     let charScore = 0
     if (charCount >= 100 && charCount <= 200) charScore = 95
     else if (charCount >= 80 && charCount <= 280) charScore = 80
     else if (charCount >= 50 && charCount <= 400) charScore = 60
     else charScore = 40
 
-    // Hook score (first line)
     let hookScore = 50
     const firstLine = lines[0] || ''
-    if (firstLine.length <= 30) hookScore += 15 // concise hook
+    if (firstLine.length <= 30) hookScore += 15
     if (/[！!？?]/.test(firstLine)) hookScore += 10
     if (/[\uD83C-\uD83E]/.test(firstLine)) hookScore += 5
     if (/知ってた|実は|正直|衝撃|ヤバい|驚き|まさか/.test(firstLine)) hookScore += 15
     hookScore = Math.min(100, hookScore)
 
-    // Emotion score
     let emotionScore = 50
     if (hasQuestion) emotionScore += 15
     if (hasExclamation) emotionScore += 10
@@ -202,14 +246,12 @@ export default function BuzzWriter() {
     if (/みんな|あなた|共感|わかる/.test(text)) emotionScore += 10
     emotionScore = Math.min(100, emotionScore)
 
-    // Hashtag score
     let hashtagScore = 0
     if (hashtags >= 2 && hashtags <= 5) hashtagScore = 90
     else if (hashtags === 1) hashtagScore = 60
     else if (hashtags > 5) hashtagScore = 50
     else hashtagScore = 30
 
-    // Readability
     let readability = 50
     if (hasLineBreaks) readability += 20
     if (lines.every(l => l.length <= 40)) readability += 15
@@ -240,27 +282,20 @@ export default function BuzzWriter() {
     canvas.height = 675
 
     if (imageStyle === 'quote') {
-      // Quote card style
       const gradient = ctx.createLinearGradient(0, 0, 1200, 675)
       gradient.addColorStop(0, '#1a1a2e')
       gradient.addColorStop(1, '#16213e')
       ctx.fillStyle = gradient
       ctx.fillRect(0, 0, 1200, 675)
-
-      // Decorative line
       ctx.strokeStyle = '#e94560'
       ctx.lineWidth = 4
       ctx.beginPath()
       ctx.moveTo(100, 150)
       ctx.lineTo(300, 150)
       ctx.stroke()
-
-      // Quote mark
       ctx.fillStyle = '#e94560'
       ctx.font = 'bold 80px serif'
       ctx.fillText('❝', 100, 130)
-
-      // Main text
       ctx.fillStyle = '#ffffff'
       ctx.font = '32px sans-serif'
       const words = imageText.split('')
@@ -277,59 +312,45 @@ export default function BuzzWriter() {
         }
       }
       if (line) ctx.fillText(line, 150, y)
-
-      // Author
       if (imageAuthor) {
         ctx.fillStyle = '#a0a0a0'
         ctx.font = '24px sans-serif'
         ctx.fillText(`— ${imageAuthor}`, 150, y + 80)
       }
-
-      // Branding
       ctx.fillStyle = '#555'
       ctx.font = '16px sans-serif'
       ctx.textAlign = 'right'
       ctx.fillText('NextraLabs', 1100, 640)
       ctx.textAlign = 'left'
     } else if (imageStyle === 'data') {
-      // Data card style
       const gradient = ctx.createLinearGradient(0, 0, 0, 675)
       gradient.addColorStop(0, '#0f3460')
       gradient.addColorStop(1, '#16213e')
       ctx.fillStyle = gradient
       ctx.fillRect(0, 0, 1200, 675)
-
-      // Title bar
       ctx.fillStyle = '#e94560'
       ctx.fillRect(0, 0, 1200, 80)
       ctx.fillStyle = '#fff'
       ctx.font = 'bold 28px sans-serif'
       ctx.fillText('📊 データで見る事実', 40, 52)
-
-      // Main text
       ctx.fillStyle = '#ffffff'
       ctx.font = '36px sans-serif'
       const lines = imageText.split('\n')
       lines.forEach((l, i) => {
         ctx.fillText(l, 80, 180 + i * 60)
       })
-
-      // Branding
       ctx.fillStyle = '#555'
       ctx.font = '16px sans-serif'
       ctx.textAlign = 'right'
       ctx.fillText('NextraLabs', 1100, 640)
       ctx.textAlign = 'left'
     } else {
-      // Comparison style
       const gradient = ctx.createLinearGradient(0, 0, 1200, 0)
       gradient.addColorStop(0, '#1a1a2e')
       gradient.addColorStop(0.5, '#16213e')
       gradient.addColorStop(1, '#1a1a2e')
       ctx.fillStyle = gradient
       ctx.fillRect(0, 0, 1200, 675)
-
-      // Divider
       ctx.strokeStyle = '#e94560'
       ctx.lineWidth = 3
       ctx.setLineDash([10, 5])
@@ -338,8 +359,6 @@ export default function BuzzWriter() {
       ctx.lineTo(600, 595)
       ctx.stroke()
       ctx.setLineDash([])
-
-      // VS badge
       ctx.fillStyle = '#e94560'
       ctx.beginPath()
       ctx.arc(600, 337, 35, 0, Math.PI * 2)
@@ -348,15 +367,11 @@ export default function BuzzWriter() {
       ctx.font = 'bold 24px sans-serif'
       ctx.textAlign = 'center'
       ctx.fillText('VS', 600, 345)
-
-      // Headers
       ctx.font = 'bold 28px sans-serif'
       ctx.fillStyle = '#4ecca3'
       ctx.fillText('Before', 300, 60)
       ctx.fillStyle = '#e94560'
       ctx.fillText('After', 900, 60)
-
-      // Content
       ctx.font = '24px sans-serif'
       ctx.fillStyle = '#ddd'
       const parts = imageText.split('vs')
@@ -367,8 +382,6 @@ export default function BuzzWriter() {
         parts[1].trim().split('\n').forEach((l, i) => ctx.fillText(l, 900, 160 + i * 45))
       }
       ctx.textAlign = 'left'
-
-      // Branding
       ctx.fillStyle = '#555'
       ctx.font = '16px sans-serif'
       ctx.textAlign = 'right'
@@ -390,7 +403,7 @@ export default function BuzzWriter() {
     <div className="min-h-screen bg-[#0a0a14] text-gray-100">
       {/* Header */}
       <div className="border-b border-gray-800 bg-[#0f0f1a]">
-        <div className="max-w-6xl mx-auto px-4 py-6">
+        <div className="max-w-3xl mx-auto px-4 py-6">
           <div className="text-4xl mb-2">🔥</div>
           <h1 className="text-2xl font-bold">AIバズ文章コーチ</h1>
           <p className="text-gray-400 mt-1">トレンドニュース × テンプレート × 画像生成</p>
@@ -406,110 +419,135 @@ export default function BuzzWriter() {
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="border-b border-gray-800 bg-[#0f0f1a] sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 flex gap-1 overflow-x-auto">
-          {tabs.map(tab => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${activeTab === tab.id ? 'border-orange-500 text-orange-400' : 'border-transparent text-gray-500 hover:text-gray-300'}`}>
-              {tab.label}
+      {/* Main vertical flow */}
+      <div className="max-w-3xl mx-auto px-4 py-8 space-y-10">
+
+        {/* ─── Step 1: ネタを選ぶ ─── */}
+        <section>
+          <div className="flex items-center gap-3 mb-4">
+            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500 text-white font-bold text-sm">1</span>
+            <h2 className="text-xl font-bold">ネタを選ぶ</h2>
+            <button onClick={fetchNews} disabled={newsLoading}
+              className="ml-auto px-3 py-1 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-700 rounded-lg text-xs font-medium transition-colors">
+              {newsLoading ? '取得中...' : '🔄 更新'}
             </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="max-w-6xl mx-auto px-4 py-8">
-
-        {/* ─── News Tab ─── */}
-        {activeTab === 'news' && (
-          <div className="max-w-3xl mx-auto space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold">📰 今日のトレンドニュース</h2>
-              <button onClick={fetchNews} disabled={newsLoading}
-                className="px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-700 rounded-lg text-sm font-medium transition-colors">
-                {newsLoading ? '取得中...' : '🔄 更新'}
-              </button>
-            </div>
-            <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 text-sm text-orange-300">
-              💡 ニュースをタップ → テンプレートを選択 → 自分の切り口で投稿文を作成。ネタ元にするだけで、パクリではありません。
-            </div>
-
-            {news.length > 0 ? (
-              <div className="space-y-3">
-                {news.map((item, i) => (
-                  <div key={i}
-                    onClick={() => { setSelectedNews(item); setActiveTab('template') }}
-                    className={`bg-[#13131e] rounded-xl border p-4 cursor-pointer transition-all hover:border-orange-500/50 ${selectedNews?.title === item.title ? 'border-orange-500/50' : 'border-gray-800'}`}>
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <h3 className="font-medium text-sm">{item.title}</h3>
-                        <div className="flex gap-2 mt-2">
-                          <span className="text-xs px-2 py-0.5 rounded bg-blue-500/20 text-blue-400">{item.category}</span>
-                        </div>
-                      </div>
-                      <span className="text-xs text-gray-500 whitespace-nowrap">→ テンプレへ</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="bg-[#13131e] rounded-xl border border-gray-800 p-8 text-center text-gray-500">
-                {newsLoading ? '⏳ ニュースを取得中...' : 'ニュースを取得できませんでした。「更新」ボタンを押してみてください。'}
-              </div>
-            )}
           </div>
-        )}
 
-        {/* ─── Template Tab ─── */}
-        {activeTab === 'template' && (
-          <div className="max-w-4xl mx-auto space-y-6">
-            <h2 className="text-xl font-bold">📝 バズ投稿テンプレート（10パターン）</h2>
+          <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-3 text-xs text-orange-300 mb-4">
+            💡 ニュースをタップして選択するか、下の「自分のネタ」に直接入力してください。
+          </div>
+
+          {/* News list */}
+          {news.length > 0 ? (
+            <div className="space-y-2 mb-4">
+              {news.map((item, i) => (
+                <div key={i}
+                  onClick={() => handleNewsSelect(item)}
+                  className={`bg-[#13131e] rounded-xl border p-4 cursor-pointer transition-all hover:border-orange-500/50 ${selectedNews?.title === item.title ? 'border-orange-500 bg-orange-500/10' : 'border-gray-800'}`}>
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className="font-medium text-sm">{item.title}</h3>
+                      <div className="flex gap-2 mt-2">
+                        <span className="text-xs px-2 py-0.5 rounded bg-blue-500/20 text-blue-400">{item.category}</span>
+                      </div>
+                    </div>
+                    {selectedNews?.title === item.title
+                      ? <span className="text-xs text-orange-400 whitespace-nowrap">✓ 選択中</span>
+                      : <span className="text-xs text-gray-500 whitespace-nowrap">タップで選択</span>
+                    }
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6 text-center text-gray-500 text-sm mb-4">
+              {newsLoading ? '⏳ ニュースを取得中...' : '「更新」ボタンを押してください。'}
+            </div>
+          )}
+
+          {/* Custom topic */}
+          <div className="bg-[#13131e] rounded-xl border border-gray-800 p-4">
+            <label className="block text-sm text-gray-400 mb-2">✏️ 自分のネタを入力する（ニュース不要の場合）</label>
+            <textarea
+              value={customTopic}
+              onChange={e => setCustomTopic(e.target.value)}
+              placeholder="例：「副業で月10万を達成した話」「AIツールを使い始めて変わったこと」"
+              rows={3}
+              className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:border-orange-500 focus:outline-none resize-none"
+            />
+          </div>
+        </section>
+
+        {/* ─── Step 2: テンプレートを選ぶ ─── */}
+        {(selectedNews || customTopic.trim()) && (
+          <section id="step2">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500 text-white font-bold text-sm">2</span>
+              <h2 className="text-xl font-bold">テンプレートを選ぶ</h2>
+            </div>
+
+            {/* Selected news display */}
             {selectedNews && (
-              <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4">
-                <div className="text-xs text-orange-400 mb-1">📰 選択中のニュース:</div>
+              <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-3 mb-4">
+                <div className="text-xs text-orange-400 mb-1">📰 選択中のネタ:</div>
                 <div className="text-sm font-medium">{selectedNews.title}</div>
               </div>
             )}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+            {!selectedNews && customTopic.trim() && (
+              <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-3 mb-4">
+                <div className="text-xs text-blue-400 mb-1">✏️ 入力中のネタ:</div>
+                <div className="text-sm font-medium">{customTopic.trim()}</div>
+              </div>
+            )}
+
+            {/* Template grid */}
+            <div className="grid grid-cols-2 gap-2 mb-4">
               {templates.map(t => (
-                <button key={t.id} onClick={() => setSelectedTemplate(selectedTemplate === t.id ? null : t.id)}
-                  className={`p-3 rounded-xl border text-center text-sm transition-all ${selectedTemplate === t.id ? 'bg-orange-500/10 border-orange-500/50' : 'bg-[#13131e] border-gray-800 hover:border-gray-600'}`}>
-                  <div className="text-xl">{t.icon}</div>
-                  <div className="font-medium mt-1">{t.name}</div>
+                <button key={t.id} onClick={() => handleTemplateSelect(t.id)}
+                  className={`p-3 rounded-xl border text-left text-sm transition-all ${selectedTemplate === t.id ? 'bg-orange-500/10 border-orange-500' : 'bg-[#13131e] border-gray-800 hover:border-gray-600'}`}>
+                  <div className="text-xl mb-1">{t.icon}</div>
+                  <div className="font-medium">{t.name}</div>
                   <div className="text-xs text-gray-500 mt-0.5">{t.desc}</div>
                 </button>
               ))}
             </div>
-            {selectedTemplate && (() => {
-              const t = templates.find(x => x.id === selectedTemplate)!
-              return (
-                <div className="space-y-4">
-                  <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6">
-                    <h3 className="font-bold mb-3">{t.icon} {t.name}テンプレート</h3>
-                    <pre className="text-sm text-amber-300 whitespace-pre-wrap font-sans bg-[#1a1a2e] rounded-lg p-4">{t.format}</pre>
-                    <button onClick={() => navigator.clipboard.writeText(t.format)}
-                      className="mt-3 px-4 py-2 bg-orange-600 hover:bg-orange-700 rounded-lg text-sm font-medium transition-colors">📋 テンプレをコピー</button>
-                  </div>
-                  <div className="bg-[#13131e] rounded-xl border border-blue-500/30 p-6">
-                    <h3 className="font-bold mb-3 text-blue-400">📖 使用例</h3>
-                    <pre className="text-sm text-gray-300 whitespace-pre-wrap font-sans bg-[#1a1a2e] rounded-lg p-4">{t.example}</pre>
-                    <button onClick={() => { setDraftText(t.example); setActiveTab('score') }}
-                      className="mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors">🔥 この例でバズ度を診断</button>
-                  </div>
+
+            {/* Editable post area */}
+            {editedPost && (
+              <div className="bg-[#13131e] rounded-xl border border-gray-700 p-4 space-y-3">
+                <div className="text-sm text-gray-400 font-medium">📝 投稿文（自由に編集できます）</div>
+                <textarea
+                  value={editedPost}
+                  onChange={e => setEditedPost(e.target.value)}
+                  rows={10}
+                  className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:border-orange-500 focus:outline-none resize-none"
+                />
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-500">{editedPost.length}文字</span>
+                  <button onClick={() => navigator.clipboard.writeText(editedPost)}
+                    className="px-4 py-2 bg-orange-600 hover:bg-orange-700 rounded-lg text-sm font-medium transition-colors">
+                    📋 コピー
+                  </button>
                 </div>
-              )
-            })()}
-          </div>
+              </div>
+            )}
+          </section>
         )}
 
-        {/* ─── Score Tab ─── */}
-        {activeTab === 'score' && (
-          <div className="max-w-3xl mx-auto space-y-6">
-            <h2 className="text-xl font-bold">🔥 バズ度診断</h2>
-            <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6">
+        {/* ─── Step 3: バズ度診断 ─── */}
+        {editedPost && (
+          <section id="step3">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500 text-white font-bold text-sm">3</span>
+              <h2 className="text-xl font-bold">バズ度診断 &amp; 仕上げ</h2>
+            </div>
+
+            {/* Buzz score */}
+            <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6 mb-4">
+              <h3 className="font-bold mb-3">🔥 バズ度診断</h3>
               <textarea value={draftText} onChange={e => setDraftText(e.target.value)}
                 placeholder="投稿の下書きを入力してください..."
-                rows={8}
+                rows={6}
                 className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:border-orange-500 focus:outline-none resize-none" />
               <div className="flex justify-between items-center mt-2">
                 <span className="text-xs text-gray-500">{draftText.length}文字</span>
@@ -519,7 +557,7 @@ export default function BuzzWriter() {
             </div>
 
             {buzzScore && (
-              <div className="space-y-4">
+              <div className="space-y-4 mb-6">
                 <div className={`bg-[#13131e] rounded-xl border p-6 text-center ${buzzScore.total >= 80 ? 'border-green-500/30' : buzzScore.total >= 60 ? 'border-orange-500/30' : 'border-red-500/30'}`}>
                   <div className="text-sm text-gray-400 mb-2">バズ度スコア</div>
                   <div className={`text-6xl font-bold ${buzzScore.total >= 80 ? 'text-green-400' : buzzScore.total >= 60 ? 'text-orange-400' : 'text-red-400'}`}>{buzzScore.total}点</div>
@@ -553,136 +591,156 @@ export default function BuzzWriter() {
                 )}
               </div>
             )}
-          </div>
-        )}
 
-        {/* ─── Hashtag Tab ─── */}
-        {activeTab === 'hashtag' && (
-          <div className="max-w-4xl mx-auto space-y-6">
-            <h2 className="text-xl font-bold">#️⃣ ハッシュタグ辞典</h2>
-            {hashtagCategories.map((cat, ci) => (
-              <div key={ci} className="bg-[#13131e] rounded-xl border border-gray-800 p-6">
-                <h3 className="font-bold mb-3">{cat.name}</h3>
-                <div className="flex flex-wrap gap-2">
-                  {cat.tags.map((tag, ti) => (
-                    <button key={ti} onClick={() => navigator.clipboard.writeText(tag)}
-                      className="px-3 py-1.5 bg-blue-500/10 text-blue-400 rounded-full text-sm hover:bg-blue-500/20 transition-colors">
-                      {tag}
-                    </button>
+            {/* Accordion: ハッシュタグ辞典 */}
+            <div className="mb-3">
+              <button
+                onClick={() => setShowHashtag(v => !v)}
+                className="w-full flex items-center justify-between bg-[#13131e] border border-gray-800 rounded-xl px-5 py-4 text-left hover:border-gray-600 transition-colors">
+                <span className="font-medium">#️⃣ ハッシュタグ辞典</span>
+                <span className="text-gray-400 text-lg">{showHashtag ? '▲' : '▼'}</span>
+              </button>
+              {showHashtag && (
+                <div className="bg-[#13131e] border border-t-0 border-gray-800 rounded-b-xl px-5 py-4 space-y-5">
+                  {hashtagCategories.map((cat, ci) => (
+                    <div key={ci}>
+                      <h3 className="font-bold mb-2 text-sm">{cat.name}</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {cat.tags.map((tag, ti) => (
+                          <button key={ti} onClick={() => navigator.clipboard.writeText(tag)}
+                            className="px-3 py-1.5 bg-blue-500/10 text-blue-400 rounded-full text-sm hover:bg-blue-500/20 transition-colors">
+                            {tag}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* ─── Image Tab ─── */}
-        {activeTab === 'image' && (
-          <div className="max-w-3xl mx-auto space-y-6">
-            <h2 className="text-xl font-bold">🖼️ 投稿画像ジェネレーター</h2>
-            <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6 space-y-4">
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">スタイル</label>
-                <div className="flex gap-3">
-                  {[
-                    { id: 'quote' as const, name: '💬 名言カード' },
-                    { id: 'data' as const, name: '📊 データカード' },
-                    { id: 'compare' as const, name: '⚡ 比較カード' },
-                  ].map(s => (
-                    <button key={s.id} onClick={() => setImageStyle(s.id)}
-                      className={`px-4 py-2 rounded-lg text-sm transition-colors ${imageStyle === s.id ? 'bg-orange-500/20 text-orange-400 border border-orange-500/50' : 'bg-[#1a1a2e] text-gray-500 border border-gray-700'}`}>
-                      {s.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">
-                  {imageStyle === 'compare' ? 'テキスト（「vs」で左右を区切る）' : 'テキスト'}
-                </label>
-                <textarea value={imageText} onChange={e => setImageText(e.target.value)}
-                  placeholder={imageStyle === 'compare' ? '努力型の人\n・毎日10時間勉強\n・根性で乗り切る\nvs\n戦略型の人\n・2時間で終わらせる\n・仕組みで解決する' : imageStyle === 'data' ? '日本のギャンブル依存症\n推定患者数：320万人\n国民の約40人に1人\n相談率：わずか3%' : '未来を予測する最善の方法は\n自分で創ることだ'}
-                  rows={5}
-                  className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:border-orange-500 focus:outline-none resize-none" />
-              </div>
-              {imageStyle === 'quote' && (
-                <div>
-                  <label className="block text-sm text-gray-400 mb-1">著者名（任意）</label>
-                  <input type="text" value={imageAuthor} onChange={e => setImageAuthor(e.target.value)}
-                    placeholder="アラン・ケイ"
-                    className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-orange-500 focus:outline-none" />
                 </div>
               )}
-              <div className="flex gap-3">
-                <button onClick={generateImage} disabled={!imageText.trim()}
-                  className="px-6 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-700 rounded-lg text-sm font-medium transition-colors">🖼️ 生成</button>
-                <button onClick={downloadImage}
-                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors">💾 ダウンロード</button>
-              </div>
             </div>
-            <div className="bg-[#13131e] rounded-xl border border-gray-800 p-4">
-              <canvas ref={canvasRef} className="w-full rounded-lg" style={{ aspectRatio: '16/9' }} />
-            </div>
-          </div>
-        )}
 
-        {/* ─── Timing Tab ─── */}
-        {activeTab === 'timing' && (
-          <div className="max-w-3xl mx-auto space-y-6">
-            <h2 className="text-xl font-bold">📊 投稿タイミングガイド</h2>
-            <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 text-sm text-orange-300">
-              💡 一般的なエンゲージメント傾向です。自分のフォロワーの反応を見ながら最適化してください。
+            {/* Accordion: 投稿タイミング */}
+            <div className="mb-3">
+              <button
+                onClick={() => setShowTiming(v => !v)}
+                className="w-full flex items-center justify-between bg-[#13131e] border border-gray-800 rounded-xl px-5 py-4 text-left hover:border-gray-600 transition-colors">
+                <span className="font-medium">📊 投稿タイミングガイド</span>
+                <span className="text-gray-400 text-lg">{showTiming ? '▲' : '▼'}</span>
+              </button>
+              {showTiming && (
+                <div className="bg-[#13131e] border border-t-0 border-gray-800 rounded-b-xl px-5 py-4 space-y-5">
+                  <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-3 text-xs text-orange-300">
+                    💡 一般的なエンゲージメント傾向です。自分のフォロワーの反応を見ながら最適化してください。
+                  </div>
+                  <div>
+                    <h3 className="font-bold mb-3 text-sm">曜日 × 時間帯 エンゲージメントマップ</h3>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-gray-800">
+                            <th className="text-left py-2 px-3 text-gray-400">曜日</th>
+                            {timingData[0].slots.map((s, i) => (
+                              <th key={i} className="text-center py-2 px-3 text-gray-400">{s.time}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {timingData.map((day, di) => (
+                            <tr key={di} className="border-b border-gray-800">
+                              <td className="py-3 px-3 font-medium">{day.day}</td>
+                              {day.slots.map((slot, si) => (
+                                <td key={si} className="text-center py-3 px-3">
+                                  <div className={`inline-flex items-center justify-center w-12 h-12 rounded-lg text-sm font-bold ${
+                                    slot.score >= 90 ? 'bg-red-500/30 text-red-400' :
+                                    slot.score >= 80 ? 'bg-orange-500/20 text-orange-400' :
+                                    slot.score >= 70 ? 'bg-amber-500/15 text-amber-400' :
+                                    'bg-gray-500/10 text-gray-500'
+                                  }`}>
+                                    {slot.score}
+                                  </div>
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="flex gap-4 mt-4 text-xs text-gray-500">
+                      <span className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-red-500/30" />90+ 最適</span>
+                      <span className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-orange-500/20" />80+ 好適</span>
+                      <span className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-amber-500/15" />70+ 普通</span>
+                      <span className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-gray-500/10" />70未満</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="font-bold mb-3 text-sm">🎯 ペルソナ別おすすめ</h3>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3 py-2"><span className="text-lg">💼</span><div><div className="font-medium">ビジネス系</div><div className="text-sm text-gray-400">火・木の12時台、金曜21時がベスト。通勤・昼休み・帰宅後のビジネスマンに刺さる</div></div></div>
+                      <div className="flex items-start gap-3 py-2"><span className="text-lg">👩‍👧</span><div><div className="font-medium">ママ・育児系</div><div className="text-sm text-gray-400">平日10時台（子供を送り出した後）、21時台（寝かしつけ後）</div></div></div>
+                      <div className="flex items-start gap-3 py-2"><span className="text-lg">💻</span><div><div className="font-medium">エンジニア系</div><div className="text-sm text-gray-400">土日の午前中、平日22時以降。深夜帯も意外とリーチする</div></div></div>
+                      <div className="flex items-start gap-3 py-2"><span className="text-lg">✨</span><div><div className="font-medium">ライフスタイル系</div><div className="text-sm text-gray-400">日曜の朝（ゆっくりSNS閲覧タイム）、金曜夜（週末気分）</div></div></div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6">
-              <h3 className="font-bold mb-4">曜日 × 時間帯 エンゲージメントマップ</h3>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-gray-800">
-                      <th className="text-left py-2 px-3 text-gray-400">曜日</th>
-                      {timingData[0].slots.map((s, i) => (
-                        <th key={i} className="text-center py-2 px-3 text-gray-400">{s.time}</th>
+
+            {/* Accordion: 画像生成 */}
+            <div className="mb-3">
+              <button
+                onClick={() => setShowImage(v => !v)}
+                className="w-full flex items-center justify-between bg-[#13131e] border border-gray-800 rounded-xl px-5 py-4 text-left hover:border-gray-600 transition-colors">
+                <span className="font-medium">🖼️ 投稿画像ジェネレーター</span>
+                <span className="text-gray-400 text-lg">{showImage ? '▲' : '▼'}</span>
+              </button>
+              {showImage && (
+                <div className="bg-[#13131e] border border-t-0 border-gray-800 rounded-b-xl px-5 py-4 space-y-4">
+                  <div>
+                    <label className="block text-sm text-gray-400 mb-1">スタイル</label>
+                    <div className="flex gap-3">
+                      {[
+                        { id: 'quote' as const, name: '💬 名言カード' },
+                        { id: 'data' as const, name: '📊 データカード' },
+                        { id: 'compare' as const, name: '⚡ 比較カード' },
+                      ].map(s => (
+                        <button key={s.id} onClick={() => setImageStyle(s.id)}
+                          className={`px-4 py-2 rounded-lg text-sm transition-colors ${imageStyle === s.id ? 'bg-orange-500/20 text-orange-400 border border-orange-500/50' : 'bg-[#1a1a2e] text-gray-500 border border-gray-700'}`}>
+                          {s.name}
+                        </button>
                       ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {timingData.map((day, di) => (
-                      <tr key={di} className="border-b border-gray-800">
-                        <td className="py-3 px-3 font-medium">{day.day}</td>
-                        {day.slots.map((slot, si) => (
-                          <td key={si} className="text-center py-3 px-3">
-                            <div className={`inline-flex items-center justify-center w-12 h-12 rounded-lg text-sm font-bold ${
-                              slot.score >= 90 ? 'bg-red-500/30 text-red-400' :
-                              slot.score >= 80 ? 'bg-orange-500/20 text-orange-400' :
-                              slot.score >= 70 ? 'bg-amber-500/15 text-amber-400' :
-                              'bg-gray-500/10 text-gray-500'
-                            }`}>
-                              {slot.score}
-                            </div>
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="flex gap-4 mt-4 text-xs text-gray-500">
-                <span className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-red-500/30" />90+ 最適</span>
-                <span className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-orange-500/20" />80+ 好適</span>
-                <span className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-amber-500/15" />70+ 普通</span>
-                <span className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-gray-500/10" />70未満</span>
-              </div>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-400 mb-1">
+                      {imageStyle === 'compare' ? 'テキスト（「vs」で左右を区切る）' : 'テキスト'}
+                    </label>
+                    <textarea value={imageText} onChange={e => setImageText(e.target.value)}
+                      placeholder={imageStyle === 'compare' ? '努力型の人\n・毎日10時間勉強\nvs\n戦略型の人\n・2時間で終わらせる' : imageStyle === 'data' ? '日本のギャンブル依存症\n推定患者数：320万人' : '未来を予測する最善の方法は\n自分で創ることだ'}
+                      rows={5}
+                      className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:border-orange-500 focus:outline-none resize-none" />
+                  </div>
+                  {imageStyle === 'quote' && (
+                    <div>
+                      <label className="block text-sm text-gray-400 mb-1">著者名（任意）</label>
+                      <input type="text" value={imageAuthor} onChange={e => setImageAuthor(e.target.value)}
+                        placeholder="アラン・ケイ"
+                        className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-orange-500 focus:outline-none" />
+                    </div>
+                  )}
+                  <div className="flex gap-3">
+                    <button onClick={generateImage} disabled={!imageText.trim()}
+                      className="px-6 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-700 rounded-lg text-sm font-medium transition-colors">🖼️ 生成</button>
+                    <button onClick={downloadImage}
+                      className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors">💾 ダウンロード</button>
+                  </div>
+                  <div className="bg-[#0a0a14] rounded-xl border border-gray-800 p-4">
+                    <canvas ref={canvasRef} className="w-full rounded-lg" style={{ aspectRatio: '16/9' }} />
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6">
-              <h3 className="font-bold mb-3">🎯 ペルソナ別おすすめ</h3>
-              <div className="space-y-3">
-                <div className="flex items-start gap-3 py-2"><span className="text-lg">💼</span><div><div className="font-medium">ビジネス系</div><div className="text-sm text-gray-400">火・木の12時台、金曜21時がベスト。通勤・昼休み・帰宅後のビジネスマンに刺さる</div></div></div>
-                <div className="flex items-start gap-3 py-2"><span className="text-lg">👩‍👧</span><div><div className="font-medium">ママ・育児系</div><div className="text-sm text-gray-400">平日10時台（子供を送り出した後）、21時台（寝かしつけ後）</div></div></div>
-                <div className="flex items-start gap-3 py-2"><span className="text-lg">💻</span><div><div className="font-medium">エンジニア系</div><div className="text-sm text-gray-400">土日の午前中、平日22時以降。深夜帯も意外とリーチする</div></div></div>
-                <div className="flex items-start gap-3 py-2"><span className="text-lg">✨</span><div><div className="font-medium">ライフスタイル系</div><div className="text-sm text-gray-400">日曜の朝（ゆっくりSNS閲覧タイム）、金曜夜（週末気分）</div></div></div>
-              </div>
-            </div>
-          </div>
+
+          </section>
         )}
       </div>
     </div>
