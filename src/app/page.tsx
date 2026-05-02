@@ -30,7 +30,7 @@ export default function HomePage() {
             </span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            あらゆる業務を加速するAIツールを、月額¥980から利用可能。
+            あらゆる業務を加速するAIツールを、月額¥480から利用可能。
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/products">
@@ -73,9 +73,9 @@ export default function HomePage() {
                 <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
                   <Infinity className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold mb-2">2つのプラン</h3>
+                <h3 className="font-semibold mb-2">4つのプラン</h3>
                 <p className="text-sm text-muted-foreground">
-                  スタンダードとプレミアム、目的に合わせて選べる月額プラン。
+                  ¥480〜4プラン。無料から始めて必要に応じてアップグレード。
                 </p>
               </CardContent>
             </Card>
@@ -243,7 +243,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">今すぐ始めよう</h2>
           <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-            スタンダード（¥980/月）またはプレミアム（¥1,980/月）で、AIツールを使い放題。
+            ¥480のライトから、¥1,980のプレミアムまで4プラン。無料ツールはアカウント不要。
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/products">
