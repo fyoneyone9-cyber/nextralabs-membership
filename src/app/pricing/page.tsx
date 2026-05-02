@@ -90,7 +90,7 @@ export default function PricingPage() {
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">料金プラン</h1>
         <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-          スタンダードで全ツール使い放題。プレミアムならGmail AI連携ツールも。
+          ¥480のライトから始めて、必要に応じてアップグレード。全プランいつでも解約OK。
         </p>
       </div>
 
@@ -293,10 +293,10 @@ export default function PricingPage() {
           <CardContent className="p-8">
             <h3 className="text-2xl font-bold mb-2">カスタマイズ<br />ツール開発</h3>
             <p className="text-muted-foreground mb-4">御社専用のAIツールを開発</p>
-            <div className="text-5xl font-bold mb-2">
+            <div className="text-2xl font-bold mb-1 text-amber-400">
               お見積り
             </div>
-            <p className="text-sm text-muted-foreground mb-6">ご要件に応じて個別にお見積り</p>
+            <p className="text-sm text-muted-foreground mb-6">ご要件に応じて個別にご提案</p>
             <ul className="space-y-3 mb-8">
               {[
                 '御社業務に特化したAIツール開発',

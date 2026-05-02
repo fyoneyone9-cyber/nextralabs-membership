@@ -558,7 +558,7 @@ export default function ProductsPage() {
           </span>
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
-          あらゆる業務を加速するAIツールを2プランで提供
+          ¥480〜4つのプランで提供。無料ツールはアカウント不要。
         </p>
 
         {/* Quick Stats */}
@@ -670,17 +670,24 @@ export default function ProductsPage() {
 
       {/* Plan CTA */}
       <div className="my-16 bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-red-500/10 border border-amber-500/20 rounded-3xl p-8 text-center">
-        <h2 className="text-2xl font-bold mb-2">2つのプランで全ツール解放</h2>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-4">
-          <div>
-            <span className="text-amber-500 font-bold">スタンダード</span>
-            <span className="text-3xl font-bold text-amber-500 ml-2">¥980</span>
-            <span className="text-muted-foreground">/月（{totalTools - 7}ツール）</span>
+        <h2 className="text-2xl font-bold mb-2">4つのプランで全ツール解放</h2>
+        <div className="flex flex-wrap gap-4 justify-center items-center mb-4">
+          <div className="flex items-baseline gap-1">
+            <span className="text-cyan-400 font-bold text-sm">ライト</span>
+            <span className="text-2xl font-bold text-cyan-400">¥480</span>
+            <span className="text-muted-foreground text-xs">/月</span>
           </div>
-          <div>
-            <span className="text-violet-500 font-bold">プレミアム</span>
-            <span className="text-3xl font-bold text-violet-500 ml-2">¥1,980</span>
-            <span className="text-muted-foreground">/月（全{totalTools}ツール）</span>
+          <span className="text-muted-foreground">→</span>
+          <div className="flex items-baseline gap-1">
+            <span className="text-sky-400 font-bold text-sm">スタンダード</span>
+            <span className="text-2xl font-bold text-sky-400">¥980</span>
+            <span className="text-muted-foreground text-xs">/月</span>
+          </div>
+          <span className="text-muted-foreground">→</span>
+          <div className="flex items-baseline gap-1">
+            <span className="text-violet-400 font-bold text-sm">プレミアム</span>
+            <span className="text-2xl font-bold text-violet-400">¥1,980</span>
+            <span className="text-muted-foreground text-xs">/月（全{totalTools}ツール）</span>
           </div>
         </div>
         <p className="text-sm text-muted-foreground mb-6">いつでも解約OK ✨ 無料ツールはアカウント不要</p>
