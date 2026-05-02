@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 
 // ─── Types ───────────────────────────────────────────────
 interface NewsItem {
@@ -137,7 +137,7 @@ export default function BuzzWriter() {
   const [customTopic, setCustomTopic] = useState('')
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
 
-  // Edited post state
+  // Edited post / prompt state
   const [editedPost, setEditedPost] = useState('')
 
   // Score state
@@ -147,21 +147,13 @@ export default function BuzzWriter() {
   // Accordion state
   const [showHashtag, setShowHashtag] = useState(false)
   const [showTiming, setShowTiming] = useState(false)
-  const [showImage, setShowImage] = useState(false)
+  const [showBuzz, setShowBuzz] = useState(false)
 
-  // Image state
-  const [imageText, setImageText] = useState('')
-  const [imageStyle, setImageStyle] = useState<'quote' | 'data' | 'compare'>('quote')
-  const [imageAuthor, setImageAuthor] = useState('')
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  // Copy state
+  const [copied, setCopied] = useState(false)
 
   // Persona
   const [selectedPersona, setSelectedPersona] = useState('business')
-
-  // Sync editedPost → draftText for buzz score
-  useEffect(() => {
-    setDraftText(editedPost)
-  }, [editedPost])
 
   // Fetch news
   const fetchNews = useCallback(async () => {
@@ -186,29 +178,40 @@ export default function BuzzWriter() {
   // Handle news selection
   const handleNewsSelect = (item: NewsItem) => {
     setSelectedNews(item)
-    if (selectedTemplate) {
-      const t = templates.find(x => x.id === selectedTemplate)
-      if (t) {
-        const inserted = t.format.replace('{ニュースの要約}', item.title)
-        setEditedPost(inserted)
-      }
-    }
     setTimeout(() => {
       document.getElementById('step2')?.scrollIntoView({ behavior: 'smooth' })
     }, 100)
   }
 
-  // Handle template selection
+  // Handle template selection — generate AI prompt
   const handleTemplateSelect = (templateId: string) => {
     setSelectedTemplate(templateId)
     const t = templates.find(x => x.id === templateId)!
-    let text = t.format
-    if (selectedNews) {
-      text = text.replace('{ニュースの要約}', selectedNews.title)
-    } else if (customTopic.trim()) {
-      text = text.replace('{ニュースの要約}', customTopic.trim())
-    }
-    setEditedPost(text)
+    const persona = personas.find(p => p.id === selectedPersona)!
+
+    const newsContext = selectedNews
+      ? `今日のトレンドニュース：「${selectedNews.title}」\n\n`
+      : ''
+
+    const prompt = `${newsContext}以下のSNS投稿テンプレートを使って、${persona.name}向けのバズる投稿文を1つ作成してください。
+
+【テンプレート種類】${t.name}（${t.desc}）
+
+【テンプレート】
+${t.format}
+
+【投稿スタイル】
+${persona.style}
+
+【条件】
+- 100〜200文字程度
+- ハッシュタグを2〜5個含める
+- 絵文字を適度に使う
+- 自分の意見・体験を入れてオリジナリティを出す
+
+投稿文のみ出力してください。`
+
+    setEditedPost(prompt)
     setTimeout(() => {
       document.getElementById('step3')?.scrollIntoView({ behavior: 'smooth' })
     }, 100)
@@ -272,134 +275,6 @@ export default function BuzzWriter() {
     setBuzzScore({ total, charScore, hookScore, emotionScore, hashtagScore, readability, tips })
   }, [draftText])
 
-  // Image generation with Canvas
-  const generateImage = useCallback(() => {
-    const canvas = canvasRef.current
-    if (!canvas || !imageText.trim()) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    canvas.width = 1200
-    canvas.height = 675
-
-    if (imageStyle === 'quote') {
-      const gradient = ctx.createLinearGradient(0, 0, 1200, 675)
-      gradient.addColorStop(0, '#1a1a2e')
-      gradient.addColorStop(1, '#16213e')
-      ctx.fillStyle = gradient
-      ctx.fillRect(0, 0, 1200, 675)
-      ctx.strokeStyle = '#e94560'
-      ctx.lineWidth = 4
-      ctx.beginPath()
-      ctx.moveTo(100, 150)
-      ctx.lineTo(300, 150)
-      ctx.stroke()
-      ctx.fillStyle = '#e94560'
-      ctx.font = 'bold 80px serif'
-      ctx.fillText('❝', 100, 130)
-      ctx.fillStyle = '#ffffff'
-      ctx.font = '32px sans-serif'
-      const words = imageText.split('')
-      let line = ''
-      let y = 250
-      for (const char of words) {
-        const testLine = line + char
-        if (ctx.measureText(testLine).width > 900 || char === '\n') {
-          ctx.fillText(line, 150, y)
-          line = char === '\n' ? '' : char
-          y += 50
-        } else {
-          line = testLine
-        }
-      }
-      if (line) ctx.fillText(line, 150, y)
-      if (imageAuthor) {
-        ctx.fillStyle = '#a0a0a0'
-        ctx.font = '24px sans-serif'
-        ctx.fillText(`— ${imageAuthor}`, 150, y + 80)
-      }
-      ctx.fillStyle = '#555'
-      ctx.font = '16px sans-serif'
-      ctx.textAlign = 'right'
-      ctx.fillText('NextraLabs', 1100, 640)
-      ctx.textAlign = 'left'
-    } else if (imageStyle === 'data') {
-      const gradient = ctx.createLinearGradient(0, 0, 0, 675)
-      gradient.addColorStop(0, '#0f3460')
-      gradient.addColorStop(1, '#16213e')
-      ctx.fillStyle = gradient
-      ctx.fillRect(0, 0, 1200, 675)
-      ctx.fillStyle = '#e94560'
-      ctx.fillRect(0, 0, 1200, 80)
-      ctx.fillStyle = '#fff'
-      ctx.font = 'bold 28px sans-serif'
-      ctx.fillText('📊 データで見る事実', 40, 52)
-      ctx.fillStyle = '#ffffff'
-      ctx.font = '36px sans-serif'
-      const lines = imageText.split('\n')
-      lines.forEach((l, i) => {
-        ctx.fillText(l, 80, 180 + i * 60)
-      })
-      ctx.fillStyle = '#555'
-      ctx.font = '16px sans-serif'
-      ctx.textAlign = 'right'
-      ctx.fillText('NextraLabs', 1100, 640)
-      ctx.textAlign = 'left'
-    } else {
-      const gradient = ctx.createLinearGradient(0, 0, 1200, 0)
-      gradient.addColorStop(0, '#1a1a2e')
-      gradient.addColorStop(0.5, '#16213e')
-      gradient.addColorStop(1, '#1a1a2e')
-      ctx.fillStyle = gradient
-      ctx.fillRect(0, 0, 1200, 675)
-      ctx.strokeStyle = '#e94560'
-      ctx.lineWidth = 3
-      ctx.setLineDash([10, 5])
-      ctx.beginPath()
-      ctx.moveTo(600, 80)
-      ctx.lineTo(600, 595)
-      ctx.stroke()
-      ctx.setLineDash([])
-      ctx.fillStyle = '#e94560'
-      ctx.beginPath()
-      ctx.arc(600, 337, 35, 0, Math.PI * 2)
-      ctx.fill()
-      ctx.fillStyle = '#fff'
-      ctx.font = 'bold 24px sans-serif'
-      ctx.textAlign = 'center'
-      ctx.fillText('VS', 600, 345)
-      ctx.font = 'bold 28px sans-serif'
-      ctx.fillStyle = '#4ecca3'
-      ctx.fillText('Before', 300, 60)
-      ctx.fillStyle = '#e94560'
-      ctx.fillText('After', 900, 60)
-      ctx.font = '24px sans-serif'
-      ctx.fillStyle = '#ddd'
-      const parts = imageText.split('vs')
-      if (parts[0]) {
-        parts[0].trim().split('\n').forEach((l, i) => ctx.fillText(l, 300, 160 + i * 45))
-      }
-      if (parts[1]) {
-        parts[1].trim().split('\n').forEach((l, i) => ctx.fillText(l, 900, 160 + i * 45))
-      }
-      ctx.textAlign = 'left'
-      ctx.fillStyle = '#555'
-      ctx.font = '16px sans-serif'
-      ctx.textAlign = 'right'
-      ctx.fillText('NextraLabs', 1100, 640)
-      ctx.textAlign = 'left'
-    }
-  }, [imageText, imageStyle, imageAuthor])
-
-  const downloadImage = useCallback(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const link = document.createElement('a')
-    link.download = `buzz-image-${Date.now()}.png`
-    link.href = canvas.toDataURL('image/png')
-    link.click()
-  }, [])
-
   return (
     <div className="min-h-screen bg-[#0a0a14] text-gray-100">
       {/* Header */}
@@ -407,7 +282,7 @@ export default function BuzzWriter() {
         <div className="max-w-3xl mx-auto px-4 py-6">
           <div className="text-4xl mb-2">🔥</div>
           <h1 className="text-2xl font-bold">AIバズ文章コーチ</h1>
-          <p className="text-gray-400 mt-1">トレンドニュース × テンプレート × 画像生成</p>
+          <p className="text-gray-400 mt-1">トレンドニュース × テンプレート × AIプロンプト生成</p>
           {/* Persona selector */}
           <div className="flex gap-2 mt-3 overflow-x-auto">
             {personas.map(p => (
@@ -515,89 +390,130 @@ export default function BuzzWriter() {
                 </button>
               ))}
             </div>
-
-            {/* Editable post area */}
-            {editedPost && (
-              <div className="bg-[#13131e] rounded-xl border border-gray-700 p-4 space-y-3">
-                <div className="text-sm text-gray-400 font-medium">📝 投稿文（自由に編集できます）</div>
-                <textarea
-                  value={editedPost}
-                  onChange={e => setEditedPost(e.target.value)}
-                  rows={10}
-                  className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:border-orange-500 focus:outline-none resize-none"
-                />
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500">{editedPost.length}文字</span>
-                  <button onClick={() => navigator.clipboard.writeText(editedPost)}
-                    className="px-4 py-2 bg-orange-600 hover:bg-orange-700 rounded-lg text-sm font-medium transition-colors">
-                    📋 コピー
-                  </button>
-                </div>
-              </div>
-            )}
           </section>
         )}
 
-        {/* ─── Step 3: バズ度診断 ─── */}
+        {/* ─── Step 3: AIで投稿文を生成 ─── */}
         {editedPost && (
           <section id="step3">
             <div className="flex items-center gap-3 mb-4">
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500 text-white font-bold text-sm">3</span>
-              <h2 className="text-xl font-bold">バズ度診断 &amp; 仕上げ</h2>
+              <div className="w-8 h-8 rounded-full bg-orange-500 text-white text-sm font-bold flex items-center justify-center">3</div>
+              <h2 className="text-lg font-bold">AIで投稿文を生成</h2>
             </div>
 
-            {/* Buzz score */}
-            <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6 mb-4">
-              <h3 className="font-bold mb-3">🔥 バズ度診断</h3>
-              <textarea value={draftText} onChange={e => setDraftText(e.target.value)}
-                placeholder="投稿の下書きを入力してください..."
-                rows={6}
-                className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:border-orange-500 focus:outline-none resize-none" />
-              <div className="flex justify-between items-center mt-2">
-                <span className="text-xs text-gray-500">{draftText.length}文字</span>
-                <button onClick={calcBuzzScore} disabled={!draftText.trim()}
-                  className="px-6 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-700 rounded-lg text-sm font-medium transition-colors">診断する</button>
+            {/* プロンプト表示エリア */}
+            <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6 space-y-4">
+              <div className="text-sm text-orange-300 bg-orange-500/10 border border-orange-500/30 rounded-lg p-3">
+                💡 下のプロンプトをコピーして、ChatGPTやClaudeに貼り付けると投稿文が生成されます
+              </div>
+
+              <textarea
+                value={editedPost}
+                readOnly
+                rows={12}
+                className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-300 resize-none"
+              />
+
+              {/* コピーボタン */}
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(editedPost)
+                  setCopied(true)
+                  setTimeout(() => setCopied(false), 2000)
+                }}
+                className="w-full py-3 bg-orange-600 hover:bg-orange-700 rounded-lg text-sm font-bold transition-colors flex items-center justify-center gap-2"
+              >
+                {copied ? '✅ コピーしました！' : '📋 プロンプトをコピー'}
+              </button>
+
+              {/* 外部AIリンク */}
+              <div className="grid grid-cols-2 gap-3">
+                <a
+                  href="https://chat.openai.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 py-2.5 bg-[#1a1a2e] border border-gray-700 hover:border-green-500/50 rounded-lg text-sm transition-colors"
+                >
+                  <span>🤖</span> ChatGPTで開く
+                </a>
+                <a
+                  href="https://claude.ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 py-2.5 bg-[#1a1a2e] border border-gray-700 hover:border-violet-500/50 rounded-lg text-sm transition-colors"
+                >
+                  <span>✨</span> Claudeで開く
+                </a>
               </div>
             </div>
 
-            {buzzScore && (
-              <div className="space-y-4 mb-6">
-                <div className={`bg-[#13131e] rounded-xl border p-6 text-center ${buzzScore.total >= 80 ? 'border-green-500/30' : buzzScore.total >= 60 ? 'border-orange-500/30' : 'border-red-500/30'}`}>
-                  <div className="text-sm text-gray-400 mb-2">バズ度スコア</div>
-                  <div className={`text-6xl font-bold ${buzzScore.total >= 80 ? 'text-green-400' : buzzScore.total >= 60 ? 'text-orange-400' : 'text-red-400'}`}>{buzzScore.total}点</div>
-                  <div className="text-sm mt-2 text-gray-400">{buzzScore.total >= 80 ? '🔥 バズりポテンシャル高！' : buzzScore.total >= 60 ? '👍 いい感じ。もう少しブラッシュアップを' : '📚 改善の余地あり。下のアドバイスを参考に'}</div>
-                </div>
-                <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6">
-                  <h3 className="font-bold mb-4">📊 詳細スコア</h3>
-                  {[
-                    { name: '文字数', score: buzzScore.charScore, desc: '100〜200文字が最適' },
-                    { name: 'フック度', score: buzzScore.hookScore, desc: '1行目のインパクト' },
-                    { name: '感情喚起', score: buzzScore.emotionScore, desc: '読者の感情を動かす力' },
-                    { name: 'ハッシュタグ', score: buzzScore.hashtagScore, desc: '2〜5個が最適' },
-                    { name: '読みやすさ', score: buzzScore.readability, desc: '改行・段落の使い方' },
-                  ].map((item, i) => (
-                    <div key={i} className="mb-3">
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>{item.name} <span className="text-xs text-gray-500">({item.desc})</span></span>
-                        <span className="text-gray-400">{item.score}/100</span>
-                      </div>
-                      <div className="w-full bg-gray-800 rounded-full h-2">
-                        <div className={`h-2 rounded-full ${item.score >= 80 ? 'bg-green-500' : item.score >= 60 ? 'bg-orange-500' : 'bg-red-500'}`} style={{ width: `${item.score}%` }} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                {buzzScore.tips.length > 0 && (
-                  <div className="bg-[#13131e] rounded-xl border border-orange-500/30 p-6">
-                    <h3 className="font-bold mb-3">💡 改善アドバイス</h3>
-                    <ul className="space-y-2">{buzzScore.tips.map((t, i) => <li key={i} className="text-sm text-gray-400">{t}</li>)}</ul>
+            {/* バズ度診断（コピーした後に使う） */}
+            <div className="mt-6">
+              <button
+                onClick={() => setShowBuzz(!showBuzz)}
+                className="w-full flex items-center justify-between px-4 py-3 bg-[#13131e] border border-gray-800 rounded-xl text-sm font-medium"
+              >
+                <span>🔥 バズ度診断（AIで生成した文章を貼り付けて診断）</span>
+                <span>{showBuzz ? '▲' : '▼'}</span>
+              </button>
+              {showBuzz && (
+                <div className="mt-2 bg-[#13131e] border border-gray-800 rounded-xl p-6 space-y-4">
+                  <textarea
+                    value={draftText}
+                    onChange={e => setDraftText(e.target.value)}
+                    placeholder="AIが生成した投稿文をここに貼り付けて診断..."
+                    rows={6}
+                    className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:border-orange-500 focus:outline-none resize-none"
+                  />
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-gray-500">{draftText.length}文字</span>
+                    <button onClick={calcBuzzScore} disabled={!draftText.trim()}
+                      className="px-6 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-700 rounded-lg text-sm font-medium">
+                      診断する
+                    </button>
                   </div>
-                )}
-              </div>
-            )}
+
+                  {buzzScore && (
+                    <div className="space-y-4">
+                      <div className={`bg-[#13131e] rounded-xl border p-6 text-center ${buzzScore.total >= 80 ? 'border-green-500/30' : buzzScore.total >= 60 ? 'border-orange-500/30' : 'border-red-500/30'}`}>
+                        <div className="text-sm text-gray-400 mb-2">バズ度スコア</div>
+                        <div className={`text-6xl font-bold ${buzzScore.total >= 80 ? 'text-green-400' : buzzScore.total >= 60 ? 'text-orange-400' : 'text-red-400'}`}>{buzzScore.total}点</div>
+                        <div className="text-sm mt-2 text-gray-400">{buzzScore.total >= 80 ? '🔥 バズりポテンシャル高！' : buzzScore.total >= 60 ? '👍 いい感じ。もう少しブラッシュアップを' : '📚 改善の余地あり。下のアドバイスを参考に'}</div>
+                      </div>
+                      <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6">
+                        <h3 className="font-bold mb-4">📊 詳細スコア</h3>
+                        {[
+                          { name: '文字数', score: buzzScore.charScore, desc: '100〜200文字が最適' },
+                          { name: 'フック度', score: buzzScore.hookScore, desc: '1行目のインパクト' },
+                          { name: '感情喚起', score: buzzScore.emotionScore, desc: '読者の感情を動かす力' },
+                          { name: 'ハッシュタグ', score: buzzScore.hashtagScore, desc: '2〜5個が最適' },
+                          { name: '読みやすさ', score: buzzScore.readability, desc: '改行・段落の使い方' },
+                        ].map((item, i) => (
+                          <div key={i} className="mb-3">
+                            <div className="flex justify-between text-sm mb-1">
+                              <span>{item.name} <span className="text-xs text-gray-500">({item.desc})</span></span>
+                              <span className="text-gray-400">{item.score}/100</span>
+                            </div>
+                            <div className="w-full bg-gray-800 rounded-full h-2">
+                              <div className={`h-2 rounded-full ${item.score >= 80 ? 'bg-green-500' : item.score >= 60 ? 'bg-orange-500' : 'bg-red-500'}`} style={{ width: `${item.score}%` }} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {buzzScore.tips.length > 0 && (
+                        <div className="bg-[#13131e] rounded-xl border border-orange-500/30 p-6">
+                          <h3 className="font-bold mb-3">💡 改善アドバイス</h3>
+                          <ul className="space-y-2">{buzzScore.tips.map((t, i) => <li key={i} className="text-sm text-gray-400">{t}</li>)}</ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Accordion: ハッシュタグ辞典 */}
-            <div className="mb-3">
+            <div className="mt-6 mb-3">
               <button
                 onClick={() => setShowHashtag(v => !v)}
                 className="w-full flex items-center justify-between bg-[#13131e] border border-gray-800 rounded-xl px-5 py-4 text-left hover:border-gray-600 transition-colors">
@@ -684,61 +600,6 @@ export default function BuzzWriter() {
                       <div className="flex items-start gap-3 py-2"><span className="text-lg">💻</span><div><div className="font-medium">エンジニア系</div><div className="text-sm text-gray-400">土日の午前中、平日22時以降。深夜帯も意外とリーチする</div></div></div>
                       <div className="flex items-start gap-3 py-2"><span className="text-lg">✨</span><div><div className="font-medium">ライフスタイル系</div><div className="text-sm text-gray-400">日曜の朝（ゆっくりSNS閲覧タイム）、金曜夜（週末気分）</div></div></div>
                     </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Accordion: 画像生成 */}
-            <div className="mb-3">
-              <button
-                onClick={() => setShowImage(v => !v)}
-                className="w-full flex items-center justify-between bg-[#13131e] border border-gray-800 rounded-xl px-5 py-4 text-left hover:border-gray-600 transition-colors">
-                <span className="font-medium">🖼️ 投稿画像ジェネレーター</span>
-                <span className="text-gray-400 text-lg">{showImage ? '▲' : '▼'}</span>
-              </button>
-              {showImage && (
-                <div className="bg-[#13131e] border border-t-0 border-gray-800 rounded-b-xl px-5 py-4 space-y-4">
-                  <div>
-                    <label className="block text-sm text-gray-400 mb-1">スタイル</label>
-                    <div className="flex gap-3">
-                      {[
-                        { id: 'quote' as const, name: '💬 名言カード' },
-                        { id: 'data' as const, name: '📊 データカード' },
-                        { id: 'compare' as const, name: '⚡ 比較カード' },
-                      ].map(s => (
-                        <button key={s.id} onClick={() => setImageStyle(s.id)}
-                          className={`px-4 py-2 rounded-lg text-sm transition-colors ${imageStyle === s.id ? 'bg-orange-500/20 text-orange-400 border border-orange-500/50' : 'bg-[#1a1a2e] text-gray-500 border border-gray-700'}`}>
-                          {s.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm text-gray-400 mb-1">
-                      {imageStyle === 'compare' ? 'テキスト（「vs」で左右を区切る）' : 'テキスト'}
-                    </label>
-                    <textarea value={imageText} onChange={e => setImageText(e.target.value)}
-                      placeholder={imageStyle === 'compare' ? '努力型の人\n・毎日10時間勉強\nvs\n戦略型の人\n・2時間で終わらせる' : imageStyle === 'data' ? '日本のギャンブル依存症\n推定患者数：320万人' : '未来を予測する最善の方法は\n自分で創ることだ'}
-                      rows={5}
-                      className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:border-orange-500 focus:outline-none resize-none" />
-                  </div>
-                  {imageStyle === 'quote' && (
-                    <div>
-                      <label className="block text-sm text-gray-400 mb-1">著者名（任意）</label>
-                      <input type="text" value={imageAuthor} onChange={e => setImageAuthor(e.target.value)}
-                        placeholder="アラン・ケイ"
-                        className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-orange-500 focus:outline-none" />
-                    </div>
-                  )}
-                  <div className="flex gap-3">
-                    <button onClick={generateImage} disabled={!imageText.trim()}
-                      className="px-6 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-700 rounded-lg text-sm font-medium transition-colors">🖼️ 生成</button>
-                    <button onClick={downloadImage}
-                      className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors">💾 ダウンロード</button>
-                  </div>
-                  <div className="bg-[#0a0a14] rounded-xl border border-gray-800 p-4">
-                    <canvas ref={canvasRef} className="w-full rounded-lg" style={{ aspectRatio: '16/9' }} />
                   </div>
                 </div>
               )}
