@@ -96,15 +96,15 @@ export default function PricingPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
         {/* Free Plan */}
-        <Card className="relative">
-          <CardContent className="p-6">
+        <Card className="relative flex flex-col">
+          <CardContent className="p-6 flex flex-col flex-1">
             <h3 className="text-xl font-bold mb-2">無料プラン</h3>
             <p className="text-muted-foreground text-sm mb-4">まずはお試しで</p>
             <div className="text-4xl font-bold mb-6">
               ¥0
               <span className="text-base text-muted-foreground font-normal">/月</span>
             </div>
-            <ul className="space-y-2.5 mb-8">
+            <ul className="space-y-2.5 flex-1 mb-8">
               {[
                 'ツールの詳細閲覧',
                 '無料ツール利用',
@@ -139,20 +139,20 @@ export default function PricingPage() {
         </Card>
 
         {/* Light Plan */}
-        <Card className="relative border-cyan-500/50 shadow-lg">
+        <Card className="relative border-cyan-500/50 shadow-lg flex flex-col">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
             <Badge className="bg-cyan-500 text-white px-4 py-1">
               ⚡ ライト
             </Badge>
           </div>
-          <CardContent className="p-6">
+          <CardContent className="p-6 flex flex-col flex-1">
             <h3 className="text-xl font-bold mb-2">ライトプラン</h3>
             <p className="text-muted-foreground text-sm mb-4">気軽に始める入門プラン</p>
             <div className="text-4xl font-bold mb-6">
               ¥480
               <span className="text-base text-muted-foreground font-normal">/月</span>
             </div>
-            <ul className="space-y-2.5 mb-8">
+            <ul className="space-y-2.5 flex-1 mb-8">
               {[
                 '塩対応代行AI',
                 'AI婚活コーチ',
@@ -184,21 +184,21 @@ export default function PricingPage() {
         </Card>
 
         {/* Standard Plan */}
-        <Card className="relative border-primary shadow-lg">
+        <Card className="relative border-primary shadow-lg flex flex-col">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
             <Badge className="bg-primary text-primary-foreground px-4 py-1">
               <Crown className="h-3 w-3 mr-1" />
               おすすめ
             </Badge>
           </div>
-          <CardContent className="p-6">
+          <CardContent className="p-6 flex flex-col flex-1">
             <h3 className="text-xl font-bold mb-2">スタンダードプラン</h3>
             <p className="text-muted-foreground text-sm mb-4">プレミアム以外の全ツール使い放題</p>
             <div className="text-4xl font-bold mb-6">
               ¥980
               <span className="text-base text-muted-foreground font-normal">/月</span>
             </div>
-            <ul className="space-y-2.5 mb-8">
+            <ul className="space-y-2.5 flex-1 mb-8">
               {[
                 'プレミアム以外の全ツール使い放題',
                 '無料・ライト・スタンダードツール全て',
@@ -236,21 +236,21 @@ export default function PricingPage() {
         </Card>
 
         {/* Premium Plan */}
-        <Card className="relative border-violet-500/50 shadow-lg">
+        <Card className="relative border-violet-500/50 shadow-lg flex flex-col">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
             <Badge className="bg-violet-500 text-white px-4 py-1">
               <Crown className="h-3 w-3 mr-1" />
               プレミアム
             </Badge>
           </div>
-          <CardContent className="p-6">
+          <CardContent className="p-6 flex flex-col flex-1">
             <h3 className="text-xl font-bold mb-2">プレミアムプラン</h3>
             <p className="text-muted-foreground text-sm mb-4">AI API連携ツール含む</p>
             <div className="text-4xl font-bold mb-6">
               ¥1,980
               <span className="text-base text-muted-foreground font-normal">/月</span>
             </div>
-            <ul className="space-y-2.5 mb-8">
+            <ul className="space-y-2.5 flex-1 mb-8">
               {[
                 '全ツール使い放題プランの全機能',
                 'Gmail AI Accelerator',
@@ -283,21 +283,21 @@ export default function PricingPage() {
         </Card>
 
         {/* Custom Development Plan */}
-        <Card className="relative border-amber-500/50">
+        <Card className="relative border-amber-500/50 flex flex-col">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
             <Badge className="bg-amber-500 text-white px-4 py-1">
               <Wrench className="h-3 w-3 mr-1" />
               法人向け
             </Badge>
           </div>
-          <CardContent className="p-8">
+          <CardContent className="p-8 flex flex-col flex-1">
             <h3 className="text-2xl font-bold mb-2">カスタマイズ<br />ツール開発</h3>
             <p className="text-muted-foreground mb-4">御社専用のAIツールを開発</p>
             <div className="text-2xl font-bold mb-1 text-amber-400">
               お見積り
             </div>
             <p className="text-sm text-muted-foreground mb-6">ご要件に応じて個別にご提案</p>
-            <ul className="space-y-3 mb-8">
+            <ul className="space-y-3 flex-1 mb-8">
               {[
                 '御社業務に特化したAIツール開発',
                 '既存ツールのカスタマイズ',
