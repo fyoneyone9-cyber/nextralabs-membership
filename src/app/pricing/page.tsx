@@ -95,6 +95,49 @@ export default function PricingPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
+        {/* Free Plan */}
+        <Card className="relative">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-bold mb-2">無料プラン</h3>
+            <p className="text-muted-foreground text-sm mb-4">まずはお試しで</p>
+            <div className="text-4xl font-bold mb-6">
+              ¥0
+              <span className="text-base text-muted-foreground font-normal">/月</span>
+            </div>
+            <ul className="space-y-2.5 mb-8">
+              {[
+                'ツールの詳細閲覧',
+                '無料ツール利用',
+                'メール通知',
+              ].map((feature) => (
+                <li key={feature} className="flex items-center gap-2 text-sm">
+                  <Check className="h-4 w-4 text-green-500 shrink-0" />
+                  {feature}
+                </li>
+              ))}
+              {[
+                '有料ツール利用',
+                'プレミアムツール',
+                '優先サポート',
+              ].map((feature) => (
+                <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground/50">
+                  <span className="h-4 w-4 shrink-0 text-center">✕</span>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            {!user ? (
+              <Button variant="outline" className="w-full" onClick={() => window.location.href = '/signup'}>
+                無料で始める
+              </Button>
+            ) : !isPaid ? (
+              <Button variant="outline" className="w-full" disabled>
+                現在のプラン
+              </Button>
+            ) : null}
+          </CardContent>
+        </Card>
+
         {/* Light Plan */}
         <Card className="relative border-cyan-500/50 shadow-lg">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
@@ -137,49 +180,6 @@ export default function PricingPage() {
                 ライトプランに登録
               </Button>
             )}
-          </CardContent>
-        </Card>
-
-        {/* Free Plan */}
-        <Card className="relative">
-          <CardContent className="p-6">
-            <h3 className="text-xl font-bold mb-2">無料プラン</h3>
-            <p className="text-muted-foreground text-sm mb-4">まずはお試しで</p>
-            <div className="text-4xl font-bold mb-6">
-              ¥0
-              <span className="text-base text-muted-foreground font-normal">/月</span>
-            </div>
-            <ul className="space-y-2.5 mb-8">
-              {[
-                'ツールの詳細閲覧',
-                '無料ツール利用',
-                'メール通知',
-              ].map((feature) => (
-                <li key={feature} className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-green-500 shrink-0" />
-                  {feature}
-                </li>
-              ))}
-              {[
-                '有料ツール利用',
-                'プレミアムツール',
-                '優先サポート',
-              ].map((feature) => (
-                <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground/50">
-                  <span className="h-4 w-4 shrink-0 text-center">✕</span>
-                  {feature}
-                </li>
-              ))}
-            </ul>
-            {!user ? (
-              <Button variant="outline" className="w-full" onClick={() => window.location.href = '/signup'}>
-                無料で始める
-              </Button>
-            ) : !isPaid ? (
-              <Button variant="outline" className="w-full" disabled>
-                現在のプラン
-              </Button>
-            ) : null}
           </CardContent>
         </Card>
 
