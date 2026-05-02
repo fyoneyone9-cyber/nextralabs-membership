@@ -370,6 +370,31 @@ export default function OfficePoliticsGraphPage() {
           </div>
         </section>
 
+        {/* Affiliate: Amazon Prime */}
+        <section className="space-y-4">
+          <div className="bg-gray-900/60 border border-gray-700/50 rounded-2xl p-6">
+            <p className="text-xs text-gray-500 mb-3 uppercase tracking-wide">PR・アフィリエイト</p>
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+              <div className="flex-1 space-y-1">
+                <p className="text-gray-300 text-sm font-medium">🎬 組織と人間関係を深く考えたくなったら</p>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  パーキンソン病と闘いながら世界中に笑顔を届け続けたマイケル・J・フォックスのドキュメンタリー。人生のリアルな「相関図」が見えてくる一作。
+                  <br />
+                  <span className="text-gray-500 text-xs">Amazon Prime Video でお試し視聴できます</span>
+                </p>
+              </div>
+              <a
+                href="https://amzn.to/4d19hCq"
+                target="_blank"
+                rel="noopener noreferrer sponsored"
+                className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-sm font-semibold transition-colors"
+              >
+                Prime で観る →
+              </a>
+            </div>
+          </div>
+        </section>
+
         {/* FAQ */}
         <section className="space-y-8">
           <h2 className="text-3xl font-bold text-white text-center">

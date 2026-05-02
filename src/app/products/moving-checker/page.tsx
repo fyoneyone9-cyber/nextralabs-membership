@@ -290,6 +290,33 @@ export default function MovingCheckerPage() {
         </div>
       </section>
 
+      {/* Affiliate: Amazon Prime */}
+      <section className="py-10 border-t">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto bg-muted/40 border rounded-2xl p-6">
+            <p className="text-xs text-muted-foreground mb-3 uppercase tracking-wide">PR・アフィリエイト</p>
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+              <div className="flex-1 space-y-1">
+                <p className="text-sm font-medium">🎬 引っ越し前夜、映画でも観ながら荷造りしませんか？</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  マイケル・J・フォックスが人生の「引っ越し」とも言える病との闘いを語るドキュメンタリー。新生活の前に観ると、何かが変わるかも。
+                  <br />
+                  <span className="text-xs text-muted-foreground/70">Amazon Prime Video でお試し視聴できます</span>
+                </p>
+              </div>
+              <a
+                href="https://amzn.to/4d19hCq"
+                target="_blank"
+                rel="noopener noreferrer sponsored"
+                className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-sm font-semibold transition-colors"
+              >
+                Prime で観る →
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section className="py-16 border-t bg-muted/30">
         <div className="container mx-auto px-4">

@@ -482,8 +482,7 @@ function ProductCard({ product }: { product: Product }) {
 
         <div className="flex items-end justify-between pt-4 border-t">
           <div>
-            <span className="text-2xl font-bold">{product.price}</span>
-            <span className="text-xs text-muted-foreground ml-1">{product.priceNote}</span>
+            <span className="text-sm font-semibold text-muted-foreground">{product.priceNote}</span>
           </div>
           <div className="flex gap-2">
             <Link
