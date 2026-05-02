@@ -11,13 +11,12 @@ import {
   ChevronUp,
   BookOpen,
   FileText,
-  Image,
-  DollarSign,
   Upload,
   Star,
   AlertCircle,
   ExternalLink,
   Lightbulb,
+  Lock,
 } from 'lucide-react'
 
 // ===================== Types =====================
@@ -57,32 +56,32 @@ const steps: StepData[] = [
       {
         id: 's1-2',
         label: '著者情報（本名またはペンネーム）を登録する',
-        detail: 'ログイン後、アカウント情報から「著者/出版社情報」を入力。ペンネームで出版する場合は、ここではなく本の登録時に「著者名」として別途設定できます。',
-        warning: 'ペンネームで出版する場合も、この欄は本名で登録します。ペンネームは本の登録時に「著者名」として設定できます。',
+        detail: 'ログイン後、右上のアカウントメニューから「アカウント情報」へ。「著者/出版社情報」に名前を入力します。ペンネームは本の登録時に「著者名」として別途設定できます。',
+        warning: 'ペンネームで出版する場合も、アカウント情報には本名で登録します。ペンネームは本の登録時に「著者名」として設定できます。',
       },
       {
         id: 's1-3',
         label: '振込先（銀行口座）を登録する',
-        detail: 'アカウント情報から「支払い情報の取得」をクリック。銀行名・支店・口座番号・口座名義（カタカナ）を入力。確認まで1〜3営業日かかります。',
-        warning: '口座名義はカタカナで登録してください。漢字で登録するとエラーになる場合があります。',
+        detail: 'アカウント情報から「支払い情報の取得」をクリック。銀行名・支店・口座番号・口座名義（カタカナ）を入力します。反映まで1〜3営業日かかります。',
+        warning: '口座名義はカタカナで登録してください。漢字だと登録エラーになる場合があります。',
       },
       {
         id: 's1-4',
         label: '税務インタビューに回答する',
-        detail: 'アカウント情報から「税務情報」→「インタビューを開始」をクリック。「個人」「日本在住者」を選んで進む。全項目に回答して送信します。',
-        warning: '英語で進む場合がありますが、選択肢は「Individual（個人）」「Japan」を選べばOKです。',
+        detail: 'アカウント情報から「税務情報」→「インタビューを開始」をクリック。途中で言語が英語になることがありますが、「Individual（個人）」「Japan」を選べばOKです。全項目に回答して送信します。',
+        warning: '税務インタビューを完了しないと売上の支払いが受け取れません。必ず完了させましょう。',
       },
       {
         id: 's1-5',
         label: 'マイナンバーを入力して源泉税率を0%にする',
-        detail: '税務インタビューの途中、「日本の納税者番号（マイナンバー）をお持ちですか？」の質問で「はい」を選択し、12桁のマイナンバーを入力する。',
-        link: { text: 'マイナポータルでマイナンバー確認', url: 'https://myna.go.jp' },
-        warning: 'スキップすると販売収益の30%が源泉徴収されます。必ず入力しましょう。',
+        detail: '税務インタビューの途中、「日本の納税者番号（マイナンバー）をお持ちですか？」の質問で「はい」を選択し、12桁のマイナンバーを入力します。',
+        link: { text: 'マイナポータルでマイナンバーを確認', url: 'https://myna.go.jp' },
+        warning: 'スキップすると米国向け販売収益の30%が源泉徴収されます。必ず入力しましょう。',
       },
     ],
     hints: [
-      { color: 'blue', text: 'マイナンバーを入力すると、米国向け販売でかかる源泉税（通常30%）が0%になります。これは非常に重要な設定です。' },
-      { color: 'blue', text: 'アカウント設定は初回のみ。一度登録すれば2冊目以降はすぐ出版できます。' },
+      { color: 'blue', text: '💡 マイナンバーを入力すると、米国向け販売でかかる源泉税（通常30%）が0%になります。知らないと損する重要な設定です。' },
+      { color: 'blue', text: '✅ アカウント設定は初回のみ。一度登録すれば2冊目以降はすぐ出版できます。' },
     ],
   },
   {
@@ -102,25 +101,25 @@ const steps: StepData[] = [
       {
         id: 's2-2',
         label: 'Kindle Createに.docxを読み込む',
-        detail: 'Kindle Createを起動し、「その他の本のタイプ」→「Reflowable」を選択して.docxファイルを開きます。読み込み後、左サイドバーに章の一覧が自動表示されます。',
-        link: { text: 'Kindle Createをダウンロード', url: 'https://www.amazon.co.jp/b?node=24423771051' },
+        detail: 'Kindle Createを起動し、「その他の本のタイプ」→「Reflowable（リフロー型）」を選択して.docxファイルを開きます。読み込み後、左サイドバーに章の一覧が自動表示されます。',
+        link: { text: 'Kindle Createをダウンロード（無料）', url: 'https://www.amazon.co.jp/b?node=24423771051' },
       },
       {
         id: 's2-3',
         label: '左サイドバーの章リストを確認・修正する',
-        detail: '左側に章タイトルの一覧が表示されます。これがそのままKindleのインタラクティブ目次になります。\n\n【章が足りない場合】本文画面で章タイトルにしたい文字を選択 → 右側の「Elements」タブから「Chapter Title」ボタンをクリック → 自動でリストに追加されます。\n\n【余計なものが入っている場合】左側リストで対象を右クリック → 除外（リストから削除）できます。',
+        detail: '左側に章タイトルの一覧が表示されます。これがそのままKindleのインタラクティブ目次になります。\n\n【章が足りない場合】本文画面で章タイトルにしたい文字を選択 → 右側の「Elements」タブから「Chapter Title」ボタンをクリック → 自動でリストに追加されます。\n\n【余計なものが入っている場合】左側リストで対象を右クリック → 「除外」を選択してリストから削除できます。',
         warning: '章リストが正しく設定されていないと、目次からジャンプできない電子書籍になります。必ず確認しましょう。',
       },
       {
         id: 's2-4',
         label: '目次ページ（HTML目次）を本文中に挿入する',
-        detail: '上部メニューの「Edit」または左上の「＋ Insert」ボタンをクリック → 「Table of Contents（目次）」を選択。すると現在の章リストをまとめた目次ページが自動生成され、本の最初の方に挿入されます。',
+        detail: '上部メニューの「Edit」または左上の「＋ Insert」ボタンをクリック → 「Table of Contents（目次）」を選択。現在の章リストをまとめた目次ページが自動生成され、本の冒頭に挿入されます。',
       },
       {
         id: 's2-5',
         label: 'Previewで目次と各章ジャンプを確認する',
         detail: '右上の「Preview」ボタンを押す → スマホ・Kindle端末を模したウィンドウが開く → メニューボタンから「目次（Contents）」を選択 → 各章タイトルをタップして正しくジャンプできるか確認します。',
-        warning: 'ここで確認せずに出版すると、目次が機能しない本になる可能性があります。必ずプレビューで動作確認しましょう。',
+        warning: 'プレビューで確認せずに出版すると、目次が機能しない本になる可能性があります。必ず動作確認しましょう。',
       },
       {
         id: 's2-6',
@@ -129,55 +128,57 @@ const steps: StepData[] = [
         warning: '.kpfファイルが最も品質が安定します。.docxでも出版可能ですが、表示崩れのリスクがあります。',
       },
       {
-        id: 's2-3',
+        id: 's2-7',
         label: '表紙画像をJPEGまたはTIFF形式で用意する',
-        detail: '推奨サイズは1,600×2,560px（縦長2:3比率）。最低でも1,000×625px以上が必要です。PNGは使用不可なので注意。',
-        warning: '表紙はKindleの売上に直結します。タイトル・サブタイトル・著者名が読みやすく入っているか確認しましょう。',
+        detail: '推奨サイズは1,600×2,560px（縦長2:3比率）。最低でも1,000×625px以上が必要です。PNGは使用不可なので必ずJPEGまたはTIFFに変換してください。',
+        warning: 'PNGはKDPにアップロードできません。事前にJPEGまたはTIFFに変換しておきましょう。表紙は売上に直結するので、タイトル・著者名が読みやすく入っているか確認しましょう。',
       },
       {
-        id: 's2-4',
+        id: 's2-8',
         label: '内容紹介（商品説明）を4,000字以内で準備する',
-        detail: '①読者の共感フック → ②著者紹介 → ③各章の内容紹介 → ④こんな人に読んでほしい → ⑤著者メッセージ、という構成が効果的です。Amazonの商品ページに表示されるので、購買を左右します。',
+        detail: '①読者の共感フック → ②著者紹介 → ③各章の内容紹介 → ④こんな人に読んでほしい → ⑤著者メッセージ、という構成が効果的です。Amazonの商品ページに表示されるので購買を左右します。HTMLタグ（<b>太字</b>、<br>改行）も使えます。',
       },
     ],
     hints: [
-      { color: 'blue', text: 'WordのヘッダースタイルをKindle Createが読み取って章リストを自動生成します。Wordで「見出し1」「見出し2」を正しく設定しておくと作業が楽になります。' },
-      { color: 'yellow', text: '表紙はKindleの検索結果に小さいサムネイルで表示されます。縮小されても読めるか確認しましょう。' },
-      { color: 'green', text: '内容紹介にHTMLタグ（<b>太字</b>、改行など）を使うとAmazonページが読みやすくなります。' },
+      { color: 'blue', text: '💡 WordのヘッダースタイルをKindle Createが読み取って章リストを自動生成します。Wordで「見出し1」「見出し2」を正しく設定しておくと作業が楽になります。' },
+      { color: 'yellow', text: '⚠️ 表紙はKindleの検索結果に小さいサムネイルで表示されます。縮小されても読めるか確認しましょう。' },
+      { color: 'green', text: '✅ 内容紹介はHTMLタグが使えます。<b>太字</b>や改行を使うと読みやすくなります。' },
     ],
   },
   {
     stepNumber: 3,
-    title: '本の情報を登録する',
+    title: '本の情報をKDPに登録する',
     icon: FileText,
     color: 'text-purple-500',
     bg: 'bg-purple-500/10',
     items: [
       {
         id: 's3-1',
-        label: 'KDPダッシュボードから「新しいタイトルを作成」→「Kindle電子書籍」を選択',
-        detail: 'KDPにログイン後、「本棚」タブから「＋新しいタイトルを作成」→「Kindle電子書籍」をクリックします。',
+        label: 'KDPダッシュボードから「＋作成」→「Kindle電子書籍」を選択する',
+        detail: 'KDPにログイン後、「本棚」タブから「＋作成」ボタンをクリック→「Kindle電子書籍」を選択します。',
+        link: { text: 'KDP本棚を開く', url: 'https://kdp.amazon.co.jp/bookshelf' },
       },
       {
         id: 's3-2',
-        label: '言語・タイトル・サブタイトル・著者名を入力する',
-        detail: '言語：日本語 / タイトル：本のタイトル / 著者名：本名またはペンネーム（ここにペンネームを設定できます） / フリガナも必須入力です（全角カタカナで入力）。',
-        warning: 'タイトルは出版後に変更が難しいため、誤字がないかよく確認してください。',
+        label: '言語・タイトル・サブタイトル・著者名・フリガナを入力する',
+        detail: '言語：日本語 / タイトル：本のタイトル / 著者名：本名またはペンネーム（ここでペンネームを設定できます）。フリガナは全角カタカナで入力します。\n\n※タイトルと著者名のフィールドにHTMLタグは使用できません。',
+        warning: 'タイトルは出版後に変更が難しい項目です。誤字がないかよく確認してください。',
       },
       {
         id: 's3-3',
         label: '内容紹介を入力する',
-        detail: '準備した商品説明文をコピー&ペーストします。KDPの入力欄にはHTMLが使えるので、<b>太字</b>や<br>改行を活用すると読みやすくなります。',
+        detail: '準備した商品説明文をコピー&ペーストします。<b>太字</b>や<br>改行などのHTMLタグが使えます。スマートフォンで読まれることを想定して、2〜3行ごとに改行を入れると読みやすくなります。',
       },
       {
         id: 's3-4',
         label: 'キーワードを7枠すべて入力する',
-        detail: '1枠にスペース区切りで複数単語を入れられます（例：「副業 AI」）。タイトルに含まれる単語の繰り返しは避け、関連するが別の検索ワードを選びましょう。',
+        detail: '1枠にスペース区切りで複数の単語を入れられます（例：「副業 AI」）。タイトルに含まれる単語の繰り返しは避け、関連するが別の検索ワードを選びましょう。7枠すべて埋めることで検索に引っかかりやすくなります。',
+        warning: 'キーワードを空欄にすると検索に表示されにくくなります。7枠すべて埋めましょう。',
       },
       {
         id: 's3-5',
         label: 'カテゴリを2つ選択する',
-        detail: '本の内容に最も近いカテゴリを2つ選択します。カテゴリは販売後でも変更可能です。',
+        detail: '本の内容に最も近いカテゴリを2つ選択します。カテゴリは出版後でも変更可能です。',
       },
       {
         id: 's3-6',
@@ -186,18 +187,18 @@ const steps: StepData[] = [
       },
       {
         id: 's3-7',
-        label: 'ページの読み方向を選択する（横書き→左から右）',
-        detail: '日本語の横書きの場合は「左から右」を選択します。縦書きの場合は「右から左」を選択してください。',
+        label: 'ページの読み方向を選択する',
+        detail: '日本語の横書き原稿の場合は「左から右」を選択します。縦書き原稿の場合は「右から左」を選択してください。',
       },
     ],
     hints: [
-      { color: 'orange', text: 'キーワードは7枠すべて埋めましょう。空欄があると検索に表示されにくくなります。' },
-      { color: 'blue', text: 'KDP Selectは90日ごとに更新されます。不要になったら90日後に解除できます。' },
+      { color: 'orange', text: '🔑 キーワードは7枠すべて埋めましょう。検索露出に直結する重要な設定です。' },
+      { color: 'blue', text: '📅 KDP Selectは90日ごとに自動更新されます。不要になったら90日後に解除できます。' },
     ],
   },
   {
     stepNumber: 4,
-    title: '原稿・表紙をアップロードして出版',
+    title: '原稿・表紙をアップロードして出版申請',
     icon: Upload,
     color: 'text-green-500',
     bg: 'bg-green-500/10',
@@ -205,39 +206,40 @@ const steps: StepData[] = [
       {
         id: 's4-1',
         label: '原稿ファイル（.kpfまたは.docx）をアップロードする',
-        detail: '「電子書籍の原稿」欄から.kpfまたは.docxをアップロードします。Kindle Createで出力した.kpfが最も安定します。アップロード後、自動で変換処理が行われます。',
+        detail: '「電子書籍の原稿」欄から.kpfまたは.docxをアップロードします。Kindle Createで出力した.kpfが最も安定します。アップロード後、自動で変換処理が行われます（数分かかる場合があります）。',
       },
       {
         id: 's4-2',
-        label: '表紙画像（JPEG/TIFF）をアップロードする',
-        detail: '「Kindle本の表紙」欄からJPEGまたはTIFF形式の画像をアップロードします。推奨サイズ：1,600×2,560px（2:3比率）。PNGは使用不可です。',
-        warning: 'PNGはアップロードできません。事前にJPEGまたはTIFFに変換しておきましょう。',
+        label: '表紙画像（JPEGまたはTIFF）をアップロードする',
+        detail: '「Kindle本の表紙」欄からJPEGまたはTIFF形式の画像をアップロードします。推奨サイズ：1,600×2,560px（2:3比率）。PNGは使用できません。',
+        warning: 'PNGはアップロードできません。必ずJPEGまたはTIFFに変換してからアップロードしましょう。',
       },
       {
         id: 's4-3',
-        label: 'Kindle Previewerで表示を確認する',
+        label: 'オンラインプレビュアーで表示を確認する',
         detail: '「オンラインプレビュアーを起動」でスマホ・タブレット・Kindle端末それぞれの表示を確認します。目次が正しく機能するか、文字が崩れていないかチェックしましょう。',
+        warning: 'プレビューで問題を見つけた場合は、原稿を修正して再アップロードしましょう。',
       },
       {
         id: 's4-4',
         label: 'ロイヤリティを70%に設定する',
-        detail: '70%ロイヤリティは¥250〜¥1,250の価格範囲で設定できます。この範囲外だと35%になります。',
-        warning: '¥250未満または¥1,251以上に設定すると自動的に35%ロイヤリティになります。',
+        detail: '70%ロイヤリティは¥250〜¥1,250の価格範囲で設定できます。この範囲内であれば自動的に70%が適用されます。',
+        warning: '¥250未満または¥1,251以上に設定すると自動的に35%ロイヤリティになります。¥499など¥250〜¥1,250の範囲で設定しましょう。',
       },
       {
         id: 's4-5',
         label: '希望小売価格を設定する',
-        detail: '70%ロイヤリティを得るなら¥250〜¥1,250の範囲で設定します。¥499は手に取りやすい価格帯で、1冊売れるたびに約¥349の収益になります。',
+        detail: '70%ロイヤリティを得るには¥250〜¥1,250の範囲で設定します。¥499は手に取りやすい価格帯で、1冊売れるたびに約¥349の収益になります。価格は出版後でもいつでも変更できます。',
       },
       {
         id: 's4-6',
-        label: '「Kindle本を出版」ボタンを押して申請する',
-        detail: 'すべての設定を確認後、「Kindle本を出版」ボタンをクリックして申請します。審査完了まで通常24〜72時間かかります。審査通過後、Amazonのストアに自動的に掲載されます。',
+        label: 'KDP利用規約に同意して「Kindle本を出版」ボタンを押す',
+        detail: 'すべての設定を確認後、利用規約に同意して「Kindle本を出版」ボタンをクリックします。審査完了まで通常24〜72時間かかります。審査通過後、Amazonのストアに自動的に掲載されます。完了するとメールで通知が届きます。',
       },
     ],
     hints: [
-      { color: 'green', text: '審査は通常24〜72時間以内に完了します。完了するとメールで通知が届きます。' },
-      { color: 'yellow', text: '価格は出版後でも変更可能です。まず¥499で出してみて、反応を見ながら調整しましょう。' },
+      { color: 'green', text: '✅ 審査は通常24〜72時間以内に完了します。完了するとメールで通知が届きます。' },
+      { color: 'yellow', text: '💰 価格は出版後でも変更可能です。まず¥499で出してみて、反応を見ながら調整しましょう。' },
     ],
   },
 ]
@@ -272,6 +274,17 @@ export default function KdpGuide() {
     return { done, total, percent: Math.round((done / total) * 100) }
   }
 
+  const isStepComplete = (stepNumber: number) => {
+    const step = steps.find(s => s.stepNumber === stepNumber)
+    if (!step) return false
+    return step.items.every(i => checked.has(i.id))
+  }
+
+  const isStepUnlocked = (stepNumber: number) => {
+    if (stepNumber === 1) return true
+    return isStepComplete(stepNumber - 1)
+  }
+
   const totalItems = steps.flatMap(s => s.items).length
   const totalChecked = steps.flatMap(s => s.items).filter(i => checked.has(i.id)).length
   const totalPercent = Math.round((totalChecked / totalItems) * 100)
@@ -289,7 +302,7 @@ export default function KdpGuide() {
       <div className="text-center space-y-2">
         <h1 className="text-2xl font-bold">📚 Kindle出版 手順ナビ</h1>
         <p className="text-muted-foreground text-sm">
-          Amazon KDPでの電子書籍出版を4ステップでガイドします
+          Amazon KDPでの電子書籍出版を4ステップでガイドします。各ステップを全部チェックすると次へ進めます。
         </p>
       </div>
 
@@ -314,22 +327,28 @@ export default function KdpGuide() {
       <div className="grid grid-cols-4 gap-2">
         {steps.map(step => {
           const { done, total } = getStepProgress(step)
-          const isComplete = done === total
+          const complete = isStepComplete(step.stepNumber)
+          const unlocked = isStepUnlocked(step.stepNumber)
+          const isActive = currentStep === step.stepNumber
+
           return (
             <button
               key={step.stepNumber}
-              onClick={() => setCurrentStep(step.stepNumber)}
+              onClick={() => unlocked && setCurrentStep(step.stepNumber)}
+              disabled={!unlocked}
               className={`p-3 rounded-xl border text-center transition-all ${
-                currentStep === step.stepNumber
-                  ? 'border-orange-500 bg-orange-500/10'
-                  : 'border-border hover:border-orange-500/50'
+                !unlocked
+                  ? 'border-border opacity-40 cursor-not-allowed'
+                  : isActive
+                    ? 'border-orange-500 bg-orange-500/10'
+                    : 'border-border hover:border-orange-500/50 cursor-pointer'
               }`}
             >
               <div className="text-lg font-bold">
-                {isComplete ? '✅' : `${step.stepNumber}`}
+                {!unlocked ? '🔒' : complete ? '✅' : `${step.stepNumber}`}
               </div>
               <div className="text-xs text-muted-foreground mt-1 leading-tight">
-                {done}/{total}
+                {unlocked ? `${done}/${total}` : 'ロック中'}
               </div>
             </button>
           )
@@ -341,6 +360,8 @@ export default function KdpGuide() {
         .filter(step => step.stepNumber === currentStep)
         .map(step => {
           const { done, total, percent } = getStepProgress(step)
+          const unlocked = isStepUnlocked(step.stepNumber)
+
           return (
             <div key={step.stepNumber} className="space-y-4">
               {/* ステップヘッダー */}
@@ -349,7 +370,7 @@ export default function KdpGuide() {
                   <step.icon className={`h-6 w-6 ${step.color}`} />
                 </div>
                 <div className="flex-1">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h2 className="font-bold text-lg">STEP {step.stepNumber}：{step.title}</h2>
                     {done === total && <Badge className="bg-green-500/10 text-green-600 border-green-500/20">完了 ✅</Badge>}
                   </div>
@@ -392,7 +413,6 @@ export default function KdpGuide() {
                             <p className={`text-sm font-medium leading-relaxed ${isChecked ? 'line-through text-muted-foreground' : ''}`}>
                               {item.label}
                             </p>
-
                             {hasDetail && (
                               <button
                                 onClick={() => toggleExpand(item.id)}
@@ -402,11 +422,10 @@ export default function KdpGuide() {
                                 {isExpanded ? '閉じる' : '詳細を見る'}
                               </button>
                             )}
-
                             {isExpanded && hasDetail && (
                               <div className="mt-3 space-y-2">
                                 {item.detail && (
-                                  <p className="text-xs text-muted-foreground leading-relaxed bg-muted/50 rounded-lg p-3">
+                                  <p className="text-xs text-muted-foreground leading-relaxed bg-muted/50 rounded-lg p-3 whitespace-pre-line">
                                     {item.detail}
                                   </p>
                                 )}
@@ -459,14 +478,33 @@ export default function KdpGuide() {
                 >
                   ← 前のステップ
                 </Button>
-                <Button
-                  size="sm"
-                  className="bg-orange-600 hover:bg-orange-700 text-white"
-                  onClick={() => setCurrentStep(s => Math.min(steps.length, s + 1))}
-                  disabled={currentStep === steps.length}
-                >
-                  次のステップ →
-                </Button>
+
+                {currentStep < steps.length && (
+                  <div className="flex flex-col items-end gap-1">
+                    <Button
+                      size="sm"
+                      className="bg-orange-600 hover:bg-orange-700 text-white disabled:opacity-40"
+                      onClick={() => {
+                        if (isStepComplete(currentStep)) {
+                          setCurrentStep(s => s + 1)
+                        }
+                      }}
+                      disabled={!isStepComplete(currentStep)}
+                    >
+                      {isStepComplete(currentStep) ? '次のステップ →' : (
+                        <span className="flex items-center gap-1">
+                          <Lock className="h-3 w-3" />
+                          全項目チェックで解除
+                        </span>
+                      )}
+                    </Button>
+                    {!isStepComplete(currentStep) && (
+                      <p className="text-xs text-muted-foreground">
+                        あと {total - done} 項目チェックで次へ進めます
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           )
@@ -477,7 +515,7 @@ export default function KdpGuide() {
         <Card className="border-green-500/30 bg-green-500/5">
           <CardContent className="pt-6 text-center space-y-3">
             <div className="text-4xl">🎉</div>
-            <h3 className="font-bold text-lg text-green-600 dark:text-green-400">全ステップ完了！</h3>
+            <h3 className="font-bold text-lg text-green-600 dark:text-green-400">全ステップ完了！おめでとうございます！</h3>
             <p className="text-sm text-muted-foreground">
               出版申請が完了しました。審査通過後、24〜72時間以内にAmazonで販売開始されます。
             </p>
