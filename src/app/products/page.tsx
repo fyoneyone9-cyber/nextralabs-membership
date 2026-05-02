@@ -76,6 +76,21 @@ const freeTools: Product[] = [
     status: '🆓 無料',
   },
   {
+    id: 'kdp-guide',
+    title: 'KDP出版ナビ',
+    subtitle: 'Amazon Kindle出版を迷わず完了 — ステップ式ガイド',
+    description:
+      'KDPアカウント設定から原稿作成・価格設定・出版申請まで、チェックリスト形式で一歩ずつ進められる。個人出版デビューをサポート。',
+    price: '無料',
+    priceNote: '無料',
+    tags: ['KDP', 'Kindle出版', '電子書籍', '副業'],
+    icon: BookOpen,
+    color: 'from-orange-500 to-amber-500',
+    bgColor: 'bg-orange-500/10',
+    iconColor: 'text-orange-500',
+    status: '🆓 無料',
+  },
+  {
     id: 'ai-report-generator',
     title: 'AIレポートジェネレーター',
     subtitle: '箇条書き → ビジネスレポート自動生成',
