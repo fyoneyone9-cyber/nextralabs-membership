@@ -69,6 +69,12 @@ const STYLES = [
   { id: 'cyberpunk', name: 'サイバーパンク', emoji: '🌃' },
   { id: 'kawaii', name: 'かわいい', emoji: '🎀' },
   { id: 'typography', name: 'タイポグラフィ', emoji: '🔤' },
+  { id: 'graffiti', name: 'グラフィティ', emoji: '🎨' },
+  { id: 'japanese', name: '和風', emoji: '⛩️' },
+  { id: 'sports', name: 'スポーツ', emoji: '⚡' },
+  { id: 'vintage', name: 'ヴィンテージ', emoji: '🏺' },
+  { id: 'neon_sign', name: 'ネオンサイン', emoji: '💡' },
+  { id: 'abstract', name: 'アブストラクト', emoji: '🔮' },
 ]
 
 const COLOR_SCHEMES = [
@@ -78,6 +84,12 @@ const COLOR_SCHEMES = [
   { id: 'sakura', name: '桜', colors: ['#ffb7c5', '#ff69b4', '#fff0f5'] },
   { id: 'forest', name: 'フォレスト', colors: ['#2d6a4f', '#52b788', '#d8f3dc'] },
   { id: 'midnight', name: 'ミッドナイト', colors: ['#7b2cbf', '#c77dff', '#e0aaff'] },
+  { id: 'fire', name: 'ファイア', colors: ['#ff4500', '#ff8c00', '#ffd700'] },
+  { id: 'monochrome', name: 'モノクロ', colors: ['#ffffff', '#888888', '#333333'] },
+  { id: 'toxic', name: 'トキシック', colors: ['#39ff14', '#00ff00', '#003300'] },
+  { id: 'candy', name: 'キャンディ', colors: ['#ff9ef0', '#ffb347', '#87ceeb'] },
+  { id: 'aurora', name: 'オーロラ', colors: ['#00c9ff', '#92fe9d', '#f7971e'] },
+  { id: 'blood', name: 'ブラッド', colors: ['#8b0000', '#dc143c', '#ff6347'] },
 ]
 
 const TSHIRT_COLORS: { id: string; name: string; hex: string; textColor: string }[] = [
@@ -86,6 +98,11 @@ const TSHIRT_COLORS: { id: string; name: string; hex: string; textColor: string 
   { id: 'gray', name: 'グレー', hex: '#6b7280', textColor: '#FFFFFF' },
   { id: 'navy', name: 'ネイビー', hex: '#1e3a5f', textColor: '#FFFFFF' },
   { id: 'khaki', name: 'カーキ', hex: '#8b7355', textColor: '#FFFFFF' },
+  { id: 'red', name: 'レッド', hex: '#c0392b', textColor: '#FFFFFF' },
+  { id: 'forest', name: 'フォレスト', hex: '#1a5e2a', textColor: '#FFFFFF' },
+  { id: 'purple', name: 'パープル', hex: '#6b21a8', textColor: '#FFFFFF' },
+  { id: 'beige', name: 'ベージュ', hex: '#d4b483', textColor: '#000000' },
+  { id: 'charcoal', name: 'チャコール', hex: '#36454f', textColor: '#FFFFFF' },
 ]
 
 const SIZES = ['S', 'M', 'L', 'XL', 'XXL']
@@ -344,6 +361,174 @@ function drawTshirt(
       ctx.fillText('DESIGN BY AI SELECT SHOP', cx, cy + w * 0.07)
       break
     }
+    case 'graffiti': {
+      ctx.save()
+      ctx.translate(cx, cy)
+      ctx.rotate(-0.12)
+      const gFont = Math.floor(w * 0.1)
+      ctx.font = `900 ${gFont}px Impact, "Arial Black", sans-serif`
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      // spray paint layers with alpha blur
+      const offsets = [[-4,-4,0.4],[4,4,0.4],[-2,3,0.3],[3,-2,0.3]]
+      for (const [ox, oy, al] of offsets) {
+        ctx.globalAlpha = al as number
+        ctx.fillStyle = scheme[1] || '#ff6600'
+        ctx.fillText(keyword.toUpperCase(), ox as number, oy as number, maxTextWidth)
+      }
+      ctx.globalAlpha = 1
+      ctx.fillStyle = scheme[0]
+      ctx.fillText(keyword.toUpperCase(), 0, 0, maxTextWidth)
+      ctx.strokeStyle = scheme[2] || '#000'
+      ctx.lineWidth = 2
+      ctx.strokeText(keyword.toUpperCase(), 0, 0, maxTextWidth)
+      ctx.restore()
+      break
+    }
+    case 'japanese': {
+      // Red circle background
+      ctx.beginPath()
+      ctx.arc(cx, cy, w * 0.2, 0, Math.PI * 2)
+      ctx.fillStyle = scheme[0] || '#cc0000'
+      ctx.globalAlpha = 0.85
+      ctx.fill()
+      ctx.globalAlpha = 1
+      // Text
+      ctx.font = `bold ${Math.floor(w * 0.07)}px "Hiragino Mincho Pro", "MS Mincho", Georgia, serif`
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillStyle = '#FFFFFF'
+      ctx.fillText(keyword, cx, cy, maxTextWidth)
+      // Decorative horizontal lines
+      ctx.strokeStyle = scheme[1] || '#cc0000'
+      ctx.lineWidth = 2
+      ctx.globalAlpha = 0.5
+      ctx.beginPath()
+      ctx.moveTo(cx - maxTextWidth / 2, cy - w * 0.13)
+      ctx.lineTo(cx + maxTextWidth / 2, cy - w * 0.13)
+      ctx.moveTo(cx - maxTextWidth / 2, cy + w * 0.13)
+      ctx.lineTo(cx + maxTextWidth / 2, cy + w * 0.13)
+      ctx.stroke()
+      ctx.globalAlpha = 1
+      break
+    }
+    case 'sports': {
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      // Arched top text
+      const radius = w * 0.22
+      const chars = keyword.toUpperCase().split('')
+      const totalAngle = Math.min(Math.PI * 0.8, chars.length * 0.18)
+      const startAngle = -Math.PI / 2 - totalAngle / 2
+      ctx.font = `900 ${Math.floor(w * 0.065)}px Impact, "Arial Black", sans-serif`
+      ctx.fillStyle = scheme[0]
+      chars.forEach((char, i) => {
+        const angle = startAngle + (i / Math.max(chars.length - 1, 1)) * totalAngle
+        ctx.save()
+        ctx.translate(cx + radius * Math.cos(angle), cy - w * 0.1 + radius * Math.sin(angle))
+        ctx.rotate(angle + Math.PI / 2)
+        ctx.fillText(char, 0, 0)
+        ctx.restore()
+      })
+      // Large number
+      ctx.font = `900 ${Math.floor(w * 0.18)}px Impact, "Arial Black", sans-serif`
+      ctx.fillStyle = scheme[1] || scheme[0]
+      ctx.globalAlpha = 0.15
+      ctx.fillText('23', cx, cy + w * 0.08, maxTextWidth)
+      ctx.globalAlpha = 1
+      ctx.fillStyle = scheme[0]
+      ctx.font = `900 ${Math.floor(w * 0.12)}px Impact, "Arial Black", sans-serif`
+      ctx.fillText('23', cx, cy + w * 0.08, maxTextWidth)
+      break
+    }
+    case 'vintage': {
+      ctx.save()
+      // Sepia overlay
+      ctx.fillStyle = 'rgba(180,120,50,0.08)'
+      ctx.fillRect(0, 0, w, h)
+      // Decorative border
+      ctx.strokeStyle = scheme[0] || '#d4a847'
+      ctx.lineWidth = 3
+      ctx.strokeRect(cx - maxTextWidth / 2 - 8, cy - w * 0.18, maxTextWidth + 16, w * 0.36)
+      ctx.lineWidth = 1
+      ctx.strokeRect(cx - maxTextWidth / 2 - 14, cy - w * 0.22, maxTextWidth + 28, w * 0.44)
+      // Text
+      ctx.font = `bold italic ${Math.floor(w * 0.075)}px Georgia, "Times New Roman", serif`
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillStyle = scheme[0] || '#d4a847'
+      ctx.fillText(keyword, cx, cy, maxTextWidth)
+      // Subtitle
+      ctx.font = `${Math.floor(w * 0.03)}px Georgia, serif`
+      ctx.fillStyle = scheme[1] || '#d4a847'
+      ctx.fillText('EST. 2024 · AUTHENTIC QUALITY', cx, cy + w * 0.1)
+      ctx.restore()
+      break
+    }
+    case 'neon_sign': {
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.font = `bold ${Math.floor(w * 0.08)}px "Courier New", monospace`
+      // Multi-layer glow
+      const glowLayers = [
+        { blur: 30, alpha: 0.3 },
+        { blur: 15, alpha: 0.5 },
+        { blur: 5, alpha: 0.8 },
+        { blur: 0, alpha: 1.0 },
+      ]
+      for (const layer of glowLayers) {
+        ctx.shadowBlur = layer.blur
+        ctx.shadowColor = scheme[0]
+        ctx.globalAlpha = layer.alpha
+        ctx.fillStyle = scheme[0]
+        ctx.fillText(keyword, cx, cy, maxTextWidth)
+      }
+      ctx.globalAlpha = 1
+      ctx.shadowBlur = 0
+      // Second line
+      ctx.font = `${Math.floor(w * 0.035)}px "Courier New", monospace`
+      ctx.shadowBlur = 10
+      ctx.shadowColor = scheme[1] || scheme[0]
+      ctx.fillStyle = scheme[1] || scheme[0]
+      ctx.fillText('✦ OPEN ✦', cx, cy + w * 0.1)
+      ctx.shadowBlur = 0
+      break
+    }
+    case 'abstract': {
+      // Geometric background shapes
+      const shapes = [
+        { x: cx - w * 0.15, y: cy - w * 0.1, r: w * 0.12, color: scheme[0] },
+        { x: cx + w * 0.1, y: cy + w * 0.05, r: w * 0.09, color: scheme[1] || scheme[0] },
+        { x: cx - w * 0.05, y: cy + w * 0.12, r: w * 0.07, color: scheme[2] || scheme[0] },
+      ]
+      for (const s of shapes) {
+        ctx.beginPath()
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
+        ctx.fillStyle = s.color
+        ctx.globalAlpha = 0.3
+        ctx.fill()
+      }
+      // Triangle
+      ctx.globalAlpha = 0.2
+      ctx.beginPath()
+      ctx.moveTo(cx + w * 0.15, cy - w * 0.15)
+      ctx.lineTo(cx + w * 0.28, cy + w * 0.1)
+      ctx.lineTo(cx + w * 0.02, cy + w * 0.1)
+      ctx.closePath()
+      ctx.fillStyle = scheme[1] || scheme[0]
+      ctx.fill()
+      ctx.globalAlpha = 1
+      // Text on top
+      ctx.font = `900 ${Math.floor(w * 0.08)}px "Helvetica Neue", Arial, sans-serif`
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillStyle = '#FFFFFF'
+      ctx.fillText(keyword, cx, cy, maxTextWidth)
+      ctx.font = `${Math.floor(w * 0.03)}px sans-serif`
+      ctx.fillStyle = scheme[0]
+      ctx.fillText('ABSTRACT SERIES', cx, cy + w * 0.09)
+      break
+    }
   }
 
   ctx.restore()
@@ -358,7 +543,8 @@ function drawTshirt(
 // ==================== Main Component ====================
 export default function AISelectShop() {
   // --- State ---
-  const [activeTab, setActiveTab] = useState<string>('trends')
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1)
+  const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [trends, setTrends] = useState<TrendKeyword[]>([])
   const [trendsLoading, setTrendsLoading] = useState(true)
   const [categoryFilter, setCategoryFilter] = useState<string>('すべて')
@@ -371,7 +557,7 @@ export default function AISelectShop() {
   const [designStyle, setDesignStyle] = useState('minimal')
   const [designColorScheme, setDesignColorScheme] = useState('neon')
   const [designTshirtColor, setDesignTshirtColor] = useState('black')
-  const [designSizes, setDesignSizes] = useState<string[]>(['M', 'L', 'XL'])
+  const [designSizes, setDesignSizes] = useState<string[]>(['S', 'M', 'L', 'XL', 'XXL'])
   const [designMarkup, setDesignMarkup] = useState(150)
   const [designGenerated, setDesignGenerated] = useState(false)
 
@@ -610,7 +796,7 @@ export default function AISelectShop() {
   const selectKeywordForDesign = useCallback((keyword: string) => {
     setDesignKeyword(keyword)
     setDesignGenerated(false)
-    setActiveTab('design')
+    setCurrentStep(2)
   }, [])
 
   const generateDesign = useCallback(() => {
@@ -646,6 +832,7 @@ export default function AISelectShop() {
     saveToStorage(STORAGE_KEYS.designs, updated)
     setDesignGenerated(false)
     setDesignKeyword('')
+    setCurrentStep(3)
   }, [designGenerated, designKeyword, designStyle, designColorScheme, designTshirtColor, designSizes, designMarkup, designs])
 
   const toggleDesignStatus = useCallback((id: string, status: DesignRecord['status']) => {
@@ -723,6 +910,19 @@ export default function AISelectShop() {
   const sortedTrends = [...filteredTrends].sort((a, b) => b.score - a.score)
   const top5 = [...trends].sort((a, b) => b.score - a.score).slice(0, 5)
 
+  // Traffic-based bar width helper
+  const getTrafficValue = (traffic: string): number => {
+    const num = parseInt(traffic.replace(/[^0-9]/g, ''), 10)
+    return isNaN(num) || num === 0 ? 0 : num
+  }
+  const top5MaxTraffic = Math.max(...top5.map((kw) => getTrafficValue(kw.traffic)), 1)
+  const sortedMaxTraffic = Math.max(...sortedTrends.map((kw) => getTrafficValue(kw.traffic)), 1)
+  const getBarWidth = (kw: TrendKeyword, maxTraffic: number): number => {
+    const tv = getTrafficValue(kw.traffic)
+    if (tv > 0) return Math.max(5, Math.round((tv / maxTraffic) * 100))
+    return Math.max(5, kw.score)
+  }
+
   const getSalesForDesign = (designId: string) => sales.filter((s) => s.designId === designId)
   const getTotalRevenue = () => sales.reduce((acc, s) => acc + s.revenue, 0)
   const getTotalProfit = () => {
@@ -739,43 +939,56 @@ export default function AISelectShop() {
   const profit = sellingPrice - baseCost
   const profitMargin = ((profit / sellingPrice) * 100).toFixed(1)
 
-  // --- Tabs ---
-  const tabs = [
-    { id: 'trends', label: '🔥 トレンド分析' },
-    { id: 'design', label: '🎨 デザイン生成' },
-    { id: 'store', label: '📦 ストア管理' },
-    { id: 'dashboard', label: '📊 ダッシュボード' },
-    { id: 'settings', label: '⚙️ 設定' },
-  ]
-
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-gray-100">
       {/* Header */}
       <div className="border-b border-emerald-500/20 bg-[#0d0d15]">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-lg">
-              🏪
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-lg">
+                🏪
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-white">「在庫ゼロ」AIセレクトショップ</h1>
+                <p className="text-xs text-gray-400">トレンド分析 × AI自動デザイン × オンデマンド出品</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-white">「在庫ゼロ」AIセレクトショップ</h1>
-              <p className="text-xs text-gray-400">トレンド分析 × AI自動デザイン × オンデマンド出品</p>
-            </div>
+            {/* Settings gear */}
+            <button
+              onClick={() => setShowSettingsModal(true)}
+              className="p-2 rounded-lg text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-colors"
+              title="設定"
+            >
+              ⚙️
+            </button>
           </div>
-          {/* Tab Bar */}
-          <div className="flex gap-1 overflow-x-auto pb-1">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
-                  activeTab === tab.id
-                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                    : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
-                }`}
-              >
-                {tab.label}
-              </button>
+          {/* Step Indicator */}
+          <div className="flex items-center gap-0">
+            {[
+              { step: 1 as const, label: 'トレンドを見る', emoji: '🔥' },
+              { step: 2 as const, label: 'デザイン生成', emoji: '🎨' },
+              { step: 3 as const, label: '出品・管理', emoji: '📦' },
+            ].map(({ step, label, emoji }, idx) => (
+              <div key={step} className="flex items-center flex-1">
+                <button
+                  onClick={() => step < currentStep && setCurrentStep(step)}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full ${
+                    currentStep === step
+                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                      : step < currentStep
+                      ? 'text-gray-300 hover:bg-white/5 cursor-pointer'
+                      : 'text-gray-600 cursor-default'
+                  }`}
+                >
+                  <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+                    currentStep === step ? 'bg-emerald-500 text-white' : step < currentStep ? 'bg-gray-600 text-white' : 'bg-gray-800 text-gray-600'
+                  }`}>{step < currentStep ? '✓' : step}</span>
+                  <span className="hidden sm:inline">{emoji} {label}</span>
+                  <span className="sm:hidden">{emoji}</span>
+                </button>
+                {idx < 2 && <div className={`h-0.5 w-4 shrink-0 ${step < currentStep ? 'bg-emerald-500' : 'bg-gray-700'}`} />}
+              </div>
             ))}
           </div>
         </div>
@@ -783,8 +996,8 @@ export default function AISelectShop() {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 py-6">
-        {/* ===== Tab 1: Trends ===== */}
-        {activeTab === 'trends' && (
+        {/* ===== STEP 1: Trends ===== */}
+        {currentStep === 1 && (
           <div className="space-y-6">
             {/* Top 5 */}
             <div>
@@ -802,7 +1015,7 @@ export default function AISelectShop() {
                       {kw.traffic && <p className="text-[10px] text-gray-400 truncate">{kw.traffic}+ 検索</p>}
                       <div className="flex items-center gap-2 mt-1">
                         <div className="flex-1 h-1.5 bg-gray-700 rounded-full">
-                          <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full" style={{ width: `${kw.score}%` }} />
+                          <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full" style={{ width: `${getBarWidth(kw, top5MaxTraffic)}%` }} />
                         </div>
                         <span className="text-xs text-emerald-400 font-mono">{kw.score}</span>
                       </div>
@@ -849,7 +1062,7 @@ export default function AISelectShop() {
                           <span className="text-xs text-gray-500">スコア: {kw.score}</span>
                         </div>
                         <div className="h-1.5 bg-gray-700 rounded-full w-full">
-                          <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full" style={{ width: `${kw.score}%` }} />
+                          <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full" style={{ width: `${getBarWidth(kw, sortedMaxTraffic)}%` }} />
                         </div>
                       </div>
                       <button
@@ -866,8 +1079,8 @@ export default function AISelectShop() {
           </div>
         )}
 
-        {/* ===== Tab 2: Design ===== */}
-        {activeTab === 'design' && (
+        {/* ===== STEP 2: Design ===== */}
+        {currentStep === 2 && (
           <div className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Left: Controls */}
@@ -1067,8 +1280,8 @@ export default function AISelectShop() {
           </div>
         )}
 
-        {/* ===== Tab 3: Store ===== */}
-        {activeTab === 'store' && (
+        {/* ===== STEP 3: Store + Dashboard ===== */}
+        {currentStep === 3 && (
           <div className="space-y-6">
             {/* Actions */}
             <div className="flex flex-wrap gap-2">
@@ -1328,11 +1541,21 @@ export default function AISelectShop() {
                 </div>
               </div>
             )}
+
+            {/* New Design Button */}
+            <div className="pt-2 border-t border-gray-800 flex justify-center">
+              <button
+                onClick={() => setCurrentStep(1)}
+                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-xl font-bold text-sm transition-colors"
+              >
+                ＋ 新しいデザインを作る
+              </button>
+            </div>
           </div>
         )}
 
-        {/* ===== Tab 4: Dashboard ===== */}
-        {activeTab === 'dashboard' && (
+        {/* ===== STEP 3 continued: Dashboard (shown below store) ===== */}
+        {currentStep === 3 && (
           <div className="space-y-6">
             {/* Stats Cards */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -1433,8 +1656,14 @@ export default function AISelectShop() {
           </div>
         )}
 
-        {/* ===== Tab 5: Settings ===== */}
-        {activeTab === 'settings' && (
+        {/* ===== Settings Modal ===== */}
+        {showSettingsModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" onClick={() => setShowSettingsModal(false)}>
+            <div className="bg-[#0d0d15] border border-gray-700 rounded-xl max-w-xl w-full max-h-[85vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-bold text-white">⚙️ 設定</h2>
+                <button onClick={() => setShowSettingsModal(false)} className="text-gray-400 hover:text-white text-xl leading-none">×</button>
+              </div>
           <div className="max-w-xl space-y-6">
             <Card className="bg-[#12121a] border-gray-800">
               <CardContent className="p-6 space-y-5">
@@ -1727,7 +1956,7 @@ export default function AISelectShop() {
 
             {/* Import Modal */}
             {showImportModal && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" onClick={() => setShowImportModal(false)}>
+              <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4" onClick={() => setShowImportModal(false)}>
                 <div className="bg-[#12121a] border border-gray-700 rounded-xl max-w-lg w-full p-6" onClick={(e) => e.stopPropagation()}>
                   <h3 className="text-lg font-bold text-white mb-4">📥 データインポート</h3>
                   <textarea
@@ -1748,6 +1977,8 @@ export default function AISelectShop() {
                 </div>
               </div>
             )}
+          </div>
+            </div>
           </div>
         )}
       </div>
