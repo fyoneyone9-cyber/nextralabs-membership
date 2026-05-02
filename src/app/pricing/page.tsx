@@ -33,7 +33,7 @@ export default function PricingPage() {
     check()
   }, [])
 
-  const handleCheckout = async (plan: 'standard' | 'premium' = 'standard') => {
+  const handleCheckout = async (plan: 'light' | 'standard' | 'premium' = 'standard') => {
     if (!user) {
       window.location.href = '/signup'
       return
@@ -94,7 +94,52 @@ export default function PricingPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
+        {/* Light Plan */}
+        <Card className="relative border-cyan-500/50 shadow-lg">
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+            <Badge className="bg-cyan-500 text-white px-4 py-1">
+              ⚡ ライト
+            </Badge>
+          </div>
+          <CardContent className="p-6">
+            <h3 className="text-xl font-bold mb-2">ライトプラン</h3>
+            <p className="text-muted-foreground text-sm mb-4">気軽に始める入門プラン</p>
+            <div className="text-4xl font-bold mb-6">
+              ¥480
+              <span className="text-base text-muted-foreground font-normal">/月</span>
+            </div>
+            <ul className="space-y-2.5 mb-8">
+              {[
+                '塩対応代行AI',
+                'AI婚活コーチ',
+                'コミュニケーションコーチ',
+                'プロンプトマスター',
+                'AI副業診断',
+                '退職代行アシスタント',
+                'AIクローゼットコーチ',
+                '+ 無料ツール全て',
+              ].map((feature) => (
+                <li key={feature} className="flex items-center gap-2 text-sm">
+                  <Check className="h-4 w-4 text-cyan-500 shrink-0" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            {isPaid ? (
+              <Button variant="outline" className="w-full border-cyan-500/50 text-cyan-400" onClick={handleManage} disabled={loadingPlan === 'manage'}>
+                {loadingPlan === 'manage' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                プラン管理
+              </Button>
+            ) : (
+              <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white" onClick={() => handleCheckout('light')} disabled={loadingPlan === 'light'}>
+                {loadingPlan === 'light' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                ライトプランに登録
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Free Plan */}
         <Card className="relative">
           <CardContent className="p-6">

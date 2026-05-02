@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { checkYoutubeLimit, recordYoutubeUsage } from '@/lib/youtube-rate-limit'
 
 const LLM_BASE = 'https://www.genspark.ai/api/llm_proxy/v1'
 
@@ -51,6 +52,14 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
 
 export async function POST(req: NextRequest) {
   try {
+    // 1日1回制限チェック（generateが最初に呼ばれるエントリーポイント）
+    const limitError = await checkYoutubeLimit()
+    if (limitError) {
+      return NextResponse.json({ error: limitError.error }, { status: limitError.status })
+    }
+    // 使用ログ記録
+    await recordYoutubeUsage()
+
     const body = await req.json()
     const { type, transcript, genre, genrePrompt, customPrompt, scriptTitle, script: scriptText } = body
 

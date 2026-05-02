@@ -178,8 +178,8 @@ const commTools: Product[] = [
     subtitle: '心理学ベース × メッセージ添削 × 自己診断',
     description:
       '心理学理論に基づいてメッセージを添削、コミュスタイルを4タイプ診断、場面別の会話プランナーでスキルアップ。恋愛もビジネスも友人関係も。',
-    price: '¥980/月',
-    priceNote: 'スタンダードプラン',
+    price: '¥480/月',
+    priceNote: 'ライトプラン',
     tags: ['メッセージ添削', 'コミュ診断', '心理学講座', 'NG＆OK集'],
     icon: MessageCircleHeart,
     color: 'from-pink-500 to-purple-500',
@@ -193,8 +193,8 @@ const commTools: Product[] = [
     subtitle: 'プロフィール添削 × メッセージ練習 × 相性診断',
     description:
       'マッチングアプリのプロフィールをAIが添削、メッセージの練習シミュレーター、価値観診断、デートプラン提案、婚活戦略分析まで。',
-    price: '¥980/月',
-    priceNote: 'スタンダードプラン',
+    price: '¥480/月',
+    priceNote: 'ライトプラン',
     tags: ['プロフィール添削', 'メッセージ練習', '相性診断', 'デートプラン'],
     icon: Heart,
     color: 'from-pink-500 to-rose-500',
@@ -223,8 +223,8 @@ const commTools: Product[] = [
     subtitle: '義実家・親戚・上司からの重い連絡を角が立たずに断る',
     description:
       '6つのシチュエーション×3段階のトーンで最適な断り文を一瞬生成。既読タイミング提案とプロのコツ付き。完全オフライン。',
-    price: '¥980/月',
-    priceNote: 'スタンダードプラン',
+    price: '¥480/月',
+    priceNote: 'ライトプラン',
     tags: ['返信生成', '既読タイミング', 'テンプレート', '人間関係'],
     icon: Shield,
     color: 'from-amber-500 to-orange-500',
@@ -242,8 +242,8 @@ const lifeTools: Product[] = [
     subtitle: '退職届生成 × 残業代計算 × 完全チェックリスト',
     description:
       'AIが退職届を自動作成、未払い残業代を計算、有給・社保・年金の手続きまで完全ガイド。退職代行サービスの比較や権利Q&Aも搭載。',
-    price: '¥980/月',
-    priceNote: 'スタンダードプラン',
+    price: '¥480/月',
+    priceNote: 'ライトプラン',
     tags: ['退職届AI生成', '残業代計算', 'チェックリスト', '権利Q&A'],
     icon: ClipboardCheck,
     color: 'from-blue-500 to-indigo-500',
@@ -272,8 +272,8 @@ const lifeTools: Product[] = [
     subtitle: 'ワードローブ管理 × コスパ分析 × 売却ガイド',
     description:
       '持ってる服のコスパを可視化、断捨離候補をAI判定。売却想定価格＆プラットフォーム比較、コーデ提案まで。クローゼットを最適化。',
-    price: '¥980/月',
-    priceNote: 'スタンダードプラン',
+    price: '¥480/月',
+    priceNote: 'ライトプラン',
     tags: ['クローゼット管理', 'コスパ分析', '断捨離AI', '売却ガイド'],
     icon: Shirt,
     color: 'from-violet-500 to-fuchsia-500',
@@ -321,8 +321,8 @@ const bizTools: Product[] = [
     subtitle: '13カテゴリ × 適性診断 × ロードマップ × 収益シミュレーター',
     description:
       'AI副業の「何から始めればいい？」から「月10万円達成」まで完全サポート。50+のAIツール辞典、テンプレート集、活動ログ搭載。',
-    price: '¥1,980/月',
-    priceNote: 'プレミアムプラン',
+    price: '¥480/月',
+    priceNote: 'ライトプラン',
     tags: ['13カテゴリ', '適性診断', 'テンプレート', '収益計算'],
     icon: Briefcase,
     color: 'from-orange-500 to-amber-500',
@@ -355,8 +355,8 @@ const creativeTools: Product[] = [
     subtitle: '26カテゴリ × 日本語→英語変換 × パラメータ辞典',
     description:
       '日本語で入力するだけで画像生成AI用の最適プロンプトを自動生成。Midjourney/DALL-E/Stable Diffusion対応。200+テンプレート搭載。',
-    price: '¥1,980/月',
-    priceNote: 'プレミアムプラン',
+    price: '¥480/月',
+    priceNote: 'ライトプラン',
     tags: ['26カテゴリ', 'プロンプト生成', 'テンプレート', '画像AI'],
     icon: Wand2,
     color: 'from-purple-500 to-fuchsia-500',
@@ -504,6 +504,10 @@ function ProductCard({ product }: { product: Product }) {
             ) : product.priceNote === 'プレミアムプラン' ? (
               <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-bold bg-gradient-to-r from-amber-500/15 to-orange-500/15 text-amber-600 dark:text-amber-400 ring-2 ring-amber-500/40 shadow-sm">
                 👑 プレミアム
+              </span>
+            ) : product.priceNote === 'ライトプラン' ? (
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-bold bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 ring-2 ring-cyan-500/40 shadow-sm">
+                ⚡ ライト
               </span>
             ) : product.priceNote === 'スタンダードプラン' ? (
               <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-bold bg-sky-500/15 text-sky-600 dark:text-sky-400 ring-2 ring-sky-500/40 shadow-sm">

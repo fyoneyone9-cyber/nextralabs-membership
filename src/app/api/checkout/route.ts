@@ -11,6 +11,8 @@ export async function POST(request: NextRequest) {
 
     const priceId = plan === 'premium'
       ? process.env.STRIPE_PREMIUM_PRICE_ID
+      : plan === 'light'
+      ? process.env.STRIPE_LIGHT_PRICE_ID
       : process.env.STRIPE_STANDARD_PRICE_ID
 
     if (!priceId) {
