@@ -726,7 +726,7 @@ export default function OfficePoliticsGraph() {
           <span className="text-sm text-gray-300">🎬 組織と人間関係を深く考えたくなったら —「STILL: マイケル・J・フォックス」</span>
           <p className="text-xs text-gray-500 mt-0.5">逆境を笑顔で生き抜いた人生のドキュメンタリー。Amazon Prime Videoで視聴できます。</p>
         </div>
-        <a href="https://amzn.to/4d19hCq" target="_blank" rel="noopener noreferrer sponsored"
+        <a href="https://amzn.to/4ejfQ5J" target="_blank" rel="noopener noreferrer sponsored"
           className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold transition-colors">
           Primeで観る →
         </a>

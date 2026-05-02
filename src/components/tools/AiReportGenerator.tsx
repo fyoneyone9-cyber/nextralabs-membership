@@ -398,7 +398,7 @@ export default function AiReportGenerator() {
           <span className="text-sm">🎬 レポート作成が終わったら —「STILL: マイケル・J・フォックス」</span>
           <p className="text-xs text-muted-foreground mt-0.5">逆境に負けず笑顔で人生を切り拓いた彼のドキュメンタリー。Amazon Prime Videoで視聴できます。</p>
         </div>
-        <a href="https://amzn.to/4d19hCq" target="_blank" rel="noopener noreferrer sponsored"
+        <a href="https://amzn.to/4ejfQ5J" target="_blank" rel="noopener noreferrer sponsored"
           className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold transition-colors">
           Primeで観る →
         </a>

@@ -635,7 +635,7 @@ export default function MovingChecker() {
           <span className="text-sm">🎬 引っ越しの夜に観たい —「STILL: マイケル・J・フォックス」</span>
           <p className="text-xs text-muted-foreground mt-0.5">人生の転機に立ち向かい続けた男のドキュメンタリー。Amazon Prime Videoで視聴できます。</p>
         </div>
-        <a href="https://amzn.to/4d19hCq" target="_blank" rel="noopener noreferrer sponsored"
+        <a href="https://amzn.to/4ejfQ5J" target="_blank" rel="noopener noreferrer sponsored"
           className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold transition-colors">
           Primeで観る →
         </a>
