@@ -20,12 +20,12 @@ import {
 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'KDP出版ナビ | NextraLabs',
-  description: 'Amazon Kindle出版（KDP）の手順をステップ形式でガイド。アカウント設定から原稿作成・価格設定・出版申請まで迷わず進められる。',
+  title: 'Kindle出版手順ナビ | NextraLabs',
+  description: 'Amazon Kindle出版の手順をステップ形式でガイド。アカウント設定から原稿作成・価格設定・出版申請まで迷わず進められる。',
   alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/kdp-guide' },
   openGraph: {
-    title: 'KDP出版ナビ | NextraLabs',
-    description: 'Amazon Kindle出版（KDP）の手順をステップ形式でガイド。アカウント設定から出版申請まで迷わず進められる。',
+    title: 'Kindle出版手順ナビ | NextraLabs',
+    description: 'Amazon Kindle出版の手順をステップ形式でガイド。アカウント設定から出版申請まで迷わず進められる。',
     url: 'https://membership-site-nextralabos.vercel.app/products/kdp-guide',
     type: 'website',
   },
@@ -145,7 +145,7 @@ export default function KdpGuidePage() {
               <Badge className="mb-4 bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20">
                 📗 無料ツール
               </Badge>
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">KDP出版ナビ</h1>
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Kindle出版手順ナビ</h1>
               <p className="text-xl text-muted-foreground mb-2">Amazon Kindle出版を迷わず完了 — ステップ式ガイド</p>
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
                 KDPアカウント設定から原稿作成・価格設定・出版申請まで、
@@ -177,7 +177,7 @@ export default function KdpGuidePage() {
                     <div className="w-3 h-3 rounded-full bg-red-500" />
                     <div className="w-3 h-3 rounded-full bg-yellow-500" />
                     <div className="w-3 h-3 rounded-full bg-green-500" />
-                    <span className="text-xs text-muted-foreground ml-2">KDP出版ナビ</span>
+                    <span className="text-xs text-muted-foreground ml-2">Kindle出版手順ナビ</span>
                   </div>
                   <div className="space-y-2">
                     {['KDPアカウントの初期設定', '出版データの作成', '本の登録・出版申請', '出版申請'].map((label, i) => (

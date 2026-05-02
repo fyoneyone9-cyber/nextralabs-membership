@@ -174,7 +174,7 @@ export default function KdpGuide() {
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">📗 KDP出版ナビ</h1>
+          <h1 className="text-3xl font-bold mb-2">📗 Kindle出版手順ナビ</h1>
           <p className="text-gray-400 text-sm">Amazon Kindle出版の手順をステップ形式でガイド</p>
         </div>
 
