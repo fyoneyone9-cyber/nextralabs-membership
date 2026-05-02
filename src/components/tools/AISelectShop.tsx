@@ -41,6 +41,14 @@ interface SaleRecord {
   timestamp: string
 }
 
+interface PrintfulOrder {
+  id: number
+  status: string
+  created: number // unix timestamp
+  retail_costs: { total: string; subtotal: string }
+  items: Array<{ name: string; quantity: number; retail_price: string }>
+}
+
 interface AppSettings {
   defaultMarkup: number
   defaultTshirtColor: string
@@ -132,9 +140,6 @@ function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).substring(2, 8)
 }
 
-function randomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min
-}
 
 function trafficToScore(traffic: string): number {
   const num = parseInt(traffic.replace(/[^0-9]/g, ''), 10)
@@ -547,11 +552,13 @@ export default function AISelectShop() {
   const [printfulConnected, setPrintfulConnected] = useState(false)
   const [printfulStoreName, setPrintfulStoreName] = useState('')
   const [printfulProducts, setPrintfulProducts] = useState<Array<{id: number, name: string, variants: number, thumbnail_url: string | null}>>([])
+  const [printfulOrders, setPrintfulOrders] = useState<PrintfulOrder[]>([])
   const [printfulLoading, setPrintfulLoading] = useState(false)
   const [printfulPublishing, setPrintfulPublishing] = useState<string | null>(null)
   const [printfulError, setPrintfulError] = useState('')
   const [printfulShowShopifyLink, setPrintfulShowShopifyLink] = useState(false)
   const [printfulShipping, setPrintfulShipping] = useState<string | null>(null)
+  const [ordersLoading, setOrdersLoading] = useState(false)
 
   // --- Printful credential helper ---
   const getPrintfulCreds = useCallback(() => {
@@ -594,6 +601,18 @@ export default function AISelectShop() {
             thumbnail_url: p.thumbnail_url,
           })))
         }
+        // Also fetch real orders
+        setOrdersLoading(true)
+        const orderRes = await fetch('/api/tools/printful', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'list-orders', ...creds }),
+        })
+        const orderData = await orderRes.json()
+        if (orderData.code === 200) {
+          setPrintfulOrders(orderData.result || [])
+        }
+        setOrdersLoading(false)
       } else {
         setPrintfulError(data.error?.message || data.result || 'Connection failed')
       }
@@ -709,33 +728,7 @@ export default function AISelectShop() {
     setSettings(loadFromStorage<AppSettings>(STORAGE_KEYS.settings, DEFAULT_SETTINGS))
   }, [])
 
-  // --- Simulate sales periodically ---
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDesigns((prev) => {
-        const activeDesigns = prev.filter((d) => d.status === '出品中')
-        if (activeDesigns.length === 0) return prev
-        if (Math.random() < 0.3) {
-          const design = activeDesigns[randomInt(0, activeDesigns.length - 1)]
-          const qty = randomInt(1, 3)
-          const newSale: SaleRecord = {
-            id: generateId(),
-            designId: design.id,
-            quantity: qty,
-            revenue: design.sellingPrice * qty,
-            timestamp: new Date().toISOString(),
-          }
-          setSales((prevSales) => {
-            const updated = [...prevSales, newSale]
-            saveToStorage(STORAGE_KEYS.sales, updated)
-            return updated
-          })
-        }
-        return prev
-      })
-    }, 8000)
-    return () => clearInterval(interval)
-  }, [])
+  // (シミュレーション売上は廃止。実売上はPrintful注文データから取得)
 
   // --- Sync settings ---
   useEffect(() => {
@@ -879,15 +872,35 @@ export default function AISelectShop() {
   const top5MaxTraffic = Math.max(...top5.map(getTrafficNumber), 1)
   const allMaxTraffic = Math.max(...sortedTrends.map(getTrafficNumber), 1)
 
-  const getSalesForDesign = (designId: string) => sales.filter((s) => s.designId === designId)
-  const getTotalRevenue = () => sales.reduce((acc, s) => acc + s.revenue, 0)
-  const getTotalProfit = () => {
-    return sales.reduce((acc, s) => {
-      const design = designs.find((d) => d.id === s.designId)
-      if (!design) return acc
-      return acc + (s.revenue - design.baseCost * s.quantity)
-    }, 0)
+  // Printful実注文ベースの集計
+  const getTotalRevenue = () => {
+    if (!printfulConnected || printfulOrders.length === 0) return null
+    return printfulOrders.reduce((acc, o) => acc + parseFloat(o.retail_costs?.total || '0'), 0)
   }
+  const getTotalOrderCount = () => {
+    if (!printfulConnected) return null
+    return printfulOrders.length
+  }
+  const getTotalItemsSold = () => {
+    if (!printfulConnected || printfulOrders.length === 0) return null
+    return printfulOrders.reduce((acc, o) => acc + o.items.reduce((a, i) => a + i.quantity, 0), 0)
+  }
+  // revenueChart用: 日付ごとの実売上
+  const getDailyRevenueFromOrders = (): Array<{ label: string; revenue: number }> => {
+    const now = new Date()
+    return Array.from({ length: 30 }, (_, i) => {
+      const d = new Date(now)
+      d.setDate(d.getDate() - (29 - i))
+      const dateStr = d.toISOString().slice(0, 10)
+      const label = `${d.getMonth() + 1}/${d.getDate()}`
+      const revenue = printfulOrders
+        .filter((o) => new Date(o.created * 1000).toISOString().slice(0, 10) === dateStr)
+        .reduce((acc, o) => acc + parseFloat(o.retail_costs?.total || '0'), 0)
+      return { label, revenue }
+    })
+  }
+  // ローカルsalesは後方互換のため残すが売上表示には使わない
+  const getSalesForDesign = (designId: string) => sales.filter((s) => s.designId === designId)
 
   const baseCost = 1200
   const sellingPrice = Math.round(baseCost * (designMarkup / 100))
@@ -1261,15 +1274,26 @@ export default function AISelectShop() {
             {/* Summary Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
-                { label: '総デザイン数', value: designs.length.toString(), color: 'text-white' },
-                { label: '出品中', value: designs.filter((d) => d.status === '出品中').length.toString(), color: 'text-emerald-400' },
-                { label: '総売上', value: `¥${getTotalRevenue().toLocaleString()}`, color: 'text-teal-400' },
-                { label: '総利益', value: `¥${getTotalProfit().toLocaleString()}`, color: getTotalProfit() >= 0 ? 'text-emerald-400' : 'text-red-400' },
+                { label: '総デザイン数', value: designs.length.toString(), color: 'text-white', note: '' },
+                { label: '出品中', value: designs.filter((d) => d.status === '出品中').length.toString(), color: 'text-emerald-400', note: '' },
+                {
+                  label: '総売上 (Printful実績)',
+                  value: ordersLoading ? '取得中...' : getTotalRevenue() !== null ? `$${getTotalRevenue()!.toFixed(2)}` : printfulConnected ? '$0.00' : '未連携',
+                  color: 'text-teal-400',
+                  note: printfulConnected ? `${getTotalOrderCount() ?? 0}件の注文` : 'Printfulに接続してください',
+                },
+                {
+                  label: '総販売点数 (Printful実績)',
+                  value: ordersLoading ? '取得中...' : getTotalItemsSold() !== null ? `${getTotalItemsSold()}点` : printfulConnected ? '0点' : '未連携',
+                  color: 'text-emerald-400',
+                  note: '',
+                },
               ].map((stat) => (
                 <Card key={stat.label} className="bg-[#12121a] border-gray-800">
                   <CardContent className="p-4">
                     <p className="text-xs text-gray-500 mb-1">{stat.label}</p>
                     <p className={`text-xl font-bold ${stat.color}`}>{stat.value}</p>
+                    {stat.note && <p className="text-[10px] text-gray-600 mt-0.5">{stat.note}</p>}
                   </CardContent>
                 </Card>
               ))}
@@ -1391,12 +1415,32 @@ export default function AISelectShop() {
               </div>
             )}
 
-            {/* Revenue Chart */}
-            {sales.length > 0 && (
+            {/* Revenue Chart - Printful実データ */}
+            {printfulConnected && (
               <Card className="bg-[#12121a] border-gray-800">
                 <CardContent className="p-4">
-                  <h3 className="text-sm font-bold text-gray-300 mb-4">📈 直近30日の売上推移</h3>
-                  <DailyRevenueChart sales={sales} />
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-bold text-gray-300">📈 直近30日の売上推移（Printful実績）</h3>
+                    {ordersLoading && <span className="text-xs text-gray-500 animate-pulse">取得中...</span>}
+                  </div>
+                  {printfulOrders.length === 0 && !ordersLoading ? (
+                    <p className="text-xs text-gray-500 text-center py-8">まだ注文がありません</p>
+                  ) : (
+                    <DailyRevenueChartRaw days={getDailyRevenueFromOrders()} />
+                  )}
+                </CardContent>
+              </Card>
+            )}
+            {!printfulConnected && (
+              <Card className="bg-[#12121a] border-gray-800 border-dashed">
+                <CardContent className="p-6 text-center">
+                  <p className="text-gray-500 text-sm mb-2">📊 売上グラフはPrintful接続後に表示されます</p>
+                  <button
+                    onClick={() => setShowPrintfulModal(true)}
+                    className="text-xs text-emerald-400 hover:text-emerald-300 underline"
+                  >
+                    Printfulに接続する →
+                  </button>
                 </CardContent>
               </Card>
             )}
@@ -1838,21 +1882,7 @@ export default function AISelectShop() {
 }
 
 // ==================== Sub-components ====================
-function DailyRevenueChart({ sales }: { sales: SaleRecord[] }) {
-  const now = new Date()
-  const days: { label: string; revenue: number }[] = []
-
-  for (let i = 29; i >= 0; i--) {
-    const d = new Date(now)
-    d.setDate(d.getDate() - i)
-    const dateStr = d.toISOString().slice(0, 10)
-    const label = `${d.getMonth() + 1}/${d.getDate()}`
-    const revenue = sales
-      .filter((s) => s.timestamp.slice(0, 10) === dateStr)
-      .reduce((acc, s) => acc + s.revenue, 0)
-    days.push({ label, revenue })
-  }
-
+function DailyRevenueChartRaw({ days }: { days: Array<{ label: string; revenue: number }> }) {
   const maxRevenue = Math.max(...days.map((d) => d.revenue), 1)
 
   return (
@@ -1861,13 +1891,13 @@ function DailyRevenueChart({ sales }: { sales: SaleRecord[] }) {
         <div key={i} className="flex-1 flex flex-col items-center justify-end h-full group relative">
           <div
             className="w-full bg-gradient-to-t from-emerald-500 to-teal-400 rounded-t min-h-[2px] transition-all"
-            style={{ height: `${Math.max((day.revenue / maxRevenue) * 100, 1.5)}%` }}
+            style={{ height: `${Math.max((day.revenue / maxRevenue) * 100, day.revenue > 0 ? 3 : 1.5)}%` }}
           />
           {i % 5 === 0 && (
             <span className="text-[8px] text-gray-600 mt-1">{day.label}</span>
           )}
           <div className="absolute bottom-full mb-2 bg-gray-800 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
-            {day.label}: ¥{day.revenue.toLocaleString()}
+            {day.label}: ${day.revenue.toFixed(2)}
           </div>
         </div>
       ))}

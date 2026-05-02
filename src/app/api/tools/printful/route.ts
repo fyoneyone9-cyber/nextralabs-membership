@@ -276,6 +276,12 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(data)
       }
 
+      case 'list-orders': {
+        // Fetch up to 100 most recent orders from Printful
+        const data = await printfulFetch('/orders?limit=100&status=fulfilled', apiKey, storeId)
+        return NextResponse.json(data)
+      }
+
       case 'shopify-test': {
         const sDomain = body.shopifyDomain || DEFAULT_SHOPIFY_STORE_DOMAIN
         const sClientId = body.shopifyClientId || DEFAULT_SHOPIFY_CLIENT_ID
