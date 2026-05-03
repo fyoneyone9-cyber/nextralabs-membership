@@ -12,8 +12,7 @@ import {
 import { toast } from "sonner";
 
 export default function SmartGardening() {
-  const [targetName, setTargetName] = useState('');
-  const [plantName, setPlantName] = useState(''); // 植物名入力用
+  const [plantName, setPlantName] = useState('');
   const [prompt, setPrompt] = useState('');
   const [image, setImage] = useState<string | null>(null);
   const [locationName, setLocationName] = useState<string>('海老名市');
@@ -45,9 +44,8 @@ export default function SmartGardening() {
       });
       const data = await response.json();
       setScanResult(data);
-      if (data.name) setTargetName(data.name);
     } catch (err) {
-      setScanResult({ name: "解析完了", status: "詳細診断の準備完了", environment: locationName, confidence: "100" });
+      setScanResult({ name: "現場写真", status: "解析準備完了", environment: locationName, confidence: "100" });
     } finally {
       setIsScanning(false);
     }
@@ -103,9 +101,10 @@ export default function SmartGardening() {
         const geoData = await geoRes.json();
         const weatherData = await weatherRes.json();
         const city = geoData.address.city || geoData.address.town || geoData.address.province || "現在地";
-        const temp = weatherData.current_weather.temperature;
+        const weatherMap: Record<number, string> = { 0: "快晴", 1: "晴れ", 2: "一部曇り", 3: "曇り", 45: "霧", 48: "霧", 51: "小雨", 61: "雨", 71: "雪", 95: "雷雨" };
+        const condition = weatherMap[weatherData.current_weather.weathercode] || "不明";
         setLocationName(city);
-        setWeatherInfo(`晴れ / ${temp}°C`);
+        setWeatherInfo(`${condition} / ${weatherData.current_weather.temperature}°C`);
         toast.success("環境データを同期しました");
       } catch (err) { console.error(err); }
     });
@@ -113,27 +112,35 @@ export default function SmartGardening() {
 
   const handleCopyAndGo = (url: string) => {
     if (!image) return toast.error("対象を撮影してください");
+    
+    // プロンプトに使用する「名前」を決定
+    const finalTargetName = plantName || (scanResult?.name && scanResult.name !== "解析完了" ? scanResult.name : "") || "現場写真";
+
     const magicPrompt = `
-重要：このテキストと一緒に、今撮影した写真を1枚送信しています。まずその画像を詳細に確認してください。
-あなたは万能現場アナリストです。
-【現場データ】
-・対象: ${targetName || plantName || "写真の通り"}
-・地域: ${locationName}
-・環境: ${weatherInfo}
-・相談: ${prompt || "詳細分析をお願いします。"}
-【指示】
-1. 写真の状態を詳しく解析し、トラブルの有無を特定してください。
-2. 地域環境を考慮した解決策を具体的に提示してください。
-3. ポジティブで温かいアドバイスをお願いします。
+重要：このテキストと一緒に、私が今撮影した【${finalTargetName}】の写真を1枚送信しています。まずその画像をピクセル単位で詳細に確認し、以下のプロフェッショナル分析を開始してください。
+
+あなたは世界中のあらゆる事象（植物・建築・機械・芸術）に精通した、慈愛に満ちた「超一流現場鑑定士」です。
+
+【現場コンテクスト】
+・対象の識別: ${finalTargetName}
+・観測地点: ${locationName}
+・環境データ: ${weatherInfo}（この気象条件が対象に与える影響を考慮してください）
+・ユーザーからの相談: ${prompt || "この状況において、今私が知るべきことと、すべきことを教えてください。"}
+
+【鑑定・実行指示】
+1. 写真を精査し、対象物の微細な変化（色、形、テクスチャ、不自然な箇所）をプロの視点で特定・解説してください。
+2. 周辺環境（${locationName}の${weatherInfo}）との相関関係を分析し、現在起きている事象の原因を論理的に導き出してください。
+3. 今、この瞬間に実行すべき「具体的かつ即効性のあるアクション」を、数値や手順を交えて指示してください。
+4. 単なる事実の羅列ではなく、持ち主の不安を解消し、前向きな希望を持てるような「温かく、格調高い言葉」で回答を締めくくってください。
 `;
-    navigator.clipboard.writeText(magicPrompt);
+    navigator.clipboard.writeText(magicPrompt.trim());
     setIsCopied(true);
-    toast.success("プロンプトをコピーしました！");
+    toast.success("プロ仕様の鑑定プロンプトをコピーしました！");
     setTimeout(() => { window.open(url, '_blank'); }, 500);
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-4 min-h-screen">
+    <div className="max-w-6xl mx-auto p-4 min-h-screen font-sans">
       <Card className="border-none bg-white shadow-2xl rounded-[3rem] overflow-hidden">
         <div className="flex flex-col lg:flex-row min-h-[750px]">
           <div className="lg:w-3/5 bg-slate-950 relative flex items-center justify-center overflow-hidden">
@@ -183,7 +190,7 @@ export default function SmartGardening() {
               <div className="text-center p-10 space-y-8">
                 <div className="h-32 w-32 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto border border-blue-500/20"><Search className="w-12 h-12 text-blue-500/40" /></div>
                 <div className="flex flex-col gap-4">
-                  <Button onClick={startCamera} className="bg-blue-600 hover:bg-blue-500 text-white h-20 px-12 rounded-3xl font-black text-2xl shadow-2xl">スコープを起動</Button>
+                  <Button onClick={startCamera} className="bg-blue-600 hover:bg-green-500 text-white h-20 px-12 rounded-3xl font-black text-2xl shadow-2xl">スコープを起動</Button>
                   <Button onClick={() => fileInputRef.current?.click()} variant="outline" className="border-white/20 text-white hover:bg-white/5 h-16 px-10 rounded-3xl font-black text-lg">画像を選択</Button>
                   <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={(e) => {
                     const file = e.target.files?.[0];
@@ -215,7 +222,7 @@ export default function SmartGardening() {
 
                 <div className="p-5 bg-slate-50 border-2 border-slate-100 rounded-2xl">
                   <label className="text-[10px] font-black text-slate-400 uppercase mb-2 block">Target Name</label>
-                  <input className="bg-transparent border-none p-0 font-bold text-lg text-slate-900 focus:ring-0 w-full" placeholder="対象の名前（植物名など）" value={plantName} onChange={(e) => setPlantName(e.target.value)} />
+                  <input className="bg-transparent border-none p-0 font-bold text-lg text-slate-900 focus:ring-0 w-full" placeholder="対象の名称（例：ダリア）" value={plantName} onChange={(e) => setPlantName(e.target.value)} />
                 </div>
 
                 <div className="p-5 bg-slate-50 border-2 border-slate-100 rounded-2xl">
@@ -224,10 +231,11 @@ export default function SmartGardening() {
                 </div>
               </section>
 
-              <section className="space-y-4 pt-4 border-t border-slate-100">
+              <section className="space-y-4 pt-4 border-t border-slate-100 text-center">
+                <p className="text-xs font-black text-slate-300 uppercase tracking-widest mb-2">Deep Expert Analysis</p>
                 <Button onClick={() => handleCopyAndGo('https://chatgpt.com/')} disabled={!image || isScanning} className="h-24 w-full bg-slate-900 hover:bg-black text-white rounded-[2rem] shadow-2xl flex flex-col items-center justify-center group active:scale-95 transition-all">
                   <div className="flex items-center gap-3 text-2xl font-black italic tracking-tighter uppercase"><Bot className="w-6 h-6 text-blue-400" /> ChatGPT</div>
-                  <span className="text-[10px] opacity-50 font-bold uppercase tracking-widest">Copy Prompt & Launch</span>
+                  <span className="text-[10px] opacity-50 font-bold uppercase tracking-widest">鑑定プロンプトをコピーして起動</span>
                 </Button>
                 <div className="grid grid-cols-2 gap-4">
                   <Button variant="outline" onClick={() => handleCopyAndGo('https://gemini.google.com/')} className="h-16 border-2 border-slate-100 hover:border-blue-500 rounded-2xl font-black text-slate-600">GEMINI</Button>
@@ -244,7 +252,7 @@ export default function SmartGardening() {
             </div>
             <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between text-[10px] font-black text-slate-300 uppercase tracking-widest">
               <span>NextraLabs Scope Engine</span>
-              <span>Final Release</span>
+              <span>Professional v3.0</span>
             </div>
           </div>
         </div>
