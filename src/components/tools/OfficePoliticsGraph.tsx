@@ -491,9 +491,9 @@ export default function OfficePoliticsGraph() {
                   <a
                     href="/samples/social-graph-sample.xlsx"
                     download
-                    className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 underline"
+                    className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-1.5 px-3 rounded-lg transition-colors"
                   >
-                    📥 サンプルExcelをダウンロード（説明付き）
+                    📥 サンプルExcelをDL（説明付き）
                   </a>
                   <span className="text-gray-600 text-xs">← Excelで開いて名前を書き換えるだけ</span>
                 </div>
