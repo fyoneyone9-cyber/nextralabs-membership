@@ -85,7 +85,7 @@ export default function RealTimeScope() {
     if (!image) return;
     const link = document.createElement('a');
     link.href = image;
-    link.download = `nextralabs-capture-${Date.now()}.jpg`;
+    link.download = `scope-capture-${Date.now()}.jpg`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -146,10 +146,10 @@ export default function RealTimeScope() {
           <div className="lg:w-3/5 bg-slate-950 relative flex items-center justify-center overflow-hidden">
             <div className="absolute top-0 left-0 w-full p-10 z-10 bg-gradient-to-b from-black/80 via-black/40 to-transparent text-white">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-blue-600 rounded-2xl shadow-lg animate-pulse"><Zap className="w-8 h-8" /></div>
+                <div className="p-3 bg-blue-600 rounded-2xl shadow-lg"><Zap className="w-8 h-8" /></div>
                 <div>
-                   <h1 className="text-3xl font-black italic tracking-tighter uppercase leading-none">AI REAL-TIME SCOPE</h1>
-                   <p className="text-blue-400 text-[10px] font-black tracking-[0.4em] mt-1">NEXTRALABS INTELLIGENCE</p>
+                   <h1 className="text-3xl font-black italic tracking-tighter leading-none">AI リアルタイム・スコープ</h1>
+                   <p className="text-blue-400 text-[10px] font-black tracking-[0.4em] mt-1 uppercase">NextraLabs Intelligence</p>
                 </div>
               </div>
             </div>
@@ -157,7 +157,6 @@ export default function RealTimeScope() {
             {isCameraActive ? (
               <div className="w-full h-full relative">
                 <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
-                <div className="absolute inset-0 border-[20px] border-white/5 pointer-events-none" />
                 <div className="absolute bottom-12 left-0 right-0 flex justify-center items-center gap-10 z-20">
                   <Button onClick={takePhoto} className="h-24 w-24 rounded-full bg-white border-8 border-blue-500/30 flex items-center justify-center shadow-[0_0_60px_rgba(255,255,255,0.4)] active:scale-90 transition-all">
                     <div className="h-14 w-14 bg-white rounded-full border-2 border-slate-200" />
@@ -180,16 +179,16 @@ export default function RealTimeScope() {
                 {isScanning && (
                   <div className="absolute inset-0 bg-blue-600/30 backdrop-blur-md flex flex-col items-center justify-center">
                     <RefreshCw className="w-20 h-20 text-white animate-spin mb-6" />
-                    <p className="text-white font-black tracking-[0.5em] text-2xl italic">AI ANALYZING...</p>
+                    <p className="text-white font-black tracking-[0.5em] text-2xl italic">AIスキャン中...</p>
                   </div>
                 )}
                 
                 {scanResult && (
                   <div className="absolute top-32 left-10 right-10 p-8 bg-black/70 backdrop-blur-2xl rounded-[2rem] border border-white/20 animate-in slide-in-from-top-4 duration-500">
-                    <div className="flex items-center gap-3 text-blue-400 font-black text-xs uppercase mb-4 tracking-[0.2em]"><Zap className="w-4 h-4" /> Real-time Analysis Success</div>
+                    <div className="flex items-center gap-3 text-blue-400 font-black text-xs uppercase mb-4 tracking-[0.2em]"><Zap className="w-4 h-4" /> プレ解析に成功しました</div>
                     <div className="grid grid-cols-2 gap-8 text-white">
-                      <div><p className="text-[10px] opacity-40 font-black uppercase mb-1">Target Identity</p><p className="text-2xl font-black tracking-tight">{scanResult.name}</p></div>
-                      <div><p className="text-[10px] opacity-40 font-black uppercase mb-1">Live Status</p><p className="text-2xl font-black text-green-400 tracking-tight">{scanResult.status}</p></div>
+                      <div><p className="text-[10px] opacity-40 font-black uppercase mb-1">対象の名称</p><p className="text-2xl font-black tracking-tight">{scanResult.name}</p></div>
+                      <div><p className="text-[10px] opacity-40 font-black uppercase mb-1">現在の状態</p><p className="text-2xl font-black text-green-400 tracking-tight">{scanResult.status}</p></div>
                     </div>
                   </div>
                 )}
@@ -201,8 +200,8 @@ export default function RealTimeScope() {
                    <div className="absolute inset-0 border-2 border-blue-500/20 rounded-full animate-ping" />
                 </div>
                 <div className="flex flex-col gap-5 max-w-sm mx-auto">
-                  <Button onClick={startCamera} className="bg-blue-600 hover:bg-blue-500 text-white h-24 px-12 rounded-[2rem] font-black text-3xl shadow-[0_20px_60px_rgba(37,99,235,0.3)] transition-all active:scale-95 uppercase italic tracking-tighter">Start Scope</Button>
-                  <Button onClick={() => fileInputRef.current?.click()} variant="outline" className="border-white/10 text-slate-400 hover:bg-white/5 hover:text-white h-16 px-10 rounded-2xl font-black text-lg transition-all uppercase tracking-widest">Import Local Image</Button>
+                  <Button onClick={startCamera} className="bg-blue-600 hover:bg-blue-500 text-white h-24 px-12 rounded-[2rem] font-black text-3xl shadow-[0_20px_60px_rgba(37,99,235,0.3)] transition-all active:scale-95 italic tracking-tighter">スコープを起動</Button>
+                  <Button onClick={() => fileInputRef.current?.click()} variant="outline" className="border-white/10 text-slate-400 hover:bg-white/5 hover:text-white h-16 px-10 rounded-2xl font-black text-lg transition-all tracking-widest">保存した写真を選択</Button>
                   <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) {
@@ -222,16 +221,16 @@ export default function RealTimeScope() {
             <div className="flex-1 space-y-12">
               
               {/* ステップ説明 */}
-              <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                <HelpCircle className="w-5 h-5 text-slate-400" />
-                <p className="text-[13px] text-slate-500 font-bold leading-snug">
-                  現場の写真を保存し、プロンプトを最強AIに貼り付けるだけで、プロ級の鑑定が始まります。
+              <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100 shadow-inner">
+                <HelpCircle className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                <p className="text-[13px] text-slate-600 font-bold leading-snug">
+                  現場の写真を保存し、鑑定プロンプトを最強AIに貼り付けるだけで、プロ級の分析が始まります。
                 </p>
               </div>
 
               <section className="space-y-6">
                 <div className="p-6 bg-blue-50/50 border-2 border-blue-100 rounded-[2rem] relative shadow-sm transition-all hover:shadow-md">
-                  <label className="text-[10px] font-black text-blue-500 uppercase mb-3 block tracking-[0.2em] font-sans">1. Environmental Sync</label>
+                  <label className="text-[10px] font-black text-blue-500 uppercase mb-3 block tracking-[0.2em]">1. 環境データの同期</label>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="h-12 w-12 bg-blue-500 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
@@ -242,46 +241,43 @@ export default function RealTimeScope() {
                         <p className="text-[11px] font-black text-blue-500 mt-1 uppercase italic tracking-widest">{weatherInfo}</p>
                       </div>
                     </div>
-                    <Button size="icon" variant="ghost" className="text-blue-500 hover:bg-blue-100 rounded-2xl h-12 w-12" onClick={syncRealtimeData}><RefreshCw className="w-5 h-5" /></Button>
+                    <Button size="icon" variant="ghost" className="text-blue-500 hover:bg-blue-100 rounded-2xl h-12 w-12" onClick={syncRealtimeData} title="再取得"><RefreshCw className="w-5 h-5" /></Button>
                   </div>
                 </div>
 
-                <div className="p-6 bg-slate-50 border-2 border-slate-100 rounded-[2rem] space-y-4">
+                <div className="p-6 bg-slate-50 border-2 border-slate-100 rounded-[2rem] space-y-4 shadow-inner">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block">2. Identify Target</label>
-                    <input className="bg-transparent border-none p-0 font-black text-xl text-slate-900 focus:ring-0 w-full placeholder:text-slate-300" placeholder="対象の名称（例：ダリア）" value={plantName} onChange={(e) => setPlantName(e.target.value)} />
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block">2. 対象の名称</label>
+                    <input className="bg-transparent border-none p-0 font-black text-xl text-slate-900 focus:ring-0 w-full placeholder:text-slate-300" placeholder="例：ダリア、ひび割れた壁" value={plantName} onChange={(e) => setPlantName(e.target.value)} />
                   </div>
                   <div className="h-px bg-slate-200" />
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block">3. Personal Request</label>
-                    <Textarea className="bg-transparent border-none p-0 font-bold text-lg text-slate-900 focus:ring-0 w-full min-h-[80px] resize-none placeholder:text-slate-300" placeholder="知りたいこと、今の困りごと..." value={prompt} onChange={(e) => setPrompt(e.target.value)} />
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block">3. 相談内容（任意）</label>
+                    <Textarea className="bg-transparent border-none p-0 font-bold text-lg text-slate-900 focus:ring-0 w-full min-h-[80px] resize-none placeholder:text-slate-300" placeholder="今の困りごとや知りたいこと..." value={prompt} onChange={(e) => setPrompt(e.target.value)} />
                   </div>
                 </div>
               </section>
 
               <section className="space-y-5 pt-6 border-t border-slate-100 text-center">
                 <div className="space-y-1">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Step 2: Choose AI & Launch Analysis</p>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Step 2: AIを選んで鑑定開始</p>
                   <p className="text-[11px] text-slate-400 font-bold">プロンプトをコピーしてAIアプリへ移動します</p>
                 </div>
                 
                 <div className="grid grid-cols-1 gap-4">
-                   {/* Gemini: 最も明るく、Vision推奨 */}
                   <Button onClick={() => handleCopyAndGo('https://gemini.google.com/')} disabled={!image || isScanning} className="h-24 w-full bg-blue-600 hover:bg-blue-500 text-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(37,99,235,0.3)] flex flex-col items-center justify-center group active:scale-95 transition-all border-none relative overflow-hidden">
-                    <div className="flex items-center gap-3 text-2xl font-black italic tracking-tighter uppercase relative z-10"><Sparkles className="w-8 h-8 text-amber-300" /> 2-A. Geminiで診断</div>
-                    <span className="text-[10px] text-blue-100 font-black uppercase tracking-widest relative z-10 italic">Recommended for Visual Analysis</span>
+                    <div className="flex items-center gap-3 text-2xl font-black italic tracking-tighter uppercase relative z-10"><Sparkles className="w-8 h-8 text-amber-300" /> 2-A. Geminiで鑑定</div>
+                    <span className="text-[10px] text-blue-100 font-black uppercase tracking-widest relative z-10 italic">画像解析・視覚認識に最適</span>
                     <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                   </Button>
 
-                  {/* ChatGPT: 安定の強力モデル */}
                   <Button onClick={() => handleCopyAndGo('https://chatgpt.com/')} disabled={!image || isScanning} className="h-20 w-full bg-emerald-600 hover:bg-emerald-500 text-white rounded-[2rem] shadow-xl flex flex-col items-center justify-center group active:scale-95 transition-all border-none">
-                    <div className="flex items-center gap-3 text-xl font-black italic tracking-tighter uppercase"><Bot className="w-6 h-6 text-white" /> 2-B. ChatGPTで診断</div>
-                    <span className="text-[10px] text-emerald-100 font-black uppercase tracking-widest italic opacity-80">Robust Reasoning & Logic</span>
+                    <div className="flex items-center gap-3 text-xl font-black italic tracking-tighter uppercase"><Bot className="w-6 h-6 text-white" /> 2-B. ChatGPTで鑑定</div>
+                    <span className="text-[10px] text-emerald-100 font-black uppercase tracking-widest italic opacity-80">論理的推論・総合診断</span>
                   </Button>
 
-                  {/* Claude: 美しい文章 */}
                   <Button onClick={() => handleCopyAndGo('https://claude.ai/')} disabled={!image || isScanning} className="h-16 w-full bg-orange-600 hover:bg-orange-500 text-white rounded-2xl shadow-lg flex items-center justify-center gap-3 font-black active:scale-95 transition-all uppercase text-sm tracking-widest italic border-none">
-                    <Heart className="w-5 h-5 fill-white" /> 2-C. Claudeで診断
+                    <Heart className="w-5 h-5 fill-white" /> 2-C. Claudeで鑑定
                   </Button>
                 </div>
               </section>
@@ -289,19 +285,19 @@ export default function RealTimeScope() {
               {isCopied && (
                 <div className="p-8 bg-red-50 rounded-[2.5rem] border-4 border-red-100 animate-in fade-in slide-in-from-top-6 shadow-2xl relative overflow-hidden">
                    <div className="absolute -top-4 -right-4 w-24 h-24 bg-red-100 rounded-full opacity-30 flex items-center justify-center"><AlertCircle className="w-12 h-12 text-red-500" /></div>
-                   <div className="flex items-center gap-3 text-red-700 mb-6 font-black italic text-xl uppercase tracking-tight">AI App Instructions</div>
+                   <div className="flex items-center gap-3 text-red-700 mb-6 font-black italic text-xl uppercase tracking-tight">AIアプリでの操作手順</div>
                    <div className="space-y-4 text-[15px] text-red-950 font-black leading-tight">
                      <p className="flex items-start gap-3">
-                       <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5">1</span>
-                       <span>AIアプリで <span className="bg-red-200 px-1.5 rounded text-red-600">「＋」</span> やカメラをタップ</span>
+                       <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-sm">1</span>
+                       <span>AIアプリの入力欄にある <span className="bg-red-200 px-1.5 rounded text-red-600">「＋」</span> やカメラをタップ</span>
                      </p>
                      <p className="flex items-start gap-3">
-                       <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5">2</span>
-                       <span>さっき <span className="underline decoration-red-500 decoration-2 underline-offset-4">保存した現場写真</span> を選択</span>
+                       <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-sm">2</span>
+                       <span>端末に <span className="underline decoration-red-500 decoration-2 underline-offset-4">保存した現場写真</span> を選択</span>
                      </p>
                      <p className="flex items-start gap-3">
-                       <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5">3</span>
-                       <span>入力欄にプロンプトを <span className="underline decoration-red-500 decoration-2 underline-offset-4">貼り付けて</span> 送信！</span>
+                       <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-sm">3</span>
+                       <span>プロンプトを <span className="underline decoration-red-500 decoration-2 underline-offset-4 font-black">貼り付けて</span> 送信！</span>
                      </p>
                    </div>
                 </div>
