@@ -134,7 +134,7 @@ export default function RealTimeScope() {
 
     navigator.clipboard.writeText(magicPrompt.trim());
     setIsCopied(true);
-    toast.success("プロンプトをコピーしました！");
+    toast.success("鑑定プロンプトをコピーしました！");
     setTimeout(() => { window.open(url, '_blank'); }, 500);
   };
 
@@ -154,7 +154,7 @@ export default function RealTimeScope() {
               <div className="w-full h-full relative">
                 <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
                 <div className="absolute bottom-12 left-0 right-0 flex justify-center items-center gap-8 z-20">
-                  <Button onClick={takePhoto} className="h-24 w-24 rounded-full bg-white border-8 border-blue-500/20 shadow-2xl active:scale-90 transition-all">
+                  <Button onClick={takePhoto} className="h-20 w-20 rounded-full bg-white border-8 border-blue-500/20 shadow-2xl active:scale-90 transition-all">
                     <div className="h-14 w-14 bg-white rounded-full border-2 border-slate-100" />
                   </Button>
                   <Button onClick={stopCamera} variant="ghost" className="text-white h-16 w-16 rounded-full"><X className="w-10 h-10" /></Button>
@@ -206,7 +206,7 @@ export default function RealTimeScope() {
           </div>
 
           <div className="lg:w-2/5 p-12 flex flex-col bg-white overflow-y-auto">
-            <div className="flex-1 space-y-10">
+            <div className="flex-1 space-y-8">
               <section className="space-y-6">
                 <div className="p-5 bg-blue-50 border-2 border-blue-100 rounded-2xl relative shadow-sm">
                   <label className="text-[10px] font-black text-blue-400 uppercase mb-2 block tracking-widest font-sans font-black">Environment</label>
@@ -232,13 +232,21 @@ export default function RealTimeScope() {
 
               <section className="space-y-4 pt-4 border-t border-slate-100 text-center">
                 <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-2">Step 2: Copy & Launch Analysis</p>
-                <Button onClick={() => handleCopyAndGo('https://chatgpt.com/')} disabled={!image || isScanning} className="h-24 w-full bg-slate-900 hover:bg-black text-white rounded-[2rem] shadow-2xl flex flex-col items-center justify-center group active:scale-95 transition-all">
-                  <div className="flex items-center gap-3 text-2xl font-black italic tracking-tighter uppercase"><Bot className="w-6 h-6 text-blue-400" /> 2. ChatGPTで診断</div>
-                  <span className="text-[10px] opacity-50 font-bold uppercase tracking-widest">プロンプトをコピーしてアプリを起動</span>
-                </Button>
-                <div className="grid grid-cols-2 gap-4">
-                  <Button variant="outline" onClick={() => handleCopyAndGo('https://gemini.google.com/')} disabled={!image} className="h-16 border-2 border-slate-100 hover:border-blue-500 rounded-2xl font-black text-slate-600 active:scale-95 transition-all uppercase tracking-widest italic">Geminiへ</Button>
-                  <Button variant="outline" onClick={() => handleCopyAndGo('https://claude.ai/')} disabled={!image} className="h-16 border-2 border-slate-100 hover:border-orange-500 rounded-2xl font-black text-slate-600 active:scale-95 transition-all uppercase tracking-widest italic">Claudeへ</Button>
+                
+                <div className="grid grid-cols-1 gap-4">
+                  <Button onClick={() => handleCopyAndGo('https://gemini.google.com/')} disabled={!image || isScanning} className="h-24 w-full bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] shadow-2xl flex flex-col items-center justify-center group active:scale-95 transition-all">
+                    <div className="flex items-center gap-3 text-2xl font-black italic tracking-tighter uppercase"><Sparkles className="w-6 h-6 text-white" /> 2-A. Geminiで診断</div>
+                    <span className="text-[10px] opacity-70 font-bold uppercase tracking-widest italic text-blue-100">Recommended for High-End Vision Analysis</span>
+                  </Button>
+
+                  <Button onClick={() => handleCopyAndGo('https://chatgpt.com/')} disabled={!image || isScanning} className="h-20 w-full bg-slate-900 hover:bg-black text-white rounded-2xl shadow-xl flex flex-col items-center justify-center group active:scale-95 transition-all">
+                    <div className="flex items-center gap-3 text-xl font-black italic tracking-tighter uppercase"><Bot className="w-5 h-5 text-blue-400" /> 2-B. ChatGPTで診断</div>
+                    <span className="text-[10px] opacity-50 font-bold uppercase tracking-widest italic">Stable and Robust Reasoning</span>
+                  </Button>
+
+                  <Button onClick={() => handleCopyAndGo('https://claude.ai/')} disabled={!image || isScanning} className="h-16 w-full bg-white border-2 border-slate-100 hover:border-orange-500 text-slate-600 rounded-2xl flex items-center justify-center gap-3 font-black active:scale-95 transition-all uppercase text-xs tracking-widest italic">
+                    <Heart className="w-4 h-4 text-orange-500" /> 2-C. Claudeで診断
+                  </Button>
                 </div>
               </section>
 
@@ -253,10 +261,6 @@ export default function RealTimeScope() {
                    </div>
                 </div>
               )}
-            </div>
-            <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between text-[10px] font-black text-slate-300 uppercase tracking-widest font-sans">
-              <span>NextraLabs Mastery</span>
-              <span>Final Release v3.0</span>
             </div>
           </div>
         </div>
