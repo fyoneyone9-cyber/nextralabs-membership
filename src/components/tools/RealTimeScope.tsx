@@ -12,6 +12,7 @@ import {
 import { toast } from "sonner";
 
 export default function RealTimeScope() {
+  const [plantName, setPlantName] = useState('');
   const [prompt, setPrompt] = useState('');
   const [image, setImage] = useState<string | null>(null);
   const [locationName, setLocationName] = useState<string>('海老名市');
@@ -110,7 +111,6 @@ export default function RealTimeScope() {
     });
   };
 
-  // AIボタン押下時に自動でプロンプトをコピーして飛ばす
   const handleAutoCopyAndGo = (url: string) => {
     if (!image) return toast.error("対象を撮影してください");
     const target = scanResult?.name || "現場写真";
@@ -134,7 +134,7 @@ export default function RealTimeScope() {
 
     navigator.clipboard.writeText(magicPrompt.trim());
     setIsCopied(true);
-    toast.success("鑑定文を自動コピーしました！貼り付けるだけです。");
+    toast.success("鑑定文を自動コピーしました！");
     
     setTimeout(() => {
       window.open(url, '_blank');
@@ -158,7 +158,7 @@ export default function RealTimeScope() {
             </div>
 
             {isCameraActive ? (
-              <div className="w-full h-full relative text-left">
+              <div className="w-full h-full relative">
                 <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
                 <div className="absolute bottom-12 left-0 right-0 flex justify-center items-center gap-10 z-20">
                   <Button onClick={takePhoto} className="h-24 w-24 rounded-full bg-white border-8 border-blue-500/30 flex items-center justify-center shadow-2xl active:scale-90 transition-all">
@@ -178,22 +178,21 @@ export default function RealTimeScope() {
                   </Button>
                   <Button onClick={() => {setImage(null); setScanResult(null); setIsCopied(false);}} className="h-16 w-16 bg-black/60 text-white rounded-full hover:bg-red-500 border-2 border-white/20"><X className="w-8 h-8" /></Button>
                 </div>
+
                 {isScanning && (
                   <div className="absolute inset-0 bg-blue-600/30 backdrop-blur-md flex flex-col items-center justify-center"><RefreshCw className="w-20 h-20 text-white animate-spin mb-6" /><p className="text-white font-black tracking-[0.5em] text-2xl italic uppercase">AIスキャン中...</p></div>
                 )}
                 {scanResult && (
                   <div className="absolute top-32 left-10 right-10 p-8 bg-black/70 backdrop-blur-2xl rounded-[2rem] border border-white/20 animate-in slide-in-from-top-4 text-left shadow-2xl">
-                    <div className="flex items-center gap-3 text-blue-400 font-black text-xs uppercase mb-4 tracking-[0.2em] text-left">
-                      <Zap className="w-4 h-4" /> プレ解析が完了しました
-                    </div>
-                    <div className="grid grid-cols-1 gap-6 text-white text-left">
-                      <div>
-                        <p className="text-[10px] opacity-40 font-black uppercase mb-1 text-left">対象の名称</p>
-                        <p className="text-2xl font-black text-left">{scanResult.name}</p>
-                      </div>
-                      <div className="p-4 bg-green-500/20 border border-green-500/40 rounded-2xl animate-pulse">
-                        <p className="text-[10px] text-green-400 font-black uppercase mb-1 text-left">NEXT ACTION</p>
-                        <p className="text-xl font-black text-green-400 leading-tight">鑑定文はコピー済みです。<br/>AIアプリに貼り付けるだけ！</p>
+                    <div className="flex items-center gap-3 text-blue-400 font-black text-xs uppercase mb-4 tracking-[0.2em]"><Zap className="w-4 h-4" /> プレ解析が完了しました</div>
+                    <div className="grid grid-cols-1 gap-6 text-white">
+                      <div><p className="text-[10px] opacity-40 font-black uppercase mb-1">対象の名称</p><p className="text-2xl font-black">{scanResult.name}</p></div>
+                      <div className="p-5 bg-green-500/20 border-2 border-green-500/40 rounded-2xl animate-pulse shadow-[0_0_30px_rgba(34,197,94,0.2)]">
+                        <p className="text-[10px] text-green-400 font-black uppercase mb-2">NEXT ACTION</p>
+                        <p className="text-lg font-bold text-white leading-relaxed">
+                          鑑定文はコピー済みです。<br/>
+                          右下の<span className="text-green-400 font-black underline underline-offset-4">AI外部リンクをクリック</span>し、写真を添付し貼り付けるだけで、最高の鑑定結果が出力されます！
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -222,9 +221,14 @@ export default function RealTimeScope() {
           {/* 右半分 */}
           <div className="lg:w-2/5 p-12 flex flex-col bg-white overflow-y-auto border-l border-slate-100 text-left">
             <div className="flex-1 space-y-10">
-              <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                <HelpCircle className="w-5 h-5 text-blue-500 flex-shrink-0" />
-                <p className="text-[13px] text-slate-600 font-bold leading-snug">写真を保存してAIボタンを押すだけ。鑑定文は自動でコピーされます。</p>
+              {/* 強調された重要ガイド */}
+              <div className="flex items-start gap-4 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-[2rem] border-2 border-blue-200 shadow-sm relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:rotate-12 transition-transform"><Camera className="w-12 h-12 text-blue-900" /></div>
+                <div className="h-10 w-10 bg-blue-500 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0"><HelpCircle className="w-6 h-6 text-white" /></div>
+                <div className="space-y-1">
+                  <p className="text-sm text-blue-900 font-black tracking-tight leading-snug">写真を保存してAIボタンを押すだけ！</p>
+                  <p className="text-[12px] text-blue-700 font-bold opacity-80 leading-relaxed">鑑定文は自動でコピーされます。あとはAIに「写真」を渡して「貼り付け」るだけ。</p>
+                </div>
               </div>
 
               <section className="space-y-6">
@@ -235,24 +239,19 @@ export default function RealTimeScope() {
                 
                 <div className="p-6 bg-slate-50 border-2 border-slate-100 rounded-[2rem] shadow-inner">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">現在の悩み・相談内容</label>
-                  <Textarea className="bg-transparent border-none p-0 font-bold text-lg text-slate-900 w-full min-h-[120px] resize-none focus:ring-0" placeholder="今の困りごと、知りたいことを入力してください..." value={prompt} onChange={(e) => setPrompt(e.target.value)} />
+                  <Textarea className="bg-transparent border-none p-0 font-bold text-lg text-slate-900 w-full min-h-[120px] resize-none focus:ring-0" placeholder="今の困りごとを入力..." value={prompt} onChange={(e) => setPrompt(e.target.value)} />
                 </div>
               </section>
 
               <section className="space-y-6 pt-6 border-t border-slate-100 text-center">
                 <div className="space-y-5">
-                  <div className="space-y-1">
-                    <p className="text-[11px] font-black text-slate-900 uppercase tracking-[0.2em]">2. AIを選んで鑑定開始</p>
-                    <p className="text-[10px] text-slate-400 font-bold">※自動で鑑定文がコピーされます</p>
-                  </div>
-                  
+                  <p className="text-[11px] font-black text-slate-900 uppercase tracking-[0.2em]">2. AIを選んで鑑定開始</p>
                   <div className="grid grid-cols-1 gap-4">
                     <Button onClick={() => handleAutoCopyAndGo('https://gemini.google.com/')} disabled={!image || isScanning} className="h-24 bg-blue-600 hover:bg-blue-500 text-white rounded-[2.5rem] shadow-2xl flex flex-col items-center justify-center group active:scale-95 transition-all border-none relative overflow-hidden">
                       <div className="flex items-center gap-3 text-2xl font-black italic tracking-tighter uppercase relative z-10"><Sparkles className="w-8 h-8 text-amber-300" /> Geminiで鑑定</div>
                       <span className="text-[10px] text-blue-100 font-black uppercase tracking-widest relative z-10">画像解析に最も強い推奨AI</span>
                       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                     </Button>
-
                     <div className="grid grid-cols-2 gap-4">
                       <Button onClick={() => handleAutoCopyAndGo('https://chatgpt.com/')} disabled={!image || isScanning} className="h-16 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl shadow-xl flex items-center justify-center gap-3 font-black active:scale-95 transition-all border-none">
                         <Bot className="w-5 h-5" /> ChatGPT
@@ -268,21 +267,14 @@ export default function RealTimeScope() {
               {isCopied && (
                 <div className="p-8 bg-red-50 rounded-[2.5rem] border-4 border-red-100 animate-in fade-in slide-in-from-top-6 shadow-2xl relative overflow-hidden text-left">
                    <div className="absolute -top-4 -right-4 w-24 h-24 bg-red-100 rounded-full opacity-30 flex items-center justify-center"><AlertCircle className="w-12 h-12 text-red-500" /></div>
-                   <div className="flex flex-col gap-1 mb-6">
-                     <div className="flex items-center gap-3 text-red-700 font-black italic text-xl uppercase tracking-tight">貼り付けるだけ！</div>
-                     <p className="text-red-600 font-black text-xs">鑑定文はすでにコピーされています</p>
-                   </div>
-                   <div className="space-y-4 text-[15px] text-red-950 font-black leading-tight">
-                     <p className="flex items-start gap-3"><span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-sm font-sans">1</span><span>AIアプリの入力欄にある <span className="bg-red-200 px-1.5 rounded text-red-600">「＋」</span> をタップ</span></p>
-                     <p className="flex items-start gap-3"><span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-sm font-sans">2</span><span>さっき保存した <span className="underline decoration-red-500 decoration-2 underline-offset-4 font-black">現場写真</span> を選択</span></p>
-                     <p className="flex items-start gap-3"><span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-sm font-sans">3</span><span>そのまま入力欄に <span className="underline decoration-red-500 decoration-2 underline-offset-4 font-black">「貼り付け」</span> して送信！</span></p>
+                   <div className="flex flex-col gap-1 mb-6"><div className="flex items-center gap-3 text-red-700 font-black italic text-xl uppercase tracking-tight text-left">鑑定アプリでの操作</div><p className="text-red-600 font-black text-xs">※鑑定文はすでにコピー済みです！</p></div>
+                   <div className="space-y-4 text-[15px] text-red-950 font-black leading-tight text-left">
+                     <p className="flex items-start gap-3"><span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-sm font-sans">1</span><span>入力欄の <span className="bg-red-200 px-1.5 rounded text-red-600">「＋」</span> をタップ</span></p>
+                     <p className="flex items-start gap-3"><span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-sm font-sans">2</span><span>保存した <span className="underline decoration-red-500 decoration-2 underline-offset-4 font-black">現場写真</span> を選択</span></p>
+                     <p className="flex items-start gap-3"><span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-sm font-sans">3</span><span>そのまま <span className="underline decoration-red-500 decoration-2 underline-offset-4 font-black">「貼り付け」</span> して送信！</span></p>
                    </div>
                 </div>
               )}
-            </div>
-            <div className="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">
-              <span>NextraLabs Mastery</span>
-              <span>v3.5 Fully Automated</span>
             </div>
           </div>
         </div>
