@@ -110,20 +110,6 @@ const freeTools: Product[] = [
 // 🛡️ 防衛シリーズ — 暮らしを守る
 const defenseTools: Product[] = [
   {
-    id: 'smart-gardening',
-    title: 'AI水やり守護神',
-    subtitle: '植物写真 × 天気予報 AI分析アドバイザー',
-    description: '写真と天気から最適な水やりタイミングを判定。植物を枯らさないためのAIガーデナー。',
-    price: '¥980',
-    priceNote: 'スタンダードプラン',
-    tags: ['ガーデニング', '天気連動', '画像解析', '水やりタイミング'],
-    icon: Droplets,
-    color: 'from-green-500 to-emerald-600',
-    bgColor: 'bg-green-500/10',
-    iconColor: 'text-green-500',
-    status: '✨ Standard',
-  },
-  {
     id: 'scam-defender',
     title: 'AI詐欺ディフェンダー',
     subtitle: '詐欺メール判定 × 闇バイト判定 × 詐欺シミュレーション × 家族見守り',
