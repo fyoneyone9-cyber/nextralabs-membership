@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { nextraAiEngine } from '@/lib/ai-engine';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
   try {
     const { prompt, image } = await req.json();

@@ -40,6 +40,7 @@ export async function nextraAiEngine({
   const modelName = quality === 'powerful' ? "gemini-1.5-pro" : "gemini-1.5-flash";
 
   // AI Call
+  const { GoogleGenerativeAI } = await import("@google/generative-ai");
   const genAI = new GoogleGenerativeAI(geminiKey);
   const model = genAI.getGenerativeModel({ model: modelName, systemInstruction });
   const result = await model.generateContent(prompt);
