@@ -9,7 +9,7 @@ const FREE_TOOLS = ['office-politics-graph', 'moving-checker', 'sns-auto-poster'
 const LIGHT_TOOLS = ['shio-taiou', 'ai-konkatsu', 'comm-coach', 'prompt-master', 'ai-sidejob', 'resignation-assistant', 'closet-coach']
 
 // スタンダードプラン以上が必要
-const STANDARD_TOOLS = ['exam-scheduler', 'disaster-guard', 'scam-defender', 'money-guard', 'ticket-scout', 'shopping-stopper', 'buzz-writer']
+const STANDARD_TOOLS = ['exam-scheduler', 'disaster-guard', 'scam-defender', 'money-guard', 'ticket-scout', 'shopping-stopper', 'buzz-writer', 'ai-recipe']
 
 // プレミアムプランのみ
 const PREMIUM_TOOLS = ['pet-translator', 'vintage-hunter', 'location-finder', 'ai-select-shop', 'youtube-producer', 'inbox-organizer', 'sns-auto-poster-pro', 'smart-gardening']
