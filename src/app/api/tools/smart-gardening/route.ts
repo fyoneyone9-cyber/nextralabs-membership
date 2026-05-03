@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { nextraAiEngine } from '@/lib/ai-engine';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export const dynamic = 'force-dynamic';
 
@@ -11,31 +11,44 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: '写真が必要です' }, { status: 400 });
     }
 
-    // AI Engine呼び出し
-    const result = await nextraAiEngine({
-      prompt: `
-以下の「植物の写真」と「地点情報」を元に、水やりとケアのアドバイスをしてください。
+    // 1. Base64データからヘッダーを除去し、純粋なデータとMIMEタイプを抽出
+    const base64Data = image.split(',')[1];
+    const mimeType = image.split(',')[0].split(':')[1].split(';')[0];
 
-【地点情報】: ${location || "海老名市"}の今日の最新天気をGoogleで検索した上で判断してください。
-【ユーザーの相談】: ${prompt || "特にありません"}
+    // 2. Gemini 1.5 Pro (Vision) を直接呼び出し（確実性を優先）
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
-【重要：画像データ形式】
-このプロンプトと一緒に画像が送信されています。画像には植物が写っています。
+    // 3. 画像とテキストを「マルチモーダル」として構築
+    const result = await model.generateContent([
+      {
+        inlineData: {
+          data: base64Data,
+          mimeType: mimeType
+        }
+      },
+      {
+        text: `
+あなたはプロのAIガーデナーです。添付された写真を詳細に分析してください。
 
-【診断項目】
+【状況】
+・現在の場所: ${location || "海老名市"}
+・ユーザーの相談: ${prompt || "植物を診てください。"}
+
+【分析指示】
 1. 写真から植物の種類を特定してください。
-2. 葉の様子（枯れ、変色、萎れ）や土の状態（乾燥、湿り気）を視覚的に解析してください。
-3. 今日の「${location || "海老名市"}」の天気予報を踏まえ、今すぐ水が必要か、明日まで待つべきか、具体的にアドバイスしてください。
-4. 数値（例：500ml）や時間帯（例：夕方17時以降）など、具体的なアクションを示してください。
-`,
-      systemInstruction: "あなたは最新のGoogle検索とマルチモーダルVision解析（画像解析）を駆使するAIガーデナーです。写真に写っている情報を逃さず、プロの視点で実用的な回答を提供してください。",
-      toolId: "smart-gardening",
-      quality: "powerful"
-    });
+2. 葉の色、萎れ、土の乾燥具合を視覚的に判断してください。
+3. あなたの持つ検索機能で「${location || "海老名市"}」の今日の最新天気を調べ、その天気を踏まえた「水やりタイミング」と「量（ml）」をズバリ回答してください。
+`
+      }
+    ]);
 
-    return NextResponse.json({ advice: result.response, model: result.model });
+    const response = await result.response;
+    const text = response.text();
+
+    return NextResponse.json({ advice: text, model: "gemini-1.5-pro" });
   } catch (error: any) {
-    console.error('SmartGardening API Error:', error);
-    return NextResponse.json({ error: 'AI解析に失敗しました。画像形式または通信環境をご確認ください。' }, { status: 500 });
+    console.error('Gemini Vision Error:', error);
+    return NextResponse.json({ error: '画像解析に失敗しました。もう少し明るい場所で撮り直すか、画像サイズを小さくしてください。' }, { status: 500 });
   }
 }

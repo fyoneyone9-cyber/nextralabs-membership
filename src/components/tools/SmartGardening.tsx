@@ -92,6 +92,11 @@ export default function SmartGardening() {
       if (!response.ok) throw new Error(data.error);
       setResult(data);
       toast.success("AI診断が完了しました");
+      
+      // 結果表示までスクロール
+      setTimeout(() => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      }, 100);
     } catch (error: any) {
       toast.error(error.message || "解析エラーが発生しました");
     } finally {
