@@ -341,6 +341,20 @@ const bizTools: Product[] = [
     iconColor: 'text-teal-500',
     status: 'NEW',
   },
+  {
+    id: 'sales-automation',
+    title: 'AIインサイドセールス自動化',
+    subtitle: 'Clearbit企業特定 × Gemini戦略メール',
+    description: '企業ドメインから業種や使用技術を特定。AIがその企業に特化した「刺さる」提案メールを自動執筆・送信する最強B2Bツール。',
+    price: '¥1,980/月',
+    priceNote: 'プレミアムプラン',
+    tags: ['B2B', '自動送信', '企業分析'],
+    icon: Building2,
+    color: 'from-blue-600 to-indigo-700',
+    bgColor: 'bg-blue-500/10',
+    iconColor: 'text-blue-500',
+    status: 'NEW',
+  },
 ]
 
 const creativeTools: Product[] = [
