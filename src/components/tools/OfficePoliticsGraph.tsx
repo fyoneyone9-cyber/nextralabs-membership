@@ -489,13 +489,13 @@ export default function OfficePoliticsGraph() {
                 </div>
                 <div className="flex items-center gap-3 mt-2 flex-wrap">
                   <a
-                    href="/samples/office-politics-sample.csv"
+                    href="/samples/social-graph-sample.xlsx"
                     download
                     className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 underline"
                   >
-                    📥 サンプルCSVをダウンロード
+                    📥 サンプルExcelをダウンロード（説明付き）
                   </a>
-                  <span className="text-gray-600 text-xs">← これを編集するのが最速</span>
+                  <span className="text-gray-600 text-xs">← Excelで開いて名前を書き換えるだけ</span>
                 </div>
               </div>
             </div>

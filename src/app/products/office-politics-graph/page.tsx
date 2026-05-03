@@ -327,7 +327,7 @@ export default function OfficePoliticsGraphPage() {
                 </div>
                 <div className="flex flex-wrap gap-3 pt-1">
                   <a
-                    href="/samples/office-politics-sample.csv"
+                    href="/samples/social-graph-sample.xlsx"
                     download
                     className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors"
                   >
