@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Droplets, Camera, CheckCircle2, MapPin, Upload, X, Copy, ExternalLink, Sparkles, Heart, Bot, RefreshCw, Sprout } from "lucide-react";
+import { Droplets, Camera, CheckCircle2, MapPin, Upload, X, Copy, ExternalLink, Sparkles, Heart, Bot, RefreshCw, Sprout, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
 export default function SmartGardening() {
@@ -73,8 +73,9 @@ export default function SmartGardening() {
     if (!image) return toast.error("写真を撮ってください");
     
     const magicPrompt = `
-あなたは慈愛に満ちた植物の専門家です。写真を分析し、診断してください。
+重要：このテキストと一緒に、私が撮影した植物の写真を1枚送信しています。まずその画像を詳細に確認してから、以下の診断を開始してください。
 
+あなたは慈愛に満ちた植物の専門家です。
 【診断対象】
 ・植物の名前/種類: ${plantName || "（写真から特定してください）"}
 ・地域: ${locationName}
@@ -82,10 +83,10 @@ export default function SmartGardening() {
 ・ユーザーの相談: ${prompt || "特にありません。現状を診てください。"}
 
 【実行指示】
-1. 写真から植物を特定し、その品種に合ったケア方法を解説してください。
-2. 葉・茎・土の状態から、健康か、何かのトラブル（水不足・病気等）があるか判断してください。
-3. 今の地域の天気（${weatherInfo}）を踏まえ、「今やるべき具体的なアクション」を指示してください。
-4. ユーザーの植物への想いに寄り添う、温かい言葉で締めてください。
+1. 添付された写真から植物の種類を特定し、その品種に合った適切なケア（日当たりや温度など）を解説してください。
+2. 写真に写っている葉・茎・土の状態を精査し、健康か、水不足や病気などのトラブルがあるかプロの視点で判断してください。
+3. 今の地域の天気（${weatherInfo}）を踏まえ、「今すぐお水をあげるべきか」「夕方まで待つべきか」など、今日のアクションを具体的に指示してください。
+4. ユーザーの植物への想いに寄り添う、温かい言葉で締めくくってください。
 `;
     navigator.clipboard.writeText(magicPrompt);
     setIsCopied(true);
@@ -190,9 +191,15 @@ export default function SmartGardening() {
               </section>
 
               {isCopied && (
-                <div className="p-6 bg-green-50 rounded-3xl border-2 border-green-100 animate-in fade-in slide-in-from-top-4">
-                   <div className="flex items-center gap-3 text-green-700 mb-2 font-black italic"><CheckCircle2 className="w-5 h-5" />PROMPT COPIED!</div>
-                   <p className="text-xs text-green-900 leading-relaxed font-bold">写真を添付して、プロンプトを貼り付けて送信してください。</p>
+                <div className="p-6 bg-red-50 rounded-3xl border-2 border-red-200 animate-in fade-in slide-in-from-top-4 shadow-lg">
+                   <div className="flex items-center gap-3 text-red-700 mb-2 font-black italic text-lg">
+                     <AlertCircle className="w-6 h-6" />
+                     重要：必ず写真を添付してください！
+                   </div>
+                   <p className="text-sm text-red-900 leading-relaxed font-bold">
+                     1. AIアプリが開いたら、「＋」ボタンやカメラアイコンから先ほど撮った植物の<span className="underline decoration-red-500 decoration-2 underline-offset-4">写真を選択</span>してください。<br />
+                     2. その後、コピーしたプロンプトを貼り付けて送信してください。
+                   </p>
                 </div>
               )}
             </div>
