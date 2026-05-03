@@ -142,11 +142,12 @@ export default function AiRecipeScope() {
                 {isScanning && (
                   <div className="absolute inset-0 bg-red-600/30 backdrop-blur-md flex flex-col items-center justify-center animate-pulse text-white font-black text-2xl uppercase italic tracking-widest">Scanning...</div>
                 )}
-                {dishName && (
+                {dishName && dishName !== "絶品レシピ" && (
                   <div className="absolute top-32 left-10 right-10 p-8 bg-black/70 backdrop-blur-2xl rounded-[2.5rem] border border-white/20 animate-in slide-in-from-top-4 shadow-2xl text-left">
+                    <p className="text-[11px] text-red-400 font-black uppercase mb-4 tracking-[0.3em]"><Zap className="w-4 h-4 inline mr-2" /> Identification Success</p>
                     <p className="text-3xl font-black tracking-tighter mb-6 text-white uppercase italic">{dishName}</p>
-                    <div className="p-6 bg-green-500/20 border-2 border-green-500/40 rounded-3xl animate-pulse">
-                      <p className="text-xl font-black leading-tight text-white">鑑定文はコピー済みです。右下のAIボタンをクリックし、写真を添付して貼り付けるだけで最高のレシピが届きます！</p>
+                    <div className="p-6 bg-green-500/20 border-2 border-green-500/40 rounded-3xl animate-pulse text-white">
+                      <p className="text-xl font-black leading-tight">鑑定文はコピー済みです。右下のAIボタンをクリックし、写真を添付して貼り付けるだけで最高のレシピが届きます！</p>
                     </div>
                   </div>
                 )}

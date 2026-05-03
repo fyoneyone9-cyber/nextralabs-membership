@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     const result = await model.generateContent([
       { inlineData: { data: base64Data, mimeType } },
-      { text: "写真の食材から作れる、最も人気な料理名を1つだけ日本語で答えてください。名称のみ出力してください。" }
+      { text: "写真に写っている主要な食材を1つ特定し、それを使った代表的な料理名を1つだけ日本語で答えてください。例：バナナなら『バナナケーキ』。名称のみ、装飾なしで出力してください。" }
     ]);
 
     const dishName = result.response.text().trim().replace(/[#*]/g, "");
