@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Droplets, Camera, CheckCircle2, Upload, X, Copy, Sparkles, RefreshCw, Zap, Youtube, Play, Download, AlertCircle } from "lucide-react";
+import { Droplets, Camera, CheckCircle2, MapPin, Upload, X, Copy, ExternalLink, Sparkles, Heart, Bot, RefreshCw, AlertCircle, Search, Zap, Loader2, Download, HelpCircle, Youtube, Utensils, Play } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AiRecipeScope() {
