@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Droplets, CloudSun, Camera, Loader2, CheckCircle2, RefreshCw, MapPin } from "lucide-react";
+import { Droplets, Camera, Loader2, CheckCircle2, MapPin, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 export default function SmartGardening() {
@@ -12,56 +12,55 @@ export default function SmartGardening() {
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
-  const [location, setLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [locationName, setLocationName] = useState<string>('');
+  const [coords, setCoords] = useState<{lat: number, lng: number} | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
-  // 位置情報の取得
+  // 位置情報の取得と地域名の特定
   const requestLocation = () => {
     if (!navigator.geolocation) {
-      toast.error("お使いのブラウザは位置情報をサポートしていません");
+      toast.error("位置情報をサポートしていません");
       return;
     }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-        toast.success("位置情報を取得しました。天気に反映します。");
-      },
-      () => toast.error("位置情報の取得に失敗しました。デフォルト設定で診断します。")
-    );
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      const { latitude, longitude } = pos.coords;
+      setCoords({ lat: latitude, lng: longitude });
+      
+      // 緯度経度からおおまかな地域名を取得（逆ジオコーディング）
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+        const data = await res.json();
+        setLocationName(data.address.city || data.address.province || "取得した地域");
+        toast.success(`${locationName || '現在地'}の天気を連携します`);
+      } catch {
+        setLocationName("現在地周辺");
+      }
+    });
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // 画像のリサイズ（Vercelのペイロード制限対策）
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 800;
-          let width = img.width;
-          let height = img.height;
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-          }
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx?.drawImage(img, 0, 0, width, height);
-          setImage(canvas.toDataURL('image/jpeg', 0.7));
-        };
-        img.src = reader.result as string;
+  const processImage = (file: File) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const scale = Math.min(600 / img.width, 600 / img.height, 1);
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+        setImage(canvas.toDataURL('image/jpeg', 0.6)); // 軽量化して送信
       };
-      reader.readAsDataURL(file);
-    }
+      img.src = reader.result as string;
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleAnalyze = async () => {
     if (!image) {
-      toast.error("写真を撮影または選択してください");
+      toast.error("写真を選んでください");
       return;
     }
     setLoading(true);
@@ -70,14 +69,14 @@ export default function SmartGardening() {
       const response = await fetch('/api/tools/smart-gardening', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt, image, location }),
+        body: JSON.stringify({ prompt, image, location: locationName }),
       });
       const data = await response.json();
-      if (data.error) throw new Error(data.error);
+      if (!response.ok) throw new Error(data.error || "サーバーエラー");
       setResult(data);
-      toast.success("AI診断が完了しました！");
+      toast.success("AIの回答が届きました");
     } catch (error: any) {
-      toast.error("診断エラー: 写真を小さくして再度お試しください。");
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -85,83 +84,85 @@ export default function SmartGardening() {
 
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
-      <Card className="border-green-600 bg-white shadow-2xl overflow-hidden rounded-3xl">
-        <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-700 text-white p-8">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-white/20 backdrop-blur-md rounded-2xl">
-              <Droplets className="w-10 h-10 text-white" />
-            </div>
+      <Card className="border-green-600 bg-white shadow-xl rounded-3xl overflow-hidden">
+        <CardHeader className="bg-green-600 text-white p-6">
+          <div className="flex items-center gap-3">
+            <Droplets className="w-10 h-10" />
             <div>
-              <CardTitle className="text-3xl font-black">AI水やり守護神 PRO</CardTitle>
-              <CardDescription className="text-green-50 text-lg opacity-90 font-medium font-sans">視覚解析 × 位置情報天気連動システム</CardDescription>
+              <CardTitle className="text-2xl font-bold">AI水やり守護神</CardTitle>
+              <CardDescription className="text-green-50 font-sans">カメラ撮影 × リアルタイム天気解析</CardDescription>
             </div>
           </div>
         </CardHeader>
 
-        <CardContent className="p-8 space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div 
-              className="aspect-square border-4 border-dashed border-green-100 rounded-[2.5rem] flex flex-col items-center justify-center bg-green-50/30 cursor-pointer hover:bg-green-50 transition-all overflow-hidden relative shadow-inner"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              {image ? (
-                <img src={image} alt="Plant" className="w-full h-full object-cover" />
-              ) : (
-                <div className="text-center p-8 space-y-6">
-                  <Camera className="w-16 h-16 text-green-200 mx-auto" />
-                  <div className="space-y-2">
-                    <Button className="w-full bg-green-600 font-bold" onClick={(e) => { e.stopPropagation(); cameraInputRef.current?.click(); }}>カメラ撮影</Button>
-                    <Button variant="outline" className="w-full bg-white border-green-200 text-green-700 font-bold" onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}>ファイル選択</Button>
-                  </div>
-                </div>
-              )}
-              <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileChange} />
-              <input type="file" accept="image/*" capture="environment" className="hidden" ref={cameraInputRef} onChange={handleFileChange} />
+        <CardContent className="p-6 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* 写真エリア */}
+            <div className="space-y-4">
+              <div 
+                className="aspect-square border-4 border-dashed border-green-100 rounded-3xl bg-green-50/50 flex items-center justify-center overflow-hidden relative"
+              >
+                {image ? (
+                  <img src={image} alt="Plant" className="w-full h-full object-cover" />
+                ) : (
+                  <Camera className="w-20 h-20 text-green-200" />
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <Button className="bg-green-600 hover:bg-green-700 font-bold" onClick={() => cameraInputRef.current?.click()}>
+                  <Camera className="mr-2 w-4 h-4" /> カメラ起動
+                </Button>
+                <Button variant="outline" className="border-green-200 text-green-700 font-bold" onClick={() => fileInputRef.current?.click()}>
+                  <Upload className="mr-2 w-4 h-4" /> 写真を選択
+                </Button>
+              </div>
+              <input type="file" accept="image/*" capture="environment" className="hidden" ref={cameraInputRef} onChange={(e) => e.target.files?.[0] && processImage(e.target.files[0])} />
+              <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={(e) => e.target.files?.[0] && processImage(e.target.files[0])} />
             </div>
 
-            <div className="flex flex-col gap-6">
-              <div className="p-6 bg-blue-50 rounded-3xl border border-blue-100 space-y-3 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <MapPin className="w-6 h-6 text-blue-600" />
-                    <p className="font-black text-blue-950">位置情報連携</p>
+            {/* 情報エリア */}
+            <div className="space-y-4 flex flex-col justify-between">
+              <div className="p-4 bg-blue-50 border border-blue-100 rounded-2xl">
+                <div className="flex justify-between items-center mb-2">
+                  <div className="flex items-center gap-2 text-blue-800 font-bold text-sm">
+                    <MapPin className="w-4 h-4" /> 地域の天気連携
                   </div>
-                  <Button size="sm" variant="outline" className="text-xs bg-white border-blue-200" onClick={requestLocation}>取得する</Button>
+                  <Button size="sm" variant="link" className="text-blue-600 h-auto p-0" onClick={requestLocation}>取得</Button>
                 </div>
-                <p className="text-xs text-blue-700 leading-relaxed">
-                  {location ? `現在地を取得済み (Lat: ${location.lat.toFixed(2)})` : "位置情報を許可すると、その場所の最新天気をAIが自動で確認します。"}
-                </p>
+                <div className="bg-white p-2 rounded border border-blue-100 text-blue-900 font-black text-center">
+                  {locationName ? locationName : "未取得（全国の天気で判断）"}
+                </div>
               </div>
 
-              <div className="space-y-3">
-                <label className="text-lg font-black text-slate-800">植物の悩み</label>
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-slate-700">植物の悩み（黒文字で入力されます）</label>
                 <Textarea 
-                  placeholder="例：葉に元気がない気がします。"
-                  className="bg-slate-50 border-slate-200 min-h-[120px] rounded-2xl p-5"
+                  className="bg-slate-50 border-slate-200 text-black min-h-[120px] rounded-xl text-lg p-4"
+                  placeholder="例：葉が萎れてきました。"
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                 />
               </div>
 
               <Button 
-                className="w-full bg-green-600 hover:bg-green-700 h-20 text-2xl font-black rounded-2xl shadow-xl shadow-green-600/20"
+                className="w-full bg-green-600 hover:bg-green-700 h-16 text-xl font-black rounded-2xl shadow-lg"
                 onClick={handleAnalyze}
                 disabled={loading}
               >
-                {loading ? <RefreshCw className="w-8 h-8 animate-spin" /> : "診断を開始する"}
+                {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : "診断を開始する"}
               </Button>
             </div>
           </div>
 
+          {/* 結果表示 */}
           {result && (
-            <div className="mt-8 p-8 bg-green-50 rounded-[2.5rem] border-2 border-green-100 shadow-sm">
-              <h3 className="text-2xl font-black text-green-900 mb-6 flex items-center gap-3">
-                <CheckCircle2 className="w-8 h-8 text-green-500" /> AIガーデナーの回答
-              </h3>
-              <div className="text-green-950 whitespace-pre-wrap leading-relaxed font-semibold text-lg">{result.advice}</div>
-              <div className="mt-8 pt-4 border-t border-green-200 flex justify-between items-center text-[10px] text-green-600/40 font-bold uppercase">
-                <span>Location Tracking Active</span>
-                <span>Powered by Gemini 1.5 Pro</span>
+            <div className="mt-6 p-8 bg-green-50 rounded-3xl border-2 border-green-100 shadow-sm animate-in fade-in slide-in-from-bottom-4">
+              <div className="flex items-center gap-3 mb-4 text-green-800">
+                <CheckCircle2 className="w-8 h-8" />
+                <h3 className="text-2xl font-black">AIガーデナーの回答</h3>
+              </div>
+              <div className="text-slate-900 whitespace-pre-wrap leading-relaxed font-medium text-lg">
+                {result.advice}
               </div>
             </div>
           )}
