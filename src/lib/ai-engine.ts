@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 /**
@@ -16,8 +16,11 @@ export async function nextraAiEngine({
   toolId: string;
   quality?: 'cheap' | 'balanced' | 'powerful' | 'auto';
 }) {
-  const supabasePromise = createClient();
-  const supabase = await supabasePromise;
+  // サーバーサイド・ビルド時にも安全なクライアント作成
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
 
   // 1. キャッシュチェック
   const { data: cached } = await supabase

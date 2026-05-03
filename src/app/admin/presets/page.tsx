@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Check, Copy } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 export default function AiPresetsPage() {
   const [copied, setCopied] = useState<string | null>(null);
 

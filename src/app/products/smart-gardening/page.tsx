@@ -3,6 +3,8 @@ import SmartGardening from '@/components/tools/SmartGardening';
 import AccessGate from '@/components/tools/AccessGate';
 import { Droplets } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'AI水やり守護神 | NextraLabs',
   description: '写真と天気から、AIが最適な水やりタイミングをアドバイス。大切な植物を枯らさないための守護神。',
