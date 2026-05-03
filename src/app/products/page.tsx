@@ -111,12 +111,12 @@ const freeTools: Product[] = [
 const defenseTools: Product[] = [
   {
     id: 'smart-gardening',
-    name: 'AI水やり守護神',
+    title: 'AI水やり守護神',
     description: '写真と天気から最適な水やりタイミングを判定。植物を枯らさないためのAIガーデナー。',
-    icon: <Droplets className="w-6 h-6 text-green-500" /> as any,
+    icon: <Droplets className="w-6 h-6 text-green-500" />,
     category: 'Standard',
     href: '/products/smart-gardening',
-    priceId: 'price_1TRGjV5HQYoJh51tjqxbF15C' // 防災ガードと同価格帯の既存IDを仮割り当て
+    priceId: 'price_1TRGjV5HQYoJh51tjqxbF15C'
   },
   {
     id: 'scam-defender',
