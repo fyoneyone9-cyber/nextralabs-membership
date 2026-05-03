@@ -11,9 +11,59 @@ export default function SmartGardening() {
   const [prompt, setPrompt] = useState('');
   const [image, setImage] = useState<string | null>(null);
   const [locationName, setLocationName] = useState<string>('海老名市');
+  const [weatherInfo, setWeatherInfo] = useState<string>('晴れ / 24°C');
   const [isCopied, setIsCopied] = useState(false);
   
-  const [isCameraActive, setIsCameraActive] = useState(false);
+  // 位置情報と天気のリアルタイム取得
+  const syncRealtimeData = () => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      const { latitude, longitude } = pos.coords;
+      try {
+        // 地域名と天気を同時に取得（簡易的にNominatimとOpen-Meteoを使用）
+        const [geoRes, weatherRes] = await Promise.all([
+          fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`),
+          fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`)
+        ]);
+        const geoData = await geoRes.json();
+        const weatherData = await weatherRes.json();
+        
+        const city = geoData.address.city || geoData.address.town || geoData.address.province || "現在地";
+        const temp = weatherData.current_weather.temperature;
+        const code = weatherData.current_weather.weathercode;
+        
+        // 天気コードを日本語に簡易変換
+        const weatherMap: Record<number, string> = { 0: "快晴", 1: "晴れ", 2: "一部曇り", 3: "曇り", 45: "霧", 48: "霧", 51: "小雨", 61: "雨", 71: "雪", 95: "雷雨" };
+        const condition = weatherMap[code] || "不明";
+        
+        setLocationName(city);
+        setWeatherInfo(`${condition} / ${temp}°C`);
+        toast.success("最新の天気情報を同期しました");
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  };
+
+  const handleCopyAndGo = (url: string) => {
+    if (!image) return toast.error("写真を撮ってください");
+    
+    const magicPrompt = `
+あなたは慈愛に満ちた植物の専門家（植物カウンセラー）です。
+添付された写真を詳細に分析し、ユーザーの不安に寄り添いながら診断結果を伝えてください。
+
+【診断リクエスト】
+・地域: ${locationName}
+・現在の天気: ${weatherInfo}
+・ユーザーの悩み: ${prompt || "特にありません"}
+
+【実行指示】
+1. 写真を見て、植物の種類（品種）を特定し、その特徴を優しく解説してください。
+2. 葉の萎れ、変色、茎の状態、土の乾き具合をプロの視点で精密に読み取ってください。
+3. 今の「${locationName}」の天気（${weatherInfo}）を踏まえ、「今すぐやるべきこと」を具体的に教えてください。
+4. 単なる指示ではなく、「大切に育てている植物への想い」を汲み取った温かい言葉で回答を締めくくってください。
+5. 「いつ、どのくらいの量」の水をやるべきか、具体的な数値でアドバイスしてください。
+`;
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -158,15 +208,23 @@ export default function SmartGardening() {
                    <h3 className="text-lg font-black text-slate-900 uppercase">Context</h3>
                 </div>
                 <div className="grid grid-cols-1 gap-4">
-                  <div className="p-5 bg-blue-50 border-2 border-blue-100 rounded-2xl">
-                    <label className="text-[10px] font-black text-blue-400 uppercase tracking-widest block mb-2">Cultivation Area</label>
-                    <div className="flex items-center gap-3">
-                      <MapPin className="text-blue-500 w-5 h-5" />
-                      <input 
-                        className="bg-transparent border-none p-0 font-black text-xl text-blue-900 focus:ring-0 w-full"
-                        value={locationName}
-                        onChange={(e) => setLocationName(e.target.value)}
-                      />
+                  <div className="p-5 bg-blue-50 border-2 border-blue-100 rounded-2xl relative">
+                    <label className="text-[10px] font-black text-blue-400 uppercase tracking-widest block mb-2">Realtime Environment</label>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <MapPin className="text-blue-500 w-5 h-5" />
+                        <div>
+                          <input 
+                            className="bg-transparent border-none p-0 font-black text-xl text-blue-900 focus:ring-0 w-full"
+                            value={locationName}
+                            onChange={(e) => setLocationName(e.target.value)}
+                          />
+                          <p className="text-xs font-bold text-blue-600">{weatherInfo}</p>
+                        </div>
+                      </div>
+                      <Button size="sm" variant="ghost" className="text-blue-500 hover:bg-blue-100 rounded-xl" onClick={syncRealtimeData}>
+                        <RefreshCw className="w-4 h-4 mr-1" /> 同期
+                      </Button>
                     </div>
                   </div>
                   <div className="p-5 bg-slate-50 border-2 border-slate-100 rounded-2xl">
