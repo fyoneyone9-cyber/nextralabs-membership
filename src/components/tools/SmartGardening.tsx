@@ -170,17 +170,29 @@ export default function SmartGardening() {
               </Button>
 
               {/* 結果エリア */}
-              {result && (
-                <div className="mt-8 p-8 bg-white rounded-[2.5rem] border-2 border-green-100 shadow-xl animate-in fade-in slide-in-from-right-4">
-                  <div className="flex items-center gap-3 mb-6">
-                    <CheckCircle2 className="w-8 h-8 text-green-500" />
-                    <h3 className="text-2xl font-black text-slate-900">診断レポート</h3>
-                  </div>
-                  <div className="text-slate-700 whitespace-pre-wrap leading-relaxed font-bold text-lg">
-                    {result.advice}
-                  </div>
+              <div className="mt-8 p-8 bg-white rounded-[2.5rem] border-2 border-green-100 shadow-xl min-h-[200px] flex flex-col">
+                <div className="flex items-center gap-3 mb-6">
+                  <CheckCircle2 className={`w-8 h-8 ${result ? 'text-green-500' : 'text-slate-200'}`} />
+                  <h3 className="text-2xl font-black text-slate-900">診断レポート</h3>
                 </div>
-              )}
+                
+                <div className="flex-1">
+                  {loading ? (
+                    <div className="flex flex-col items-center justify-center h-full space-y-4 py-10">
+                      <RefreshCw className="w-12 h-12 text-green-500 animate-spin" />
+                      <p className="text-slate-400 font-bold animate-pulse">AIが写真を解析して天気を調べています...</p>
+                    </div>
+                  ) : result ? (
+                    <div className="text-slate-700 whitespace-pre-wrap leading-relaxed font-bold text-lg animate-in fade-in">
+                      {result.advice}
+                    </div>
+                  ) : (
+                    <div className="text-slate-300 text-center py-10 font-bold">
+                      カメラを起動して植物を撮影し、診断を開始してください。
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
             
             <div className="mt-10 pt-6 border-t border-slate-200 flex items-center justify-between">
