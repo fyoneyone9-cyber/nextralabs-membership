@@ -27,15 +27,18 @@ export default function SmartGardening() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // 撮影・選択後の自動スキャン
   useEffect(() => {
     if (image && !isScanning && !scanResult) {
-      autoScanImage();
+      const timer = setTimeout(() => {
+        autoScanImage();
+      }, 500);
+      return () => clearTimeout(timer);
     }
   }, [image]);
 
   const autoScanImage = async () => {
     setIsScanning(true);
-    setScanResult(null);
     try {
       const response = await fetch('/api/tools/smart-gardening', {
         method: 'POST',
@@ -43,6 +46,8 @@ export default function SmartGardening() {
         body: JSON.stringify({ image, location: locationName }),
       });
       const data = await response.json();
+      // "解析完了"というダミー名が入るのを防止
+      if (data.name === "解析完了") data.name = "現場写真";
       setScanResult(data);
     } catch (err) {
       setScanResult({ name: "現場写真", status: "解析準備完了", environment: locationName, confidence: "100" });
@@ -70,23 +75,32 @@ export default function SmartGardening() {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       canvas.getContext('2d')?.drawImage(video, 0, 0);
-      setImage(canvas.toDataURL('image/jpeg', 0.8));
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      setImage(dataUrl);
       stopCamera();
     }
   };
 
   const stopCamera = () => {
-    if (videoRef.current?.srcObject) (videoRef.current.srcObject as MediaStream).getTracks().forEach(t => t.stop());
+    if (videoRef.current?.srcObject) {
+      (videoRef.current.srcObject as MediaStream).getTracks().forEach(t => t.stop());
+    }
     setIsCameraActive(false);
   };
 
   const downloadImage = () => {
     if (!image) return;
-    const link = document.createElement('a');
-    link.href = image;
-    link.download = `nextralabs-capture-${Date.now()}.jpg`;
-    link.click();
-    toast.success("写真を端末に保存しました");
+    try {
+      const link = document.createElement('a');
+      link.href = image;
+      link.setAttribute('download', `nextralabs-capture-${Date.now()}.jpg`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast.success("写真を端末に保存しました");
+    } catch (err) {
+      toast.error("保存に失敗しました");
+    }
   };
 
   const syncRealtimeData = () => {
@@ -101,10 +115,9 @@ export default function SmartGardening() {
         const geoData = await geoRes.json();
         const weatherData = await weatherRes.json();
         const city = geoData.address.city || geoData.address.town || geoData.address.province || "現在地";
-        const weatherMap: Record<number, string> = { 0: "快晴", 1: "晴れ", 2: "一部曇り", 3: "曇り", 45: "霧", 48: "霧", 51: "小雨", 61: "雨", 71: "雪", 95: "雷雨" };
-        const condition = weatherMap[weatherData.current_weather.weathercode] || "不明";
+        const temp = weatherData.current_weather.temperature;
         setLocationName(city);
-        setWeatherInfo(`${condition} / ${weatherData.current_weather.temperature}°C`);
+        setWeatherInfo(`晴れ / ${temp}°C`);
         toast.success("環境データを同期しました");
       } catch (err) { console.error(err); }
     });
@@ -117,9 +130,9 @@ export default function SmartGardening() {
     const finalTargetName = plantName || (scanResult?.name && scanResult.name !== "解析完了" ? scanResult.name : "") || "現場写真";
 
     const magicPrompt = `
-重要：このテキストと一緒に、私が今撮影した【${finalTargetName}】の写真を1枚送信しています。まずその画像をピクセル単位で詳細に確認し、以下のプロフェッショナル分析を開始してください。
+重要：このテキストと一緒に、私が今撮影した【${finalTargetName}】の写真を1枚送信しています。まずその画像を詳細に確認し、以下のプロフェッショナル分析を開始してください。
 
-あなたは世界中のあらゆる事象（植物・建築・機械・芸術）に精通した、慈愛に満ちた「超一流現場鑑定士」です。
+あなたは世界中のあらゆる事象に精通した、慈愛に満ちた「超一流現場鑑定士」です。
 
 【現場コンテクスト】
 ・対象の識別: ${finalTargetName}
@@ -135,7 +148,7 @@ export default function SmartGardening() {
 `;
     navigator.clipboard.writeText(magicPrompt.trim());
     setIsCopied(true);
-    toast.success("プロ仕様の鑑定プロンプトをコピーしました！");
+    toast.success("プロンプトをコピーしました！");
     setTimeout(() => { window.open(url, '_blank'); }, 500);
   };
 
@@ -146,7 +159,7 @@ export default function SmartGardening() {
           <div className="lg:w-3/5 bg-slate-950 relative flex items-center justify-center overflow-hidden">
             <div className="absolute top-0 left-0 w-full p-10 z-10 bg-gradient-to-b from-black/60 to-transparent">
               <div className="flex items-center gap-3">
-                <div className="p-3 bg-blue-600 rounded-2xl"><Zap className="w-8 h-8 text-white" /></div>
+                <div className="p-3 bg-blue-600 rounded-2xl shadow-lg"><Zap className="w-8 h-8 text-white" /></div>
                 <h1 className="text-3xl font-black text-white italic uppercase tracking-tighter">AI REAL-TIME SCOPE</h1>
               </div>
             </div>
@@ -158,7 +171,7 @@ export default function SmartGardening() {
                   <Button onClick={takePhoto} className="h-24 w-24 rounded-full bg-white border-8 border-blue-500/20 shadow-2xl active:scale-90 transition-all">
                     <div className="h-14 w-14 bg-white rounded-full border-2 border-slate-100" />
                   </Button>
-                  <Button onClick={stopCamera} variant="ghost" className="text-white hover:bg-white/10 h-16 w-16 rounded-full"><X /></Button>
+                  <Button onClick={stopCamera} variant="ghost" className="text-white hover:bg-white/10 h-16 w-16 rounded-full"><X className="w-10 h-10" /></Button>
                 </div>
               </div>
             ) : image ? (
@@ -177,8 +190,8 @@ export default function SmartGardening() {
                   </div>
                 )}
                 {scanResult && (
-                  <div className="absolute top-32 left-10 right-10 p-6 bg-black/60 backdrop-blur-xl rounded-3xl border border-white/20">
-                    <div className="flex items-center gap-2 text-blue-400 font-black text-xs uppercase mb-3"><Zap className="w-4 h-4" /> ANALYSIS RESULT</div>
+                  <div className="absolute top-32 left-10 right-10 p-6 bg-black/60 backdrop-blur-xl rounded-3xl border border-white/20 animate-in zoom-in-95">
+                    <div className="flex items-center gap-2 text-blue-400 font-black text-xs uppercase mb-3 tracking-widest"><Zap className="w-4 h-4" /> ANALYSIS RESULT</div>
                     <div className="grid grid-cols-2 gap-4 text-white">
                       <div><p className="text-[10px] opacity-50 font-bold uppercase">Identity</p><p className="text-lg font-black">{scanResult.name}</p></div>
                       <div><p className="text-[10px] opacity-50 font-bold uppercase">Status</p><p className="text-lg font-black text-green-400">{scanResult.status}</p></div>
@@ -187,11 +200,11 @@ export default function SmartGardening() {
                 )}
               </div>
             ) : (
-              <div className="text-center p-10 space-y-8">
+              <div className="text-center p-10 space-y-8 animate-in fade-in">
                 <div className="h-32 w-32 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto border border-blue-500/20"><Search className="w-12 h-12 text-blue-500/40" /></div>
                 <div className="flex flex-col gap-4">
-                  <Button onClick={startCamera} className="bg-blue-600 hover:bg-green-500 text-white h-20 px-12 rounded-3xl font-black text-2xl shadow-2xl">スコープを起動</Button>
-                  <Button onClick={() => fileInputRef.current?.click()} variant="outline" className="border-white/20 text-white hover:bg-white/5 h-16 px-10 rounded-3xl font-black text-lg">画像を選択</Button>
+                  <Button onClick={startCamera} className="bg-blue-600 hover:bg-blue-500 text-white h-20 px-12 rounded-3xl font-black text-2xl shadow-2xl transition-all active:scale-95">スコープを起動</Button>
+                  <Button onClick={() => fileInputRef.current?.click()} variant="outline" className="border-white/20 text-white hover:bg-white/5 h-20 px-10 rounded-3xl font-black text-lg transition-all">画像を選択</Button>
                   <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) {
@@ -207,52 +220,52 @@ export default function SmartGardening() {
           </div>
 
           <div className="lg:w-2/5 p-12 flex flex-col bg-white overflow-y-auto">
-            <div className="flex-1 space-y-8">
+            <div className="flex-1 space-y-10">
               <section className="space-y-6">
                 <div className="p-5 bg-blue-50 border-2 border-blue-100 rounded-2xl relative shadow-sm">
-                  <label className="text-[10px] font-black text-blue-400 uppercase mb-2 block">Environment</label>
+                  <label className="text-[10px] font-black text-blue-400 uppercase mb-2 block tracking-widest">Environment</label>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <MapPin className="text-blue-500 w-5 h-5" />
                       <div><input className="bg-transparent border-none p-0 font-black text-xl text-blue-900 focus:ring-0 w-full" value={locationName} onChange={(e) => setLocationName(e.target.value)} /><p className="text-xs font-bold text-blue-600">{weatherInfo}</p></div>
                     </div>
-                    <Button size="sm" variant="ghost" className="text-blue-500" onClick={syncRealtimeData}><RefreshCw className="w-4 h-4" /></Button>
+                    <Button size="sm" variant="ghost" className="text-blue-500 hover:bg-blue-100 rounded-xl" onClick={syncRealtimeData}><RefreshCw className="w-4 h-4" /></Button>
                   </div>
                 </div>
 
                 <div className="p-5 bg-slate-50 border-2 border-slate-100 rounded-2xl">
-                  <label className="text-[10px] font-black text-slate-400 uppercase mb-2 block">Target Name</label>
+                  <label className="text-[10px] font-black text-slate-400 uppercase mb-2 block tracking-widest">Identify Target</label>
                   <input className="bg-transparent border-none p-0 font-bold text-lg text-slate-900 focus:ring-0 w-full" placeholder="対象の名称（例：ダリア）" value={plantName} onChange={(e) => setPlantName(e.target.value)} />
                 </div>
 
                 <div className="p-5 bg-slate-50 border-2 border-slate-100 rounded-2xl">
-                  <label className="text-[10px] font-black text-slate-400 uppercase mb-2 block">Request</label>
+                  <label className="text-[10px] font-black text-slate-400 uppercase mb-2 block tracking-widest">Details</label>
                   <Textarea className="bg-transparent border-none p-0 font-bold text-slate-900 focus:ring-0 w-full min-h-[60px] resize-none text-lg" placeholder="知りたいこと、困っていること..." value={prompt} onChange={(e) => setPrompt(e.target.value)} />
                 </div>
               </section>
 
               <section className="space-y-4 pt-4 border-t border-slate-100 text-center">
-                <p className="text-xs font-black text-slate-300 uppercase tracking-widest mb-2">Deep Expert Analysis</p>
+                <p className="text-xs font-black text-slate-300 uppercase tracking-widest mb-2">Launch Expert Analysis</p>
                 <Button onClick={() => handleCopyAndGo('https://chatgpt.com/')} disabled={!image || isScanning} className="h-24 w-full bg-slate-900 hover:bg-black text-white rounded-[2rem] shadow-2xl flex flex-col items-center justify-center group active:scale-95 transition-all">
                   <div className="flex items-center gap-3 text-2xl font-black italic tracking-tighter uppercase"><Bot className="w-6 h-6 text-blue-400" /> ChatGPT</div>
                   <span className="text-[10px] opacity-50 font-bold uppercase tracking-widest">鑑定プロンプトをコピーして起動</span>
                 </Button>
                 <div className="grid grid-cols-2 gap-4">
-                  <Button variant="outline" onClick={() => handleCopyAndGo('https://gemini.google.com/')} className="h-16 border-2 border-slate-100 hover:border-blue-500 rounded-2xl font-black text-slate-600">GEMINI</Button>
-                  <Button variant="outline" onClick={() => handleCopyAndGo('https://claude.ai/')} className="h-16 border-2 border-slate-100 hover:border-orange-500 rounded-2xl font-black text-slate-600">CLAUDE</Button>
+                  <Button variant="outline" onClick={() => handleCopyAndGo('https://gemini.google.com/')} className="h-16 border-2 border-slate-100 hover:border-blue-500 rounded-2xl font-black text-slate-600 transition-all active:scale-95">GEMINI</Button>
+                  <Button variant="outline" onClick={() => handleCopyAndGo('https://claude.ai/')} className="h-16 border-2 border-slate-100 hover:border-orange-500 rounded-2xl font-black text-slate-600 transition-all active:scale-95">CLAUDE</Button>
                 </div>
               </section>
 
               {isCopied && (
                 <div className="p-6 bg-red-50 rounded-3xl border-2 border-red-200 animate-in fade-in slide-in-from-top-4 shadow-xl">
                    <div className="flex items-center gap-3 text-red-700 mb-2 font-black italic text-lg"><AlertCircle className="w-6 h-6" />写真を添付して送信！</div>
-                   <p className="text-sm text-red-900 font-bold">1. 保存した写真を添付<br/>2. プロンプトを貼り付けて送信</p>
+                   <p className="text-sm text-red-900 font-bold leading-relaxed">1. [保存] した写真を添付<br/>2. プロンプトを貼り付けて送信</p>
                 </div>
               )}
             </div>
-            <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between text-[10px] font-black text-slate-300 uppercase tracking-widest">
-              <span>NextraLabs Scope Engine</span>
-              <span>Professional v3.0</span>
+            <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between text-[10px] font-black text-slate-300 uppercase tracking-widest font-sans">
+              <span>NextraLabs Context System</span>
+              <span>v3.0 Official Release</span>
             </div>
           </div>
         </div>
