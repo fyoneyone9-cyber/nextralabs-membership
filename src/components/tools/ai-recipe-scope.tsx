@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { 
   Droplets, Camera, CheckCircle2, MapPin, Upload, X, Copy, 
   Sparkles, Heart, Bot, RefreshCw, AlertCircle, 
-  Search, Zap, Loader2, Download, HelpCircle, Utensils, Play, Youtube
+  Search, Zap, Loader2, Download, HelpCircle, Utensils, Play, Video
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -202,7 +202,7 @@ export default function AiRecipeScope() {
                 {dishName && (
                   <div className="pt-8 border-t border-slate-100 space-y-4 text-left">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-100 rounded-xl shadow-sm"><Youtube className="text-red-600 w-5 h-5" /></div>
+                      <div className="p-2 bg-red-100 rounded-xl shadow-sm"><Video className="text-red-600 w-5 h-5" /></div>
                       <h3 className="text-lg font-black text-slate-900 italic tracking-tighter uppercase">Cook Videos</h3>
                     </div>
                     <Card className="bg-slate-950 border-none rounded-3xl overflow-hidden shadow-xl cursor-pointer group" onClick={() => window.open(`https://www.youtube.com/results?search_query=${dishName}+作り方`, '_blank')}>
