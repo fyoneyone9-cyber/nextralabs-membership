@@ -384,20 +384,6 @@ const creativeTools: Product[] = [
 // 🐾 エンタメ・趣味
 const funTools: Product[] = [
   {
-    id: 'ai-recipe',
-    title: 'AIレシピ・スコープ',
-    subtitle: '冷蔵庫スキャン × 天才シェフ × YouTube連動',
-    description: '残り物の写真を撮るだけでAIが絶品レシピを考案。同時に「作り方動画」も表示する究極の自炊サポートツール。',
-    price: '¥980/月',
-    priceNote: 'スタンダードプラン',
-    tags: ['時短レシピ', '画像解析', 'YouTube連携', '節約'],
-    icon: Utensils,
-    color: 'from-red-500 to-orange-600',
-    bgColor: 'bg-red-500/10',
-    iconColor: 'text-red-500',
-    status: 'NEW',
-  },
-  {
     id: 'location-finder',
     title: 'AI Location Scout',
     subtitle: 'YouTube URLを貼るだけ → Gemini AIが解析 → Google Mapsにピン表示',
