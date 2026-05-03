@@ -5,136 +5,100 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Zap, Mail, Building2, Send, Search, X, ShieldCheck, Copy, Sparkles, Bot, Heart, AlertCircle, HelpCircle } from "lucide-react";
+import { Zap, Mail, Building2, Send, Loader2, Search, X, ShieldCheck, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 
 export default function SalesAutomation() {
   const [domain, setDomain] = useState('');
   const [targetPerson, setTargetPerson] = useState('');
   const [prompt, setPrompt] = useState('');
-  const [isCopied, setIsCopied] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'analyzing' | 'done'>('idle');
+  const [result, setResult] = useState<any>(null);
 
-  // 有名企業のプリセット
   const presets = [
     { name: 'TOYOTA', domain: 'toyota.jp' },
     { name: 'SONY', domain: 'sony.jp' },
-    { name: 'SoftBank', domain: 'softbank.jp' },
     { name: 'Rakuten', domain: 'rakuten.co.jp' },
     { name: 'Nintendo', domain: 'nintendo.co.jp' }
   ];
 
-  const handleCopyAndGo = (url: string) => {
+  const handleGenerate = async () => {
     if (!domain) return toast.error("企業ドメインを入力してください");
-    
-    // プロンプトはクライアント側で瞬時に生成（500エラーを回避）
-    const magicPrompt = `
-あなたは超一流のインサイドセールス担当者です。
-以下の企業ドメインを持つ会社に対し、NextraLabsのAIソリューションを提案する最高の営業メールを執筆してください。
+    setStatus('analyzing');
+    setResult(null);
+    try {
+      const response = await fetch('/api/tools/sales-automation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ domain, targetPerson, prompt }),
+      });
+      const data = await response.json();
+      const compName = domain.split('.')[0].toUpperCase();
+      setResult({
+        companyName: compName,
+        email: data.draftEmail || "メール生成に失敗しました。",
+        subject: `【ご提案】${compName}様におけるAI自動化の導入について`
+      });
+      setStatus('done');
+      toast.success("戦略メールの作成に成功しました");
+    } catch (error) {
+      toast.error("解析に失敗しました");
+      setStatus('idle');
+    }
+  };
 
-【ターゲット企業データ】
-・企業ドメイン: ${domain}
-・担当者名: ${targetPerson || "ご担当者"}様
-・特記事項: ${prompt || "特になし"}
-
-【実行指示】
-1. あなたの持つ最新のGoogle検索機能を使い、${domain} の最新ニュースや事業内容を1分でリサーチしてください。
-2. その企業が今直面しているであろう課題（効率化、コスト削減、DX推進等）を鋭く推測してください。
-3. NextraLabsのAI技術（業務自動化、画像解析、顧客対応AI等）が、その企業の利益にどう直結するか具体的に提案してください。
-4. 相手の価値を尊重し、思わず返信したくなるような「知性的で熱意のある文章」を日本語で作成してください。
-5. 件名も「思わず開きたくなるタイトル」を3案添えてください。
-`;
-    
-    navigator.clipboard.writeText(magicPrompt.trim());
-    setIsCopied(true);
-    toast.success("戦略プロンプトを自動コピーしました！");
-    
-    setTimeout(() => {
-      window.open(url, '_blank');
-    }, 100);
+  const handleSendEmail = () => {
+    if (!result) return;
+    const body = encodeURIComponent(result.email);
+    const subject = encodeURIComponent(result.subject);
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&su=${subject}&body=${body}`, '_blank');
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-4 min-h-screen font-sans bg-slate-50/50 text-left text-slate-900">
+    <div className="max-w-6xl mx-auto p-4 min-h-screen font-sans bg-slate-50/50 text-left">
       <Card className="border-none bg-white shadow-2xl rounded-[3rem] overflow-hidden antialiased">
-        <div className="flex flex-col lg:flex-row min-h-[750px]">
-          {/* 左側：分析コックピット */}
-          <div className="lg:w-1/2 p-12 bg-slate-900 text-white flex flex-col justify-between relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-cyan-400 to-indigo-600"></div>
-            <div className="space-y-12">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-blue-600 rounded-2xl shadow-lg animate-pulse"><Zap className="w-8 h-8 text-white" /></div>
-                <h1 className="text-3xl font-black italic tracking-tighter leading-none uppercase">Sales AI Scope</h1>
-              </div>
-
-              <div className="space-y-6">
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block ml-1">1. Choose or Enter Domain</label>
-                  
-                  {/* 企業プリセットボタン */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {presets.map((p) => (
-                      <Button key={p.name} variant="outline" size="sm" className="bg-white/5 border-slate-700 text-slate-300 hover:bg-blue-600 hover:text-white rounded-full font-black text-[10px] transition-all" onClick={() => setDomain(p.domain)}>
-                        {p.name}
-                      </Button>
-                    ))}
-                  </div>
-
-                  <Input placeholder="example.com" className="bg-black/40 border-slate-800 text-white h-16 rounded-2xl text-xl font-black focus:border-blue-500 transition-all" value={domain} onChange={(e) => setDomain(e.target.value)} />
+        <div className="flex flex-col lg:flex-row min-h-[800px]">
+          <div className="lg:w-1/2 p-12 bg-slate-900 text-white flex flex-col justify-between relative text-left">
+            <div className="space-y-12 text-left">
+              <div className="flex items-center gap-4 text-left"><div className="p-3 bg-blue-600 rounded-2xl animate-pulse text-left"><Zap className="w-8 h-8 text-white" /></div><h1 className="text-3xl font-black italic tracking-tighter uppercase text-white">Sales AI Scope</h1></div>
+              <div className="space-y-8 text-left">
+                <div className="space-y-4 text-left"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block ml-1 text-left">1. Company Selection</label>
+                  <div className="flex flex-wrap gap-2 text-left">{presets.map((p) => (<Button key={p.name} variant="outline" size="sm" className="bg-white/5 border-slate-700 text-slate-300 hover:bg-blue-600 hover:text-white rounded-full font-black text-[10px]" onClick={() => setDomain(p.domain)}>{p.name}</Button>))}</div>
+                  <Input placeholder="example.com" className="bg-black/40 border-slate-800 text-white h-16 rounded-2xl text-xl font-black" value={domain} onChange={(e) => setDomain(e.target.value)} />
                 </div>
-
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block ml-1">2. Contact Name</label>
+                <div className="space-y-2 text-left"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block text-left">2. Personal Context</label>
                   <Input placeholder="担当者名" className="bg-black/40 border-slate-800 text-white h-14 rounded-2xl text-lg font-bold" value={targetPerson} onChange={(e) => setTargetPerson(e.target.value)} />
+                  <Textarea placeholder="相談内容や特記事項" className="bg-black/40 border-slate-800 text-white min-h-[100px] rounded-2xl font-bold" value={prompt} onChange={(e) => setPrompt(e.target.value)} />
                 </div>
-
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block ml-1">3. Context (Optional)</label>
-                  <Textarea placeholder="相手の悩み、自社の強みなど..." className="bg-black/40 border-slate-800 text-white min-h-[100px] rounded-2xl font-bold" value={prompt} onChange={(e) => setPrompt(e.target.value)} />
-                </div>
+                <Button onClick={handleGenerate} disabled={status === 'analyzing'} className="w-full bg-blue-600 hover:bg-blue-500 h-20 rounded-[2rem] text-2xl font-black shadow-xl">
+                  {status === 'analyzing' ? <Loader2 className="w-8 h-8 animate-spin" /> : "戦略メールを生成"}
+                </Button>
               </div>
-            </div>
-            
-            <div className="p-6 bg-white/5 rounded-3xl border border-white/5 flex items-start gap-4">
-               <HelpCircle className="text-blue-400 w-6 h-6 mt-1 flex-shrink-0" />
-               <p className="text-slate-400 text-xs font-bold leading-relaxed">ドメインを入力するだけで、AIがその企業の最新ニュースをリサーチ。刺さる営業メールを自動生成するための最強プロンプトを構築します。</p>
             </div>
           </div>
 
-          {/* 右側：AIポータル */}
-          <div className="lg:w-1/2 p-12 flex flex-col bg-white overflow-hidden border-l border-slate-100">
-            <div className="flex-1 space-y-10">
-              <div className="text-center space-y-5">
-                 <p className="text-[11px] font-black text-slate-900 uppercase tracking-[0.4em]">Step 2: AIを選んで鑑定開始</p>
-                 <div className="grid grid-cols-1 gap-5">
-                    <Button onClick={() => handleCopyAndGo('https://gemini.google.com/')} className="h-28 bg-blue-600 hover:bg-blue-500 text-white rounded-[2.5rem] shadow-2xl flex flex-col items-center justify-center group active:scale-95 transition-all border-none relative overflow-hidden">
-                      <div className="flex items-center gap-4 text-2xl font-black italic tracking-tighter uppercase relative z-10"><Sparkles className="w-8 h-8 text-amber-300" /> Geminiで執筆</div>
-                      <span className="text-[10px] text-blue-100 font-black uppercase tracking-widest relative z-10">最新リサーチ ＋ Groundingに最強</span>
-                    </Button>
-                    <div className="grid grid-cols-2 gap-5">
-                      <Button onClick={() => handleCopyAndGo('https://chatgpt.com/')} className="h-20 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl shadow-xl flex items-center justify-center gap-3 font-black active:scale-95 transition-all border-none text-lg italic tracking-tighter uppercase"><Bot className="w-6 h-6" /> ChatGPT</Button>
-                      <Button onClick={() => handleCopyAndGo('https://claude.ai/')} className="h-20 bg-orange-600 hover:bg-orange-500 text-white rounded-3xl shadow-xl flex items-center justify-center gap-3 font-black active:scale-95 transition-all border-none text-lg italic tracking-tighter uppercase"><Heart className="w-6 h-6 fill-white" /> Claude</Button>
-                    </div>
-                 </div>
+          <div className="lg:w-1/2 p-12 flex flex-col bg-white overflow-hidden border-l border-slate-100 text-left">
+            <div className="flex-1 flex flex-col space-y-8 min-h-0 text-left">
+              <div className="flex items-center justify-between text-left">
+                <div className="flex items-center gap-3 text-left"><div className="p-2 bg-slate-100 rounded-xl text-left"><Mail className="text-slate-900 w-6 h-6" /></div><h2 className="text-xl font-black italic tracking-tight uppercase text-slate-900 text-left">Draft Preview</h2></div>
+                {result && <Button variant="ghost" size="icon" onClick={() => setResult(null)} className="text-slate-300 hover:text-red-500 transition-colors"><X className="w-5 h-5" /></Button>}
               </div>
-
-              {isCopied && (
-                <div className="p-10 bg-red-50 rounded-[3rem] border-4 border-red-100 animate-in fade-in slide-in-from-top-6 shadow-2xl relative overflow-hidden text-left">
-                   <div className="absolute -top-6 -right-6 w-32 h-32 bg-red-100 rounded-full opacity-30 flex items-center justify-center"><AlertCircle className="w-16 h-16 text-red-500" /></div>
-                   <div className="flex flex-col gap-1 mb-8">
-                     <div className="flex items-center gap-3 text-red-700 font-black italic text-xl uppercase tracking-tight text-left">貼り付けるだけ！</div>
-                     <p className="text-red-600 font-black text-xs">戦略プロンプトは自動でコピーされました</p>
-                   </div>
-                   <div className="space-y-5 text-[15px] text-red-950 font-black leading-tight text-left">
-                     <p className="flex items-start gap-4 text-left font-black"><span className="bg-red-600 text-white w-7 h-7 rounded-xl flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-md font-sans">1</span><span>AIアプリが起動したら、入力欄を長押し</span></p>
-                     <p className="flex items-start gap-4 text-left font-black"><span className="bg-red-600 text-white w-7 h-7 rounded-xl flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-md font-sans">2</span><span>そのまま <span className="underline decoration-red-500 decoration-[3px] underline-offset-4 font-black text-red-600">「貼り付け（ペースト）」</span></span></p>
-                     <p className="flex items-start gap-4 text-left font-black"><span className="bg-red-600 text-white w-7 h-7 rounded-xl flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-md font-sans">3</span><span>送信ボタンを押して、戦略メールを取得！</span></p>
-                   </div>
-                </div>
-              )}
-            </div>
-            <div className="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">
-              <span>NextraLabs Sales Intelligence</span>
-              <span>Final Release v4.0</span>
+              <div className="flex-1 min-h-0 bg-slate-50 border-2 border-slate-100 rounded-[2.5rem] flex flex-col overflow-hidden shadow-inner text-left">
+                {result ? (
+                  <>
+                    <div className="p-6 border-b border-slate-200 bg-white text-left"><p className="text-[10px] font-black text-slate-400 uppercase mb-1">Subject</p><p className="text-sm font-black text-slate-900 leading-tight">{result.subject}</p></div>
+                    <div className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-white/50 text-left"><div className="text-slate-700 font-bold leading-relaxed whitespace-pre-wrap text-[15px] text-left">{result.email}</div></div>
+                  </>
+                ) : (
+                  <div className="flex-1 flex flex-col items-center justify-center text-slate-200 py-20 text-center"><div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6"><Mail className="w-12 h-12 opacity-20" /></div><p className="font-black uppercase tracking-[0.3em] text-slate-300">Wait for Analysis</p></div>
+                )}
+              </div>
+              <div className="pt-6 text-left">
+                <Button onClick={handleSendEmail} disabled={!result} className={`w-full h-20 rounded-[2rem] text-2xl font-black shadow-2xl transition-all active:scale-95 text-left flex items-center justify-center gap-4 ${result ? 'bg-slate-900 hover:bg-black text-white cursor-pointer' : 'bg-slate-100 text-slate-300'}`}>
+                  <Send className="w-8 h-8" /> Gmailへ同期して送信
+                </Button>
+                <div className="mt-4 flex items-center justify-center gap-2"><div className="h-1 w-1 bg-green-500 rounded-full animate-ping"></div><p className="text-[10px] text-slate-400 font-black uppercase tracking-widest text-center">Ready for Real-world Operation</p></div>
+              </div>
             </div>
           </div>
         </div>
