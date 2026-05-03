@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Youtube, Utensils, Camera, Zap, CheckCircle2, Rocket } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'AIレシピ・スコープ | 残り物から絶品料理を',
   description: '冷蔵庫の中身を撮るだけで、AIが最高に美味しいレシピと調理動画を提案します。',
