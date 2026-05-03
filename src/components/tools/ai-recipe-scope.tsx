@@ -38,7 +38,8 @@ export default function AiRecipeScope() {
             body: JSON.stringify({ image }),
           });
           const data = await res.json();
-          setDishName(data.dishName || "絶品レシピ");
+          if (data.dishName) setDishName(data.dishName);
+          else setDishName("絶品レシピ");
         } catch (err) {
           setDishName("絶品レシピ");
         } finally {
