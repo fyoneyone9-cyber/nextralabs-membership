@@ -12,10 +12,10 @@ const LIGHT_TOOLS = ['shio-taiou', 'ai-konkatsu', 'comm-coach', 'prompt-master',
 const STANDARD_TOOLS = ['exam-scheduler', 'disaster-guard', 'scam-defender', 'money-guard', 'ticket-scout', 'shopping-stopper', 'buzz-writer', 'ai-recipe']
 
 // プレミアムプランのみ
-const PREMIUM_TOOLS = ['pet-translator', 'vintage-hunter', 'location-finder', 'ai-select-shop', 'youtube-producer', 'inbox-organizer', 'sns-auto-poster-pro']
+const PREMIUM_TOOLS = ['pet-translator', 'vintage-hunter', 'location-finder', 'ai-select-shop', 'youtube-producer', 'inbox-organizer', 'sns-auto-poster-pro', 'smart-gardening']
 
 // 作成中（全ユーザー利用不可）
-const DEVELOPMENT_TOOLS = ['smart-gardening', 'ai-recipe']
+const DEVELOPMENT_TOOLS = ['ai-recipe']
 
 // プランの強さを数値化
 const PLAN_LEVEL: Record<string, number> = {

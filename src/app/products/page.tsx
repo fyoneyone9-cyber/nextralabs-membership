@@ -405,22 +405,24 @@ const funTools: Product[] = [
   },
 ]
 
-// 🛠️ 作成中ジャンル — 全プラン利用不可
-const developmentTools: Product[] = [
   {
     id: 'smart-gardening',
     title: 'AIリアルタイム・スコープ',
     subtitle: '視覚解析 × 位置情報 × 環境データ',
-    description: 'カメラで対象を捉えるだけでAIが周辺環境と視覚情報を統合分析。※現在、仕様調整中のため利用できません。',
-    price: '非公開',
-    priceNote: '作成中',
-    tags: ['万能診断', '画像解析', '作成中'],
+    description: 'カメラで対象を捉えるだけでAIが周辺環境と視覚情報を統合分析。あらゆる現場を解読する万能の眼。',
+    price: '¥1,980/月',
+    priceNote: 'プレミアムプラン',
+    tags: ['万能診断', '画像解析', '環境連動'],
     icon: Zap,
-    color: 'from-slate-600 to-slate-700',
-    bgColor: 'bg-slate-500/10',
-    iconColor: 'text-slate-500',
-    status: '🚧 開発中',
+    color: 'from-blue-600 to-indigo-700',
+    bgColor: 'bg-blue-500/10',
+    iconColor: 'text-blue-600',
+    status: '✨ UPDATED',
   },
+]
+
+// 🛠️ 作成中ジャンル — 全プラン利用不可
+const developmentTools: Product[] = [
   {
     id: 'ai-recipe',
     title: 'AIレシピ・スコープ',
