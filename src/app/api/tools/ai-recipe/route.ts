@@ -14,20 +14,25 @@ export async function POST(req: Request) {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    // バナナ等の食材を確実に1つ特定させる指示
+    // 画像と指示を同時に渡すマルチモーダル形式
     const result = await model.generateContent([
-      { inlineData: { data: base64Data, mimeType } },
-      { text: "写真に写っている主要な食材を1つだけ特定し、その名称を日本語で答えてください。余計な言葉（「写っているのは〜」など）は一切不要です。食材名のみ出力してください。" }
+      {
+        inlineData: {
+          data: base64Data,
+          mimeType: mimeType
+        }
+      },
+      { text: "写真に写っている主要な食材を1つだけ特定し、その名称を日本語で答えてください。バナナなら「バナナ」とだけ出力してください。装飾や説明は一切不要です。" }
     ]);
 
     const dishName = result.response.text().trim().replace(/[#*]/g, "");
 
     return NextResponse.json({ 
-      dishName: dishName || "不明な食材", 
+      dishName: dishName || "食材不明", 
       youtubeSearchUrl: `https://www.youtube.com/results?search_query=${encodeURIComponent(dishName)}+作り方`
     });
   } catch (error: any) {
     console.error('Recipe API Error:', error);
-    return NextResponse.json({ error: '解析失敗' }, { status: 500 });
+    return NextResponse.json({ dishName: "解析エラー" });
   }
 }
