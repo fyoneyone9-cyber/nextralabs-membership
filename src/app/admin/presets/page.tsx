@@ -1,21 +1,9 @@
-'use client';
-
-import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Check, Copy } from "lucide-react";
+import { CopyButton } from "@/components/tools/CopyButton";
 
 export const dynamic = 'force-dynamic';
 
 export default function AiPresetsPage() {
-  const [copied, setCopied] = useState<string | null>(null);
-
-  const copyToClipboard = (text: string, id: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(id);
-    setTimeout(() => setCopied(null), 2000);
-  };
-
   const presets = [
     {
       id: 'waterfall',
@@ -80,29 +68,22 @@ export async function POST(req: Request) {
   return (
     <div className="container mx-auto py-10 space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">AI開発プリセット</h1>
-        <p className="text-muted-foreground">今後の開発はここからコードをコピペして、コストを最小化します。</p>
+        <h1 className="text-3xl font-bold text-white">AI開発プリセット</h1>
+        <p className="text-slate-400">今後の開発はここからコードをコピペして、コストを最小化します。</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6">
         {presets.map((preset) => (
-          <Card key={preset.id}>
+          <Card key={preset.id} className="bg-slate-900 border-slate-800">
             <CardHeader>
-              <CardTitle className="flex justify-between items-center">
+              <CardTitle className="flex justify-between items-center text-white">
                 <span>{preset.title}</span>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => copyToClipboard(preset.code, preset.id)}
-                >
-                  {copied === preset.id ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
-                  {copied === preset.id ? 'コピー済み' : 'コピー'}
-                </Button>
+                <CopyButton code={preset.code} id={preset.id} />
               </CardTitle>
-              <CardDescription>{preset.description}</CardDescription>
+              <CardDescription className="text-slate-400">{preset.description}</CardDescription>
             </CardHeader>
             <CardContent>
-              <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg overflow-x-auto text-xs font-mono">
+              <pre className="bg-black text-slate-300 p-4 rounded-lg overflow-x-auto text-xs font-mono border border-slate-800">
                 <code>{preset.code}</code>
               </pre>
             </CardContent>
