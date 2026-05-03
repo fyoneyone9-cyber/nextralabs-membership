@@ -140,11 +140,10 @@ export default function SmartGardening() {
                   <Bot className="mr-2 w-4 h-4" /> Gemini 1.5 Pro
                 </Button>
                 <Button 
-                  onClick={() => setSelectedModel('gpt')}
-                  disabled
-                  className={`flex-1 rounded-xl font-bold h-12 transition-all ${selectedModel === 'gpt' ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-50 text-slate-400 opacity-50'}`}
+                  onClick={() => setSelectedModel('claude' as any)}
+                  className={`flex-1 rounded-xl font-bold h-12 transition-all ${selectedModel === ('claude' as any) ? 'bg-orange-600 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
                 >
-                  GPT-4o (近日対応)
+                  <Bot className="mr-2 w-4 h-4" /> Claude 3.5 Sonnet
                 </Button>
               </div>
 
