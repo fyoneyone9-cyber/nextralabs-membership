@@ -24,7 +24,7 @@ export async function nextraAiEngine({
     return { response: "Service is currently initializing...", model: "none", cached: false };
   }
 
-  const supabase = createClient(supabaseUrl, supabaseKey);
+  const supabase = createClient(supabaseUrl as string, supabaseKey as string);
 
   // Cache Check
   const { data: cached } = await supabase
@@ -34,7 +34,7 @@ export async function nextraAiEngine({
     .eq('system_instruction', systemInstruction || '')
     .single();
 
-  if (cached) return { response: cached.response, model: cached.model, cached: true };
+  if (cached) return { response: cached.response as string, model: cached.model as string, cached: true };
 
   // Model Selection
   const modelName = quality === 'powerful' ? "gemini-1.5-pro" : "gemini-1.5-flash";
