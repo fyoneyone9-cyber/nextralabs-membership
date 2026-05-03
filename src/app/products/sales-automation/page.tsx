@@ -1,10 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
-import { Button } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, Zap, Building2, CheckCircle2, Rocket } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
 
 export default function SalesAutomationLandingPage() {
   const features = [
