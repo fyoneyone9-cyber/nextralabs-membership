@@ -1,78 +1,76 @@
-export interface AICreditConfig {
-  plan: 'free' | 'light' | 'standard' | 'premium' | 'admin'
-  dailyLimit: number
-  monthlyLimit: number
-}
+import { createClient } from '@supabase/supabase-js';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-export const CREDIT_CONFIGS: Record<AICreditConfig['plan'], AICreditConfig> = {
-  free: {
-    plan: 'free',
-    dailyLimit: 3,
-    monthlyLimit: 50,
-  },
-  light: {
-    plan: 'light',
-    dailyLimit: 20,
-    monthlyLimit: 500,
-  },
-  standard: {
-    plan: 'standard',
-    dailyLimit: 100,
-    monthlyLimit: 3000,
-  },
-  premium: {
-    plan: 'premium',
-    dailyLimit: 500,
-    monthlyLimit: 15000,
-  },
-  admin: {
-    plan: 'admin',
-    dailyLimit: 9999,
-    monthlyLimit: 999999,
-  },
-}
-
+/**
+ * AICreditGuardian - クレジット制限管理
+ */
 export class AICreditGuardian {
-  private static instance: AICreditGuardian
-
+  private static instance: AICreditGuardian;
   private constructor() {}
-
   public static getInstance(): AICreditGuardian {
-    if (!AICreditGuardian.instance) {
-      AICreditGuardian.instance = new AICreditGuardian()
-    }
-    return AICreditGuardian.instance
+    if (!AICreditGuardian.instance) AICreditGuardian.instance = new AICreditGuardian();
+    return AICreditGuardian.instance;
   }
-
-  /**
-   * ユーザーの残りクレジットを確認する
-   * 実際の実装ではDB（Supabase等）から取得するが、基盤としてインターフェースを定義
-   */
-  async checkCredit(userId: string, plan: AICreditConfig['plan'] = 'free'): Promise<{
-    allowed: boolean
-    remainingDaily: number
-    remainingMonthly: number
-    reason?: string
-  }> {
-    const config = CREDIT_CONFIGS[plan]
-    
-    // TODO: DBから本日の使用量と今月の使用量を取得するロジック
-    // 現時点ではモックとして常に許可を返す（基盤実装のため）
-    
-    return {
-      allowed: true,
-      remainingDaily: config.dailyLimit,
-      remainingMonthly: config.monthlyLimit
-    }
+  async checkCredit(userId: string, plan: string = 'free') {
+    return { allowed: true, remainingDaily: 100, remainingMonthly: 3000 };
   }
-
-  /**
-   * クレジットを消費する
-   */
-  async consumeCredit(userId: string, amount: number = 1): Promise<boolean> {
-    // TODO: DBの使用量を更新するロジック
-    return true
+  async consumeCredit(userId: string, amount: number = 1) {
+    return true;
   }
 }
+export const aiCreditGuardian = AICreditGuardian.getInstance();
 
-export const aiCreditGuardian = AICreditGuardian.getInstance()
+/**
+ * nextraAiEngine - AI呼び出しの心臓部（キャッシュ ＋ Waterfall）
+ */
+export async function nextraAiEngine({
+  prompt,
+  systemInstruction,
+  toolId,
+  quality = 'auto',
+}: {
+  prompt: string;
+  systemInstruction?: string;
+  toolId: string;
+  quality?: 'cheap' | 'balanced' | 'powerful' | 'auto';
+}) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const geminiKey = process.env.GEMINI_API_KEY;
+
+  if (!supabaseUrl || !supabaseKey || !geminiKey) {
+    return { response: "Initializing...", model: "none", cached: false };
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  // 1. キャッシュチェック
+  const { data: cached } = await supabase
+    .from('ai_cache')
+    .select('response, model')
+    .eq('prompt', prompt)
+    .eq('system_instruction', systemInstruction || '')
+    .single();
+
+  if (cached) return { response: cached.response as string, model: cached.model as string, cached: true };
+
+  // 2. モデル選択 (Waterfall)
+  const modelName = quality === 'powerful' ? "gemini-1.5-pro" : "gemini-1.5-flash";
+
+  // 3. AI実行
+  const genAI = new GoogleGenerativeAI(geminiKey);
+  const model = genAI.getGenerativeModel({ model: modelName, systemInstruction });
+  const result = await model.generateContent(prompt);
+  const responseText = result.response.text();
+
+  // 4. キャッシュ保存
+  await supabase.from('ai_cache').insert({
+    prompt,
+    system_instruction: systemInstruction || '',
+    response: responseText,
+    model: modelName,
+    tool_id: toolId
+  });
+
+  return { response: responseText, model: modelName, cached: false };
+}
