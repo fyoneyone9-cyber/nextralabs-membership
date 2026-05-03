@@ -182,11 +182,19 @@ export default function RealTimeScope() {
                   <div className="absolute inset-0 bg-blue-600/30 backdrop-blur-md flex flex-col items-center justify-center"><RefreshCw className="w-20 h-20 text-white animate-spin mb-6" /><p className="text-white font-black tracking-[0.5em] text-2xl italic uppercase">AIスキャン中...</p></div>
                 )}
                 {scanResult && (
-                  <div className="absolute top-32 left-10 right-10 p-8 bg-black/70 backdrop-blur-2xl rounded-[2rem] border border-white/20 animate-in slide-in-from-top-4 text-left">
-                    <div className="flex items-center gap-3 text-blue-400 font-black text-xs uppercase mb-4 tracking-[0.2em]"><Zap className="w-4 h-4" /> プレ解析に成功しました</div>
-                    <div className="grid grid-cols-2 gap-8 text-white">
-                      <div><p className="text-[10px] opacity-40 font-black uppercase mb-1 text-left">対象の名称</p><p className="text-2xl font-black text-left">{scanResult.name}</p></div>
-                      <div><p className="text-[10px] opacity-40 font-black uppercase mb-1 text-left">現在の状態</p><p className="text-2xl font-black text-green-400 tracking-tight text-left">{scanResult.status}</p></div>
+                  <div className="absolute top-32 left-10 right-10 p-8 bg-black/70 backdrop-blur-2xl rounded-[2rem] border border-white/20 animate-in slide-in-from-top-4 text-left shadow-2xl">
+                    <div className="flex items-center gap-3 text-blue-400 font-black text-xs uppercase mb-4 tracking-[0.2em] text-left">
+                      <Zap className="w-4 h-4" /> プレ解析が完了しました
+                    </div>
+                    <div className="grid grid-cols-1 gap-6 text-white text-left">
+                      <div>
+                        <p className="text-[10px] opacity-40 font-black uppercase mb-1 text-left">対象の名称</p>
+                        <p className="text-2xl font-black text-left">{scanResult.name}</p>
+                      </div>
+                      <div className="p-4 bg-green-500/20 border border-green-500/40 rounded-2xl animate-pulse">
+                        <p className="text-[10px] text-green-400 font-black uppercase mb-1 text-left">NEXT ACTION</p>
+                        <p className="text-xl font-black text-green-400 leading-tight">鑑定文はコピー済みです。<br/>AIアプリに貼り付けるだけ！</p>
+                      </div>
                     </div>
                   </div>
                 )}
