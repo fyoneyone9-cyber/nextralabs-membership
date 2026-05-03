@@ -1,6 +1,6 @@
 import React from 'react';
 import SmartGardening from '@/components/tools/SmartGardening';
-import AccessGate from '@/components/tools/AccessGate';
+import { AccessGate } from '@/components/tools/AccessGate';
 import { Droplets } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
