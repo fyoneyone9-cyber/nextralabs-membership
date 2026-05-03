@@ -33,18 +33,20 @@ export default function SmartGardening() {
 
   const autoScanImage = async () => {
     setIsScanning(true);
+    setScanResult(null);
     try {
       const response = await fetch('/api/tools/smart-gardening', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image, location: locationName }),
       });
+      if (!response.ok) throw new Error("API Error");
       const data = await response.json();
       setScanResult(data);
       if (data.name) setTargetName(data.name);
-      toast.success("AIスキャン完了：対象を特定しました");
     } catch (err) {
       console.error(err);
+      setScanResult({ name: "解析失敗", status: "手動入力してください", environment: locationName, confidence: "0" });
     } finally {
       setIsScanning(false);
     }

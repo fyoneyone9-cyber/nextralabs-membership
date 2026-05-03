@@ -12,26 +12,36 @@ export async function POST(req: Request) {
     const base64Data = image.split(',')[1];
     const mimeType = image.split(',')[0].split(':')[1].split(';')[0];
 
-    // --- Gemini 1.5 Flash による高速・低コストな「プレ解析」 ---
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const result = await model.generateContent([
       { inlineData: { data: base64Data, mimeType } },
       { 
-        text: `この現場写真を一言で解析してください。以下のJSON形式でのみ返してください。
-        {"name": "対象物の名前", "status": "健康状態や劣化具合を一言", "environment": "周辺の気象や状況", "confidence": "確信度%"}` 
+        text: `この現場写真を一言で解析してください。必ず以下のJSON形式でのみ返してください。
+        {"name": "対象の名前", "status": "状態を一言", "environment": "周辺状況", "confidence": "95"}` 
       }
     ]);
 
     const response = await result.response;
-    const jsonStr = response.text().replace(/```json|```/g, "");
-    const scanResult = JSON.parse(jsonStr);
+    let text = response.text();
+    
+    // JSON以外のゴミ（```json 等）を正規表現で完全に除去
+    const jsonMatch = text.match(/\{.*\}/s);
+    if (!jsonMatch) throw new Error("JSON not found in response");
+    
+    const scanResult = JSON.parse(jsonMatch[0]);
 
     return NextResponse.json(scanResult);
 
   } catch (error: any) {
     console.error('AI Scan Error:', error);
-    return NextResponse.json({ name: "解析中...", status: "不明", environment: "未特定", confidence: "0" });
+    // 失敗時はデフォルト値を返してUIを止めない
+    return NextResponse.json({ 
+      name: "不明な対象", 
+      status: "要詳細解析", 
+      environment: location || "未特定", 
+      confidence: "50" 
+    });
   }
 }
