@@ -16,10 +16,10 @@ export async function nextraAiEngine({
   toolId: string;
   quality?: 'cheap' | 'balanced' | 'powerful' | 'auto';
 }) {
-  const supabase = await createClient();
+  const supabase = createClient();
 
   // 1. キャッシュチェック
-  const { data: cached } = await supabase
+  const { data: cached } = await (await supabase)
     .from('ai_cache')
     .select('response, model')
     .eq('prompt', prompt)
@@ -32,7 +32,7 @@ export async function nextraAiEngine({
   let modelName = "gemini-1.5-flash"; // デフォルト（激安）
   
   if (quality === 'powerful') {
-    modelName = "claude-3-5-sonnet-20240620";
+    modelName = "gemini-1.5-pro"; // 品質追求
   } else if (quality === 'auto') {
     // 複雑な要求が含まれる場合のみ格上げ（Waterfall）
     const complexKeywords = ["分析", "法律", "高度", "作成", "リサーチ"];
