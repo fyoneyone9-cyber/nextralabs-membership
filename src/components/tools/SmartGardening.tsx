@@ -22,6 +22,12 @@ export default function SmartGardening() {
     }
   };
 
+  const triggerCamera = () => {
+    // モバイルブラウザ等でカメラを直接起動させるための設定
+    const input = document.getElementById('camera-upload') as HTMLInputElement;
+    if (input) input.click();
+  };
+
   const handleAnalyze = async () => {
     if (!image) {
       toast.error("植物の写真をアップロードしてください");
@@ -68,18 +74,28 @@ export default function SmartGardening() {
               {image ? (
                 <>
                   <img src={image} alt="Plant" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                    <Camera className="w-12 h-12 text-white" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity gap-4">
+                    <Button variant="secondary" size="sm" onClick={() => document.getElementById('photo-upload')?.click()}>
+                      差し替え
+                    </Button>
                   </div>
                 </>
               ) : (
                 <div className="text-center p-4">
                   <Camera className="w-16 h-16 text-green-200 mx-auto mb-4" />
                   <p className="text-lg font-bold text-green-800">植物の写真を撮影・アップ</p>
-                  <p className="text-sm text-green-600 mt-2">カメラアイコンをタップしてください</p>
+                  <div className="flex gap-2 mt-4 justify-center">
+                    <Button variant="outline" className="bg-white border-green-200 text-green-700" onClick={(e) => { e.stopPropagation(); triggerCamera(); }}>
+                      カメラを起動
+                    </Button>
+                    <Button variant="outline" className="bg-white border-green-200 text-green-700" onClick={(e) => { e.stopPropagation(); document.getElementById('photo-upload')?.click(); }}>
+                      ファイル選択
+                    </Button>
+                  </div>
                 </div>
               )}
               <input id="photo-upload" type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+              <input id="camera-upload" type="file" accept="image/*" capture="environment" className="hidden" onChange={handleImageUpload} />
             </div>
 
             <div className="flex flex-col justify-between space-y-4">
