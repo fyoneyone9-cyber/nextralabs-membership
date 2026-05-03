@@ -429,6 +429,21 @@ const funTools: Product[] = [
     iconColor: 'text-violet-500',
     status: 'NEW',
   },
+  {
+    id: 'smart-gardening',
+    title: 'スマート・ガーデニング',
+    subtitle: 'AI搭載 植物健康診断 × 育て方アドバイザー',
+    description:
+      '植物の名前と状態を入力するだけで、AIが健康状態を診断し最適なケア方法をアドバイス。枯らさないためのパーソナルガイド。',
+    price: '¥980/月',
+    priceNote: 'スタンダードプラン',
+    tags: ['AI診断', '植物ケア', 'ガーデニング', 'アドバイザー'],
+    icon: Sprout,
+    color: 'from-emerald-500 to-teal-500',
+    bgColor: 'bg-emerald-500/10',
+    iconColor: 'text-emerald-500',
+    status: 'NEW',
+  },
 ]
 
 // ==================== Section Component ====================
