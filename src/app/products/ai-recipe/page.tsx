@@ -5,21 +5,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Youtube, Utensils, Camera, Zap, Rocket } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
-
-export const metadata = {
-  title: 'AIレシピ・スコープ | 残り物から絶品料理を',
-  description: '冷蔵庫の中身を撮るだけで、AIが最高に美味しいレシピと調理動画を提案します。',
-};
+export const fetchCache = 'force-no-store';
 
 export default function AiRecipeLandingPage() {
   const features = [
     { icon: <Camera className="w-6 h-6 text-red-500" />, title: '冷蔵庫スキャン', desc: '食材の残り具合をAIが視覚的に解析します' },
     { icon: <Zap className="w-6 h-6 text-amber-500" />, title: '天才シェフの知能', desc: 'Gemini 1.5 Proが複数の食材を組み合わせた神レシピを考案' },
-    { icon: <Youtube className="w-6 h-6 text-red-600" />, title: '動画連動', desc: '文字だけでなく、プロの調理動画を同じ画面で確認可能' }
+    { icon: <Youtube className="text-red-600 w-6 h-6" />, title: '動画連動', desc: '文字だけでなく、プロの調理動画を同じ画面で確認可能' }
   ];
 
   return (
-    <div className="container mx-auto px-4 py-16 max-w-5xl text-left">
+    <div className="container mx-auto px-4 py-16 max-w-5xl text-left font-sans">
       <div className="text-center mb-16 space-y-4">
         <div className="inline-flex p-3 bg-red-500/10 rounded-2xl mb-4">
           <Utensils className="w-12 h-12 text-red-500" />
@@ -45,7 +41,7 @@ export default function AiRecipeLandingPage() {
               <div className="w-12 h-12 flex items-center justify-center bg-slate-800 rounded-xl mb-4">
                 {f.icon}
               </div>
-              <h3 className="text-xl font-black text-white italic tracking-tighter uppercase">{f.title}</h3>
+              <h3 className="text-xl font-black text-white italic uppercase tracking-tighter uppercase">{f.title}</h3>
               <p className="text-slate-400 font-bold text-sm leading-relaxed">{f.desc}</p>
             </CardContent>
           </Card>
