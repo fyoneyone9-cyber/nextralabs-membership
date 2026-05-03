@@ -71,9 +71,19 @@ export default function SmartGardening() {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       canvas.getContext('2d')?.drawImage(video, 0, 0);
-      setImage(canvas.toDataURL('image/jpeg', 0.8));
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      setImage(dataUrl);
       stopCamera();
     }
+  };
+
+  const downloadImage = () => {
+    if (!image) return;
+    const link = document.createElement('a');
+    link.href = image;
+    link.download = `scope-capture-${Date.now()}.jpg`;
+    link.click();
+    toast.success("写真を端末に保存しました。AIアプリで添付してください。");
   };
 
   const stopCamera = () => {
@@ -127,31 +137,16 @@ export default function SmartGardening() {
                     <p className="text-white font-black tracking-widest text-xl">AI SCANNING...</p>
                   </div>
                 )}
+                
+                {/* 写真保存・削除ボタン */}
+                <div className="absolute top-10 right-10 flex gap-2">
+                  <Button onClick={downloadImage} className="h-14 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black shadow-xl border-2 border-white/20">
+                    端末に保存
+                  </Button>
+                  <Button onClick={() => {setImage(null); setScanResult(null);}} className="h-14 w-14 bg-black/50 text-white rounded-full hover:bg-red-500 border-2 border-white/20"><X /></Button>
+                </div>
+
                 {scanResult && (
-                  <div className="absolute top-10 left-10 right-10 p-6 bg-black/60 backdrop-blur-xl rounded-3xl border border-white/20 animate-in fade-in zoom-in-95">
-                    <div className="flex items-center gap-2 text-blue-400 font-black text-xs uppercase mb-3 tracking-widest">
-                      <Zap className="w-4 h-4" /> Live Analysis Result
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 text-white">
-                      <div>
-                        <p className="text-[10px] opacity-50 font-bold">IDENTITY</p>
-                        <p className="text-lg font-black text-blue-100">{scanResult.name}</p>
-                      </div>
-                      <div>
-                        <p className="text-[10px] opacity-50 font-bold">STATUS</p>
-                        <p className="text-lg font-black text-green-400">{scanResult.status}</p>
-                      </div>
-                    </div>
-                    <div className="mt-3 pt-3 border-t border-white/10 flex justify-between items-center">
-                       <span className="text-[10px] text-white/40 font-bold">AI Confidence: {scanResult.confidence}%</span>
-                       <div className="h-1 w-20 bg-white/10 rounded-full overflow-hidden">
-                          <div className="h-full bg-blue-500" style={{width: `${scanResult.confidence}%`}} />
-                       </div>
-                    </div>
-                  </div>
-                )}
-                <Button onClick={() => {setImage(null); setScanResult(null);}} className="absolute top-10 right-10 h-14 w-14 bg-black/50 text-white rounded-full hover:bg-red-500"><X /></Button>
-              </div>
             ) : (
               <div className="text-center p-10">
                 <div className="h-32 w-32 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-blue-500/20">
