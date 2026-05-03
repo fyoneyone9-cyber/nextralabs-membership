@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Youtube, Utensils, Camera, Zap, CheckCircle2, Rocket } from 'lucide-react';
+import { Youtube, Utensils, Camera, Zap, Rocket } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
