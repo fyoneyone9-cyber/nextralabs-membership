@@ -1,4 +1,6 @@
+// @ts-ignore
 import { createClient } from '@supabase/supabase-js';
+// @ts-ignore
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 /**
@@ -24,7 +26,7 @@ export async function nextraAiEngine({
     return { response: "Service is currently initializing...", model: "none", cached: false };
   }
 
-  const supabase = createClient(supabaseUrl as string, supabaseKey as string);
+  const supabase = createClient(supabaseUrl as string, supabaseKey as string) as any;
 
   // Cache Check
   const { data: cached } = await supabase
