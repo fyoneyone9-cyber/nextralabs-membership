@@ -1,23 +1,14 @@
 import React from 'react';
-import SmartGardening from '@/components/tools/SmartGardening';
-import { AccessGate } from '@/components/tools/AccessGate';
 import { Droplets } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata = {
-  title: 'AI水やり守護神 | NextraLabs',
-  description: '写真と天気から、AIが最適な水やりタイミングをアドバイス。大切な植物を枯らさないための守護神。',
-};
-
 export default function SmartGardeningPage() {
   return (
-    <AccessGate 
-      productId="smart-gardening" 
-      title="AI水やり守護神"
-      icon={<Droplets className="w-12 h-12 text-green-500" />}
-    >
-      <SmartGardening />
-    </AccessGate>
+    <div className="p-10 text-center space-y-4">
+      <Droplets className="w-16 h-16 mx-auto text-green-500" />
+      <h1 className="text-3xl font-bold text-white">AI水やり守護神</h1>
+      <p className="text-slate-400">システムメンテナンス中です。まもなく公開されます。</p>
+    </div>
   );
 }
