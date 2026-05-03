@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 }
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, Ticket, BookOpen, Sprout, Zap, Droplets, type LucideIcon } from 'lucide-react'
+import { Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, Ticket, BookOpen, Sprout, Zap, Droplets, Utensils, type LucideIcon } from 'lucide-react'
 
 // ==================== Product Type ====================
 interface Product {
@@ -107,7 +107,6 @@ const freeTools: Product[] = [
   },
 ]
 
-// 🛡️ 防衛シリーズ — 暮らしを守る
 const defenseTools: Product[] = [
   {
     id: 'scam-defender',
@@ -170,7 +169,6 @@ const defenseTools: Product[] = [
   },
 ]
 
-// 💬 コミュニケーション — 人間関係を磨く
 const commTools: Product[] = [
   {
     id: 'comm-coach',
@@ -234,7 +232,6 @@ const commTools: Product[] = [
   },
 ]
 
-// 🏢 キャリア・ライフ — 人生の転機をサポート
 const lifeTools: Product[] = [
   {
     id: 'resignation-assistant',
@@ -283,7 +280,6 @@ const lifeTools: Product[] = [
   },
 ]
 
-// 🛍️ ビジネス・副業 — AIで稼ぐ
 const bizTools: Product[] = [
   {
     id: 'vintage-hunter',
@@ -305,7 +301,7 @@ const bizTools: Product[] = [
     title: '「在庫ゼロ」AIセレクトショップ',
     subtitle: 'トレンド分析 × AI自動デザイン × オンデマンド出品',
     description:
-      'AIがバズワードを分析しTシャツデザインを自動生成。注文時にオンデマンド製造・配送。在庫リスクゼロのAIファッションビジネス。',
+      'AIがバズワードを分析しTシャツデザインを自動生成。注文時にオンデマンド製造・配送。在庫リスクゼロ of AIファッションビジネス。',
     price: '¥1,980/月',
     priceNote: 'プレミアムプラン',
     tags: ['AI Design', 'Printful API', 'トレンド分析', 'Shopify'],
@@ -347,7 +343,6 @@ const bizTools: Product[] = [
   },
 ]
 
-// 🎨 クリエイティブ — AIで創作を加速
 const creativeTools: Product[] = [
   {
     id: 'prompt-master',
@@ -381,7 +376,6 @@ const creativeTools: Product[] = [
   },
 ]
 
-// 🐾 エンタメ・趣味
 const funTools: Product[] = [
   {
     id: 'location-finder',
@@ -413,7 +407,6 @@ const funTools: Product[] = [
     iconColor: 'text-violet-500',
     status: 'NEW',
   },
-
   {
     id: 'pet-translator',
     title: 'AIペット翻訳モニター',
@@ -433,7 +426,7 @@ const funTools: Product[] = [
     id: 'smart-gardening',
     title: 'AIリアルタイム・スコープ',
     subtitle: '視覚解析 × 位置情報 × 環境データ 万能診断システム',
-    description: 'カメラで対象を捉えるだけで、AIが周辺環境（天気・気温）と視覚情報を統合分析。植物の健康、建物の状態、旅先の景色まで瞬時に解読。',
+    description: 'カメラで対象を捉えるだけで、AIが周辺環境（天気・気温）と視覚情報を統合分析。あらゆる現場を解読する万能の眼。',
     price: '¥1,980/月',
     priceNote: 'プレミアムプラン',
     tags: ['万能診断', '画像解析', '環境連動', 'プロンプト誘導'],
@@ -441,7 +434,29 @@ const funTools: Product[] = [
     color: 'from-blue-600 to-indigo-700',
     bgColor: 'bg-blue-500/10',
     iconColor: 'text-blue-600',
-    status: 'NEW',
+    status: '✨ UPDATED',
+  },
+]
+
+// 🛠️ 作成中ジャンル — 全プラン利用不可
+const comingSoon: { title: string; description: string; icon: any; color: string; bgColor: string; iconColor: string; id: string }[] = [
+  {
+    id: 'ai-recipe',
+    title: 'AIレシピ・スコープ',
+    description: '冷蔵庫の中身を撮るだけでAIがレシピと動画を提案。※現在、仕様調整中のため利用できません。',
+    icon: Utensils,
+    color: 'from-slate-600 to-slate-700',
+    bgColor: 'bg-slate-500/10',
+    iconColor: 'text-slate-500',
+  },
+  {
+    id: 'ai-stylist',
+    title: 'AIスタイリスト・スコープ',
+    description: '服の素材や色、シルエットをAIが解析し、あなたに最適なスタイリングを提案。※現在開発中です。',
+    icon: Shirt,
+    color: 'from-slate-600 to-slate-700',
+    bgColor: 'bg-slate-500/10',
+    iconColor: 'text-slate-500',
   },
 ]
 
@@ -480,7 +495,7 @@ function ProductCard({ product }: { product: Product }) {
   const Icon = product.icon
   return (
     <Card className="h-full hover:shadow-xl transition-all duration-300 group border-2 hover:border-primary/50">
-      <CardContent className="p-6 flex flex-col h-full">
+      <CardContent className="p-6 flex flex-col h-full text-left">
         <div className="flex items-start justify-between mb-4">
           <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ${product.bgColor}`}>
             <Icon className={`h-6 w-6 ${product.iconColor}`} />
@@ -505,7 +520,7 @@ function ProductCard({ product }: { product: Product }) {
 
         <div className="flex flex-wrap gap-1.5 mb-4">
           {product.tags.map((tag) => (
-            <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
+            <Badge key={tag} variant="secondary" className="text-xs">#{tag}</Badge>
           ))}
         </div>
 
@@ -541,12 +556,6 @@ function ProductCard({ product }: { product: Product }) {
               <Rocket className="h-3 w-3" />
               使う
             </Link>
-            <Link href={`/products/${product.id}`}>
-              <Button variant="ghost" size="sm" className="gap-1">
-                詳細
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
           </div>
         </div>
       </CardContent>
@@ -554,15 +563,12 @@ function ProductCard({ product }: { product: Product }) {
   )
 }
 
-// ==================== Coming Soon ====================
-const comingSoon: { title: string; description: string; icon: any; color: string; bgColor: string; iconColor: string }[] = []
-
 // ==================== Page ====================
 export default function ProductsPage() {
   const totalTools = freeTools.length + defenseTools.length + commTools.length + lifeTools.length + bizTools.length + creativeTools.length + funTools.length
 
   return (
-    <div className="container mx-auto px-4 py-16">
+    <div className="container mx-auto px-4 py-16 font-sans">
       {/* Hero */}
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -588,7 +594,7 @@ export default function ProductsPage() {
           </div>
           <div className="w-px h-6 bg-border" />
           <div className="flex items-center gap-1.5">
-            <span className="font-bold text-2xl text-violet-500">7</span>
+            <span className="font-bold text-2xl text-violet-500">8</span>
             <span className="text-muted-foreground">プレミアム</span>
           </div>
         </div>
@@ -607,114 +613,56 @@ export default function ProductsPage() {
 
       {/* FREE */}
       <div id="free">
-        <ProductSection
-          emoji="🆓"
-          title="無料ツール"
-          subtitle="アカウント不要・今すぐ使える無料AIツール"
-          accentColor="bg-blue-500/10 text-blue-600 dark:text-blue-400"
-          products={freeTools}
-        />
+        <ProductSection emoji="🆓" title="無料ツール" subtitle="アカウント不要・今すぐ使える無料AIツール" accentColor="bg-blue-500/10 text-blue-600 dark:text-blue-400" products={freeTools} />
       </div>
 
       {/* DEFENSE SERIES */}
       <div id="defense">
-        <ProductSection
-          emoji="🛡️"
-          title="防衛シリーズ"
-          subtitle="詐欺・お金・住まい・災害…暮らしのリスクからあなたを守る"
-          accentColor="bg-amber-500/10 text-amber-600 dark:text-amber-400"
-          products={defenseTools}
-        />
+        <ProductSection emoji="🛡️" title="防衛シリーズ" subtitle="詐欺・お金・住まい・災害…暮らしのリスクからあなたを守る" accentColor="bg-amber-500/10 text-amber-600 dark:text-amber-400" products={defenseTools} />
       </div>
 
       {/* COMMUNICATION */}
       <div id="comm">
-        <ProductSection
-          emoji="💬"
-          title="コミュニケーション"
-          subtitle="恋愛・婚活・SNS…人間関係のスキルを磨く"
-          accentColor="bg-pink-500/10 text-pink-600 dark:text-pink-400"
-          products={commTools}
-        />
+        <ProductSection emoji="💬" title="コミュニケーション" subtitle="恋愛・婚活・SNS…人間関係のスキルを磨く" accentColor="bg-pink-500/10 text-pink-600 dark:text-pink-400" products={commTools} />
       </div>
 
       {/* CAREER & LIFE */}
       <div id="life">
-        <ProductSection
-          emoji="🏢"
-          title="キャリア・ライフ"
-          subtitle="退職・断捨離…人生の転機をAIがサポート"
-          accentColor="bg-violet-500/10 text-violet-600 dark:text-violet-400"
-          products={lifeTools}
-        />
+        <ProductSection emoji="🏢" title="キャリア・ライフ" subtitle="退職・断捨離…人生の転機をAIがサポート" accentColor="bg-violet-500/10 text-violet-600 dark:text-violet-400" products={lifeTools} />
       </div>
 
       {/* BUSINESS */}
       <div id="biz">
-        <ProductSection
-          emoji="🛍️"
-          title="ビジネス・副業"
-          subtitle="AIを使って効率よく稼ぐ"
-          accentColor="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-          products={bizTools}
-        />
+        <ProductSection emoji="🛍️" title="ビジネス・副業" subtitle="AIを使って効率よく稼ぐ" accentColor="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" products={bizTools} />
       </div>
 
       {/* CREATIVE */}
       <div id="creative">
-        <ProductSection
-          emoji="🎨"
-          title="クリエイティブ"
-          subtitle="画像生成AI・デザイン…創作を加速する"
-          accentColor="bg-purple-500/10 text-purple-600 dark:text-purple-400"
-          products={creativeTools}
-        />
+        <ProductSection emoji="🎨" title="クリエイティブ" subtitle="画像生成AI・デザイン…創作を加速する" accentColor="bg-purple-500/10 text-purple-600 dark:text-purple-400" products={creativeTools} />
       </div>
 
       {/* FUN */}
       <div id="fun">
-        <ProductSection
-          emoji="🐾"
-          title="エンタメ・趣味"
-          subtitle="AIで毎日をちょっと楽しく"
-          accentColor="bg-violet-500/10 text-violet-600 dark:text-violet-400"
-          products={funTools}
-        />
+        <ProductSection emoji="🐾" title="エンタメ・趣味" subtitle="AIで毎日をちょっと楽しく" accentColor="bg-violet-500/10 text-violet-600 dark:text-violet-400" products={funTools} />
       </div>
 
       {/* Plan CTA */}
       <div className="my-16 bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-red-500/10 border border-amber-500/20 rounded-3xl p-8 text-center">
         <h2 className="text-2xl font-bold mb-2">4つのプランで全ツール解放</h2>
-        <div className="flex flex-wrap gap-4 justify-center items-center mb-4">
-          <div className="flex items-baseline gap-1">
-            <span className="text-cyan-400 font-bold text-sm">ライト</span>
-            <span className="text-2xl font-bold text-cyan-400">¥480</span>
-            <span className="text-muted-foreground text-xs">/月</span>
-          </div>
+        <div className="flex flex-wrap gap-4 justify-center items-center mb-4 text-left">
+          <div className="flex items-baseline gap-1"><span className="text-cyan-400 font-bold text-sm">ライト</span><span className="text-2xl font-bold text-cyan-400">¥480</span><span className="text-muted-foreground text-xs">/月</span></div>
           <span className="text-muted-foreground">→</span>
-          <div className="flex items-baseline gap-1">
-            <span className="text-sky-400 font-bold text-sm">スタンダード</span>
-            <span className="text-2xl font-bold text-sky-400">¥980</span>
-            <span className="text-muted-foreground text-xs">/月</span>
-          </div>
+          <div className="flex items-baseline gap-1"><span className="text-sky-400 font-bold text-sm">スタンダード</span><span className="text-2xl font-bold text-sky-400">¥980</span><span className="text-muted-foreground text-xs">/月</span></div>
           <span className="text-muted-foreground">→</span>
-          <div className="flex items-baseline gap-1">
-            <span className="text-violet-400 font-bold text-sm">プレミアム</span>
-            <span className="text-2xl font-bold text-violet-400">¥1,980</span>
-            <span className="text-muted-foreground text-xs">/月（全{totalTools}ツール）</span>
-          </div>
+          <div className="flex items-baseline gap-1"><span className="text-violet-400 font-bold text-sm">プレミアム</span><span className="text-2xl font-bold text-violet-400">¥1,980</span><span className="text-muted-foreground text-xs">/月（全{totalTools}ツール）</span></div>
         </div>
         <p className="text-sm text-muted-foreground mb-6">いつでも解約OK ✨ 無料ツールはアカウント不要</p>
-        <Link href="/pricing">
-          <Button className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-8 py-3 rounded-xl text-lg font-bold hover:opacity-90">
-            プランを見る →
-          </Button>
-        </Link>
+        <Link href="/pricing"><Button className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-8 py-3 rounded-xl text-lg font-bold hover:opacity-90">プランを見る →</Button></Link>
       </div>
 
       {/* Coming Soon — 空なら非表示 */}
       {comingSoon.length > 0 && (
-        <section>
+        <section id="dev" className="mt-20 border-t border-slate-900 pt-10 opacity-50 grayscale">
           <h2 className="text-2xl font-bold mb-8 flex items-center gap-2">
             🚧 開発中
           </h2>
@@ -722,8 +670,8 @@ export default function ProductsPage() {
             {comingSoon.map((item) => {
               const Icon = item.icon
               return (
-                <Card key={item.title} className="h-full opacity-60 cursor-default">
-                  <CardContent className="p-6">
+                <Card key={item.id} className="h-full opacity-60 cursor-not-allowed">
+                  <CardContent className="p-6 text-left">
                     <div className="flex items-start justify-between mb-4">
                       <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ${item.bgColor}`}>
                         <Icon className={`h-6 w-6 ${item.iconColor}`} />
