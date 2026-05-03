@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export const dynamic = 'force-dynamic';
 
@@ -6,36 +7,42 @@ export async function POST(req: Request) {
   try {
     const { domain, targetPerson } = await req.json();
 
-    // Clearbit API連携 (現在は骨組みとしてシミュレート)
-    const companyInfo = {
-      name: "サンプル株式会社",
-      industry: "IT / SaaS",
-      size: "100-500人",
-      tech: ["Next.js", "Supabase", "AWS"]
-    };
+    if (!domain) return NextResponse.json({ error: 'ドメインが必要です' }, { status: 400 });
 
-    // TODO: Gemini 1.5 Pro によるパーソナライズメール執筆
-    const draftEmail = `
-件名: ${companyInfo.name}様の${companyInfo.industry}事業におけるAI活用のご提案
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
-${targetPerson}様
+    // AIに企業分析とメール執筆を依頼
+    const result = await model.generateContent([
+      { 
+        text: `
+あなたは超一流のインサイドセールス担当者です。
+以下のドメインを持つ企業に対し、NextraLabsのAI自動化ソリューションを提案する営業メールの「本文のみ」を執筆してください。
 
-突然のご連絡失礼いたします。
-NextraLabsのAIコンサルタントでございます。
+【ターゲット企業ドメイン】: ${domain}
+【担当者名】: ${targetPerson || "ご担当者"}様
 
-貴社の${companyInfo.industry}における先進的な取り組みを拝見し、
-特に${companyInfo.tech.join(', ')}をご活用の貴社であれば、
-弊社の最新AIオートメーションが大きく貢献できると考えご連絡いたしました...
-    `;
+【執筆ルール】
+1. Google検索を駆使し、${domain} の事業内容や最新ニュースを特定した上で、その企業特有の課題に触れてください。
+2. NextraLabsが提供するAI技術（画像解析、業務自動化、顧客対応AI等）が、${domain} の事業をどう加速させるか具体的に提案してください。
+3. 毎回同じ内容にならないよう、その企業の強みを活かした独自の提案角度（切り口）を1つ選んでください。
+4. 構成：挨拶 → 相手企業への賞賛/リサーチ結果 → 課題提起 → NextraLabsによる解決策 → 面談のお願い。
+5. 件名は不要です。本文のみを返してください。
+`
+      }
+    ]);
+
+    const response = await result.response;
+    const draftEmail = response.text().trim();
 
     return NextResponse.json({ 
-      companyInfo, 
+      companyInfo: { name: domain.split('.')[0].toUpperCase() }, 
       draftEmail,
       status: "SUCCESS" 
     });
 
-  } catch (error) {
-    console.error('Sales Automation Error:', error);
-    return NextResponse.json({ error: "API Error" }, { status: 500 });
+  } catch (error: any) {
+    console.error('Sales AI Error:', error);
+    return NextResponse.json({ error: 'メール生成に失敗しました' }, { status: 500 });
   }
 }
