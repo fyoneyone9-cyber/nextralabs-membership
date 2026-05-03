@@ -1,5 +1,5 @@
 import React from 'react';
-import AiRecipeScope from '@/components/tools/AiRecipeScope';
+import AiRecipeScope from '@/components/tools/ai-recipe-scope';
 import { AccessGate } from '@/components/tools/AccessGate';
 
 export const dynamic = 'force-dynamic';
