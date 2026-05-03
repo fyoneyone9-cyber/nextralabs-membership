@@ -27,7 +27,6 @@ export default function RealTimeScope() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 撮影後の自動スキャン
   useEffect(() => {
     if (image && !isScanning && !scanResult) {
       const runScan = async () => {
@@ -39,7 +38,6 @@ export default function RealTimeScope() {
             body: JSON.stringify({ image, location: locationName }),
           });
           const data = await response.json();
-          // ダミーデータを排除
           const finalName = (data.name && data.name !== "解析完了") ? data.name : "現場写真";
           setScanResult({ name: finalName, status: data.status || "解析完了" });
         } catch (err) {
@@ -115,8 +113,6 @@ export default function RealTimeScope() {
 
   const handleCopyAndGo = (url: string) => {
     if (!image) return toast.error("対象を撮影してください");
-    
-    // プロンプトを完全に新規構築（古いゴミが入る余地を無くす）
     const target = plantName || scanResult?.name || "現場写真";
     const magicPrompt = [
       `重要：このテキストと一緒に、私が今撮影した【${target}】の写真を1枚送信しています。まずその画像をピクセル単位で詳細に確認し、以下のプロフェッショナル分析を開始してください。`,
@@ -146,7 +142,6 @@ export default function RealTimeScope() {
     <div className="max-w-6xl mx-auto p-4 min-h-screen font-sans">
       <Card className="border-none bg-white shadow-2xl rounded-[3rem] overflow-hidden">
         <div className="flex flex-col lg:flex-row min-h-[750px]">
-          {/* 左半分 */}
           <div className="lg:w-3/5 bg-slate-950 relative flex items-center justify-center overflow-hidden">
             <div className="absolute top-0 left-0 w-full p-10 z-10 bg-gradient-to-b from-black/60 to-transparent text-white">
               <div className="flex items-center gap-3">
@@ -159,8 +154,8 @@ export default function RealTimeScope() {
               <div className="w-full h-full relative">
                 <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
                 <div className="absolute bottom-12 left-0 right-0 flex justify-center items-center gap-8 z-20">
-                  <Button onClick={takePhoto} className="h-20 w-20 rounded-full bg-white border-8 border-blue-500/20 shadow-2xl active:scale-90 transition-all">
-                    <div className="h-12 w-12 bg-blue-500 rounded-full animate-pulse" />
+                  <Button onClick={takePhoto} className="h-24 w-24 rounded-full bg-white border-8 border-blue-500/20 shadow-2xl active:scale-90 transition-all">
+                    <div className="h-14 w-14 bg-white rounded-full border-2 border-slate-100" />
                   </Button>
                   <Button onClick={stopCamera} variant="ghost" className="text-white h-16 w-16 rounded-full"><X className="w-10 h-10" /></Button>
                 </div>
@@ -169,8 +164,8 @@ export default function RealTimeScope() {
               <div className="w-full h-full relative animate-in fade-in duration-500">
                 <img src={image} className="w-full h-full object-cover" />
                 <div className="absolute top-10 right-10 flex gap-3 z-30">
-                  <Button onClick={downloadImage} className="h-14 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black shadow-xl border-2 border-white/20">
-                    <Download className="mr-2 w-5 h-5" /> 保存
+                  <Button onClick={downloadImage} className="h-14 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black shadow-xl border-2 border-white/20 animate-bounce">
+                    1. 写真を保存（必須）
                   </Button>
                   <Button onClick={() => {setImage(null); setScanResult(null);}} className="h-14 w-14 bg-black/50 text-white rounded-full hover:bg-red-500 border-2 border-white/20"><X /></Button>
                 </div>
@@ -181,7 +176,7 @@ export default function RealTimeScope() {
                   </div>
                 )}
                 {scanResult && (
-                  <div className="absolute top-32 left-10 right-10 p-6 bg-black/60 backdrop-blur-xl rounded-3xl border border-white/20">
+                  <div className="absolute top-32 left-10 right-10 p-6 bg-black/60 backdrop-blur-xl rounded-3xl border border-white/20 animate-in zoom-in-95">
                     <div className="flex items-center gap-2 text-blue-400 font-black text-xs uppercase mb-3"><Zap className="w-4 h-4" /> ANALYSIS RESULT</div>
                     <div className="grid grid-cols-2 gap-4 text-white">
                       <div><p className="text-[10px] opacity-50 font-bold uppercase">Identity</p><p className="text-lg font-black">{scanResult.name}</p></div>
@@ -191,11 +186,11 @@ export default function RealTimeScope() {
                 )}
               </div>
             ) : (
-              <div className="text-center p-10 space-y-8">
+              <div className="text-center p-10 space-y-8 animate-in fade-in">
                 <div className="h-32 w-32 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto border border-blue-500/20"><Search className="w-12 h-12 text-blue-500/40" /></div>
                 <div className="flex flex-col gap-4">
-                  <Button onClick={startCamera} className="bg-blue-600 hover:bg-blue-500 text-white h-20 px-12 rounded-3xl font-black text-2xl shadow-2xl">スコープを起動</Button>
-                  <Button onClick={() => fileInputRef.current?.click()} variant="outline" className="border-white/20 text-white hover:bg-white/5 h-16 px-10 rounded-3xl font-black text-lg">画像を選択</Button>
+                  <Button onClick={startCamera} className="bg-blue-600 hover:bg-blue-500 text-white h-20 px-12 rounded-3xl font-black text-2xl shadow-2xl transition-all active:scale-95 uppercase italic tracking-tighter">Start Scope</Button>
+                  <Button onClick={() => fileInputRef.current?.click()} variant="outline" className="border-white/20 text-white hover:bg-white/5 h-16 px-10 rounded-3xl font-black text-lg transition-all uppercase tracking-widest">Import Image</Button>
                   <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) {
@@ -210,49 +205,58 @@ export default function RealTimeScope() {
             <canvas ref={canvasRef} className="hidden" />
           </div>
 
-          {/* 右半分 */}
           <div className="lg:w-2/5 p-12 flex flex-col bg-white overflow-y-auto">
             <div className="flex-1 space-y-10">
               <section className="space-y-6">
                 <div className="p-5 bg-blue-50 border-2 border-blue-100 rounded-2xl relative shadow-sm">
-                  <label className="text-[10px] font-black text-blue-400 uppercase mb-2 block tracking-widest font-sans">Environmental Data</label>
+                  <label className="text-[10px] font-black text-blue-400 uppercase mb-2 block tracking-widest font-sans font-black">Environment</label>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <MapPin className="text-blue-500 w-5 h-5" />
                       <div><input className="bg-transparent border-none p-0 font-black text-xl text-blue-900 focus:ring-0 w-full" value={locationName} onChange={(e) => setLocationName(e.target.value)} /><p className="text-xs font-bold text-blue-600">{weatherInfo}</p></div>
                     </div>
-                    <Button size="sm" variant="ghost" className="text-blue-500" onClick={syncRealtimeData}><RefreshCw className="w-4 h-4" /></Button>
+                    <Button size="sm" variant="ghost" className="text-blue-500 hover:bg-blue-100 rounded-xl" onClick={syncRealtimeData}><RefreshCw className="w-4 h-4" /></Button>
                   </div>
                 </div>
 
                 <div className="p-5 bg-slate-50 border-2 border-slate-100 rounded-2xl">
-                  <label className="text-[10px] font-black text-slate-400 uppercase mb-2 block tracking-widest font-sans">Target Name</label>
+                  <label className="text-[10px] font-black text-slate-400 uppercase mb-2 block tracking-widest font-sans font-black">Target Identity</label>
                   <input className="bg-transparent border-none p-0 font-bold text-lg text-slate-900 focus:ring-0 w-full" placeholder="対象の名称（例：ダリア）" value={plantName} onChange={(e) => setPlantName(e.target.value)} />
                 </div>
 
                 <div className="p-5 bg-slate-50 border-2 border-slate-100 rounded-2xl">
-                  <label className="text-[10px] font-black text-slate-400 uppercase mb-2 block tracking-widest font-sans">Context</label>
+                  <label className="text-[10px] font-black text-slate-400 uppercase mb-2 block tracking-widest font-sans font-black">User Context</label>
                   <Textarea className="bg-transparent border-none p-0 font-bold text-slate-900 focus:ring-0 w-full min-h-[60px] resize-none text-lg" placeholder="知りたいこと、困っていること..." value={prompt} onChange={(e) => setPrompt(e.target.value)} />
                 </div>
               </section>
 
               <section className="space-y-4 pt-4 border-t border-slate-100 text-center">
+                <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-2">Step 2: Copy & Launch Analysis</p>
                 <Button onClick={() => handleCopyAndGo('https://chatgpt.com/')} disabled={!image || isScanning} className="h-24 w-full bg-slate-900 hover:bg-black text-white rounded-[2rem] shadow-2xl flex flex-col items-center justify-center group active:scale-95 transition-all">
-                  <div className="flex items-center gap-3 text-2xl font-black italic tracking-tighter uppercase"><Bot className="w-6 h-6 text-blue-400" /> ChatGPT</div>
-                  <span className="text-[10px] opacity-50 font-bold uppercase tracking-widest italic">Copy High-End Prompt & Go</span>
+                  <div className="flex items-center gap-3 text-2xl font-black italic tracking-tighter uppercase"><Bot className="w-6 h-6 text-blue-400" /> 2. ChatGPTで診断</div>
+                  <span className="text-[10px] opacity-50 font-bold uppercase tracking-widest">プロンプトをコピーしてアプリを起動</span>
                 </Button>
                 <div className="grid grid-cols-2 gap-4">
-                  <Button variant="outline" onClick={() => handleCopyAndGo('https://gemini.google.com/')} className="h-16 border-2 border-slate-100 hover:border-blue-500 rounded-2xl font-black text-slate-600 active:scale-95 transition-all">GEMINI</Button>
-                  <Button variant="outline" onClick={() => handleCopyAndGo('https://claude.ai/')} className="h-16 border-2 border-slate-100 hover:border-orange-500 rounded-2xl font-black text-slate-600 active:scale-95 transition-all">CLAUDE</Button>
+                  <Button variant="outline" onClick={() => handleCopyAndGo('https://gemini.google.com/')} disabled={!image} className="h-16 border-2 border-slate-100 hover:border-blue-500 rounded-2xl font-black text-slate-600 active:scale-95 transition-all uppercase tracking-widest italic">Geminiへ</Button>
+                  <Button variant="outline" onClick={() => handleCopyAndGo('https://claude.ai/')} disabled={!image} className="h-16 border-2 border-slate-100 hover:border-orange-500 rounded-2xl font-black text-slate-600 active:scale-95 transition-all uppercase tracking-widest italic">Claudeへ</Button>
                 </div>
               </section>
 
               {isCopied && (
                 <div className="p-6 bg-red-50 rounded-3xl border-2 border-red-200 animate-in fade-in slide-in-from-top-4 shadow-xl">
-                   <div className="flex items-center gap-3 text-red-700 mb-2 font-black italic text-lg"><AlertCircle className="w-6 h-6" />写真を添付して送信！</div>
-                   <p className="text-sm text-red-900 leading-relaxed font-black">1. [保存] ボタンで写真を保存<br/>2. AIアプリで写真を添付<br/>3. プロンプトを貼り付けて送信</p>
+                   <div className="flex items-center gap-3 text-red-700 mb-4 font-black italic text-lg"><AlertCircle className="w-6 h-6" />AIアプリでの操作手順</div>
+                   <div className="space-y-3 text-[13px] text-red-900 font-bold leading-tight">
+                     <p className="flex gap-2"><span>1.</span><span>アプリ画面下の <span className="bg-red-200 px-1 rounded">「＋」</span> をタップ</span></p>
+                     <p className="flex gap-2"><span>2.</span><span>さっき <span className="underline decoration-red-500 decoration-2 underline-offset-2">保存した写真</span> を選択</span></p>
+                     <p className="flex gap-2"><span>3.</span><span>入力欄にプロンプトを <span className="underline decoration-red-500 decoration-2 underline-offset-2">貼り付け</span></span></p>
+                     <p className="flex gap-2"><span>4.</span><span>送信ボタンを押して鑑定開始！</span></p>
+                   </div>
                 </div>
               )}
+            </div>
+            <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between text-[10px] font-black text-slate-300 uppercase tracking-widest font-sans">
+              <span>NextraLabs Mastery</span>
+              <span>Final Release v3.0</span>
             </div>
           </div>
         </div>
