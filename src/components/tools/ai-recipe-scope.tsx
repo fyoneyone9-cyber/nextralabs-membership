@@ -6,16 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { 
   Droplets, Camera, CheckCircle2, MapPin, Upload, X, Copy, 
-  Sparkles, Heart, Bot, RefreshCw, AlertCircle, 
+  ExternalLink, Sparkles, Heart, Bot, RefreshCw, AlertCircle, 
   Search, Zap, Loader2, Download, HelpCircle, Utensils, Play, Video
 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AiRecipeScope() {
-  const [plantName, setPlantName] = useState(''); // 食材/料理名
+  const [plantName, setPlantName] = useState('');
   const [prompt, setPrompt] = useState('');
   const [image, setImage] = useState<string | null>(null);
-  const [dishName, setDishName] = useState('');
+  const [dishName, setDishName] = useState(''); // 空文字で初期化
   const [locationName, setLocationName] = useState<string>('海老名市');
   const [weatherInfo, setWeatherInfo] = useState<string>('晴れ / 24°C');
   const [isCopied, setIsCopied] = useState(false);
@@ -26,33 +26,41 @@ export default function AiRecipeScope() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 撮影後のプレ解析
+  // 撮影後の自動スキャン
   useEffect(() => {
     if (image && !isScanning && !dishName) {
-      const scan = async () => {
-        setIsScanning(true);
-        try {
-          const res = await fetch('/api/tools/ai-recipe', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ image }),
-          });
-          const data = await res.json();
-          if (data.dishName) setDishName(data.dishName);
-          else setDishName("絶品レシピ");
-        } catch (err) {
-          setDishName("絶品レシピ");
-        } finally {
-          setIsScanning(false);
-        }
-      };
-      scan();
+      autoScanRecipe();
     }
   }, [image]);
+
+  const autoScanRecipe = async () => {
+    setIsScanning(true);
+    setDishName(''); // リセット
+    try {
+      const response = await fetch('/api/tools/ai-recipe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image }),
+      });
+      const data = await response.json();
+      // 解析結果を即座にセット
+      if (data.dishName && data.dishName !== "絶品レシピ") {
+        setDishName(data.dishName);
+        toast.success(`食材を特定しました：${data.dishName}`);
+      } else {
+        setDishName("絶品料理");
+      }
+    } catch (err) {
+      setDishName("絶品料理");
+    } finally {
+      setIsScanning(false);
+    }
+  };
 
   const startCamera = async () => {
     try {
       setIsCameraActive(true);
+      setDishName('');
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
       if (videoRef.current) videoRef.current.srcObject = stream;
     } catch (err) {
@@ -87,7 +95,14 @@ export default function AiRecipeScope() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    toast.success("写真を保存しました");
+    toast.success("写真を端末に保存しました");
+  };
+
+  // YouTube検索URLを動的に生成する関数
+  const openYouTube = () => {
+    const query = dishName || "料理";
+    const url = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}+作り方`;
+    window.open(url, '_blank');
   };
 
   const handleAutoCopyAndGo = (url: string) => {
@@ -110,7 +125,7 @@ export default function AiRecipeScope() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-4 min-h-screen font-sans bg-slate-50/50 antialiased text-left text-slate-900">
+    <div className="max-w-6xl mx-auto p-4 min-h-screen font-sans bg-slate-50/50">
       <Card className="border-none bg-white shadow-2xl rounded-[3rem] overflow-hidden">
         <div className="flex flex-col lg:flex-row min-h-[750px]">
           {/* 左半分 */}
@@ -127,7 +142,7 @@ export default function AiRecipeScope() {
                 <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
                 <div className="absolute bottom-12 left-0 right-0 flex justify-center items-center gap-8 z-20">
                   <Button onClick={takePhoto} className="h-20 w-20 rounded-full bg-white border-8 border-red-500/30 flex items-center justify-center shadow-2xl active:scale-90 transition-all">
-                    <div className="h-12 w-12 bg-red-500 rounded-full animate-pulse" />
+                    <div className="h-12 w-12 bg-red-500 rounded-full" />
                   </Button>
                   <Button onClick={stopCamera} variant="ghost" className="text-white hover:bg-white/10 h-16 w-16 rounded-full"><X className="w-10 h-10" /></Button>
                 </div>
@@ -142,12 +157,12 @@ export default function AiRecipeScope() {
                 {isScanning && (
                   <div className="absolute inset-0 bg-red-600/30 backdrop-blur-md flex flex-col items-center justify-center animate-pulse text-white font-black text-2xl uppercase italic tracking-widest">Scanning...</div>
                 )}
-                {dishName && dishName !== "絶品レシピ" && (
+                {dishName && (
                   <div className="absolute top-32 left-10 right-10 p-8 bg-black/70 backdrop-blur-2xl rounded-[2.5rem] border border-white/20 animate-in slide-in-from-top-4 shadow-2xl text-left">
                     <p className="text-[11px] text-red-400 font-black uppercase mb-4 tracking-[0.3em]"><Zap className="w-4 h-4 inline mr-2" /> Identification Success</p>
                     <p className="text-3xl font-black tracking-tighter mb-6 text-white uppercase italic">{dishName}</p>
-                    <div className="p-6 bg-green-500/20 border-2 border-green-500/40 rounded-3xl animate-pulse text-white">
-                      <p className="text-xl font-black leading-tight">鑑定文はコピー済みです。右下のAIボタンをクリックし、写真を添付して貼り付けるだけで最高のレシピが届きます！</p>
+                    <div className="p-6 bg-green-500/20 border-2 border-green-500/40 rounded-3xl animate-pulse">
+                      <p className="text-xl font-black leading-tight text-white">鑑定文はコピー済みです。右下のAIボタンをクリックし、写真を添付して貼り付けるだけで最高のレシピが届きます！</p>
                     </div>
                   </div>
                 )}
@@ -155,8 +170,8 @@ export default function AiRecipeScope() {
             ) : (
               <div className="text-center p-10 space-y-10 animate-in fade-in">
                 <div className="h-40 w-40 bg-red-500/5 rounded-full flex items-center justify-center mx-auto border border-red-500/10 relative"><Search className="w-20 h-20 text-red-500/20" /><div className="absolute inset-0 border-2 border-red-500/20 rounded-full animate-ping" /></div>
-                <div className="flex flex-col gap-4 max-w-sm mx-auto">
-                  <Button onClick={startCamera} className="bg-red-600 hover:bg-red-500 text-white h-24 px-12 rounded-3xl font-black text-2xl shadow-xl active:scale-95 transition-all italic tracking-tighter uppercase">Fridge Scan</Button>
+                <div className="flex flex-col gap-4">
+                  <Button onClick={startCamera} className="bg-red-600 hover:bg-red-500 text-white h-20 px-12 rounded-3xl font-black text-2xl shadow-xl active:scale-95 transition-all italic tracking-tighter uppercase">Fridge Scan</Button>
                   <Button onClick={() => fileInputRef.current?.click()} variant="outline" className="border-white/10 text-slate-400 hover:bg-white/5 h-16 px-10 rounded-2xl font-black uppercase tracking-widest">Import Image</Button>
                   <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={(e) => {
                     const f = e.target.files?.[0];
@@ -179,7 +194,7 @@ export default function AiRecipeScope() {
                 </div>
               </div>
 
-              <div className="p-8 bg-slate-50 border-2 border-slate-100 rounded-[2.5rem] shadow-inner space-y-4">
+              <div className="p-8 bg-slate-50 border-2 border-slate-100 rounded-[2.5rem] shadow-inner space-y-4 text-left">
                 <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest block">Plant/Ingredient Context</label>
                 <input className="bg-transparent border-none p-0 font-black text-2xl text-slate-900 w-full focus:ring-0 tracking-tighter" placeholder="対象の名称（例：残り野菜）" value={plantName} onChange={(e) => setPlantName(e.target.value)} />
                 <div className="h-px bg-slate-200 w-full" />
@@ -192,7 +207,7 @@ export default function AiRecipeScope() {
                   <div className="grid grid-cols-1 gap-5">
                     <Button onClick={() => handleAutoCopyAndGo('https://gemini.google.com/')} disabled={!image || isScanning} className="h-28 bg-blue-600 hover:bg-blue-500 text-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(37,99,235,0.3)] flex flex-col items-center justify-center group active:scale-95 transition-all border-none relative overflow-hidden">
                       <div className="flex items-center gap-4 text-3xl font-black italic tracking-tighter uppercase z-10"><Sparkles className="w-8 h-8 text-amber-300" /> Geminiで鑑定</div>
-                      <span className="text-[11px] text-blue-100 font-black uppercase tracking-[0.2em] z-10">画像解析・Google検索に最適</span>
+                      <span className="text-[11px] text-blue-100 font-black uppercase z-10">画像解析・Google検索に最適</span>
                     </Button>
                     <div className="grid grid-cols-2 gap-5">
                       <Button onClick={() => handleAutoCopyAndGo('https://chatgpt.com/')} disabled={!image || isScanning} className="h-20 bg-emerald-600 hover:bg-emerald-500 text-white rounded-3xl shadow-xl flex items-center justify-center gap-3 font-black active:scale-95 transition-all border-none text-lg tracking-tighter uppercase italic"><Bot className="w-6 h-6 text-white" /> ChatGPT</Button>
@@ -201,16 +216,23 @@ export default function AiRecipeScope() {
                   </div>
                 </div>
 
-                {dishName && (
-                  <div className="pt-8 border-t border-slate-100 space-y-4 text-left">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-100 rounded-xl shadow-sm"><Video className="text-red-600 w-5 h-5" /></div>
-                      <h3 className="text-lg font-black text-slate-900 italic tracking-tighter uppercase">Cook Videos</h3>
+                {/* YouTubeセクション: 解析が完了し、料理名が決まっている時だけ表示 */}
+                {dishName && dishName !== "絶品料理" && (
+                  <div className="pt-8 border-t border-slate-100 space-y-4 text-left animate-in fade-in">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-red-100 rounded-xl shadow-sm"><Video className="text-red-600 w-5 h-5" /></div>
+                        <h3 className="text-lg font-black text-slate-900 italic tracking-tighter uppercase">Cook Videos</h3>
+                      </div>
+                      <Button variant="ghost" className="text-blue-600 font-black text-xs h-auto p-0" onClick={openYouTube}>YouTubeで詳しく</Button>
                     </div>
-                    <Card className="bg-slate-950 border-none rounded-3xl overflow-hidden shadow-xl cursor-pointer group" onClick={() => window.open(`https://www.youtube.com/results?search_query=${dishName}+作り方`, '_blank')}>
+                    <Card className="bg-slate-950 border-none rounded-3xl overflow-hidden shadow-xl cursor-pointer group" onClick={openYouTube}>
                       <div className="aspect-video relative bg-slate-900 flex items-center justify-center">
                         <Play className="w-10 h-10 text-white/30 group-hover:scale-125 transition-all" />
-                        <div className="absolute bottom-4 left-4 right-4"><p className="text-white font-black text-xs">{dishName}のレシピ動画をYouTubeで開く</p></div>
+                        <div className="absolute bottom-6 left-6 right-6">
+                           <p className="text-white font-black text-lg tracking-tight line-clamp-1">{dishName} のプロレシピ</p>
+                           <p className="text-white/40 text-[10px] uppercase font-bold tracking-widest mt-1">Tap to search on YouTube</p>
+                        </div>
                       </div>
                     </Card>
                   </div>
@@ -224,10 +246,10 @@ export default function AiRecipeScope() {
                      <div className="flex items-center gap-3 text-red-700 font-black italic text-2xl uppercase tracking-tighter">鑑定アプリでの操作</div>
                      <p className="text-red-600 font-black text-xs tracking-widest uppercase opacity-70">鑑定文はすでにコピー済みです！</p>
                    </div>
-                   <div className="space-y-5 text-[15px] text-red-950 font-black leading-tight">
-                     <p className="flex items-start gap-4"><span className="bg-red-600 text-white w-7 h-7 rounded-xl flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-md font-sans">1</span><span>入力欄の <span className="bg-red-200 px-2 py-0.5 rounded-lg text-red-600">「＋」</span> をタップ</span></p>
-                     <p className="flex items-start gap-4"><span className="bg-red-600 text-white w-7 h-7 rounded-xl flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-md font-sans">2</span><span>保存した <span className="underline decoration-red-500 decoration-[3px] underline-offset-4 font-black">現場写真</span> を選択</span></p>
-                     <p className="flex items-start gap-4"><span className="bg-red-600 text-white w-7 h-7 rounded-xl flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-md font-sans">3</span><span>そのまま <span className="underline decoration-red-500 decoration-[3px] underline-offset-4 font-black text-red-600">「貼り付け」</span> して送信！</span></p>
+                   <div className="space-y-5 text-[15px] text-red-950 font-black leading-tight text-left">
+                     <p className="flex items-start gap-4 text-left"><span className="bg-red-600 text-white w-7 h-7 rounded-xl flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-md font-sans">1</span><span>入力欄の <span className="bg-red-200 px-2 py-0.5 rounded-lg text-red-600">「＋」</span> をタップ</span></p>
+                     <p className="flex items-start gap-4 text-left"><span className="bg-red-600 text-white w-7 h-7 rounded-xl flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-md font-sans">2</span><span>保存した <span className="underline decoration-red-500 decoration-[3px] underline-offset-4 font-black text-red-600">現場写真</span> を選択</span></p>
+                     <p className="flex items-start gap-4 text-left"><span className="bg-red-600 text-white w-7 h-7 rounded-xl flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-md font-sans">3</span><span>そのまま <span className="underline decoration-red-500 decoration-[3px] underline-offset-4 font-black text-red-600">「貼り付け」</span> して送信！</span></p>
                    </div>
                 </div>
               )}
