@@ -16,6 +16,7 @@
     "@anthropic-ai/sdk": "^0.92.0",
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
+    "@google/generative-ai": "^0.24.1",
     "@hookform/resolvers": "^5.2.2",
     "@stripe/stripe-js": "^9.3.1",
     "@supabase/ssr": "^0.10.2",

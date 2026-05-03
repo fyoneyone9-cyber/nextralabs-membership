@@ -16,10 +16,11 @@ export async function nextraAiEngine({
   toolId: string;
   quality?: 'cheap' | 'balanced' | 'powerful' | 'auto';
 }) {
-  const supabase = createClient();
+  const supabasePromise = createClient();
+  const supabase = await supabasePromise;
 
   // 1. キャッシュチェック
-  const { data: cached } = await (await supabase)
+  const { data: cached } = await supabase
     .from('ai_cache')
     .select('response, model')
     .eq('prompt', prompt)
