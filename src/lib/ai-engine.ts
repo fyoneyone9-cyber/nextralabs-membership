@@ -17,10 +17,16 @@ export async function nextraAiEngine({
   quality?: 'cheap' | 'balanced' | 'powerful' | 'auto';
 }) {
   // サーバーサイド・ビルド時にも安全なクライアント作成
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    console.warn("[Guardian] Supabase keys missing - skipping cache (this is expected during build)");
+    // ビルド時はダミーのレスポンスを返すか、エラーにならないようにする
+    return { response: "API Key missing during build", model: "none", cached: false };
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
   // 1. キャッシュチェック
   const { data: cached } = await supabase

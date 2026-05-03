@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CopyButton } from "@/components/tools/CopyButton";
 
+// ビルド時にサーバーサイド・ロジックを走らせない
 export const dynamic = 'force-dynamic';
 
 export default function AiPresetsPage() {
