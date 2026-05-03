@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Zap, Mail, Building2, Send, Loader2, CheckCircle2, Search } from "lucide-react";
+import { Zap, Mail, Building2, Send, Loader2, Search, X } from "lucide-react";
 import { toast } from "sonner";
 
 export default function SalesAutomation() {
@@ -26,10 +26,10 @@ export default function SalesAutomation() {
       });
       const data = await response.json();
       
-      // 成功時
       setResult({
         companyName: domain.split('.')[0].toUpperCase() + "様",
-        email: data.draftEmail
+        email: data.draftEmail,
+        subject: `${domain.split('.')[0].toUpperCase()}様へのAI活用のご提案`
       });
       setStatus('done');
       toast.success("提案メールを作成しました");
@@ -39,12 +39,20 @@ export default function SalesAutomation() {
     }
   };
 
+  // Gmail送信画面を開く
+  const handleSendEmail = () => {
+    if (!result) return;
+    const body = encodeURIComponent(result.email);
+    const subject = encodeURIComponent(result.subject);
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&su=${subject}&body=${body}`, '_blank');
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-4 min-h-screen font-sans bg-slate-50/50 text-left text-slate-900">
       <Card className="border-none bg-white shadow-2xl rounded-[3rem] overflow-hidden antialiased">
         <div className="flex flex-col lg:flex-row min-h-[800px]">
           {/* 左側 */}
-          <div className="lg:w-1/2 p-10 bg-slate-900 text-white flex flex-col justify-between">
+          <div className="lg:w-1/2 p-10 bg-slate-900 text-white flex flex-col justify-between relative z-10">
             <div className="space-y-10">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-blue-600 rounded-2xl shadow-lg"><Zap className="w-8 h-8 text-white" /></div>
@@ -66,22 +74,25 @@ export default function SalesAutomation() {
             </div>
           </div>
 
-          {/* 右側：プレビュー改善 */}
-          <div className="lg:w-1/2 p-12 flex flex-col bg-white overflow-hidden border-l border-slate-100">
-            <div className="flex-1 flex flex-col space-y-8">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-slate-100 rounded-xl"><Mail className="text-slate-600" /></div>
-                <h2 className="text-xl font-black italic tracking-tight uppercase">Draft Preview</h2>
+          {/* 右側：プレビュー */}
+          <div className="lg:w-1/2 p-12 flex flex-col bg-white overflow-hidden border-l border-slate-100 relative z-20">
+            <div className="flex-1 flex flex-col space-y-8 min-h-0">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-slate-100 rounded-xl"><Mail className="text-slate-600" /></div>
+                  <h2 className="text-xl font-black italic tracking-tight uppercase">Draft Preview</h2>
+                </div>
+                {result && <Button variant="ghost" size="sm" onClick={() => setResult(null)} className="text-slate-400 hover:text-red-500"><X className="w-4 h-4" /></Button>}
               </div>
 
-              <div className="flex-1 min-h-0 bg-slate-50 border-2 border-slate-100 rounded-[2rem] flex flex-col overflow-hidden">
+              <div className="flex-1 min-h-0 bg-slate-50 border-2 border-slate-100 rounded-[2rem] flex flex-col overflow-hidden shadow-inner">
                 {result ? (
                   <>
                     <div className="p-6 border-b border-slate-200 bg-white flex items-center gap-3">
                       <Building2 className="text-blue-500 w-5 h-5" />
                       <p className="font-black text-slate-900">{result.companyName}</p>
                     </div>
-                    <div className="flex-1 overflow-y-auto p-8">
+                    <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
                       <div className="text-slate-700 font-bold leading-relaxed whitespace-pre-wrap text-sm">
                         {result.email}
                       </div>
@@ -95,12 +106,17 @@ export default function SalesAutomation() {
                 )}
               </div>
 
-              <Button 
-                disabled={!result}
-                className={`w-full h-16 rounded-2xl text-xl font-black shadow-lg transition-all ${result ? 'bg-slate-900 hover:bg-black text-white' : 'bg-slate-100 text-slate-300'}`}
-              >
-                <Send className="mr-2 w-6 h-6" /> Gmailで送信
-              </Button>
+              {/* ボタンの z-index と onClick を確実に設定 */}
+              <div className="pt-4 relative z-30">
+                <Button 
+                  onClick={handleSendEmail}
+                  disabled={!result}
+                  className={`w-full h-16 rounded-2xl text-xl font-black shadow-2xl transition-all active:scale-95 ${result ? 'bg-slate-900 hover:bg-black text-white cursor-pointer' : 'bg-slate-100 text-slate-300'}`}
+                >
+                  <Send className="mr-3 w-6 h-6" /> Gmailで送信
+                </Button>
+                <p className="text-center text-[10px] text-slate-400 font-bold mt-3 uppercase tracking-widest">Powered by NextraLabs AI Engine</p>
+              </div>
             </div>
           </div>
         </div>
