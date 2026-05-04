@@ -1,34 +1,32 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { image } = body;
+    const { image } = await req.json();
 
     if (!image) {
-      return NextResponse.json({ error: "画像データが空です" }, { status: 400 });
+      return NextResponse.json({ error: "画像データが必要です" }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY1;
-    if (!apiKey) {
-      return NextResponse.json({ error: "サーバーにAPIキーが設定されていません(ENV_MISSING)" }, { status: 500 });
-    }
-
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-    // Base64のヘッダーを削除
-    const base64Data = image.includes(",") ? image.split(",")[1] : image;
+    // Base64から純粋なデータ部分を抽出
+    const base64Data = image.split(",")[1];
     
+    // Gemini 1.5 Flash モデルの取得
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+
     const prompt = `
-      画像内の「忘れ物」を分析し、以下のJSON形式でのみ答えてください。
+      この画像に写っている「忘れ物（拾得物）」を詳細に分析してください。
+      以下のJSON形式のみで回答してください。余計な解説は不要です。
+
       {
-        "item": "品目名",
-        "color": "色",
-        "brand": "ブランド（不明なら不明）",
-        "features": ["特徴1", "特徴2"],
-        "matchConfidence": 90
+        "item": "品目（例：折りたたみ傘、財布、スマホ等）",
+        "color": "主要な色",
+        "brand": "ブランド名（不明なら「不明」）",
+        "features": ["特徴1", "特徴2", "特徴3（目立つ傷やシールなど）"],
+        "matchConfidence": 0から100の数値（確信度）
       }
     `;
 
@@ -45,20 +43,15 @@ export async function POST(req: Request) {
     const response = await result.response;
     const text = response.text();
     
-    // AIの返答をデバッグ用にログ出力（Vercel Logsで見れるよう）
-    console.log("AI Response:", text);
-
-    const cleanText = text.replace(/```json|```/g, "").trim();
-    const analysis = JSON.parse(cleanText);
+    // JSON部分のみを抽出してパース
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("AIからのレスポンスが不正です");
+    
+    const analysis = JSON.parse(jsonMatch[0]);
 
     return NextResponse.json(analysis);
-  } catch (error: any) {
-    // ここでエラーの詳細を惜しみなく出力します
-    console.error("DETAILED ERROR:", error);
-    return NextResponse.json({ 
-      error: "AI解析中にサーバー内部でエラーが発生しました", 
-      message: error.message,
-      stack: error.stack?.substring(0, 100) // スタックトレースの冒頭
-    }, { status: 500 });
+  } catch (error) {
+    console.error("Gemini Analysis Error:", error);
+    return NextResponse.json({ error: "AI解析に失敗しました" }, { status: 500 });
   }
 }
