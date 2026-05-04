@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { Terminal, ChevronDown, ChevronUp, AlertCircle, Copy, CheckCircle2, ShieldQuestion } from 'lucide-react'
+import { Button } from '@/components/ui/button' // 🛠️ 追加
 
 interface DebugPanelProps {
   data: any
