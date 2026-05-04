@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Shield, Zap, Code, Download, Bot, Search, FileText, Infinity, PawPrint, Building2, Shirt, Hotel, Key, ArrowRight, Smartphone, Share, PlusSquare, DownloadCloud } from 'lucide-react'
+import { Shield, Zap, Code, Download, Bot, Search, FileText, Infinity, PawPrint, Building2, Shirt, Hotel, Key, ArrowRight, Smartphone, Share, PlusSquare, DownloadCloud, ExternalLink, Coffee } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 const featuredProduct = {
@@ -45,9 +45,9 @@ export default function HomePage() {
   };
 
   return (
-    <div className="animate-in fade-in duration-700 bg-slate-950">
+    <div className="animate-in fade-in duration-700 bg-slate-950 text-white">
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-24 md:py-40 bg-slate-950 text-white">
+      <section className="relative overflow-hidden py-24 md:py-40 bg-slate-950">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-transparent to-amber-500/20" />
         <div className="container mx-auto px-4 text-center relative">
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8">
@@ -87,7 +87,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="text-center md:text-left flex-1">
-              <h2 className="text-2xl font-bold mb-3">スマホでもっと快適に。</h2>
+              <h2 className="text-2xl font-bold mb-3 text-white">スマホでもっと快適に。</h2>
               <p className="text-indigo-200 text-sm mb-6 leading-relaxed">
                 NextraLabs をホーム画面に追加して、全画面でスムーズなAI体験を。
                 最新のAI自動化ツールへ、いつでもワンタップでアクセスできます。
@@ -128,7 +128,7 @@ export default function HomePage() {
             <Hotel className="h-10 w-10 text-blue-200" />
             <h2 className="text-4xl font-bold">ホテル・民泊オーナー様向け</h2>
           </div>
-          <p className="text-blue-100 mb-16 max-w-2xl mx-auto text-lg">
+          <p className="text-blue-100 mb-16 max-w-2xl mx-auto text-lg leading-relaxed">
             宿泊施設のオペレーションを劇的に効率化。AI×宿泊管理システム連携で、人手不足の解消を実現します。
           </p>
           
@@ -167,19 +167,49 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Product */}
-      <section className="py-24 bg-slate-950 text-white border-t border-slate-900">
+      {/* Amazon Affiliate PR Section */}
+      <section className="py-12 bg-amber-500 text-black border-y border-amber-600">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-16">注目のツール</h2>
-          <div className="max-w-3xl mx-auto">
+          <a 
+            href="https://amzn.to/3zM6fKx" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="flex flex-col md:flex-row items-center justify-between gap-6 max-w-5xl mx-auto hover:opacity-90 transition-opacity group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="bg-black/10 p-3 rounded-full group-hover:scale-110 transition-transform">
+                <Coffee className="h-8 w-8" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-bold bg-black text-white px-1.5 py-0.5 rounded">PR</span>
+                  <h2 className="text-xl font-bold font-sans">😌 職場ストレスを消すアイテムを見る</h2>
+                </div>
+                <p className="text-sm font-medium opacity-80 leading-relaxed">
+                  人間関係の把握が終わったら「メンタルケア」。ストレス解消グッズ・リラックスアイテムを探そう。
+                </p>
+              </div>
+            </div>
+            <Button className="bg-black text-white font-bold px-8 h-12 rounded-xl whitespace-nowrap gap-2">
+              チェックする <ExternalLink className="h-4 w-4" />
+            </Button>
+          </a>
+        </div>
+      </section>
+
+      {/* Featured Product */}
+      <section className="py-24 bg-slate-950 border-t border-slate-900">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-16 text-white">注目のツール</h2>
+          <div className="max-w-3xl mx-auto text-left">
             <Link href={`/products/${featuredProduct.id}`}>
-              <Card className="hover:shadow-2xl transition-all duration-300 cursor-pointer group border-slate-800 bg-slate-900 text-white rounded-[2rem] overflow-hidden hover:border-amber-500/50">
+              <Card className="hover:shadow-2xl transition-all duration-300 cursor-pointer group border-slate-800 bg-slate-900 text-white rounded-[2.5rem] overflow-hidden hover:border-amber-500/50 shadow-2xl">
                 <CardContent className="p-12">
                   <div className="flex items-start justify-between mb-8">
-                    <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-500">
+                    <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
                       <Search className="h-8 w-8" />
                     </div>
-                    <Badge className="bg-green-500 text-white border-0 py-1 px-4 text-sm">販売中</Badge>
+                    <Badge className="bg-green-500 text-white border-0 py-1 px-4 text-sm font-bold shadow-lg shadow-green-500/20">販売中</Badge>
                   </div>
                   <h3 className="text-3xl font-bold mb-3 group-hover:text-amber-500 transition-colors">
                     {featuredProduct.title}
@@ -187,7 +217,7 @@ export default function HomePage() {
                   <p className="text-slate-400 mb-10 leading-relaxed text-lg">{featuredProduct.description}</p>
                   <div className="flex flex-wrap gap-2 mb-10">
                     {featuredProduct.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary" className="bg-slate-800 text-slate-300 border-0 px-4 py-1 text-sm font-medium">#{tag}</Badge>
+                      <Badge key={tag} variant="secondary" className="bg-slate-800 text-slate-300 border-0 px-4 py-1.5 text-sm font-medium">#{tag}</Badge>
                     ))}
                   </div>
                   <div className="flex items-end justify-between pt-8 border-t border-slate-800">
@@ -195,8 +225,8 @@ export default function HomePage() {
                       <span className="text-4xl font-bold">{featuredProduct.price}</span>
                       <span className="text-sm text-slate-500 ml-3">{featuredProduct.priceNote}</span>
                     </div>
-                    <Button variant="default" className="gap-1 bg-white text-black hover:bg-slate-200 px-8 h-14 rounded-2xl font-bold">
-                      詳しく見る →
+                    <Button variant="default" className="gap-1 bg-white text-black hover:bg-slate-200 px-10 h-16 rounded-2xl font-bold text-lg shadow-lg">
+                      詳しく見る <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
                   </div>
                 </CardContent>
@@ -206,66 +236,65 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Coming Soon - Fixed Contrast & Removed Links */}
-      <section className="py-24 bg-slate-900 text-white border-y border-slate-950">
+      {/* Coming Soon */}
+      <section className="py-24 bg-slate-900 border-y border-slate-950">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">開発中のツール</h2>
-          <p className="text-slate-500 mb-16">さらに便利なAIツールを準備中です</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mt-12">
-            {/* NO Link for coming soon tools */}
-            <Card className="border-2 border-dashed border-slate-800 bg-slate-800/50 rounded-[2rem] cursor-default">
-              <CardContent className="p-10 text-center">
+          <h2 className="text-3xl font-bold mb-4 text-white">開発中のツール</h2>
+          <p className="text-slate-500 mb-16 text-lg">さらに便利なAIツールを準備中です</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <Card className="border-2 border-dashed border-slate-800 bg-slate-800/50 rounded-[2.5rem] cursor-default shadow-xl">
+              <CardContent className="p-12 text-center">
                 <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-500/10 text-violet-400">
                   <Shirt className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-bold mb-3 text-white">AIスタイリスト</h3>
                 <p className="text-sm text-slate-400 leading-relaxed">個人のクローゼットと天気を連動。Geminiによるファッション提案モデル。</p>
-                <Badge variant="outline" className="mt-6 border-violet-500 text-violet-400 px-6 py-1">2026年5月 登場予定</Badge>
+                <Badge variant="outline" className="mt-8 border-violet-500 text-violet-400 px-6 py-1.5 font-bold">2026年5月 登場</Badge>
               </CardContent>
             </Card>
 
-            <Card className="border-2 border-dashed border-slate-800 bg-slate-950/30 rounded-[2rem] cursor-default opacity-50">
-              <CardContent className="p-10 text-center text-slate-500">
+            <Card className="border-2 border-dashed border-slate-800 bg-slate-950/30 rounded-[2.5rem] cursor-default opacity-50">
+              <CardContent className="p-12 text-center text-slate-500">
                 <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-800/50 text-slate-600">
                   <Bot className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-bold mb-3">SNSオートポスター</h3>
                 <p className="text-sm">X/Instagramへの投稿を一括管理・自動化するツール。</p>
-                <Badge variant="outline" className="mt-6 border-slate-800">Coming Soon</Badge>
+                <Badge variant="outline" className="mt-8 border-slate-800">Coming Soon</Badge>
               </CardContent>
             </Card>
 
-            <Card className="border-2 border-dashed border-slate-800 bg-slate-950/30 rounded-[2rem] cursor-default opacity-50">
-              <CardContent className="p-10 text-center text-slate-500">
+            <Card className="border-2 border-dashed border-slate-800 bg-slate-950/30 rounded-[2.5rem] cursor-default opacity-50">
+              <CardContent className="p-12 text-center text-slate-500">
                 <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-800/50 text-slate-600">
                   <FileText className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-bold mb-3">AIレポート作成</h3>
                 <p className="text-sm">データを投げるだけで分析レポートをAIが自動生成。</p>
-                <Badge variant="outline" className="mt-6 border-slate-800">Coming Soon</Badge>
+                <Badge variant="outline" className="mt-8 border-slate-800">Coming Soon</Badge>
               </CardContent>
             </Card>
           </div>
         </div>
       </section>
 
-      {/* CTA - Fixed Visibility */}
-      <section className="py-32 bg-slate-950 text-white relative overflow-hidden">
+      {/* CTA */}
+      <section className="py-32 bg-slate-950 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent pointer-events-none" />
         <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight">今すぐ始めよう</h2>
-          <p className="text-slate-400 mb-12 max-w-xl mx-auto text-lg leading-relaxed">
+          <h2 className="text-4xl md:text-6xl font-bold mb-8 text-white tracking-tight">今すぐ始めよう</h2>
+          <p className="text-slate-400 mb-12 max-w-xl mx-auto text-xl leading-relaxed">
             有料プランに登録して、すべてのAIツールを使い放題に。
             あなたの業務にAIの力を。
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link href="/products">
-              <Button size="lg" className="text-xl px-12 h-18 bg-amber-500 text-black font-bold rounded-2xl hover:bg-amber-400 transition-all hover:scale-105">
+              <Button size="lg" className="text-xl px-14 h-20 bg-amber-500 text-black font-bold rounded-[1.5rem] hover:bg-amber-400 transition-all hover:scale-105 shadow-2xl shadow-amber-500/20">
                 ツール一覧を見る
               </Button>
             </Link>
             <Link href="/pricing">
-              <Button variant="outline" size="lg" className="text-xl px-12 h-18 border-slate-700 text-white rounded-2xl hover:bg-white/5 transition-all">
+              <Button variant="outline" size="lg" className="text-xl px-14 h-20 border-slate-700 text-white rounded-[1.5rem] hover:bg-white/5 transition-all">
                 有料プランに登録
               </Button>
             </Link>
