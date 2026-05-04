@@ -620,8 +620,8 @@ export default function ProductsPage() {
 
       {/* Category Nav */}
       <div className="flex flex-wrap justify-center gap-2 mb-12">
-        <a href="#hotel" className="px-3 py-1.5 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors">🏨 ホテル・民泊</a>
         <a href="#free" className="px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-sm font-medium hover:bg-blue-500/20 transition-colors">🆓 無料体験</a>
+        <a href="#hotel" className="px-3 py-1.5 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors">🏨 ホテル・民泊</a>
         <a href="#defense" className="px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-sm font-medium hover:bg-amber-500/20 transition-colors">🛡️ 防衛シリーズ</a>
         <a href="#comm" className="px-3 py-1.5 rounded-full bg-pink-500/10 text-pink-600 dark:text-pink-400 text-sm font-medium hover:bg-pink-500/20 transition-colors">💬 コミュニケーション</a>
         <a href="#life" className="px-3 py-1.5 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-sm font-medium hover:bg-violet-500/20 transition-colors">🏢 キャリア・ライフ</a>
@@ -630,14 +630,14 @@ export default function ProductsPage() {
         <a href="#fun" className="px-3 py-1.5 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-sm font-medium hover:bg-violet-500/20 transition-colors">🐾 エンタメ・趣味</a>
       </div>
 
-      {/* HOTEL & MINPAKU */}
-      <div id="hotel">
-        <ProductSection emoji="🏨" title="ホテル・民泊オーナー様向け" subtitle="宿泊施設の運営をAIで劇的に効率化するB2Bソリューション" accentColor="bg-blue-600 text-white" products={hotelTools} />
-      </div>
-
       {/* FREE */}
       <div id="free">
         <ProductSection emoji="🆓" title="無料ツール" subtitle="アカウント不要・今すぐ使える無料AIツール" accentColor="bg-blue-500/10 text-blue-600 dark:text-blue-400" products={freeTools} />
+      </div>
+
+      {/* HOTEL & MINPAKU - Moved below FREE */}
+      <div id="hotel">
+        <ProductSection emoji="🏨" title="ホテル・民泊オーナー様向け" subtitle="宿泊施設の運営をAIで劇的に効率化するB2Bソリューション" accentColor="bg-blue-600 text-white" products={hotelTools} />
       </div>
 
       {/* DEFENSE SERIES */}
