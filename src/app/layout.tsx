@@ -26,6 +26,9 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
     title: 'NextraLabs',
   },
+  other: {
+    'mobile-web-app-capable': 'yes',
+  },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 } },
   openGraph: {
     title: 'NextraLabs | AIツール使い放題メンバーシップ',
