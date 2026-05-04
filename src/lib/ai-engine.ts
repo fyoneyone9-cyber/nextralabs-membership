@@ -1,9 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import Anthropic from '@anthropic-ai/sdk';
 
 /**
- * AI Engine v1.2 - Multi-Model Support (Gemini & Claude)
+ * AI Engine v1.2.1 - Clean Build Version (Gemini Only for now)
+ * Anthropic dependency removed to ensure build stability until SDK is properly added.
  */
 export async function nextraAiEngine({
   prompt,
@@ -20,8 +20,7 @@ export async function nextraAiEngine({
 }) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const geminiKey = process.env.GEMINI_API_KEY;
-  const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  const geminiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY1;
 
   if (!supabaseUrl || !supabaseKey) return { response: "Supabase Error", model: "none", cached: false };
 
@@ -39,29 +38,23 @@ export async function nextraAiEngine({
   let responseText = "";
   let finalModel = "";
 
-  // 2. Claude 3.5 Sonnet 呼び出し
-  if (preferredModel === 'claude' && anthropicKey) {
-    const anthropic = new Anthropic({ apiKey: anthropicKey });
-    const message = await anthropic.messages.create({
-      model: "claude-3-5-sonnet-20240620",
-      max_tokens: 2000,
-      system: systemInstruction,
-      messages: [{ role: "user", content: prompt }],
-    });
-    // @ts-ignore
-    responseText = message.content[0].text;
-    finalModel = "Claude 3.5 Sonnet";
-  } 
-  // 3. Gemini 1.5 Pro 呼び出し
-  else if (geminiKey) {
-    const genAI = new GoogleGenerativeAI(geminiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro", systemInstruction });
-    const result = await model.generateContent(prompt);
-    responseText = result.response.text();
-    finalModel = "Gemini 1.5 Pro";
+  // 2. Gemini 1.5 Pro 呼び出し (メインエンジンとして統合)
+  if (geminiKey) {
+    try {
+      const genAI = new GoogleGenerativeAI(geminiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro", systemInstruction });
+      const result = await model.generateContent(prompt);
+      responseText = result.response.text();
+      finalModel = "Gemini 1.5 Pro";
+    } catch (error) {
+      console.error("Gemini Engine Error:", error);
+      return { response: "AI Engine Error", model: "error", cached: false };
+    }
+  } else {
+    return { response: "API Key missing", model: "none", cached: false };
   }
 
-  // 4. キャッシュ保存
+  // 3. キャッシュ保存
   await supabase.from('ai_cache').insert({
     prompt,
     system_instruction: systemInstruction || '',
