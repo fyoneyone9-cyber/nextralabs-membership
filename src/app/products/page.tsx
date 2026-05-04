@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 
 export const metadata: Metadata = {
   title: 'AIツール一覧',
-  description: 'あらゆる業務を自動化するNextraLabsのAIツール・ラインナップ。',
+  description: 'NextraLabsの全てのAIツール。',
 }
 
 import { Badge } from '@/components/ui/badge'
@@ -24,27 +24,25 @@ interface Product {
   status: string
 }
 
-// ==================== ALL PRODUCTS (RESTORED & JAPANESE) ====================
-const hotelTools: Product[] = [
-  { id: 'staysee-ai-finder', title: 'Staysee AI Finder', subtitle: '画像解析 × 宿泊者照合', description: '忘れ物を撮影してAIが持ち主を特定。フロントの電話対応を劇的に減らします。', priceNote: 'プレミアム', tags: ['B2B', 'ホテルDX'], icon: Building2, bgColor: 'bg-blue-500/10', iconColor: 'text-blue-400', status: '新着' },
-]
-
+// ==================== PRODUCT DATA ====================
 const freeTools: Product[] = [
   { id: 'office-politics-graph', title: '社内政治 相関図', subtitle: '人間関係の可視化', description: '組織図に載らない本当の関係をAIが分析。キーマンを見抜くツール。', priceNote: '無料', tags: ['分析', '無料'], icon: Network, bgColor: 'bg-indigo-500/10', iconColor: 'text-indigo-400', status: '人気' },
   { id: 'moving-checker', title: '引っ越し安心チェッカー', subtitle: '治安・騒音スコア', description: '物件の「見えないリスク」をAIが数値化。後悔しない引っ越しを。', priceNote: '無料', tags: ['治安', '不動産'], icon: Home, bgColor: 'bg-emerald-500/10', iconColor: 'text-emerald-400', status: '無料' },
   { id: 'sns-auto-poster', title: 'SNSオートポスター', subtitle: 'マルチ投稿文生成', description: 'トピックから投稿文とハッシュタグを自動生成。マーケ担当者必見。', priceNote: '無料', tags: ['SNS', '自動化'], icon: Share2, bgColor: 'bg-blue-500/10', iconColor: 'text-blue-400', status: '無料' },
 ]
 
+const hotelTools: Product[] = [
+  { id: 'staysee-ai-finder', title: 'Staysee AI Finder', subtitle: '画像解析 × 宿泊者照合', description: '忘れ物を撮影してAIが持ち主を特定。フロントの電話対応を劇的に減らします。', priceNote: 'プレミアム', tags: ['B2B', 'ホテルDX'], icon: Building2, bgColor: 'bg-blue-500/10', iconColor: 'text-blue-400', status: '新着' },
+]
+
 const defenseTools: Product[] = [
   { id: 'scam-defender', title: 'AI詐欺ディフェンダー', subtitle: '詐欺・闇バイト判定', description: '不審な連絡をAIが即判定。最新の詐欺手口から家族を守ります。', priceNote: 'プレミアム', tags: ['防犯', '安心'], icon: ShieldCheck, bgColor: 'bg-red-500/10', iconColor: 'text-red-400', status: '注目' },
   { id: 'money-guard', title: 'AI家計防衛', subtitle: '依存防止シミュレーター', description: 'ギャンブル収支を数学的に分析。認知バイアスから家計を守ります。', priceNote: 'スタンダード', tags: ['家計', '数学'], icon: Wallet, bgColor: 'bg-amber-500/10', iconColor: 'text-amber-400', status: 'NEW' },
-  { id: 'disaster-guard', title: 'AI防災ガイド', subtitle: '避難所検索 × 防災プラン', description: '現在地から避難所を検索。家族に最適な防災プランを提案します。', priceNote: 'スタンダード', tags: ['防災', 'GPS'], icon: Shield, bgColor: 'bg-blue-500/10', iconColor: 'text-blue-400', status: 'NEW' },
 ]
 
 const bizTools: Product[] = [
   { id: 'vintage-hunter', title: '古着お買い得ハンター', subtitle: 'メルカリ自動監視', description: 'お宝品をAIが24時間監視。見つけ次第Discordへ通知します。', priceNote: 'プレミアム', tags: ['副業', '監視'], icon: Search, bgColor: 'bg-amber-500/10', iconColor: 'text-amber-400', status: '最強' },
   { id: 'ai-select-shop', title: 'AIセレクトショップ', subtitle: '在庫ゼロの物販', description: 'トレンドからTシャツを自動デザイン。そのまま出品まで完遂。', priceNote: 'プレミアム', tags: ['物販', 'Shopify'], icon: Store, bgColor: 'bg-teal-500/10', iconColor: 'text-teal-400', status: '人気' },
-  { id: 'inbox-organizer', title: 'Gmail AI Accelerator', subtitle: 'Inbox Zeroを実現', description: '受信メールを自動分類・返信案生成。受信トレイを瞬時に整理。', priceNote: 'プレミアム', tags: ['Gmail', '効率化'], icon: Mail, bgColor: 'bg-cyan-500/10', iconColor: 'text-cyan-400', status: 'NEW' },
 ]
 
 const creativeTools: Product[] = [
@@ -69,9 +67,6 @@ function ProductCard({ product }: { product: Product }) {
           <p className="text-slate-400 text-sm leading-relaxed mb-6">{product.description}</p>
         </div>
         <div className="pt-6 border-t border-slate-800/50 flex flex-col gap-4">
-          <div className="flex justify-between items-center px-1">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Plan: {product.priceNote}</span>
-          </div>
           <Link href={`/products/${product.id}/app`} className="block w-full">
             <Button className="w-full h-16 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-lg rounded-2xl shadow-lg transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 group/btn">
               <span>このツールを使う</span>
@@ -87,56 +82,36 @@ function ProductCard({ product }: { product: Product }) {
 export default function ProductsPage() {
   return (
     <div className="min-h-screen bg-[#0f1115] text-slate-200 pb-20 font-sans">
-      <div className="max-w-7xl mx-auto px-4 pt-20">
-        <div className="text-center mb-20 space-y-4">
-          <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1 rounded-full font-bold">NextraLabs Catalogue</Badge>
-          <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight">AIツールを、<br/>もっと身近に。</h1>
-          <p className="text-slate-500 max-w-xl mx-auto text-lg leading-relaxed">あなたの日常や業務を劇的に効率化する、<br/>NextraLabs自慢のAIツール・ラインナップです。</p>
-        </div>
+      <div className="max-w-7xl mx-auto px-4 pt-20 text-center mb-20 space-y-4">
+        <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1 rounded-full font-bold uppercase tracking-widest text-xs">Catalogue</Badge>
+        <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight">AIツールを、<br/>もっと身近に。</h1>
+        <p className="text-slate-500 max-w-xl mx-auto text-lg leading-relaxed">日常や業務を劇的に効率化する、NextraLabsのAIツール群。</p>
+      </div>
 
-        <section className="mb-24">
-          <div className="flex items-center gap-4 mb-8 border-l-4 border-blue-500 pl-6">
-            <h2 className="text-3xl font-bold text-white">🏨 ホテル・民泊オーナー様向け</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {hotelTools.map(p => <ProductCard key={p.id} product={p} />)}
-          </div>
+      <div className="max-w-7xl mx-auto px-4 space-y-24">
+        <section>
+          <div className="flex items-center gap-4 mb-8 border-l-4 border-emerald-500 pl-6"><h2 className="text-3xl font-bold text-white uppercase tracking-tighter italic">🆓 無料ツール</h2></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{freeTools.map(p => <ProductCard key={p.id} product={p} />)}</div>
         </section>
 
-        <section className="mb-24">
-          <div className="flex items-center gap-4 mb-8 border-l-4 border-emerald-500 pl-6">
-            <h2 className="text-3xl font-bold text-white">🆓 無料ツール</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {freeTools.map(p => <ProductCard key={p.id} product={p} />)}
-          </div>
+        <section>
+          <div className="flex items-center gap-4 mb-8 border-l-4 border-blue-500 pl-6"><h2 className="text-3xl font-bold text-white uppercase tracking-tighter italic">🏨 ホテル・民泊オーナー様向け</h2></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{hotelTools.map(p => <ProductCard key={p.id} product={p} />)}</div>
         </section>
 
-        <section className="mb-24">
-          <div className="flex items-center gap-4 mb-8 border-l-4 border-red-500 pl-6">
-            <h2 className="text-3xl font-bold text-white">🛡️ 防衛シリーズ</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {defenseTools.map(p => <ProductCard key={p.id} product={p} />)}
-          </div>
+        <section>
+          <div className="flex items-center gap-4 mb-8 border-l-4 border-red-500 pl-6"><h2 className="text-3xl font-bold text-white uppercase tracking-tighter italic">🛡️ 防衛シリーズ</h2></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{defenseTools.map(p => <ProductCard key={p.id} product={p} />)}</div>
         </section>
 
-        <section className="mb-24">
-          <div className="flex items-center gap-4 mb-8 border-l-4 border-teal-500 pl-6">
-            <h2 className="text-3xl font-bold text-white">🛍️ ビジネス・副業</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {bizTools.map(p => <ProductCard key={p.id} product={p} />)}
-          </div>
+        <section>
+          <div className="flex items-center gap-4 mb-8 border-l-4 border-teal-500 pl-6"><h2 className="text-3xl font-bold text-white uppercase tracking-tighter italic">🛍️ ビジネス・副業</h2></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{bizTools.map(p => <ProductCard key={p.id} product={p} />)}</div>
         </section>
 
-        <section className="mb-24">
-          <div className="flex items-center gap-4 mb-8 border-l-4 border-purple-500 pl-6">
-            <h2 className="text-3xl font-bold text-white">🎨 クリエイティブ</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {creativeTools.map(p => <ProductCard key={p.id} product={p} />)}
-          </div>
+        <section>
+          <div className="flex items-center gap-4 mb-8 border-l-4 border-purple-500 pl-6"><h2 className="text-3xl font-bold text-white uppercase tracking-tighter italic">🎨 クリエイティブ</h2></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{creativeTools.map(p => <ProductCard key={p.id} product={p} />)}</div>
         </section>
       </div>
     </div>
