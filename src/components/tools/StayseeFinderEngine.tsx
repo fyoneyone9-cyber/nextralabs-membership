@@ -4,15 +4,16 @@ import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Camera, Search, Loader2, Mail, CheckCircle2, AlertCircle, Building2, PackageSearch, Terminal, ChevronDown, ChevronUp } from 'lucide-react'
+import { Camera, Search, Loader2, Mail, CheckCircle2, AlertCircle, Building2, PackageSearch } from 'lucide-react'
+import { DebugPanel } from './DebugPanel'
 
 export default function StayseeFinderEngine() {
   const [image, setImage] = useState<string | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [analysisResult, setAnalysisResult] = useState<any | null>(null)
-  const [debugInfo, setDebugInfo] = useState<any | null>(null)
-  const [showDebug, setShowDebug] = useState(false)
+  const [debugData, setDebugData] = useState<any>(null)
 
+  // 画像圧縮 (413エラー対策 - 維持)
   const compressImage = (base64Str: string): Promise<string> => {
     return new Promise((resolve) => {
       const img = new Image()
@@ -40,7 +41,6 @@ export default function StayseeFinderEngine() {
         const base64 = event.target?.result as string
         const compressed = await compressImage(base64)
         setImage(compressed)
-        setDebugInfo({ message: "Image compressed successfully", sizeKB: (compressed.length/1024).toFixed(1) })
       }
       reader.readAsDataURL(file)
     }
@@ -50,7 +50,7 @@ export default function StayseeFinderEngine() {
     if (!image) return;
     setIsAnalyzing(true);
     setAnalysisResult(null);
-    setDebugInfo(null);
+    setDebugData(null);
 
     try {
       const response = await fetch("/api/analyze-item", {
@@ -60,92 +60,122 @@ export default function StayseeFinderEngine() {
       });
 
       const data = await response.json();
-      setDebugInfo(data);
+      setDebugData(data); // デバッグ用
 
       if (!response.ok) {
-        throw new Error(data.message || data.details || data.error || "解析失敗");
+        throw new Error(data.message || data.error || "解析失敗");
       }
       
-      setAnalysisResult({ ...data, suggestedGuests: [{ name: "ヨネヤマ フミタカ 様", room: "302", date: "2026/05/03" }] });
+      setAnalysisResult({
+        ...data,
+        suggestedGuests: [
+          { name: "ヨネヤマ フミタカ 様", room: "302", date: "2026/05/03" }
+        ]
+      });
     } catch (error: any) {
       console.error(error);
+      alert(`エラー: ${error.message}`);
     } finally {
       setIsAnalyzing(false);
     }
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-6 font-sans">
-      <Card className="border-2 border-blue-100 shadow-xl overflow-hidden bg-white text-slate-900 rounded-[2rem]">
-        <CardHeader className="bg-blue-600 text-white p-8">
-          <CardTitle className="text-3xl font-black flex items-center gap-3">
-            <PackageSearch className="h-8 w-8" /> Staysee AI Finder
-          </CardTitle>
-          <CardDescription className="text-blue-100 text-lg">
-            拾得物を撮影 ➔ AI解析 ➔ 宿泊者特定を一本道で。
-          </CardDescription>
+    <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-12 min-h-screen text-slate-200">
+      
+      <Card className="border-0 shadow-2xl overflow-hidden bg-[#1a1b23] rounded-[3rem]">
+        <CardHeader className="bg-blue-600 p-10 text-white">
+          <div className="flex items-center gap-4">
+            <div className="p-4 bg-white/20 rounded-3xl">
+              <PackageSearch className="h-10 w-10" />
+            </div>
+            <div>
+              <CardTitle className="text-4xl font-black tracking-tight">Staysee AI Finder</CardTitle>
+              <CardDescription className="text-blue-100 text-lg mt-2 font-medium">拾得物を撮影して持ち主を特定</CardDescription>
+            </div>
+          </div>
         </CardHeader>
         
-        <CardContent className="p-10 space-y-8">
+        <CardContent className="p-10">
           {!image ? (
-            <div className="border-4 border-dashed border-slate-100 rounded-[2.5rem] p-20 text-center hover:bg-slate-50 transition-all cursor-pointer relative group">
-              <input type="file" accept="image/*" onChange={handleFileUpload} className="absolute inset-0 opacity-0 cursor-pointer" />
-              <div className="inline-flex h-24 w-24 items-center justify-center rounded-3xl bg-blue-50 text-blue-600 mb-6 group-hover:scale-110 transition-transform shadow-inner">
+            <label className="flex flex-col items-center justify-center border-4 border-dashed border-slate-800 rounded-[3rem] p-24 text-center hover:bg-slate-800/30 transition-all cursor-pointer group">
+              <input 
+                type="file" 
+                accept="image/*" 
+                capture="environment"
+                onChange={handleFileUpload}
+                className="hidden" 
+              />
+              <div className="h-28 w-28 items-center justify-center rounded-full bg-blue-500/10 text-blue-500 mb-8 group-hover:scale-110 transition-transform flex shadow-inner">
                 <Camera className="h-12 w-12" />
               </div>
-              <h3 className="text-2xl font-black text-slate-700">拾得物を撮影して開始</h3>
-              <p className="text-slate-400 mt-3 text-lg">スマホカメラを起動、または画像を選択</p>
-            </div>
+              <h3 className="text-3xl font-black text-white">拾得物を撮影する</h3>
+              <p className="text-slate-500 mt-4 text-xl font-medium">ここをタップしてカメラを起動</p>
+            </label>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
               <div className="space-y-6">
-                <div className="relative aspect-square rounded-[2rem] overflow-hidden border-4 border-slate-100 bg-slate-50 flex items-center justify-center shadow-inner">
+                <div className="relative aspect-square rounded-[2.5rem] overflow-hidden border-4 border-slate-800 bg-black flex items-center justify-center shadow-inner">
                   <img src={image} alt="Uploaded" className="max-h-full max-w-full object-contain" />
-                  <Button variant="destructive" size="sm" className="absolute top-4 right-4 rounded-xl font-bold" onClick={() => {setImage(null); setAnalysisResult(null); setDebugInfo(null)}}>削除</Button>
+                  <Button 
+                    variant="destructive" 
+                    className="absolute top-6 right-6 rounded-2xl font-black px-6 py-4 h-auto shadow-xl"
+                    onClick={() => {setImage(null); setAnalysisResult(null); setDebugData(null)}}
+                  >
+                    削除
+                  </Button>
                 </div>
                 {!analysisResult && (
-                  <Button className="w-full h-24 text-2xl bg-blue-600 hover:bg-blue-700 text-white font-black rounded-3xl shadow-2xl shadow-blue-500/30 gap-3" onClick={analyzeImage} disabled={isAnalyzing}>
-                    {isAnalyzing ? <><Loader2 className="h-8 w-8 animate-spin" /> 解析中...</> : <><Search className="h-8 w-8" /> 持ち主を特定する</>}
+                  <Button 
+                    className="w-full h-24 text-3xl bg-blue-600 hover:bg-blue-500 text-white font-black rounded-[2rem] shadow-2xl shadow-blue-600/30 gap-4 transition-transform active:scale-95" 
+                    onClick={analyzeImage}
+                    disabled={isAnalyzing}
+                  >
+                    {isAnalyzing ? (
+                      <><Loader2 className="h-10 w-10 animate-spin" /> 解析中...</>
+                    ) : (
+                      <><Search className="h-10 w-10" /> 持ち主を特定する</>
+                    )}
                   </Button>
                 )}
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-8">
                 {analysisResult ? (
-                  <div className="space-y-6 animate-in fade-in zoom-in duration-500">
-                    <div className="p-6 bg-green-50 border-2 border-green-100 rounded-3xl">
-                      <h4 className="font-black text-green-900 flex items-center gap-2 text-lg mb-4">
-                        <CheckCircle2 className="h-6 w-6 text-green-600" /> AI解析が完了しました
+                  <div className="space-y-8 animate-in fade-in zoom-in duration-500">
+                    <div className="p-8 bg-green-500/10 border-2 border-green-500/20 rounded-[2.5rem]">
+                      <h4 className="font-black text-green-400 flex items-center gap-3 text-2xl mb-6">
+                        <CheckCircle2 className="h-8 w-8" /> AI解析完了
                       </h4>
-                      <div className="grid grid-cols-2 gap-y-4 text-base bg-white/50 p-4 rounded-2xl">
-                        <span className="text-slate-500 font-bold">品目:</span><span className="font-black text-slate-900">{analysisResult.item}</span>
-                        <span className="text-slate-500 font-bold">カラー:</span><span className="font-black text-slate-900">{analysisResult.color}</span>
-                        <span className="text-slate-500 font-bold">ブランド:</span><span className="font-black text-slate-900">{analysisResult.brand}</span>
+                      <div className="space-y-4 text-xl">
+                        <div className="flex justify-between border-b border-white/5 pb-2"><span className="text-slate-500 font-bold">品目</span><span className="font-black text-white">{analysisResult.item}</span></div>
+                        <div className="flex justify-between border-b border-white/5 pb-2"><span className="text-slate-500 font-bold">カラー</span><span className="font-black text-white">{analysisResult.color}</span></div>
+                        <div className="flex justify-between"><span className="text-slate-500 font-bold">ブランド</span><span className="font-black text-white">{analysisResult.brand}</span></div>
                       </div>
                     </div>
 
-                    <div className="p-6 bg-blue-50 border-2 border-blue-100 rounded-3xl">
-                      <h4 className="font-black text-blue-900 mb-4 text-lg">特定された宿泊客</h4>
+                    <div className="p-8 bg-blue-500/10 border-2 border-blue-500/20 rounded-[2.5rem]">
+                      <h4 className="font-black text-blue-400 mb-6 text-2xl tracking-tighter">特定された宿泊客</h4>
                       {analysisResult.suggestedGuests.map((guest: any, i: number) => (
-                        <div key={i} className="flex justify-between items-center bg-white p-5 rounded-2xl border-2 border-blue-200 shadow-md">
+                        <div key={i} className="flex justify-between items-center bg-white text-slate-900 p-6 rounded-[1.5rem] border-0 shadow-xl">
                           <div>
-                            <div className="font-black text-xl text-slate-900">{guest.name}</div>
-                            <div className="text-sm text-slate-500 font-bold">{guest.room}号室 / {guest.date} OUT</div>
+                            <div className="font-black text-2xl">{guest.name}</div>
+                            <div className="text-sm text-slate-500 font-bold mt-1 uppercase">{guest.room}号室 / {guest.date} OUT</div>
                           </div>
-                          <Badge className="bg-blue-600 text-white font-black text-lg px-4 py-1">{analysisResult.matchConfidence}%</Badge>
+                          <Badge className="bg-blue-600 text-white font-black text-xl px-5 py-2 rounded-xl">{analysisResult.matchConfidence}%</Badge>
                         </div>
                       ))}
                     </div>
 
-                    <Button className="w-full h-20 bg-slate-900 hover:bg-black text-white font-black text-xl rounded-3xl gap-3 shadow-xl">
-                      <Mail className="h-6 w-6" /> 写真付きで自動連絡する
+                    <Button className="w-full h-24 bg-white hover:bg-slate-100 text-slate-950 font-black text-2xl rounded-[2rem] gap-4 shadow-2xl">
+                      <Mail className="h-8 w-8" /> 写真付きで自動連絡する
                     </Button>
                   </div>
                 ) : (
-                  <div className="h-full flex items-center justify-center border-4 border-dashed border-slate-50 rounded-[2rem] p-10 text-center text-slate-300">
-                    <div className="space-y-4 font-bold">
-                      <Building2 className="h-20 w-20 mx-auto opacity-10" />
-                      <p className="text-xl leading-relaxed">解析を実行すると、<br/>Stayseeの宿泊データと<br/>自動的に照合されます</p>
+                  <div className="h-full flex items-center justify-center border-4 border-dashed border-slate-800 rounded-[3rem] p-12 text-center text-slate-700">
+                    <div className="space-y-6">
+                      <Building2 className="h-24 w-24 mx-auto opacity-10" />
+                      <p className="text-2xl font-bold leading-tight">解析を実行すると、<br/>宿泊データと<br/>自動照合されます</p>
                     </div>
                   </div>
                 )}
@@ -155,22 +185,7 @@ export default function StayseeFinderEngine() {
         </CardContent>
       </Card>
 
-      {/* 🛠️ DEBUG PANEL - NextraLabs Special */}
-      <div className="max-w-4xl mx-auto">
-        <button onClick={() => setShowDebug(!showDebug)} className="flex items-center gap-2 text-slate-500 text-xs font-bold hover:text-slate-700 transition-colors mb-2">
-          <Terminal className="h-3 w-3" /> {showDebug ? "デバッグパネルを閉じる" : "デバッグログを表示"} {showDebug ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-        </button>
-        {showDebug && (
-          <div className="bg-slate-950 text-emerald-400 p-6 rounded-2xl font-mono text-[10px] border border-emerald-500/20 shadow-2xl overflow-x-auto">
-            <p className="mb-2 border-b border-emerald-500/10 pb-1 text-white opacity-50 uppercase tracking-widest">--- System Debug Logs ---</p>
-            {debugInfo ? (
-              <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
-            ) : (
-              <p className="italic opacity-50">No logs yet. Try performing an action...</p>
-            )}
-          </div>
-        )}
-      </div>
+      <DebugPanel data={debugData} toolId="staysee-ai-finder" />
     </div>
   )
 }
