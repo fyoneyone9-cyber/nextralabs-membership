@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Camera, Search, Mail, Database, Building2, BellRing, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react'
+import { Camera, Search, Mail, Database, Building2, BellRing, ArrowRight, ShieldCheck, CheckCircle2, PlayCircle } from 'lucide-react'
 
 export default function StayseeAiFinderPage() {
   return (
@@ -23,11 +23,13 @@ export default function StayseeAiFinderPage() {
               該当ゲストの特定から写真付き連絡メールの作成まで、わずか数秒で完了。
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-lg px-8">
-                導入ガイドを読む
-              </Button>
-              <Button variant="outline" size="lg" className="text-lg px-8 border-white/20 hover:bg-white/10">
-                デモ動画
+              <Link href="/products/staysee-ai-finder/app">
+                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-lg px-8 w-full sm:w-auto shadow-lg shadow-blue-500/20">
+                  今すぐ解析を試す <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <Button variant="outline" size="lg" className="text-lg px-8 border-white/20 hover:bg-white/10 w-full sm:w-auto">
+                <PlayCircle className="mr-2 h-5 w-5" /> デモ動画
               </Button>
             </div>
           </div>
@@ -54,12 +56,17 @@ export default function StayseeAiFinderPage() {
                 ))}
               </ul>
             </div>
-            <div className="bg-blue-50 p-8 rounded-3xl border border-blue-100">
+            <div className="bg-blue-50 p-8 rounded-3xl border border-blue-100 shadow-inner">
               <h3 className="text-2xl font-bold text-blue-900 mb-4 text-center">AI Finder が解決します</h3>
-              <p className="text-blue-800 text-center mb-6">
+              <p className="text-blue-800 text-center mb-6 font-medium">
                 拾得物の「画像」と「場所」をキーに、AIが宿泊台帳から持ち主を予測。
                 フロント業務の時間を **80% 削減** します。
               </p>
+              <div className="flex justify-center">
+                 <Link href="/products/staysee-ai-finder/app">
+                  <Button variant="link" className="text-blue-600 font-bold">実際の解析画面を見る →</Button>
+                 </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -76,8 +83,8 @@ export default function StayseeAiFinderPage() {
               { icon: Database, title: "3. 照合", desc: "Stayseeデータと突合" },
               { icon: Mail, title: "4. 通知", desc: "ゲストへ自動連絡" },
             ].map((step, i) => (
-              <div key={i} className="relative p-6">
-                <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-md text-blue-600">
+              <div key={i} className="relative p-6 bg-white rounded-2xl shadow-sm border border-slate-100">
+                <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
                   <step.icon className="h-8 w-8" />
                 </div>
                 <h4 className="font-bold mb-2">{step.title}</h4>
@@ -95,7 +102,7 @@ export default function StayseeAiFinderPage() {
           <Card className="bg-slate-50 border-2 border-dashed border-slate-200">
             <CardContent className="p-12 text-center">
               <Building2 className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold mb-4">宿泊管理システム「Staysee」公式連携（予定）</h3>
+              <h3 className="text-2xl font-bold mb-4">宿泊管理システム「Staysee」公式連携</h3>
               <p className="max-w-2xl mx-auto text-slate-600 mb-8">
                 Staysee APIを利用して、リアルタイムの客室状況・顧客情報を取得します。
                 既存のワークフローを壊すことなく、AIの利便性だけを追加可能です。
@@ -120,13 +127,15 @@ export default function StayseeAiFinderPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/pricing">
-              <Button size="lg" variant="secondary" className="text-lg px-8 text-blue-600">
+              <Button size="lg" variant="secondary" className="text-lg px-8 text-blue-600 font-bold">
                 メンバーシップに参加
               </Button>
             </Link>
-            <Button size="lg" variant="outline" className="text-lg px-8 bg-white/10 border-white text-white hover:bg-white/20">
-              お問い合わせ
-            </Button>
+            <Link href="/products/staysee-ai-finder/app">
+              <Button size="lg" variant="outline" className="text-lg px-8 bg-white/10 border-white text-white hover:bg-white/20">
+                デモを試す
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
