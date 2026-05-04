@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { Providers } from '@/components/providers'
@@ -7,12 +7,25 @@ import { Footer } from '@/components/footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
+export const viewport: Viewport = {
+  themeColor: '#2563eb',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+}
+
 export const metadata: Metadata = {
   title: { default: 'NextraLabs | AIツール使い放題メンバーシップ — 月額¥980〜', template: '%s | NextraLabs' },
   description: 'NextraLabsは月額¥980から使えるAIツールのメンバーシップです。資格試験スケジューラー・AIペット翻訳・古着ハンターなど20以上のAIツールが使い放題。業務効率化・副業・エンタメまで。',
+  manifest: '/manifest.json',
   keywords: ['AIツール', 'メンバーシップ', '月額980円', '業務効率化', '副業AI', '資格試験', 'スケジューラー', 'ペット翻訳', 'AI自動化', 'NextraLabs'],
   metadataBase: new URL('https://membership-site-nextralabos.vercel.app'),
   alternates: { canonical: 'https://membership-site-nextralabos.vercel.app' },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'NextraLabs',
+  },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 } },
   openGraph: {
     title: 'NextraLabs | AIツール使い放題メンバーシップ',
