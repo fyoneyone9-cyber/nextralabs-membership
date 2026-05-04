@@ -22,21 +22,34 @@ export default function StayseeFinderEngine() {
   }
 
   const analyzeImage = async () => {
-    setIsAnalyzing(true)
-    // 開発用ダミーレスポンス (Gemini API 連携予定)
-    setTimeout(() => {
+    if (!image) return;
+    setIsAnalyzing(true);
+    setAnalysisResult(null);
+
+    try {
+      const response = await fetch("/api/analyze-item", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image }),
+      });
+
+      if (!response.ok) throw new Error("解析に失敗しました");
+
+      const data = await response.json();
+      
+      // 宿泊客マッチングのシミュレーション（本来はここでStaysee APIと突合）
       setAnalysisResult({
-        item: "折りたたみ傘",
-        color: "ネイビー / 紺色",
-        brand: "Waterfront",
-        features: ["持ち手に赤い目印シール", "石突に擦り傷あり"],
-        matchConfidence: 92,
+        ...data,
         suggestedGuests: [
           { name: "ヨネヤマ フミタカ 様", room: "302", date: "2026/05/03" }
         ]
-      })
-      setIsAnalyzing(false)
-    }, 2000)
+      });
+    } catch (error) {
+      console.error(error);
+      alert("AI解析中にエラーが発生しました。");
+    } finally {
+      setIsAnalyzing(false);
+    }
   }
 
   return (
