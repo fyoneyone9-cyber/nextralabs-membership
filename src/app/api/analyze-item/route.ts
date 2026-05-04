@@ -1,42 +1,46 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
     const { image } = await req.json();
     const apiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY1;
-    if (!apiKey || !image) return NextResponse.json({ error: "Missing Key/Image" }, { status: 400 });
+    if (!apiKey || !image) return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
 
-    const genAI = new GoogleGenerativeAI(apiKey);
     const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
     
-    // 試行するモデルの優先順位リスト
-    const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-1.5-flash-latest", "gemini-1.5-pro-latest"];
-    
-    let lastError = "";
-    
-    for (const modelName of modelsToTry) {
-      try {
-        console.log(`Trying model: ${modelName}`);
-        const model = genAI.getGenerativeModel({ model: modelName });
-        const result = await model.generateContent([
-          { inlineData: { data: base64Data, mimeType: "image/jpeg" } },
-          "Analyze this image. Return ONLY JSON: { \"item\": \"name\", \"color\": \"color\", \"brand\": \"brand\", \"features\": [\"tag\"], \"matchConfidence\": 95 }"
-        ]);
-        
-        const text = result.response.text();
-        const cleanJson = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-        return NextResponse.json(JSON.parse(cleanJson));
-      } catch (e: any) {
-        lastError = e.message;
-        console.warn(`${modelName} failed: ${e.message}`);
-        continue; // 次のモデルを試す
-      }
+    // SDKを使わず直接Google APIを叩く（404を回避）
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+    const requestBody = {
+      contents: [{
+        parts: [
+          { text: "Analyze this image (Lost and Found). Return ONLY JSON: { \"item\": \"品目\", \"color\": \"色\", \"brand\": \"ブランド\", \"features\": [\"特徴1\"], \"matchConfidence\": 95 }" },
+          { inline_data: { mime_type: "image/jpeg", data: base64Data } }
+        ]
+      }]
+    };
+
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestBody)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(`Google API Error: ${data.error?.message || "Unknown error"}`);
     }
 
-    throw new Error(`All models failed. Last error: ${lastError}`);
+    const text = data.candidates[0].content.parts[0].text;
+    const cleanJson = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+    
+    return NextResponse.json(JSON.parse(cleanJson));
 
   } catch (error: any) {
-    return NextResponse.json({ error: "AI解析エラー", message: error.message }, { status: 500 });
+    return NextResponse.json({ 
+      error: "究極の直接コール失敗", 
+      message: error.message 
+    }, { status: 500 });
   }
 }
