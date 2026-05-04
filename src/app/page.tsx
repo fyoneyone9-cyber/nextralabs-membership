@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Shield, Zap, Code, Download, Bot, Search, FileText, Infinity, PawPrint, Building2, Shirt, Hotel, Key, ArrowRight } from 'lucide-react'
+import { Shield, Zap, Code, Download, Bot, Search, FileText, Infinity, PawPrint, Building2, Shirt, Hotel, Key, ArrowRight, Smartphone, Share, PlusSquare } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 const featuredProduct = {
@@ -19,8 +19,8 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 md:py-32">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-amber-500/5" />
+      <section className="relative overflow-hidden py-20 md:py-32 bg-slate-950 text-white">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-amber-500/20" />
         <div className="container mx-auto px-4 text-center relative">
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
             AIツールで
@@ -29,21 +29,49 @@ export default function HomePage() {
               業務を自動化
             </span>
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+          <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-8">
             マーケティング、データ分析、業務効率化——あらゆる分野のAI自動化ツールのソースコードを販売。
             有料プランならすべて使い放題。買い切りも選べます。
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/products">
-              <Button size="lg" className="text-lg px-8">
+              <Button size="lg" className="text-lg px-8 bg-amber-500 hover:bg-amber-600 text-black font-bold">
                 ツールを見る
               </Button>
             </Link>
             <Link href="/pricing">
-              <Button variant="outline" size="lg" className="text-lg px-8">
+              <Button variant="outline" size="lg" className="text-lg px-8 border-white/20 hover:bg-white/10">
                 有料プランを見る
               </Button>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* PWA Installation Section */}
+      <section className="py-12 bg-indigo-900 text-white border-y border-indigo-800">
+        <div className="container mx-auto px-4 text-center">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 max-w-4xl mx-auto">
+            <div className="flex-shrink-0">
+              <Smartphone className="h-16 w-16 text-indigo-300" />
+            </div>
+            <div className="text-left">
+              <h2 className="text-2xl font-bold mb-2">NextraLabs をホーム画面に追加</h2>
+              <p className="text-indigo-200 text-sm mb-4">
+                アプリとしてインストールすれば、ブラウザの枠なしで全画面利用可能。
+                最新のAIツールへ、ホーム画面からワンタップでアクセスできます。
+              </p>
+              <div className="flex flex-wrap gap-4 text-xs font-mono">
+                <div className="flex items-center gap-2 bg-indigo-950/50 px-3 py-2 rounded-lg">
+                  <Badge variant="secondary" className="bg-indigo-700 text-white border-0">Android</Badge>
+                  <span>メニュー ➔ 「アプリをインストール」</span>
+                </div>
+                <div className="flex items-center gap-2 bg-indigo-950/50 px-3 py-2 rounded-lg">
+                  <Badge variant="secondary" className="bg-pink-700 text-white border-0">iPhone</Badge>
+                  <span>共有ボタン <Share className="inline h-3 w-3" /> ➔ 「ホーム画面に追加」 <PlusSquare className="inline h-3 w-3" /></span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -83,8 +111,8 @@ export default function HomePage() {
                         忘れ物管理の革命。拾得物を撮影するだけで、AIが宿泊台帳から持ち主を自動特定。
                         フロントの電話対応と確認作業をわずか数秒に短縮します。
                       </p>
-                      <div className="flex items-center text-blue-600 font-bold">
-                        詳細・デモを試す <ArrowRight className="ml-2 h-4 w-4" />
+                      <div className="flex items-center text-blue-600 font-bold text-lg">
+                        詳細・デモを試す <ArrowRight className="ml-2 h-5 w-5" />
                       </div>
                     </div>
                   </div>
@@ -190,7 +218,7 @@ export default function HomePage() {
               <Button size="lg" className="text-lg px-8 bg-slate-900 text-white hover:bg-slate-800">ツール一覧を見る</Button>
             </Link>
             <Link href="/pricing">
-              <Button variant="outline" size="lg" className="text-lg px-8 border-slate-300">有料プランに登録</Button>
+              <Button variant="outline" size="lg" className="text-lg px-8 border-slate-300 text-slate-700">有料プランに登録</Button>
             </Link>
           </div>
         </div>
