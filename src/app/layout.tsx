@@ -29,6 +29,9 @@ export const metadata: Metadata = {
   other: {
     'mobile-web-app-capable': 'yes',
   },
+  verification: {
+    google: 'P-zm2rdcV0kWAXrKxANacp5a5hbx8tkjlPeclNkiLlg',
+  },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large', 'max-snippet': -1 } },
   openGraph: {
     title: 'NextraLabs | AIツール使い放題メンバーシップ',
