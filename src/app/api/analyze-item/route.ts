@@ -9,40 +9,52 @@ export async function POST(req: Request) {
 
     const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
 
-    // 【重要】v1beta ではなく v1 を使用し、モデル名に models/ を含めない形式でリクエスト
-    const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    // 試行するエンドポイントとモデルの全パターン
+    const configs = [
+      { v: "v1beta", model: "gemini-1.5-flash" },
+      { v: "v1", model: "gemini-1.5-flash" },
+      { v: "v1beta", model: "gemini-pro-vision" },
+      { v: "v1", model: "gemini-pro-vision" }
+    ];
 
-    const requestBody = {
-      contents: [{
-        parts: [
-          { text: "Analyze the item in this image for a hotel lost and found system. Respond with ONLY JSON: { \"item\": \"品目\", \"color\": \"色\", \"brand\": \"ブランド\", \"features\": [\"特徴1\", \"特徴2\"], \"matchConfidence\": 95 }" },
-          { inline_data: { mime_type: "image/jpeg", data: base64Data } }
-        ]
-      }]
-    };
+    let lastErrorMessage = "";
 
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody)
-    });
+    for (const config of configs) {
+      try {
+        const apiUrl = `https://generativelanguage.googleapis.com/${config.v}/models/${config.model}:generateContent?key=${apiKey}`;
+        
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{
+              parts: [
+                { text: "Analyze this image for hotel lost and found. Respond ONLY with raw JSON: { \"item\": \"name\", \"color\": \"color\", \"brand\": \"brand\", \"features\": [\"tag\"], \"matchConfidence\": 95 }" },
+                { inline_data: { mime_type: "image/jpeg", data: base64Data } }
+              ]
+            }]
+          })
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    if (!response.ok) {
-      // もしv1でもダメな場合の詳細エラーを出力
-      throw new Error(data.error?.message || `Status: ${response.status}`);
+        if (response.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
+          const text = data.candidates[0].content.parts[0].text;
+          const cleanJson = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+          return NextResponse.json(JSON.parse(cleanJson));
+        } else {
+          lastErrorMessage = data.error?.message || "Not found";
+          continue; // 次の構成へ
+        }
+      } catch (e: any) {
+        lastErrorMessage = e.message;
+        continue;
+      }
     }
 
-    const text = data.candidates[0].content.parts[0].text;
-    const cleanJson = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-    
-    return NextResponse.json(JSON.parse(cleanJson));
+    throw new Error(`利用可能なモデルが見つかりません。Google AI Studioで「Pay-as-you-go」を有効にするか、別のキーを試してください。最後のエラー: ${lastErrorMessage}`);
 
   } catch (error: any) {
-    return NextResponse.json({ 
-      error: "API接続エラー", 
-      message: error.message 
-    }, { status: 500 });
+    return NextResponse.json({ error: "全自動試行失敗", message: error.message }, { status: 500 });
   }
 }
