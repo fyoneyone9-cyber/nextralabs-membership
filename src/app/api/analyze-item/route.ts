@@ -2,42 +2,29 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { image } = await req.json();
     const apiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY1;
-    if (!apiKey || !image) return NextResponse.json({ error: "No Data" }, { status: 400 });
+    if (!apiKey) return NextResponse.json({ error: "No API Key" }, { status: 500 });
 
-    const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
-
-    // 【最終形態】モデル名を最も互換性の高い gemini-pro-vision に変更し、v1 エンドポイントを使用
-    const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-pro-vision:generateContent?key=${apiKey}`;
-
-    const requestBody = {
-      contents: [{
-        parts: [
-          { text: "Analyze this image. Respond ONLY with JSON: { \"item\": \"品目\", \"color\": \"色\", \"brand\": \"ブランド\", \"features\": [\"特徴\"], \"matchConfidence\": 95 }" },
-          { inline_data: { mime_type: "image/jpeg", data: base64Data } }
-        ]
-      }]
-    };
-
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody)
-    });
-
+    // Googleに「使えるモデルのリスト」を問い合わせる
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+    const response = await fetch(apiUrl);
     const data = await response.json();
 
     if (!response.ok) {
-      // Pro Vision もダメな場合、モデル名リストを取得してデバッグする最終情報を出す
-      throw new Error(`Google Final Error: ${data.error?.message || "Not found"}`);
+      throw new Error(`ListModels Error: ${data.error?.message || "Unknown"}`);
     }
 
-    const text = data.candidates[0].content.parts[0].text;
-    const cleanJson = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-    return NextResponse.json(JSON.parse(cleanJson));
+    // 利用可能な全モデル名を抽出
+    const availableModels = data.models?.map((m: any) => m.name) || [];
+
+    return NextResponse.json({ 
+      error: "診断モード: 利用可能なモデルを特定しました",
+      message: "以下のリストにある名前以外は404になります",
+      availableModels: availableModels,
+      recommendation: availableModels.find((m: string) => m.includes("flash")) || "なし"
+    }, { status: 500 }); // あえてエラーを返し、画面にリストを表示させます
 
   } catch (error: any) {
-    return NextResponse.json({ error: "全モデル/全URL試行失敗", message: error.message }, { status: 500 });
+    return NextResponse.json({ error: "診断失敗", message: error.message }, { status: 500 });
   }
 }
