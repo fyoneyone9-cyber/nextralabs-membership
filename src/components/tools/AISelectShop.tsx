@@ -32,6 +32,7 @@ interface DesignRecord {
 const STYLES = [
   { id: 'minimal', name: 'ミニマル', emoji: '⬜' },
   { id: 'street', name: 'ストリート', emoji: '🏙️' },
+  { id: 'retro', name: 'レトロ', emoji: '📻' },
   { id: 'cyberpunk', name: 'サイバーパンク', emoji: '🌃' },
   { id: 'kawaii', name: 'かわいい', emoji: '🎀' },
   { id: 'japanese', name: '和風', emoji: '⛩️' },
@@ -59,7 +60,6 @@ export default function AISelectShop() {
 
   // Initialize
   useEffect(() => {
-    // Mock trends
     const mockTrends: TrendKeyword[] = [
       { id: '1', name: '猫耳サイバーパンク', score: 95, category: 'ファッション', direction: '↑', traffic: '500K' },
       { id: '2', name: '昭和レトロポップ', score: 88, category: 'デザイン', direction: '↗', traffic: '200K' },
@@ -70,6 +70,13 @@ export default function AISelectShop() {
     setTrends(mockTrends)
     setLoading(false)
   }, [])
+
+  // 🛠️ Fixed: useEffect should be here, outside JSX
+  useEffect(() => {
+    if (currentStep === 2) {
+      generateDesign()
+    }
+  }, [designKeyword, designStyle, designTshirtColor, currentStep])
 
   const selectTrend = (name: string) => {
     setDesignKeyword(name)
@@ -82,7 +89,6 @@ export default function AISelectShop() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    // Draw simple t-shirt mock with text
     ctx.fillStyle = designTshirtColor === 'black' ? '#1a1a1a' : designTshirtColor === 'navy' ? '#1e3a5f' : '#ffffff'
     ctx.fillRect(0, 0, 400, 400)
     ctx.fillStyle = designTshirtColor === 'white' ? '#000000' : '#ffffff'
@@ -129,17 +135,13 @@ export default function AISelectShop() {
         ))}
       </div>
 
-      {/* 🔵 CONTENT AREA */}
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-        
-        {/* --- STEP 1: TRENDS --- */}
         {currentStep === 1 && (
           <div className="space-y-6 text-center">
             <div className="max-w-2xl mx-auto">
               <h2 className="text-3xl font-bold mb-3 text-white">トレンドをキャッチする</h2>
               <p className="text-slate-400">AIがリアルタイムで解析した、いま「売れる」キーワードです。</p>
             </div>
-            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12">
               {trends.map((kw) => (
                 <Card key={kw.id} className="bg-slate-900 border-slate-800 hover:border-emerald-500/50 transition-all cursor-pointer group shadow-xl" onClick={() => selectTrend(kw.name)}>
@@ -162,7 +164,6 @@ export default function AISelectShop() {
           </div>
         )}
 
-        {/* --- STEP 2: DESIGN --- */}
         {currentStep === 2 && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <div className="space-y-8">
@@ -170,12 +171,10 @@ export default function AISelectShop() {
                 <h2 className="text-2xl font-bold text-white flex items-center gap-2">
                   <Palette className="text-emerald-400" /> デザインを確定する
                 </h2>
-                
                 <div className="space-y-4">
                   <Label className="text-slate-400">デザインキーワード</Label>
                   <Input value={designKeyword} onChange={(e) => setDesignKeyword(e.target.value)} className="bg-slate-950 border-slate-700 h-12 text-lg font-bold text-white rounded-xl" />
                 </div>
-
                 <div className="space-y-4">
                   <Label className="text-slate-400">スタイルを選択</Label>
                   <div className="grid grid-cols-3 gap-2">
@@ -186,7 +185,6 @@ export default function AISelectShop() {
                     ))}
                   </div>
                 </div>
-
                 <div className="space-y-4">
                   <Label className="text-slate-400">Tシャツの色</Label>
                   <div className="flex gap-4">
@@ -195,26 +193,21 @@ export default function AISelectShop() {
                     ))}
                   </div>
                 </div>
-
                 <Button onClick={addToStore} className="w-full h-16 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xl rounded-2xl shadow-xl shadow-emerald-500/20 mt-8 gap-2">
                   ショップへ出品する <Rocket className="h-6 w-6" />
                 </Button>
               </div>
             </div>
-
             <div className="space-y-4 text-center">
               <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Real-time Preview</span>
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] p-8 shadow-2xl overflow-hidden aspect-[3/4] flex flex-col items-center justify-center relative group">
+              <div className="bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] p-8 shadow-2xl overflow-hidden aspect-[3/4] flex flex-col items-center justify-center relative">
                 <canvas ref={canvasRef} width={400} height={400} className="w-full h-full object-contain rounded-xl" />
-                {/* Auto-generate helper */}
-                {useEffect(() => { generateDesign() }, [designKeyword, designStyle, designTshirtColor])}
               </div>
               <p className="text-xs text-slate-500">※ デザインはAIによって最適化されています</p>
             </div>
           </div>
         )}
 
-        {/* --- STEP 3: STORE --- */}
         {currentStep === 3 && (
           <div className="space-y-8">
              <div className="flex justify-between items-end mb-8">
@@ -226,7 +219,6 @@ export default function AISelectShop() {
                 ✨ 新しく作る
               </Button>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {designs.map(d => (
                 <Card key={d.id} className="bg-slate-900 border-slate-800 overflow-hidden rounded-3xl group shadow-2xl">
@@ -253,7 +245,6 @@ export default function AISelectShop() {
                   </CardContent>
                 </Card>
               ))}
-              
               {designs.length === 0 && (
                 <div className="col-span-full py-32 text-center bg-slate-900/30 border-2 border-dashed border-slate-800 rounded-[2.5rem]">
                   <ShoppingCart className="h-16 w-16 text-slate-700 mx-auto mb-4" />
@@ -266,7 +257,6 @@ export default function AISelectShop() {
         )}
       </div>
 
-      {/* 🎁 FOOTER INFO */}
       <div className="max-w-4xl mx-auto mt-20 p-8 bg-emerald-500/5 border border-emerald-500/10 rounded-[2rem] flex gap-6 items-start">
         <div className="bg-emerald-500/20 p-3 rounded-2xl text-emerald-400">
           <Info className="h-6 w-6" />
@@ -279,7 +269,6 @@ export default function AISelectShop() {
           </p>
         </div>
       </div>
-
     </div>
   )
 }
