@@ -33,7 +33,10 @@ export default function StayseeFinderEngine() {
         body: JSON.stringify({ image }),
       });
 
-      if (!response.ok) throw new Error("解析に失敗しました");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || errorData.error || "解析に失敗しました");
+      }
 
       const data = await response.json();
       
