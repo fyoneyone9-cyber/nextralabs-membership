@@ -3,23 +3,23 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { image } = await req.json();
+    const body = await req.json();
+    const { image } = body;
 
     if (!image) {
-      return NextResponse.json({ error: "画像データがありません" }, { status: 400 });
+      return NextResponse.json({ error: "画像データが空です" }, { status: 400 });
     }
 
     const apiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY1;
     if (!apiKey) {
-      console.error("Critical: GEMINI_API_KEY is not set in environment variables.");
-      return NextResponse.json({ error: "APIキーが設定されていません。Vercelの環境変数を確認してください。" }, { status: 500 });
+      return NextResponse.json({ error: "サーバーにAPIキーが設定されていません(ENV_MISSING)" }, { status: 500 });
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    // Base64からデータ部分のみを抽出
-    const base64Data = image.split(",")[1];
+    // Base64のヘッダーを削除
+    const base64Data = image.includes(",") ? image.split(",")[1] : image;
     
     const prompt = `
       画像内の「忘れ物」を分析し、以下のJSON形式でのみ答えてください。
@@ -45,16 +45,20 @@ export async function POST(req: Request) {
     const response = await result.response;
     const text = response.text();
     
-    // JSONのパース（バックティックなどの余計な文字を除去）
+    // AIの返答をデバッグ用にログ出力（Vercel Logsで見れるよう）
+    console.log("AI Response:", text);
+
     const cleanText = text.replace(/```json|```/g, "").trim();
     const analysis = JSON.parse(cleanText);
 
     return NextResponse.json(analysis);
   } catch (error: any) {
-    console.error("Staysee AI Analysis Error:", error);
+    // ここでエラーの詳細を惜しみなく出力します
+    console.error("DETAILED ERROR:", error);
     return NextResponse.json({ 
-      error: "AI解析に失敗しました", 
-      details: error.message 
+      error: "AI解析中にサーバー内部でエラーが発生しました", 
+      message: error.message,
+      stack: error.stack?.substring(0, 100) // スタックトレースの冒頭
     }, { status: 500 });
   }
 }
