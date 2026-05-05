@@ -88,11 +88,14 @@ export default function AISelectShop() {
     setConceptResult('');
     setMockupImage(null);
     try {
-      // 憲法：画像も「本物」のように動的に。トレンドとスタイルをシード値にして画像を生成
+      // 憲法：画像キャッシュを破壊して強制的にトレンド・スタイルに同期させる
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const seed = encodeURIComponent(`${selectedTrend}-${selectedStyle}`);
-      const imageUrl = `https://loremflickr.com/800/800/${selectedCategory.toLowerCase()},${encodeURIComponent(selectedStyle)}?lock=${seed}`;
+      const timestamp = new Date().getTime();
+      const styleSlug = encodeURIComponent(selectedStyle);
+      const trendSlug = encodeURIComponent(selectedTrend);
+      // seedとtimestampを組み合わせて、同じキーワード・スタイルでも新しい画像を引けるように、かつ「選んだ時」に確実に変わるようにする
+      const imageUrl = `https://loremflickr.com/800/800/${selectedCategory.toLowerCase()},${styleSlug}?lock=${trendSlug}-${timestamp}`;
       
       setConceptResult(`【SHOP IDENTITY】: ${selectedTrend.toUpperCase()}\n【STYLE】: ${selectedStyle}\n【CAT】: ${selectedCategory}\n【SIZE】: ${selectedSizes.join(', ')}\n\nこの構成で設計を執行しました。`);
       setMockupImage(imageUrl);
