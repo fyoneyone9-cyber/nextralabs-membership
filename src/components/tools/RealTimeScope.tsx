@@ -7,7 +7,7 @@ export default function Realtimescope() {
       <h1 style={{ fontSize: '3rem', fontWeight: '900' }}>NextraLabs AI Tool</h1>
       <p style={{ fontSize: '1.5rem', marginTop: '20px' }}>System Component: RealTimeScope</p>
       <div style={{ marginTop: '40px', padding: '20px', border: '2px dashed #334155', borderRadius: '20px' }}>
-        現在、システムを安全に復旧させています。数分後に元の機能が復活します。
+        現在、システムを安全に復旧させています。
       </div>
     </div>
   )
