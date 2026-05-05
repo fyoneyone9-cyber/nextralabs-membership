@@ -119,6 +119,19 @@ export default function OfficePoliticsGraph() {
     }, 800);
   };
 
+    <div className="bg-slate-900 border-2 border-indigo-600/50 rounded-2xl p-5 md:p-8 mb-8 flex items-start gap-4 shadow-xl">
+      <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg"><Lightbulb className="text-white" /></div>
+      <div className="space-y-1">
+        <p className="text-sm font-black text-indigo-400 uppercase italic tracking-widest opacity-70">Operation Guide</p>
+        <div className="space-y-1">
+          {steps.map((s, i) => (
+            <p key={i} className="text-xs md:text-base text-slate-300 font-bold flex items-center gap-2 md:gap-4 leading-tight"><span className="text-indigo-600 italic">#{i+1}</span> {s}</p>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
   const FINAL_PROMPT = `あなたは組織心理学と社内政治のプロコンサルタントです。\n以下の【ログデータ】を分析し、派閥・キーマン・裏の力関係をリアルに出力し、最後にMermaid.js形式のgraph TDコード（日本語ノード名 A["名前"] の形式）を作成してください。\n\n【データ】:\n${csvData.substring(0, 2000)}`;
 
   return (
@@ -158,6 +171,7 @@ export default function OfficePoliticsGraph() {
           <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3.5rem] p-8 md:p-16 shadow-[0_40px_100px_rgba(0,0,0,0.6)] animate-in fade-in slide-in-from-bottom-4 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-600 via-purple-600 to-emerald-600" />
             <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase tracking-tighter mb-8 flex items-center gap-3"><FileSpreadsheet className="text-indigo-500" /> ① 解析依頼</h3>
+            {renderGuide(['ログCSVを準備（下のボタンでサンプル保存可能）', 'ファイルをドロップして解析準備完了', '最強プロンプトをAI三台体制へ投げよう'])}
             <div className="grid lg:grid-cols-2 gap-10">
               <div className="space-y-6">
                 {!file ? (
