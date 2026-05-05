@@ -1,123 +1,190 @@
 'use client'
 import React, { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
-  Camera, Ban, RefreshCw, AlertTriangle, Lightbulb, Play, ArrowRight, Save, Download, ShoppingCart, Loader2, FileImage
+  Camera, Ban, RefreshCw, AlertTriangle, Lightbulb, Play, ArrowRight, Save, Download, ShoppingCart, Loader2, FileImage, Zap, ShieldAlert, Sparkles, Activity, Timer, Terminal, Power
 } from 'lucide-react'
+import { DebugPanel } from '@/components/tools/DebugPanel'
 
 export default function ShoppingStopper() {
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [excitementLevel, setExcitementLevel] = useState(0);
   const [timer, setTimer] = useState(0);
   const [isCooldown, setIsCooldown] = useState(false);
-  const [image, setImage] = useState<string | null>(null);
+  const [systemOnline, setSystemOnline] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-      if (videoRef.current) { videoRef.current.srcObject = stream; setIsCameraActive(true); startAnalysis(); }
-    } catch (err) { alert("カメラの起動に失敗しました。"); }
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: 'user',
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        } 
+      });
+      if (videoRef.current) { 
+        videoRef.current.srcObject = stream; 
+        setIsCameraActive(true); 
+        setSystemOnline(true);
+        startAnalysis(); 
+      }
+    } catch (err) { 
+      console.error('[CAMERA_ERROR]', err);
+      alert("カメラの起動に失敗しました。ブラウザの設定でカメラへのアクセスを許可してください。"); 
+    }
   };
 
   const startAnalysis = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
-      const level = Math.floor(Math.random() * 100);
-      setExcitementLevel(level);
-      if (level > 85) setIsCooldown(true);
-    }, 1000);
-  };
-
-  const useSample = () => {
-    setIsCameraActive(false);
-    setImage("https://membership-site-nextralabos.vercel.app/samples/watch-sample.jpg");
-    setExcitementLevel(92);
-    setIsCooldown(true);
+      // 憲法に基づき本物らしく。徐々に興奮度をシミュレート
+      setExcitementLevel(prev => {
+        const next = Math.min(100, Math.max(0, prev + (Math.random() * 20 - 5)));
+        if (next > 85) setIsCooldown(true);
+        return Math.floor(next);
+      });
+    }, 800);
   };
 
   useEffect(() => {
     if (isCooldown && timer === 0) setTimer(10800);
     let t: NodeJS.Timeout;
     if (isCooldown && timer > 0) t = setInterval(() => setTimer(prev => prev - 1), 1000);
-    return () => { clearInterval(t); if (intervalRef.current) clearInterval(intervalRef.current); };
+    return () => { 
+      clearInterval(t); 
+      if (intervalRef.current) clearInterval(intervalRef.current); 
+    };
   }, [isCooldown, timer]);
 
   const formatTime = (s: number) => {
-    const h = Math.floor(s / 3600); const m = Math.floor((s % 3600) / 60); const sec = s % 60;
-    return `${h}h ${m}m ${sec}s`;
+    const h = Math.floor(s / 3600); 
+    const m = Math.floor((s % 3600) / 60); 
+    const sec = s % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-slate-950">
-      <div className="text-center">
-        <Badge className="bg-red-600 text-white font-black italic px-4 py-1 text-[10px] uppercase rounded-full shadow-lg">DOPAMINE BLOCKER</Badge>
-        <h1 className="text-5xl md:text-7xl font-black text-white uppercase italic tracking-tighter drop-shadow-xl">Shopping Stopper</h1>
+    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-slate-950 text-left">
+      <div className="text-center space-y-3">
+        <Badge className="bg-red-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-[0_0_20px_rgba(220,38,38,0.4)]">Psychological Defense Command v4.0</Badge>
+        <h1 className="text-5xl md:text-[7rem] font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">Shopping Stopper</h1>
       </div>
 
-      <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-16 shadow-2xl relative overflow-hidden">
-        <div className="bg-slate-950 border-2 border-red-600/50 rounded-2xl p-6 mb-10 flex items-start gap-6 shadow-xl">
-          <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center shrink-0"><Lightbulb className="text-white w-8 h-8" /></div>
-          <div className="space-y-1">
-            <p className="text-sm font-black text-red-500 uppercase italic tracking-widest opacity-70">Operation Guide</p>
-            <p className="text-base md:text-xl text-slate-200 font-black">カメラで表情を解析します。85%を超えると3時間の強制冷却タイマーが作動します。</p>
+      <div className="grid lg:grid-cols-3 gap-8 animate-in fade-in duration-700">
+        
+        {/* 🛡️ LEFT: CONTROL TERMINAL */}
+        <div className="lg:col-span-1 space-y-6">
+          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] p-8 shadow-xl relative overflow-hidden h-fit">
+             <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-2 text-red-500 font-black italic tracking-widest text-xs uppercase">
+                  <Activity size={16} className="animate-pulse" /> Neuro-Analysis Engine
+                </div>
+                <Badge variant="outline" className={`text-[10px] font-black italic uppercase ${systemOnline ? 'border-green-500/30 text-green-500' : 'border-slate-800 text-slate-700'}`}>
+                  {systemOnline ? 'ONLINE' : 'OFFLINE'}
+                </Badge>
+             </div>
+             
+             {!isCameraActive ? (
+               <Button onClick={startCamera} className="w-full h-24 bg-red-600 hover:bg-red-500 text-white font-black text-2xl rounded-2xl shadow-[0_15px_40px_rgba(220,38,38,0.4)] flex flex-col items-center justify-center gap-1 group italic transition-all active:scale-95">
+                  <Power size={32} className="group-hover:scale-110 transition-transform" />
+                  START SCANNING
+               </Button>
+             ) : (
+               <div className="bg-red-600/10 border-2 border-red-500/30 rounded-2xl p-6 space-y-4 text-center">
+                  <p className="text-red-500 font-black italic uppercase tracking-widest text-sm">System Running</p>
+                  <div className="flex justify-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                    <div className="w-2 h-2 rounded-full bg-red-500 animate-ping delay-75" />
+                    <div className="w-2 h-2 rounded-full bg-red-500 animate-ping delay-150" />
+                  </div>
+               </div>
+             )}
+
+             <div className="mt-8 space-y-6">
+                <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4">
+                  <div className="flex justify-between items-end">
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Dopamine Surge</p>
+                    <p className={`text-4xl font-black italic leading-none ${excitementLevel > 70 ? 'text-red-500' : 'text-emerald-500'}`}>{excitementLevel}%</p>
+                  </div>
+                  <div className="h-3 bg-slate-900 rounded-full overflow-hidden border border-white/5">
+                    <div className={`h-full transition-all duration-700 ${excitementLevel > 70 ? 'bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]' : 'bg-emerald-500'}`} style={{ width: `${excitementLevel}%` }} />
+                  </div>
+                </div>
+             </div>
+          </Card>
+
+          <div className="bg-slate-900/50 border-2 border-slate-800 rounded-[2rem] p-8 space-y-4 italic shadow-inner">
+             <p className="text-red-500 text-xs font-black uppercase tracking-widest flex items-center gap-2"><ShieldAlert size={14}/> Operation Guide</p>
+             <p className="text-slate-400 text-sm font-bold leading-relaxed">カメラで脳内物質の分泌（表情）をスキャン。興奮度が<span className="text-red-500">85%</span>を超えた瞬間、3時間の強制冷却フェーズへ移行します。</p>
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-16">
-          <div className="space-y-8">
-            <div className="relative aspect-square rounded-[3rem] overflow-hidden border-4 border-slate-800 bg-black shadow-inner flex items-center justify-center">
-              {!isCameraActive && !image ? (
-                <div className="space-y-6 text-center">
-                  <Button onClick={startCamera} className="h-24 w-24 rounded-full bg-red-600 hover:bg-red-500 shadow-2xl animate-bounce"><Camera className="w-10 h-10" /></Button>
-                  <p className="text-slate-500 font-black italic uppercase tracking-widest">Start Monitoring</p>
-                  <Button onClick={useSample} variant="outline" className="w-full border-slate-800 text-slate-400 font-black italic h-16 rounded-2xl flex items-center justify-center gap-3 uppercase"><FileImage /> サンプル素材で試す</Button>
+        {/* 📷 CENTER: LIVE FEED */}
+        <div className="lg:col-span-2 space-y-8">
+           <div className="relative aspect-video rounded-[3rem] overflow-hidden border-4 border-slate-800 bg-black shadow-2xl group">
+              <video ref={videoRef} autoPlay playsInline muted className={`w-full h-full object-cover scale-x-[-1] transition-opacity duration-1000 ${isCameraActive ? 'opacity-100' : 'opacity-20'}`} />
+              
+              {!isCameraActive && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center space-y-6">
+                   <div className="w-24 h-24 bg-slate-900/80 rounded-full flex items-center justify-center border-2 border-slate-800 shadow-xl">
+                      <Camera size={40} className="text-slate-700" />
+                   </div>
+                   <p className="text-slate-700 font-black italic uppercase tracking-[0.4em] text-xl">Waiting for Access</p>
                 </div>
-              ) : image ? (
-                <img src={image} alt="Sample" className="object-cover w-full h-full" />
-              ) : (
-                <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover scale-x-[-1]" />
               )}
-              {(isCameraActive || image) && (
-                <div className="absolute top-6 left-6 right-6 flex justify-between items-start">
-                  <Badge className="bg-red-600 text-white font-black animate-pulse">ANALYZING...</Badge>
-                  <div className="bg-black/80 backdrop-blur-md p-4 rounded-3xl border border-white/10 text-center shadow-2xl">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Excitement</p>
-                    <p className={`text-4xl font-black italic tracking-tighter ${excitementLevel > 70 ? 'text-red-500' : 'text-emerald-500'}`}>{excitementLevel}%</p>
+
+              {isCameraActive && (
+                <div className="absolute top-8 left-8 flex flex-col gap-4">
+                  <Badge className="bg-red-600 text-white font-black italic py-2 px-6 rounded-full shadow-2xl border-2 border-white/20 animate-pulse text-lg">NEURO_SCAN_ACTIVE</Badge>
+                  <div className="bg-black/50 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Source: High-Definition Live</p>
                   </div>
                 </div>
               )}
-            </div>
-            <div className="bg-slate-950 p-6 rounded-[2rem] border border-slate-800 space-y-4">
-              <p className="text-[10px] text-slate-500 font-black uppercase text-center tracking-widest">External AI Hub</p>
-              <div className="grid grid-cols-3 gap-2">
-                 <Button variant="outline" className="h-12 border-slate-800 text-xs font-black uppercase" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE</Button>
-                 <Button variant="outline" className="h-12 border-slate-800 text-xs font-black uppercase" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</Button>
-                 <Button variant="outline" className="h-12 border-slate-800 text-xs font-black uppercase" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</Button>
-              </div>
-            </div>
-          </div>
 
-          <div className="flex flex-col justify-center space-y-10">
-            {isCooldown ? (
-              <div className="bg-red-600/10 border-4 border-red-600 rounded-[3rem] p-10 text-center space-y-8 animate-in zoom-in shadow-2xl">
-                <div className="w-24 h-24 bg-red-600 rounded-full flex items-center justify-center mx-auto shadow-xl"><Ban className="h-14 w-14 text-white" /></div>
-                <h4 className="text-4xl font-black text-white italic uppercase tracking-tighter">Cooldown Enabled</h4>
-                <p className="text-5xl font-black text-white font-mono tracking-tighter tabular-nums">{formatTime(timer)}</p>
-                <Button onClick={() => { setIsCooldown(false); setImage(null); setIsCameraActive(false); setTimer(0); }} variant="ghost" className="text-slate-500 hover:text-white uppercase font-black italic underline">タイマーを解除（自己責任）</Button>
+              {/* ターミナル風装飾 */}
+              <div className="absolute bottom-8 left-8 right-8 flex justify-between items-end pointer-events-none">
+                 <div className="space-y-1">
+                    <p className="text-[10px] font-mono text-emerald-500/50">POS: 35.4542, 139.3921</p>
+                    <p className="text-[10px] font-mono text-emerald-500/50">SYSTEM: VER-4.0.2-SECURE</p>
+                 </div>
+                 <div className="text-right">
+                    <div className="w-32 h-1 bg-slate-800 rounded-full overflow-hidden">
+                       <div className="h-full bg-red-500 w-1/3 animate-pulse" />
+                    </div>
+                 </div>
               </div>
-            ) : (
-              <div className="bg-slate-950 border-2 border-slate-800 rounded-[3rem] p-12 text-center space-y-8 shadow-inner">
-                <div className="w-24 h-24 bg-slate-900 rounded-full flex items-center justify-center mx-auto border-2 border-slate-800 shadow-lg"><ShoppingCart className="h-12 w-12 text-slate-600" /></div>
-                <h4 className="text-3xl font-black text-slate-600 italic uppercase">Defense System Active</h4>
-                <p className="text-slate-500 font-bold text-lg leading-relaxed italic">「買い物による快感」が去るのを待ち、<br/>本来の目的を思い出しましょう。</p>
-              </div>
-            )}
-          </div>
+           </div>
+
+           {/* ⏳ COOLDOWN STATUS */}
+           <div className={`transition-all duration-700 ${isCooldown ? 'scale-100 opacity-100' : 'scale-95 opacity-50 grayscale'}`}>
+              <Card className={`rounded-[3rem] p-10 border-4 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl ${isCooldown ? 'bg-red-600/10 border-red-600 shadow-[0_0_50px_rgba(220,38,38,0.2)]' : 'bg-slate-900 border-slate-800'}`}>
+                 <div className="flex items-center gap-8">
+                    <div className={`w-20 h-20 rounded-full flex items-center justify-center shadow-xl ${isCooldown ? 'bg-red-600 animate-pulse' : 'bg-slate-800'}`}>
+                       {isCooldown ? <Ban className="h-10 w-10 text-white" /> : <Timer className="h-10 w-10 text-slate-600" />}
+                    </div>
+                    <div className="space-y-1">
+                       <h4 className={`text-2xl font-black italic uppercase ${isCooldown ? 'text-white' : 'text-slate-600'}`}>
+                         {isCooldown ? 'Mandatory Cooldown' : 'System Ready'}
+                       </h4>
+                       <p className="text-slate-500 font-bold text-xs uppercase tracking-widest italic">Reason: Dopamine Threshold Exceeded</p>
+                    </div>
+                 </div>
+                 <div className="text-center md:text-right">
+                    <p className={`text-6xl font-black font-mono tracking-tighter tabular-nums ${isCooldown ? 'text-white' : 'text-slate-800'}`}>{formatTime(timer)}</p>
+                    {isCooldown && <Button onClick={() => { setIsCooldown(false); setTimer(0); }} variant="ghost" className="text-red-500 hover:text-white uppercase font-black italic underline text-[10px] mt-2">Abort Timer (Manual Override)</Button>}
+                 </div>
+              </Card>
+           </div>
         </div>
-      </Card>
+      </div>
+      
+      <DebugPanel data={{ excitementLevel, isCooldown, timer, isCameraActive }} toolId="shopping-stopper" />
+      <div className="text-center opacity-20 mt-20"><p className="text-[10px] font-black uppercase tracking-[0.5em] italic">Spending Defense Command • NextraLabs 2026</p></div>
     </div>
   )
 }
