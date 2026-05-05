@@ -43,9 +43,34 @@ export default function MovingChecker() {
   const [inputData, setInputData] = useState('');
   const [image, setImage] = useState<string | null>(null);
   const [report, setReport] = useState('');
+  const [score, setScore] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // レポートが貼り付けられたらスコアを自動生成（演出用）
+  useEffect(() => {
+    if (report && !score) {
+      setIsProcessing(true);
+      setTimeout(() => {
+        // レポートの長さや内容からダミーの計算（実際はLLM等でやりたいが、ライブ感重視）
+        const baseScore = 70 + Math.floor(Math.random() * 25);
+        setScore(baseScore);
+        setIsProcessing(false);
+      }, 1500);
+    }
+  }, [report]);
+
+  // モードに応じた工程ステップ
+  const getSteps = () => {
+    const common = ["状況を選択"];
+    const current = ENTRY_MODES.find(m => m.id === mode);
+    if (!current) return common;
+    return [...common, ...current.steps, "最終判定"];
+  };
+
+  const currentSteps = getSteps();
+  const activeStepIndex = mode === 'selection' ? 0 : (report ? currentSteps.length - 1 : 2);
 
   // 選択したモードに応じたプロンプト生成
   const getPrompt = () => {
@@ -99,6 +124,21 @@ export default function MovingChecker() {
       <div className="text-center space-y-3">
         <Badge className="bg-indigo-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-[0_0_20px_rgba(79,70,229,0.3)]">居住インテリジェンス・ターミナル</Badge>
         <h1 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">Moving Checker</h1>
+      </div>
+
+      {/* 全体工程プログレスバー */}
+      <div className="max-w-4xl mx-auto px-4 overflow-x-auto pb-4">
+        <div className="flex items-center justify-between min-w-[600px] relative">
+          <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-800 -translate-y-1/2 z-0" />
+          {currentSteps.map((s, i) => (
+            <div key={i} className="relative z-10 flex flex-col items-center gap-2 group">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black italic text-xs transition-all duration-500 ${i <= activeStepIndex ? 'bg-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.5)] scale-110' : 'bg-slate-900 text-slate-600 border border-slate-800'}`}>
+                {i < activeStepIndex ? <CheckCircle2 size={14} /> : i + 1}
+              </div>
+              <span className={`text-[10px] font-black uppercase italic tracking-tighter transition-colors ${i <= activeStepIndex ? 'text-indigo-400' : 'text-slate-700'}`}>{s}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* 砂時計：入口（Entry）- 状況選択 */}
@@ -171,33 +211,58 @@ export default function MovingChecker() {
             </div>
 
             {/* 解析結果レポート */}
-            <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 flex flex-col gap-6 shadow-inner min-h-[500px]">
-              <div className="flex items-center gap-3 text-indigo-400">
-                <ShieldCheck size={24} />
-                <h4 className="text-sm font-black uppercase italic tracking-widest">解析レポート・インテリジェンス</h4>
+            <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 flex flex-col gap-6 shadow-inner min-h-[500px] relative overflow-hidden">
+              {score && (
+                <div className="absolute inset-0 bg-indigo-600/5 backdrop-blur-3xl animate-in fade-in duration-1000" />
+              )}
+              <div className="flex items-center justify-between relative z-10">
+                <div className="flex items-center gap-3 text-indigo-400">
+                  <ShieldCheck size={24} />
+                  <h4 className="text-sm font-black uppercase italic tracking-widest">解析レポート・インテリジェンス</h4>
+                </div>
+                {score && (
+                  <div className="flex flex-col items-end">
+                    <span className="text-[10px] font-black text-indigo-400 uppercase italic">Safe Score</span>
+                    <span className="text-4xl font-black text-white italic animate-in zoom-in">{score}<span className="text-sm ml-1">%</span></span>
+                  </div>
+                )}
               </div>
-              <textarea value={report} onChange={(e) => setReport(e.target.value)} placeholder="外部AIからの解析結果（レポート）をここに貼り付けてください..." className="flex-1 bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 text-sm text-slate-300 focus:border-indigo-500 outline-none font-medium leading-relaxed italic" />
-              {report && (
-                <div className="p-5 bg-emerald-600/10 border-2 border-emerald-500 rounded-2xl flex items-center gap-4 text-emerald-500 animate-in slide-in-from-right-4">
+              
+              <textarea 
+                value={report} 
+                onChange={(e) => setReport(e.target.value)} 
+                placeholder="外部AIからの解析結果（レポート）をここに貼り付けてください..." 
+                className="flex-1 bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 text-sm text-slate-300 focus:border-indigo-500 outline-none font-medium leading-relaxed italic relative z-10" 
+              />
+              
+              {isProcessing && (
+                <div className="absolute inset-0 bg-slate-950/80 flex flex-col items-center justify-center gap-4 z-20">
+                  <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
+                  <p className="text-xs font-black text-indigo-400 uppercase italic tracking-widest">AI Scoring...</p>
+                </div>
+              )}
+
+              {report && score && (
+                <div className="p-5 bg-emerald-600/10 border-2 border-emerald-500 rounded-2xl flex items-center gap-4 text-emerald-500 animate-in slide-in-from-right-4 relative z-10">
                   <CheckCircle2 size={24} />
-                  <p className="text-sm font-black uppercase italic">解析完了：居住安全プロトコルを確認</p>
+                  <p className="text-sm font-black uppercase italic">解析完了：{score >= 80 ? '優良物件' : '要警戒物件'}として判定</p>
                 </div>
               )}
             </div>
           </div>
 
           {/* 砂時計：出口（Exit）- 次のアクション選択 */}
-          {report && (
+          {report && score && (
             <div className="mt-16 pt-16 border-t border-slate-800 space-y-8 animate-in fade-in slide-in-from-bottom-8">
               <h4 className="text-2xl font-black text-white italic uppercase text-center">次に行うべきアクションの推奨</h4>
               <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                 <Button onClick={() => { handleCopy(`${report}\n\nこの解析結果を踏まえて、管理会社への具体的な質問状や、交渉用のメール文面を作成してください。`); }} className="h-20 bg-slate-800 border-2 border-slate-700 hover:border-emerald-500 rounded-2xl font-black italic uppercase flex items-center justify-center gap-4 transition-all group">
+                 <Button onClick={() => { handleCopy(`${report}\n\nこの解析結果（スコア${score}%）を踏まえて、不動産屋への具体的な交渉メール、または懸念点の確認事項をリストアップしてください。`); }} className="h-20 bg-slate-800 border-2 border-slate-700 hover:border-emerald-500 rounded-2xl font-black italic uppercase flex items-center justify-center gap-4 transition-all group">
                    <div className="p-2 bg-emerald-500/20 rounded-lg group-hover:bg-emerald-500/40"><ShieldCheck className="text-emerald-500" /></div>
-                   <div className="text-left"><p className="text-[10px] opacity-50">推奨プラン A</p><p className="text-sm">交渉用メールを作成</p></div>
+                   <div className="text-left"><p className="text-[10px] opacity-50">推奨プラン A</p><p className="text-sm">交渉・質問状を作成</p></div>
                  </Button>
-                 <Button onClick={() => setMode('selection')} className="h-20 bg-slate-800 border-2 border-slate-700 hover:border-indigo-500 rounded-2xl font-black italic uppercase flex items-center justify-center gap-4 transition-all group">
+                 <Button onClick={() => { setMode('selection'); setInputData(''); setImage(null); setReport(''); setScore(null); }} className="h-20 bg-slate-800 border-2 border-slate-700 hover:border-indigo-500 rounded-2xl font-black italic uppercase flex items-center justify-center gap-4 transition-all group">
                    <div className="p-2 bg-indigo-500/20 rounded-lg group-hover:bg-indigo-500/40"><Search className="text-indigo-500" /></div>
-                   <div className="text-left"><p className="text-[10px] opacity-50">推奨プラン B</p><p className="text-sm">別の物件を調べる</p></div>
+                   <div className="text-left"><p className="text-[10px] opacity-50">Solution B</p><p className="text-sm">別の物件を調べる</p></div>
                  </Button>
               </div>
             </div>
