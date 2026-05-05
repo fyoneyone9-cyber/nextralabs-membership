@@ -1,98 +1,68 @@
 ﻿'use client'
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Label } from '@/components/ui/label'
+import * as Icons from 'lucide-react'
 import { DebugPanel } from './DebugPanel'
-import { ArrowRight, Video, FileText, Download, Copy, ExternalLink, FileAudio, Clapperboard, CheckCircle2, MessageSquareText, HelpCircle } from 'lucide-react'
-
-const STEPS = [
-  { id: 1, label: "素材取り込み", what: "動画・音声の解析準備", how: "動画または音声ファイルをアップロード。AIが扱いやすい形式に自動抽出します。", result: "文字起こし用の音声データ" },
-  { id: 2, label: "台本作成", what: "ストーリー構築", how: "生成されたプロンプトをコピーしてAIに渡してください。", result: "プロ級の動画台本" }
-]
-
-const MAJOR_AI = [
-  { id: "gemini", name: "GEMINI", url: "https://gemini.google.com", icon: "💎" },
-  { id: "chatgpt", name: "GPT", url: "https://chatgpt.com", icon: "🟢" },
-  { id: "claude", name: "CLAUDE", url: "https://claude.ai", icon: "🟠" }
-]
 
 export default function YoutubeProducer() {
-  const [currentStep, setCurrentStep] = useState(1)
-  const [inputText, setInputText] = useState(`)
-  const [selectedFile, setSelectedFile] = useState(null)
-  const [extractedAudioUrl, setExtractedAudioUrl] = useState(null)
-  const [copiedId, setCopiedId] = useState(null)
-  const fileRef = useRef(null)
-
-  const extractAudio = async (file) => {
-    const { FFmpeg } = await import('@ffmpeg/ffmpeg')
-    const { fetchFile, toBlobURL } = await import('@ffmpeg/util')
-    const ffmpeg = new FFmpeg()
-    const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd"
-    await ffmpeg.load({ coreURL: await toBlobURL(baseURL + "/ffmpeg-core.js", "text/javascript"), wasmURL: await toBlobURL(baseURL + "/ffmpeg-core.wasm", "application/wasm") })
-    const inputName = "input" + file.name.slice(file.name.lastIndexOf("."))
-    await ffmpeg.writeFile(inputName, await fetchFile(file))
-    await ffmpeg.exec(["-i", inputName, "-vn", "-acodec", "libmp3lame", "-ab", "16k", "-ar", "8000", "-ac", "1", "output.mp3"])
-    const data = await ffmpeg.readFile("output.mp3")
-    setExtractedAudioUrl(URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })))
+  const [step, setStep] = useState(1)
+  const [copied, setCopied] = useState(false)
+  const handleCopy = (txt) => {
+    navigator.clipboard.writeText(txt)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
-  const currentInfo = STEPS[currentStep - 1]
-
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-16 min-h-screen text-slate-200 font-sans pb-20">
-      <div className="text-center space-y-4">
-        <div className="w-24 h-24 rounded-[2rem] bg-red-600 flex items-center justify-center mx-auto shadow-2xl"><Clapperboard className="h-12 w-12 text-white" /></div>
-        <h1 className="text-5xl md:text-7xl font-black text-white uppercase italic tracking-tighter leading-none">YouTube Producer</h1>
-      </div>
-
-      <div className="max-w-4xl mx-auto bg-indigo-600 p-10 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden text-left">
-        <div className="relative z-10 space-y-6">
-          <div className="flex items-center gap-4">
-            <Badge className="bg-white text-indigo-600 font-black px-6 py-2 text-xl rounded-2xl">STEP 0{currentStep}</Badge>
-            <h3 className="text-4xl font-black italic uppercase tracking-tighter">{currentInfo.what}</h3>
-          </div>
-          <p className="text-2xl font-bold leading-relaxed opacity-95">{currentInfo.how}</p>
+    <div style={{ padding: '60px', textAlign: 'center', backgroundColor: '#0a0a0f', color: 'white', minHeight: '100vh', fontFamily: 'sans-serif' }}>
+      <div style={{ marginBottom: '40px' }}>
+        <div style={{ width: '80px', height: '80px', backgroundColor: '#ef4444', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+          <Icons.Clapperboard size={40} color="white" />
         </div>
+        <h1 style={{ fontSize: '4rem', fontWeight: '900' }}>YouTube Producer</h1>
       </div>
 
-      <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-        <Card className="bg-slate-900 border-2 border-slate-800 rounded-[4rem] p-16 shadow-2xl max-w-5xl mx-auto overflow-hidden">
-          {currentStep === 1 ? (
-             <div className="space-y-12">
-                <input ref={fileRef} type="file" accept="video/*,audio/*" onChange={(e) => { const f = e.target.files[0]; if(f){setSelectedFile(f); extractAudio(f)}} } className="hidden" />
-                {!extractedAudioUrl ? (
-                  <label className="flex flex-col items-center justify-center border-4 border-dashed border-slate-800 rounded-[3rem] p-24 text-center hover:bg-slate-800/30 cursor-pointer group transition-all relative">
-                    <input type="file" accept="video/*,audio/*" onChange={(e) => { const f = e.target.files[0]; if(f){setSelectedFile(f); extractAudio(f)}} } className="absolute inset-0 opacity-0 cursor-pointer z-50" />
-                    <FileAudio className="h-28 w-28 mx-auto mb-8 text-red-500 group-hover:scale-110 transition-transform />
-                    <p className="text-4xl font-black text-white leading-tight">動画または音声を<br/>ここに追加して開始</p>
-                  </label>
-                ) : (
-                  <div className="bg-slate-950 p-12 rounded-[3.5rem] border-2 border-blue-500/30 space-y-10 text-center">
-                    <audio src={extractedAudioUrl} controls className="w-full h-20 shadow-inner mb-6" />
-                    <div className="grid grid-cols-2 gap-8">
-                        <a href={extractedAudioUrl} download="nextra-audio.mp3" className="w-full h-32 bg-blue-600 hover:bg-blue-500 text-white font-black text-3xl rounded-[2.5rem] flex items-center justify-center gap-6"><Download className="h-12 w-12" /> 音声を保存</a>
-                        <Button onClick={() => { navigator.clipboard.writeText("一字一句文字起こしして。") }} className="w-full h-32 bg-white text-black font-black text-3xl rounded-[2.5rem]">指示をコピー</Button>
-                    </div>
-                    <div className="grid grid-cols-3 gap-6 pt-12">
-                      {MAJOR_AI.map(ai => (
-                        <a key={ai.id} href={ai.url} target="_blank" className="h-24 bg-slate-900 border-2 border-white/5 rounded-3xl flex flex-col items-center justify-center shadow-xl group"><span className="text-4xl">{ai.icon}</span><span className="font-black text-white text-xl">{ai.name}</span></a>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                <div className="space-y-8 pt-12 border-t border-slate-800">
-                  <Label className="text-3xl font-black text-white flex items-center gap-4 italic uppercase"><MessageSquareText className="h-12 w-12 text-red-500" /> Result Paste Area</Label>
-                  <textarea value={inputText} onChange={(e) => setInputText(e.target.value)} placeholder="結果を貼り付け..." className="w-full h-96 bg-slate-950 border-2 border-slate-800 rounded-[3rem] p-12 text-3xl font-medium focus:border-red-600 text-white" />
-                  <Button onClick={() => setCurrentStep(2)} disabled={!inputText} className="w-full h-32 bg-red-600 text-white font-black text-4xl rounded-[3rem] shadow-2xl mt-12">Next Stage</Button>
-                </div>
-             </div>
-          ) : (
-             <div className="text-center py-40"><h2 className="text-5xl font-black text-white uppercase italic">Step 02: Scripting</h2><Button onClick={() => setCurrentStep(1)} className="mt-12 h-24 bg-slate-800 text-white px-16 rounded-3xl font-black text-2xl">← BACK</Button></div>
-          )}
-        </Card>
+      <div style={{ maxWidth: '800px', margin: '0 auto 40px', backgroundColor: '#4f46e5', padding: '40px', borderRadius: '40px', textAlign: 'left' }}>
+        <h2 style={{ fontSize: '2rem', fontWeight: '900' }}>Step 01: 素材の準備</h2>
+        <p style={{ fontSize: '1.2rem', marginTop: '10px', opacity: 0.9 }}>
+          動画や音声をアップロードして、AIに渡すための文字起こし指示を作成しましょう。
+        </p>
+      </div>
+
+      <div style={{ maxWidth: '900px', margin: '0 auto', backgroundColor: '#111827', border: '2px solid #1f2937', borderRadius: '50px', padding: '50px' }}>
+        <div style={{ marginBottom: '40px' }}>
+          <Button 
+            onClick={() => handleCopy('スプレッドシート形式不要、詳細に漏れのないように抜き出して下さい。この音声を一字一句正確に文字起こしして下さい。')}
+            style={{ width: '100%', height: '100px', fontSize: '2rem', fontWeight: '900', borderRadius: '30px', backgroundColor: copied ? '#10b981' : 'white', color: copied ? 'white' : 'black' }}
+          >
+            {copied ? '✅ コピー完了！' : '最強の指示をコピー'}
+          </Button>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
+          <a href="https://gemini.google.com" target="_blank" style={{ padding: '40px', backgroundColor: '#030712', border: '2px solid #374151', borderRadius: '30px', textDecoration: 'none' }}>
+            <div style={{ fontSize: '3rem' }}>💎</div>
+            <div style={{ fontWeight: '900', color: 'white', marginTop: '10px' }}>GEMINI</div>
+          </a>
+          <a href="https://chatgpt.com" target="_blank" style={{ padding: '40px', backgroundColor: '#030712', border: '2px solid #374151', borderRadius: '30px', textDecoration: 'none' }}>
+            <div style={{ fontSize: '3rem' }}>🟢</div>
+            <div style={{ fontWeight: '900', color: 'white', marginTop: '10px' }}>GPT</div>
+          </a>
+          <a href="https://claude.ai" target="_blank" style={{ padding: '40px', backgroundColor: '#030712', border: '2px solid #ea580c', borderRadius: '30px', textDecoration: 'none', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: '-15px', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#ea580c', color: 'white', padding: '5px 15px', borderRadius: '10px', fontSize: '0.8rem', fontWeight: '900' }}>RECOMMENDED</div>
+            <div style={{ fontSize: '3rem' }}>🟠</div>
+            <div style={{ fontWeight: '900', color: '#fb923c', marginTop: '10px' }}>CLAUDE</div>
+          </a>
+        </div>
+
+        <Button 
+          onClick={() => setStep(2)}
+          style={{ width: '100%', height: '100px', fontSize: '2rem', fontWeight: '900', borderRadius: '30px', backgroundColor: '#ef4444', color: 'white', marginTop: '60px' }}
+        >
+          次へ進む →
+        </Button>
       </div>
       <DebugPanel data={null} toolId="youtube-producer" />
     </div>
