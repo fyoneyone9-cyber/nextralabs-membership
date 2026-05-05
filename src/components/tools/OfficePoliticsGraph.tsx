@@ -38,20 +38,22 @@ export default function OfficePoliticsGraph() {
 
         const m = (window as any).mermaid;
         if (m) {
-          // 🔴 COOL DARK MODE THEME FOR MERMAID
+          // 🔴 OPTIMIZED CONTRAST FOR DARK MODE (BLACK TEXT ON BRIGHT NODES)
           m.initialize({ 
             startOnLoad: false, 
-            theme: 'dark', 
+            theme: 'base', 
             securityLevel: 'loose',
             themeVariables: {
-              primaryColor: '#6366f1',
-              primaryTextColor: '#fff',
-              primaryBorderColor: '#818cf8',
-              lineColor: '#ef4444',
-              secondaryColor: '#10b981',
-              tertiaryColor: '#fff',
+              primaryColor: '#818cf8', // Node background
+              primaryTextColor: '#000', // 🔴 FORCE BLACK TEXT FOR NODES
+              primaryBorderColor: '#312e81',
+              lineColor: '#6366f1',
+              secondaryColor: '#f472b6',
+              tertiaryColor: '#fb923c',
               mainBkg: '#020617',
-              nodeBorder: '#1e293b'
+              nodeBorder: '#1e293b',
+              textColor: '#fff', // Arrows/Label text
+              edgeLabelBackground: '#1e293b'
             }
           });
           if (mermaidRef.current) {
@@ -77,14 +79,11 @@ export default function OfficePoliticsGraph() {
       canvas.width = img.width + 100;
       canvas.height = img.height + 100;
       if (ctx) {
-        ctx.fillStyle = "#020617"; // Dark Background for PNG
+        ctx.fillStyle = "#020617";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 50, 50);
         const pngUrl = canvas.toDataURL("image/png");
-        const downloadLink = document.createElement("a");
-        downloadLink.href = pngUrl;
-        downloadLink.download = "office_politics_map.png";
-        downloadLink.click();
+        const a = document.createElement("a"); a.href = pngUrl; a.download = "politics_map.png"; a.click();
       }
     };
     img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData)));
@@ -93,18 +92,14 @@ export default function OfficePoliticsGraph() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
-      setFile(selectedFile);
-      setIsProcessing(true);
+      setFile(selectedFile); setIsProcessing(true);
       const reader = new FileReader();
-      reader.onload = (event) => {
-        setCsvData(event.target?.result as string);
-        setTimeout(() => setIsProcessing(false), 800);
-      };
+      reader.onload = (event) => { setCsvData(event.target?.result as string); setTimeout(() => setIsProcessing(false), 800); };
       reader.readAsText(selectedFile);
     }
   };
 
-  const FINAL_PROMPT = `あなたは組織政治のプロコンサルタントです。\n以下の【ログデータ】を分析し、次の2点を出力してください。\n\n1. 【分析レポート】: 主要な派閥、キーマン、立ち回り方をリアルに。\n2. 【Mermaidコード】: graph TD形式のコード（派閥はsubgraph）。\n\n【ルール】日本語ノード名は A["名前"] のように囲むこと。\n\n【データ】:\n${csvData.substring(0, 2000)}`;
+  const FINAL_PROMPT = `あなたは組織政治のプロコンサルタントです。\n以下の【ログデータ】を分析し、主要派閥、キーマン、立ち回り方をリアルに詳しく出力し、最後にMermaid.js形式のgraph TDコード（日本語ノードは A["名前"] の形式）を作成してください。\n\n【データ】:\n${csvData.substring(0, 2000)}`;
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-slate-950">
@@ -126,18 +121,17 @@ export default function OfficePoliticsGraph() {
       <div className="mt-4">
         {activeTab === 'input' && (
           <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl animate-in fade-in slide-in-from-bottom-4 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-10 opacity-5 -rotate-12"><Monitor className="w-64 h-64 text-white" /></div>
             <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase tracking-tighter mb-8 flex items-center gap-3 relative z-10"><FileSpreadsheet className="text-indigo-500" /> ① 解析依頼</h3>
             <div className="grid lg:grid-cols-2 gap-10 relative z-10">
               <div className="space-y-6">
                 {!file ? (
-                  <div className="border-4 border-dashed border-slate-800 rounded-[2.5rem] p-16 text-center hover:bg-slate-950 hover:border-indigo-500/50 transition-all group cursor-pointer bg-slate-900/50 shadow-inner" onClick={() => fileInputRef.current?.click()}>
-                    <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".csv" /><Upload className="h-12 w-12 text-slate-700 group-hover:text-indigo-500 mx-auto mb-4" /><p className="text-lg text-slate-500 font-black italic uppercase">Drop CSV</p>
+                  <div className="border-4 border-dashed border-slate-800 rounded-[2.5rem] p-16 text-center hover:bg-slate-950 transition-all cursor-pointer bg-slate-900/50" onClick={() => fileInputRef.current?.click()}>
+                    <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".csv" /><Upload className="h-12 w-12 text-slate-700 mx-auto mb-4" /><p className="text-lg text-slate-500 font-black italic uppercase">Drop CSV</p>
                   </div>
                 ) : (
                   <div className="bg-slate-950 border-2 border-indigo-600/30 rounded-3xl p-6 space-y-6 text-center shadow-xl">
                     <p className="text-white font-black truncate">{file.name}</p>
-                    <Button onClick={() => { navigator.clipboard.writeText(FINAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className={`w-full h-16 font-black rounded-xl transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-indigo-600 text-white'}`}>指示をコピー</Button>
+                    <Button onClick={() => { navigator.clipboard.writeText(FINAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className={`w-full h-16 font-black rounded-xl transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-indigo-600 text-white'}`}>解析指示をコピー</Button>
                     <div className="grid grid-cols-3 gap-2">
                        <Button variant="outline" className="h-10 border-slate-800 text-[8px] font-black uppercase" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE</Button>
                        <Button variant="outline" className="h-10 border-slate-800 text-[8px] font-black uppercase" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</Button>
@@ -146,9 +140,9 @@ export default function OfficePoliticsGraph() {
                   </div>
                 )}
               </div>
-              <div className="bg-slate-950 rounded-[2.5rem] p-8 border border-slate-800 space-y-6 shadow-2xl flex flex-col justify-center">
-                 <textarea value={analysisReport} onChange={(e) => setAnalysisReport(e.target.value)} placeholder="分析レポートをペースト..." className="w-full h-32 bg-slate-900 border-2 border-slate-800 rounded-xl p-4 text-[10px] text-slate-300 focus:border-indigo-500 outline-none font-medium" />
-                 <textarea value={mermaidCode} onChange={(e) => setMermaidCode(e.target.value)} placeholder="Mermaidコードをペースト..." className="w-full h-32 bg-slate-900 border-2 border-slate-800 rounded-xl p-4 text-[10px] text-slate-300 focus:border-emerald-500 outline-none font-mono" />
+              <div className="bg-slate-950 rounded-[2.5rem] p-8 border border-slate-800 space-y-6 shadow-2xl">
+                 <textarea value={analysisReport} onChange={(e) => setAnalysisReport(e.target.value)} placeholder="分析レポートを貼る..." className="w-full h-32 bg-slate-900 border border-slate-800 rounded-xl p-4 text-[10px] text-slate-300 focus:border-indigo-500 outline-none" />
+                 <textarea value={mermaidCode} onChange={(e) => setMermaidCode(e.target.value)} placeholder="Mermaidコードを貼る..." className="w-full h-32 bg-slate-900 border border-slate-800 rounded-xl p-4 text-[10px] text-slate-300 focus:border-emerald-500 outline-none font-mono" />
               </div>
             </div>
             {mermaidCode && <Button onClick={() => setActiveTab('graph')} className="w-full h-16 mt-8 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-3 uppercase italic group">② 相関図を表示する <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></Button>}
@@ -159,8 +153,8 @@ export default function OfficePoliticsGraph() {
           <div className="space-y-8 animate-in fade-in zoom-in">
             <div className="grid lg:grid-cols-3 gap-8">
               <Card className="lg:col-span-1 bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 shadow-2xl h-fit border-l-4 border-l-indigo-500">
-                 <h3 className="text-xl font-black text-white uppercase italic mb-6 flex items-center gap-2"><FileSearch className="text-indigo-500" /> 分析レポート</h3>
-                 <div className="bg-slate-950 rounded-2xl p-6 border border-slate-800 h-[550px] overflow-y-auto text-xs text-slate-300 font-medium leading-relaxed whitespace-pre-wrap shadow-inner italic">
+                 <h3 className="text-xl font-black text-white uppercase italic mb-6">分析レポート</h3>
+                 <div className="bg-slate-950 rounded-2xl p-6 border border-slate-800 h-[550px] overflow-y-auto text-xs text-slate-300 leading-relaxed whitespace-pre-wrap italic shadow-inner">
                     {analysisReport || "（レポート未入力）"}
                  </div>
               </Card>
@@ -168,12 +162,11 @@ export default function OfficePoliticsGraph() {
               <Card className="lg:col-span-2 bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 shadow-2xl relative border-l-4 border-l-emerald-500">
                  <div className="flex justify-between items-center mb-6">
                     <h3 className="text-xl font-black text-white uppercase italic flex items-center gap-2"><Network className="text-emerald-500" /> 組織相関図</h3>
-                    <Button onClick={handleDownloadImage} className="bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl h-10 px-4 text-xs italic flex items-center gap-2 shadow-lg"><Download className="w-4 h-4" /> PNGで保存</Button>
+                    <Button onClick={handleDownloadImage} className="bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl h-10 px-4 text-xs italic flex items-center gap-2 shadow-lg"><Download className="w-4 h-4" /> PNG保存</Button>
                  </div>
-                 {/* 🔴 COOL DARK MODE CANVAS */}
-                 <div className="bg-slate-950 rounded-[2.5rem] p-10 min-h-[550px] flex items-center justify-center border-4 border-slate-800 shadow-inner overflow-x-auto relative group">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-500/5 via-transparent to-transparent opacity-50" />
-                    <div key={mermaidCode} ref={mermaidRef} className="mermaid w-full text-center relative z-10">
+                 <div className="bg-slate-950 rounded-[2.5rem] p-10 min-h-[550px] flex items-center justify-center border-4 border-slate-800 shadow-inner overflow-x-auto relative">
+                    {/* 🔴 FORCE BLACK TEXT FOR RENDERED NODES */}
+                    <div key={mermaidCode} ref={mermaidRef} className="mermaid w-full text-center relative z-10 text-black">
                       {mermaidCode}
                     </div>
                  </div>
