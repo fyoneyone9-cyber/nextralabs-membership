@@ -1,12 +1,17 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+// 🛠️ 使用されている全てのコンポーネントを網羅
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { TrendingUp, Palette, Rocket, ChevronRight, Settings, Info, ShoppingCart, HelpCircle, Zap } from 'lucide-react'
+// 🛠️ 使用されている全てのアイコンを網羅 (CheckCircle2含む)
+import { 
+  TrendingUp, Palette, Rocket, ChevronRight, Settings, 
+  Info, ShoppingCart, HelpCircle, Zap, CheckCircle2 
+} from 'lucide-react'
 import { DebugPanel } from './DebugPanel'
 
 const STEPS = [
@@ -32,14 +37,11 @@ export default function AISelectShop() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-slate-200 p-4 md:p-10 font-sans">
-      
-      {/* 🔴 HEADER */}
       <div className="text-center space-y-4 mb-12">
         <h1 className="text-5xl font-black text-white uppercase italic tracking-tighter">AI Select Shop</h1>
         <p className="text-xl text-slate-400 font-bold uppercase tracking-widest">3-Step Business Launcher</p>
       </div>
 
-      {/* 💡 INTUITIVE GUIDE PANEL (MANDATORY STANDARDIZATION) */}
       <div className="max-w-5xl mx-auto mb-16 bg-emerald-600 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 right-0 p-8 opacity-10"><HelpCircle className="h-40 w-40" /></div>
         <div className="relative z-10 space-y-4">
@@ -54,7 +56,6 @@ export default function AISelectShop() {
         </div>
       </div>
 
-      {/* --- CONTENT AREA (Linear Flow) --- */}
       <div className="max-w-6xl mx-auto space-y-12">
         {currentStep === 1 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto animate-in fade-in">
@@ -86,7 +87,9 @@ export default function AISelectShop() {
 
         {currentStep === 3 && (
           <div className="text-center py-32 space-y-10 animate-in fade-in">
-             <div className="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center mx-auto shadow-2xl shadow-emerald-500/20"><CheckCircle2 className="h-12 w-12 text-slate-950" /></div>
+             <div className="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center mx-auto shadow-2xl shadow-emerald-500/20">
+               <CheckCircle2 className="h-12 w-12 text-slate-950" />
+             </div>
              <h2 className="text-5xl font-black text-white uppercase tracking-tighter italic">Successfully Ready!</h2>
              <Button onClick={() => setCurrentStep(1)} className="bg-white text-slate-950 px-16 h-24 rounded-3xl font-black text-2xl hover:bg-slate-200 shadow-xl transition-all hover:scale-105">最初から作り直す</Button>
           </div>
