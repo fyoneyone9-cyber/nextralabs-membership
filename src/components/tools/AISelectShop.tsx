@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { TrendingUp, Activity, Terminal, Sparkles, Wand2, Palette, Shirt, Trash2, Globe, RefreshCw, X, Store, Loader2, Eye, ChevronRight } from 'lucide-react'
+import { TrendingUp, Activity, Terminal, Sparkles, Wand2, Palette, Shirt, Trash2, Globe, RefreshCw, X, Store, Loader2, Eye, ChevronRight, Box } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
 // ==================== Constants ====================
@@ -48,15 +48,41 @@ export default function AISelectShop() {
 
   useEffect(() => {
     setIsClient(true)
-    const saved = localStorage.getItem(STORAGE_KEYS.designs)
-    if (saved) {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.designs)
+      if (saved) setDesigns(JSON.parse(saved))
+    } catch (e) { console.error(e) }
+    
+    // トレンド取得
+    const fetchTrends = async () => {
+      setIsLoadingTrends(true);
       try {
-        setDesigns(JSON.parse(saved))
-      } catch (e) { console.error(e) }
-    }
-    fetchTrends()
-  }, [])
+        const r = await fetch('/api/trends');
+        if (!r.ok) throw new Error('API ERROR');
+        const d = await r.json();
+        if (d && d.trends && d.trends.length > 0) {
+          setTrends(d.trends.map((t: string, i: number) => ({ id: `t-${i}`, name: t })));
+        } else {
+          throw new Error('EMPTY');
+        }
+      } catch (e) {
+        console.error('Trend fetch error:', e);
+        // 本物が取れない時の「誠実な」固定データ
+        setTrends([
+          { id: '1', name: 'AIエージェント' },
+          { id: '2', name: '働き方改革' },
+          { id: '3', name: 'Web3革命' },
+          { id: '4', name: '次世代Apple' },
+          { id: '5', name: 'メタバース' }
+        ]);
+      } finally {
+        setIsLoadingTrends(false);
+      }
+    };
+    fetchTrends();
+  }, []);
 
+  // 画像プレビュー連動
   useEffect(() => {
     if (!designKeyword || !isClient) return
     const timer = setTimeout(() => {
@@ -66,28 +92,6 @@ export default function AISelectShop() {
     }, 600)
     return () => clearTimeout(timer)
   }, [designKeyword, designStyle, designTshirtColor, isClient])
-
-  const fetchTrends = async () => {
-    setIsLoadingTrends(true)
-    try {
-      const r = await fetch('/api/trends')
-      const d = await r.json()
-      if (d && d.trends && d.trends.length > 0) {
-        setTrends(d.trends.map((t: string, i: number) => ({ id: `t-${i}`, name: t })))
-      } else {
-        throw new Error('Empty trends')
-      }
-    } catch (e) {
-      console.error('Trend fetch error:', e)
-      setTrends([
-        { id: '1', name: 'AI革命' },
-        { id: '2', name: '働き方改革' },
-        { id: '3', name: '次世代デバイス' }
-      ])
-    } finally {
-      setIsLoadingTrends(false)
-    }
-  }
 
   const executeDesign = () => {
     if (!canvasRef.current || !designKeyword) return
@@ -102,7 +106,9 @@ export default function AISelectShop() {
 
     ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center'
     if (designStyle === 'japanese') {
-       ctx.font = 'bold 30px serif'; designKeyword.split('').forEach((ch, i) => ctx.fillText(ch, w/2, h/2 - 60 + i*40))
+       ctx.font = 'bold 30px serif'; 
+       const chars = designKeyword.split('');
+       chars.forEach((ch, i) => ctx.fillText(ch, w/2, h/2 - (chars.length * 15) + (i*40)))
     } else {
        ctx.font = '900 45px Impact'; ctx.fillText(designKeyword.toUpperCase(), w/2, h/2)
     }
@@ -110,7 +116,13 @@ export default function AISelectShop() {
   }
 
   const addToList = () => {
-    const newDesign = { id: Date.now().toString(), keyword: designKeyword, canvasDataUrl: canvasRef.current?.toDataURL() || '' }
+    const newDesign = { 
+      id: Date.now().toString(), 
+      keyword: designKeyword, 
+      style: designStyle,
+      canvasDataUrl: canvasRef.current?.toDataURL() || '',
+      status: 'READY'
+    }
     const updated = [newDesign, ...designs]
     setDesigns(updated)
     localStorage.setItem(STORAGE_KEYS.designs, JSON.stringify(updated))
@@ -124,10 +136,11 @@ export default function AISelectShop() {
       <div className="max-w-7xl mx-auto space-y-12">
         <div className="text-center space-y-4">
           <h1 className="text-6xl md:text-[8rem] font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">AI SELECT SHOP</h1>
-          <Badge className="bg-[#5845e0] text-white font-black px-8 py-2 rounded-full uppercase italic text-sm">v12.0-MASTER</Badge>
+          <Badge className="bg-[#5845e0] text-white font-black px-8 py-2 rounded-full uppercase italic text-sm tracking-widest">Master Command v12.0</Badge>
         </div>
 
-        <div className="flex gap-4 justify-center bg-[#1a1b26]/50 p-2 rounded-3xl border border-white/5">
+        {/* Step Navigation */}
+        <div className="flex gap-4 justify-center bg-[#1a1b26]/50 p-2 rounded-3xl border border-white/5 max-w-2xl mx-auto">
           {[1, 2, 3].map(s => (
             <button key={s} onClick={() => setCurrentStep(s as any)} className={`flex-1 py-4 rounded-2xl font-black italic transition-all ${currentStep === s ? 'bg-[#5845e0] text-white shadow-2xl scale-105' : 'text-slate-500 hover:text-slate-300'}`}>Step {s}</button>
           ))}
@@ -136,7 +149,7 @@ export default function AISelectShop() {
         {currentStep === 1 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in">
             {isLoadingTrends ? (
-              Array(6).fill(0).map((_, i) => <Card key={i} className="bg-[#13141f] border-2 border-white/5 h-48 animate-pulse" />)
+              Array(6).fill(0).map((_, i) => <Card key={i} className="bg-[#13141f] border-2 border-white/5 h-48 animate-pulse rounded-[2.5rem]" />)
             ) : (
               trends.map((t) => (
                 <Card key={t.id} className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[2.5rem] hover:border-[#5845e0] cursor-pointer group transition-all" onClick={() => { setDesignKeyword(t.name); setCurrentStep(2); }}>
@@ -152,18 +165,18 @@ export default function AISelectShop() {
           <div className="grid lg:grid-cols-2 gap-12 animate-in zoom-in-95">
             <div className="bg-[#13141f] p-10 rounded-[3rem] border-2 border-white/5 space-y-10 shadow-2xl">
               <div className="space-y-4">
-                <Label className="text-[10px] font-black uppercase text-slate-500 tracking-widest px-2">Master Parameter</Label>
-                <Input value={designKeyword} onChange={(e) => setDesignKeyword(e.target.value)} className="h-20 text-3xl font-black italic bg-black border-2 border-white/10 rounded-2xl px-8" />
+                <Label className="text-[10px] font-black uppercase text-slate-500 tracking-widest px-2 italic">Master Parameter</Label>
+                <Input value={designKeyword} onChange={(e) => setDesignKeyword(e.target.value)} className="h-20 text-3xl font-black italic bg-black border-2 border-white/10 rounded-2xl px-8 focus:border-[#5845e0]" />
               </div>
               <div className="grid grid-cols-2 gap-8">
                  <div className="space-y-4">
-                    <Label className="text-[10px] font-black uppercase text-slate-500 tracking-widest px-2">Design Style</Label>
+                    <Label className="text-[10px] font-black uppercase text-slate-500 tracking-widest px-2 italic">Design Style</Label>
                     <div className="grid grid-cols-2 gap-2">
                        {STYLES.map(s => <button key={s.id} onClick={() => setDesignStyle(s.id)} className={`py-3 rounded-xl text-[10px] font-black uppercase italic border-2 transition-all ${designStyle === s.id ? 'bg-[#5845e0] text-white border-white shadow-lg' : 'bg-black text-slate-500 border-white/5'}`}>{s.name}</button>)}
                     </div>
                  </div>
                  <div className="space-y-4">
-                    <Label className="text-[10px] font-black uppercase text-slate-500 tracking-widest px-2">Fabric Color</Label>
+                    <Label className="text-[10px] font-black uppercase text-slate-500 tracking-widest px-2 italic">Fabric Tone</Label>
                     <div className="flex gap-3">
                        {TSHIRT_COLORS.map(c => <button key={c.id} onClick={() => setDesignTshirtColor(c.id)} className={`w-12 h-12 rounded-2xl border-4 transition-all ${designTshirtColor === c.id ? 'border-[#5845e0] scale-110 shadow-xl' : 'border-white/5'}`} style={{ backgroundColor: c.hex }} />)}
                     </div>
@@ -177,7 +190,7 @@ export default function AISelectShop() {
             <div className="bg-[#13141f] rounded-[3rem] border-2 border-white/5 p-12 shadow-2xl relative overflow-hidden flex flex-col items-center">
               <div className="flex items-center gap-4 mb-8 w-full"><Activity className="text-indigo-400" /><h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">Live Monitor</h3></div>
               <div className="relative aspect-square w-full rounded-[2.5rem] overflow-hidden border-4 border-white/5 bg-black shadow-inner">
-                {mockupImage ? <img src={mockupImage} key={mockupImage} className="w-full h-full object-cover animate-in fade-in" alt="Preview" /> : <div className="absolute inset-0 flex flex-col items-center justify-center opacity-20"><Eye size={64}/><p className="text-xs font-black uppercase mt-4">Awaiting Parameters</p></div>}
+                {mockupImage ? <img src={mockupImage} key={mockupImage} className="w-full h-full object-cover animate-in fade-in" alt="Preview" /> : <div className="absolute inset-0 flex flex-col items-center justify-center opacity-20"><Eye size={64}/><p className="text-xs font-black uppercase mt-4">Awaiting Signal</p></div>}
               </div>
               <canvas ref={canvasRef} width={400} height={500} className="hidden" />
             </div>
@@ -185,20 +198,24 @@ export default function AISelectShop() {
         )}
 
         {currentStep === 3 && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {designs.map(d => (
-              <Card key={d.id} className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] overflow-hidden shadow-2xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-in slide-in-from-bottom-8">
+            {designs.length > 0 ? designs.map(d => (
+              <Card key={d.id} className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] overflow-hidden shadow-2xl group hover:border-emerald-500/30 transition-all">
                 <img src={d.canvasDataUrl} className="w-full aspect-[4/5] object-cover bg-black" />
                 <CardContent className="p-8 space-y-6">
-                  <div className="flex justify-between items-center"><p className="text-2xl font-black italic uppercase text-white tracking-tighter">{d.keyword}</p><Badge className="bg-emerald-500 text-slate-950 font-black italic text-[10px] px-4 py-1">READY</Badge></div>
-                  <Button onClick={() => window.open(`https://z5ju1n-vs.myshopify.com/admin/products`, '_blank')} className="w-full h-16 bg-white text-slate-950 font-black rounded-2xl italic uppercase flex items-center justify-center gap-3">Shopify Open</Button>
+                  <div className="flex justify-between items-center"><p className="text-2xl font-black italic uppercase text-white tracking-tighter">{d.keyword}</p><Badge className="bg-emerald-500/20 text-emerald-500 border-0 font-black italic uppercase text-[10px] px-4 py-1">{d.status}</Badge></div>
+                  <Button onClick={() => window.open(`https://z5ju1n-vs.myshopify.com/admin/products`, '_blank')} className="w-full h-16 bg-white text-slate-950 font-black rounded-2xl italic uppercase flex items-center justify-center gap-3 hover:bg-emerald-500 hover:text-white transition-all">
+                    <Store size={20}/> Shopify Open
+                  </Button>
                 </CardContent>
               </Card>
-            ))}
+            )) : (
+              <div className="col-span-full py-20 text-center opacity-30 italic"><Box size={80} className="mx-auto mb-4"/><p className="text-xl font-black uppercase">No Designs in List</p></div>
+            )}
           </div>
         )}
       </div>
-      <DebugPanel data={{ designs, currentStep }} toolId="ai-select-shop-ultimate" />
+      <DebugPanel data={{ designs, currentStep }} toolId="ai-select-shop-ultimate-stable" />
     </div>
   )
 }
