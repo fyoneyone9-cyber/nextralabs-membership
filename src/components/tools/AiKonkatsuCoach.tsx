@@ -21,7 +21,11 @@ const WEAPONS = [
       { label: "今の自分の課題を知りたい", content: "【外見：清潔感はあるが地味、会話：聞き役になりがち、経済：安定、教養：読書好き、メンタル：消極的】この状態で、何を最優先で磨くべきか具体的に教えて。" },
       { label: "30代・年収別診断", content: "30代前半、年収500万、趣味はアニメと筋トレ。マッチングアプリで勝つために、同年代と差別化できるポイントを診断して。" },
       { label: "清潔感の具体的な上げ方", content: "「清潔感はあるつもり」だが、女性から選ばれない。美容、髪型、服装、姿勢など、婚活市場で『好印象』に見えるためのチェックリストを作って。" },
-      { label: "会話力の弱点を克服", content: "1対1の対話で沈黙が怖い。自分の話をしすぎるか、全く話さないかの両極端になってしまう。相手に心地よく喋らせる『魔法の質問』を5つ提案して。" }
+      { label: "会話力の弱点を克服", content: "1対1の対話で沈黙が怖い。自分の話をしすぎるか、全く話さないかの両極端になってしまう。相手に心地よく喋らせる『魔法の質問』を5つ提案して。" },
+      { label: "ハイスペック層への挑戦", content: "自分より格上の相手（年収・学歴）を狙いたい。今の自分に足りない『品格』や『立ち居振る舞い』の改善点を厳しく指摘して。" },
+      { label: "オタク趣味の出し方", content: "アニメやゲームが好き。これを隠すべきか、武器にすべきか。同じ趣味の人と出会うための戦略と、一般層に引かれない伝え方を診断して。" },
+      { label: "自信を取り戻すメンタル術", content: "お見合いで断られ続けて自信喪失。自己肯定感を高め、次の出会いで「選ばれる余裕」を醸し出すためのマインドセットを教えて。" },
+      { label: "40代からの婚活戦略", content: "年齢的に不利だと感じている。大人の余裕と安定感を最大の武器にするための、ターゲット選定と見せ方をアドバイスして。" }
     ]
   },
   { 
@@ -36,7 +40,11 @@ const WEAPONS = [
       { label: "短すぎる文章を強化", content: "「趣味は旅行と映画です。よろしくお願いします。」このプロフィールを、優しくて誠実そうなイメージに膨らませて。" },
       { label: "真剣度を伝える（婚活仕様）", content: "仕事が忙しくてつい「休みは家でゴロゴロ」と書いてしまいます。自立していて、かつパートナーとの時間を大切にする印象に変えて。" },
       { label: "写真選びとキャプション案", content: "顔出しに抵抗がある、または写真が少ない。雰囲気のいい写真の撮り方と、メイン写真に添えるべき『一言で心を掴む』フレーズを3つ考えて。" },
-      { label: "再婚・再スタート編", content: "バツイチであることを隠さず、かつネガティブにならずに伝えるプロフィール。包容力と誠実さを感じさせる書き方を提案して。" }
+      { label: "再婚・再スタート編", content: "バツイチであることを隠さず、かつネガティブにならずに伝えるプロフィール。包容力と誠実さを感じさせる書き方を提案して。" },
+      { label: "「ギャップ萌え」を狙う", content: "見た目は怖そうと言われるが、実は料理が得意。このギャップを親しみやすさに変えて、女性が「安心していいね」できる文章にして。" },
+      { label: "仕事への情熱を魅力に", content: "仕事人間だと思われがち。仕事へのやりがいを伝えつつ、「家庭も大切にする未来」を想像させる魅力的な書き方を教えて。" },
+      { label: "共通点で見つける趣味の記載", content: "キャンプ、サウナ、読書。バラバラな趣味を一つのストーリーにまとめて、価値観が合う人を引き寄せるプロフィールにして。" },
+      { label: "マッチングアプリ疲れを打破", content: "「普通の人でいいのに出会えない」という本音を漏らさず、誠実な出会いを求めていることを品よく伝える添削をして。" }
     ]
   },
   { 
@@ -51,7 +59,11 @@ const WEAPONS = [
       { label: "初対面のお茶デート", content: "週末の午後、銀座付近。相手はカフェ巡りが趣味。緊張せずに話せる静かすぎない場所と、沈黙を怖がらないための会話ネタを3つ教えて。" },
       { label: "3回目勝負のディナー", content: "相手はイタリアンが好き。告白を視野に入れたい。雰囲気の良いレストランの選び方と、切り出すタイミングのヒントを。" },
       { label: "雨の日・室内デート案", content: "予定していた公園が雨。急遽インドアで楽しめるプランへの変更案。映画館、水族館、または体験型イベントで距離を縮める工夫を。" },
-      { label: "緊張をほぐす会話スターター", content: "話題が尽きた時のための『相手の価値観を深掘りできる』10分間の会話構成を、相手のプロフィール（旅行好き）に合わせて作成して。" }
+      { label: "緊張をほぐす会話スターター", content: "話題が尽きた時のための『相手の価値観を深掘りできる』10分間の会話構成を、相手のプロフィール（旅行好き）に合わせて作成して。" },
+      { label: "お家デートの誘い方と準備", content: "仲良くなってきたのでお家で映画でも、と誘いたい。下心を感じさせない誘い文句と、好感度が上がる「おもてなし」のポイントを。" },
+      { label: "遠出・ドライブデート", content: "少し遠出をしてみたい。車内でのBGMや会話の持たせ方、疲れさせない休憩の挟み方を含めた1日プランを作成して。" },
+      { label: "共通の趣味を体験する日", content: "二人とも陶芸に興味がある。体験教室後の食事までの流れと、共同作業を通じて親密度を爆上げする声掛けを教えて。" },
+      { label: "予算を抑えた知的デート", content: "金銭感覚が近いことをアピールしたい。美術館や図書館、公園散歩など、お金をかけずにかつ特別感を出せるプランを。" }
     ]
   },
   { 
@@ -66,7 +78,11 @@ const WEAPONS = [
       { label: "金銭感覚のズレを確認", content: "自分：貯金重視、相手：趣味（旅行）に惜しみなく使う。結婚後に家計を共にする際、もめないための妥協点を探って。" },
       { label: "休日の過ごし方の違い", content: "自分：インドア派、相手：キャンプ大好きアウトドア派。無理せず一緒に楽しめる「中間地点の休日」を提案して。" },
       { label: "共働き・家事分担の懸念", content: "私は多忙、相手は丁寧な暮らしを希望。生活リズムがズレた時の家事分担や、不満を溜め込まないための『家庭内ルール』をシミュレーションして。" },
-      { label: "将来の住まい・親との関係", content: "都会派の私と、将来は地元に帰りたい相手。歩み寄るための交渉術と、お互いが納得できる条件の洗い出しをして。" }
+      { label: "将来の住まい・親との関係", content: "都会派の私と、将来は地元に帰りたい相手。歩み寄るための交渉術と、お互いが納得できる条件の洗い出しをして。" },
+      { label: "子供・育児の価値観", content: "私は子供が早く欲しい、相手は仕事が落ち着いてから。この「時間軸のズレ」をどう埋めるか、お互いのキャリアを尊重した対話案を。" },
+      { label: "ペット・生活環境の違い", content: "私は犬を飼いたい、相手は動物が苦手。将来の家族構成に直結するこの問題を、どちらも犠牲にならない形で解決できるかシミュレーションして。" },
+      { label: "宗教・食生活・こだわり", content: "ヴィーガンの相手と、肉好きの自分。日々の食事という最も重要な時間を、ストレスなく共存させるためのアイデアを出して。" },
+      { label: "過去の恋愛とトラウマ", content: "浮気された経験がある自分と、交友関係が広い相手。束縛にならない程度に「安心感」を得るための信頼関係構築ステップを提示して。" }
     ]
   },
   { 
@@ -81,7 +97,11 @@ const WEAPONS = [
       { label: "2回目に繋がらなかった反省", content: "「話は盛り上がったはずなのに、LINEがそっけない。」会話の比率や、最後の別れ際の挨拶など、どこに盲点があったか分析して。" },
       { label: "成功パターンを再現化", content: "初めて交際まで発展しそう。今回の成功パターンを言語化して、自信を確信に変えたい。何が相手に刺さったのか整理して。" },
       { label: "フェードアウトの原因調査", content: "いい感じだった相手から急に連絡が途絶えた。直近のやり取り（数通のLINE）から、相手の心境の変化を推測し、挽回可能か判定して。" },
-      { label: "自分の改善グラフを作成", content: "この1ヶ月で5人と会った。共通して指摘される点や、自分の中で手応えが変わってきた部分を棚卸しして、成長を可視化して。" }
+      { label: "自分の改善グラフを作成", content: "この1ヶ月で5人と会った。共通して指摘される点や、自分の中で手応えが変わってきた部分を棚卸しして、成長を可視化して。" },
+      { label: "第一印象のブラッシュアップ", content: "「写真と実物が違う」と思われていないか不安。相手の反応から、プロフィールと実物のギャップがどこにあったか客観的に分析して。" },
+      { label: "LINEの距離感を最適化", content: "返信が遅い、または早すぎて引かれている気がする。相手の返信速度やテンションに合わせた、最適な「ミラーリング戦略」を立案して。" },
+      { label: "結婚への焦り度をチェック", content: "つい急ぎすぎて相手を怖がらせていないか。会話の中で「結婚」のワードを出すタイミングや、重くない進め方を過去の失敗から学んで。" },
+      { label: "仲人のアドバイスを補完", content: "相談所の担当者に言われた「もっと自分を出して」の意味がわからない。AIの視点で、どう自分を開示すればいいか具体的なセリフにして。" }
     ]
   },
 ];
@@ -93,6 +113,18 @@ export default function AiKonkatsuCoach() {
   const [score, setScore] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [visiblePresets, setVisiblePresets] = useState<any[]>([]);
+
+  // 武器を切り替えたとき、ランダムに4つ選ぶ
+  useEffect(() => {
+    if (activeWeapon) {
+      const weapon = WEAPONS.find(w => w.id === activeWeapon);
+      if (weapon && weapon.presets) {
+        const shuffled = [...weapon.presets].sort(() => 0.5 - Math.random());
+        setVisiblePresets(shuffled.slice(0, 4));
+      }
+    }
+  }, [activeWeapon]);
 
   // 憲法：自動スコアリング演出
   useEffect(() => {
@@ -154,14 +186,14 @@ export default function AiKonkatsuCoach() {
       ) : (
         /* 機能実行状態：憲法準拠の一本道 */
         <div className="space-y-6 animate-in zoom-in-95">
-          {/* 🟢 プリセットを独立した大きな選択エリアとして配置 */}
+          {/* プリセットを独立した大きな選択エリアとして配置 */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-             {currentWeapon?.presets.map((p, i) => (
+             {visiblePresets.map((p, i) => (
                <Button 
                 key={i} 
                 variant="outline" 
                 onClick={() => setInputData(p.content)} 
-                className="h-20 border-2 border-slate-800 bg-slate-900 text-slate-300 font-black text-xs uppercase italic hover:bg-pink-600/10 hover:border-pink-500/50 rounded-2xl whitespace-normal p-4 leading-tight transition-all active:scale-95"
+                className="h-24 border-2 border-slate-800 bg-slate-900 text-slate-300 font-black text-xs uppercase italic hover:bg-pink-600/10 hover:border-pink-500/50 rounded-3xl whitespace-normal p-4 leading-tight transition-all active:scale-95 shadow-lg flex items-center justify-center text-center"
                >
                  {p.label}
                </Button>
@@ -187,7 +219,7 @@ export default function AiKonkatsuCoach() {
                     value={inputData} 
                     onChange={(e) => setInputData(e.target.value)} 
                     placeholder={`${currentWeapon?.label}に必要な情報を入力、または上のボタンから選んでください...`} 
-                    className="w-full h-64 bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 text-lg text-white font-bold focus:border-pink-500 outline-none transition-all" 
+                    className="w-full h-64 bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 text-lg text-white font-bold focus:border-pink-500 outline-none transition-all shadow-inner" 
                   />
                 </div>
 
@@ -221,7 +253,7 @@ export default function AiKonkatsuCoach() {
                   value={report} 
                   onChange={(e) => setReport(e.target.value)} 
                   placeholder="AIからのアドバイスをここに貼り付けると、成婚期待度が算出されます..." 
-                  className="flex-1 bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 text-sm text-slate-300 focus:border-pink-500 outline-none font-medium leading-relaxed italic relative z-10" 
+                  className="flex-1 bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 text-sm text-slate-300 focus:border-pink-500 outline-none font-medium leading-relaxed italic relative z-10 shadow-inner" 
                 />
                 {isProcessing && <div className="absolute inset-0 bg-slate-950/80 flex flex-col items-center justify-center gap-4 z-20"><Loader2 className="w-10 h-10 text-pink-500 animate-spin" /><p className="text-xs font-black text-pink-400 uppercase italic tracking-widest">AI Strategic Scoring...</p></div>}
               </div>
