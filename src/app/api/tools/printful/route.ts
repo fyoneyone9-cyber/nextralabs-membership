@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     if (action === 'create-product') {
       let finalImageUrl = mockupUrl;
 
-      // 🚀 1. Data URL (base64) を Supabase にアップロード
+      // 1. Data URL を Supabase にアップロードして「本物のURL」を取得
       if (mockupUrl.startsWith('data:image')) {
         const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
         const base64Data = mockupUrl.split(',')[1];
@@ -27,13 +27,13 @@ export async function POST(request: NextRequest) {
           .from('designs')
           .upload(filename, buffer, { contentType: 'image/png' });
 
-        if (uploadError) throw new Error(`Image Storage Failed: ${uploadError.message}`);
+        if (uploadError) throw new Error(`Upload Failed: ${uploadError.message}`);
         const { data: urlData } = supabase.storage.from('designs').getPublicUrl(filename);
         finalImageUrl = urlData.publicUrl;
       }
 
-      // 🚀 2. Printful API 実行 (Shopify への同期を強制)
-      console.log(`[MASTER_SYNC] Sending to Printful Store: ${PRINTFUL_STORE_ID}`);
+      // 🚀 2. Printful API 実行 (Shopifyへの自動同期を確実にするための全パラメータ)
+      // https://developers.printful.com/docs/#operation/createSyncProduct
       const pRes = await fetch('https://api.printful.com/store/products', {
         method: 'POST',
         headers: {
@@ -43,16 +43,18 @@ export async function POST(request: NextRequest) {
         },
         body: JSON.stringify({
           sync_product: { 
-            name: `Nextra Edition: ${keyword}`,
-            thumbnail: finalImageUrl
+            name: `Nextra_${keyword}_${style}`, 
+            thumbnail: finalImageUrl 
           },
           sync_variants: [{
-            variant_id: 4012, // Bella+Canvas 3001 M Size
+            variant_id: 4012, // Bella+Canvas 3001 / Black / M
             retail_price: "35.00",
-            files: [{ 
-              type: "default",
-              url: finalImageUrl 
-            }]
+            files: [
+              { 
+                type: "default",
+                url: finalImageUrl 
+              }
+            ]
           }]
         })
       });
@@ -60,21 +62,20 @@ export async function POST(request: NextRequest) {
       const pData = await pRes.json();
 
       if (pData.error) {
-        throw new Error(`Printful Sync Error: ${pData.error.message}`);
+        // Printful側で詳細なエラーを吐いている可能性をフロントに返す
+        throw new Error(`Printful: ${pData.error.message} (${pData.error.code})`);
       }
 
-      // 🚀 3. 同期プロセスが開始されたことを確認
-      // PrintfulとShopifyが正しく接続されていれば、この時点でShopify側に「下書き」または「公開」で出現します。
-      console.log(`[MASTER_SYNC] Success. Product ID: ${pData.result.id}`);
-
+      // 🚀 重要: Shopifyへの連携は、Printful側のステータスが「Synced」になる必要があります
       return NextResponse.json({ 
         success: true, 
+        result: pData.result,
         shopify: { url: `https://${SHOPIFY_DOMAIN}/admin/products` } 
       });
     }
     return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
   } catch (error: any) {
-    console.error(`[SYNC_ENGINE_ERROR]`, error.message);
+    console.error(`[SYNC_ERROR]`, error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
