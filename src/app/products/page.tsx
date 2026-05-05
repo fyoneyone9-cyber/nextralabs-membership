@@ -19,7 +19,7 @@ interface Product {
   id: string; title: string; subtitle: string; description: string; priceNote: string; tags: string[]; icon: LucideIcon; bgColor: string; iconColor: string; status: string;
 }
 
-// ==================== 🛠️ ALL 22 TOOLS (NO DELETIONS ALLOWED) ====================
+// ==================== ALL PRODUCTS ====================
 
 const freeTools: Product[] = [
   { id: 'office-politics-graph', title: '社内政治 相関図', subtitle: '人間関係の可視化', description: '組織図に載らない本当の関係をAIが分析。キーマンを見抜きます。', priceNote: '無料', tags: ['分析', '無料'], icon: Network, bgColor: 'bg-indigo-500/10', iconColor: 'text-indigo-400', status: '人気' },
@@ -71,8 +71,6 @@ const funTools: Product[] = [
   { id: 'smart-gardening', title: 'AI万能スコープ', subtitle: '視覚解析 × 環境', description: 'カメラで対象を捉えるだけで、環境と視覚情報を統合分析。', priceNote: 'プレミアム', tags: ['調査', '万能'], icon: Zap, bgColor: 'bg-yellow-500/10', iconColor: 'text-yellow-400', status: '万能' },
 ]
 
-// ==================== UI Component ====================
-
 function ProductCard({ product }: { product: Product }) {
   const Icon = product.icon
   return (
@@ -93,11 +91,19 @@ function ProductCard({ product }: { product: Product }) {
           <Link href={`/products/${product.id}/app`} className="block w-full">
             <Button className="w-full h-16 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-lg rounded-2xl shadow-lg transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 group/btn">
               <span>このツールを使う</span>
-              <Rocket className="h-5 w-5 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
+              <ArrowRight className="h-5 w-5 group-hover/btn:translate-x-1 transition-transform" />
             </Button>
           </Link>
           <div className="flex justify-between items-center px-1">
-            <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">Access Level: {product.priceNote}</span>
+            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Access Level</span>
+            <span className={`text-sm font-black tracking-tighter ${
+              product.priceNote === '無料' ? 'text-emerald-400' :
+              product.priceNote === 'ライト' ? 'text-sky-400' :
+              product.priceNote === 'スタンダード' ? 'text-amber-400' :
+              'text-purple-400'
+            }`}>
+              {product.priceNote === 'プレミアム' ? '👑 ' : ''}{product.priceNote}
+            </span>
           </div>
         </div>
       </CardContent>
@@ -124,49 +130,34 @@ export default function ProductsPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 space-y-24">
-        {/* 1. FREE TOOLS FIRST */}
         <section>
           <SectionTitle emoji="🆓" title="無料ツール" color="border-emerald-500" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{freeTools.map(p => <ProductCard key={p.id} product={p} />)}</div>
         </section>
-
-        {/* 2. HOTEL B2B */}
         <section>
           <SectionTitle emoji="🏨" title="ホテル・民泊オーナー様向け" color="border-blue-500" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{hotelTools.map(p => <ProductCard key={p.id} product={p} />)}</div>
         </section>
-
-        {/* 3. DEFENSE & LIFE */}
         <section>
           <SectionTitle emoji="🛡️" title="防衛・ライフ" color="border-red-500" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{defenseTools.map(p => <ProductCard key={p.id} product={p} />)}</div>
         </section>
-
-        {/* 4. COMMUNICATION */}
         <section>
           <SectionTitle emoji="💬" title="コミュニケーション" color="border-pink-500" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{commTools.map(p => <ProductCard key={p.id} product={p} />)}</div>
         </section>
-
-        {/* 5. CAREER & LIFE */}
         <section>
           <SectionTitle emoji="🏢" title="キャリア・ライフ" color="border-slate-500" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{lifeTools.map(p => <ProductCard key={p.id} product={p} />)}</div>
         </section>
-
-        {/* 6. BUSINESS */}
         <section>
           <SectionTitle emoji="🛍️" title="ビジネス・副業" color="border-teal-500" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{bizTools.map(p => <ProductCard key={p.id} product={p} />)}</div>
         </section>
-
-        {/* 7. CREATIVE */}
         <section>
           <SectionTitle emoji="🎨" title="クリエイティブ" color="border-purple-500" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{creativeTools.map(p => <ProductCard key={p.id} product={p} />)}</div>
         </section>
-
-        {/* 8. FUN & ENT */}
         <section>
           <SectionTitle emoji="🐾" title="エンタメ・趣味" color="border-rose-500" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{funTools.map(p => <ProductCard key={p.id} product={p} />)}</div>
