@@ -1,13 +1,12 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
-  ArrowRight, CheckCircle2, Copy, RotateCcw, Lightbulb, Search, ShieldCheck, LayoutGrid, Loader2, Wand2, Sparkles, Zap, Trash2, Camera, Palette, Sun, Maximize, Ghost, Building, Users, Leaf, Music, Clapperboard, Monitor, Laptop, Globe, Heart, Rocket, Layers, Eye, Mountain, Coffee, Watch, Cpu, Microscope, Brush
+  ArrowRight, CheckCircle2, Copy, RotateCcw, Lightbulb, Search, ShieldCheck, LayoutGrid, Wand2, Sparkles, Zap, Trash2, Camera, Palette, Sun, Maximize, Ghost, Layers, Monitor
 } from 'lucide-react'
 
-// パーツ極限拡充版
 const PRESET_TAGS = {
   style: [
     { label: '実写フォト', content: 'photorealistic, 8k resolution, cinematic lighting, shot on 35mm lens, f/1.8' },
@@ -128,7 +127,6 @@ export default function PromptMaster() {
         <h1 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl">Prompt Master</h1>
       </div>
 
-      {/* 全体工程バー */}
       <div className="max-w-4xl mx-auto px-4 overflow-x-auto pb-4">
         <div className="flex items-center justify-between min-w-[600px] relative">
           <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-800 -translate-y-1/2 z-0" />
@@ -169,11 +167,11 @@ export default function PromptMaster() {
                   <div key={category} className="space-y-3 bg-slate-950/50 p-8 rounded-3xl border border-slate-800 shadow-inner">
                     <p className="text-[10px] font-black text-indigo-400 uppercase italic tracking-[0.2em] flex items-center gap-2 mb-4">
                       {category === 'style' && <Palette size={14} />}
-                      {category === 'lighting' && <SunIcon size={14} />}
+                      {category === 'lighting' && <Sun size={14} />}
                       {category === 'composition' && <Maximize size={14} />}
-                      {category === 'atmosphere' && <GhostIcon size={14} />}
-                      {category === 'material' && <LayersIcon size={14} />}
-                      {category === 'aspect' && <MonitorIcon size={14} />}
+                      {category === 'atmosphere' && <Ghost size={14} />}
+                      {category === 'material' && <Layers size={14} />}
+                      {category === 'aspect' && <Monitor size={14} />}
                       {category}
                     </p>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
