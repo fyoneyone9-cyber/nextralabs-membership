@@ -78,6 +78,12 @@ const PRESET_TAGS = {
     { label: 'Instagram (1:1)', content: 'aspect ratio 1:1, square' },
     { label: 'TikTok/Reels (9:16)', content: 'aspect ratio 9:16, portrait, vertical' },
     { label: '映画 (2.39:1)', content: 'aspect ratio 2.39:1, anamorphic cinematic' }
+  ],
+  logo_spec: [
+    { label: '白背景指定', content: 'pure white background, isolated on white' },
+    { label: '透過前提', content: 'high contrast, sharp edges, flat design, vector style' },
+    { label: '文字なし指定', content: 'no text, no letters, watermark free, clean symbol only' },
+    { label: '正方形に収める', content: 'centered composition, symmetrical, square frame' }
   ]
 };
 
@@ -170,6 +176,7 @@ export default function PromptMaster() {
                       {category === 'atmosphere' && <Ghost size={14} />}
                       {category === 'material' && <Layers size={14} />}
                       {category === 'aspect' && <Monitor size={14} />}
+                      {category === 'logo_spec' && <Zap size={14} />}
                       {category}
                     </p>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
