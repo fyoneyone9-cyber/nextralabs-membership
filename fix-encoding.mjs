@@ -1,4 +1,11 @@
-﻿'use client'
+import fs from 'fs';
+import path from 'path';
+
+const toolsDir = 'C:/Users/fyone/Desktop/membership-site-fix/src/components/tools';
+const files = fs.readdirSync(toolsDir).filter(f => f.endsWith('.tsx'));
+
+const corrections = {
+  'AiSidejob.tsx': `'use client'
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -52,4 +59,19 @@ export default function AiSidejob() {
       <DebugPanel data={null} toolId="ai-sidejob" />
     </div>
   )
-}
+}`
+};
+
+files.forEach(file => {
+  const filePath = path.join(toolsDir, file);
+  let content = fs.readFileSync(filePath, 'utf8');
+  
+  if (corrections[file]) {
+    fs.writeFileSync(filePath, corrections[file], 'utf8');
+    console.log(`✅ Perfectly restored: ${file}`);
+  } else {
+    // 他のファイルもUTF-8として再保存して不純物を除去
+    fs.writeFileSync(filePath, content, 'utf8');
+    console.log(`✅ Normalized encoding: ${file}`);
+  }
+});

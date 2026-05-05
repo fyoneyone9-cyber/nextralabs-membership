@@ -1,4 +1,10 @@
-﻿'use client'
+import fs from 'fs';
+import path from 'path';
+
+const filePath = 'C:/Users/fyone/Desktop/membership-site-fix/src/components/tools/AiSidejob.tsx';
+
+// 🛠️ 日本語を一切「生」で含まず、コードとして書き出す
+const rawContent = `'use client'
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -53,3 +59,8 @@ export default function AiSidejob() {
     </div>
   )
 }
+`;
+
+// UTF-8 BOM付きで保存し、さらにNode.jsのwriteFileでバイナリとしての整合性を保つ
+fs.writeFileSync(filePath, Buffer.from('\\ufeff' + rawContent, 'utf8'));
+console.log('🏁 EMERGENCY REPAIR COMPLETE: AiSidejob.tsx');
