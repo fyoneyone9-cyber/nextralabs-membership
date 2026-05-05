@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
   Mail, Zap, Clock, ListChecks, Filter, CheckCircle2, Loader2, LogIn, Trash2, Send, 
-  ArrowRight, ShieldCheck, Sparkles, RefreshCw, Inbox, Archive, MessageSquareQuote, ChevronRight, Activity, Terminal, ExternalLink, X
+  ArrowRight, ShieldCheck, Sparkles, RefreshCw, Inbox, Archive, MessageSquareQuote, ChevronRight, Activity, Terminal, ExternalLink, X, ChevronDown, ChevronUp
 } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
@@ -18,8 +18,10 @@ export default function InboxOrganizer() {
   const [loading, setLoading] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [activeReplyId, setActiveReplyId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -52,6 +54,9 @@ export default function InboxOrganizer() {
   };
 
   const handleAction = async (messageId: string, action: 'archive' | 'trash') => {
+    const confirmed = confirm(`このメールを${action === 'trash' ? 'ゴミ箱に移動' : 'アーカイブ'}しますか？`);
+    if (!confirmed) return;
+
     try {
       const res = await fetch('/api/tools/gmail-action', {
         method: 'POST',
@@ -60,6 +65,9 @@ export default function InboxOrganizer() {
       });
       if (res.ok) {
         setEmails(prev => prev.filter(e => e.id !== messageId));
+        alert('完了しました');
+      } else {
+        alert('実行に失敗しました。権限（gmail.modify）を確認してください。');
       }
     } catch (e) { console.error(e); }
   };
@@ -72,7 +80,7 @@ export default function InboxOrganizer() {
       const res = await fetch('/api/tools/gmail-reply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subject: email.subject, from: email.from, snippet: email.snippet }),
+        body: JSON.stringify({ subject: email.subject, from: email.from, snippet: email.body }),
       });
       const data = await res.json();
       setReplyText(data.reply);
@@ -102,8 +110,8 @@ export default function InboxOrganizer() {
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-slate-950 text-left">
       <div className="text-center space-y-3">
-        <Badge className="bg-blue-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-[0_0_20px_rgba(37,99,235,0.4)]">GMAIL AI ACCELERATOR v3.0</Badge>
-        <h1 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl leading-none">Inbox Zero</h1>
+        <Badge className="bg-blue-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-[0_0_20px_rgba(37,99,235,0.4)]">GMAIL AI ACCELERATOR v3.5-ULTIMATE</Badge>
+        <h1 className="text-5xl md:text-[8rem] font-black text-white uppercase italic tracking-tighter drop-shadow-2xl leading-none">Inbox Zero</h1>
       </div>
 
       {!googleToken ? (
@@ -171,33 +179,71 @@ export default function InboxOrganizer() {
                       Array(3).fill(0).map((_, i) => (<div key={i} className="h-28 bg-slate-950 border border-slate-800 rounded-3xl animate-pulse" />))
                    ) : emails.length > 0 ? (
                       emails.map((email, i) => (
-                        <div key={i} className="bg-slate-950 border border-slate-800 rounded-[2rem] p-6 hover:border-blue-500/50 transition-all group shadow-xl relative overflow-hidden">
-                           <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                              <Button onClick={() => handleAction(email.id, 'archive')} variant="ghost" size="sm" className="text-slate-500 hover:text-blue-500 bg-slate-900"><Archive size={16}/></Button>
-                              <Button onClick={() => handleAction(email.id, 'trash')} variant="ghost" size="sm" className="text-slate-500 hover:text-red-500 bg-slate-900"><Trash2 size={16}/></Button>
+                        <div key={i} className="bg-slate-950 border border-slate-800 rounded-[2rem] p-8 hover:border-blue-500/50 transition-all group shadow-xl relative overflow-hidden">
+                           <div className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 transition-opacity flex gap-3 z-20">
+                              <Button onClick={() => handleAction(email.id, 'archive')} variant="outline" size="sm" className="bg-slate-900 border-slate-700 hover:border-blue-500 hover:text-blue-500"><Archive size={18}/></Button>
+                              <Button onClick={() => handleAction(email.id, 'trash')} variant="outline" size="sm" className="bg-slate-900 border-slate-700 hover:border-red-500 hover:text-red-500"><Trash2 size={18}/></Button>
                            </div>
-                           <div className="flex items-start gap-4">
-                              <div className="w-12 h-12 bg-blue-600/10 rounded-2xl flex items-center justify-center shrink-0 border border-blue-500/20"><Mail className="text-blue-500" size={24} /></div>
-                              <div className="flex-1 space-y-1 min-w-0 text-left">
-                                 <p className="text-[10px] font-black text-blue-500 uppercase italic truncate">{email.from}</p>
-                                 <h4 className="text-lg font-black text-white italic truncate">{email.subject}</h4>
-                                 <p className="text-xs text-slate-500 font-bold line-clamp-1 italic">{email.snippet}</p>
+                           <div className="flex items-start gap-6">
+                              <div className="w-14 h-14 bg-blue-600/10 rounded-2xl flex items-center justify-center shrink-0 border border-blue-500/20"><Mail className="text-blue-500" size={28} /></div>
+                              <div className="flex-1 space-y-2 min-w-0 text-left">
+                                 <p className="text-xs font-black text-blue-500 uppercase italic tracking-wider">{email.from}</p>
+                                 <h4 className="text-2xl font-black text-white italic leading-tight">{email.subject}</h4>
+                                 
+                                 <div className="relative mt-4">
+                                    <div className={`text-sm text-slate-400 font-bold leading-relaxed italic ${expandedId === email.id ? '' : 'line-clamp-2'}`}>
+                                       {email.body}
+                                    </div>
+                                    <button 
+                                      onClick={() => setExpandedId(expandedId === email.id ? null : email.id)}
+                                      className="text-blue-500 text-[10px] font-black uppercase mt-2 hover:underline flex items-center gap-1"
+                                    >
+                                       {expandedId === email.id ? <><ChevronUp size={12}/>本文を閉じる</> : <><ChevronDown size={12}/>全文を表示</>}
+                                    </button>
+                                 </div>
                               </div>
                            </div>
-                           <div className="mt-6 flex flex-col gap-4">
-                              <Button onClick={() => generateAiReply(email)} size="sm" className="w-fit bg-white text-black font-black italic text-[10px] rounded-lg px-6 h-10 hover:bg-blue-600 hover:text-white transition-all shadow-lg">
-                                 <Sparkles size={14} className="mr-2" /> AI返信ドラフトを生成
+
+                           <div className="mt-8 pt-8 border-t border-slate-800/50 flex flex-col gap-6">
+                              <Button 
+                                onClick={() => generateAiReply(email)} 
+                                size="lg" 
+                                className={`w-full md:w-fit bg-white text-black font-black italic text-sm rounded-xl px-10 h-14 hover:bg-blue-600 hover:text-white transition-all shadow-xl flex items-center justify-center gap-3 ${activeReplyId === email.id ? 'ring-4 ring-blue-500/20' : ''}`}
+                              >
+                                 <Sparkles size={18} className="animate-pulse" /> AI返信ドラフトを生成
                               </Button>
+                              
                               {activeReplyId === email.id && (
-                                 <div className="bg-slate-900 rounded-2xl p-6 border border-blue-600/30 animate-in slide-in-from-top-2 relative">
-                                    <button onClick={() => setActiveReplyId(null)} className="absolute top-4 right-4 text-slate-500 hover:text-white"><X size={16}/></button>
-                                    <p className="text-[10px] font-black text-blue-500 uppercase italic mb-3 flex items-center gap-2"><Sparkles size={12}/> AI Generated Draft</p>
+                                 <div className="bg-slate-900 rounded-[2.5rem] p-10 border border-blue-600/30 animate-in slide-in-from-top-4 relative shadow-inner">
+                                    <button onClick={() => setActiveReplyId(null)} className="absolute top-6 right-6 text-slate-500 hover:text-white bg-slate-950 p-2 rounded-full"><X size={20}/></button>
+                                    <div className="flex items-center gap-3 text-blue-500 font-black italic uppercase text-xs tracking-[0.2em] mb-6">
+                                       <Activity size={16} /> AI Intelligence Output
+                                    </div>
                                     {isGenerating ? (
-                                       <div className="flex items-center gap-3 text-slate-500 italic text-xs"><Loader2 className="animate-spin" size={14}/> 思考中...</div>
+                                       <div className="py-12 flex flex-col items-center gap-4 text-slate-500 italic">
+                                          <Loader2 className="animate-spin text-blue-500" size={40}/>
+                                          <p className="text-sm font-black uppercase tracking-widest animate-pulse">Analyzing context & drafting response...</p>
+                                       </div>
                                     ) : (
-                                       <div className="space-y-4">
-                                          <pre className="text-xs text-slate-300 whitespace-pre-wrap font-sans leading-relaxed">{replyText}</pre>
-                                          <Button onClick={() => { navigator.clipboard.writeText(replyText); alert('コピーしました'); }} className="h-8 bg-blue-600 text-[10px] font-black italic rounded-lg px-4">結果をコピー</Button>
+                                       <div className="space-y-6">
+                                          <div className="bg-slate-950 p-8 rounded-3xl border border-slate-800 text-base text-slate-200 whitespace-pre-wrap font-sans leading-relaxed italic shadow-inner">
+                                             {replyText}
+                                          </div>
+                                          <div className="flex flex-wrap gap-4">
+                                            <Button 
+                                              onClick={() => { 
+                                                navigator.clipboard.writeText(replyText); 
+                                                setCopied(true); 
+                                                setTimeout(() => setCopied(false), 2000); 
+                                              }} 
+                                              className="h-14 bg-blue-600 hover:bg-blue-500 text-white font-black italic rounded-xl px-10 shadow-lg flex items-center gap-3"
+                                            >
+                                               <ClipboardPaste size={20}/> {copied ? 'COPIED!' : 'ドラフトをコピー'}
+                                            </Button>
+                                            <Button variant="outline" className="h-14 border-slate-800 text-slate-500 font-black italic rounded-xl px-8 hover:bg-slate-800">
+                                               <Send size={18} className="mr-2"/> GMAILへ転送 (開発中)
+                                            </Button>
+                                          </div>
                                        </div>
                                     )}
                                  </div>
