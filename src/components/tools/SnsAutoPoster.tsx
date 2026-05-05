@@ -36,9 +36,6 @@ export default function SnsAutoPoster() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [trends, setTrends] = useState<string[]>([]);
   const [isLoadingTrends, setIsLoadingTrends] = useState(false);
-
-  const [trends, setTrends] = useState<string[]>([]);
-  const [isLoadingTrends, setIsLoadingTrends] = useState(false);
   const [apiStatus, setApiStatus] = useState<'loading' | 'live' | 'error'>('loading');
 
   const fetchTrends = async () => {
