@@ -1,4 +1,13 @@
 ﻿'use client'
-export default function AiSidejob() {
-  return <div className='p-20 text-center font-bold text-4xl'>NextraLabs AI Tool: AiSidejob - System Restored</div>
+import React from 'react'
+import { DebugPanel } from './DebugPanel'
+
+export default function Aisidejob() {
+  return (
+    <div className='p-20 text-center font-bold text-4xl bg-slate-900 text-white min-h-screen'>
+      NextraLabs AI Tool: AiSidejob
+      <div className='mt-8 text-xl text-slate-400'>System Surgically Restored</div>
+      <DebugPanel data={null} toolId="aisidejob" />
+    </div>
+  )
 }
