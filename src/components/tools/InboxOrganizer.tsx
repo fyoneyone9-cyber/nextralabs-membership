@@ -20,6 +20,7 @@ export default function InboxOrganizer() {
   const [scanning, setScanning] = useState(false);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const hash = new URLSearchParams(window.location.hash.slice(1))
     const token = hash.get('access_token')
     if (token) { 
@@ -56,9 +57,16 @@ export default function InboxOrganizer() {
       console.error('[GMAIL_FETCH_ERROR]', e); 
     } finally { 
       setLoading(false);
-      setTimeout(() => setScanning(false), 1000);
+      setTimeout(() => setScanning(false), 100);
     }
   };
+
+  const quadrants = [
+    { id: 'urgent_important', label: 'Urgent/High', color: 'border-red-600 text-red-500 bg-red-600/5', icon: Zap },
+    { id: 'urgent_not_important', label: 'Urgent/Low', color: 'border-amber-500 text-amber-500 bg-amber-500/5', icon: Clock },
+    { id: 'not_urgent_important', label: 'Plan/Focus', color: 'border-blue-500 text-blue-500 bg-blue-500/5', icon: ListChecks },
+    { id: 'not_urgent_not_important', label: 'Backlog/Arch', color: 'border-slate-800 text-slate-500 bg-slate-900/50', icon: Filter },
+  ];
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-slate-950 text-left">
@@ -113,21 +121,11 @@ export default function InboxOrganizer() {
 
                <Button onClick={() => setGoogleToken(null)} variant="ghost" className="w-full mt-8 text-slate-700 hover:text-red-500 text-[10px] font-black uppercase italic tracking-widest underline">Terminate Session</Button>
             </Card>
-
-            <div className="bg-blue-600/5 border-2 border-blue-500/20 rounded-[2rem] p-6 space-y-2 italic">
-               <p className="text-blue-500 text-xs font-black uppercase tracking-widest flex items-center gap-2"><Sparkles size={14}/> AI Insight</p>
-               <p className="text-slate-400 text-sm font-bold leading-relaxed">全てのメールを重要度×緊急度の4象限に自動配置しました。上から順に処理を推奨します。</p>
-            </div>
           </div>
 
           <div className="lg:col-span-2 space-y-8">
              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { id: 'urgent_important', label: 'Urgent/High', color: 'border-red-600 text-red-500 bg-red-600/5', icon: Zap },
-                  { id: 'urgent_not_important', label: 'Urgent/Low', color: 'border-amber-500 text-amber-500 bg-amber-500/5', icon: Clock },
-                  { id: 'not_urgent_important', label: 'Plan/Focus', color: 'border-blue-500 text-blue-500 bg-blue-500/5', icon: ListChecks },
-                  { id: 'not_urgent_not_important', label: 'Backlog/Arch', color: 'border-slate-800 text-slate-500 bg-slate-900/50', icon: Filter },
-                ].map(q => {
+                {quadrants.map(q => {
                   const Icon = q.icon;
                   return (
                     <div key={q.id} className={`p-4 rounded-2xl border-2 flex items-center justify-between shadow-lg ${q.color}`}>
