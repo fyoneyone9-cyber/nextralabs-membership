@@ -4,10 +4,10 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
-  ArrowRight, CheckCircle2, Copy, RotateCcw, Lightbulb, Search, ShieldCheck, LayoutGrid, Loader2, Wand2, Sparkles, Zap, Trash2, Camera, Palette, Sun, Maximize, Ghost, Building, Users, Leaf, Music, Clapperboard, Monitor, Laptop, Globe, Heart
+  ArrowRight, CheckCircle2, Copy, RotateCcw, Lightbulb, Search, ShieldCheck, LayoutGrid, Loader2, Wand2, Sparkles, Zap, Trash2, Camera, Palette, Sun, Maximize, Ghost, Building, Users, Leaf, Music, Clapperboard, Monitor, Laptop, Globe, Heart, Rocket, Layers, Eye, Mountain, Coffee, Watch, Cpu, Microscope, Brush
 } from 'lucide-react'
 
-// プロフェッショナル・タグ群の超拡充
+// プロフェッショナル・タグ群の究極拡充（限界突破版）
 const PRESET_TAGS = {
   style: [
     { label: '実写フォト', content: 'photorealistic, 8k resolution, cinematic lighting, shot on 35mm lens' },
@@ -21,7 +21,13 @@ const PRESET_TAGS = {
     { label: '浮世絵', content: 'Ukiyo-e style, traditional Japanese woodblock print, flat colors' },
     { label: 'スケッチ', content: 'pencil sketch, rough lines, charcoal drawing, artistic' },
     { label: 'ミニチュア', content: 'tilt-shift photography, miniature model style, bokeh' },
-    { label: 'クレイアニメ', content: 'claymation style, plasticine texture, stop motion look' }
+    { label: 'クレイアニメ', content: 'claymation style, plasticine texture, stop motion look' },
+    { label: 'スチームパンク', content: 'steampunk, brass gears, steam, victorian industrial, copper' },
+    { label: '万華鏡風', content: 'kaleidoscopic, symmetrical fractals, psychedelic, vibrant' },
+    { label: '点描画', content: 'pointillism, tiny dots of color, post-impressionism' },
+    { label: 'チョークアート', content: 'chalk drawing, blackboard texture, dusty, colorful' },
+    { label: 'ポップアート', content: 'pop art style, Andy Warhol style, high contrast, vibrant dots' },
+    { label: '切り絵', content: 'paper cut art, layered paper, shadows between layers, handcrafted' }
   ],
   lighting: [
     { label: '黄金の夕暮れ', content: 'golden hour, warm sunlight, long shadows' },
@@ -31,7 +37,11 @@ const PRESET_TAGS = {
     { label: '神々しい光', content: 'god rays, ethereal lighting, heavenly glow, cinematic' },
     { label: 'キャンドル', content: 'candlelight, flickering flame, warm intimate atmosphere' },
     { label: '白黒・低照度', content: 'low key lighting, dramatic shadows, black and white noir' },
-    { label: 'SF・レーザー', content: 'laser beam lighting, glowing energy, high tech' }
+    { label: 'SF・レーザー', content: 'laser beam lighting, glowing energy, high tech' },
+    { label: 'オーロラ', content: 'aurora borealis lighting, green and purple sky glow, magical' },
+    { label: '雷光', content: 'lightning flash, high contrast electric blue, dramatic dark sky' },
+    { label: '海底の光', content: 'underwater light rays, caustic ripples, deep blue' },
+    { label: 'ブラックライト', content: 'ultraviolet light, uv reactive, neon florescent glow' }
   ],
   composition: [
     { label: '超広角', content: 'ultra wide angle, fisheye lens, expansive view' },
@@ -41,7 +51,11 @@ const PRESET_TAGS = {
     { label: '対称性', content: 'symmetrical composition, balanced, centered focus' },
     { label: 'パノラマ', content: 'panoramic view, wide landscape, breathtaking scale' },
     { label: '躍動感', content: 'dynamic action shot, motion blur, fast movement' },
-    { label: '映画構図', content: 'cinematic composition, 2.35:1 aspect ratio, epic scale' }
+    { label: '映画構図', content: 'cinematic composition, 2.35:1 aspect ratio, epic scale' },
+    { label: '虫瞰（ロー）', content: 'worms-eye view, looking up, low angle, monumental' },
+    { label: '三分割法', content: 'rule of thirds, off-center focal point, visually balanced' },
+    { label: '極小フィギュア', content: 'extremely small subject in a vast world, lonely, grand scale' },
+    { label: '二重露光', content: 'double exposure, overlapping images, artistic blend' }
   ],
   atmosphere: [
     { label: '幻想的', content: 'ethereal, dreamlike, magical atmosphere, surreal' },
@@ -49,13 +63,27 @@ const PRESET_TAGS = {
     { label: 'ダーク・ホラー', content: 'dark, gothic, horror atmosphere, creepy, moody' },
     { label: '爽やか・清潔', content: 'fresh, clean, minimalist, airy, bright atmosphere' },
     { label: '緊迫感', content: 'tense atmosphere, high stakes, dramatic pressure' },
-    { label: '和風・禅', content: 'zen, peaceful Japanese atmosphere, traditional, calm' }
+    { label: '和風・禅', content: 'zen, peaceful Japanese atmosphere, traditional, calm' },
+    { label: '終末世界', content: 'post-apocalyptic, overgrown, ruined city, desolate' },
+    { label: 'サイケデリック', content: 'trippy, colorful, warped reality, intricate patterns' },
+    { label: '霧の都', content: 'mysterious fog, misty, silhouette, detective noir vibe' },
+    { label: '賑やかな祭り', content: 'vibrant festival atmosphere, fireworks, crowd, energy' }
+  ],
+  material: [
+    { label: '液体金属', content: 'liquid metal, metallic mercury texture, reflective' },
+    { label: '氷・凍結', content: 'frozen, ice crystals, transparent, cold blue' },
+    { label: '溶岩・マグマ', content: 'molten lava, glowing cracks, intense heat' },
+    { label: 'クリスタル', content: 'crystalline structure, diamond facets, prismatic' },
+    { label: 'ホログラム', content: 'holographic, glitch effect, semi-transparent, light based' },
+    { label: '木彫り', content: 'hand-carved wood, organic grain, natural texture' }
   ],
   quality: [
     { label: '最高傑作', content: 'masterpiece, best quality, ultra-detailed' },
     { label: '4k/8k', content: '4k resolution, 8k, high definition, extremely detailed' },
     { label: '緻密な細部', content: 'intricate details, complex patterns, hyper-detailed' },
-    { label: 'プロの仕上がり', content: 'professional work, trending on artstation, award winning' }
+    { label: 'プロの仕上がり', content: 'professional work, trending on artstation, award winning' },
+    { label: 'ナショジオ風', content: 'National Geographic style, wildlife photography excellence' },
+    { label: 'ヴォーグ風', content: 'Vogue editorial style, high fashion photography' }
   ]
 };
 
@@ -87,14 +115,14 @@ export default function PromptMaster() {
   const getCombinedPrompt = () => {
     const tagsPart = selectedTags.join(', ');
     return `あなたは世界最高峰の画像生成プロンプトエンジニアです。
-以下の【主題】をベースに、【指定パーツ】の要素をプロの技法で組み合わせ、DALL-E 3やMidjourneyで「写真コンテスト優勝レベル」の傑作を生み出すための「最強の英文プロンプト」を作成してください。
+以下の【主題】をベースに、【指定パーツ】の要素をプロの技法で組み合わせ、DALL-E 3やMidjourneyで「歴史に残る傑作」を生み出すための「最強の英文プロンプト」を作成してください。
 
 【主題（日本語）】: ${subject}
 【指定パーツ（英語）】: ${tagsPart}
 
 【出力要求】:
 1. 【Master Prompt】: コピペでそのまま使える完成された英文プロンプト。
-2. 【日本語による構成解説】: なぜこの語順・単語を選んだのか、プロの設計思想を解説してください。`;
+2. 【日本語による構成解説】: 構図や素材、光の設計意図をプロの視点で解説してください。`;
   };
 
   const handleCopy = (text: string) => {
@@ -107,7 +135,7 @@ export default function PromptMaster() {
     if (report && !score) {
       setIsProcessing(true);
       setTimeout(() => {
-        setScore(90 + Math.floor(Math.random() * 10));
+        setScore(95 + Math.floor(Math.random() * 5));
         setIsProcessing(false);
       }, 1500);
     }
@@ -116,7 +144,7 @@ export default function PromptMaster() {
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-32 bg-slate-950">
       <div className="text-center space-y-3">
-        <Badge className="bg-orange-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-lg">Prompt Engineering Studio v3.0</Badge>
+        <Badge className="bg-orange-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-lg">ULTIMATE PROMPT ENGINE v4.0</Badge>
         <h1 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl">Prompt Master</h1>
       </div>
 
@@ -136,34 +164,35 @@ export default function PromptMaster() {
 
       {activeTab === 'input' && (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
-          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-16 shadow-2xl relative overflow-hidden">
+          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3.5rem] p-8 md:p-16 shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-600 to-amber-600" />
             
             <div className="grid lg:grid-cols-2 gap-12">
               <div className="space-y-10">
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-2xl font-black text-white italic uppercase flex items-center gap-2"><Sparkles className="text-orange-500" /> ① 主題を入力</h3>
-                    <Button onClick={clearAll} variant="ghost" size="sm" className="text-slate-500 hover:text-red-500 font-black"><Trash2 size={16} /> 全クリア</Button>
+                  <div className="flex justify-between items-center px-2">
+                    <h3 className="text-2xl font-black text-white italic uppercase flex items-center gap-3"><Sparkles className="text-orange-500" /> ① 主題（何を描くか）</h3>
+                    <Button onClick={clearAll} variant="ghost" size="sm" className="text-slate-500 hover:text-red-500 font-black"><Trash2 size={16} /> ALL CLEAR</Button>
                   </div>
                   <textarea 
                     value={subject} 
                     onChange={(e) => setSubject(e.target.value)} 
-                    placeholder="例：廃墟となった未来の渋谷に立つサイボーグの侍..." 
-                    className="w-full h-48 bg-slate-950 border-2 border-slate-800 rounded-3xl p-8 text-xl text-white font-bold focus:border-orange-500 outline-none shadow-inner" 
+                    placeholder="例：廃墟となった未来の渋谷、光る雨の中でたたずむ少女..." 
+                    className="w-full h-40 bg-slate-950 border-2 border-slate-800 rounded-[2rem] p-8 text-2xl text-white font-bold focus:border-orange-500 outline-none shadow-inner transition-all" 
                   />
                 </div>
 
-                <div className="space-y-8">
-                  <h3 className="text-2xl font-black text-white italic uppercase flex items-center gap-2"><LayoutGrid className="text-orange-500" /> ② パーツを組み合わせる</h3>
+                <div className="space-y-8 h-[600px] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
+                  <h3 className="text-2xl font-black text-white italic uppercase flex items-center gap-3 sticky top-0 bg-slate-900 py-2 z-10"><LayoutGrid className="text-orange-500" /> ② プロのパーツを選択</h3>
                   
                   {Object.entries(PRESET_TAGS).map(([category, tags]) => (
                     <div key={category} className="space-y-3 bg-slate-950/50 p-6 rounded-2xl border border-slate-800 shadow-inner">
-                      <p className="text-xs font-black text-indigo-400 uppercase italic tracking-widest flex items-center gap-2">
+                      <p className="text-xs font-black text-indigo-400 uppercase italic tracking-[0.2em] flex items-center gap-2">
                         {category === 'style' && <Palette size={14} />}
                         {category === 'lighting' && <Sun size={14} />}
                         {category === 'composition' && <Maximize size={14} />}
                         {category === 'atmosphere' && <Ghost size={14} />}
+                        {category === 'material' && <Layers size={14} />}
                         {category === 'quality' && <Sparkles size={14} />}
                         {category}
                       </p>
@@ -174,7 +203,7 @@ export default function PromptMaster() {
                             variant="outline" 
                             size="sm" 
                             onClick={() => toggleTag(tag.content)}
-                            className={`h-11 px-4 rounded-xl font-black text-xs md:text-sm transition-all ${selectedTags.includes(tag.content) ? 'bg-orange-600 border-orange-400 text-white scale-105 shadow-lg' : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-900'}`}
+                            className={`h-11 px-4 rounded-xl font-black text-sm transition-all ${selectedTags.includes(tag.content) ? 'bg-orange-600 border-orange-400 text-white scale-105 shadow-xl' : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-900'}`}
                           >
                             {tag.label}
                           </Button>
@@ -186,40 +215,40 @@ export default function PromptMaster() {
               </div>
 
               <div className="space-y-8">
-                <div className="bg-slate-950 p-10 rounded-[3rem] border border-slate-800 space-y-6 shadow-2xl text-center sticky top-10">
-                  <p className="text-white font-black italic uppercase tracking-tighter flex items-center justify-center gap-2"><Zap className="text-orange-500" /> AI 錬成指令センター</p>
+                <div className="bg-slate-950 p-10 rounded-[3rem] border border-slate-800 space-y-6 shadow-2xl text-center">
+                  <p className="text-white font-black italic uppercase tracking-tighter flex items-center justify-center gap-2"><Zap className="text-orange-500" /> PROMPT COMMAND CENTER</p>
                   <Button 
                     onClick={() => handleCopy(getCombinedPrompt())} 
                     disabled={!subject}
-                    className={`w-full h-28 text-3xl font-black rounded-3xl transition-all shadow-xl ${copied ? 'bg-emerald-500 text-slate-950 scale-95' : 'bg-orange-600 text-white hover:bg-orange-500'}`}
+                    className={`w-full h-32 text-3xl font-black rounded-[2.5rem] transition-all shadow-xl ${copied ? 'bg-emerald-500 text-slate-950 scale-95' : 'bg-orange-600 text-white hover:bg-orange-500'}`}
                   >
-                    {copied ? '✅ 指示をコピー完了' : '錬成指示をコピー'}
+                    {copied ? '✅ COPIED TO CLIPBOARD' : '錬成指令をコピー'}
                   </Button>
                   <div className="grid grid-cols-2 gap-4">
-                    <Button variant="outline" className="h-20 border-2 border-slate-800 text-slate-200 font-black text-lg uppercase italic hover:bg-orange-600/10 rounded-2xl" onClick={() => window.open('https://chatgpt.com', '_blank')}>ChatGPT</Button>
-                    <Button variant="outline" className="h-20 border-2 border-slate-800 text-slate-200 font-black text-lg uppercase italic hover:bg-orange-600/10 rounded-2xl" onClick={() => window.open('https://gemini.google.com', '_blank')}>Gemini</Button>
+                    <Button variant="outline" className="h-20 border-2 border-slate-800 text-slate-200 font-black text-xl uppercase italic hover:bg-orange-600/10 rounded-2xl shadow-lg" onClick={() => window.open('https://chatgpt.com', '_blank')}>ChatGPT</Button>
+                    <Button variant="outline" className="h-20 border-2 border-slate-800 text-slate-200 font-black text-xl uppercase italic hover:bg-orange-600/10 rounded-2xl shadow-lg" onClick={() => window.open('https://gemini.google.com', '_blank')}>Gemini</Button>
                   </div>
 
-                  <div className="bg-slate-900/50 rounded-2xl p-6 border border-slate-800 flex flex-col gap-6 shadow-inner min-h-[350px] relative overflow-hidden mt-10">
+                  <div className="bg-slate-900/80 rounded-[2.5rem] p-10 border border-slate-800 flex flex-col gap-6 shadow-inner min-h-[450px] relative overflow-hidden mt-10">
                     {score && <div className="absolute inset-0 bg-orange-600/5 backdrop-blur-3xl animate-in fade-in" />}
                     <div className="flex items-center justify-between relative z-10 text-left">
-                      <div className="flex items-center gap-3 text-orange-400"><Sparkles size={24} /><h4 className="text-sm font-black uppercase italic tracking-widest">Master Result</h4></div>
-                      {score && <div className="text-right leading-none"><span className="text-[8px] font-black text-orange-400 uppercase italic">Quality Score</span><br/><span className="text-4xl font-black text-white italic">{score}%</span></div>}
+                      <div className="flex items-center gap-3 text-orange-400"><Wand2 size={24} /><h4 className="text-sm font-black uppercase italic tracking-widest text-white">錬成結果ペースト</h4></div>
+                      {score && <div className="text-right leading-none"><span className="text-[10px] font-black text-orange-400 uppercase italic">Mastery</span><br/><span className="text-5xl font-black text-white italic">{score}%</span></div>}
                     </div>
                     <textarea 
                       value={report} 
                       onChange={(e) => setReport(e.target.value)} 
-                      placeholder="AIが生成したプロンプトをここに貼り付けてください..." 
-                      className="flex-1 bg-slate-950 border-2 border-slate-800 rounded-2xl p-6 text-sm text-slate-300 focus:border-orange-500 outline-none font-mono italic relative z-10 shadow-inner" 
+                      placeholder="AIが錬成した最強のプロンプトをここに貼り付けてください..." 
+                      className="flex-1 bg-slate-950 border-2 border-slate-800 rounded-3xl p-8 text-base text-slate-300 focus:border-orange-500 outline-none font-mono italic relative z-10 shadow-inner leading-relaxed" 
                     />
-                    {isProcessing && <div className="absolute inset-0 bg-slate-950/80 flex items-center justify-center z-20"><Loader2 className="animate-spin text-orange-500" /></div>}
+                    {isProcessing && <div className="absolute inset-0 bg-slate-950/80 flex flex-col items-center justify-center gap-4 z-20"><Loader2 className="animate-spin text-orange-500" size={40} /><p className="text-xs font-black text-orange-400 uppercase italic tracking-widest">Mastery Evaluating...</p></div>}
                   </div>
                 </div>
               </div>
             </div>
             {report && (
-              <Button onClick={() => setActiveTab('master')} className="w-full h-24 mt-12 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-3xl shadow-xl flex items-center justify-center gap-4 uppercase italic text-2xl group">
-                 最終プロンプトを確定する <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition-transform" />
+              <Button onClick={() => setActiveTab('master')} className="w-full h-24 mt-12 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-[2rem] shadow-2xl flex items-center justify-center gap-6 uppercase italic text-3xl group transition-all active:scale-95">
+                 最終プロンプトを確定 <ArrowRight className="w-10 h-10 group-hover:translate-x-3 transition-transform" />
               </Button>
             )}
           </Card>
@@ -228,18 +257,18 @@ export default function PromptMaster() {
 
       {activeTab === 'master' && (
         <div className="animate-in fade-in zoom-in-95 space-y-8 text-center pb-20">
-          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-10 md:p-20 shadow-2xl border-l-8 border-l-orange-600 relative overflow-hidden text-left">
-             <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white"><ImageIcon className="w-[30rem] h-[30rem]" /></div>
-             <h3 className="text-4xl md:text-7xl font-black text-white italic uppercase mb-12 flex items-center gap-6 relative z-10"><Wand2 className="text-orange-500 animate-pulse" size={80} /> Master Prompt</h3>
-             <div className="bg-slate-950 rounded-[3rem] p-12 border border-slate-800 text-xl text-slate-200 font-mono leading-relaxed shadow-inner relative z-10">
+          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[4rem] p-12 md:p-24 shadow-2xl border-l-[12px] border-l-orange-600 relative overflow-hidden text-left">
+             <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white"><ImageIcon className="w-[40rem] h-[40rem]" /></div>
+             <h3 className="text-5xl md:text-8xl font-black text-white italic uppercase mb-16 flex items-center gap-8 relative z-10"><Wand2 className="text-orange-500 animate-pulse" size={100} /> Master Prompt</h3>
+             <div className="bg-slate-950 rounded-[3rem] p-16 border border-slate-800 text-2xl text-slate-200 font-mono leading-relaxed shadow-inner relative z-10 selection:bg-orange-600/30">
                 {report || "データがありません。"}
              </div>
           </Card>
-          <Button onClick={() => setActiveTab('input')} variant="outline" className="w-full h-24 border-2 border-slate-800 text-slate-500 hover:bg-slate-800 font-black rounded-[2.5rem] uppercase italic text-2xl active:scale-95 transition-all shadow-xl"><RotateCcw className="mr-4" size={32} /> 編集に戻る</Button>
+          <Button onClick={() => setActiveTab('input')} variant="outline" className="w-full h-28 border-4 border-slate-800 text-slate-500 hover:bg-slate-800 font-black rounded-[3rem] uppercase italic text-3xl active:scale-95 transition-all shadow-2xl"><RotateCcw className="mr-6" size={48} /> 編集に戻る</Button>
         </div>
       )}
 
-      <div className="text-center opacity-20"><p className="text-[10px] font-black uppercase tracking-[0.5em] italic">Visual Prompt Engineering Core • NextraLabs 2026</p></div>
+      <div className="text-center opacity-20"><p className="text-[10px] font-black uppercase tracking-[0.5em] italic">Ultimate Prompt Engineering Core • NextraLabs 2026</p></div>
     </div>
   )
 }
