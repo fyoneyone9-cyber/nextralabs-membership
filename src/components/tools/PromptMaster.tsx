@@ -84,6 +84,13 @@ const PRESET_TAGS = {
     { label: 'プロの仕上がり', content: 'professional work, trending on artstation, award winning' },
     { label: 'ナショジオ風', content: 'National Geographic style, wildlife photography excellence' },
     { label: 'ヴォーグ風', content: 'Vogue editorial style, high fashion photography' }
+  ],
+  aspect: [
+    { label: 'YouTube用 (16:9)', content: 'aspect ratio 16:9, wide screen' },
+    { label: 'X/Twitter (3:2)', content: 'aspect ratio 3:2, landscape' },
+    { label: 'インスタ/TikTok (9:16)', content: 'aspect ratio 9:16, portrait, vertical' },
+    { label: 'Instagram投稿 (1:1)', content: 'aspect ratio 1:1, square' },
+    { label: '映画シネマ (21:9)', content: 'aspect ratio 21:9, ultra-wide cinematic' }
   ]
 };
 
@@ -194,6 +201,7 @@ export default function PromptMaster() {
                         {category === 'atmosphere' && <Ghost size={14} />}
                         {category === 'material' && <Layers size={14} />}
                         {category === 'quality' && <Sparkles size={14} />}
+                        {category === 'aspect' && <Monitor size={14} />}
                         {category}
                       </p>
                       <div className="flex flex-wrap gap-2">
