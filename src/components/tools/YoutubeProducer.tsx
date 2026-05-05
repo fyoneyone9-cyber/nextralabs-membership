@@ -3,14 +3,12 @@ import React, { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   ArrowRight, 
   Upload, 
   CheckCircle2, 
   Youtube, 
   FileVideo, 
-  FileAudio, 
   FileText,
   Zap,
   ChevronRight,
@@ -27,6 +25,15 @@ import {
   Scissors
 } from 'lucide-react'
 
+const TABS = [
+  { id: 'transcribe', label: '① 文字起こし', icon: Volume2 },
+  { id: 'script', label: '② 台本作成', icon: FileText },
+  { id: 'character', label: '③ 人物画像', icon: Scissors },
+  { id: 'thumbnail', label: '④ サムネイル', icon: ImageIcon },
+  { id: 'seo', label: '⑤ タイトル/SEO', icon: Type },
+  { id: 'bgm', label: '⑥ BGM', icon: Music },
+];
+
 const GENRES = [
   '🎭 エンタメ', '📚 教育・解説', '📷 Vlog', '💻 テック・IT', '💼 ビジネス',
   '🎮 ゲーム実況', '🍳 料理', '✈️ 旅行', '📰 ニュース', '🎤 対談'
@@ -34,7 +41,6 @@ const GENRES = [
 
 export default function YoutubeProducer() {
   const [activeTab, setActiveTab] = useState('transcribe');
-  const [isProcessing, setIsProcessing] = useState(false);
   const [selectedGenre, setSelectedGenre] = useState(GENRES[0]);
   const [copied, setCopied] = useState(false);
 
@@ -54,23 +60,30 @@ export default function YoutubeProducer() {
         <p className="text-slate-400 font-bold tracking-widest text-xs uppercase">Post-Production Automation Hub</p>
       </div>
 
-      {/* 🟢 THE 6-STEP PIPELINE TABS */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      {/* 🟢 NATIVE TAILWIND TABS (NO EXTERNAL DEPENDENCY) */}
+      <div className="w-full">
         <div className="overflow-x-auto pb-4">
-          <TabsList className="bg-slate-900 border border-slate-800 p-1 h-auto flex min-w-[800px] rounded-2xl">
-            <TabsTrigger value="transcribe" className="flex-1 py-4 rounded-xl data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold text-xs uppercase italic"><Volume2 className="w-4 h-4 mr-2" /> ① 文字起こし</TabsTrigger>
-            <TabsTrigger value="script" className="flex-1 py-4 rounded-xl data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold text-xs uppercase italic"><FileText className="w-4 h-4 mr-2" /> ② 台本作成</TabsTrigger>
-            <TabsTrigger value="character" className="flex-1 py-4 rounded-xl data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold text-xs uppercase italic"><Scissors className="w-4 h-4 mr-2" /> ③ 人物画像</TabsTrigger>
-            <TabsTrigger value="thumbnail" className="flex-1 py-4 rounded-xl data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold text-xs uppercase italic"><ImageIcon className="w-4 h-4 mr-2" /> ④ サムネイル</TabsTrigger>
-            <TabsTrigger value="seo" className="flex-1 py-4 rounded-xl data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold text-xs uppercase italic"><Type className="w-4 h-4 mr-2" /> ⑤ タイトル/SEO</TabsTrigger>
-            <TabsTrigger value="bgm" className="flex-1 py-4 rounded-xl data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold text-xs uppercase italic"><Music className="w-4 h-4 mr-2" /> ⑥ BGM</TabsTrigger>
-          </TabsList>
+          <div className="bg-slate-900 border border-slate-800 p-1 flex min-w-[800px] rounded-2xl">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-1 py-4 px-2 rounded-xl font-bold text-xs uppercase italic transition-all flex items-center justify-center ${
+                  activeTab === tab.id 
+                    ? 'bg-red-600 text-white shadow-lg' 
+                    : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
+                }`}
+              >
+                <tab.icon className="w-4 h-4 mr-2" /> {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="mt-8">
-          {/* ① 文字起こし (FFmpeg WASM Simulator) */}
-          <TabsContent value="transcribe" className="animate-in fade-in slide-in-from-bottom-4">
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl">
+          {/* ① 文字起こし */}
+          {activeTab === 'transcribe' && (
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
               <div className="grid md:grid-cols-2 gap-10">
                 <div className="space-y-6">
                   <div className="w-16 h-16 bg-red-600/10 rounded-2xl flex items-center justify-center"><Volume2 className="h-8 w-8 text-red-500" /></div>
@@ -101,11 +114,11 @@ export default function YoutubeProducer() {
                 </div>
               </div>
             </Card>
-          </TabsContent>
+          )}
 
           {/* ② 台本作成 */}
-          <TabsContent value="script" className="animate-in fade-in slide-in-from-bottom-4">
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl">
+          {activeTab === 'script' && (
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
               <div className="space-y-8 text-center max-w-2xl mx-auto">
                 <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">台本プロンプトを生成</h3>
                 <div className="flex flex-wrap justify-center gap-2">
@@ -126,11 +139,11 @@ export default function YoutubeProducer() {
                 </div>
               </div>
             </Card>
-          </TabsContent>
+          )}
 
           {/* ③ 人物画像 */}
-          <TabsContent value="character" className="animate-in fade-in slide-in-from-bottom-4">
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-12 shadow-2xl text-center">
+          {activeTab === 'character' && (
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-12 shadow-2xl text-center animate-in fade-in slide-in-from-bottom-4">
               <div className="max-w-xl mx-auto space-y-8">
                 <div className="w-20 h-20 bg-yellow-500/10 rounded-3xl flex items-center justify-center mx-auto"><Scissors className="h-10 w-10 text-yellow-500" /></div>
                 <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">登場人物のイラスト生成</h3>
@@ -144,67 +157,57 @@ export default function YoutubeProducer() {
                 </div>
               </div>
             </Card>
-          </TabsContent>
+          )}
 
           {/* ④ サムネイル */}
-          <TabsContent value="thumbnail" className="animate-in fade-in slide-in-from-bottom-4">
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-12 shadow-2xl text-center">
+          {activeTab === 'thumbnail' && (
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-12 shadow-2xl text-center animate-in fade-in slide-in-from-bottom-4">
               <div className="max-w-xl mx-auto space-y-8">
                 <div className="w-20 h-20 bg-emerald-500/10 rounded-3xl flex items-center justify-center mx-auto"><ImageIcon className="h-10 w-10 text-emerald-500" /></div>
                 <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">最強サムネイル案</h3>
                 <p className="text-slate-400 font-medium italic leading-relaxed">クリック率を最大化する3パターンのデザイン構成と、具体的な画像生成プロンプトを作成します。</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {['🔥 インパクト系', '💡 情報・解決系', '😢 感情・共感系'].map(tag => (
-                    <Badge key={tag} className="bg-slate-950 border-slate-800 text-slate-400 py-2 justify-center">{tag}</Badge>
-                  ))}
-                </div>
                 <div className="grid md:grid-cols-2 gap-4">
                   <Button onClick={() => handleCopy("この動画の内容に最適な、YouTubeサムネイル案を3パターン（インパクト重視、情報量重視、感情重視）提案してください。サイズは16:9とし、入れるべきキャッチコピーと画像構成、背景、色の指定を含めてください。")} className="h-14 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl italic uppercase">{copied ? '✅ COPIED' : '指示をコピー'}</Button>
                   <Button variant="outline" onClick={() => window.open('https://www.canva.com', '_blank')} className="h-14 border-slate-800 text-slate-300 font-black rounded-xl italic uppercase">CANVAを開く <ExternalLink className="ml-2 w-4 h-4" /></Button>
                 </div>
               </div>
             </Card>
-          </TabsContent>
+          )}
 
           {/* ⑤ タイトル/SEO */}
-          <TabsContent value="seo" className="animate-in fade-in slide-in-from-bottom-4">
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-12 shadow-2xl text-center">
+          {activeTab === 'seo' && (
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-12 shadow-2xl text-center animate-in fade-in slide-in-from-bottom-4">
               <div className="max-w-xl mx-auto space-y-8">
                 <div className="w-20 h-20 bg-blue-500/10 rounded-3xl flex items-center justify-center mx-auto"><Type className="h-10 w-10 text-blue-500" /></div>
                 <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">SEO最適化セット</h3>
                 <p className="text-slate-400 font-medium italic leading-relaxed">Google検索とYouTube検索の両方で有利になる、タイトル・タグ・説明文のセットです。</p>
-                <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 text-left font-mono text-[10px] text-slate-500 space-y-2">
-                  <p>・SEO最適化タイトル5案</p>
-                  <p>・ハッシュタグ15個（ボリューム順）</p>
-                  <p>・クリックされる動画説明文（チャプター付き）</p>
-                </div>
                 <div className="grid md:grid-cols-2 gap-4">
                   <Button onClick={() => handleCopy("この動画をYouTubeに投稿します。SEOに最適化された、クリックされやすいタイトルを5案出してください。また、関連ハッシュタグを15個、動画のチャプターを含む魅力的な説明文を作成してください。")} className="h-14 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl italic uppercase">{copied ? '✅ COPIED' : '指示をコピー'}</Button>
                   <Button variant="outline" onClick={() => window.open('https://gemini.google.com', '_blank')} className="h-14 border-slate-800 text-slate-300 font-black rounded-xl italic uppercase">GEMINI (SEO推奨) <ExternalLink className="ml-2 w-4 h-4" /></Button>
                 </div>
               </div>
             </Card>
-          </TabsContent>
+          )}
 
           {/* ⑥ BGM */}
-          <TabsContent value="bgm" className="animate-in fade-in slide-in-from-bottom-4">
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-12 shadow-2xl text-center">
+          {activeTab === 'bgm' && (
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-12 shadow-2xl text-center animate-in fade-in slide-in-from-bottom-4">
               <div className="max-w-xl mx-auto space-y-8">
                 <div className="w-20 h-20 bg-purple-500/10 rounded-3xl flex items-center justify-center mx-auto"><Music className="h-10 w-10 text-purple-500" /></div>
                 <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">BGM & サウンド生成</h3>
                 <p className="text-slate-400 font-medium italic leading-relaxed">動画の雰囲気に合わせたBGM生成プロンプトや、おすすめのフリー音源サイトへ誘導します。</p>
-                <div className="flex justify-center gap-4">
-                   <a href="https://suno.com" target="_blank" className="bg-slate-950 border border-slate-800 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-600/10 transition-colors">Suno AI</a>
-                   <a href="https://dova-s.jp" target="_blank" className="bg-slate-950 border border-slate-800 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-600/10 transition-colors">DOVA-SYNDROME</a>
-                </div>
                 <div className="grid md:grid-cols-1">
                   <Button onClick={() => handleCopy("この動画の台本の雰囲気に合わせた、YouTubeのバックグラウンドで流すのに最適なBGMの構成案と、音楽生成AI用のプロンプトを作成してください。")} className="h-14 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl italic uppercase">{copied ? '✅ COPIED' : '指示をコピー'}</Button>
                 </div>
+                <div className="flex justify-center gap-4 pt-4">
+                   <a href="https://suno.com" target="_blank" className="text-xs font-bold text-slate-500 hover:text-red-500 transition-colors">Suno AI ↗</a>
+                   <a href="https://dova-s.jp" target="_blank" className="text-xs font-bold text-slate-500 hover:text-red-500 transition-colors">DOVA-SYNDROME ↗</a>
+                </div>
               </div>
             </Card>
-          </TabsContent>
+          )}
         </div>
-      </Tabs>
+      </div>
 
       <div className="mt-16 text-center text-slate-500">
          <p className="text-[10px] font-black uppercase tracking-widest italic">Powered by NextraLabs — AIの力を、あなたの日常に。</p>
