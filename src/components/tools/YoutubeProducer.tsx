@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
-  ArrowRight, Upload, CheckCircle2, Youtube, FileVideo, FileText, Zap, ChevronRight, Loader2, Copy, ExternalLink, Sparkles, Download, Volume2, Image as ImageIcon, Type, Music, Clapperboard, Scissors, FileCheck, Lock, MessageSquarePlus, ClipboardPaste, RotateCcw
+  ArrowRight, Upload, CheckCircle2, Youtube, FileVideo, FileText, Zap, ChevronRight, Loader2, Copy, ExternalLink, Sparkles, Download, Volume2, Image as ImageIcon, Type, Music, Clapperboard, Scissors, FileCheck, Lock, MessageSquarePlus, ClipboardPaste, RotateCcw, Info, Lightbulb
 } from 'lucide-react'
 
 const TABS = [
@@ -59,14 +59,22 @@ export default function YoutubeProducer() {
     bgm: `この動画のテーマと雰囲気に最適なBGMの構成案を作成してください。また、音楽生成AI（Suno AI等）で使えるプロンプトを3つ作成してください。`
   };
 
-  const renderNextButton = (target: string, label: string) => (
-    <Button onClick={() => setActiveTab(target)} className="w-full h-16 mt-8 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 uppercase italic text-sm group">
-      {label} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-    </Button>
+  const renderGuide = (steps: string[]) => (
+    <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-4 mb-8 flex items-start gap-4">
+      <div className="w-10 h-10 bg-red-600/10 rounded-xl flex items-center justify-center shrink-0"><Lightbulb className="w-5 h-5 text-red-500" /></div>
+      <div className="space-y-1">
+        <p className="text-xs font-black text-white uppercase italic tracking-widest mb-1">How to play</p>
+        {steps.map((s, i) => (
+          <p key={i} className="text-[10px] text-slate-400 font-bold flex items-center gap-2">
+            <span className="text-red-500">{i+1}.</span> {s}
+          </p>
+        ))}
+      </div>
+    </div>
   );
 
   const renderCopySection = (prompt: string, aiName: string, aiUrl: string) => (
-    <div className="grid md:grid-cols-2 gap-6 mt-8">
+    <div className="grid md:grid-cols-2 gap-6 mt-6">
       <div className="space-y-4">
         <div className="bg-slate-950 rounded-2xl p-6 border border-slate-800 text-left h-40 overflow-y-auto text-[10px] text-slate-500 font-mono italic whitespace-pre-wrap">{prompt}</div>
         <Button onClick={() => handleCopy(prompt)} className={`w-full h-16 font-black rounded-xl shadow-lg transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-red-600 text-white hover:bg-red-500'}`}>
@@ -74,8 +82,8 @@ export default function YoutubeProducer() {
         </Button>
       </div>
       <div className="bg-slate-950 rounded-2xl p-6 border border-slate-800 flex flex-col items-center justify-center space-y-4 text-center">
-        <p className="text-white font-black italic uppercase tracking-widest text-xs">Recommended: {aiName}</p>
-        <Button variant="outline" onClick={() => window.open(aiUrl, '_blank')} className="w-full h-16 border-slate-800 text-slate-300 font-black rounded-xl hover:bg-slate-900 transition-all flex items-center justify-center gap-2">
+        <p className="text-white font-black italic uppercase tracking-widest text-xs">Recommended AI</p>
+        <Button variant="outline" onClick={() => window.open(aiUrl, '_blank')} className="w-full h-16 border-slate-800 text-slate-300 font-black rounded-xl hover:bg-slate-900 transition-all flex items-center justify-center gap-2 italic uppercase">
            {aiName}を開く <ExternalLink className="w-4 h-4" />
         </Button>
       </div>
@@ -106,12 +114,13 @@ export default function YoutubeProducer() {
       <div className="mt-8">
         {activeTab === 'transcribe' && (
           <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
+            <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter mb-6 flex items-center gap-3"><Volume2 className="text-red-500" /> ① 文字起こし</h3>
+            {renderGuide(['動画ファイルをドロップして音声を抽出・保存する', '指示をコピーしてAI（Gemini等）を開く', 'AIにMP3を投げて結果を待ち、右側の欄に貼り付ける'])}
             <div className="grid md:grid-cols-2 gap-10">
               <div className="space-y-6">
-                <div className="flex items-center gap-3"><div className="w-12 h-12 bg-red-600/10 rounded-2xl flex items-center justify-center shadow-lg"><Volume2 className="h-6 w-6 text-red-500" /></div><h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">1. 素材を準備</h3></div>
                 {!file ? (
                   <div className="border-2 border-dashed border-slate-800 rounded-3xl p-12 text-center hover:bg-slate-950 transition-all group cursor-pointer bg-slate-900/50" onClick={() => fileInputRef.current?.click()}>
-                    <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="video/*,audio/*" /><Upload className="h-10 w-10 text-slate-700 group-hover:text-red-500 mx-auto mb-4" /><p className="text-slate-500 font-bold italic text-sm">動画ファイルをドロップ</p>
+                    <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="video/*,audio/*" /><Upload className="h-10 w-10 text-slate-700 group-hover:text-red-500 mx-auto mb-4" /><p className="text-slate-500 font-bold italic text-sm uppercase">Drop Video/Audio</p>
                   </div>
                 ) : (
                   <div className="bg-slate-950 border-2 border-red-600/30 rounded-3xl p-6 space-y-4 shadow-2xl">
@@ -129,18 +138,16 @@ export default function YoutubeProducer() {
                               <Button variant="outline" className="h-10 border-slate-800 text-slate-400 text-[9px] font-black uppercase" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT ↗</Button>
                            </div>
                         </div>
-                        {renderNextButton('script', '② 台本作成へ進む')}
+                        <Button onClick={() => setActiveTab('script')} className="w-full h-16 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 uppercase italic text-sm group">② 台本作成へ進む <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></Button>
                       </div>
                     )}
                   </div>
                 )}
               </div>
-              <div className="bg-slate-950 rounded-[2.5rem] p-8 border border-slate-800 flex flex-col justify-center space-y-6 relative overflow-hidden">
-                 <div className="space-y-4 relative z-10">
-                    <div className="flex items-center gap-3"><div className="w-10 h-10 bg-emerald-600/10 rounded-xl flex items-center justify-center shadow-lg"><ClipboardPaste className="h-5 w-5 text-emerald-500" /></div><h3 className="text-xl font-black text-white italic uppercase tracking-tighter">AIの回答を戻す</h3></div>
-                    <p className="text-xs text-slate-400 font-medium leading-relaxed italic">AIで文字起こしした結果をここに貼り付けてください</p>
-                    <textarea value={transcriptionResult} onChange={(e) => setTranscriptionResult(e.target.value)} placeholder="ここにペースト..." className="w-full h-48 bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 text-xs text-slate-300 focus:border-emerald-500 outline-none shadow-inner font-mono" />
-                 </div>
+              <div className="bg-slate-950 rounded-[2.5rem] p-8 border border-slate-800 flex flex-col justify-center space-y-4 relative overflow-hidden">
+                 <div className="flex items-center gap-3"><ClipboardPaste className="h-5 w-5 text-emerald-500" /><h3 className="text-xl font-black text-white italic uppercase tracking-tighter">AIの回答を戻す</h3></div>
+                 <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest italic">Paste results from Gemini/ChatGPT here</p>
+                 <textarea value={transcriptionResult} onChange={(e) => setTranscriptionResult(e.target.value)} placeholder="ここにペースト..." className="w-full h-48 bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 text-xs text-slate-300 focus:border-emerald-500 outline-none shadow-inner transition-colors font-mono" />
               </div>
             </div>
           </Card>
@@ -148,49 +155,55 @@ export default function YoutubeProducer() {
 
         {activeTab === 'script' && (
           <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl animate-in fade-in zoom-in duration-500">
-            <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter mb-8 text-center">② 台本プロンプトを生成</h3>
+            <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter mb-6 flex items-center gap-3"><FileText className="text-red-500" /> ② 台本プロンプトを生成</h3>
+            {renderGuide(['動画ジャンルを選択する', '「台本指示をコピー」してCLAUDEを開く', 'CLAUDEに指示を貼り付けて送信し、次の工程へ進む'])}
             <div className="flex flex-wrap justify-center gap-2 mb-10">
               {GENRES.map(g => (
-                <Button key={g} variant={selectedGenre === g ? 'default' : 'outline'} onClick={() => setSelectedGenre(g)} className={`rounded-xl font-bold h-10 px-6 ${selectedGenre === g ? 'bg-red-600 border-red-400' : 'border-slate-800 text-slate-400 hover:bg-slate-800'}`}>{g}</Button>
+                <button key={g} onClick={() => setSelectedGenre(g)} className={`px-4 py-2 rounded-xl font-bold text-[10px] transition-all ${selectedGenre === g ? 'bg-red-600 text-white' : 'bg-slate-950 text-slate-500 border border-slate-800 hover:bg-slate-800'}`}>{g}</button>
               ))}
             </div>
             {renderCopySection(PROMPTS.script, 'CLAUDE', 'https://claude.ai')}
-            {renderNextButton('character', '③ 登場人物画像へ進む')}
+            <Button onClick={() => setActiveTab('character')} className="w-full h-16 mt-8 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 uppercase italic text-sm group">③ 登場人物画像へ進む <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></Button>
           </Card>
         )}
 
         {activeTab === 'character' && (
           <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl animate-in fade-in zoom-in duration-500">
-            <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter mb-8 text-center">③ 登場人物のイラスト生成</h3>
-            {renderCopySection(PROMPTS.character, 'ChatGPT (DALL-E 3)', 'https://chatgpt.com')}
-            {renderNextButton('thumbnail', '④ サムネイルへ進む')}
+            <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter mb-6 flex items-center gap-3"><Scissors className="text-red-500" /> ③ 登場人物のイラスト生成</h3>
+            {renderGuide(['「指示をコピー」してChatGPTを開く', '台本をもとにキャラクター画像（DALL-E 3）を生成する', 'お気に入りの画像が見つかったら次へ進む'])}
+            {renderCopySection(PROMPTS.character, 'CHATGPT', 'https://chatgpt.com')}
+            <Button onClick={() => setActiveTab('thumbnail')} className="w-full h-16 mt-8 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 uppercase italic text-sm group">④ サムネイルへ進む <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></Button>
           </Card>
         )}
 
         {activeTab === 'thumbnail' && (
           <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl animate-in fade-in zoom-in duration-500">
-            <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter mb-8 text-center">④ 最強サムネイル構成案</h3>
+            <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter mb-6 flex items-center gap-3"><ImageIcon className="text-red-500" /> ④ 最強サムネイル構成案</h3>
+            {renderGuide(['「指示をコピー」してCANVAまたはAIを開く', 'クリック率の高い構成案を確認し、制作する', '完成したら次へ進む'])}
             {renderCopySection(PROMPTS.thumbnail, 'CANVA', 'https://www.canva.com')}
-            {renderNextButton('seo', '⑤ タイトル/SEOへ進む')}
+            <Button onClick={() => setActiveTab('seo')} className="w-full h-16 mt-8 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 uppercase italic text-sm group">⑤ タイトル/SEOへ進む <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></Button>
           </Card>
         )}
 
         {activeTab === 'seo' && (
           <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl animate-in fade-in zoom-in duration-500">
-            <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter mb-8 text-center">⑤ SEO最適化タイトル＆タグ</h3>
+            <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter mb-6 flex items-center gap-3"><Type className="text-red-500" /> ⑤ SEO最適化タイトル＆タグ</h3>
+            {renderGuide(['「指示をコピー」してGEMINIを開く', '検索に強いタイトルとタグを生成し、YouTubeに設定する', '最後はBGM！次へ進む'])}
             {renderCopySection(PROMPTS.seo, 'GEMINI', 'https://gemini.google.com')}
-            {renderNextButton('bgm', '⑥ BGMへ進む')}
+            <Button onClick={() => setActiveTab('bgm')} className="w-full h-16 mt-8 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 uppercase italic text-sm group">⑥ BGMへ進む <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></Button>
           </Card>
         )}
 
         {activeTab === 'bgm' && (
           <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl animate-in fade-in zoom-in duration-500">
-            <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter mb-8 text-center">⑥ BGMプロンプト作成</h3>
+            <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter mb-6 flex items-center gap-3"><Music className="text-red-500" /> ⑥ BGMプロンプト作成</h3>
+            {renderGuide(['「指示をコピー」してSuno AI等の音楽AIを開く', '動画にぴったりのBGMを生成し、制作完了！'])}
             {renderCopySection(PROMPTS.bgm, 'SUNO AI', 'https://suno.com')}
-            <Button onClick={() => setActiveTab('transcribe')} variant="outline" className="w-full h-16 mt-8 border-slate-800 text-slate-500 hover:bg-slate-800 font-black rounded-2xl flex items-center justify-center gap-3 uppercase italic text-sm"><RotateCcw className="w-4 h-4" /> 最初からやり直す</Button>
+            <Button onClick={() => { setFile(null); setProcessedFileUrl(null); setTranscriptionResult(''); setActiveTab('transcribe'); }} variant="outline" className="w-full h-16 mt-8 border-slate-800 text-slate-500 hover:bg-slate-800 font-black rounded-2xl flex items-center justify-center gap-3 uppercase italic text-sm transition-all"><RotateCcw className="w-4 h-4" /> 最初からやり直す</Button>
           </Card>
         )}
       </div>
+      <div className="mt-16 text-center text-slate-500"><p className="text-[10px] font-black uppercase tracking-widest italic opacity-20">NextraLabs — 2026 Creative Automation Hub</p></div>
     </div>
   )
 }
