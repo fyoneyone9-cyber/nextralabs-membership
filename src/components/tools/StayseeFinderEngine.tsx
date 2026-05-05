@@ -73,7 +73,7 @@ export default function StayseeFinderEngine() {
       });
     } catch (error: any) {
       console.error("[Staysee_Error]", error.message);
-      setDebugData(prev => ({ ...prev, status: "EXCEPTION_CAUGHT", error_message: error.message }));
+      setDebugData({ status: "EXCEPTION_CAUGHT", error_message: error.message });
     } finally {
       setIsAnalyzing(false);
     }
