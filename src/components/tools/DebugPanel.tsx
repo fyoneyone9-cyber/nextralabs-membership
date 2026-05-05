@@ -19,6 +19,8 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
   )
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     const checkUser = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser()
@@ -27,9 +29,9 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
     }
     checkUser()
 
-    const originalError = console.error;
-    const originalLog = console.log;
-    const originalWarn = console.warn;
+    const originalError = window.console.error;
+    const originalLog = window.console.log;
+    const originalWarn = window.console.warn;
 
     const captureLog = (type: string, ...args: any[]) => {
       const msg = args.map(arg => {
@@ -43,25 +45,25 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
       setConsoleErrors(prev => [...prev.slice(-50), `[${new Date().toLocaleTimeString()}][${type}] ${msg}`]);
     };
 
-    console.error = (...args: any[]) => {
+    window.console.error = (...args: any[]) => {
       captureLog('ERROR', ...args);
-      originalError.apply(console, args);
+      originalError.apply(window.console, args);
     };
-    console.log = (...args: any[]) => {
+    window.console.log = (...args: any[]) => {
       captureLog('LOG', ...args);
-      originalLog.apply(console, args);
+      originalLog.apply(window.console, args);
     };
-    console.warn = (...args: any[]) => {
+    window.console.warn = (...args: any[]) => {
       captureLog('WARN', ...args);
-      originalWarn.apply(console, args);
+      originalWarn.apply(window.console, args);
     };
 
     return () => { 
-      console.error = originalError; 
-      console.log = originalLog;
-      console.warn = originalWarn;
+      window.console.error = originalError; 
+      window.console.log = originalLog;
+      window.console.warn = originalWarn;
     };
-  }, []); // supabase依存を外して確実に初期化
+  }, []); 
 
   const handleAuth = () => {
     if (password === '2026') setIsAuth(true)
