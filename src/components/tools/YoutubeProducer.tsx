@@ -23,6 +23,16 @@ const GENRES = [
   '🎮 ゲーム実況', '🍲 料理', '✈️ 旅行', '📰 ニュース', '🗣️ 対談'
 ];
 
+// 戦略パーツ（YouTube向け）
+const STRATEGY_PARTS = [
+  { label: "衝撃・暴露", content: "【戦略：衝撃】業界の裏側や誰も知らない真実を暴く、クリックせずにはいられない構成。" },
+  { label: "徹底解説", content: "【戦略：有益】初心者でも10分でマスターできる、図解を多用した神解説の構成。" },
+  { label: "ルーティン", content: "【戦略：没入】憧れの生活や仕事の裏側を、シネマティックな映像美で魅せる構成。" },
+  { label: "検証・比較", content: "【戦略：納得】巷の噂や新製品をガチ検証し、独自の結論を導き出す構成。" },
+  { label: "泣ける話", content: "【戦略：共感】視聴者の心に深く刺さり、コメント欄が温かくなるエモーショナルな構成。" },
+  { label: "効率化Tips", content: "【戦略：時短】明日から人生が変わる時短術や生産性向上テクニックを詰め込んだ構成。" }
+];
+
 export default function YoutubeProducer() {
   const [activeTab, setActiveTab] = useState('transcribe');
   const [selectedGenre, setSelectedGenre] = useState(GENRES[0]);
@@ -34,9 +44,37 @@ export default function YoutubeProducer() {
   const [transcriptionResult, setTranscriptionResult] = useState('');
   const [scriptResult, setScriptResult] = useState('');
   const [score, setScore] = useState<number | null>(null);
+  const [trends, setTrends] = useState<string[]>([]);
+  const [isLoadingTrends, setIsLoadingTrends] = useState(false);
+  const [apiStatus, setApiStatus] = useState<'loading' | 'live' | 'local' | 'error'>('loading');
+  const [inputData, setInputData] = useState('');
   
   const ffmpegRef = useRef(new FFmpeg());
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const fetchTrends = async () => {
+    setIsLoadingTrends(true);
+    setApiStatus('loading');
+    try {
+      const response = await fetch('/api/trends');
+      if (!response.ok) throw new Error('API Error');
+      const data = await response.json();
+      if (data.trends && data.trends.length > 0) {
+        setTrends(data.trends);
+        setApiStatus(data.isLive ? 'live' : 'local');
+      } else {
+        throw new Error('No data');
+      }
+    } catch (error) {
+      console.error('Fetch trends error:', error);
+      setTrends([]);
+      setApiStatus('error');
+    } finally {
+      setIsLoadingTrends(false);
+    }
+  };
+
+  useEffect(() => { fetchTrends(); }, []);
 
   // 憲法：工程の定義
   const STEPS = ["素材準備", "文字起こし", "台本作成", "ビジュアル設計", "SEO設定", "最終確認"];
@@ -89,8 +127,8 @@ export default function YoutubeProducer() {
   };
 
   const PROMPTS = {
-    script: `あなたはプロのYouTube作家です。以下のデータを元に最高に面白い台本を作成してください。\n\n【ジャンル】: ${selectedGenre}\n【素材】:\n${transcriptionResult || '（未入力）'}`,
-    character: `以下の台本から登場人物を抽出し、DALL-E 3用のプロンプト（アニメ・イラスト調）を作成してください。\n\n【台本】:\n${scriptResult || transcriptionResult || '（未入力）'}`,
+    script: `あなたはプロのYouTube作家です。以下の最新トレンドと戦略を元に、最高に面白い動画台本（構成案）を作成してください。\n\n【ジャンル】: ${selectedGenre}\n【トレンド・素材】:\n${inputData || transcriptionResult || '（未入力）'}`,
+    character: `以下の台本から登場人物を抽出し、DALL-E 3用のプロンプト（アニメ・イラスト調）を作成してください。\n\n【台本】:\n${scriptResult || inputData || transcriptionResult || '（未入力）'}`,
     thumbnail: `視聴者が思わずクリックしたくなる16:9サムネイルの構成案と、画像生成AIへの指示を作成してください。\n\n【内容】:\n${scriptResult || transcriptionResult || '（未入力）'}`,
     seo: `SEOに最適なタイトル案5つ、タグ15個、動画説明文を作成してください。\n\n【内容】:\n${scriptResult || '（未入力）'}`,
     bgm: `動画の雰囲気に合うBGM構成案と、Suno AI用プロンプトを作成してください。\n\n【内容】:\n${scriptResult || transcriptionResult || '（未入力）'}`
@@ -218,11 +256,94 @@ export default function YoutubeProducer() {
           <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3.5rem] p-8 md:p-16 shadow-[0_40px_100px_rgba(0,0,0,0.6)] animate-in fade-in zoom-in-95 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-600 via-orange-600 to-yellow-600" />
             <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase tracking-tighter mb-8 flex items-center gap-3"><FileText className="text-red-500" size={40} /> ② 台本構成プロンプト</h3>
-            <div className="flex flex-wrap justify-center gap-3 mb-10">
-              {GENRES.map(g => (
-                <button key={g} onClick={() => setSelectedGenre(g)} className={`px-5 py-2.5 rounded-full font-black text-xs transition-all ${selectedGenre === g ? 'bg-red-600 text-white shadow-lg scale-110' : 'bg-slate-950 text-slate-500 border border-slate-800 hover:bg-slate-800'}`}>{g}</button>
-              ))}
+            
+            {/* 🚀 【新・皇帝の剣】 トレンド ＋ 戦略パーツ エリア */}
+            <div className="mb-12 space-y-8">
+              <div className="grid lg:grid-cols-2 gap-8">
+                {/* リアルタイムトレンド */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between px-4">
+                    <div className="flex items-center gap-2 text-red-500 animate-pulse">
+                      <Search size={20} />
+                      <p className="text-xs font-black uppercase italic tracking-widest">Real-time Trends</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {apiStatus === 'live' && (
+                        <div className="flex items-center gap-2 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/50">
+                          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                          <span className="text-[9px] font-black text-green-500 uppercase">LIVE</span>
+                        </div>
+                      )}
+                      {apiStatus === 'local' && (
+                        <div className="flex items-center gap-2 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/50">
+                          <div className="w-2 h-2 rounded-full bg-amber-500" />
+                          <span className="text-[9px] font-black text-amber-400 uppercase">LOCAL</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {isLoadingTrends ? (
+                      Array(4).fill(0).map((_, i) => <div key={i} className="h-16 bg-slate-800 rounded-xl animate-pulse" />)
+                    ) : (
+                      trends.map((t, i) => {
+                        const line = `【トレンド】：${t}`;
+                        const isActive = inputData.includes(line);
+                        return (
+                          <Button 
+                            key={i} 
+                            variant="outline" 
+                            onClick={() => setInputData(prev => prev.includes(line) ? prev.split('\n').filter(l => l !== line).join('\n') : (prev ? `${prev}\n${line}` : line))}
+                            className={`h-16 border-2 font-black text-[10px] md:text-xs uppercase italic rounded-xl transition-all ${isActive ? 'bg-red-600 border-white text-white shadow-lg scale-95' : 'border-slate-800 bg-slate-950 text-slate-300'}`}
+                          >
+                            {t}
+                          </Button>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+
+                {/* 動画戦略パーツ */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-orange-500 px-4">
+                    <Zap size={20} />
+                    <p className="text-xs font-black uppercase italic tracking-widest">Video Strategy</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {STRATEGY_PARTS.map((p, i) => {
+                      const isActive = inputData.includes(p.content);
+                      return (
+                        <Button 
+                          key={i} 
+                          variant="outline" 
+                          onClick={() => setInputData(prev => prev.includes(p.content) ? prev.split('\n').filter(l => l !== p.content).join('\n') : (prev ? `${prev}\n${p.content}` : p.content))}
+                          className={`h-16 border-2 font-black text-[10px] md:text-xs uppercase italic rounded-xl transition-all ${isActive ? 'bg-orange-600 border-white text-white shadow-lg scale-95' : 'border-slate-800 bg-slate-950 text-orange-400'}`}
+                        >
+                          {p.label}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* 指示プレビュー & ジャンル選択 */}
+              <div className="bg-slate-950 p-8 rounded-[2.5rem] border border-slate-800 shadow-inner space-y-6">
+                <div className="flex flex-wrap justify-center gap-2">
+                  {GENRES.map(g => (
+                    <button key={g} onClick={() => setSelectedGenre(g)} className={`px-4 py-1.5 rounded-full font-black text-[10px] transition-all ${selectedGenre === g ? 'bg-red-600 text-white' : 'bg-slate-900 text-slate-500 border border-slate-800'}`}>{g}</button>
+                  ))}
+                </div>
+                <textarea 
+                  value={inputData} 
+                  onChange={(e) => setInputData(e.target.value)} 
+                  placeholder="上のトレンドと戦略を選んで、台本指示を錬成..." 
+                  className="w-full h-32 bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 text-sm text-white font-bold focus:border-red-600 outline-none leading-relaxed" 
+                />
+              </div>
             </div>
+
             {renderCopySection(PROMPTS.script, 'CLAUDE', 'https://claude.ai', 'character')}
             <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 space-y-4 mt-10 shadow-inner">
                <div className="flex items-center gap-3"><ClipboardPaste className="h-6 w-6 text-orange-500" /><h4 className="text-sm font-black text-white italic uppercase tracking-widest">Master Script Result</h4></div>
