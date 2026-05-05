@@ -17,16 +17,16 @@ const TABS = [
 ];
 
 const CATEGORIES = [
-  { id: 'tshirt', label: 'T-Shirts (B+C 3001)', kw: 't-shirt,premium-apparel' },
-  { id: 'hoodie', label: 'Hoodies', kw: 'hoodie,premium-cotton' },
-  { id: 'cap', label: 'Caps', kw: 'hat,headwear' },
-  { id: 'mug', label: 'Mugs', kw: 'ceramic-mug' }
+  { id: 'tshirt', label: 'T-Shirts (B+C 3001)', kw: 't-shirt,apparel,design' },
+  { id: 'hoodie', label: 'Hoodies', kw: 'hoodie,sweatshirt,design' },
+  { id: 'cap', label: 'Caps', kw: 'cap,hat,design' },
+  { id: 'mug', label: 'Mugs', kw: 'mug,coffee-cup,design' }
 ];
 
 const STYLES = [
-  { id: 'wafu', label: '和風・浮世絵', kw: 'ukiyo-e,japanese-art' },
+  { id: 'wafu', label: '和風・浮世絵', kw: 'ukiyo-e,japanese-style' },
   { id: 'cyber', label: 'サイバーパンク', kw: 'cyberpunk,neon' },
-  { id: 'mini', label: 'ミニマリズム', kw: 'minimalist,graphic' },
+  { id: 'mini', label: 'ミニマリズム', kw: 'minimalist,vector' },
   { id: 'street', label: 'ストリート', kw: 'streetwear,urban' },
   { id: 'vintage', label: 'ビンテージ', kw: 'vintage,retro' }
 ];
@@ -36,35 +36,36 @@ const SIZES = ['S', 'M', 'L', 'XL', '2XL', '3XL'];
 export default function AISelectShop() {
   const [activeTab, setActiveTab] = useState('concept');
   const [trends, setTrends] = useState<string[]>([]);
-  const [isLoadingTrends, setIsLoadingTrends] = useState(false);
   const [apiStatus, setApiStatus] = useState<'loading' | 'live' | 'local'>('loading');
-  const [targetKeyword, setTargetKeyword] = useState('あああああ'); // 動作確認用初期値
+  const [targetKeyword, setTargetKeyword] = useState('');
   const [selectedStyle, setSelectedStyle] = useState(STYLES[0]);
-  const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[1]); // Hoodies
+  const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>(SIZES);
   const [conceptResult, setConceptResult] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [mockupImage, setMockupImage] = useState<string | null>(null);
-  const [activeAction, setActiveAction] = useState<string | null>(null);
+  const [shopifyUrl, setShopifyUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     fetchTrends();
   }, []);
 
-  // 🚀 【仕組みの核心】Shopify/Printful API ドキュメントに基づいた完全同期エンジン
+  // 🚀 【解決】画像を根本から修正。LoremFlickrの不安定さを排除。
+  // Source.Unsplash を使い、より高速かつ確実に画像が切り替わるように再構築
   useEffect(() => {
     if (!targetKeyword) return;
     const timer = setTimeout(() => {
       const ts = new Date().getTime();
-      const imageUrl = `https://loremflickr.com/800/800/${selectedCategory.id},${selectedStyle.kw}?lock=${ts}`;
+      // キーワードとスタイルを正確に画像検索に反映させる
+      const query = encodeURIComponent(`${targetKeyword},${selectedStyle.kw},${selectedCategory.id}`);
+      const imageUrl = `https://source.unsplash.com/featured/800x800?${query}&sig=${ts}`;
       setMockupImage(imageUrl);
     }, 600);
     return () => clearTimeout(timer);
   }, [targetKeyword, selectedStyle, selectedCategory]);
 
   const fetchTrends = async () => {
-    setIsLoadingTrends(true);
     try {
       const response = await fetch('/api/trends');
       const data = await response.json();
@@ -72,40 +73,25 @@ export default function AISelectShop() {
         setTrends(data.trends);
         setApiStatus(data.isLive ? 'live' : 'local');
       }
-    } catch (e) { setApiStatus('local'); } finally { setIsLoadingTrends(false); }
+    } catch (e) { setApiStatus('local'); }
   };
 
   const generateAndPublish = async () => {
     if (!targetKeyword) return;
     setIsGenerating(true);
-    setActiveAction('publishing');
-    setConceptResult('');
+    setShopifyUrl(null);
     try {
-      // 1. アーキテクチャ生成
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setConceptResult(`【PRODUCT_CORE】 : \nBeLLa+Canvas 3001 Premium\n【SHOP IDENTITY】 : \n${targetKeyword.toUpperCase()}\n【STYLE】 : ${selectedStyle.label}\n【CAT】 : ${selectedCategory.label}\n【SIZE】 : ${selectedSizes.join(', ')}\n\n設計を執行完了\n\n>_ PRINTFUL_SYNC: OK\n>_ SHOPIFY_PUBLISH: WAITING...`);
-      
-      // 2. 本物のAPI執行 (Printful -> Shopify)
       const res = await fetch('/api/tools/printful', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          action: 'create-product', 
-          keyword: targetKeyword, 
-          style: selectedStyle.label, 
-          sizes: selectedSizes,
-          mockupUrl: mockupImage 
-        }),
+        body: JSON.stringify({ action: 'create-product', keyword: targetKeyword, style: selectedStyle.label, sizes: selectedSizes, mockupUrl: mockupImage }),
       });
       const data = await res.json();
       if (data.success) {
-        alert('SHOPIFYへの出品が完了しました！');
-        setConceptResult(prev => prev + '\n>_ SHOPIFY_PUBLISH: SUCCESS ✅');
+        setShopifyUrl(data.shopify.url);
+        setConceptResult(`【PRODUCT_CORE】 : \nBeLLa+Canvas 3001 Premium\n【SHOP IDENTITY】 : \n${targetKeyword.toUpperCase()}\n【STYLE】 : ${selectedStyle.label}\n【CAT】 : ${selectedCategory.label}\n【SIZE】 : ${selectedSizes.join(', ')}\n\n設計を執行完了 ✅\nSHOPIFYへの出品が完了しました！`);
       }
-    } finally { 
-      setIsGenerating(false); 
-      setActiveAction(null);
-    }
+    } finally { setIsGenerating(false); }
   };
 
   const toggleSize = (size: string) => {
@@ -124,7 +110,6 @@ export default function AISelectShop() {
 
       {activeTab === 'concept' && (
         <div className="grid lg:grid-cols-3 gap-8 animate-in fade-in duration-700">
-          {/* 左：パラメータ */}
           <div className="lg:col-span-1 space-y-6">
             <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 shadow-2xl space-y-8">
               <div className="space-y-4">
@@ -156,26 +141,25 @@ export default function AISelectShop() {
             </Card>
           </div>
 
-          {/* 中：ライブエンジン */}
           <div className="lg:col-span-2">
             <Card className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 md:p-12 shadow-2xl relative overflow-hidden h-full">
               <div className="grid md:grid-cols-2 gap-12 h-full">
                 <div className="space-y-8 flex flex-col items-center">
                   <div className="w-full flex items-center gap-4 mb-4"><div className="w-12 h-12 rounded-xl bg-indigo-600/20 flex items-center justify-center border border-indigo-500/20"><Activity className="text-indigo-400" /></div><h3 className="text-4xl font-black text-white italic uppercase tracking-tighter">LIVE ENGINE</h3></div>
-                  <div className="relative aspect-square w-full rounded-[2.5rem] overflow-hidden border-4 border-white/5 bg-[#0a0b14] shadow-inner mb-8">
-                    {mockupImage ? <img src={mockupImage} key={mockupImage} className="w-full h-full object-cover animate-in fade-in duration-500" alt="Preview" /> : <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4 opacity-20"><Eye size={64} /><p className="text-sm font-black uppercase tracking-widest">Awaiting Parameters...</p></div>}
+                  <div className="relative aspect-square w-full rounded-[2.5rem] overflow-hidden border-4 border-white/5 bg-black shadow-inner mb-8">
+                    {mockupImage ? <img src={mockupImage} key={mockupImage} className="w-full h-full object-cover animate-in fade-in" alt="Preview" /> : <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4 opacity-20"><Eye size={64} /><p className="text-sm font-black uppercase tracking-widest">Awaiting Parameters...</p></div>}
                     {isGenerating && <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center"><Loader2 className="animate-spin text-indigo-500" size={48} /></div>}
                   </div>
-                  <Button onClick={generateAndPublish} disabled={!targetKeyword || isGenerating} className="w-full h-24 bg-white text-black hover:bg-indigo-600 hover:text-white font-black text-3xl rounded-3xl shadow-2xl mt-auto transition-all flex items-center justify-center gap-4 group">
+                  <Button onClick={generateAndPublish} disabled={!targetKeyword || isGenerating} className="w-full h-24 bg-white text-black hover:bg-indigo-600 hover:text-white font-black text-3xl rounded-3xl shadow-2xl mt-auto transition-all flex items-center justify-center gap-4">
                     {isGenerating ? <Loader2 className="animate-spin" /> : <Wand2 size={40} />}
                     <span>全自動設計を執行</span>
                   </Button>
                 </div>
 
-                {/* 右：アーキテクチャ出力 */}
                 <div className="flex-1 bg-[#0a0b14] rounded-[2.5rem] p-8 border border-white/5 shadow-inner flex flex-col relative overflow-hidden">
                   <div className="flex items-center gap-3 mb-6 border-b border-white/5 pb-4 text-slate-500 font-black italic uppercase text-[10px] tracking-widest">{`>_ SHOPIFY ARCHITECTURE OUTPUT`}</div>
-                  <textarea value={conceptResult} readOnly className="flex-1 bg-transparent text-xl md:text-3xl text-emerald-400 font-mono italic outline-none resize-none leading-relaxed custom-scrollbar" placeholder="Ready for generation..." />
+                  <textarea value={conceptResult} readOnly className="flex-1 bg-transparent text-xl md:text-3xl text-emerald-400 font-mono italic outline-none resize-none leading-relaxed" placeholder="Ready for generation..." />
+                  {shopifyUrl && <Button onClick={() => window.open(shopifyUrl, '_blank')} className="mt-6 w-full h-20 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl italic flex items-center justify-center gap-4 shadow-xl animate-bounce"><Globe size={24}/> SHOPIFY管理画面を開く</Button>}
                   <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none"><Sparkles size={120} className="text-emerald-500" /></div>
                 </div>
               </div>
