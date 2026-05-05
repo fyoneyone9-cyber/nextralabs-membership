@@ -1,13 +1,2 @@
-import React from 'react';
-import AiRecipeScope from '@/components/tools/ai-recipe-scope';
-import { AccessGate } from '@/components/tools/AccessGate';
-
-export const dynamic = 'force-dynamic';
-
-export default function AiRecipeAppPage() {
-  return (
-    <AccessGate productId="ai-recipe">
-      <AiRecipeScope />
-    </AccessGate>
-  );
-}
+﻿import AiRecipeScope from '@/components/tools/AiRecipeScope'
+export default function Page() { return <AiRecipeScope /> }

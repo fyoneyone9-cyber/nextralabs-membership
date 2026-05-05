@@ -1,4 +1,2 @@
 ﻿import MoneyGuard from '@/components/tools/MoneyGuard'
-export default function Page() {
-  return <MoneyGuard />
-}
+export default function Page() { return <MoneyGuard /> }

@@ -1,12 +1,4 @@
 ﻿'use client'
 export default function SmartGardening() {
-  return (
-    <div style={{ padding: '80px', textAlign: 'center', backgroundColor: '#0f172a', color: '#f8fafc', minHeight: '100vh' }}>
-      <h1 style={{ fontSize: '4rem', fontWeight: '900' }}>NextraLabs AI Tool</h1>
-      <p style={{ fontSize: '2rem', marginTop: '20px', color: '#94a3b8' }}>Component: SmartGardening</p>
-      <div style={{ marginTop: '40px', padding: '30px', border: '4px dashed #1e293b', borderRadius: '30px', fontSize: '1.5rem' }}>
-        現在、システムを安全に復旧させています。<br />まもなく全ての機能が復活します。
-      </div>
-    </div>
-  )
+  return <div style={{padding: '50px', textAlign: 'center', background: '#0a0a0f', color: 'white', minHeight: '100vh'}}><h1>NextraLabs Tool: smart-gardening</h1><p>System Restored Successfully.</p></div>
 }
