@@ -124,17 +124,19 @@ export default function InboxOrganizer() {
           {/* 🔥 RIGHT: MESSAGE FEED (THE MATRIX) */}
           <div className="lg:col-span-2 space-y-8">
              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { id: 'urgent_important', label: 'Urgent/High', color: 'border-red-600 text-red-500 bg-red-600/5', icon: Zap },
-                  { id: 'urgent_not_important', label: 'Urgent/Low', color: 'border-amber-500 text-amber-500 bg-amber-500/5', icon: Clock },
-                  { id: 'not_urgent_important', label: 'Plan/Focus', color: 'border-blue-500 text-blue-500 bg-blue-500/5', icon: ListChecks },
-                  { id: 'not_urgent_not_important', label: 'Backlog/Arch', color: 'border-slate-800 text-slate-500 bg-slate-900/50', icon: Filter },
-                ].map(q => (
+               { id: 'urgent_important', label: 'Urgent/High', color: 'border-red-600 text-red-500 bg-red-600/5', icon: Zap },
+               { id: 'urgent_not_important', label: 'Urgent/Low', color: 'border-amber-500 text-amber-500 bg-amber-500/5', icon: Clock },
+               { id: 'not_urgent_important', label: 'Plan/Focus', color: 'border-blue-500 text-blue-500 bg-blue-500/5', icon: ListChecks },
+               { id: 'not_urgent_not_important', label: 'Backlog/Arch', color: 'border-slate-800 text-slate-500 bg-slate-900/50', icon: Filter },
+             ].map(q => {
+               const Icon = q.icon;
+               return (
                   <div key={q.id} className={`p-4 rounded-2xl border-2 flex items-center justify-between shadow-lg ${q.color}`}>
-                     <div className="flex items-center gap-3"><q.icon size={18}/><span className="text-xs font-black uppercase italic">{q.label}</span></div>
+                     <div className="flex items-center gap-3"><Icon size={18}/><span className="text-xs font-black uppercase italic">{q.label}</span></div>
                      <span className="text-lg font-black italic">{loading ? '...' : emails.filter(e => e.quadrant === q.id).length}</span>
                   </div>
-                ))}
+               );
+             })}
              </div>
 
              <div className="bg-slate-900/50 border-2 border-slate-800 rounded-[3rem] p-10 min-h-[600px] shadow-inner space-y-6">
