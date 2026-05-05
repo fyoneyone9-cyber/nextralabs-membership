@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { Terminal, ChevronDown, ChevronUp, AlertCircle, Copy, CheckCircle2, ShieldQuestion, Bug, Lock, Unlock, Database, Activity, History, ShieldAlert, Cpu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge' // 🛠️ 追加
 
 interface DebugPanelProps {
   data: any
