@@ -43,7 +43,7 @@ const MasterEngine = () => {
     const w = canvas.width, h = canvas.height;
     
     ctx.fillStyle = '#050507'; ctx.fillRect(0, 0, w, h);
-    ctx.fillStyle = '#FFFFFF'; // T-shirt Body
+    ctx.fillStyle = '#FFFFFF'; 
     ctx.beginPath();
     ctx.moveTo(w*0.2, h*0.1); ctx.lineTo(w*0.8, h*0.1); ctx.lineTo(w*0.9, h*0.3); ctx.lineTo(w*0.8, h*0.35);
     ctx.lineTo(w*0.8, h*0.9); ctx.lineTo(w*0.2, h*0.9); ctx.lineTo(w*0.2, h*0.35); ctx.lineTo(w*0.1, h*0.3);
@@ -58,7 +58,7 @@ const MasterEngine = () => {
       ctx.fillStyle = '#000000'; ctx.font = '900 45px Impact'; ctx.textAlign = 'center';
       ctx.fillText(keyword.toUpperCase(), cx, cy);
     }
-    setMockup(canvas.toDataURL());
+    setMockup(canvas.toDataURL('image/png'));
   }, [keyword, style]);
 
   useEffect(() => {
@@ -66,35 +66,53 @@ const MasterEngine = () => {
   }, [keyword, style, drawDesign]);
 
   const handlePublish = async () => {
+    if (isPublishing) return;
     setIsPublishing(true);
     try {
+      // 🚀 執行：Printful API経由でShopifyへPush
       const res = await fetch('/api/tools/printful', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'create-product', keyword, style, mockupUrl: mockup }),
+        body: JSON.stringify({ 
+          action: 'create-product', 
+          keyword, 
+          style, 
+          mockupUrl: mockup // Canvasで生成した本物のデザインURL（DataURL）
+        }),
       });
       const d = await res.json();
-      if (d.success) { alert('Shopify出品完了！'); setCurrentStep(3); }
-    } catch { alert('エラー'); } finally { setIsPublishing(false); }
+      if (d.success) { 
+        alert('SHOPIFYへの出品リクエストを送信しました！管理画面を確認してください。'); 
+        setCurrentStep(3); 
+      } else {
+        alert('APIエラー: ' + (d.error || '不明なエラー'));
+      }
+    } catch (e) { 
+      alert('通信失敗'); 
+    } finally { 
+      setIsPublishing(false); 
+    }
   };
 
   return (
     <div className="max-w-6xl mx-auto space-y-12">
       <div className="text-center">
-        <h1 className="text-6xl font-black text-white italic tracking-tighter">AI SELECT SHOP v13.5</h1>
+        <h1 className="text-6xl font-black text-white italic tracking-tighter">AI SELECT SHOP v14.0</h1>
+        <div className="inline-block bg-[#5845e0] text-white font-black px-6 py-1 rounded-full uppercase italic text-xs mt-4">Masterpiece Restoration</div>
       </div>
 
-      <div className="flex gap-4 justify-center">
+      <div className="flex gap-4 justify-center max-w-xl mx-auto">
         {[1, 2, 3].map(s => (
-          <button key={s} onClick={() => setCurrentStep(s as any)} className={`px-10 py-4 rounded-2xl font-black italic transition-all ${currentStep === s ? 'bg-[#5845e0] text-white scale-110 shadow-2xl' : 'text-slate-600 border border-white/5'}`}>Step {s}</button>
+          <button key={s} onClick={() => setCurrentStep(s as any)} className={`flex-1 py-4 rounded-2xl font-black italic transition-all ${currentStep === s ? 'bg-[#5845e0] text-white scale-110 shadow-2xl' : 'text-slate-600 border border-white/5'}`}>Step {s}</button>
         ))}
       </div>
 
       {currentStep === 1 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in">
           {trends.map(t => (
-            <div key={t.id} className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[2.5rem] hover:border-[#5845e0] cursor-pointer" onClick={() => { setKeyword(t.name); setCurrentStep(2); }}>
-              <p className="text-4xl font-black italic uppercase text-white">{t.name}</p>
+            <div key={t.id} className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[2.5rem] hover:border-[#5845e0] cursor-pointer group" onClick={() => { setKeyword(t.name); setCurrentStep(2); }}>
+              <p className="text-3xl font-black italic uppercase text-white group-hover:text-[#5845e0] transition-colors">{t.name}</p>
+              <div className="mt-4 text-[10px] text-emerald-500 font-bold tracking-widest uppercase">Select & Create</div>
             </div>
           ))}
         </div>
@@ -102,25 +120,36 @@ const MasterEngine = () => {
 
       {currentStep === 2 && (
         <div className="grid lg:grid-cols-2 gap-12 animate-in zoom-in-95">
-          <div className="bg-[#13141f] p-10 rounded-[3rem] border-2 border-white/5 space-y-10 shadow-2xl">
-            <input value={keyword} onChange={(e) => setKeyword(e.target.value)} className="w-full h-20 text-4xl font-black italic bg-black border-2 border-white/10 rounded-2xl px-8 text-white outline-none" />
-            <div className="grid grid-cols-2 gap-4">
-              {STYLES.map(s => <button key={s.id} onClick={() => setStyle(s.id)} className={`py-4 rounded-xl font-black uppercase italic border-2 ${style === s.id ? 'bg-[#5845e0] text-white border-white' : 'bg-black text-slate-600 border-white/5'}`}>{s.name}</button>)}
+          <div className="bg-[#13141f] p-10 rounded-[3rem] border-2 border-white/5 space-y-10 shadow-2xl flex flex-col">
+            <div className="space-y-4">
+               <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest px-2 italic">Design Keyword</label>
+               <input value={keyword} onChange={(e) => setKeyword(e.target.value)} className="w-full h-20 text-4xl font-black italic bg-black border-2 border-white/10 rounded-2xl px-8 text-white outline-none focus:border-[#5845e0]" />
             </div>
-            <button onClick={handlePublish} disabled={isPublishing} className="w-full h-28 bg-emerald-600 text-white font-black text-4xl italic rounded-[2.5rem] shadow-xl flex items-center justify-center gap-4">
-              {isPublishing ? "SENDING..." : "SHOPIFY 出品"}
+            <div className="grid grid-cols-2 gap-4">
+              {STYLES.map(s => <button key={s.id} onClick={() => setStyle(s.id)} className={`py-4 rounded-xl font-black uppercase italic border-2 transition-all ${style === s.id ? 'bg-[#5845e0] text-white border-white' : 'bg-black text-slate-600 border-white/5'}`}>{s.name}</button>)}
+            </div>
+            <button onClick={handlePublish} disabled={isPublishing} className="w-full h-28 bg-emerald-600 text-white font-black text-4xl italic rounded-[2.5rem] shadow-xl flex items-center justify-center gap-4 mt-auto active:scale-95 transition-all">
+              {isPublishing ? <Loader2 className="animate-spin" size={40} /> : "SHOPIFY 出品"}
             </button>
           </div>
-          <div className="bg-[#13141f] rounded-[3rem] border-2 border-white/5 p-12 flex justify-center shadow-2xl">
-            <canvas ref={canvasRef} width={400} height={500} className="bg-black rounded-3xl border border-white/5" />
+          <div className="bg-[#13141f] rounded-[3rem] border-2 border-white/5 p-12 flex flex-col items-center justify-center shadow-2xl">
+            <canvas ref={canvasRef} width={400} height={500} className="bg-black rounded-3xl border border-white/5 shadow-inner" />
+            <p className="mt-6 text-[10px] text-slate-700 font-black uppercase tracking-[0.5em]">Real-time Design Logic</p>
           </div>
         </div>
       )}
 
       {currentStep === 3 && (
-        <div className="text-center py-20 animate-in slide-in-from-bottom-8">
-          <h2 className="text-5xl font-black text-white italic mb-10">SUCCESS!</h2>
-          <button onClick={() => window.open('https://z5ju1n-vs.myshopify.com/admin/products', '_blank')} className="h-20 px-12 bg-white text-black font-black rounded-2xl text-xl">管理画面を確認</button>
+        <div className="text-center py-20 animate-in slide-in-from-bottom-8 space-y-8">
+          <div className="w-32 h-32 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto border-2 border-emerald-500/20">
+             <CheckCircle2 size={64} className="text-emerald-500 animate-bounce" />
+          </div>
+          <h2 className="text-5xl font-black text-white italic tracking-tighter">PUBLISH SUCCESSFUL!</h2>
+          <p className="text-slate-500 font-bold max-w-md mx-auto">ShopifyストアとPrintfulの同期が開始されました。管理画面に商品が反映されるまで1分ほどお待ちください。</p>
+          <div className="flex gap-4 justify-center">
+             <button onClick={() => window.open('https://z5ju1n-vs.myshopify.com/admin/products', '_blank')} className="h-20 px-12 bg-white text-black font-black rounded-2xl text-xl hover:bg-[#96bf48] transition-colors">Shopify 管理画面</button>
+             <button onClick={() => setCurrentStep(1)} className="h-20 px-12 bg-slate-800 text-white font-black rounded-2xl text-xl">次のトレンドへ</button>
+          </div>
         </div>
       )}
     </div>
