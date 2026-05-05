@@ -3,87 +3,172 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Label } from '@/components/ui/label'
-import { DebugPanel } from './DebugPanel'
-import { ArrowRight, Copy, HelpCircle, Zap, CheckCircle2, Globe, Video, FileText, Users, ImageIcon, Music, Type } from 'lucide-react'
+import { 
+  ArrowRight, BookOpen, CheckCircle2, Zap, ChevronRight, Copy, ExternalLink, RotateCcw, Lightbulb, ClipboardPaste, ListChecks, Landmark, Layout, Globe, FileText, Lock
+} from 'lucide-react'
 
-const STEPS = [
-  { id: 1, label: 'STEP 01', what: '初期設定', how: '情報を入力してください。' },
-  { id: 2, label: 'STEP 02', what: 'AI解析', how: 'プロンプトをAIに渡して実行してください。' },
-  { id: 3, label: 'STEP 03', what: '結果出力', how: '最終成果物を確認・保存します。' }
-];
-
-const MAJOR_AI = [
-  { id: 'gemini', name: 'GEMINI', url: 'https://gemini.google.com', icon: '💎' },
-  { id: 'chatgpt', name: 'GPT', url: 'https://chatgpt.com', icon: '🟢' },
-  { id: 'claude', name: 'CLAUDE', url: 'https://claude.ai', icon: '🟠' }
+const TABS = [
+  { id: 'account', label: '① KDP設定', icon: Landmark },
+  { id: 'manuscript', label: '② 原稿・表紙', icon: FileText },
+  { id: 'register', label: '③ 本の情報', icon: ListChecks },
+  { id: 'publish', label: '④ 出版申請', icon: Globe },
 ];
 
 export default function KdpGuide() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [inputText, setInputText] = useState('');
+  const [activeTab, setActiveTab] = useState('account');
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText("詳細に漏れのないように抜き出して下さい。:" + inputText);
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const currentInfo = STEPS[currentStep - 1] || STEPS[0];
+  const renderGuide = (steps: string[]) => (
+    <div className="bg-slate-900 border-2 border-indigo-600/50 rounded-2xl p-5 md:p-8 mb-8 flex items-start gap-4 shadow-xl">
+      <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg"><Lightbulb className="text-white" /></div>
+      <div className="space-y-1">
+        <p className="text-sm font-black text-indigo-400 uppercase italic tracking-widest">KDP Strategy Guide</p>
+        <div className="space-y-1">
+          {steps.map((s, i) => (
+            <p key={i} className="text-xs md:text-lg text-slate-200 font-bold flex items-center gap-2 md:gap-4 leading-tight">
+              <span className="flex items-center justify-center w-5 h-5 md:w-7 md:h-7 bg-indigo-600 text-white rounded-full text-[10px] md:text-sm italic shrink-0 font-black">{i+1}</span> {s}
+            </p>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-16 min-h-screen text-slate-200 font-sans pb-20">
-      <div className="text-center">
-        <h1 className="text-5xl md:text-7xl font-black text-white uppercase italic tracking-tighter">KdpGuide</h1>
+    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-slate-950">
+      <div className="text-center space-y-2">
+        <Badge className="bg-indigo-600 text-white font-black italic tracking-widest px-4 py-1 text-[10px] uppercase rounded-full">KINDLE PUBLISHING HUB</Badge>
+        <h1 className="text-4xl md:text-7xl font-black text-white uppercase italic tracking-tighter leading-tight drop-shadow-xl">Kindle 出版ナビ</h1>
       </div>
 
-      {/* 🟢 PROGRESS BAR - MANDATORY IN ALL TOOLS */}
-      <div className="flex items-center justify-center max-w-5xl mx-auto overflow-x-auto pb-10 px-10">
-        <div className="flex items-center justify-between w-full min-w-[600px]">
-          {STEPS.map((s, i) => (
-            <div key={s.id} className="flex items-center flex-1 last:flex-none cursor-pointer" onClick={() => setCurrentStep(s.id)}>
-              <div className={"flex flex-col items-center gap-3 transition-all " + (currentStep === s.id ? 'opacity-100 scale-125' : 'opacity-20')}>
-                <div className={"w-12 h-12 rounded-2xl flex items-center justify-center border-2 " + (currentStep === s.id ? 'bg-red-600 border-red-400 text-white shadow-xl' : currentStep > s.id ? 'bg-emerald-500 border-emerald-400 text-white' : 'bg-slate-800 border-slate-700')}>
-                  {currentStep > s.id ? <CheckCircle2 className="h-6 w-6" /> : <span className="font-bold text-sm">{s.id}</span>}
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-widest">{s.label}</span>
-              </div>
-              {i < STEPS.length - 1 && <div className={"h-1 flex-1 mx-4 rounded-full transition-all " + (currentStep > s.id ? 'bg-emerald-500' : 'bg-slate-800')} />}
-            </div>
+      <div className="overflow-x-auto pb-4 scrollbar-hide">
+        <div className="bg-slate-900 border border-slate-800 p-1 flex min-w-[800px] md:min-w-full rounded-2xl shadow-2xl">
+          {TABS.map((tab) => (
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex-1 py-4 px-2 rounded-xl font-black text-sm uppercase italic transition-all flex items-center justify-center gap-2 relative ${activeTab === tab.id ? 'bg-indigo-600 text-white shadow-xl scale-[1.03] z-10' : 'text-slate-500 hover:text-white hover:bg-slate-800'}`}>
+              <tab.icon className="w-5 h-5" /> <span>{tab.label}</span>
+            </button>
           ))}
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto bg-indigo-600 p-10 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden text-left">
-        <div className="absolute top-0 right-0 p-8 opacity-10"><HelpCircle className="h-40 w-40" /></div>
-        <div className="relative z-10 space-y-4">
-          <div className="flex items-center gap-4">
-            <Badge className="bg-white text-indigo-600 font-black px-6 py-2 text-xl rounded-2xl shadow-xl">STEP 0{currentStep}</Badge>
-            <h3 className="text-4xl font-black italic uppercase tracking-tighter">{currentInfo.what}</h3>
-          </div>
-          <p className="text-2xl font-bold leading-relaxed opacity-95">{currentInfo.how}</p>
-        </div>
-      </div>
-
-      <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-        <Card className="bg-slate-900 border-2 border-slate-800 rounded-[4rem] p-16 shadow-2xl max-w-5xl mx-auto overflow-hidden">
-          <div className="space-y-12">
-            <textarea value={inputText} onChange={(e) => setInputText(e.target.value)} placeholder="情報を入力..." className="w-full h-80 bg-slate-950 border-2 border-slate-800 rounded-[2.5rem] p-10 text-2xl font-medium focus:border-red-600 text-white shadow-inner" />
-            <Button onClick={handleCopy} className={"w-full h-32 font-black text-4xl rounded-[2rem] shadow-2xl transition-all " + (copied ? 'bg-emerald-500 text-slate-950 scale-105' : 'bg-white text-black hover:bg-slate-100')}>
-               {copied ? '✅ COPIED!' : '指示をコピー'}
-            </Button>
-            <div className="grid grid-cols-3 gap-6 pt-12 border-t border-white/5">
-              {MAJOR_AI.map(ai => (
-                <a key={ai.id} href={ai.url} target="_blank" className="h-24 bg-slate-900 border-2 border-white/5 rounded-3xl flex flex-col items-center justify-center gap-2 hover:scale-105 transition-all shadow-xl group text-slate-400 hover:text-white">
-                  <span className="text-3xl">{ai.icon}</span><span className="font-black text-xs uppercase tracking-tighter">{ai.name}</span>
-                </a>
-              ))}
+      <div className="mt-4">
+        {/* ① KDP設定 */}
+        {activeTab === 'account' && (
+          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
+            <h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-10 flex items-center gap-4 text-indigo-500"><Landmark /> ① KDPアカウント設定</h3>
+            {renderGuide([
+              'AmazonアカウントでKDPにサインインする',
+              '銀行口座と「税に関する情報（マイナンバー）」を登録',
+              'これを忘れると収益の30%が源泉徴収されるので注意！'
+            ])}
+            <div className="grid lg:grid-cols-2 gap-12">
+               <div className="space-y-6">
+                  <div className="p-6 bg-slate-950 rounded-3xl border border-slate-800">
+                     <p className="text-sm font-bold text-slate-300 mb-4 italic">KDP公式サイトへ</p>
+                     <Button variant="outline" className="w-full h-16 border-2 border-slate-800 text-slate-200 font-black text-lg rounded-2xl hover:bg-slate-900 transition-all flex items-center justify-center gap-2" onClick={() => window.open('https://kdp.amazon.co.jp/', '_blank')}>KDP サインイン ↗</Button>
+                  </div>
+               </div>
+               <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 flex flex-col justify-center space-y-4 shadow-2xl">
+                  <p className="text-amber-500 font-black uppercase text-xs italic tracking-widest flex items-center gap-2"><Zap className="w-4 h-4" /> Crucial Tip</p>
+                  <p className="text-base text-slate-300 font-bold leading-relaxed">
+                    銀行口座の登録後、「税に関する情報」セクションで「米国の源泉徴収」を防ぐために日本のマイナンバーを入力してください。
+                  </p>
+               </div>
             </div>
+            <Button onClick={() => setActiveTab('manuscript')} className="w-full h-16 md:h-20 mt-10 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-3 uppercase italic text-sm md:text-lg group">
+               ② 原稿・表紙作成へ進む <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Card>
+        )}
+
+        {/* ② 原稿・表紙 */}
+        {activeTab === 'manuscript' && (
+          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in zoom-in">
+            <h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-10 flex items-center gap-4 text-indigo-500"><FileText /> ② 原稿・表紙の準備</h3>
+            {renderGuide([
+              'Wordで原稿を作成（Kindle Createで.kpfに変換が推奨）',
+              '表紙画像を用意（JPEG/TIFFのみ、PNG不可）',
+              'AIに「内容紹介」を書かせるための指示をコピー'
+            ])}
+            <div className="grid lg:grid-cols-2 gap-12">
+               <div className="space-y-6 text-center">
+                  <div className="bg-slate-950 p-8 rounded-[3rem] border border-slate-800 space-y-6">
+                    <p className="text-white font-black italic uppercase tracking-tighter">AI 内容紹介アシスタント</p>
+                    <Button onClick={() => handleCopy("あなたはベストセラー作家です。以下の本の内容をもとに、Kindleストアで『読みたくなる』魅力的な内容紹介（商品説明）を1500字程度で作成してください。")} className={`w-full h-16 font-black rounded-xl transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-indigo-600 text-white'}`}>紹介文作成指示をコピー</Button>
+                    <div className="grid grid-cols-2 gap-4">
+                       <Button variant="outline" className="h-12 border-slate-800 text-[10px] font-black uppercase italic" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE ↗</Button>
+                       <Button variant="outline" className="h-12 border-slate-800 text-[10px] font-black uppercase italic" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT ↗</Button>
+                    </div>
+                  </div>
+               </div>
+               <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 space-y-4 shadow-2xl flex flex-col justify-center">
+                  <p className="text-indigo-400 font-black uppercase text-xs italic tracking-widest flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Checklist</p>
+                  <ul className="text-sm text-slate-300 space-y-2 font-bold italic">
+                    <li>・ページ読み方向は「左から右（横書き）」</li>
+                    <li>・目次ページが正しく機能しているか確認</li>
+                    <li>・表紙は1600 x 2560 px以上を推奨</li>
+                  </ul>
+               </div>
+            </div>
+            <Button onClick={() => setActiveTab('register')} className="w-full h-16 md:h-20 mt-10 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-3 uppercase italic text-sm md:text-lg group">
+               ③ 本の情報を登録する <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Card>
+        )}
+
+        {/* ③ 本の情報 */}
+        {activeTab === 'register' && (
+          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in zoom-in">
+            <h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-10 flex items-center gap-4 text-indigo-500"><ListChecks /> ③ 本の情報登録</h3>
+            {renderGuide([
+              'タイトル、著者名、内容紹介を入力する',
+              '「売れるキーワード（7つ）」の選定指示をコピー',
+              'KDP Selectへの登録を検討（Kindle Unlimited対応）'
+            ])}
+            <div className="space-y-10">
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <div className="bg-slate-950 rounded-2xl p-6 border border-slate-800 text-left h-40 overflow-y-auto text-[10px] text-slate-500 font-mono italic">
+                    「この本をKindleで出版します。検索にヒットしやすく、かつターゲットに刺さる『7つの検索キーワード』を提案してください。」
+                  </div>
+                  <Button onClick={() => handleCopy("この本をKindleで出版します。検索にヒットしやすく、かつターゲットに刺さる『7つの検索キーワード』を提案してください。")} className={`w-full h-16 font-black rounded-xl shadow-lg transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-indigo-600 text-white'}`}>キーワード指示をコピー</Button>
+                </div>
+                <div className="bg-slate-950 rounded-2xl p-8 border border-slate-800 flex flex-col items-center justify-center space-y-4">
+                   <p className="text-white font-black italic uppercase tracking-widest text-xs opacity-70">Recommended AI</p>
+                   <Button variant="outline" onClick={() => window.open('https://gemini.google.com', '_blank')} className="w-full h-16 border-2 border-slate-800 text-slate-300 font-black text-xl rounded-2xl hover:bg-slate-900 transition-all uppercase italic">GEMINI (SEOに強い) ↗</Button>
+                </div>
+              </div>
+            </div>
+            <Button onClick={() => setActiveTab('publish')} className="w-full h-16 md:h-20 mt-10 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-3 uppercase italic text-sm md:text-lg group">
+               ④ 最終申請へ進む <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Card>
+        )}
+
+        {/* ④ 出版申請 */}
+        {activeTab === 'publish' && (
+          <div className="animate-in fade-in zoom-in space-y-8 text-center pb-20">
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-10 md:p-20 shadow-2xl border-l-8 border-l-emerald-600 relative overflow-hidden text-left">
+               <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white"><Globe className="w-80 h-80" /></div>
+               <h3 className="text-4xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 relative z-10"><CheckCircle2 className="text-emerald-500 animate-pulse w-12 h-12" /> 出版申請ファイナル</h3>
+               <div className="bg-slate-950 rounded-[2.5rem] p-12 border border-slate-800 text-lg text-slate-200 font-bold leading-relaxed shadow-inner relative z-10">
+                  <p className="mb-6">・「ロイヤリティ 70%」を選択しましたか？</p>
+                  <p className="mb-6">・「主なマーケットプレイス」を Amazon.co.jp にしましたか？</p>
+                  <p className="mb-6">・プレビューアーでレイアウト崩れがないか最終確認しましたか？</p>
+                  <p className="text-emerald-500 uppercase italic tracking-widest text-2xl mt-10">あとは「Kindle本を出版」ボタンを押すだけです！</p>
+               </div>
+            </Card>
+            <Button onClick={() => setActiveTab('account')} variant="outline" className="w-full h-16 border-2 border-slate-800 text-slate-500 hover:bg-slate-800 font-black rounded-2xl uppercase italic"><RotateCcw className="mr-2 h-5 w-5" /> 最初から確認する</Button>
           </div>
-        </Card>
+        )}
       </div>
-      <DebugPanel data={null} toolId="kdpguide" />
+      <div className="mt-16 text-center text-slate-500"><p className="text-[10px] font-black uppercase tracking-widest italic opacity-20">KDP Mastery Guide — Powered by NextraLabs</p></div>
     </div>
   )
 }
