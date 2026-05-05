@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
   Mail, Zap, Clock, ListChecks, Filter, CheckCircle2, Loader2, LogIn, Trash2, Send, 
-  ArrowRight, ShieldCheck, Sparkles, RefreshCw, Inbox, Archive, MessageSquareQuote, ChevronRight, Activity, Terminal
+  ArrowRight, ShieldCheck, Sparkles, RefreshCw, Inbox, Archive, MessageSquareQuote, ChevronRight, Activity, Terminal, ExternalLink
 } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
@@ -83,7 +83,6 @@ export default function InboxOrganizer() {
         </Card>
       ) : (
         <div className="grid lg:grid-cols-3 gap-8 animate-in fade-in duration-700">
-          {/* ⚡ LEFT: CONTROL TERMINAL */}
           <div className="lg:col-span-1 space-y-6">
             <Card className="bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] p-8 shadow-xl relative overflow-hidden">
                <div className="flex items-center justify-between mb-8">
@@ -121,22 +120,22 @@ export default function InboxOrganizer() {
             </div>
           </div>
 
-          {/* 🔥 RIGHT: MESSAGE FEED (THE MATRIX) */}
           <div className="lg:col-span-2 space-y-8">
              <div className="grid grid-cols-2 gap-4">
-               { id: 'urgent_important', label: 'Urgent/High', color: 'border-red-600 text-red-500 bg-red-600/5', icon: Zap },
-               { id: 'urgent_not_important', label: 'Urgent/Low', color: 'border-amber-500 text-amber-500 bg-amber-500/5', icon: Clock },
-               { id: 'not_urgent_important', label: 'Plan/Focus', color: 'border-blue-500 text-blue-500 bg-blue-500/5', icon: ListChecks },
-               { id: 'not_urgent_not_important', label: 'Backlog/Arch', color: 'border-slate-800 text-slate-500 bg-slate-900/50', icon: Filter },
-             ].map(q => {
-               const Icon = q.icon;
-               return (
-                  <div key={q.id} className={`p-4 rounded-2xl border-2 flex items-center justify-between shadow-lg ${q.color}`}>
-                     <div className="flex items-center gap-3"><Icon size={18}/><span className="text-xs font-black uppercase italic">{q.label}</span></div>
-                     <span className="text-lg font-black italic">{loading ? '...' : emails.filter(e => e.quadrant === q.id).length}</span>
-                  </div>
-               );
-             })}
+                {[
+                  { id: 'urgent_important', label: 'Urgent/High', color: 'border-red-600 text-red-500 bg-red-600/5', icon: Zap },
+                  { id: 'urgent_not_important', label: 'Urgent/Low', color: 'border-amber-500 text-amber-500 bg-amber-500/5', icon: Clock },
+                  { id: 'not_urgent_important', label: 'Plan/Focus', color: 'border-blue-500 text-blue-500 bg-blue-500/5', icon: ListChecks },
+                  { id: 'not_urgent_not_important', label: 'Backlog/Arch', color: 'border-slate-800 text-slate-500 bg-slate-900/50', icon: Filter },
+                ].map(q => {
+                  const Icon = q.icon;
+                  return (
+                    <div key={q.id} className={`p-4 rounded-2xl border-2 flex items-center justify-between shadow-lg ${q.color}`}>
+                       <div className="flex items-center gap-3"><Icon size={18}/><span className="text-xs font-black uppercase italic">{q.label}</span></div>
+                       <span className="text-lg font-black italic">{loading ? '...' : emails.filter(e => e.quadrant === q.id).length}</span>
+                    </div>
+                  );
+                })}
              </div>
 
              <div className="bg-slate-900/50 border-2 border-slate-800 rounded-[3rem] p-10 min-h-[600px] shadow-inner space-y-6">
