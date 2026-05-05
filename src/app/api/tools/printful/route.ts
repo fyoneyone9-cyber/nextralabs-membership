@@ -1,25 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-/**
- * 🛠️ Master E-commerce Engine v14.0 (Final Architecture)
- * Printful API 経由で製品を生成し、連携済みの Shopify ストアへ自動同期させる。
- */
+import { createClient } from '@supabase/supabase-js'
 
 const PRINTFUL_API_KEY = 'suHaJYIsHrfarAJXAApi6tetzLMmoZvD5qfZgaHN';
 const PRINTFUL_STORE_ID = '18088076';
+const SHOPIFY_DOMAIN = 'z5ju1n-vs.myshopify.com';
 
-async function printfulRequest(endpoint: string, method = 'GET', body?: any) {
-  const res = await fetch(`https://api.printful.com${endpoint}`, {
-    method,
-    headers: {
-      'Authorization': `Bearer ${PRINTFUL_API_KEY}`,
-      'X-PF-Store-Id': PRINTFUL_STORE_ID,
-      'Content-Type': 'application/json'
-    },
-    body: body ? JSON.stringify(body) : undefined
-  });
-  return res.json();
-}
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,52 +14,49 @@ export async function POST(request: NextRequest) {
     const { action, keyword, style, mockupUrl } = data;
 
     if (action === 'create-product') {
-      console.log(`[SYSTEM_ACTIVATE] Publishing to Store: ${keyword}`);
+      let finalImageUrl = mockupUrl;
 
-      // 🚀 1. Printful 側に「Sync Product（同期商品）」を作成
-      // これを行うと、PrintfulとShopifyが連携済みであれば、自動的にShopifyへ商品がPushされる
-      const syncRes = await printfulRequest('/store/products', 'POST', {
-        sync_product: {
-          name: `Nextra Edition: ${keyword}`,
-          thumbnail: mockupUrl
-        },
-        sync_variants: [
-          {
-            variant_id: 4012, // Bella+Canvas 3001 / Black / M
-            retail_price: "3500",
-            files: [{ type: "default", url: mockupUrl }]
-          },
-          {
-            variant_id: 4011, // Bella+Canvas 3001 / Black / S
-            retail_price: "3500",
-            files: [{ type: "default", url: mockupUrl }]
-          },
-          {
-            variant_id: 4013, // Bella+Canvas 3001 / Black / L
-            retail_price: "3500",
-            files: [{ type: "default", url: mockupUrl }]
-          }
-        ]
-      });
+      // 🚀 1. Data URL (base64) を Supabase にアップロードして、Printful が受け取れる公開URLにする
+      if (mockupUrl.startsWith('data:image')) {
+        const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+        const base64Data = mockupUrl.split(',')[1];
+        const buffer = Buffer.from(base64Data, 'base64');
+        const filename = `design-${Date.now()}.png`;
 
-      if (syncRes.error) {
-        console.error('[PRINTFUL_ERROR]', syncRes.error);
-        throw new Error(syncRes.error.message || 'Printful API Error');
+        const { error: uploadError } = await supabase.storage
+          .from('designs')
+          .upload(filename, buffer, { contentType: 'image/png' });
+
+        if (uploadError) throw new Error(`Upload Failed: ${uploadError.message}`);
+        const { data: urlData } = supabase.storage.from('designs').getPublicUrl(filename);
+        finalImageUrl = urlData.publicUrl;
       }
 
-      console.log('[SYSTEM_SUCCESS] Product Pushed to Printful/Shopify Pipeline.');
-
-      return NextResponse.json({ 
-        success: true, 
-        result: syncRes.result,
-        shopify: { url: `https://z5ju1n-vs.myshopify.com/admin/products` }
+      // 🚀 2. Printful API 実行
+      const pRes = await fetch('https://api.printful.com/store/products', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${PRINTFUL_API_KEY}`,
+          'X-PF-Store-Id': PRINTFUL_STORE_ID,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          sync_product: { name: `Nextra: ${keyword}` },
+          sync_variants: [{
+            variant_id: 4012,
+            retail_price: "35.00",
+            files: [{ url: finalImageUrl }]
+          }]
+        })
       });
+      const pData = await pRes.json();
+
+      if (pData.error) throw new Error(pData.error.message);
+
+      return NextResponse.json({ success: true, shopify: { url: `https://${SHOPIFY_DOMAIN}/admin/products` } });
     }
-
-    return NextResponse.json({ error: 'Unknown Action' }, { status: 400 });
-
+    return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
   } catch (error: any) {
-    console.error(`[CRITICAL_FAILURE]`, error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
