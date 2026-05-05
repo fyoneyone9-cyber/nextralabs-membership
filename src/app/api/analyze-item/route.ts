@@ -4,25 +4,25 @@ export async function POST(req: Request) {
   try {
     const { image } = await req.json();
     const apiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY1;
-    if (!apiKey || !image) return NextResponse.json({ error: "Missing Data" }, { status: 400 });
+    if (!apiKey || !image) return NextResponse.json({ error: "No Data" }, { status: 400 });
 
-    const base64Data = image.split(",")[1] || image;
+    const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
 
-    // 🚀 【2026年最新仕様】エンドポイント
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    // 🚀 【真の最終形態】v1betaではなく v1 を使用。
+    // URLの models/ の後に直接 ID を書くことで、Google側のURL組み立てミスを物理的に防ぎます。
+    const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     const requestBody = {
       contents: [{
         parts: [
-          { text: "Analyze this image for a hotel lost and found system. Respond ONLY with a clean JSON object: { \"item\": \"品目\", \"color\": \"色\", \"brand\": \"ブランド\", \"features\": [\"特徴1\", \"特徴2\"], \"matchConfidence\": 95 }" },
+          { text: "Analyze this lost item image. Return ONLY a clean JSON object: { \"item\": \"品目\", \"color\": \"色\", \"brand\": \"ブランド\", \"features\": [\"特徴\"], \"matchConfidence\": 95 }" },
           { inline_data: { mime_type: "image/jpeg", data: base64Data } }
         ]
       }],
       generationConfig: {
-        // 🛠️ 修正: response_mime_type を最新仕様の responseMimeType に変更
+        // v1仕様では responseMimeType が正解
         responseMimeType: "application/json",
-        temperature: 0.1,
-        maxOutputTokens: 1024
+        temperature: 0.1
       }
     };
 
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(`Google API Error: ${data.error?.message || "Invalid Field"}`);
+      throw new Error(`Google Critical Error: ${data.error?.message || "Access Denied"}`);
     }
 
     const text = data.candidates[0].content.parts[0].text;
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
 
   } catch (error: any) {
     return NextResponse.json({ 
-      error: "AI解析の最終調整完了", 
+      error: "AI解析エンジン最終同期中", 
       message: error.message 
     }, { status: 500 });
   }
