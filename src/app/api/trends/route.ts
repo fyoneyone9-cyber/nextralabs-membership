@@ -3,13 +3,12 @@ import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  // NewsAPI.org の無料キー（開発用・低頻度想定）
-  // ※本来は環境変数に入れるべきですが、即座に「本物」を動かすため一時的に記述
+  // 5a687f8f94d348a68868673a903487c8 は NewsAPI のキー
   const API_KEY = '5a687f8f94d348a68868673a903487c8'; 
   const TOP_HEADLINES_URL = `https://newsapi.org/v2/top-headlines?country=jp&pageSize=12&apiKey=${API_KEY}`;
   
   try {
-    console.log(`[Trends API] Switching to NewsAPI LIVE: ${TOP_HEADLINES_URL}`);
+    console.log(`[Trends API] Fetching NewsAPI: ${TOP_HEADLINES_URL}`);
 
     const response = await fetch(TOP_HEADLINES_URL, {
       cache: 'no-store',
@@ -19,7 +18,9 @@ export async function GET() {
     });
 
     if (!response.ok) {
-      throw new Error(`NewsAPI HTTP ${response.status}`);
+      const errorData = await response.json().catch(() => ({}));
+      console.error(`[Trends API] NewsAPI Error ${response.status}:`, errorData);
+      throw new Error(`NewsAPI HTTP ${response.status}: ${errorData.message || 'Unknown'}`);
     }
 
     const data = await response.json();

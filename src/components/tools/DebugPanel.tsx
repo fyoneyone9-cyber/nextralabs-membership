@@ -5,7 +5,7 @@ import { Copy, CheckCircle2, Database, Sparkles, Lock, Unlock, Heart, Cat, Chevr
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@/lib/supabase/client'
 
 export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -14,10 +14,7 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
   const [copied, setCopied] = useState(false)
   const [consoleErrors, setConsoleErrors] = useState<string[]>([])
   
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
-  )
+  const supabase = createClient()
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
