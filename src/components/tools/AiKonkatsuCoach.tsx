@@ -16,7 +16,11 @@ const WEAPONS = [
     icon: BarChart3, 
     color: 'text-pink-500', 
     bg: 'bg-pink-500/10',
-    prompt: "あなたは婚活コンサルタントです。以下のチェックリスト結果から、レーダーチャートを分析するように私の『外見・会話・経済・教養・メンタル』を評価し、最優先の改善ポイントを提案してください。"
+    prompt: "あなたは婚活コンサルタントです。以下のチェックリスト結果から、レーダーチャートを分析するように私の『外見・会話・経済・教養・メンタル』を評価し、最優先の改善ポイントを提案してください。",
+    presets: [
+      { label: "今の自分の課題を知りたい", content: "【外見：清潔感はあるが地味、会話：聞き役になりがち、経済：安定、教養：読書好き、メンタル：消極的】この状態で、何を最優先で磨くべきか具体的に教えて。" },
+      { label: "30代・年収別診断", content: "30代前半、年収500万、趣味はアニメと筋トレ。マッチングアプリで勝つために、同年代と差別化できるポイントを診断して。" }
+    ]
   },
   { 
     id: 'profile', 
@@ -25,7 +29,11 @@ const WEAPONS = [
     icon: UserCircle, 
     color: 'text-indigo-500', 
     bg: 'bg-indigo-500/10',
-    prompt: "あなたはマッチングアプリのプロです。以下の自己紹介文を読み、具体的なエピソードの追加、ポジティブな言い換え、そしてターゲットに刺さるキャッチコピーを提案してください。"
+    prompt: "あなたはマッチングアプリのプロです。以下の自己紹介文を読み、具体的なエピソードの追加、ポジティブな言い換え、そしてターゲットに刺さるキャッチコピーを提案してください。",
+    presets: [
+      { label: "短すぎる文章を強化", content: "「趣味は旅行と映画です。よろしくお願いします。」このプロフィールを、優しくて誠実そうなイメージに膨らませて。" },
+      { label: "真剣度を伝える（婚活仕様）", content: "仕事が忙しくてつい「休みは家でゴロゴロ」と書いてしまいます。自立していて、かつパートナーとの時間を大切にする印象に変えて。" }
+    ]
   },
   { 
     id: 'dating', 
@@ -34,7 +42,11 @@ const WEAPONS = [
     icon: MapPin, 
     color: 'text-emerald-500', 
     bg: 'bg-emerald-500/10',
-    prompt: "あなたはデートプランナーです。相手の趣味、デート回数、季節を踏まえて、最適な待ち合わせ場所、会話のフック、避けるべき話題、次へ繋げるクロージングを提案してください。"
+    prompt: "あなたはデートプランナーです。相手の趣味、デート回数、季節を踏まえて、最適な待ち合わせ場所、会話のフック、避けるべき話題、次へ繋げるクロージングを提案してください。",
+    presets: [
+      { label: "初対面のお茶デート", content: "週末の午後、銀座付近。相手はカフェ巡りが趣味。緊張せずに話せる静かすぎない場所と、沈黙を怖がらないための会話ネタを3つ教えて。" },
+      { label: "3回目勝負のディナー", content: "相手はイタリアンが好き。告白を視野に入れたい。雰囲気の良いレストランの選び方と、切り出すタイミングのヒントを。" }
+    ]
   },
   { 
     id: 'compatibility', 
@@ -43,7 +55,11 @@ const WEAPONS = [
     icon: Users2, 
     color: 'text-orange-500', 
     bg: 'bg-orange-500/10',
-    prompt: "あなたは心理学者です。私と相手の『金銭感覚・休日・家事・将来ビジョン』のデータを比較し、致命的な不一致リスクと、それを乗り越えるための対話方法を教えてください。"
+    prompt: "あなたは心理学者です。私と相手の『金銭感覚・休日・家事・将来ビジョン』のデータを比較し、致命的な不一致リスクと、それを乗り越えるための対話方法を教えてください。",
+    presets: [
+      { label: "金銭感覚のズレを確認", content: "自分：貯金重視、相手：趣味（旅行）に惜しみなく使う。結婚後に家計を共にする際、もめないための妥協点を探って。" },
+      { label: "休日の過ごし方の違い", content: "自分：インドア派、相手：キャンプ大好きアウトドア派。無理せず一緒に楽しめる「中間地点の休日」を提案して。" }
+    ]
   },
   { 
     id: 'pdca', 
@@ -52,7 +68,11 @@ const WEAPONS = [
     icon: Target, 
     color: 'text-rose-500', 
     bg: 'bg-rose-500/10',
-    prompt: "あなたは戦略コーチです。今回のお見合い・デートの記録から、成功要因と失敗要因を特定し、次のアクションで修正すべき具体的な行動ログを出力してください。"
+    prompt: "あなたは戦略コーチです。今回のお見合い・デートの記録から、成功要因と失敗要因を特定し、次のアクションで修正すべき具体的な行動ログを出力してください。",
+    presets: [
+      { label: "2回目に繋がらなかった反省", content: "「話は盛り上がったはずなのに、LINEがそっけない。」会話の比率や、最後の別れ際の挨拶など、どこに盲点があったか分析して。" },
+      { label: "成功パターンを再現化", content: "初めて交際まで発展しそう。今回の成功パターンを言語化して、自信を確信に変えたい。何が相手に刺さったのか整理して。" }
+    ]
   },
 ];
 
@@ -124,7 +144,7 @@ export default function AiKonkatsuCoach() {
       ) : (
         /* 機能実行状態：憲法準拠の一本道 */
         <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3.5rem] p-8 md:p-16 shadow-[0_40px_100px_rgba(0,0,0,0.6)] animate-in zoom-in-95 relative overflow-hidden">
-          <div className={`absolute top-0 left-0 w-full h-2 ${currentWeapon?.bg.replace('10', '100')} bg-pink-600`} />
+          <div className={`absolute top-0 left-0 w-full h-2 bg-pink-600`} />
           
           <div className="flex justify-between items-center mb-10">
             <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase flex items-center gap-4">
@@ -137,11 +157,21 @@ export default function AiKonkatsuCoach() {
           <div className="grid lg:grid-cols-2 gap-12">
             <div className="space-y-8">
               <div className="bg-slate-950 p-6 rounded-3xl border border-slate-800 shadow-inner">
-                <p className="text-[10px] font-black text-pink-500 uppercase italic tracking-widest mb-4">Input Information</p>
+                <div className="flex justify-between items-center mb-4">
+                   <p className="text-[10px] font-black text-pink-500 uppercase italic tracking-widest">Input Information</p>
+                   {/* 🟢 プリセット選択肢の追加 */}
+                   <div className="flex gap-2">
+                      {currentWeapon?.presets.map((p, i) => (
+                        <Button key={i} variant="outline" size="sm" onClick={() => setInputData(p.content)} className="h-7 border-slate-800 text-[8px] font-black uppercase italic hover:bg-pink-600/10 text-slate-400">
+                          {p.label}
+                        </Button>
+                      ))}
+                   </div>
+                </div>
                 <textarea 
                   value={inputData} 
                   onChange={(e) => setInputData(e.target.value)} 
-                  placeholder={`${currentWeapon?.label}に必要な情報を入力、または貼り付けてください...`} 
+                  placeholder={`${currentWeapon?.label}に必要な情報を入力、またはプリセットから選んでください...`} 
                   className="w-full h-64 bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 text-lg text-white font-bold focus:border-pink-500 outline-none" 
                 />
               </div>
