@@ -2,11 +2,11 @@
 ;
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Zap, MapPin, ShieldAlert, Mail, Bell, CheckCircle2, Navigation, Loader2 } from "lucide-react";
-import { toast } from "sonner";
+import { Zap, CheckCircle2, Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Zap, CheckCircle2, Button } from "@/components/ui/button";
+import { Zap, CheckCircle2, Input } from "@/components/ui/input";
+import { Zap, CheckCircle2, Zap, MapPin, ShieldAlert, Mail, Bell, CheckCircle2, Navigation, Loader2 } from "lucide-react";
+import { Zap, CheckCircle2, toast } from "sonner";
 
 export default function DisasterAgent() {
   const [coords, setCoords] = useState<{lat: number, lng: number} | null>(null);
@@ -88,5 +88,7 @@ export default function DisasterAgent() {
       </div>
   );
 }
+
+
 
 

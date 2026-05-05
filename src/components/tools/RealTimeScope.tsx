@@ -2,15 +2,15 @@
 ;
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { 
+import { Zap, HelpCircle, Video, Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Zap, HelpCircle, Video, Button } from "@/components/ui/button";
+import { Zap, HelpCircle, Video, Textarea } from "@/components/ui/textarea";
+import { Zap, HelpCircle, Video, 
   Droplets, Camera, CheckCircle2, MapPin, Upload, X, Copy, 
   ExternalLink, Sparkles, Heart, Bot, RefreshCw, AlertCircle, 
   Search, Zap, Loader2, Download, HelpCircle
 } from "lucide-react";
-import { toast } from "sonner";
+import { Zap, HelpCircle, Video, toast } from "sonner";
 
 export default function RealTimeScope() {
   const [plantName, setPlantName] = useState('');
@@ -286,5 +286,7 @@ export default function RealTimeScope() {
       </div>
   );
 }
+
+
 
 

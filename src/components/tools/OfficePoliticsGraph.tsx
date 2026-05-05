@@ -145,7 +145,7 @@ export default function OfficePoliticsGraph() {
       </div>
 
       {/* 氏 PRO TIP */}
-      <div className="max-w-4xl mx-auto mt-20 p-10 bg-indigo-500/5 border border-indigo-500/10 rounded-[3rem] flex gap-8 items-start">
+      <div className="max-w-4xl mx-auto mt-8 p-10 bg-indigo-500/5 border border-indigo-500/10 rounded-[3rem] flex gap-8 items-start">
         <div className="bg-indigo-500/20 p-6 rounded-2xl text-indigo-400 flex-shrink-0">
           <Info className="h-10 w-10" />
         </div>
@@ -159,5 +159,7 @@ export default function OfficePoliticsGraph() {
       </div>
   )
 }
+
+
 
 

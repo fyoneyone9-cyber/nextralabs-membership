@@ -2,12 +2,12 @@
 ;
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Zap, Mail, Building2, Send, Search, X, ShieldCheck, Copy, Sparkles, Bot, Heart, AlertCircle, HelpCircle } from "lucide-react";
-import { toast } from "sonner";
+import { Zap, HelpCircle, Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Zap, HelpCircle, Button } from "@/components/ui/button";
+import { Zap, HelpCircle, Input } from "@/components/ui/input";
+import { Zap, HelpCircle, Textarea } from "@/components/ui/textarea";
+import { Zap, HelpCircle, Zap, Mail, Building2, Send, Search, X, ShieldCheck, Copy, Sparkles, Bot, Heart, AlertCircle, HelpCircle } from "lucide-react";
+import { Zap, HelpCircle, toast } from "sonner";
 
 export default function SalesAutomation() {
   const [domain, setDomain] = useState('');
@@ -150,5 +150,7 @@ export default function SalesAutomation() {
       </div>
   );
 }
+
+
 
 

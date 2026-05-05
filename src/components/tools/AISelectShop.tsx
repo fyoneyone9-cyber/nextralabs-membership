@@ -85,7 +85,7 @@ export default function AISelectShop() {
         )}
 
         {currentStep === 3 && (
-          <div className="text-center py-32 space-y-10 animate-in fade-in">
+          <div className="text-center py-16 space-y-10 animate-in fade-in">
              <div className="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center mx-auto shadow-2xl shadow-emerald-500/20">
                <CheckCircle2 className="h-12 w-12 text-slate-950" />
              </div>
@@ -99,4 +99,6 @@ export default function AISelectShop() {
     </div>
   )
 }
+
+
 
