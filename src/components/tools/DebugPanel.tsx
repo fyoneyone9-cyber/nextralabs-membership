@@ -1,7 +1,23 @@
 ﻿'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Copy, CheckCircle2, Database, Sparkles, Lock, Unlock, Heart, Cat, ChevronUp, ChevronDown } from 'lucide-react'
+import { 
+  Copy, 
+  CheckCircle2, 
+  Database, 
+  Sparkles, 
+  Lock, 
+  Unlock, 
+  Heart, 
+  Cat, 
+  ChevronUp, 
+  ChevronDown,
+  Bug,
+  Activity,
+  History,
+  Terminal,
+  ShieldQuestion
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -26,15 +42,19 @@ export function DebugPanel({ data, toolId }: DebugPanelProps) {
 
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user?.email === 'f.yoneyone9@gmail.com') setIsAuth(true)
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user?.email === 'f.yoneyone9@gmail.com') setIsAuth(true)
+      } catch (e) {
+        console.warn("Auth check bypassed or failed", e)
+      }
     }
     checkUser()
 
     const originalError = console.error;
     console.error = (...args: any[]) => {
       const msg = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' ');
-      setConsoleErrors(prev => [...prev.slice(-30), [\] \]);
+      setConsoleErrors(prev => [...prev.slice(-30), "[\" + new Date().toLocaleTimeString() + \"] \" + msg]);
       originalError.apply(console, args);
     };
     return () => { console.error = originalError; };
@@ -47,7 +67,7 @@ export function DebugPanel({ data, toolId }: DebugPanelProps) {
 
   const copyForAI = () => {
     const report = {
-      header: "=== NEXTRALABS SURGICAL CALTE v4.4 (Kawaii Edition) ===",
+      header: "=== NEXTRALABS SURGICAL CALTE v4.4 ===",
       tool: toolId,
       time: new Date().toISOString(),
       server_trace: data,
@@ -62,10 +82,9 @@ export function DebugPanel({ data, toolId }: DebugPanelProps) {
     <div className="fixed bottom-4 left-4 z-[9999]">
       <button 
         onClick={() => setIsOpen(!isOpen)} 
-        className={lex items-center justify-center p-2 rounded-full transition-all duration-500 group \}
-        title="NextraLabs Helper"
+        className={"flex items-center justify-center p-2 rounded-full transition-all duration-500 group " + (isOpen ? 'bg-emerald-500 scale-110 shadow-lg rotate-12' : 'opacity-10 hover:opacity-100 hover:bg-white/5 scale-90 hover:scale-110')}
       >
-        <Sparkles className={h-4 w-4 transition-all \} />
+        <Sparkles className={"h-4 w-4 transition-all " + (isOpen ? 'text-white' : 'text-emerald-400 group-hover:animate-spin')} />
         <span className="absolute left-10 scale-0 group-hover:scale-100 transition-all origin-left bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg whitespace-nowrap shadow-xl">
            Nextra Helper 🐾
         </span>
@@ -79,23 +98,20 @@ export function DebugPanel({ data, toolId }: DebugPanelProps) {
                 <Cat className="h-16 w-16 text-slate-800" />
                 <Lock className="h-6 w-6 text-emerald-500 absolute -bottom-1 -right-1" />
               </div>
-              <div className="space-y-1">
-                <p className="text-white font-black text-lg">合言葉を教えてね 🔑</p>
-                <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Authorized Access Only</p>
-              </div>
+              <p className="text-white font-black text-lg">合言葉を教えてね 🔑</p>
               <div className="flex gap-2 w-full max-w-sm">
                 <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••" className="bg-slate-900 border-slate-800 text-white text-center rounded-2xl h-12 text-xl font-black" onKeyDown={(e) => e.key === 'Enter' && handleAuth()} />
-                <Button onClick={handleAuth} className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-2xl px-6 h-12">OPEN</Button>
+                <Button onClick={handleAuth} className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-2xl px-6 h-12 text-black">OPEN</Button>
               </div>
             </div>
           ) : (
             <div className="space-y-6 animate-in fade-in duration-500">
               <div className="flex items-center justify-between border-b border-white/5 pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="bg-emerald-500 p-2 rounded-xl shadow-lg shadow-emerald-500/20"><Unlock className="h-4 w-4 text-slate-950" /></div>
+                  <Unlock className="h-4 w-4 text-emerald-500" />
                   <span className="text-white font-black text-xs uppercase tracking-widest">Diagnostic Live 🐾</span>
                 </div>
-                <Button onClick={copyForAI} className={h-10 px-4 rounded-xl text-[10px] font-black gap-2 transition-all \}>
+                <Button onClick={copyForAI} className={"h-10 px-4 rounded-xl text-[10px] font-black gap-2 transition-all " + (copied ? 'bg-green-600' : 'bg-slate-800 hover:bg-slate-700 text-white')}>
                   {copied ? <CheckCircle2 className="h-3 w-3" /> : <Heart className="h-3 w-3" />}
                   {copied ? "COPIED!" : "CALTE FOR AI"}
                 </Button>
@@ -113,7 +129,7 @@ export function DebugPanel({ data, toolId }: DebugPanelProps) {
             </div>
           )}
           <div className="flex justify-between items-center px-2">
-            <span className="text-[9px] text-slate-700 font-bold uppercase tracking-[0.2em]">v4.4 Kawaii Stealth</span>
+            <span className="text-[9px] text-slate-700 font-bold uppercase tracking-[0.2em]">NextraLabs surgical v4.4 - Sweet & Stealth</span>
             <button onClick={() => setIsOpen(false)} className="text-slate-500 hover:text-white text-[10px] font-black uppercase underline decoration-emerald-500/30 underline-offset-4">さよなら</button>
           </div>
         </div>
