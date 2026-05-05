@@ -102,7 +102,7 @@ export default function SnsAutoPoster() {
               {apiStatus === 'live' && (
                 <div className="flex items-center gap-2 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/50 shadow-[0_0_15px_rgba(34,197,94,0.4)]">
                   <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-[10px] font-black text-green-500 uppercase tracking-tighter">API: LIVE (GOOGLE_TRENDS)</span>
+                  <span className="text-[10px] font-black text-green-500 uppercase tracking-tighter">API: LIVE (NEWS_TOP_HEADLINES)</span>
                 </div>
               )}
               {apiStatus === 'local' && (
