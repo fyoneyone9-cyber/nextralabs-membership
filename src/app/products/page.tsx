@@ -21,11 +21,11 @@ interface Product {
 
 // モデル化したツールには isModel: true を付与
 const freeTools: Product[] = [
-  { id: 'office-politics-graph', title: '社内政治 相関図', subtitle: '人間関係の可視化', description: '組織図に載らない本当の関係をAI解析。', priceNote: '無料', tags: ['無料'], icon: Network, bgColor: 'bg-indigo-500/10', iconColor: 'text-indigo-400', status: '人気', isModel: true },
-  { id: 'moving-checker', title: 'AI引越し安心チェッカー', subtitle: '治安・物件リスク分析', description: '住居のリスクをAI解析・スコアリング。', priceNote: '無料', tags: ['無料'], icon: Home, bgColor: 'bg-emerald-500/10', iconColor: 'text-emerald-400', status: '注目', isModel: true },
-  { id: 'sns-auto-poster', title: 'SNSオートポスター', subtitle: 'マルチSNS投稿作成', description: 'トピックから投稿内容を自動生成します。', priceNote: '無料', tags: ['SNS'], icon: Share2, bgColor: 'bg-blue-500/10', iconColor: 'text-blue-400', status: 'マスタ', isModel: true },
-  { id: 'kdp-guide', title: 'Kindle出版完全ナビ', subtitle: '電子書籍出版ガイド', description: 'KDPアカウント設定から出版申請まで完結。', priceNote: '無料', tags: ['教育'], icon: BookOpen, bgColor: 'bg-orange-500/10', iconColor: 'text-orange-400', status: '標準', isModel: true },
-  { id: 'ai-report-generator', title: 'AIレポートジェネレーター', subtitle: 'ビジネス文書作成', description: '箇条書きからプロ級のレポートを生成。', priceNote: '無料', tags: ['事務'], icon: FileText, bgColor: 'bg-slate-500/10', iconColor: 'text-slate-400', status: 'マスタ', isModel: true },
+  { id: 'office-politics-graph', title: '社内政治 相関図', subtitle: '人間関係の暗部を可視化', description: '組織図には載らない「本当のパワーバランス」をAIが暴き出します。派閥争いやキーマンの特定、あなたの社内での立ち位置を数値化・相関図化。', priceNote: '無料', tags: ['無料'], icon: Network, bgColor: 'bg-indigo-500/10', iconColor: 'text-indigo-400', status: '人気', isModel: true },
+  { id: 'moving-checker', title: 'AI引越し安心チェッカー', subtitle: '治安・物件リスクを徹底分析', description: '住所を入力するだけで、周辺の治安、ハザードマップ、隠れた物件リスクをAIがスコアリング。後悔しない引越しをデータでサポートします。', priceNote: '無料', tags: ['無料'], icon: Home, bgColor: 'bg-emerald-500/10', iconColor: 'text-emerald-400', status: '注目', isModel: true },
+  { id: 'sns-auto-poster', title: 'SNSオートポスター', subtitle: 'バズを量産するマルチSNS生成', description: '今のトレンドニュースと強力な投稿戦略を掛け合わせ、X、Instagram、TikTok向けの最適な文章を秒速で錬成。ハッシュタグ提案まで完結。', priceNote: '無料', tags: ['SNS'], icon: Share2, bgColor: 'bg-blue-500/10', iconColor: 'text-blue-400', status: 'マスタ', isModel: true },
+  { id: 'kdp-guide', title: 'Kindle出版完全ナビ', subtitle: '執筆から出版までの一気通貫ガイド', description: '本のネタ出し、目次構成、原稿執筆支援からKDPの複雑な登録作業まで。最短距離で電子書籍作家デビューを果たすための全工程を可視化。', priceNote: '無料', tags: ['教育'], icon: BookOpen, bgColor: 'bg-orange-500/10', iconColor: 'text-orange-400', status: '標準', isModel: true },
+  { id: 'ai-report-generator', title: 'AIレポートジェネレーター', subtitle: '箇条書きからプロ級の文書を生成', description: '支離滅裂なメモや箇条書きを、論理的で説得力のあるビジネスレポートへ瞬時に変換。会議録、日報、企画書のクオリティを極限まで高めます。', priceNote: '無料', tags: ['事務'], icon: FileText, bgColor: 'bg-slate-500/10', iconColor: 'text-slate-400', status: 'マスタ', isModel: true },
 ]
 
 const hotelTools: Product[] = [
@@ -33,20 +33,20 @@ const hotelTools: Product[] = [
 ]
 
 const defenseTools: Product[] = [
-  { id: 'scam-defender', title: 'AI詐欺ディフェンダー', subtitle: '詐欺判定', description: '不審な連絡をAIが即座に診断。', priceNote: 'プレミアム', tags: ['防犯'], icon: ShieldCheck, bgColor: 'bg-red-500/10', iconColor: 'text-red-400', status: '最強' },
-  { id: 'money-guard', title: 'AI家計防衛シミュレーター', subtitle: '散財防止', description: '支出を分析。認知バイアスを撃退。', priceNote: 'スタンダード', tags: ['家計'], icon: Wallet, bgColor: 'bg-amber-500/10', iconColor: 'text-amber-400', status: 'NEW' },
-  { id: 'disaster-guard', title: 'AI防災パーソナルガイド', subtitle: '避難所検索 × 備蓄', description: '現在地の危険度を把握し、防災プランを。', priceNote: 'スタンダード', tags: ['防災'], icon: Shield, bgColor: 'bg-sky-500/10', iconColor: 'text-sky-400', status: 'NEW' },
-  { id: 'shopping-stopper', title: 'AI買い物依存ストッパー', subtitle: '抑止AI', description: '冷静な判断を促し、散財を抑止。', priceNote: 'スタンダード', tags: ['節約'], icon: ShieldAlert, bgColor: 'bg-rose-500/10', iconColor: 'text-rose-400', status: 'NEW' },
-  { id: 'ai-konkatsu', title: 'AI婚活コーチ', subtitle: '戦略的成婚支援', description: '成婚期待度を算出し、次の一手を提案。', priceNote: 'スタンダード', tags: ['恋愛'], icon: Heart, bgColor: 'bg-pink-500/10', iconColor: 'text-pink-400', status: '注目', isModel: true },
+  { id: 'scam-defender', title: 'AI詐欺ディフェンダー', subtitle: '詐欺・悪意を即座に判定', description: '不審なDM、メール、SMSをAIが徹底スキャン。最新の詐欺手口と照らし合わせ、その危険性をリアルタイムで警告。あなたのデジタル資産を守り抜きます。', priceNote: 'プレミアム', tags: ['防犯'], icon: ShieldCheck, bgColor: 'bg-red-500/10', iconColor: 'text-red-400', status: '最強' },
+  { id: 'money-guard', title: 'AI家計防衛シミュレーター', subtitle: '衝動買いの心理的抑止', description: '支出を単に記録するだけでなく、購入前の迷いをAIが客観的に分析。「今、本当に必要か？」を問いかけ、家計の致命傷を未然に防ぎます。', priceNote: 'スタンダード', tags: ['家計'], icon: Wallet, bgColor: 'bg-amber-500/10', iconColor: 'text-amber-400', status: 'NEW' },
+  { id: 'disaster-guard', title: 'AI防災パーソナルガイド', subtitle: '避難ルート × 備蓄最適化', description: '現在地のハザードマップを読み込み、あなた専用の防災・備蓄プランをAIが提案。災害発生時の生存確率を最大化させるためのデジタルガイド。', priceNote: 'スタンダード', tags: ['防災'], icon: Shield, bgColor: 'bg-sky-500/10', iconColor: 'text-sky-400', status: 'NEW' },
+  { id: 'shopping-stopper', title: 'AI買い物依存ストッパー', subtitle: '散財の鎖を断ち切る', description: '特定のキーワードやサイトへの接触を制限し、冷静な判断を促す。依存のメカニズムをAIが理解し、あなたの購買行動を健全な方向へと導きます。', priceNote: 'スタンダード', tags: ['節約'], icon: ShieldAlert, bgColor: 'bg-rose-500/10', iconColor: 'text-rose-400', status: 'NEW' },
+  { id: 'ai-konkatsu', title: 'AI婚活コーチ', subtitle: '戦略的成婚支援システム', description: '現在のステータスと相手の希望条件から成婚期待度を算出。データに基づいた「次の一手」を提案し、迷走しがちな婚活に終止符を打ちます。', priceNote: 'スタンダード', tags: ['恋愛'], icon: Heart, bgColor: 'bg-pink-500/10', iconColor: 'text-pink-400', status: '注目', isModel: true },
 ]
 
 const bizTools: Product[] = [
-  { id: 'vintage-hunter', title: 'AI古着ハンター', subtitle: 'メルカリ監視', description: '24時間監視し、お宝商品を即通知。', priceNote: 'プレミアム', tags: ['物販'], icon: Search, bgColor: 'bg-amber-500/10', iconColor: 'text-amber-400', status: '最強' },
-  { id: 'ai-select-shop', title: '「在庫ゼロ」AIセレクトショップ', subtitle: 'トレンド分析 × 自動デザイン', description: 'デザイン案を自動生成しShopify出品まで。', priceNote: 'プレミアム', tags: ['EC'], icon: Store, bgColor: 'bg-teal-500/10', iconColor: 'text-teal-400', status: '人気' },
-  { id: 'youtube-producer', title: 'AI YouTubeプロデューサー', subtitle: '全自動動画制作', description: '文字起こしから台本、サムネイルまで。', priceNote: 'プレミアム', tags: ['動画'], icon: Clapperboard, bgColor: 'bg-red-500/10', iconColor: 'text-red-400', status: '注目', isModel: true },
-  { id: 'prompt-master', title: 'AI画像プロンプトマスター', subtitle: '画像生成パーツ工房', description: 'パーツを組み合わせて究極の呪文を錬成。', priceNote: 'ライト', tags: ['画像AI'], icon: Wand2, bgColor: 'bg-purple-500/10', iconColor: 'text-purple-400', status: '必須', isModel: true },
-  { id: 'inbox-organizer', title: 'Gmail AI Accelerator', subtitle: 'Inbox Zero', description: '受信メールを自動仕分け・返信案生成。', priceNote: 'プレミアム', tags: ['Gmail'], icon: Mail, bgColor: 'bg-cyan-500/10', iconColor: 'text-cyan-400', status: 'NEW' },
-  { id: 'ai-sidejob', title: 'AI副業スタートダッシュ', subtitle: '適性診断 × ロードマップ', description: 'あなたに最適なAI副業を完全ガイド。', priceNote: 'ライト', tags: ['副業'], icon: Briefcase, bgColor: 'bg-indigo-500/10', iconColor: 'text-indigo-400', status: 'NEW' },
+  { id: 'vintage-hunter', title: 'AI古着ハンター', subtitle: 'メルカリ24時間自動監視', description: '設定した条件に合う「お宝商品」をAIが常に監視し、出品された瞬間に通知。転売・仕入れのスピードをプロレベルへ引き上げます。', priceNote: 'プレミアム', tags: ['物販'], icon: Search, bgColor: 'bg-amber-500/10', iconColor: 'text-amber-400', status: '最強' },
+  { id: 'ai-select-shop', title: '「在庫ゼロ」AIセレクトショップ', subtitle: 'トレンド分析 × Shopify連携', description: '流行をAIが分析し、売れるデザインを自動生成。そのままShopify経由でオンデマンド生産・出品し、在庫リスクゼロのネットショップを実現。', priceNote: 'プレミアム', tags: ['EC'], icon: Store, bgColor: 'bg-teal-500/10', iconColor: 'text-teal-400', status: '人気' },
+  { id: 'youtube-producer', title: 'AI YouTubeプロデューサー', subtitle: '最新ニュースからの全自動台本作成', description: '音声の文字起こしから、最新トレンドを反映した台本生成、サムネイル設計まで。YouTube運用の全工程をAIが代行する「最強の工場」です。', priceNote: 'プレミアム', tags: ['動画'], icon: Clapperboard, bgColor: 'bg-red-500/10', iconColor: 'text-red-400', status: '注目', isModel: true },
+  { id: 'prompt-master', title: 'AI画像プロンプトマスター', subtitle: '究極の画像生成パーツ工房', description: '1000種類以上のパーツをパズルのように組み合わせ、MidjourneyやStable Diffusionで使える究極の呪文を錬成します。', priceNote: 'ライト', tags: ['画像AI'], icon: Wand2, bgColor: 'bg-purple-500/10', iconColor: 'text-purple-400', status: '必須', isModel: true },
+  { id: 'inbox-organizer', title: 'Gmail AI Accelerator', subtitle: '未読ゼロを最速で実現', description: '受信メールをAIが瞬時に解析し、重要度別に仕分け。文脈を汲み取った返信案もワンクリックで生成し、メール対応時間を劇的に短縮。', priceNote: 'プレミアム', tags: ['Gmail'], icon: Mail, bgColor: 'bg-cyan-500/10', iconColor: 'text-cyan-400', status: 'NEW' },
+  { id: 'ai-sidejob', title: 'AI副業スタートダッシュ', subtitle: '適性診断 × 収益化ロードマップ', description: 'あなたのスキルと時間に合わせた「稼げるAI副業」を診断。具体的な始め方から収益化までのステップをロードマップ形式で提示します。', priceNote: 'ライト', tags: ['副業'], icon: Briefcase, bgColor: 'bg-indigo-500/10', iconColor: 'text-indigo-400', status: 'NEW' },
 ]
 
 function ProductCard({ product }: { product: Product }) {
@@ -75,9 +75,18 @@ function ProductCard({ product }: { product: Product }) {
               <ArrowRight className="h-5 w-5 group-hover/btn:translate-x-1 transition-transform" />
             </Button>
           </Link>
-          <div className="flex justify-between items-center px-1">
-            <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">Plan: {product.priceNote}</span>
-            {product.priceNote !== '無料' && <Lock className="h-3 w-3 text-slate-600" />}
+          <div className="flex justify-between items-center px-2 py-2 bg-slate-950/50 rounded-xl border border-slate-800/50">
+            <div className="flex items-center gap-2">
+              <CreditCard className="h-3 w-3 text-slate-500" />
+              <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${product.priceNote === '無料' ? 'text-emerald-400' : 'text-slate-400'}`}>
+                {product.priceNote} PLAN
+              </span>
+            </div>
+            {product.priceNote !== '無料' ? (
+              <Lock className="h-3 w-3 text-amber-500/50" />
+            ) : (
+              <Sparkles className="h-3 w-3 text-emerald-500 animate-pulse" />
+            )}
           </div>
         </div>
       </CardContent>
