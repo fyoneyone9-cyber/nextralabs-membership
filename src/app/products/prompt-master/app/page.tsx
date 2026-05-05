@@ -1,11 +1,6 @@
+﻿import PromptMaster from '@/components/tools/PromptMaster'
 import { AccessGate } from '@/components/tools/AccessGate'
-import { PromptMaster } from '@/components/tools/PromptMaster'
-
-export const metadata = {
-  title: 'AI画像プロンプトマスター | NextraLabs',
-}
-
-export default function PromptMasterAppPage() {
+export default function Page() {
   return (
     <AccessGate productId="prompt-master">
       <PromptMaster />

@@ -1,7 +1,6 @@
+﻿import BuzzWriter from '@/components/tools/BuzzWriter'
 import { AccessGate } from '@/components/tools/AccessGate'
-import BuzzWriter from '@/components/tools/BuzzWriter'
-
-export default function BuzzWriterAppPage() {
+export default function Page() {
   return (
     <AccessGate productId="buzz-writer">
       <BuzzWriter />

@@ -1,11 +1,6 @@
+﻿import ClosetCoach from '@/components/tools/ClosetCoach'
 import { AccessGate } from '@/components/tools/AccessGate'
-import { ClosetCoach } from '@/components/tools/ClosetCoach'
-
-export const metadata = {
-  title: 'AIクローゼット断捨離コーチ | NextraLabs',
-}
-
-export default function ClosetCoachAppPage() {
+export default function Page() {
   return (
     <AccessGate productId="closet-coach">
       <ClosetCoach />

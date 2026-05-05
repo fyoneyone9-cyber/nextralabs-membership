@@ -1,11 +1,6 @@
+﻿import YoutubeProducer from '@/components/tools/YoutubeProducer'
 import { AccessGate } from '@/components/tools/AccessGate'
-import { YoutubeProducer } from '@/components/tools/YoutubeProducer'
-
-export const metadata = {
-  title: 'AI YouTubeプロデューサー | NextraLabs',
-}
-
-export default function YoutubeProducerAppPage() {
+export default function Page() {
   return (
     <AccessGate productId="youtube-producer">
       <YoutubeProducer />
