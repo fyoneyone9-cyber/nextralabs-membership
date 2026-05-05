@@ -36,10 +36,11 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
       try {
         const msg = args.map(arg => {
           try {
+            if (arg instanceof Error) return `${arg.name}: ${arg.message}`;
             return typeof arg === 'object' ? JSON.stringify(arg) : String(arg);
-          } catch { return "[Complex Object]"; }
+          } catch { return "[Object]"; }
         }).join(' ');
-        setConsoleErrors(prev => [...prev.slice(-20), `[${new Date().toLocaleTimeString()}][ERR] ${msg}`]);
+        setConsoleErrors(prev => [...prev.slice(-30), `[${new Date().toLocaleTimeString()}][ERR] ${msg}`]);
       } catch (e) { /* fail silent */ }
       originalError.apply(window.console, args);
     };
@@ -100,7 +101,22 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
             <div className="space-y-6 animate-in fade-in duration-500">
               <div className="flex items-center justify-between border-b border-white/5 pb-4 text-white">
                 <div className="flex items-center gap-3"><Unlock className="h-4 w-4 text-emerald-500" /><span className="text-sm font-black uppercase">Diagnostic Live</span></div>
-                <Button onClick={() => { navigator.clipboard.writeText(JSON.stringify(data, null, 2)); setCopied(true); setTimeout(() => setCopied(false), 2000) }} className="h-8 bg-slate-800 text-[10px] rounded-lg">{copied ? "COPIED" : "REPORT TO AI"}</Button>
+                <Button 
+                  onClick={() => { 
+                    const fullReport = {
+                      timestamp: new Date().toISOString(),
+                      toolId,
+                      logs: consoleErrors,
+                      componentData: data
+                    };
+                    navigator.clipboard.writeText(JSON.stringify(fullReport, null, 2)); 
+                    setCopied(true); 
+                    setTimeout(() => setCopied(false), 2000) 
+                  }} 
+                  className="h-8 bg-slate-800 text-[10px] rounded-lg border border-white/10 hover:bg-slate-700 transition-colors"
+                >
+                  {copied ? "✅ FULL REPORT COPIED" : "📋 COPY ALL FOR AI"}
+                </Button>
               </div>
               <div className="bg-black p-6 rounded-2xl border border-white/5 overflow-auto max-h-[350px] space-y-4">
                 <div className="space-y-2">
