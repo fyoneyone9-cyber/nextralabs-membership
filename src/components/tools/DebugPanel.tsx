@@ -99,37 +99,121 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
             </div>
           ) : (
             <div className="space-y-6 animate-in fade-in duration-500">
-              <div className="flex items-center justify-between border-b border-white/5 pb-4 text-white">
-                <div className="flex items-center gap-3"><Unlock className="h-4 w-4 text-emerald-500" /><span className="text-sm font-black uppercase">Diagnostic Live</span></div>
-                <Button 
-                  onClick={() => { 
-                    const fullReport = {
-                      timestamp: new Date().toISOString(),
-                      toolId,
-                      logs: consoleErrors,
-                      componentData: data
-                    };
-                    navigator.clipboard.writeText(JSON.stringify(fullReport, null, 2)); 
-                    setCopied(true); 
-                    setTimeout(() => setCopied(false), 2000) 
-                  }} 
-                  className="h-8 bg-slate-800 text-[10px] rounded-lg border border-white/10 hover:bg-slate-700 transition-colors"
-                >
-                  {copied ? "✅ FULL REPORT COPIED" : "📋 COPY ALL FOR AI"}
-                </Button>
+                <div className="flex items-center gap-3">
+                  <Unlock className="h-4 w-4 text-emerald-500" />
+                  <span className="text-sm font-black uppercase tracking-tighter">Diagnostic Live (Master Core)</span>
+                  <Badge variant="outline" className="text-[8px] border-emerald-500/30 text-emerald-500 animate-pulse">STREAMING</Badge>
+                </div>
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={() => {
+                      const el = document.documentElement;
+                      const report = {
+                        url: window.location.href,
+                        screen: { width: window.innerWidth, height: window.innerHeight },
+                        ua: navigator.userAgent,
+                        dom_summary: {
+                          tags: Array.from(document.querySelectorAll('*')).length,
+                          has_error_overlay: !!document.querySelector('.nextjs-error-overlay-dark')
+                        }
+                      };
+                      console.log('[SYSTEM_SNAPSHOT]', report);
+                    }}
+                    className="h-8 bg-blue-600 hover:bg-blue-500 text-[10px] font-black rounded-lg px-4"
+                  >
+                    🔍 SNAPSHOT
+                  </Button>
+                  <Button 
+                    onClick={() => { 
+                      const fullReport = {
+                        identity: {
+                          app: "NextraLabs Social Command",
+                          version: "v7.5-ULTIMATE",
+                          environment: process.env.NODE_ENV,
+                        },
+                        diagnostic: {
+                          timestamp: new Date().toISOString(),
+                          local_time: new Date().toLocaleString(),
+                          url: window.location.href,
+                          user_agent: navigator.userAgent
+                        },
+                        tool_context: {
+                          toolId,
+                          current_state: data
+                        },
+                        console_stack: {
+                          count: consoleErrors.length,
+                          entries: consoleErrors
+                        },
+                        network_check: {
+                          online: navigator.onLine,
+                        }
+                      };
+                      navigator.clipboard.writeText(JSON.stringify(fullReport, null, 2)); 
+                      setCopied(true); 
+                      setTimeout(() => setCopied(false), 2000) 
+                    }} 
+                    className="h-8 bg-white text-black hover:bg-slate-200 text-[10px] font-black rounded-lg px-4 shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+                  >
+                    {copied ? "✅ ULTIMATE REPORT COPIED" : "🚀 COPY ULTIMATE REPORT"}
+                  </Button>
+                </div>
               </div>
-              <div className="bg-black p-6 rounded-2xl border border-white/5 overflow-auto max-h-[350px] space-y-4">
-                <div className="space-y-2">
-                  <p className="text-[10px] font-black text-slate-500 uppercase">Console Logs (F12 Mirror)</p>
-                  <div className="bg-slate-900/50 p-4 rounded-xl font-mono text-[10px] leading-relaxed text-emerald-500/80 whitespace-pre-wrap border border-white/5">
-                    {consoleErrors.length > 0 ? consoleErrors.join('\n') : "No logs captured yet..."}
+
+              <div className="bg-black rounded-[2rem] border border-white/5 overflow-hidden flex flex-col h-[500px]">
+                {/* ターミナルヘッダー */}
+                <div className="bg-slate-900 px-6 py-3 border-b border-white/5 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Terminal size={14} className="text-slate-400" />
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nextra Debug Terminal</span>
+                  </div>
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-slate-800" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-slate-800" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/50" />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <p className="text-[10px] font-black text-slate-500 uppercase">Component Data</p>
-                  <pre className="text-blue-400/70 font-mono text-[10px] leading-relaxed bg-slate-900/50 p-4 rounded-xl border border-white/5">
-                    {JSON.stringify(data, null, 2)}
-                  </pre>
+
+                <div className="flex-1 overflow-auto p-6 font-mono text-[11px] leading-relaxed custom-scrollbar">
+                  <div className="space-y-4">
+                    {/* Console Logs Area */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-slate-500 border-b border-white/5 pb-1">
+                        <Activity size={12} />
+                        <span className="font-black uppercase tracking-tighter">System Events & F12 Mirror</span>
+                      </div>
+                      <div className="space-y-1">
+                        {consoleErrors.length > 0 ? (
+                          consoleErrors.map((log, i) => {
+                            const isErr = log.includes('[ERR]');
+                            const isWarn = log.includes('[WARN]');
+                            return (
+                              <div key={i} className={`py-1 px-3 rounded border-l-2 ${
+                                isErr ? 'bg-red-500/10 border-red-500 text-red-400' : 
+                                isWarn ? 'bg-amber-500/10 border-amber-500 text-amber-400' : 
+                                'bg-emerald-500/5 border-emerald-500/30 text-emerald-500/80'
+                              }`}>
+                                {log}
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <p className="text-slate-700 italic">No events captured...</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Component Data Area */}
+                    <div className="space-y-2 pt-4">
+                      <div className="flex items-center gap-2 text-slate-500 border-b border-white/5 pb-1">
+                        <Database size={12} />
+                        <span className="font-black uppercase tracking-tighter">Live State Buffer</span>
+                      </div>
+                      <pre className="text-blue-400/60 bg-blue-500/5 p-4 rounded-xl border border-blue-500/10 overflow-x-auto">
+                        {JSON.stringify(data, null, 2)}
+                      </pre>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
