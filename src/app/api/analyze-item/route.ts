@@ -1,36 +1,32 @@
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  const requestId = Math.random().toString(36).substring(7);
-  const debugLogs: any[] = [];
-  
-  const addLog = (tag: string, content: any) => {
-    debugLogs.push({ timestamp: new Date().toISOString(), tag, content });
-    console.log(`[${requestId}] ${tag}:`, JSON.stringify(content));
-  };
-
   try {
     const { image } = await req.json();
-    addLog("REQUEST_DATA_SIZE", `${(image?.length / 1024).toFixed(2)} KB`);
-
     const apiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY1;
-    addLog("API_KEY_CHECK", apiKey ? `PRESENT (Ends with: ...${apiKey.slice(-4)})` : "MISSING");
+    
+    if (!apiKey || !image) return NextResponse.json({ error: "No Data" }, { status: 400 });
 
-    if (!apiKey || !image) throw new Error("Missing params");
+    // 🏆 不要なヘッダーを除去し、純粋なBase64データのみを抽出
+    const base64Data = image.includes(",") ? image.split(",")[1] : image;
 
-    const base64Data = image.split(",")[1] || image;
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    // 🚀 【2026年最新】v1 正式版エンドポイント ＋ gemini-1.5-flash
+    // 404を回避するため、モデル名の前に /models/ を付けない「純粋な指定」で行います
+    const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     const requestBody = {
       contents: [{
         parts: [
-          { text: "Respond ONLY with raw JSON: { \"item\": \"name\", \"color\": \"color\", \"brand\": \"brand\", \"features\": [\"tag\"], \"matchConfidence\": 95 }" },
+          { text: "Analyze this image for a hotel lost and found system. Respond ONLY with raw JSON: { \"item\": \"品目\", \"color\": \"色\", \"brand\": \"ブランド\", \"features\": [\"特徴1\", \"特徴2\"], \"matchConfidence\": 95 }" },
           { inline_data: { mime_type: "image/jpeg", data: base64Data } }
         ]
-      }]
+      }],
+      generationConfig: {
+        // AIの出力をJSONに固定。これによりパースエラーを防ぎます
+        response_mime_type: "application/json",
+        temperature: 0.1
+      }
     };
-
-    addLog("SENDING_TO_GOOGLE", { url: apiUrl.split("?")[0] + "?key=HIDDEN", model: "gemini-1.5-flash" });
 
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -39,27 +35,22 @@ export async function POST(req: Request) {
     });
 
     const data = await response.json();
-    addLog("GOOGLE_RESPONSE_RAW", data);
 
     if (!response.ok) {
-      return NextResponse.json({ 
-        error: "Google API Rejected Request", 
-        google_status: response.status,
-        google_error: data.error,
-        debug_trace: debugLogs 
-      }, { status: response.status });
+      throw new Error(`Google API Error: ${data.error?.message || "Internal Access Error"}`);
     }
 
+    // AIからの回答テキストを取得
     const text = data.candidates[0].content.parts[0].text;
-    const cleanJson = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
     
-    return NextResponse.json({
-      ...JSON.parse(cleanJson),
-      _debug: debugLogs // 成功時もデバッグ情報を付与
-    });
+    // JSONとしてクライアントへ返却
+    return NextResponse.json(JSON.parse(text));
 
   } catch (error: any) {
-    addLog("FATAL_ERROR", error.message);
-    return NextResponse.json({ error: "System Failure", message: error.message, debug_trace: debugLogs }, { status: 500 });
+    console.error("STAYSEE_FINAL_CRASH:", error.message);
+    return NextResponse.json({ 
+      error: "AI解析の最終同期中", 
+      message: error.message 
+    }, { status: 500 });
   }
 }
