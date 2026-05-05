@@ -37,20 +37,28 @@ export default function SnsAutoPoster() {
   const [trends, setTrends] = useState<string[]>([]);
   const [isLoadingTrends, setIsLoadingTrends] = useState(false);
 
+  const [trends, setTrends] = useState<string[]>([]);
+  const [isLoadingTrends, setIsLoadingTrends] = useState(false);
+  const [apiStatus, setApiStatus] = useState<'loading' | 'live' | 'error'>('loading');
+
   const fetchTrends = async () => {
     setIsLoadingTrends(true);
+    setApiStatus('loading');
     try {
       const response = await fetch('/api/trends');
+      if (!response.ok) throw new Error('API Error');
       const data = await response.json();
+      
       if (data.trends && data.trends.length > 0) {
         setTrends(data.trends);
+        setApiStatus('live');
       } else {
-        // フォールバック（万が一APIが失敗した場合の最低限のデータ）
-        setTrends(["AI活用", "業務効率化", "最新ガジェット", "働き方改革"]);
+        throw new Error('No data');
       }
     } catch (error) {
       console.error('Fetch trends error:', error);
-      setTrends(["SNSマーケティング", "コンテンツ作成"]);
+      setTrends([]); // 偽物は出さない
+      setApiStatus('error');
     } finally {
       setIsLoadingTrends(false);
     }
@@ -93,13 +101,36 @@ export default function SnsAutoPoster() {
               <p className="text-xs font-black uppercase italic tracking-widest">① Real-time Trends (Subject)</p>
             </div>
             {/* API連携ステータスの可視化 */}
-            <div className="flex items-center gap-2 bg-slate-900 px-3 py-1 rounded-full border border-slate-800 shadow-[0_0_10px_rgba(34,197,94,0.2)]">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[9px] font-black text-green-500 uppercase tracking-tighter">API: LIVE (GOOGLE_TRENDS)</span>
+            <div className="flex items-center gap-2">
+              {apiStatus === 'live' && (
+                <div className="flex items-center gap-2 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/50 shadow-[0_0_15px_rgba(34,197,94,0.4)]">
+                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-[10px] font-black text-green-500 uppercase tracking-tighter">API: LIVE (GOOGLE_TRENDS)</span>
+                </div>
+              )}
+              {apiStatus === 'loading' && (
+                <div className="flex items-center gap-2 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/50">
+                  <Loader2 className="w-3 h-3 text-blue-500 animate-spin" />
+                  <span className="text-[10px] font-black text-blue-500 uppercase tracking-tighter">API: CONNECTING...</span>
+                </div>
+              )}
+              {apiStatus === 'error' && (
+                <div className="flex items-center gap-2 bg-red-500/10 px-3 py-1 rounded-full border border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.4)]">
+                  <div className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                  <span className="text-[10px] font-black text-red-500 uppercase tracking-tighter">API: CONNECTION_ERROR</span>
+                </div>
+              )}
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {trends.map((t, i) => {
+            {isLoadingTrends ? (
+              Array(6).fill(0).map((_, i) => (
+                <div key={i} className="h-24 bg-slate-900/50 border-2 border-slate-800 rounded-2xl animate-pulse flex items-center justify-center">
+                  <Loader2 className="text-slate-700 animate-spin" />
+                </div>
+              ))
+            ) : trends.length > 0 ? (
+              trends.map((t, i) => {
               const isActive = inputData.includes(`【トレンド】：${t}`);
               return (
                 <Button 
@@ -124,7 +155,15 @@ export default function SnsAutoPoster() {
                   </div>
                 </Button>
               );
-            })}
+            })
+          ) : (
+            <div className="col-span-full py-10 text-center space-y-4">
+              <p className="text-red-500 font-black italic uppercase tracking-widest">⚠️ Live trends could not be loaded</p>
+              <Button onClick={fetchTrends} variant="outline" className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white font-black italic">
+                <RotateCcw className="mr-2" size={16} /> RETRY CONNECTION
+              </Button>
+            </div>
+          )}
           </div>
         </div>
 
