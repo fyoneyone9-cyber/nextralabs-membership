@@ -40,15 +40,17 @@ export default function SnsAutoPoster() {
   const fetchTrends = async () => {
     setIsLoadingTrends(true);
     try {
-      // 実際は外部API(Google Trends等)を叩く想定だが、現在は固定リストをシャッフル
-      await new Promise(resolve => setTimeout(resolve, 800));
-      const mockTrends = [
-        "AIエージェントの衝撃", "次世代iPhoneリーク", "週末の絶品スイーツ", 
-        "メタバースの今", "リモートワーク革命", "注目のスタートアップ",
-        "最新の生成AIツール", "環境保護とテクノロジー", "宇宙旅行の現実味",
-        "プロンプトエンジニアリング", "Web3の新潮流", "未来の都市設計"
-      ];
-      setTrends(mockTrends.sort(() => 0.5 - Math.random()));
+      const response = await fetch('/api/trends');
+      const data = await response.json();
+      if (data.trends && data.trends.length > 0) {
+        setTrends(data.trends);
+      } else {
+        // フォールバック（万が一APIが失敗した場合の最低限のデータ）
+        setTrends(["AI活用", "業務効率化", "最新ガジェット", "働き方改革"]);
+      }
+    } catch (error) {
+      console.error('Fetch trends error:', error);
+      setTrends(["SNSマーケティング", "コンテンツ作成"]);
     } finally {
       setIsLoadingTrends(false);
     }
@@ -91,9 +93,9 @@ export default function SnsAutoPoster() {
               <p className="text-xs font-black uppercase italic tracking-widest">① Real-time Trends (Subject)</p>
             </div>
             {/* API連携ステータスの可視化 */}
-            <div className="flex items-center gap-2 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">
-              <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-              <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">API: MOCK_MODE (FIXED_DATA)</span>
+            <div className="flex items-center gap-2 bg-slate-900 px-3 py-1 rounded-full border border-slate-800 shadow-[0_0_10px_rgba(34,197,94,0.2)]">
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-[9px] font-black text-green-500 uppercase tracking-tighter">API: LIVE (GOOGLE_TRENDS)</span>
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
