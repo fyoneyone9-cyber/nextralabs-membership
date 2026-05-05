@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
+
 import { DebugPanel } from './DebugPanel'
 import { 
   ArrowRight, 
@@ -20,15 +20,15 @@ import {
 } from 'lucide-react'
 
 const STEPS = [
-  { id: 1, label: 'STEP 01', what: '素材取り込み', how: '動画・音声・YouTubeリンクを読み込みます。' },
-  { id: 2, label: 'STEP 02', what: 'AIプロンプト生成', how: '文字起こしから最強の指示書を作成します。' },
-  { id: 3, label: 'STEP 03', what: '各AIで実行', how: '生成された指示をコピーして、目的のAIで実行します。' }
+  { id: 1, label: 'STEP 01', what: '邏譚仙叙繧願ｾｼ縺ｿ', how: '蜍慕判繝ｻ髻ｳ螢ｰ繝ｻYouTube繝ｪ繝ｳ繧ｯ繧定ｪｭ縺ｿ霎ｼ縺ｿ縺ｾ縺吶・ },
+  { id: 2, label: 'STEP 02', what: 'AI繝励Ο繝ｳ繝励ヨ逕滓・', how: '譁・ｭ苓ｵｷ縺薙＠縺九ｉ譛蠑ｷ縺ｮ謖・､ｺ譖ｸ繧剃ｽ懈・縺励∪縺吶・ },
+  { id: 3, label: 'STEP 03', what: '蜷БI縺ｧ螳溯｡・, how: '逕滓・縺輔ｌ縺滓欠遉ｺ繧偵さ繝斐・縺励※縲∫岼逧・・AI縺ｧ螳溯｡後＠縺ｾ縺吶・ }
 ];
 
 const MAJOR_AI = [
-  { id: 'gemini', name: 'GEMINI', url: 'https://gemini.google.com', icon: '💎', desc: '動画解析・長文に強い' },
-  { id: 'chatgpt', name: 'GPT', url: 'https://chatgpt.com', icon: '🟢', desc: '台本・構成案に強い' },
-  { id: 'claude', name: 'CLAUDE', url: 'https://claude.ai', icon: '🟠', desc: '自然な文章・編集に強い' }
+  { id: 'gemini', name: 'GEMINI', url: 'https://gemini.google.com', icon: '虫', desc: '蜍慕判隗｣譫舌・髟ｷ譁・↓蠑ｷ縺・ },
+  { id: 'chatgpt', name: 'GPT', url: 'https://chatgpt.com', icon: '泙', desc: '蜿ｰ譛ｬ繝ｻ讒区・譯医↓蠑ｷ縺・ },
+  { id: 'claude', name: 'CLAUDE', url: 'https://claude.ai', icon: '泛', desc: '閾ｪ辟ｶ縺ｪ譁・ｫ繝ｻ邱ｨ髮・↓蠑ｷ縺・ }
 ];
 
 export default function YoutubeProducer() {
@@ -57,7 +57,7 @@ export default function YoutubeProducer() {
         if (prev >= 100) {
           clearInterval(interval);
           setIsUploading(false);
-          setTranscript('（擬似文字起こし結果）動画の内容：AIを活用した副業の始め方について。1. ジャンル選定 2. プロンプト作成 3. 継続のコツ...');
+          setTranscript('・域闘莨ｼ譁・ｭ苓ｵｷ縺薙＠邨先棡・牙虚逕ｻ縺ｮ蜀・ｮｹ・哂I繧呈ｴｻ逕ｨ縺励◆蜑ｯ讌ｭ縺ｮ蟋九ａ譁ｹ縺ｫ縺､縺・※縲・. 繧ｸ繝｣繝ｳ繝ｫ驕ｸ螳・2. 繝励Ο繝ｳ繝励ヨ菴懈・ 3. 邯咏ｶ壹・繧ｳ繝・..');
           setCurrentStep(2);
           return 100;
         }
@@ -73,7 +73,7 @@ export default function YoutubeProducer() {
   };
 
   const handleCopy = () => {
-    const prompt = `以下の文字起こしデータをもとに、YouTubeの「台本案」「タイトル5選」「サムネイル構成案」を作成してください。\n\n【文字起こし】\n${transcript}`;
+    const prompt = `莉･荳九・譁・ｭ苓ｵｷ縺薙＠繝・・繧ｿ繧偵ｂ縺ｨ縺ｫ縲〆ouTube縺ｮ縲悟床譛ｬ譯医阪後ち繧､繝医Ν5驕ｸ縲阪後し繝繝阪う繝ｫ讒区・譯医阪ｒ菴懈・縺励※縺上□縺輔＞縲・n\n縲先枚蟄苓ｵｷ縺薙＠縲曾n${transcript}`;
     navigator.clipboard.writeText(prompt);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -84,11 +84,11 @@ export default function YoutubeProducer() {
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-12 min-h-screen text-slate-200 font-sans pb-20">
       <div className="text-center">
-        <h1 className="text-5xl md:text-7xl font-black text-white uppercase italic tracking-tighter">AI YouTubeプロデューサー</h1>
+        <h1 className="text-5xl md:text-7xl font-black text-white uppercase italic tracking-tighter">AI YouTube繝励Ο繝・Η繝ｼ繧ｵ繝ｼ</h1>
         <p className="text-slate-400 mt-4 font-bold tracking-widest uppercase">Content Creation Pipeline</p>
       </div>
 
-      {/* 🔴 PROGRESS BAR */}
+      {/* 閥 PROGRESS BAR */}
       <div className="flex items-center justify-center max-w-5xl mx-auto overflow-x-auto pb-10 px-4">
         <div className="flex items-center justify-between w-full min-w-[500px] relative">
           <div className="absolute top-6 left-0 w-full h-1 bg-slate-800 -z-10 rounded-full" />
@@ -132,12 +132,12 @@ export default function YoutubeProducer() {
                   {isUploading ? <Loader2 className="h-12 w-12 text-red-500 animate-spin" /> : <Upload className="h-12 w-12 text-red-500" />}
                 </div>
                 <div>
-                  <h4 className="text-2xl font-black text-white">動画・音声ファイルをアップ</h4>
-                  <p className="text-slate-400 mt-2 font-medium">MP4, MOV, MP3, WAV 対応</p>
+                  <h4 className="text-2xl font-black text-white">蜍慕判繝ｻ髻ｳ螢ｰ繝輔ぃ繧､繝ｫ繧偵い繝・・</h4>
+                  <p className="text-slate-400 mt-2 font-medium">MP4, MOV, MP3, WAV 蟇ｾ蠢・/p>
                 </div>
                 {isUploading && (
                   <div className="w-full space-y-2">
-                    <Progress value={uploadProgress} className="h-2 bg-slate-800" />
+                    <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden"><div className="h-full bg-red-600 transition-all duration-300" style={{ width: `${uploadProgress}%` }}></div></div>
                     <p className="text-xs font-bold text-red-500 uppercase tracking-tighter">Uploading: {uploadProgress}%</p>
                   </div>
                 )}
@@ -164,7 +164,7 @@ export default function YoutubeProducer() {
                   disabled={!youtubeUrl || isUploading}
                   className="w-full h-16 bg-white text-black hover:bg-slate-200 font-black text-xl rounded-2xl shadow-xl transition-all"
                 >
-                  読み込む <ChevronRight className="ml-2" />
+                  隱ｭ縺ｿ霎ｼ繧 <ChevronRight className="ml-2" />
                 </Button>
               </div>
             </Card>
@@ -178,9 +178,9 @@ export default function YoutubeProducer() {
               <div className="space-y-8">
                 <div className="flex items-center justify-between">
                   <h4 className="text-2xl font-black text-white italic uppercase flex items-center gap-3">
-                    <FileText className="text-red-500" /> 文字起こしプレビュー
+                    <FileText className="text-red-500" /> 譁・ｭ苓ｵｷ縺薙＠繝励Ξ繝薙Η繝ｼ
                   </h4>
-                  <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1">解析完了</Badge>
+                  <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1">隗｣譫仙ｮ御ｺ・/Badge>
                 </div>
                 
                 <div className="bg-slate-950 border-2 border-slate-800 rounded-[2rem] p-8 max-h-60 overflow-y-auto text-slate-300 font-medium leading-relaxed shadow-inner">
@@ -189,22 +189,21 @@ export default function YoutubeProducer() {
 
                 <div className="pt-6">
                   <h4 className="text-2xl font-black text-white italic uppercase mb-6 flex items-center gap-3">
-                    <Zap className="text-yellow-500" /> 最強のプロンプトを生成
-                  </h4>
+                    <Zap className="text-yellow-500" /> 譛蠑ｷ縺ｮ繝励Ο繝ｳ繝励ヨ繧堤函謌・                  </h4>
                   <Button 
                     onClick={handleCopy} 
                     className={`w-full h-24 font-black text-3xl rounded-[2rem] shadow-2xl transition-all duration-300 ${
                       copied ? 'bg-emerald-500 text-slate-950 scale-105' : 'bg-red-600 text-white hover:bg-red-500'
                     }`}
                   >
-                    {copied ? '✅ COPIED!' : '指示をコピーして次へ'}
+                    {copied ? '笨・COPIED!' : '謖・､ｺ繧偵さ繝斐・縺励※谺｡縺ｸ'}
                   </Button>
                 </div>
               </div>
             </Card>
             <div className="mt-8 flex justify-center">
               <Button variant="ghost" onClick={() => setCurrentStep(3)} className="text-slate-500 hover:text-white font-bold">
-                コピーせずに次へ <ArrowRight className="ml-2 h-4 w-4" />
+                繧ｳ繝斐・縺帙★縺ｫ谺｡縺ｸ <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -237,14 +236,13 @@ export default function YoutubeProducer() {
             </div>
             
             <div className="mt-16 text-center bg-slate-900/50 border-2 border-dashed border-slate-800 p-10 rounded-[3rem]">
-              <p className="text-slate-400 font-bold mb-6 italic">別の素材でやり直す場合はこちら</p>
+              <p className="text-slate-400 font-bold mb-6 italic">蛻･縺ｮ邏譚舌〒繧・ｊ逶ｴ縺吝ｴ蜷医・縺薙■繧・/p>
               <Button 
                 variant="outline" 
                 onClick={() => setCurrentStep(1)}
                 className="rounded-2xl border-slate-700 text-slate-300 hover:bg-slate-800 px-10 h-14 font-black italic"
               >
-                最初からやり直す
-              </Button>
+                譛蛻昴°繧峨ｄ繧顔峩縺・              </Button>
             </div>
           </div>
         )}
