@@ -23,9 +23,9 @@ interface Product {
 const freeTools: Product[] = [
   { id: 'office-politics-graph', title: '社内政治 相関図', subtitle: '人間関係の可視化', description: '組織図に載らない本当の関係をAI解析。', priceNote: '無料', tags: ['無料'], icon: Network, bgColor: 'bg-indigo-500/10', iconColor: 'text-indigo-400', status: '人気', isModel: true },
   { id: 'moving-checker', title: 'AI引越し安心チェッカー', subtitle: '治安・物件リスク分析', description: '住居のリスクをAI解析・スコアリング。', priceNote: '無料', tags: ['無料'], icon: Home, bgColor: 'bg-emerald-500/10', iconColor: 'text-emerald-400', status: '注目', isModel: true },
-  { id: 'sns-auto-poster', title: 'SNSオートポスター', subtitle: 'マルチSNS投稿作成', description: 'トピックから投稿内容を自動生成します。', priceNote: '無料', tags: ['SNS'], icon: Share2, bgColor: 'bg-blue-500/10', iconColor: 'text-blue-400', status: '標準' },
+  { id: 'sns-auto-poster', title: 'SNSオートポスター', subtitle: 'マルチSNS投稿作成', description: 'トピックから投稿内容を自動生成します。', priceNote: '無料', tags: ['SNS'], icon: Share2, bgColor: 'bg-blue-500/10', iconColor: 'text-blue-400', status: 'マスタ', isModel: true },
   { id: 'kdp-guide', title: 'Kindle出版完全ナビ', subtitle: '電子書籍出版ガイド', description: 'KDPアカウント設定から出版申請まで完結。', priceNote: '無料', tags: ['教育'], icon: BookOpen, bgColor: 'bg-orange-500/10', iconColor: 'text-orange-400', status: '標準', isModel: true },
-  { id: 'ai-report-generator', title: 'AIレポートジェネレーター', subtitle: 'ビジネス文書作成', description: '箇条書きからプロ級のレポートを生成。', priceNote: '無料', tags: ['事務'], icon: FileText, bgColor: 'bg-slate-500/10', iconColor: 'text-slate-400', status: '標準' },
+  { id: 'ai-report-generator', title: 'AIレポートジェネレーター', subtitle: 'ビジネス文書作成', description: '箇条書きからプロ級のレポートを生成。', priceNote: '無料', tags: ['事務'], icon: FileText, bgColor: 'bg-slate-500/10', iconColor: 'text-slate-400', status: 'マスタ', isModel: true },
 ]
 
 const hotelTools: Product[] = [
@@ -95,6 +95,11 @@ function SectionTitle({ emoji, title, color }: { emoji: string; title: string; c
 }
 
 export default function ProductsPage() {
+  // マスタ化されたツール（isModel: true）を全て抽出してランダムに3つ選択
+  const allTools = [...freeTools, ...hotelTools, ...defenseTools, ...bizTools]
+  const masterTools = allTools.filter(p => p.isModel)
+  const todayRecommended = masterTools.sort(() => 0.5 - Math.random()).slice(0, 3)
+
   return (
     <div className="min-h-screen bg-[#0f1115] text-slate-200 pb-32 font-sans">
       <div className="max-w-7xl mx-auto px-4 pt-20 text-center mb-16 space-y-6">
@@ -104,6 +109,14 @@ export default function ProductsPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 space-y-32">
+        {/* 本日のおすすめセクション */}
+        <section>
+          <SectionTitle emoji="🔥" title="本日のおすすめ" color="border-orange-500" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {todayRecommended.map(p => <ProductCard key={p.id} product={p} />)}
+          </div>
+        </section>
+
         <section><SectionTitle emoji="🎁" title="無料ツール" color="border-emerald-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{freeTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
         <section><SectionTitle emoji="🏨" title="オーナー様向け" color="border-blue-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{hotelTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
         <section><SectionTitle emoji="🛡️" title="防犯・ライフ" color="border-red-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{defenseTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
