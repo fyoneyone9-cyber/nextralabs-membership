@@ -1,23 +1,51 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { 
-  TrendingUp, Activity, Database, Terminal, Sparkles, Wand2, Box, Palette, Shirt, 
-  Trash2, Globe, RefreshCw, X, Settings, Store, Loader2, FileDown, CheckCircle2 
-} from 'lucide-react'
+import { TrendingUp, RefreshCw, X, Settings, Store, Loader2, FileDown, CheckCircle2, ShieldCheck, CreditCard, Sparkles, Activity, Database, Terminal, Wand2, Package, Globe } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
+
+// ==================== Types ====================
+interface TrendKeyword {
+  id: string
+  name: string
+  score: number
+  category: string
+  direction: '↑' | '↗' | '→' | '↘' | '↓'
+  traffic: string
+}
+
+interface DesignRecord {
+  id: string
+  keyword: string
+  style: string
+  colorScheme: string[]
+  tshirtColor: string
+  sizes: string[]
+  sellingPrice: number
+  baseCost: number
+  markup: number
+  status: '出品中' | '下書き' | '売り切れ'
+  createdAt: string
+  canvasDataUrl: string
+}
+
+interface AppSettings {
+  defaultMarkup: number
+  defaultTshirtColor: string
+  printfulApiKey: string
+  printfulStoreId: string
+  shopifyDomain: string
+}
 
 // ==================== Constants ====================
 const STORAGE_KEYS = {
   designs: 'ai-select-shop-designs',
-  sales: 'ai-select-shop-sales',
   settings: 'ai-select-shop-settings',
-  trends: 'ai-select-shop-trends',
 }
 
 const STYLES = [
@@ -29,85 +57,118 @@ const STYLES = [
   { id: 'japanese', name: '和風', emoji: '⛩️' },
 ]
 
+const COLOR_SCHEMES = [
+  { id: 'neon', name: 'ネオン', colors: ['#00ff88', '#00ccff', '#ff00ff'] },
+  { id: 'sunset', name: 'サンセット', colors: ['#ff6b35', '#f7c59f', '#efefd0'] },
+  { id: 'sakura', name: '桜', colors: ['#ffb7c5', '#ff69b4', '#fff0f5'] },
+  { id: 'midnight', name: 'ミッドナイト', colors: ['#7b2cbf', '#c77dff', '#e0aaff'] },
+  { id: 'monochrome', name: 'モノクロ', colors: ['#ffffff', '#888888', '#333333'] },
+]
+
 const TSHIRT_COLORS = [
   { id: 'white', name: '白', hex: '#FFFFFF', textColor: '#000000' },
   { id: 'black', name: '黒', hex: '#1a1a1a', textColor: '#FFFFFF' },
-  { id: 'gray', name: 'グレー', hex: '#6b7280', textColor: '#FFFFFF' },
   { id: 'navy', name: 'ネイビー', hex: '#1e3a5f', textColor: '#FFFFFF' },
 ]
 
 const SIZES = ['S', 'M', 'L', 'XL', 'XXL']
 
+const DEFAULT_SETTINGS: AppSettings = {
+  defaultMarkup: 150,
+  defaultTshirtColor: 'black',
+  printfulApiKey: 'suHaJYIsHrfarAJXAApi6tetzLMmoZvD5qfZgaHN',
+  printfulStoreId: '18088076',
+  shopifyDomain: 'z5ju1n-vs.myshopify.com',
+}
+
+// ==================== Canvas Logic ====================
+function drawTshirt(
+  canvas: HTMLCanvasElement,
+  keyword: string,
+  styleId: string,
+  scheme: string[],
+  tshirtHex: string,
+) {
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return
+
+  const w = canvas.width
+  const h = canvas.height
+  ctx.clearRect(0, 0, w, h)
+  ctx.fillStyle = '#0f0f1a'
+  ctx.fillRect(0, 0, w, h)
+
+  // T-shirt shape
+  ctx.beginPath()
+  ctx.moveTo(w * 0.15, h * 0.12); ctx.lineTo(w * 0.05, h * 0.28); ctx.lineTo(w * 0.2, h * 0.32)
+  ctx.lineTo(w * 0.2, h * 0.88); ctx.lineTo(w * 0.8, h * 0.88); ctx.lineTo(w * 0.8, h * 0.32)
+  ctx.lineTo(w * 0.95, h * 0.28); ctx.lineTo(w * 0.85, h * 0.12); ctx.lineTo(w * 0.62, h * 0.08)
+  ctx.quadraticCurveTo(w * 0.5, h * 0.14, w * 0.38, h * 0.08); ctx.closePath()
+
+  ctx.fillStyle = tshirtHex
+  ctx.fill()
+
+  // Design Logic
+  const cx = w * 0.5, cy = h * 0.48
+  if (styleId === 'japanese') {
+    ctx.beginPath(); ctx.arc(cx, cy, w * 0.2, 0, Math.PI * 2); ctx.fillStyle = '#c0392b'; ctx.fill()
+    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 32px serif'; ctx.textAlign = 'center'
+    const chars = keyword.split('');
+    chars.forEach((ch, i) => ctx.fillText(ch, cx, cy - (chars.length * 15) + (i * 40)))
+  } else {
+    ctx.fillStyle = scheme[0]; ctx.font = '900 40px Impact'; ctx.textAlign = 'center'; ctx.fillText(keyword.toUpperCase(), cx, cy)
+  }
+}
+
 // ==================== Component ====================
 export default function AISelectShop() {
-  const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1)
-  const [designs, setDesigns] = useState<any[]>([])
-  const [trends, setTrends] = useState<any[]>([])
-  const [trendsLoading, setTrendsLoading] = useState(true)
-  const [designKeyword, setDesignKeyword] = useState('')
-  const [designStyle, setDesignStyle] = useState('minimal')
-  const [designTshirtColor, setDesignTshirtColor] = useState('black')
-  const [designSizes, setDesignSizes] = useState<string[]>(SIZES)
-  const [designGenerated, setDesignGenerated] = useState(false)
   const [isClient, setIsClient] = useState(false)
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1)
+  const [trends, setTrends] = useState<TrendKeyword[]>([])
+  const [designs, setDesigns] = useState<DesignRecord[]>([])
+  const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS)
 
+  const [designKeyword, setDesignKeyword] = useState('')
+  const [designStyle, setDesignStyle] = useState('japanese')
+  const [designColorScheme, setDesignColorScheme] = useState('monochrome')
+  const [designTshirtColor, setDesignTshirtColor] = useState('black')
+  const [designGenerated, setDesignGenerated] = useState(false)
+  
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
     setIsClient(true)
-    const savedDesigns = localStorage.getItem(STORAGE_KEYS.designs)
-    if (savedDesigns) setDesigns(JSON.parse(savedDesigns))
+    const saved = localStorage.getItem(STORAGE_KEYS.designs)
+    if (saved) setDesigns(JSON.parse(saved))
     
-    fetch('/api/trends')
-      .then(res => res.json())
-      .then(data => {
-        if (data.trends) setTrends(data.trends)
-        setTrendsLoading(false)
-      })
-      .catch(() => setTrendsLoading(false))
+    fetch('/api/trends').then(r => r.json()).then(data => {
+      if (data.trends) setTrends(data.trends.map((t: string, i: number) => ({ id: `t-${i}`, name: t, score: 90, direction: '↑' })))
+    })
   }, [])
 
-  const generateDesign = () => {
+  const executeDesign = () => {
     if (!canvasRef.current || !designKeyword) return
-    const ctx = canvasRef.current.getContext('2d')
-    if (!ctx) return
-    
-    const w = canvasRef.current.width
-    const h = canvasRef.current.height
-    const tc = TSHIRT_COLORS.find(c => c.id === designTshirtColor) || TSHIRT_COLORS[1]
-    
-    ctx.fillStyle = '#0f0f1a'
-    ctx.fillRect(0, 0, w, h)
-    
-    // T-shirt Shape
-    ctx.fillStyle = tc.hex
-    ctx.beginPath()
-    ctx.moveTo(w*0.2, h*0.1)
-    ctx.lineTo(w*0.8, h*0.1)
-    ctx.lineTo(w*0.9, h*0.3)
-    ctx.lineTo(w*0.8, h*0.3)
-    ctx.lineTo(w*0.8, h*0.9)
-    ctx.lineTo(w*0.2, h*0.9)
-    ctx.lineTo(w*0.2, h*0.3)
-    ctx.lineTo(w*0.1, h*0.3)
-    ctx.closePath()
-    ctx.fill()
-    
-    // Text
-    ctx.fillStyle = tc.textColor
-    ctx.font = 'bold 40px sans-serif'
-    ctx.textAlign = 'center'
-    ctx.fillText(designKeyword.toUpperCase(), w/2, h/2)
+    const scheme = COLOR_SCHEMES.find(c => c.id === designColorScheme)?.colors || ['#ffffff']
+    const tc = TSHIRT_COLORS.find(c => c.id === designTshirtColor)?.hex || '#1a1a1a'
+    drawTshirt(canvasRef.current, designKeyword, designStyle, scheme, tc)
     setDesignGenerated(true)
   }
 
-  const addToStore = () => {
+  const addToList = () => {
     if (!canvasRef.current) return
-    const newDesign = {
+    const newDesign: DesignRecord = {
       id: Date.now().toString(),
       keyword: designKeyword,
-      canvasDataUrl: canvasRef.current.toDataURL(),
-      status: '下書き'
+      style: designStyle,
+      colorScheme: [],
+      tshirtColor: designTshirtColor,
+      sizes: SIZES,
+      sellingPrice: 3500,
+      baseCost: 1200,
+      markup: 150,
+      status: '出品中',
+      createdAt: new Date().toISOString(),
+      canvasDataUrl: canvasRef.current.toDataURL()
     }
     const updated = [newDesign, ...designs]
     setDesigns(updated)
@@ -119,63 +180,86 @@ export default function AISelectShop() {
 
   return (
     <div className="min-h-screen bg-[#050507] text-gray-100 font-sans p-4 md:p-10">
-      <div className="max-w-7xl mx-auto space-y-10">
+      <div className="max-w-7xl mx-auto space-y-12">
         <div className="text-center space-y-4">
-          <h1 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl">AI SELECT SHOP</h1>
-          <Badge className="bg-emerald-500 text-slate-950 font-black px-6 py-1 rounded-full uppercase italic">v12.0-STABLE</Badge>
+          <h1 className="text-6xl md:text-[9rem] font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">AI SELECT SHOP</h1>
+          <Badge className="bg-emerald-500 text-slate-950 font-black px-8 py-2 rounded-full uppercase italic text-sm">v12.0-MASTER</Badge>
         </div>
 
-        {/* Step Nav */}
-        <div className="flex gap-2 justify-center">
+        <div className="flex gap-4 justify-center">
           {[1, 2, 3].map(s => (
-            <Button key={s} onClick={() => setCurrentStep(s as any)} variant={currentStep === s ? 'default' : 'outline'} className={currentStep === s ? 'bg-emerald-500' : ''}>
-              Step {s}
-            </Button>
+            <button key={s} onClick={() => setCurrentStep(s as any)} className={`px-8 py-4 rounded-2xl font-black italic transition-all ${currentStep === s ? 'bg-emerald-500 text-slate-950 scale-110 shadow-2xl' : 'bg-slate-900 text-slate-500 border border-white/5'}`}>Step {s}</button>
           ))}
         </div>
 
         {currentStep === 1 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in">
-            {trends.map((t, i) => (
-              <Card key={i} className="bg-[#12121a] border-white/5 p-6 hover:border-emerald-500/50 cursor-pointer" onClick={() => { setDesignKeyword(t); setCurrentStep(2); }}>
-                <p className="text-xl font-black italic uppercase text-white">{t}</p>
-                <p className="text-xs text-emerald-500 font-bold mt-2">TRENDING NOW</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in duration-500">
+            {trends.map((t) => (
+              <Card key={t.id} className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[2.5rem] hover:border-emerald-500/50 cursor-pointer transition-all group" onClick={() => { setDesignKeyword(t.name); setCurrentStep(2); }}>
+                <div className="flex justify-between items-start mb-6">
+                  <Badge variant="outline" className="text-emerald-500 border-emerald-500/30">TRENDING</Badge>
+                  <TrendingUp className="text-emerald-500 group-hover:scale-125 transition-transform" />
+                </div>
+                <p className="text-3xl font-black italic uppercase text-white tracking-tighter">{t.name}</p>
               </Card>
             ))}
           </div>
         )}
 
         {currentStep === 2 && (
-          <div className="grid lg:grid-cols-2 gap-10 animate-in zoom-in-95">
-            <div className="bg-[#13141f] p-8 rounded-[3rem] border border-white/5 space-y-6">
-              <Label className="text-xs font-black uppercase text-slate-500">Master Parameter</Label>
-              <Input value={designKeyword} onChange={(e) => setDesignKeyword(e.target.value)} className="h-16 text-2xl font-black italic bg-black border-white/10" />
+          <div className="grid lg:grid-cols-2 gap-12 animate-in zoom-in-95 duration-500">
+            <div className="bg-[#13141f] p-10 rounded-[3rem] border-2 border-white/5 space-y-10 shadow-2xl">
+              <div className="space-y-4">
+                <Label className="text-[10px] font-black uppercase text-slate-500 tracking-widest px-2">Master Parameter</Label>
+                <Input value={designKeyword} onChange={(e) => setDesignKeyword(e.target.value)} className="h-20 text-3xl font-black italic bg-black border-2 border-white/10 rounded-2xl px-8" />
+              </div>
               <div className="grid grid-cols-2 gap-4">
-                <Button onClick={generateDesign} className="h-20 bg-white text-black font-black text-xl italic uppercase rounded-2xl hover:bg-emerald-500">Execution</Button>
-                <Button onClick={addToStore} disabled={!designGenerated} className="h-20 bg-emerald-600 text-white font-black text-xl italic uppercase rounded-2xl">Add to List</Button>
+                 <div className="space-y-4">
+                    <Label className="text-[10px] font-black uppercase text-slate-500 tracking-widest px-2">Style</Label>
+                    <div className="grid grid-cols-2 gap-2">
+                       {STYLES.map(s => <button key={s.id} onClick={() => setDesignStyle(s.id)} className={`py-3 rounded-xl text-[10px] font-black uppercase italic border-2 transition-all ${designStyle === s.id ? 'bg-emerald-500 text-slate-950 border-white' : 'bg-black text-slate-500 border-white/5'}`}>{s.name}</button>)}
+                    </div>
+                 </div>
+                 <div className="space-y-4">
+                    <Label className="text-[10px] font-black uppercase text-slate-500 tracking-widest px-2">Fabric</Label>
+                    <div className="flex gap-2">
+                       {TSHIRT_COLORS.map(c => <button key={c.id} onClick={() => setDesignTshirtColor(c.id)} className={`w-10 h-10 rounded-full border-4 transition-all ${designTshirtColor === c.id ? 'border-emerald-500 scale-110' : 'border-white/5'}`} style={{ backgroundColor: c.hex }} />)}
+                    </div>
+                 </div>
+              </div>
+              <div className="grid grid-cols-2 gap-6 pt-6">
+                <Button onClick={executeDesign} className="h-24 bg-white text-slate-950 font-black text-2xl italic uppercase rounded-[2rem] hover:bg-emerald-500 shadow-xl transition-all">EXECUTION</Button>
+                <Button onClick={addToList} disabled={!designGenerated} className="h-24 bg-emerald-600 text-white font-black text-2xl italic uppercase rounded-[2rem] shadow-xl transition-all">ADD TO LIST</Button>
               </div>
             </div>
-            <div className="flex justify-center bg-[#13141f] rounded-[3rem] border border-white/5 p-10">
-              <canvas ref={canvasRef} width={400} height={500} className="bg-black rounded-2xl shadow-2xl" />
+            <div className="flex flex-col items-center justify-center bg-[#13141f] rounded-[3rem] border-2 border-white/5 p-12 shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500/30" />
+              <canvas ref={canvasRef} width={400} height={500} className="bg-black rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/5" />
+              <p className="mt-8 text-[10px] font-black text-slate-700 uppercase tracking-[0.5em]">Real-time Design Logic v12.0</p>
             </div>
           </div>
         )}
 
         {currentStep === 3 && (
-          <div className="grid md:grid-cols-3 gap-6 animate-in slide-in-from-bottom-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-in slide-in-from-bottom-8 duration-700">
             {designs.map(d => (
-              <Card key={d.id} className="bg-[#12121a] border-white/5 p-4">
-                <img src={d.canvasDataUrl} className="w-full aspect-[4/5] object-cover rounded-xl mb-4" />
-                <div className="flex justify-between items-center">
-                  <p className="font-black italic text-white">{d.keyword}</p>
-                  <Badge className="bg-white/10 text-slate-400">{d.status}</Badge>
-                </div>
+              <Card key={d.id} className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] overflow-hidden shadow-2xl group transition-all hover:border-emerald-500/30">
+                <img src={d.canvasDataUrl} className="w-full aspect-[4/5] object-cover bg-black" />
+                <CardContent className="p-8 space-y-6">
+                  <div className="flex justify-between items-center">
+                    <p className="text-2xl font-black italic uppercase text-white tracking-tighter">{d.keyword}</p>
+                    <Badge className="bg-emerald-500/20 text-emerald-500 border-0 font-black italic uppercase text-[10px] px-4 py-1">{d.status}</Badge>
+                  </div>
+                  <Button onClick={() => window.open('https://z5ju1n-vs.myshopify.com/admin/products', '_blank')} className="w-full h-16 bg-white text-slate-950 font-black rounded-2xl italic uppercase flex items-center justify-center gap-3">
+                    <Store size={20}/> Shopify Open
+                  </Button>
+                </CardContent>
               </Card>
             ))}
           </div>
         )}
       </div>
-      <DebugPanel data={{ currentStep, designs }} toolId="ai-select-shop-stable" />
+      <DebugPanel data={{ designs, currentStep }} toolId="ai-select-shop-master" />
     </div>
   )
 }
