@@ -1,137 +1,73 @@
 ﻿'use client'
-
 import React, { useState, useEffect } from 'react'
-import { 
-  Copy, 
-  CheckCircle2, 
-  Database, 
-  Sparkles, 
-  Lock, 
-  Unlock, 
-  Heart, 
-  Cat, 
-  ChevronUp, 
-  ChevronDown,
-  Bug,
-  Activity,
-  History,
-  Terminal,
-  ShieldQuestion
-} from 'lucide-react'
+import { Copy, CheckCircle2, Database, Sparkles, Lock, Unlock, Heart, Cat, ChevronUp, ChevronDown, Bug, Activity, History, Terminal, ShieldQuestion } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@supabase/supabase-js'
 
-interface DebugPanelProps {
-  data: any
-  toolId?: string
-}
-
-export function DebugPanel({ data, toolId }: DebugPanelProps) {
+export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isAuth, setIsAuth] = useState(false)
   const [password, setPassword] = useState('')
   const [copied, setCopied] = useState(false)
   const [consoleErrors, setConsoleErrors] = useState<string[]>([])
-  
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
-  )
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL || '', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '')
 
   useEffect(() => {
     const checkUser = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser()
-        if (user?.email === 'f.yoneyone9@gmail.com') setIsAuth(true)
-      } catch (e) {
-        console.warn("Auth check bypassed or failed", e)
-      }
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user?.email === 'f.yoneyone9@gmail.com') setIsAuth(true)
     }
     checkUser()
-
-    const originalError = console.error;
+    const originalError = console.error
     console.error = (...args: any[]) => {
-      const msg = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' ');
-      setConsoleErrors(prev => [...prev.slice(-30), "[\" + new Date().toLocaleTimeString() + \"] \" + msg]);
-      originalError.apply(console, args);
-    };
-    return () => { console.error = originalError; };
-  }, [supabase.auth]);
+      const msg = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' ')
+      setConsoleErrors(prev => [...prev.slice(-30), '[' + new Date().toLocaleTimeString() + '] ' + msg])
+      originalError.apply(console, args)
+    }
+    return () => { console.error = originalError }
+  }, [supabase.auth])
 
   const handleAuth = () => {
     if (password === 'nextralabs2026') setIsAuth(true)
-    else alert('ごめんなさい、パスワードが違います 🐾')
+    else alert('パスワードが違います 🐾')
   }
 
   const copyForAI = () => {
-    const report = {
-      header: "=== NEXTRALABS SURGICAL CALTE v4.4 ===",
-      tool: toolId,
-      time: new Date().toISOString(),
-      server_trace: data,
-      client_logs: consoleErrors
-    }
+    const report = { report_type: "AI_DIAGNOSTIC_REPORT", tool_id: toolId || "unknown", time: new Date().toISOString(), server_trace: data, client_logs: consoleErrors }
     navigator.clipboard.writeText(JSON.stringify(report, null, 2))
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
 
   return (
-    <div className="fixed bottom-4 left-4 z-[9999]">
-      <button 
-        onClick={() => setIsOpen(!isOpen)} 
-        className={"flex items-center justify-center p-2 rounded-full transition-all duration-500 group " + (isOpen ? 'bg-emerald-500 scale-110 shadow-lg rotate-12' : 'opacity-10 hover:opacity-100 hover:bg-white/5 scale-90 hover:scale-110')}
-      >
-        <Sparkles className={"h-4 w-4 transition-all " + (isOpen ? 'text-white' : 'text-emerald-400 group-hover:animate-spin')} />
-        <span className="absolute left-10 scale-0 group-hover:scale-100 transition-all origin-left bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg whitespace-nowrap shadow-xl">
-           Nextra Helper 🐾
-        </span>
+    <div className="fixed bottom-4 left-4 z-[9999] opacity-20 hover:opacity-100 transition-opacity">
+      <button onClick={() => setIsOpen(!isOpen)} className="p-2 rounded-full transition-all group">
+        <Sparkles className={'h-4 w-4 ' + (isOpen ? 'text-white' : 'text-emerald-400')} />
       </button>
-      
       {isOpen && (
-        <div className="fixed bottom-16 left-4 w-[90vw] max-w-lg bg-[#0a0a0f]/95 backdrop-blur-2xl border-2 border-emerald-500/20 p-8 rounded-[2.5rem] shadow-[0_0_80px_rgba(16,185,129,0.15)] space-y-6 animate-in zoom-in-95 fade-in duration-300">
+        <div className="fixed bottom-16 left-4 w-[90vw] max-w-lg bg-[#0a0a0f]/95 backdrop-blur-2xl border-2 border-emerald-500/20 p-8 rounded-[2.5rem] shadow-2xl space-y-6 animate-in slide-in-from-bottom-4 duration-300">
           {!isAuth ? (
-            <div className="flex flex-col items-center py-10 space-y-6 text-center">
-              <div className="relative">
-                <Cat className="h-16 w-16 text-slate-800" />
-                <Lock className="h-6 w-6 text-emerald-500 absolute -bottom-1 -right-1" />
-              </div>
-              <p className="text-white font-black text-lg">合言葉を教えてね 🔑</p>
+            <div className="flex flex-col items-center py-10 space-y-4">
+              <Lock className="h-10 w-10 text-slate-700" />
               <div className="flex gap-2 w-full max-w-sm">
-                <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••" className="bg-slate-900 border-slate-800 text-white text-center rounded-2xl h-12 text-xl font-black" onKeyDown={(e) => e.key === 'Enter' && handleAuth()} />
-                <Button onClick={handleAuth} className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-2xl px-6 h-12 text-black">OPEN</Button>
+                <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="bg-slate-900 border-white/5 text-white h-12 rounded-xl" onKeyDown={(e) => e.key === 'Enter' && handleAuth()} />
+                <Button onClick={handleAuth} className="bg-emerald-600 text-white rounded-xl h-12 px-6">OPEN</Button>
               </div>
             </div>
           ) : (
-            <div className="space-y-6 animate-in fade-in duration-500">
+            <div className="space-y-6">
               <div className="flex items-center justify-between border-b border-white/5 pb-4">
-                <div className="flex items-center gap-3">
-                  <Unlock className="h-4 w-4 text-emerald-500" />
-                  <span className="text-white font-black text-xs uppercase tracking-widest">Diagnostic Live 🐾</span>
-                </div>
-                <Button onClick={copyForAI} className={"h-10 px-4 rounded-xl text-[10px] font-black gap-2 transition-all " + (copied ? 'bg-green-600' : 'bg-slate-800 hover:bg-slate-700 text-white')}>
-                  {copied ? <CheckCircle2 className="h-3 w-3" /> : <Heart className="h-3 w-3" />}
-                  {copied ? "COPIED!" : "CALTE FOR AI"}
-                </Button>
+                <div className="flex items-center gap-3"><Unlock className="h-5 w-5 text-emerald-500" /><span className="text-white font-black text-xs uppercase">Diagnostic Hub</span></div>
+                <Button onClick={copyForAI} size="sm" className={'h-10 px-4 rounded-xl text-xs font-black ' + (copied ? 'bg-green-600' : 'bg-white text-black')}>{copied ? 'COPIED!' : 'REPORT TO AI'}</Button>
               </div>
-              <div className="bg-slate-950 p-6 rounded-[2rem] border border-emerald-500/10 shadow-inner">
-                <pre className="text-emerald-400/90 font-mono text-[9px] leading-relaxed max-h-[300px] overflow-y-auto scrollbar-hide whitespace-pre-wrap">
-                  {JSON.stringify(data, null, 2)}
-                </pre>
+              <div className="bg-slate-950 p-6 rounded-[2rem] border border-emerald-500/10 shadow-inner overflow-auto max-h-[300px]">
+                <pre className="text-emerald-400/90 font-mono text-[9px] leading-relaxed">{JSON.stringify(data, null, 2)}</pre>
               </div>
-              {consoleErrors.length > 0 && (
-                <div className="bg-slate-950 p-4 rounded-xl border border-rose-500/20 font-mono text-[9px] text-rose-300/70 overflow-y-auto max-h-[100px]">
-                  {consoleErrors.map((err, i) => <p key={i} className="mb-1">➔ {err}</p>)}
-                </div>
-              )}
             </div>
           )}
-          <div className="flex justify-between items-center px-2">
-            <span className="text-[9px] text-slate-700 font-bold uppercase tracking-[0.2em]">NextraLabs surgical v4.4 - Sweet & Stealth</span>
-            <button onClick={() => setIsOpen(false)} className="text-slate-500 hover:text-white text-[10px] font-black uppercase underline decoration-emerald-500/30 underline-offset-4">さよなら</button>
-          </div>
+          <div className="flex justify-end"><button onClick={() => setIsOpen(false)} className="text-slate-500 hover:text-white text-[10px] font-bold underline">CLOSE</button></div>
         </div>
       )}
     </div>

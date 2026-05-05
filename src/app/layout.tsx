@@ -1,10 +1,10 @@
-import type { Metadata, Viewport } from 'next'
+﻿import type { Metadata, Viewport } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
 import './globals.css'
 import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
-import { DebugPanel } from '@/components/tools/DebugPanel' // 🛠️ 共通デバッガーをインポート
+import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const notoPlain = Noto_Sans_JP({ 
   subsets: ['latin'],
@@ -29,11 +29,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://membership-site-nextralabos.vercel.app'),
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja" suppressHydrationWarning>
       <body className={notoPlain.className}>
@@ -42,7 +38,6 @@ export default function RootLayout({
             <Header />
             <main className="flex-1">{children}</main>
             <Footer />
-            {/* 🐞 全ページ・全システム共通のステルス・デバッガー */}
             <DebugPanel data={null} toolId="global_system" />
           </div>
         </Providers>
