@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
   Mail, Zap, Clock, ListChecks, Filter, CheckCircle2, Loader2, LogIn, Trash2, Send, 
-  ArrowRight, ShieldCheck, Sparkles, RefreshCw, Inbox, Archive, MessageSquareQuote, ChevronRight, Activity, Terminal, ExternalLink
+  ArrowRight, ShieldCheck, Sparkles, RefreshCw, Inbox, Archive, MessageSquareQuote, ChevronRight, Activity, Terminal, ExternalLink, X
 } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
@@ -16,9 +16,10 @@ export default function InboxOrganizer() {
   const [googleToken, setGoogleToken] = useState<string | null>(null);
   const [emails, setEmails] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [authLoading, setAuthLoading] = useState(false);
   const [scanning, setScanning] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [activeReplyId, setActiveReplyId] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -29,18 +30,6 @@ export default function InboxOrganizer() {
       window.history.replaceState(null, '', window.location.pathname); 
       fetchEmails(token); 
     }
-  }, []);
-
-  const handleGoogleAuth = useCallback(() => {
-    setAuthLoading(true)
-    const params = new URLSearchParams({
-      client_id: GOOGLE_CLIENT_ID,
-      redirect_uri: window.location.href.split('?')[0].split('#')[0],
-      response_type: 'token',
-      scope: GOOGLE_SCOPES,
-      prompt: 'consent',
-    })
-    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`
   }, []);
 
   const fetchEmails = async (token: string) => {
@@ -62,15 +51,46 @@ export default function InboxOrganizer() {
     }
   };
 
-  const handleAction = (email: any, type: string) => {
-    if (type === 'reply') {
-      const prompt = `あなたは有能なビジネス秘書です。以下のメール内容を解析し、状況に合わせた最適な返信案を2パターン（丁寧・簡潔）作成してください。\n\n【差出人】: ${email.from}\n【件名】: ${email.subject}\n【内容】: ${email.snippet}`;
-      navigator.clipboard.writeText(prompt);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-      alert('返信生成プロンプトをコピーしました。AIに貼り付けてください。');
+  const handleAction = async (messageId: string, action: 'archive' | 'trash') => {
+    try {
+      const res = await fetch('/api/tools/gmail-action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accessToken: googleToken, messageId, action }),
+      });
+      if (res.ok) {
+        setEmails(prev => prev.filter(e => e.id !== messageId));
+      }
+    } catch (e) { console.error(e); }
+  };
+
+  const generateAiReply = async (email: any) => {
+    setActiveReplyId(email.id);
+    setIsGenerating(true);
+    setReplyText('');
+    try {
+      const res = await fetch('/api/tools/gmail-reply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject: email.subject, from: email.from, snippet: email.snippet }),
+      });
+      const data = await res.json();
+      setReplyText(data.reply);
+    } catch (e) { console.error(e); } finally {
+      setIsGenerating(false);
     }
   };
+
+  const handleGoogleAuth = useCallback(() => {
+    const params = new URLSearchParams({
+      client_id: GOOGLE_CLIENT_ID,
+      redirect_uri: window.location.href.split('?')[0].split('#')[0],
+      response_type: 'token',
+      scope: GOOGLE_SCOPES,
+      prompt: 'consent',
+    })
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`
+  }, []);
 
   const quadrants = [
     { id: 'urgent_important', label: '🔥 今すぐ対応', color: 'border-red-600 text-red-500 bg-red-600/5', icon: Zap },
@@ -82,12 +102,12 @@ export default function InboxOrganizer() {
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-slate-950 text-left">
       <div className="text-center space-y-3">
-        <Badge className="bg-blue-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-[0_0_20px_rgba(37,99,235,0.4)]">GMAIL AI ACCELERATOR v2.0</Badge>
-        <h1 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl">Inbox Zero</h1>
+        <Badge className="bg-blue-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-[0_0_20px_rgba(37,99,235,0.4)]">GMAIL AI ACCELERATOR v3.0</Badge>
+        <h1 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl leading-none">Inbox Zero</h1>
       </div>
 
       {!googleToken ? (
-        <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3.5rem] p-12 md:p-24 text-center space-y-10 shadow-[0_40px_100px_rgba(0,0,0,0.6)] relative overflow-hidden animate-in zoom-in-95">
+        <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3.5rem] p-12 md:p-24 text-center space-y-10 shadow-[0_40px_100px_rgba(0,0,0,0.6)] relative overflow-hidden">
            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-600" />
            <div className="w-32 h-32 bg-blue-600/10 rounded-[2.5rem] flex items-center justify-center mx-auto border-2 border-blue-500/30 shadow-[0_0_50px_rgba(37,99,235,0.2)]">
               <Mail className="w-16 h-16 text-blue-500 animate-pulse" />
@@ -96,8 +116,8 @@ export default function InboxOrganizer() {
               <h2 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter">Accelerate Your Workflow</h2>
               <p className="text-slate-500 font-bold text-lg max-w-xl mx-auto leading-relaxed italic">GmailをAIと直結。重要度の自動分類と、返信ドラフトの自動生成を「秒速」で開始しましょう。</p>
            </div>
-           <Button onClick={handleGoogleAuth} disabled={authLoading} className="h-24 bg-white text-black hover:bg-blue-600 hover:text-white font-black px-16 rounded-[2rem] text-3xl uppercase italic shadow-2xl transition-all active:scale-95 group">
-              {authLoading ? <Loader2 className="animate-spin" size={40} /> : <>Connect Gmail <ExternalLink className="ml-4 group-hover:translate-x-2 transition-transform" size={32} /></>}
+           <Button onClick={handleGoogleAuth} className="h-24 bg-white text-black hover:bg-blue-600 hover:text-white font-black px-16 rounded-[2rem] text-3xl uppercase italic shadow-2xl transition-all">
+              Connect Gmail <ExternalLink className="ml-4" size={32} />
            </Button>
         </Card>
       ) : (
@@ -110,12 +130,10 @@ export default function InboxOrganizer() {
                   </div>
                   <Badge variant="outline" className="text-[10px] border-green-500/30 text-green-500 font-black italic uppercase animate-pulse">Live Link</Badge>
                </div>
-               
                <Button onClick={() => fetchEmails(googleToken)} disabled={loading} className="w-full h-20 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-2xl shadow-lg flex items-center justify-center gap-4 group italic">
                   {loading ? <Loader2 className="animate-spin" /> : <RefreshCw className="group-hover:rotate-180 transition-transform duration-500" />}
                   最新メールを解析
                </Button>
-
                <div className="mt-8 space-y-4">
                   <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800 pb-2">解析ステータス</p>
                   <div className="grid grid-cols-2 gap-4">
@@ -129,14 +147,8 @@ export default function InboxOrganizer() {
                     </div>
                   </div>
                </div>
-
                <Button onClick={() => setGoogleToken(null)} variant="ghost" className="w-full mt-8 text-slate-700 hover:text-red-500 text-[10px] font-black uppercase italic tracking-widest underline">セッション終了</Button>
             </Card>
-
-            <div className="bg-blue-600/5 border-2 border-blue-500/20 rounded-[2rem] p-6 space-y-2 italic">
-               <p className="text-blue-500 text-xs font-black uppercase tracking-widest flex items-center gap-2"><Sparkles size={14}/> AI解析アドバイス</p>
-               <p className="text-slate-400 text-sm font-bold leading-relaxed">全てのメールを重要度×緊急度の4象限に自動配置しました。上から順に処理を推奨します。</p>
-            </div>
           </div>
 
           <div className="lg:col-span-2 space-y-8">
@@ -153,49 +165,50 @@ export default function InboxOrganizer() {
              </div>
 
              <div className="bg-slate-900/50 border-2 border-slate-800 rounded-[3rem] p-10 min-h-[600px] shadow-inner space-y-6">
-                <div className="flex items-center gap-3 text-slate-500 font-black italic uppercase text-xs tracking-[0.3em]">
-                   <Activity size={16} /> ライブ・メールフィード
-                </div>
-
+                <div className="flex items-center gap-3 text-slate-500 font-black italic uppercase text-xs tracking-[0.3em]"><Activity size={16} /> ライブ・メールフィード</div>
                 <div className="space-y-4">
                    {loading || scanning ? (
-                      Array(3).fill(0).map((_, i) => (
-                        <div key={i} className="h-28 bg-slate-950 border border-slate-800 rounded-3xl animate-pulse" />
-                      ))
+                      Array(3).fill(0).map((_, i) => (<div key={i} className="h-28 bg-slate-950 border border-slate-800 rounded-3xl animate-pulse" />))
                    ) : emails.length > 0 ? (
                       emails.map((email, i) => (
                         <div key={i} className="bg-slate-950 border border-slate-800 rounded-[2rem] p-6 hover:border-blue-500/50 transition-all group shadow-xl relative overflow-hidden">
-                           <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <Button variant="ghost" size="sm" className="text-slate-500 hover:text-red-500"><Trash2 size={16}/></Button>
+                           <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                              <Button onClick={() => handleAction(email.id, 'archive')} variant="ghost" size="sm" className="text-slate-500 hover:text-blue-500 bg-slate-900"><Archive size={16}/></Button>
+                              <Button onClick={() => handleAction(email.id, 'trash')} variant="ghost" size="sm" className="text-slate-500 hover:text-red-500 bg-slate-900"><Trash2 size={16}/></Button>
                            </div>
                            <div className="flex items-start gap-4">
-                              <div className="w-12 h-12 bg-blue-600/10 rounded-2xl flex items-center justify-center shrink-0 border border-blue-500/20">
-                                 <Mail className="text-blue-500" size={24} />
-                              </div>
+                              <div className="w-12 h-12 bg-blue-600/10 rounded-2xl flex items-center justify-center shrink-0 border border-blue-500/20"><Mail className="text-blue-500" size={24} /></div>
                               <div className="flex-1 space-y-1 min-w-0 text-left">
                                  <p className="text-[10px] font-black text-blue-500 uppercase italic truncate">{email.from}</p>
                                  <h4 className="text-lg font-black text-white italic truncate">{email.subject}</h4>
                                  <p className="text-xs text-slate-500 font-bold line-clamp-1 italic">{email.snippet}</p>
                               </div>
                            </div>
-                           <div className="mt-6 flex items-center gap-3">
-                              <Button 
-                                onClick={() => handleAction(email, 'reply')}
-                                size="sm" 
-                                className="bg-white text-black font-black italic text-[10px] rounded-lg px-4 hover:bg-blue-600 hover:text-white transition-colors"
-                              >
-                                 <MessageSquareQuote size={12} className="mr-2" /> 返信案を生成
+                           <div className="mt-6 flex flex-col gap-4">
+                              <Button onClick={() => generateAiReply(email)} size="sm" className="w-fit bg-white text-black font-black italic text-[10px] rounded-lg px-6 h-10 hover:bg-blue-600 hover:text-white transition-all shadow-lg">
+                                 <Sparkles size={14} className="mr-2" /> AI返信ドラフトを生成
                               </Button>
-                              <Button variant="outline" size="sm" className="border-slate-800 text-slate-500 font-black italic text-[10px] rounded-lg px-4 hover:bg-slate-800">
-                                 <Archive size={12} className="mr-2" /> アーカイブ
-                              </Button>
+                              {activeReplyId === email.id && (
+                                 <div className="bg-slate-900 rounded-2xl p-6 border border-blue-600/30 animate-in slide-in-from-top-2 relative">
+                                    <button onClick={() => setActiveReplyId(null)} className="absolute top-4 right-4 text-slate-500 hover:text-white"><X size={16}/></button>
+                                    <p className="text-[10px] font-black text-blue-500 uppercase italic mb-3 flex items-center gap-2"><Sparkles size={12}/> AI Generated Draft</p>
+                                    {isGenerating ? (
+                                       <div className="flex items-center gap-3 text-slate-500 italic text-xs"><Loader2 className="animate-spin" size={14}/> 思考中...</div>
+                                    ) : (
+                                       <div className="space-y-4">
+                                          <pre className="text-xs text-slate-300 whitespace-pre-wrap font-sans leading-relaxed">{replyText}</pre>
+                                          <Button onClick={() => { navigator.clipboard.writeText(replyText); alert('コピーしました'); }} className="h-8 bg-blue-600 text-[10px] font-black italic rounded-lg px-4">結果をコピー</Button>
+                                       </div>
+                                    )}
+                                 </div>
+                              )}
                            </div>
                         </div>
                       ))
                    ) : (
                       <div className="h-96 flex flex-col items-center justify-center space-y-6 opacity-30 italic">
                          <Inbox size={80} />
-                         <p className="text-xl font-black uppercase tracking-widest">受信トレイは空です</p>
+                         <p className="text-xl font-black uppercase tracking-widest">Inbox Zero Achieved</p>
                       </div>
                    )}
                 </div>
@@ -203,9 +216,7 @@ export default function InboxOrganizer() {
           </div>
         </div>
       )}
-      
-      <DebugPanel data={{ emails, googleToken, loading, scanning }} toolId="inbox-organizer" />
-      <div className="text-center opacity-20 mt-20"><p className="text-[10px] font-black uppercase tracking-[0.5em] italic">Email Acceleration Engine • NextraLabs 2026</p></div>
+      <DebugPanel data={{ emails, googleToken, loading }} toolId="inbox-organizer" />
     </div>
   )
 }
