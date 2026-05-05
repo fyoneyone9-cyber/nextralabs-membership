@@ -37,7 +37,7 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
   }, [supabase.auth]);
 
   const handleAuth = () => {
-    if (password === 'nextralabs2026') setIsAuth(true)
+    if (password === '2026') setIsAuth(true)
     else alert('Invalid Developer Key')
   }
 
