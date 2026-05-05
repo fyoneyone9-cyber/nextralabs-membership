@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Copy, CheckCircle2, Database, Sparkles, Lock, Unlock, Heart, Cat, ChevronUp, ChevronDown, Activity, Terminal, ShieldAlert, Loader2, Send, ExternalLink } from 'lucide-react'
+import { Copy, CheckCircle2, Database, Sparkles, Lock, Unlock, Heart, Cat, ChevronUp, ChevronDown, Activity, Terminal, ShieldAlert, Loader2, Send, ExternalLink, Camera } from 'lucide-react'
+import html2canvas from 'html2canvas'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -69,6 +70,26 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
     else alert('Invalid Developer Key')
   }
 
+  const takeScreenshot = async () => {
+    const target = document.body;
+    try {
+      const canvas = await html2canvas(target, {
+        backgroundColor: '#050507',
+        scale: 2,
+        logging: false,
+        useCORS: true
+      });
+      const image = canvas.toDataURL("image/png");
+      const link = document.createElement('a');
+      link.href = image;
+      link.download = `debug-snapshot-${new Date().getTime()}.png`;
+      link.click();
+      console.log('[SYSTEM] Screenshot captured and downloaded.');
+    } catch (e) {
+      console.error('[SYSTEM] Screenshot failed:', e);
+    }
+  };
+
   return (
     <div className="fixed bottom-6 left-6 z-[9999] flex flex-col items-start">
       <button 
@@ -102,6 +123,12 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
                   <Badge variant="outline" className="text-[8px] border-emerald-500/30 text-emerald-500 animate-pulse">STREAMING</Badge>
                 </div>
                 <div className="flex gap-2">
+                  <Button 
+                    onClick={takeScreenshot}
+                    className="h-8 bg-pink-600 hover:bg-pink-500 text-[10px] font-black rounded-lg px-4 flex items-center gap-2"
+                  >
+                    <Camera size={12} /> SHOT
+                  </Button>
                   <Button 
                     onClick={() => {
                       const report = {
