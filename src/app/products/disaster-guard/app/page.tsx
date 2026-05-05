@@ -1,5 +1,5 @@
 import DisasterGuard from '@/components/tools/DisasterGuard'
-import { AccessGate } from '@/components/auth/AccessGate'
+import { AccessGate } from '@/components/tools/AccessGate'
 
 export default function Page() {
   return (

@@ -1,5 +1,5 @@
 import ResignationAssistant from '@/components/tools/ResignationAssistant'
-import { AccessGate } from '@/components/auth/AccessGate'
+import { AccessGate } from '@/components/tools/AccessGate'
 
 export default function Page() {
   return (
