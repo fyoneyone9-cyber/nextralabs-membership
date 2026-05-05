@@ -5,17 +5,24 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
-import { ArrowRight, Video, FileText, Users, Image as ImageIcon, Music, Type, Download, Copy, ExternalLink, Info, FileAudio, Clapperboard, CheckCircle2, Sparkles, MessageSquareText, HelpCircle } from 'lucide-react'
+import { ArrowRight, Video, FileText, Users, Image as ImageIcon, Music, Type, Download, Copy, ExternalLink, Info, FileAudio, Clapperboard, CheckCircle2, Sparkles, MessageSquareText, HelpCircle, Globe, BrainCircuit, Zap } from 'lucide-react'
 import { DebugPanel } from './DebugPanel'
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6
 const STEPS = [
-  { id: 1, label: '素材取り込み', icon: Video, guide: '動画や音声から「文字」を抽出する最初の工程です。' },
-  { id: 2, label: '台本作成', icon: FileText, guide: '文字起こし結果を元に、プロ級の台本プロンプトを生成します。' },
-  { id: 3, label: 'キャラ設定', icon: Users, guide: '動画に彩りを添えるキャラクターの外見や性格を定義します。' },
-  { id: 4, label: 'サムネイル', icon: ImageIcon, guide: 'クリック率を最大化するサムネイルの構図案を作成します。' },
-  { id: 5, label: 'タイトル/タグ', icon: Type, guide: 'YouTube SEOに最適化されたタイトルとタグを生成します。' },
-  { id: 6, label: 'BGM作成', icon: Music, guide: '動画の雰囲気を決定づける音楽のAIプロンプトを作成します。' },
+  { id: 1, label: '素材取り込み', icon: Video },
+  { id: 2, label: '台本作成', icon: FileText },
+  { id: 3, label: 'キャラ設定', icon: Users },
+  { id: 4, label: 'サムネイル', icon: ImageIcon },
+  { id: 5, label: 'タイトル/タグ', icon: Type },
+  { id: 6, label: 'BGM作成', icon: Music },
+]
+
+const FAMOUS_AI = [
+  { id: 'claude', name: 'Claude', url: 'https://claude.ai', icon: '🟠', desc: '文章・台本が得意', billing: '基本無料（1日5〜10回程度）', isBestForScript: true },
+  { id: 'chatgpt', name: 'ChatGPT', url: 'https://chatgpt.com', icon: '🟢', desc: '万能・画像生成に強い', billing: '基本無料（制限なし/上位版は制限有）', isBestForImage: true },
+  { id: 'perplexity', name: 'Perplexity', url: 'https://www.perplexity.ai', icon: '⚪', desc: '最新情報の調査に最強', billing: '基本無料（回数制限あり）' },
+  { id: 'gemini', name: 'Gemini', url: 'https://gemini.google.com', icon: '💎', desc: 'Google連動・大容量', billing: '基本無料（大容量データ向き）', isBestForSEO: true },
 ]
 
 export function YoutubeProducer() {
@@ -28,7 +35,7 @@ export function YoutubeProducer() {
   const fileRef = useRef<HTMLInputElement>(null)
 
   const extractAudio = async (file: File) => {
-    setCompressProgress('🔄 音声データを抽出しています...');
+    setCompressProgress('🔄 音声を抽出中...');
     const { FFmpeg } = await import('@ffmpeg/ffmpeg');
     const { fetchFile, toBlobURL } = await import('@ffmpeg/util');
     const ffmpeg = new FFmpeg();
@@ -37,11 +44,10 @@ export function YoutubeProducer() {
       coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
       wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
     });
-    ffmpeg.on('progress', ({ progress }) => setCompressProgress(`🎵 解析中... ${Math.round(progress * 100)}%`));
-    const inputName = 'input' + file.name.slice(file.name.lastIndexOf('.'));
-    await ffmpeg.writeFile(inputName, await fetchFile(file));
-    await ffmpeg.exec(['-i', inputName, '-vn', '-acodec', 'libmp3lame', '-ab', '16k', '-ar', '8000', '-ac', '1', 'output.mp3']);
-    const data = await ffmpeg.readFile('output.mp3') as any;
+    const inputName = 'input' + file.name.slice(file.name.lastIndexOf('.'))
+    await ffmpeg.writeFile(inputName, await fetchFile(file))
+    await ffmpeg.exec(['-i', inputName, '-vn', '-acodec', 'libmp3lame', '-ab', '16k', '-ar', '8000', '-ac', '1', 'output.mp3'])
+    const data = await ffmpeg.readFile('output.mp3') as any
     setExtractedAudioUrl(URL.createObjectURL(new Blob([data.buffer], { type: 'audio/mp3' })));
     setCompressProgress(null);
   }
@@ -50,154 +56,144 @@ export function YoutubeProducer() {
     navigator.clipboard.writeText(text); setCopied(id); setTimeout(() => setCopied(null), 2000);
   }
 
-  const transcribePrompt = "この音声ファイルを一字一句漏らさず文字起こししてください。専門用語や固有名詞も文脈から推測して正しく記述してください。"
+  const transcribePrompt = "以下の音声を文字起こししてください。専門用語や固有名詞も正確に記述してください。"
 
   const getStepPrompt = (step: number) => {
-    const base = inputText || "(ここに文字起こしデータが入ります)"
-    if (step === 2) return `以下の文字起こしを徹底的に分析し、視聴者の離脱を防ぐ最高に面白いYouTube台本（構成・セリフ・ト書き）を作成してください。:${base}`
-    if (step === 3) return `この台本の文脈から、登場キャラクターの性格・役割・外見の設定案を作成してください。画像生成AI用の外見記述も含めてください。:${base}`
+    const base = inputText || "(文字起こしデータ)"
+    if (step === 2) return `以下の文字起こしを徹底分析し、YouTube動画の構成と詳細な台本を作成してください：\n\n${base}`
+    if (step === 3) return `この動画に登場するキャラ設定案を作成してください：\n\n${base}`
     return ""
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-10 space-y-12 min-h-screen text-slate-200 font-sans">
-      {/* 🔴 HEADER & GLOBAL GUIDE */}
-      <div className="text-center space-y-6 max-w-3xl mx-auto">
-        <div className="w-20 h-20 rounded-[2.5rem] bg-red-600 flex items-center justify-center mx-auto shadow-2xl shadow-red-600/30 border-4 border-white/10">
-          <Clapperboard className="h-10 w-10 text-white" />
-        </div>
-        <div className="space-y-3">
-          <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase italic">YouTube Producer</h1>
-          <p className="text-xl text-slate-400 leading-relaxed font-bold">
-            素材を入れるだけで、台本からBGMまで。<br/>
-            指示に従うだけで、プロの動画制作フローが完結します。
-          </p>
-        </div>
+    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-16 min-h-screen text-slate-200 font-sans">
+      <div className="text-center space-y-4">
+        <div className="w-24 h-24 rounded-[2.5rem] bg-red-600 flex items-center justify-center mx-auto shadow-2xl"><Clapperboard className="h-12 w-12 text-white" /></div>
+        <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase italic leading-none">YouTube Producer</h1>
       </div>
 
-      {/* 🟢 STEP NAV WITH TOOLTIPS */}
-      <div className="flex items-center justify-center max-w-5xl mx-auto overflow-x-auto pb-12 px-10 scrollbar-hide">
-        <div className="flex items-center justify-between w-full min-w-[700px]">
-          {STEPS.map((s, i) => (
-            <div key={s.id} className="flex items-center flex-1 last:flex-none relative group">
-              <div className={`flex flex-col items-center gap-3 transition-all ${currentStep === s.id ? 'opacity-100 scale-110' : currentStep > s.id ? 'opacity-100' : 'opacity-20'}`}>
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border-2 transition-all ${currentStep === s.id ? 'bg-red-600 border-red-400 text-white shadow-xl' : currentStep > s.id ? 'bg-emerald-500 border-emerald-400 text-white' : 'bg-slate-800 border-slate-700'}`}>
-                  {currentStep > s.id ? <CheckCircle2 className="h-7 w-7" /> : <s.icon className="h-7 w-7" />}
-                </div>
-                <span className="text-[11px] font-black uppercase whitespace-nowrap tracking-widest">{s.label}</span>
+      {/* 🟢 STEP NAV */}
+      <div className="flex items-center justify-between max-w-5xl mx-auto overflow-x-auto pb-4 px-4 scrollbar-hide">
+        {STEPS.map((s, i) => (
+          <div key={s.id} className="flex items-center flex-1 last:flex-none">
+            <div className={`flex flex-col items-center gap-3 transition-all ${currentStep === s.id ? 'opacity-100 scale-125' : currentStep > s.id ? 'opacity-100' : 'opacity-20'}`}>
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border-2 ${currentStep === s.id ? 'bg-red-600 border-red-400 text-white shadow-xl' : currentStep > s.id ? 'bg-emerald-500 border-emerald-400 text-white' : 'bg-slate-800 border-slate-700'}`}>
+                {currentStep > s.id ? <CheckCircle2 className="h-8 w-8" /> : <s.icon className="h-8 w-8" />}
               </div>
-              {i < STEPS.length - 1 && <div className={`h-1 flex-1 mx-4 rounded-full transition-all ${currentStep > s.id ? 'bg-emerald-500' : 'bg-slate-800'}`} />}
+              <span className="text-[10px] font-black uppercase tracking-widest">{s.label}</span>
             </div>
-          ))}
-        </div>
+            {i < STEPS.length - 1 && <div className={`h-1 flex-1 mx-4 rounded-full ${currentStep > s.id ? 'bg-emerald-500' : 'bg-slate-800'}`} />}
+          </div>
+        ))}
       </div>
 
       <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-        {/* --- STEP 1 --- */}
+        
+        {/* --- STEP 1: MEDIA --- */}
         {currentStep === 1 && (
-          <div className="max-w-4xl mx-auto space-y-10">
-            <div className="bg-emerald-500/10 border border-emerald-500/20 p-8 rounded-[2.5rem] flex gap-6 items-center">
-              <div className="bg-emerald-500 p-4 rounded-2xl shadow-lg"><HelpCircle className="h-8 w-8 text-slate-950" /></div>
-              <div>
-                <h3 className="text-xl font-black text-white mb-1">Step 01: 何をすればいいですか？</h3>
-                <p className="text-slate-400 text-lg leading-relaxed font-medium">お手元にある **動画ファイル** または **音声ファイル** をアップロードしてください。AIが扱いやすい「音声データ」として抜き出し、文字起こしの準備を整えます。</p>
-              </div>
-            </div>
-
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-10 shadow-2xl overflow-hidden">
-              <div className="space-y-8">
+          <div className="max-w-4xl mx-auto space-y-12">
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-12 shadow-2xl">
+              <div className="space-y-12">
                 {!extractedAudioUrl ? (
-                  <div className="space-y-6">
+                  <div className="space-y-8">
                     <input ref={fileRef} type="file" accept="video/*,audio/*" onChange={(e) => { const f = e.target.files?.[0]; if(f){setSelectedFile(f); extractAudio(f)}} } className="hidden" />
-                    <div onClick={() => fileRef.current?.click()} className="border-4 border-dashed border-slate-800 rounded-[2.5rem] p-20 text-center hover:bg-slate-800/30 cursor-pointer group transition-all">
-                      <FileAudio className="h-20 w-20 mx-auto mb-6 text-red-500 group-hover:scale-110 transition-transform" />
-                      <p className="text-3xl font-black text-white">{selectedFile ? selectedFile.name : '動画または音声をここに追加'}</p>
+                    <div onClick={() => fileRef.current?.click()} className="border-4 border-dashed border-slate-800 rounded-[3rem] p-24 text-center hover:bg-slate-800/30 cursor-pointer group transition-all">
+                      <FileAudio className="h-24 w-24 mx-auto mb-6 text-red-500 group-hover:scale-110 transition-transform" />
+                      <p className="text-3xl font-black text-white">{selectedFile ? selectedFile.name : '動画または音声を追加'}</p>
                     </div>
-                    {compressProgress && <Badge className="bg-blue-600 animate-pulse px-8 py-4 text-xl rounded-2xl w-full flex justify-center shadow-xl">{compressProgress}</Badge>}
                   </div>
                 ) : (
-                  <div className="bg-slate-950 p-10 rounded-[2.5rem] border-2 border-blue-500/30 space-y-8 animate-in zoom-in duration-300 shadow-2xl">
-                    <div className="space-y-4">
-                      <h4 className="text-xl font-bold text-blue-400">✅ 準備完了！外部AIに文字起こしを頼みましょう</h4>
-                      <audio src={extractedAudioUrl} controls className="w-full h-16" />
+                  <div className="bg-slate-950 p-12 rounded-[3rem] border-2 border-blue-500/30 space-y-10 animate-in zoom-in duration-500 shadow-2xl">
+                    <div className="space-y-6 border-b border-white/5 pb-8 text-center">
+                       <h3 className="text-2xl font-black text-blue-400 uppercase italic tracking-widest">Audio Extraction Success</h3>
+                       <audio src={extractedAudioUrl} controls className="w-full h-16" />
                     </div>
-                    <div className="space-y-4">
-                      <p className="text-slate-300 text-lg">指示をコピーして、おすすめAI（ChatGPTが最強です）に音声ファイルを渡してください。</p>
-                      <Button onClick={() => handleCopy(transcribePrompt, 'trans')} className="w-full h-24 bg-white text-black font-black text-2xl rounded-3xl gap-4 shadow-xl hover:bg-slate-100 transition-transform active:scale-95">
-                        <Copy className="h-10 w-10" /> {copied === 'trans' ? 'コピー完了！' : '文字起こし指示をコピー'}
-                      </Button>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <a href="https://chatgpt.com" target="_blank" className="relative h-28 bg-slate-900 border-2 border-green-500/50 rounded-2xl flex flex-col items-center justify-center hover:scale-105 transition-all">
-                          <Badge className="absolute -top-3 bg-green-600 text-white font-black px-4 py-1">★ 精度No.1：おすすめ</Badge>
-                          <span className="text-3xl">🟢</span><span className="font-black text-green-400 text-xl uppercase tracking-widest">ChatGPT</span>
-                        </a>
-                        <a href="https://gemini.google.com" target="_blank" className="h-28 bg-slate-900 border-2 border-sky-500/20 rounded-2xl flex flex-col items-center justify-center hover:scale-105 transition-all opacity-80">
-                          <span className="text-3xl">🔵</span><span className="font-black text-sky-400 text-xl uppercase tracking-widest">Gemini</span>
-                        </a>
-                      </div>
+                    
+                    {/* 🚀 AI WORKFLOW GUIDE (VERY USER FRIENDLY) */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                       <div className="space-y-6">
+                          <Label className="text-emerald-400 font-black text-sm uppercase tracking-widest flex items-center gap-2"><Zap className="h-4 w-4" /> Step 1: Copy Command</Label>
+                          <p className="text-slate-400 text-sm font-bold">下のボタンを押して、AIへの「命令文」をコピーします。</p>
+                          <Button onClick={() => handleCopy(transcribePrompt, 'tr')} className="w-full h-24 bg-white text-black font-black text-2xl rounded-3xl gap-4 shadow-xl hover:bg-slate-100 transition-all active:scale-95">
+                             <Copy className="h-8 w-8" /> 指示をコピー
+                          </Button>
+                       </div>
+                       <div className="space-y-6">
+                          <Label className="text-emerald-400 font-black text-sm uppercase tracking-widest flex items-center gap-2"><Globe className="h-4 w-4" /> Step 2: Paste to AI</Label>
+                          <p className="text-slate-400 text-sm font-bold">好きなAIを開き、命令文と抽出ファイルを渡してください。</p>
+                          <div className="grid grid-cols-2 gap-4">
+                            {FAMOUS_AI.slice(0, 2).map(ai => (
+                              <a key={ai.id} href={ai.url} target="_blank" className="h-24 bg-slate-900 border border-white/10 rounded-2xl flex flex-col items-center justify-center hover:bg-slate-800 transition-all group">
+                                <span className="text-3xl mb-1">{ai.icon}</span>
+                                <span className="font-black text-white text-xs uppercase">{ai.name}</span>
+                                <span className="text-[9px] text-slate-500 mt-1">{ai.billing}</span>
+                              </a>
+                            ))}
+                          </div>
+                       </div>
                     </div>
                   </div>
                 )}
-                
-                <div className="space-y-6 pt-10 border-t border-slate-800">
-                  <div className="flex items-center gap-3"><MessageSquareText className="h-8 w-8 text-red-500" /><Label className="text-2xl font-black text-white text-left">文字起こし結果を貼り付け</Label></div>
-                  <p className="text-slate-500 text-lg">AIが書き出したテキストを、下の枠にコピペしてください。</p>
-                  <textarea value={inputText} onChange={(e) => setInputText(e.target.value)} placeholder="ここにテキストを貼り付けてください..." className="w-full h-96 bg-slate-950 border-2 border-slate-800 rounded-[2.5rem] p-10 text-2xl font-medium focus:border-red-600 text-white shadow-inner" />
+                <div className="space-y-6 pt-12 border-t border-slate-800">
+                  <div className="flex items-center gap-3 text-white font-black text-3xl italic uppercase"><MessageSquareText className="h-10 w-10 text-red-500" /> Result Input</div>
+                  <p className="text-slate-500 font-bold text-lg leading-relaxed">AIから返ってきたテキストを下の枠に貼り付けて、次へ進んでください。費用は一切かかりません。</p>
+                  <textarea value={inputText} onChange={(e) => setInputText(e.target.value)} placeholder="ここに文字起こし結果を貼り付け..." className="w-full h-80 bg-slate-950 border-2 border-slate-800 rounded-[3rem] p-10 text-2xl font-medium focus:border-red-600 text-white shadow-inner" />
+                  <Button onClick={() => setCurrentStep(2)} disabled={!inputText} className="w-full h-32 bg-red-600 text-white font-black text-4xl rounded-[3rem] shadow-2xl shadow-red-600/40 mt-6 gap-4 uppercase italic">NEXT: SCRIPTING <ArrowRight className="h-12 w-12" /></Button>
                 </div>
-
-                <Button onClick={() => setCurrentStep(2)} disabled={!inputText.trim()} className="w-full h-32 bg-red-600 hover:bg-red-500 text-white font-black text-4xl rounded-[3rem] shadow-2xl shadow-red-600/40 transition-transform active:scale-95 flex items-center justify-center gap-4">
-                  STEP ② 台本作成を開始する <ArrowRight className="h-12 w-12" />
-                </Button>
               </div>
             </Card>
           </div>
         )}
 
-        {/* --- STEP 2+ --- */}
+        {/* --- STEP 2+: SCRIPTING & BEYOND --- */}
         {currentStep > 1 && (
-          <div className="max-w-5xl mx-auto space-y-12">
-            <div className="bg-emerald-500/10 border border-emerald-500/20 p-8 rounded-[2.5rem] flex gap-6 items-center shadow-xl">
-              <div className="bg-emerald-500 p-4 rounded-2xl shadow-lg"><HelpCircle className="h-8 w-8 text-slate-950" /></div>
-              <div>
-                <h3 className="text-xl font-black text-white mb-1">Step 0{currentStep}: {STEPS[currentStep-1].label} の手順</h3>
-                <p className="text-slate-400 text-lg leading-relaxed font-medium">{STEPS[currentStep-1].guide}</p>
-              </div>
-            </div>
-
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-12 shadow-2xl">
+          <div className="max-w-6xl mx-auto space-y-12">
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[4rem] p-16 shadow-2xl">
               <div className="flex justify-between items-center mb-10">
-                <h2 className="text-4xl font-black text-white uppercase italic tracking-tighter font-mono">{STEPS[currentStep-1].label} PROMPT</h2>
+                <h2 className="text-4xl font-black text-white uppercase italic tracking-tighter">Step 0{currentStep}: {STEPS[currentStep-1].label}</h2>
                 <Button variant="ghost" onClick={() => setCurrentStep((currentStep - 1) as any)} className="text-slate-500 text-xl font-bold">← 戻る</Button>
               </div>
-              
-              <div className="bg-slate-950 p-10 rounded-[2.5rem] border-2 border-white/5 font-mono text-2xl text-slate-300 leading-relaxed mb-12 max-h-[500px] overflow-y-auto whitespace-pre-wrap shadow-inner">
-                {getStepPrompt(currentStep)}
-              </div>
 
-              <div className="space-y-10">
-                <Button onClick={() => handleCopy(getStepPrompt(currentStep), `step-${currentStep}`)} className="w-full h-28 bg-white text-black font-black text-3xl rounded-[2rem] gap-4 shadow-xl hover:bg-slate-100 transition-all active:scale-95">
-                  <Copy className="h-12 w-12" /> {copied === `step-${currentStep}` ? "コピー成功！AIに貼り付けてください" : "最強プロンプトをコピー"}
-                </Button>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                   <a href="https://claude.ai" target="_blank" className={`relative h-32 rounded-[2rem] border-2 bg-slate-950 flex flex-col items-center justify-center hover:scale-105 transition-all ${currentStep === 2 ? 'border-orange-500 ring-2 ring-orange-500/20' : 'border-white/5 opacity-70'}`}>
-                      {currentStep === 2 && <Badge className="absolute -top-4 bg-orange-600 text-white font-black px-6 py-2 text-base shadow-xl">★ おすすめ：自然な日本語台本</Badge>}
-                      <span className="text-4xl mb-1">🟠</span><span className="font-black text-orange-400 text-2xl uppercase tracking-widest">Claude</span>
-                   </a>
-                   <a href="https://chatgpt.com" target="_blank" className={`relative h-32 rounded-[2rem] border-2 bg-slate-950 flex flex-col items-center justify-center hover:scale-105 transition-all ${currentStep !== 2 ? 'border-green-500' : 'border-white/5 opacity-70'}`}>
-                      {currentStep !== 2 && <Badge className="absolute -top-4 bg-green-600 text-white font-black px-6 py-2 text-base shadow-xl">★ おすすめ：高品質生成</Badge>}
-                      <span className="text-4xl mb-1">🟢</span><span className="font-black text-green-400 text-2xl uppercase tracking-widest">ChatGPT</span>
-                   </a>
+              <div className="grid grid-cols-1 gap-12">
+                <div className="space-y-6">
+                   <Label className="text-blue-400 font-black uppercase text-sm tracking-[0.3em] flex items-center gap-2"><Zap className="h-5 w-5" /> STEP 1: Copy The High-Quality Prompt</Label>
+                   <div className="bg-slate-950 p-12 rounded-[3rem] border-2 border-white/5 font-mono text-2xl text-slate-300 leading-relaxed mb-6 max-h-[600px] overflow-y-auto shadow-inner">
+                      {getStepPrompt(currentStep)}
+                   </div>
+                   <Button onClick={() => handleCopy(getStepPrompt(currentStep), "p")} className="w-full h-32 bg-white text-black font-black text-4xl rounded-[2.5rem] gap-6 shadow-2xl hover:scale-[1.02] transition-all active:scale-95">
+                      <Copy className="h-12 w-12" /> プロンプトをコピー
+                   </Button>
                 </div>
 
-                {currentStep < 6 && (
-                  <div className="pt-10 border-t border-slate-800">
-                    <p className="text-slate-500 text-center mb-6 font-bold uppercase tracking-widest">AIの作業が終わったら...</p>
-                    <Button onClick={() => setCurrentStep((currentStep + 1) as any)} className="w-full h-24 bg-slate-800 hover:bg-slate-700 text-white font-black text-2xl rounded-3xl shadow-xl gap-4 border-b-8 border-slate-950">
-                      STEP 0{currentStep + 1} へ進む <ArrowRight />
-                    </Button>
+                <div className="space-y-8 pt-8 border-t border-slate-800">
+                  <div className="space-y-2">
+                    <Label className="text-blue-400 font-black uppercase text-sm tracking-[0.3em] flex items-center gap-2"><Globe className="h-5 w-5" /> STEP 2: Choose Best AI (FREE Tier)</Label>
+                    <p className="text-slate-500 text-lg font-bold">コピーした指示を、以下の好きなAIに貼り付けるだけで完了。どれも基本無料で使えます。</p>
                   </div>
-                )}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {FAMOUS_AI.map(ai => (
+                      <a key={ai.id} href={ai.url} target="_blank" className={`p-8 rounded-[2.5rem] border-2 bg-slate-950 flex items-center justify-between hover:scale-[1.02] transition-all shadow-xl ${
+                        (currentStep === 2 && ai.isBestForScript) || (currentStep === 4 && ai.isBestForImage) ? 'border-amber-500 ring-4 ring-amber-500/10' : 'border-white/5 opacity-80'
+                      }`}>
+                        <div className="flex items-center gap-6">
+                          <span className="text-5xl">{ai.icon}</span>
+                          <div>
+                            <span className="font-black text-white text-2xl uppercase tracking-tighter block">{ai.name}</span>
+                            <span className="text-slate-400 text-sm font-bold italic">{ai.desc}</span>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end gap-2">
+                          {(currentStep === 2 && ai.isBestForScript) || (currentStep === 4 && ai.isBestForImage) ? <Badge className="bg-amber-500 text-black font-black px-5 py-2 text-sm uppercase">Recommended</Badge> : null}
+                          <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{ai.billing}</span>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                <Button onClick={() => setCurrentStep((currentStep + 1) as any)} className="w-full h-28 bg-slate-800 hover:bg-slate-700 text-white font-black text-2xl rounded-3xl shadow-xl border-b-8 border-slate-950 uppercase italic">
+                  Complete Task: Move to Next Stage <ArrowRight />
+                </Button>
               </div>
             </Card>
           </div>
