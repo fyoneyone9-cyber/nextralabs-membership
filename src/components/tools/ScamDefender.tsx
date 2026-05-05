@@ -12,24 +12,27 @@ const DANGER_KEYWORDS = ["即日現金", "身分証不要", "テレグラム", "
 
 export default function ScamDefender() {
   const [inputText, setInputText] = useState('');
+  const [senderInfo, setSenderInfo] = useState('');
+  const [subjectInfo, setSubjectInfo] = useState('');
   const [riskScore, setRiskScore] = useState(0);
   const [detectedWords, setDetectedWords] = useState<string[]>([]);
   const [image, setImage] = useState<string | null>(null);
   const [systemOnline, setSystemOnline] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const performRealtimeAnalysis = (text: string) => {
-    const found = DANGER_KEYWORDS.filter(word => text.includes(word));
+  const performRealtimeAnalysis = (text: string, sender: string, subject: string) => {
+    const fullText = `${text} ${sender} ${subject}`;
+    const found = DANGER_KEYWORDS.filter(word => fullText.includes(word));
     setDetectedWords(found);
-    const score = Math.min(100, found.length * 25 + (text.length > 50 ? 10 : 0));
+    const score = Math.min(100, found.length * 25 + (fullText.length > 50 ? 10 : 0));
     setRiskScore(score);
-    if (!systemOnline && text.length > 0) setSystemOnline(true);
-    if (text.length === 0 && !image) setSystemOnline(false);
+    if (!systemOnline && (text.length > 0 || sender.length > 0 || subject.length > 0)) setSystemOnline(true);
+    if (text.length === 0 && sender.length === 0 && subject.length === 0 && !image) setSystemOnline(false);
   };
 
   useEffect(() => {
-    performRealtimeAnalysis(inputText);
-  }, [inputText]);
+    performRealtimeAnalysis(inputText, senderInfo, subjectInfo);
+  }, [inputText, senderInfo, subjectInfo]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -44,6 +47,10 @@ export default function ScamDefender() {
   };
 
   const PROMPT = `あなたはプロのサイバー犯罪捜査官です。以下の【証拠データ】を解析し、詐欺の可能性を判定してください。
+【送信者/ドメイン】: ${senderInfo}
+【件名】: ${subjectInfo}
+【本文】: ${inputText}
+
 1. 【詐欺スコア】: 0-100で判定
 2. 【手口の解説】: どのような詐欺か（闇バイト、フィッシング等）
 3. 【対策アドバイス】: 今すぐすべきこと`;
@@ -51,7 +58,7 @@ export default function ScamDefender() {
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-slate-950 text-left">
       <div className="text-center space-y-3">
-        <Badge className="bg-red-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-[0_0_20px_rgba(220,38,38,0.4)]">Cyber scanner engine v5.0</Badge>
+        <Badge className="bg-red-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-[0_0_20px_rgba(220,38,38,0.4)]">Cyber scanner engine v5.1</Badge>
         <h1 className="text-5xl md:text-[8rem] font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">Scam Defender</h1>
       </div>
 
@@ -112,23 +119,47 @@ export default function ScamDefender() {
             </div>
 
             <div className="grid lg:grid-cols-2 gap-8 text-left">
-              {/* Text Input */}
-              <div className="space-y-4">
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4">Evidence: Text Buffer</p>
-                <textarea 
-                  value={inputText} 
-                  onChange={(e) => setInputText(e.target.value)}
-                  placeholder="怪しいメール文面、SNSの募集文などを貼り付けてください..."
-                  className="w-full h-[450px] bg-slate-950 border-2 border-slate-800 rounded-[2.5rem] p-8 text-lg text-slate-200 focus:border-red-600 outline-none shadow-inner leading-relaxed transition-all italic"
-                />
-                <Button onClick={() => setInputText('')} variant="ghost" size="sm" className="text-slate-700 hover:text-red-500 font-black"><Trash2 size={14} /> CLEAR BUFFER</Button>
+              {/* Text Input Group */}
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4">Meta: Sender / Domain</p>
+                    <input 
+                      type="text"
+                      value={senderInfo}
+                      onChange={(e) => setSenderInfo(e.target.value)}
+                      placeholder="info@unknown-scam.com / @fake_user..."
+                      className="w-full h-14 bg-slate-950 border-2 border-slate-800 rounded-2xl px-6 text-sm text-slate-200 focus:border-red-600 outline-none italic"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4">Meta: Subject</p>
+                    <input 
+                      type="text"
+                      value={subjectInfo}
+                      onChange={(e) => setSubjectInfo(e.target.value)}
+                      placeholder="重要：アカウントが停止されました..."
+                      className="w-full h-14 bg-slate-950 border-2 border-slate-800 rounded-2xl px-6 text-sm text-slate-200 focus:border-red-600 outline-none italic"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4">Evidence: Text Buffer</p>
+                    <textarea 
+                      value={inputText} 
+                      onChange={(e) => setInputText(e.target.value)}
+                      placeholder="本文、SNS募集文などを貼り付け..."
+                      className="w-full h-64 bg-slate-950 border-2 border-slate-800 rounded-[2.5rem] p-8 text-lg text-slate-200 focus:border-red-600 outline-none shadow-inner leading-relaxed transition-all italic"
+                    />
+                  </div>
+                </div>
+                <Button onClick={() => { setInputText(''); setSenderInfo(''); setSubjectInfo(''); }} variant="ghost" size="sm" className="text-slate-700 hover:text-red-500 font-black"><Trash2 size={14} /> CLEAR ALL BUFFERS</Button>
               </div>
 
               {/* Image Input */}
               <div className="space-y-4">
                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4">Evidence: Visual Snapshot</p>
                 {!image ? (
-                  <div className="border-4 border-dashed border-slate-800 rounded-[2.5rem] h-[450px] hover:bg-slate-950 transition-all cursor-pointer bg-slate-950/50 shadow-inner group flex flex-col items-center justify-center space-y-6" onClick={() => fileInputRef.current?.click()}>
+                  <div className="border-4 border-dashed border-slate-800 rounded-[2.5rem] h-[550px] hover:bg-slate-950 transition-all cursor-pointer bg-slate-950/50 shadow-inner group flex flex-col items-center justify-center space-y-6" onClick={() => fileInputRef.current?.click()}>
                     <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
                     <div className="w-24 h-24 bg-slate-900 rounded-full flex items-center justify-center border-2 border-slate-800 shadow-xl group-hover:border-red-600 transition-colors">
                       <Camera className="w-10 h-10 text-slate-700 group-hover:text-red-500 transition-colors" />
@@ -136,7 +167,7 @@ export default function ScamDefender() {
                     <p className="text-xl text-slate-700 font-black italic uppercase tracking-widest group-hover:text-slate-500 text-center px-8">Upload<br/>Screenshot</p>
                   </div>
                 ) : (
-                  <div className="relative h-[450px] rounded-[2.5rem] overflow-hidden border-4 border-red-600/20 shadow-2xl bg-black group">
+                  <div className="relative h-[550px] rounded-[2.5rem] overflow-hidden border-4 border-red-600/20 shadow-2xl bg-black group">
                     <img src={image} alt="Scam Evidence" className="object-contain w-full h-full" />
                     <Button onClick={() => setImage(null)} className="absolute top-6 right-6 bg-black/50 hover:bg-red-600 p-2 rounded-full h-12 w-12 text-white border-2 border-white/20 transition-all">✕</Button>
                     <div className="absolute bottom-6 left-6 flex items-center gap-2">
@@ -150,10 +181,10 @@ export default function ScamDefender() {
             <div className="mt-12 space-y-6">
               <Button 
                 onClick={() => { 
-                  navigator.clipboard.writeText(`${PROMPT}\n\n【証拠データ】：\n${inputText}`);
+                  navigator.clipboard.writeText(PROMPT);
                   window.open('https://gemini.google.com', '_blank');
                 }} 
-                disabled={!inputText && !image}
+                disabled={!inputText && !image && !senderInfo && !subjectInfo}
                 className="w-full h-24 bg-white text-black hover:bg-red-600 hover:text-white font-black text-3xl rounded-[2rem] shadow-[0_20px_50px_rgba(255,255,255,0.1)] uppercase italic flex items-center justify-center gap-6 transition-all active:scale-95 group"
               >
                 <Zap className="w-10 h-10 text-red-600 group-hover:text-white transition-colors" />
@@ -165,7 +196,7 @@ export default function ScamDefender() {
         </div>
       </div>
       
-      <DebugPanel data={{ riskScore, detectedWords, systemOnline }} toolId="scam-defender" />
+      <DebugPanel data={{ riskScore, detectedWords, systemOnline, senderInfo, subjectInfo }} toolId="scam-defender" />
       <div className="text-center opacity-20 mt-20"><p className="text-[10px] font-black uppercase tracking-[0.5em] italic">Nextra Cyber Defense Command • 2026</p></div>
     </div>
   )
