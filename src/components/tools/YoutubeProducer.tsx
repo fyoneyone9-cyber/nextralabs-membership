@@ -12,6 +12,8 @@ import {
   Youtube, 
   FileVideo, 
   FileAudio, 
+  FileText,
+  Zap,
   ChevronRight,
   Loader2,
   Copy,
