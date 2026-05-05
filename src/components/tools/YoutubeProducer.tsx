@@ -3,52 +3,42 @@ import React, { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-// import { DebugPanel } from './DebugPanel'
 import { 
   ArrowRight, 
   Upload, 
-  Link as LinkIcon, 
   CheckCircle2, 
   Youtube, 
   FileVideo, 
-  FileAudio, 
   FileText,
   Zap,
   ChevronRight,
   Loader2,
   Copy,
-  ExternalLink
+  ExternalLink,
+  Sparkles,
+  ArrowDown
 } from 'lucide-react'
 
 const STEPS = [
-  { id: 1, label: 'STEP 01', what: '素材取り込み', how: '動画・音声・YouTubeリンクを読み込みます。' },
-  { id: 2, label: 'STEP 02', what: 'AIプロンプト生成', how: '文字起こしから最強の指示書を作成します。' },
-  { id: 3, label: 'STEP 03', what: '各AIで実行', how: '生成された指示をコピーして、目的のAIで実行します。' }
+  { id: 1, label: 'STEP 01', title: '素材取り込み', desc: '動画・音声・URLの準備' },
+  { id: 2, label: 'STEP 02', title: 'AIプロンプト生成', desc: '最強の指示書でAIを実行' },
+  { id: 3, label: 'STEP 03', title: '完了', desc: '成果物の確認' }
 ];
 
 const MAJOR_AI = [
-  { id: 'gemini', name: 'GEMINI', url: 'https://gemini.google.com', icon: '💎', desc: '動画解析・長文に強い' },
-  { id: 'chatgpt', name: 'GPT', url: 'https://chatgpt.com', icon: '🟢', desc: '台本・構成案に強い' },
-  { id: 'claude', name: 'CLAUDE', url: 'https://claude.ai', icon: '🟠', desc: '自然な文章・編集に強い' }
+  { id: 'gemini', name: 'GEMINI', url: 'https://gemini.google.com', icon: '💎', color: 'bg-blue-600' },
+  { id: 'chatgpt', name: 'CHATGPT', url: 'https://chatgpt.com', icon: '🟢', color: 'bg-emerald-600' },
+  { id: 'claude', name: 'CLAUDE', url: 'https://claude.ai', icon: '🟠', color: 'bg-orange-600' }
 ];
 
 export default function YoutubeProducer() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [transcript, setTranscript] = useState('');
   const [copied, setCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      simulateUpload();
-    }
-  };
 
   const simulateUpload = () => {
     setIsUploading(true);
@@ -58,19 +48,13 @@ export default function YoutubeProducer() {
         if (prev >= 100) {
           clearInterval(interval);
           setIsUploading(false);
-          setTranscript('（擬似文字起こし結果）動画の内容：AIを活用した副業の始め方について。1. ジャンル選定 2. プロンプト作成 3. 継続のコツ...');
+          setTranscript('（文字起こし結果）本日の動画ではAI副業について解説します。1.市場調査 2.ツール選定 3.コンテンツ作成...');
           setCurrentStep(2);
           return 100;
         }
         return prev + 10;
       });
-    }, 200);
-  };
-
-  const handleUrlSubmit = () => {
-    if (youtubeUrl) {
-      simulateUpload();
-    }
+    }, 150);
   };
 
   const handleCopy = () => {
@@ -80,65 +64,62 @@ export default function YoutubeProducer() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const currentInfo = STEPS[currentStep - 1] || STEPS[0];
-
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-12 min-h-screen text-slate-200 font-sans pb-20">
-      <div className="text-center">
-        <h1 className="text-5xl md:text-7xl font-black text-white uppercase italic tracking-tighter">AI YouTubeプロデューサー</h1>
-        <p className="text-slate-400 mt-4 font-bold tracking-widest uppercase">Content Creation Pipeline</p>
+    <div className="max-w-6xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-20">
+      <div className="text-center space-y-2">
+        <h1 className="text-5xl md:text-7xl font-black text-white uppercase italic tracking-tighter">AI YouTube PRODUCER</h1>
+        <div className="flex items-center justify-center gap-2 text-red-500 font-bold tracking-[0.3em] text-xs md:text-sm">
+          <Sparkles className="h-4 w-4" /> NEXTRALABS CREATIVE PIPELINE
+        </div>
       </div>
 
-      <div className="flex items-center justify-center max-w-5xl mx-auto overflow-x-auto pb-10 px-4">
-        <div className="flex items-center justify-between w-full min-w-[500px] relative">
-          <div className="absolute top-6 left-0 w-full h-1 bg-slate-800 -z-10 rounded-full" />
+      {/* 🔴 ENHANCED PROGRESS BAR */}
+      <div className="bg-slate-900/50 border border-slate-800 rounded-[2rem] p-6 max-w-4xl mx-auto shadow-xl">
+        <div className="flex items-center justify-between relative px-4">
+          <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-800 -z-10 -translate-y-1/2" />
           {STEPS.map((s, i) => (
-            <div key={s.id} className="flex flex-col items-center gap-3 bg-slate-950 px-4">
+            <div key={s.id} className="flex flex-col items-center gap-2 bg-slate-950 px-2 md:px-6 py-2 rounded-2xl border border-transparent transition-all">
               <div 
-                className={`w-14 h-14 rounded-2xl flex items-center justify-center border-2 transition-all duration-500 ${
-                  currentStep === s.id ? 'bg-red-600 border-red-400 text-white shadow-[0_0_20px_rgba(220,38,38,0.5)] scale-110' : 
+                className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${
+                  currentStep === s.id ? 'bg-red-600 border-red-400 text-white scale-125 shadow-[0_0_15px_rgba(220,38,38,0.6)]' : 
                   currentStep > s.id ? 'bg-emerald-500 border-emerald-400 text-white' : 
                   'bg-slate-900 border-slate-700 text-slate-500'
                 }`}
               >
-                {currentStep > s.id ? <CheckCircle2 className="h-7 w-7" /> : <span className="font-bold text-lg italic">{s.id}</span>}
+                {currentStep > s.id ? <CheckCircle2 className="h-5 w-5" /> : <span className="font-black text-sm italic">{s.id}</span>}
               </div>
-              <span className={`text-[10px] font-black uppercase tracking-widest ${currentStep === s.id ? 'text-red-500' : 'text-slate-500'}`}>{s.label}</span>
+              <div className="text-center">
+                <p className={`text-[10px] font-black uppercase tracking-widest ${currentStep === s.id ? 'text-red-500' : 'text-slate-500'}`}>{s.title}</p>
+                <p className="text-[8px] text-slate-600 font-bold hidden md:block">{s.desc}</p>
+              </div>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto bg-gradient-to-br from-indigo-600 to-violet-700 p-8 md:p-12 rounded-[3rem] text-white shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-8 opacity-10 rotate-12"><FileVideo className="h-48 w-48" /></div>
-        <div className="relative z-10 space-y-4">
-          <div className="flex items-center gap-4">
-            <Badge className="bg-white text-indigo-700 font-black px-4 py-1 text-lg rounded-xl shadow-lg">STEP 0{currentStep}</Badge>
-            <h3 className="text-3xl md:text-4xl font-black italic uppercase tracking-tighter">{currentInfo.what}</h3>
-          </div>
-          <p className="text-xl md:text-2xl font-bold leading-relaxed opacity-90">{currentInfo.how}</p>
-        </div>
-      </div>
-
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-4xl mx-auto">
+        {/* STEP 01: INPUT */}
         {currentStep === 1 && (
           <div className="grid md:grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 shadow-2xl hover:border-red-500/50 transition-colors group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-              <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="video/*,audio/*" />
+            <Card 
+              className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 shadow-2xl hover:border-red-500/50 transition-all group cursor-pointer" 
+              onClick={() => !isUploading && fileInputRef.current?.click()}
+            >
+              <input type="file" ref={fileInputRef} onChange={simulateUpload} className="hidden" accept="video/*,audio/*" />
               <div className="h-full flex flex-col items-center justify-center text-center space-y-6 py-10">
-                <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center group-hover:bg-red-600/20 transition-colors">
-                  {isUploading ? <Loader2 className="h-12 w-12 text-red-500 animate-spin" /> : <Upload className="h-12 w-12 text-red-500" />}
+                <div className="w-20 h-20 bg-slate-950 rounded-[2rem] flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
+                  {isUploading ? <Loader2 className="h-10 w-10 text-red-500 animate-spin" /> : <Upload className="h-10 w-10 text-red-500" />}
                 </div>
                 <div>
-                  <h4 className="text-2xl font-black text-white">動画・音声ファイルをアップ</h4>
-                  <p className="text-slate-400 mt-2 font-medium">MP4, MOV, MP3, WAV 対応</p>
+                  <h4 className="text-2xl font-black text-white italic uppercase tracking-tighter">File Upload</h4>
+                  <p className="text-slate-500 mt-1 font-bold text-xs">VIDEO / AUDIO SUPPORTED</p>
                 </div>
                 {isUploading && (
                   <div className="w-full space-y-2">
-                    <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-1.5 w-full bg-slate-950 rounded-full overflow-hidden">
                       <div className="h-full bg-red-600 transition-all duration-300" style={{ width: `${uploadProgress}%` }}></div>
                     </div>
-                    <p className="text-xs font-bold text-red-500 uppercase tracking-tighter">Uploading: {uploadProgress}%</p>
+                    <p className="text-[10px] font-black text-red-500 uppercase tracking-widest animate-pulse">Processing... {uploadProgress}%</p>
                   </div>
                 )}
               </div>
@@ -146,109 +127,119 @@ export default function YoutubeProducer() {
 
             <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 shadow-2xl">
               <div className="h-full flex flex-col justify-center space-y-6">
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="w-12 h-12 bg-red-600/10 rounded-2xl flex items-center justify-center">
-                    <Youtube className="h-6 w-6 text-red-500" />
-                  </div>
-                  <h4 className="text-2xl font-black text-white uppercase italic">YouTube URL</h4>
+                <div className="flex items-center gap-3">
+                  <Youtube className="h-6 w-6 text-red-600" />
+                  <h4 className="text-2xl font-black text-white italic uppercase tracking-tighter">YouTube URL</h4>
                 </div>
                 <input 
                   type="text" 
                   value={youtubeUrl}
                   onChange={(e) => setYoutubeUrl(e.target.value)}
-                  placeholder="https://www.youtube.com/watch?v=..." 
-                  className="w-full bg-slate-950 border-2 border-slate-800 rounded-2xl p-5 text-lg focus:border-red-600 outline-none text-white shadow-inner" 
+                  placeholder="Paste video link here..." 
+                  className="w-full bg-slate-950 border-2 border-slate-800 rounded-2xl p-4 text-sm focus:border-red-600 outline-none text-white shadow-inner font-mono" 
                 />
                 <Button 
-                  onClick={handleUrlSubmit}
+                  onClick={simulateUpload}
                   disabled={!youtubeUrl || isUploading}
-                  className="w-full h-16 bg-white text-black hover:bg-slate-200 font-black text-xl rounded-2xl shadow-xl transition-all"
+                  className="w-full h-14 bg-white text-black hover:bg-red-600 hover:text-white font-black text-lg rounded-2xl shadow-xl transition-all uppercase italic"
                 >
-                  読み込む <ChevronRight className="ml-2" />
+                  Fetch Content <ChevronRight className="ml-1 h-5 w-5" />
                 </Button>
               </div>
             </Card>
           </div>
         )}
 
+        {/* STEP 02: THE "ONE-WAY" PIPELINE */}
         {currentStep === 2 && (
-          <div className="animate-in fade-in zoom-in duration-500">
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[4rem] p-8 md:p-12 shadow-2xl overflow-hidden relative">
+          <div className="space-y-8 animate-in fade-in zoom-in duration-500">
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl overflow-hidden">
               <div className="space-y-8">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-2xl font-black text-white italic uppercase flex items-center gap-3">
-                    <FileText className="text-red-500" /> 文字起こしプレビュー
-                  </h4>
-                  <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1">解析完了</Badge>
+                <div className="flex items-center justify-between border-b border-slate-800 pb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-red-600/10 rounded-xl flex items-center justify-center">
+                      <FileText className="h-5 w-5 text-red-500" />
+                    </div>
+                    <h4 className="text-2xl font-black text-white italic uppercase tracking-tighter">文字起こし完了</h4>
+                  </div>
+                  <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1 font-bold">READY</Badge>
                 </div>
                 
-                <div className="bg-slate-950 border-2 border-slate-800 rounded-[2rem] p-8 max-h-60 overflow-y-auto text-slate-300 font-medium leading-relaxed shadow-inner">
+                <div className="bg-slate-950 border-2 border-slate-800 rounded-2xl p-6 h-40 overflow-y-auto text-slate-400 text-sm font-medium leading-relaxed">
                   {transcript}
                 </div>
 
-                <div className="pt-6">
-                  <h4 className="text-2xl font-black text-white italic uppercase mb-6 flex items-center gap-3">
-                    <Zap className="text-yellow-500" /> 最強のプロンプトを生成
-                  </h4>
-                  <Button 
-                    onClick={handleCopy} 
-                    className={`w-full h-24 font-black text-3xl rounded-[2rem] shadow-2xl transition-all duration-300 ${
-                      copied ? 'bg-emerald-500 text-slate-950 scale-105' : 'bg-red-600 text-white hover:bg-red-500'
-                    }`}
-                  >
-                    {copied ? '✅ COPIED!' : '指示をコピーして次へ'}
-                  </Button>
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3">
+                    <Zap className="h-6 w-6 text-yellow-500 fill-yellow-500" />
+                    <h4 className="text-xl font-black text-white uppercase italic tracking-tighter">最強のプロンプトを生成しました</h4>
+                  </div>
+                  
+                  <div className="grid gap-4">
+                    <Button 
+                      onClick={handleCopy} 
+                      className={`h-20 font-black text-2xl rounded-2xl shadow-2xl transition-all duration-300 ${
+                        copied ? 'bg-emerald-500 text-slate-950' : 'bg-red-600 text-white hover:bg-red-500'
+                      }`}
+                    >
+                      {copied ? <span className="flex items-center gap-2"><CheckCircle2 /> COPIED!</span> : 'プロンプトをコピーする'}
+                    </Button>
+
+                    {/* AI REDIRECTION SECTION - REVEALED ON COPY OR JUST VISIBLE */}
+                    <div className={`pt-6 border-t border-slate-800 transition-all duration-700 ${copied ? 'opacity-100 translate-y-0' : 'opacity-50'}`}>
+                      <p className="text-center text-xs font-black text-slate-500 uppercase tracking-widest mb-6">貼り付け先を選択してください</p>
+                      <div className="grid grid-cols-3 gap-4">
+                        {MAJOR_AI.map(ai => (
+                          <a 
+                            key={ai.id} 
+                            href={ai.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            onClick={() => setCurrentStep(3)}
+                            className={`${ai.color} h-20 rounded-2xl flex flex-col items-center justify-center gap-1 hover:scale-105 transition-all shadow-xl group`}
+                          >
+                            <span className="text-2xl">{ai.icon}</span>
+                            <span className="font-black text-[10px] tracking-tighter text-white/90">{ai.name}</span>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </Card>
-            <div className="mt-8 flex justify-center">
-              <Button variant="ghost" onClick={() => setCurrentStep(3)} className="text-slate-500 hover:text-white font-bold">
-                コピーせずに次へ <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
           </div>
         )}
 
+        {/* STEP 03: COMPLETION */}
         {currentStep === 3 && (
-          <div className="animate-in fade-in slide-in-from-right-8 duration-700">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {MAJOR_AI.map(ai => (
-                <a 
-                  key={ai.id} 
-                  href={ai.url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 flex flex-col items-center text-center space-y-6 hover:border-red-500/50 hover:-translate-y-2 transition-all shadow-2xl group"
-                >
-                  <div className="text-6xl bg-slate-950 w-24 h-24 flex items-center justify-center rounded-[2rem] shadow-inner group-hover:scale-110 transition-transform">
-                    {ai.icon}
-                  </div>
-                  <div>
-                    <h5 className="text-2xl font-black text-white tracking-tighter">{ai.name}</h5>
-                    <p className="text-slate-400 text-sm mt-1 font-bold uppercase tracking-widest">{ai.desc}</p>
-                  </div>
-                  <div className="w-full h-12 bg-white/5 rounded-2xl flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                    <ExternalLink className="h-5 w-5 text-slate-400 group-hover:text-white" />
-                  </div>
-                </a>
-              ))}
+          <div className="text-center space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <div className="w-32 h-32 bg-emerald-500/10 border-4 border-emerald-500 rounded-full flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+              <CheckCircle2 className="h-16 w-16 text-emerald-500" />
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-4xl font-black text-white italic uppercase tracking-tighter">Mission Accomplished</h3>
+              <p className="text-slate-400 font-bold max-w-md mx-auto">AIでの生成は開始されましたか？台本、タイトル、サムネイル案が揃えば動画制作の準備は完了です。</p>
             </div>
             
-            <div className="mt-16 text-center bg-slate-900/50 border-2 border-dashed border-slate-800 p-10 rounded-[3rem]">
-              <p className="text-slate-400 font-bold mb-6 italic">別の素材でやり直す場合はこちら</p>
+            <div className="flex flex-col md:flex-row gap-4 justify-center pt-10">
               <Button 
                 variant="outline" 
                 onClick={() => setCurrentStep(1)}
-                className="rounded-2xl border-slate-700 text-slate-300 hover:bg-slate-800 px-10 h-14 font-black italic"
+                className="rounded-2xl border-slate-800 text-slate-400 hover:bg-slate-900 px-10 h-16 font-black italic uppercase"
               >
-                最初からやり直す
+                別の動画を制作する
+              </Button>
+              <Button 
+                onClick={() => window.location.href = '/dashboard'}
+                className="bg-white text-black hover:bg-slate-200 rounded-2xl px-10 h-16 font-black italic uppercase"
+              >
+                ダッシュボードに戻る
               </Button>
             </div>
           </div>
         )}
       </div>
-
-      {/* <DebugPanel data={null} toolId="youtubeproducer" /> */}
     </div>
   )
 }
