@@ -1,9 +1,11 @@
-{
+﻿{
+  "version": 2,
+  "buildCommand": "next build",
+  "installCommand": "npm install",
+  "framework": "nextjs",
   "functions": {
     "src/app/api/**/*": {
       "maxDuration": 60
     }
-  },
-  "installCommand": "npm install",
-  "buildCommand": "npm run build"
+  }
 }
