@@ -36,7 +36,7 @@ export default function SnsAutoPoster() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [trends, setTrends] = useState<string[]>([]);
   const [isLoadingTrends, setIsLoadingTrends] = useState(false);
-  const [apiStatus, setApiStatus] = useState<'loading' | 'live' | 'error'>('loading');
+  const [apiStatus, setApiStatus] = useState<'loading' | 'live' | 'local' | 'error'>('loading');
 
   const fetchTrends = async () => {
     setIsLoadingTrends(true);
@@ -48,13 +48,13 @@ export default function SnsAutoPoster() {
       
       if (data.trends && data.trends.length > 0) {
         setTrends(data.trends);
-        setApiStatus('live');
+        setApiStatus(data.isLive ? 'live' : 'local');
       } else {
         throw new Error('No data');
       }
     } catch (error) {
       console.error('Fetch trends error:', error);
-      setTrends([]); // 偽物は出さない
+      setTrends([]); 
       setApiStatus('error');
     } finally {
       setIsLoadingTrends(false);
@@ -103,6 +103,12 @@ export default function SnsAutoPoster() {
                 <div className="flex items-center gap-2 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/50 shadow-[0_0_15px_rgba(34,197,94,0.4)]">
                   <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                   <span className="text-[10px] font-black text-green-500 uppercase tracking-tighter">API: LIVE (GOOGLE_TRENDS)</span>
+                </div>
+              )}
+              {apiStatus === 'local' && (
+                <div className="flex items-center gap-2 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
+                  <div className="w-2 h-2 rounded-full bg-amber-500" />
+                  <span className="text-[10px] font-black text-amber-400 uppercase tracking-tighter">API: LOCAL_STATIC (OFFLINE)</span>
                 </div>
               )}
               {apiStatus === 'loading' && (
