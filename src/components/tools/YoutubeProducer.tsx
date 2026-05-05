@@ -16,13 +16,15 @@ import {
   Copy,
   ExternalLink,
   Sparkles,
-  ArrowDown
+  Download,
+  Save,
+  RotateCcw
 } from 'lucide-react'
 
 const STEPS = [
   { id: 1, label: 'STEP 01', title: '素材取り込み', desc: '動画・音声・URLの準備' },
-  { id: 2, label: 'STEP 02', title: 'AIプロンプト生成', desc: '最強の指示書でAIを実行' },
-  { id: 3, label: 'STEP 03', title: '完了', desc: '成果物の確認' }
+  { id: 2, label: 'STEP 02', title: 'AIプロンプト生成', desc: '指示をコピーしてAI実行' },
+  { id: 3, label: 'STEP 03', title: '結果保存', desc: '生成された成果物を保存' }
 ];
 
 const MAJOR_AI = [
@@ -37,6 +39,7 @@ export default function YoutubeProducer() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [transcript, setTranscript] = useState('');
+  const [finalResult, setFinalResult] = useState('');
   const [copied, setCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -64,6 +67,15 @@ export default function YoutubeProducer() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleDownload = () => {
+    const element = document.createElement("a");
+    const file = new Blob([finalResult], {type: 'text/plain'});
+    element.href = URL.createObjectURL(file);
+    element.download = "youtube_producer_result.txt";
+    document.body.appendChild(element);
+    element.click();
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-20">
       <div className="text-center space-y-2">
@@ -73,7 +85,7 @@ export default function YoutubeProducer() {
         </div>
       </div>
 
-      {/* 🔴 ENHANCED PROGRESS BAR */}
+      {/* PROGRESS BAR */}
       <div className="bg-slate-900/50 border border-slate-800 rounded-[2rem] p-6 max-w-4xl mx-auto shadow-xl">
         <div className="flex items-center justify-between relative px-4">
           <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-800 -z-10 -translate-y-1/2" />
@@ -101,10 +113,7 @@ export default function YoutubeProducer() {
         {/* STEP 01: INPUT */}
         {currentStep === 1 && (
           <div className="grid md:grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <Card 
-              className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 shadow-2xl hover:border-red-500/50 transition-all group cursor-pointer" 
-              onClick={() => !isUploading && fileInputRef.current?.click()}
-            >
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 shadow-2xl hover:border-red-500/50 transition-all group cursor-pointer" onClick={() => !isUploading && fileInputRef.current?.click()}>
               <input type="file" ref={fileInputRef} onChange={simulateUpload} className="hidden" accept="video/*,audio/*" />
               <div className="h-full flex flex-col items-center justify-center text-center space-y-6 py-10">
                 <div className="w-20 h-20 bg-slate-950 rounded-[2rem] flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
@@ -112,14 +121,13 @@ export default function YoutubeProducer() {
                 </div>
                 <div>
                   <h4 className="text-2xl font-black text-white italic uppercase tracking-tighter">File Upload</h4>
-                  <p className="text-slate-500 mt-1 font-bold text-xs">VIDEO / AUDIO SUPPORTED</p>
+                  <p className="text-slate-500 mt-1 font-bold text-xs uppercase">Video / Audio</p>
                 </div>
                 {isUploading && (
                   <div className="w-full space-y-2">
                     <div className="h-1.5 w-full bg-slate-950 rounded-full overflow-hidden">
                       <div className="h-full bg-red-600 transition-all duration-300" style={{ width: `${uploadProgress}%` }}></div>
                     </div>
-                    <p className="text-[10px] font-black text-red-500 uppercase tracking-widest animate-pulse">Processing... {uploadProgress}%</p>
                   </div>
                 )}
               </div>
@@ -135,14 +143,10 @@ export default function YoutubeProducer() {
                   type="text" 
                   value={youtubeUrl}
                   onChange={(e) => setYoutubeUrl(e.target.value)}
-                  placeholder="Paste video link here..." 
+                  placeholder="Paste video link..." 
                   className="w-full bg-slate-950 border-2 border-slate-800 rounded-2xl p-4 text-sm focus:border-red-600 outline-none text-white shadow-inner font-mono" 
                 />
-                <Button 
-                  onClick={simulateUpload}
-                  disabled={!youtubeUrl || isUploading}
-                  className="w-full h-14 bg-white text-black hover:bg-red-600 hover:text-white font-black text-lg rounded-2xl shadow-xl transition-all uppercase italic"
-                >
+                <Button onClick={simulateUpload} disabled={!youtubeUrl || isUploading} className="w-full h-14 bg-white text-black hover:bg-red-600 hover:text-white font-black text-lg rounded-2xl shadow-xl transition-all uppercase italic">
                   Fetch Content <ChevronRight className="ml-1 h-5 w-5" />
                 </Button>
               </div>
@@ -150,59 +154,34 @@ export default function YoutubeProducer() {
           </div>
         )}
 
-        {/* STEP 02: THE "ONE-WAY" PIPELINE */}
+        {/* STEP 02: COPY & REDIRECT */}
         {currentStep === 2 && (
           <div className="space-y-8 animate-in fade-in zoom-in duration-500">
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl overflow-hidden">
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl">
               <div className="space-y-8">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-red-600/10 rounded-xl flex items-center justify-center">
-                      <FileText className="h-5 w-5 text-red-500" />
-                    </div>
-                    <h4 className="text-2xl font-black text-white italic uppercase tracking-tighter">文字起こし完了</h4>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <h4 className="text-2xl font-black text-white italic uppercase flex items-center gap-3"><FileText className="text-red-500" /> 文字起こしプレビュー</h4>
                   <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1 font-bold">READY</Badge>
                 </div>
-                
-                <div className="bg-slate-950 border-2 border-slate-800 rounded-2xl p-6 h-40 overflow-y-auto text-slate-400 text-sm font-medium leading-relaxed">
-                  {transcript}
-                </div>
-
+                <div className="bg-slate-950 border-2 border-slate-800 rounded-2xl p-6 h-40 overflow-y-auto text-slate-400 text-sm font-medium leading-relaxed">{transcript}</div>
                 <div className="space-y-6">
-                  <div className="flex items-center gap-3">
-                    <Zap className="h-6 w-6 text-yellow-500 fill-yellow-500" />
-                    <h4 className="text-xl font-black text-white uppercase italic tracking-tighter">最強のプロンプトを生成しました</h4>
-                  </div>
-                  
-                  <div className="grid gap-4">
-                    <Button 
-                      onClick={handleCopy} 
-                      className={`h-20 font-black text-2xl rounded-2xl shadow-2xl transition-all duration-300 ${
-                        copied ? 'bg-emerald-500 text-slate-950' : 'bg-red-600 text-white hover:bg-red-500'
-                      }`}
-                    >
-                      {copied ? <span className="flex items-center gap-2"><CheckCircle2 /> COPIED!</span> : 'プロンプトをコピーする'}
-                    </Button>
-
-                    {/* AI REDIRECTION SECTION - REVEALED ON COPY OR JUST VISIBLE */}
-                    <div className={`pt-6 border-t border-slate-800 transition-all duration-700 ${copied ? 'opacity-100 translate-y-0' : 'opacity-50'}`}>
-                      <p className="text-center text-xs font-black text-slate-500 uppercase tracking-widest mb-6">貼り付け先を選択してください</p>
-                      <div className="grid grid-cols-3 gap-4">
-                        {MAJOR_AI.map(ai => (
-                          <a 
-                            key={ai.id} 
-                            href={ai.url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            onClick={() => setCurrentStep(3)}
-                            className={`${ai.color} h-20 rounded-2xl flex flex-col items-center justify-center gap-1 hover:scale-105 transition-all shadow-xl group`}
-                          >
-                            <span className="text-2xl">{ai.icon}</span>
-                            <span className="font-black text-[10px] tracking-tighter text-white/90">{ai.name}</span>
-                          </a>
-                        ))}
-                      </div>
+                  <div className="flex items-center gap-3"><Zap className="h-6 w-6 text-yellow-500 fill-yellow-500" /><h4 className="text-xl font-black text-white uppercase italic tracking-tighter">最強プロンプトをコピー</h4></div>
+                  <Button onClick={handleCopy} className={`w-full h-20 font-black text-2xl rounded-2xl shadow-2xl transition-all duration-300 ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-red-600 text-white hover:bg-red-500'}`}>
+                    {copied ? '✅ COPIED!' : 'プロンプトをコピー'}
+                  </Button>
+                  <div className={`pt-6 transition-all duration-700 ${copied ? 'opacity-100 translate-y-0' : 'opacity-40'}`}>
+                    <p className="text-center text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">貼り付け先AIを選択</p>
+                    <div className="grid grid-cols-3 gap-4">
+                      {MAJOR_AI.map(ai => (
+                        <a key={ai.id} href={ai.url} target="_blank" rel="noopener noreferrer" className={`${ai.color} h-16 rounded-xl flex flex-col items-center justify-center gap-1 hover:scale-105 transition-all shadow-xl group`}>
+                          <span className="text-xl">{ai.icon}</span><span className="font-black text-[9px] tracking-tighter text-white/90">{ai.name}</span>
+                        </a>
+                      ))}
+                    </div>
+                    <div className="mt-8 text-center">
+                      <Button variant="ghost" onClick={() => setCurrentStep(3)} className="text-slate-400 hover:text-white font-black italic">
+                        生成が終わったら次へ進む <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -211,32 +190,44 @@ export default function YoutubeProducer() {
           </div>
         )}
 
-        {/* STEP 03: COMPLETION */}
+        {/* STEP 03: SAVE & EXPORT */}
         {currentStep === 3 && (
-          <div className="text-center space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <div className="w-32 h-32 bg-emerald-500/10 border-4 border-emerald-500 rounded-full flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(16,185,129,0.3)]">
-              <CheckCircle2 className="h-16 w-16 text-emerald-500" />
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-4xl font-black text-white italic uppercase tracking-tighter">Mission Accomplished</h3>
-              <p className="text-slate-400 font-bold max-w-md mx-auto">AIでの生成は開始されましたか？台本、タイトル、サムネイル案が揃えば動画制作の準備は完了です。</p>
-            </div>
-            
-            <div className="flex flex-col md:flex-row gap-4 justify-center pt-10">
-              <Button 
-                variant="outline" 
-                onClick={() => setCurrentStep(1)}
-                className="rounded-2xl border-slate-800 text-slate-400 hover:bg-slate-900 px-10 h-16 font-black italic uppercase"
-              >
-                別の動画を制作する
-              </Button>
-              <Button 
-                onClick={() => window.location.href = '/dashboard'}
-                className="bg-white text-black hover:bg-slate-200 rounded-2xl px-10 h-16 font-black italic uppercase"
-              >
-                ダッシュボードに戻る
-              </Button>
-            </div>
+          <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-700">
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl">
+              <div className="space-y-8">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-6">
+                  <div className="flex items-center gap-3">
+                    <Save className="h-6 w-6 text-emerald-500" />
+                    <h4 className="text-2xl font-black text-white italic uppercase tracking-tighter">生成結果を保存</h4>
+                  </div>
+                </div>
+                
+                <p className="text-slate-400 text-sm font-bold italic">AIが生成した台本やタイトルをここに貼り付けて保存できます</p>
+                <textarea 
+                  value={finalResult} 
+                  onChange={(e) => setFinalResult(e.target.value)} 
+                  placeholder="AIの回答をここに貼り付けてください..." 
+                  className="w-full h-80 bg-slate-950 border-2 border-slate-800 rounded-[2rem] p-8 text-slate-200 focus:border-emerald-500 outline-none shadow-inner" 
+                />
+
+                <div className="flex flex-col md:flex-row gap-4">
+                  <Button 
+                    onClick={handleDownload}
+                    disabled={!finalResult}
+                    className="flex-1 h-16 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xl rounded-2xl shadow-xl transition-all"
+                  >
+                    <Download className="mr-2" /> テキストファイルで保存
+                  </Button>
+                  <Button 
+                    onClick={() => { setFinalResult(''); setCurrentStep(1); }}
+                    variant="outline"
+                    className="h-16 border-slate-800 text-slate-400 hover:bg-slate-900 px-8 rounded-2xl font-black italic uppercase"
+                  >
+                    <RotateCcw className="mr-2 h-4 w-4" /> 最初から
+                  </Button>
+                </div>
+              </div>
+            </Card>
           </div>
         )}
       </div>
