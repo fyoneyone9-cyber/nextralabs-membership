@@ -97,7 +97,7 @@ export default function MovingChecker() {
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-slate-950">
       <div className="text-center space-y-3">
-        <Badge className="bg-indigo-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-[0_0_20px_rgba(79,70,229,0.3)]">Resident Intelligence Terminal</Badge>
+        <Badge className="bg-indigo-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-[0_0_20px_rgba(79,70,229,0.3)]">居住インテリジェンス・ターミナル</Badge>
         <h1 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">Moving Checker</h1>
       </div>
 
@@ -108,7 +108,7 @@ export default function MovingChecker() {
             <Card key={item.id} onClick={() => setMode(item.id as any)} className="bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] p-8 hover:border-indigo-500 transition-all cursor-pointer group hover:scale-[1.02] shadow-2xl relative overflow-hidden">
               <div className={`absolute top-0 right-0 w-32 h-32 ${item.bg} blur-3xl -mr-16 -mt-16 group-hover:opacity-100 opacity-50 transition-opacity`} />
               <div className={`w-16 h-16 ${item.bg} ${item.color} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform`}><item.icon size={32} /></div>
-              <h3 className="text-2xl font-black text-white italic uppercase mb-2">{item.label}</h3>
+              <h3 className="text-2xl font-black text-white italic mb-2">{item.label}</h3>
               <p className="text-slate-500 font-bold text-sm mb-6">{item.desc}</p>
               <div className="space-y-2">
                 {item.steps.map((s, i) => (
@@ -130,7 +130,7 @@ export default function MovingChecker() {
               {ENTRY_MODES.find(m => m.id === mode)?.icon && React.createElement(ENTRY_MODES.find(m => m.id === mode)!.icon, { className: "text-indigo-500", size: 40 })}
               {ENTRY_MODES.find(m => m.id === mode)?.label}
             </h3>
-            <Button onClick={() => { setMode('selection'); setInputData(''); setImage(null); setReport(''); }} variant="ghost" className="text-slate-500 font-black italic uppercase hover:text-white"><RotateCcw className="mr-2" size={16} /> Mode Change</Button>
+            <Button onClick={() => { setMode('selection'); setInputData(''); setImage(null); setReport(''); }} variant="ghost" className="text-slate-500 font-black italic uppercase hover:text-white"><RotateCcw className="mr-2" size={16} /> モード選択に戻る</Button>
           </div>
 
           {renderGuide(ENTRY_MODES.find(m => m.id === mode)?.steps || [])}
@@ -145,7 +145,7 @@ export default function MovingChecker() {
                     <div className="border-4 border-dashed border-slate-800 rounded-[2.5rem] p-20 text-center hover:bg-slate-950 transition-all cursor-pointer bg-slate-900/50 shadow-inner group" onClick={() => fileInputRef.current?.click()}>
                       <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
                       <Upload className="h-16 w-16 text-slate-700 mx-auto mb-6 group-hover:text-indigo-500 transition-colors" />
-                      <p className="text-xl text-slate-500 font-black italic uppercase">Drop Room Photo</p>
+                      <p className="text-xl text-slate-500 font-black italic uppercase">室内の写真をドロップ</p>
                     </div>
                   ) : (
                     <div className="relative aspect-video rounded-[2.5rem] overflow-hidden border-4 border-indigo-600/30 shadow-2xl bg-black flex items-center justify-center">
@@ -163,9 +163,9 @@ export default function MovingChecker() {
                   {copied ? <CheckCircle2 className="mr-3" /> : <ClipboardPaste className="mr-3" />} 解析指示をコピーする
                 </Button>
                 <div className="grid grid-cols-3 gap-3">
-                   <Button variant="outline" className="h-14 border-2 border-slate-800 text-[10px] font-black uppercase italic hover:bg-indigo-600/10" onClick={() => window.open('https://claude.ai', '_blank')}>Claude <Sparkles className="ml-1 w-3 h-3 text-indigo-400" /></Button>
-                   <Button variant="outline" className="h-14 border-2 border-slate-800 text-[10px] font-black uppercase italic hover:bg-indigo-600/10" onClick={() => window.open('https://gemini.google.com', '_blank')}>Gemini <Zap className="ml-1 w-3 h-3 text-indigo-400" /></Button>
-                   <Button variant="outline" className="h-14 border-2 border-slate-800 text-[10px] font-black uppercase italic hover:bg-indigo-600/10" onClick={() => window.open('https://chatgpt.com', '_blank')}>ChatGPT <Search className="ml-1 w-3 h-3 text-indigo-400" /></Button>
+                   <Button variant="outline" className="h-14 border-2 border-slate-800 text-[10px] font-black uppercase italic hover:bg-indigo-600/10" onClick={() => window.open('https://claude.ai', '_blank')}>Claudeで解析</Button>
+                   <Button variant="outline" className="h-14 border-2 border-slate-800 text-[10px] font-black uppercase italic hover:bg-indigo-600/10" onClick={() => window.open('https://gemini.google.com', '_blank')}>Geminiで解析</Button>
+                   <Button variant="outline" className="h-14 border-2 border-slate-800 text-[10px] font-black uppercase italic hover:bg-indigo-600/10" onClick={() => window.open('https://chatgpt.com', '_blank')}>ChatGPTで解析</Button>
                 </div>
               </div>
             </div>
@@ -174,13 +174,13 @@ export default function MovingChecker() {
             <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 flex flex-col gap-6 shadow-inner min-h-[500px]">
               <div className="flex items-center gap-3 text-indigo-400">
                 <ShieldCheck size={24} />
-                <h4 className="text-sm font-black uppercase italic tracking-widest">Intelligence Report</h4>
+                <h4 className="text-sm font-black uppercase italic tracking-widest">解析レポート・インテリジェンス</h4>
               </div>
               <textarea value={report} onChange={(e) => setReport(e.target.value)} placeholder="外部AIからの解析結果（レポート）をここに貼り付けてください..." className="flex-1 bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 text-sm text-slate-300 focus:border-indigo-500 outline-none font-medium leading-relaxed italic" />
               {report && (
                 <div className="p-5 bg-emerald-600/10 border-2 border-emerald-500 rounded-2xl flex items-center gap-4 text-emerald-500 animate-in slide-in-from-right-4">
                   <CheckCircle2 size={24} />
-                  <p className="text-sm font-black uppercase italic">Safe Living Protocol: Analysis Verified</p>
+                  <p className="text-sm font-black uppercase italic">解析完了：居住安全プロトコルを確認</p>
                 </div>
               )}
             </div>
@@ -189,15 +189,15 @@ export default function MovingChecker() {
           {/* 砂時計：出口（Exit）- 次のアクション選択 */}
           {report && (
             <div className="mt-16 pt-16 border-t border-slate-800 space-y-8 animate-in fade-in slide-in-from-bottom-8">
-              <h4 className="text-2xl font-black text-white italic uppercase text-center">Next Action Recommend</h4>
+              <h4 className="text-2xl font-black text-white italic uppercase text-center">次に行うべきアクションの推奨</h4>
               <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                  <Button onClick={() => { handleCopy(`${report}\n\nこの解析結果を踏まえて、管理会社への具体的な質問状や、交渉用のメール文面を作成してください。`); }} className="h-20 bg-slate-800 border-2 border-slate-700 hover:border-emerald-500 rounded-2xl font-black italic uppercase flex items-center justify-center gap-4 transition-all group">
                    <div className="p-2 bg-emerald-500/20 rounded-lg group-hover:bg-emerald-500/40"><ShieldCheck className="text-emerald-500" /></div>
-                   <div className="text-left"><p className="text-[10px] opacity-50">Solution A</p><p className="text-sm">交渉用メールを作成</p></div>
+                   <div className="text-left"><p className="text-[10px] opacity-50">推奨プラン A</p><p className="text-sm">交渉用メールを作成</p></div>
                  </Button>
                  <Button onClick={() => setMode('selection')} className="h-20 bg-slate-800 border-2 border-slate-700 hover:border-indigo-500 rounded-2xl font-black italic uppercase flex items-center justify-center gap-4 transition-all group">
                    <div className="p-2 bg-indigo-500/20 rounded-lg group-hover:bg-indigo-500/40"><Search className="text-indigo-500" /></div>
-                   <div className="text-left"><p className="text-[10px] opacity-50">Solution B</p><p className="text-sm">別の物件を調べる</p></div>
+                   <div className="text-left"><p className="text-[10px] opacity-50">推奨プラン B</p><p className="text-sm">別の物件を調べる</p></div>
                  </Button>
               </div>
             </div>
@@ -205,7 +205,7 @@ export default function MovingChecker() {
         </Card>
       )}
 
-      <div className="text-center opacity-20"><p className="text-[10px] font-black uppercase tracking-[0.5em] italic">Safe Living Engine • NextraLabs 2026</p></div>
+      <div className="text-center opacity-20"><p className="text-[10px] font-black uppercase tracking-[0.5em] italic">居住安全エンジン • NextraLabs 2026</p></div>
     </div>
   )
 }
