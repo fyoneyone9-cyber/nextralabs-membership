@@ -12,9 +12,9 @@ const MasterEngine = () => {
   const [mockup, setMockup] = useState<string | null>(null);
   const [isPublishing, setIsPublishing] = useState(false);
   
-  // 🚀 API監視ステート
   const [apiLogs, setApiLogs] = useState<string[]>([]);
   const [syncStatus, setSyncStatus] = useState({ supabase: 'idle', printful: 'idle', shopify: 'idle' });
+  const [designs, setDesigns] = useState<any[]>([]);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -26,6 +26,12 @@ const MasterEngine = () => {
 
   useEffect(() => {
     fetchTrends();
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('ai-select-shop-list-v14');
+      if (saved) {
+        try { setDesigns(JSON.parse(saved)); } catch (e) { console.error(e); }
+      }
+    }
   }, []);
 
   const addLog = (msg: string) => setApiLogs(prev => [...prev.slice(-5), `[${new Date().toLocaleTimeString()}] ${msg}`]);
@@ -79,7 +85,7 @@ const MasterEngine = () => {
     setSyncStatus({ supabase: 'processing', printful: 'idle', shopify: 'idle' });
 
     try {
-      addLog("クラウドストレージ(Supabase)へ画像を同期中...");
+      addLog("画像を同期中...");
       const mockupData = canvasRef.current?.toDataURL('image/png');
       
       const res = await fetch('/api/tools/printful', {
@@ -92,19 +98,24 @@ const MasterEngine = () => {
       
       if (res.ok && d.success) {
         setSyncStatus({ supabase: 'success', printful: 'success', shopify: 'success' });
-        addLog("✅ Supabase同期完了");
-        addLog("✅ Printful製造ライン登録完了");
-        addLog("✅ Shopifyストア出品完了");
-        alert('全てのシステム連携が完了しました！');
-        setCurrentStep(3);
+        addLog("✅ システム連携完了");
+        
+        // 🚀 クラッシュ防止: 状態更新を少し遅らせて確実にする
+        setTimeout(() => {
+          if (typeof window !== 'undefined') {
+            const newEntry = { id: Date.now(), name: keyword, img: mockupData };
+            const updated = [newEntry, ...designs];
+            setDesigns(updated);
+            localStorage.setItem('ai-select-shop-list-v14', JSON.stringify(updated));
+            setCurrentStep(3);
+          }
+        }, 100);
       } else {
         setSyncStatus({ supabase: 'error', printful: 'error', shopify: 'error' });
-        addLog(`❌ エラー発生: ${d.error}`);
-        alert('連携に失敗しました: ' + d.error);
+        alert('エラー: ' + d.error);
       }
     } catch (e) {
       setSyncStatus({ supabase: 'error', printful: 'error', shopify: 'error' });
-      addLog("❌ 通信エラーが発生しました");
     } finally {
       setIsPublishing(false);
     }
@@ -113,8 +124,7 @@ const MasterEngine = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-10">
       <div className="text-center">
-        <h1 className="text-6xl font-black text-white italic tracking-tighter">AI SELECT SHOP v14.5</h1>
-        <div className="inline-block bg-[#5845e0] text-white font-black px-6 py-1 rounded-full uppercase italic text-xs mt-4">Triple-API Surveillance</div>
+        <h1 className="text-6xl font-black text-white italic tracking-tighter">AI SELECT SHOP v14.6</h1>
       </div>
 
       <div className="flex gap-4 justify-center">
@@ -139,32 +149,30 @@ const MasterEngine = () => {
             <div className="bg-[#13141f] p-10 rounded-[3rem] border-2 border-white/5 space-y-10 shadow-2xl">
               <input value={keyword} onChange={(e) => setKeyword(e.target.value)} className="w-full h-20 text-4xl font-black italic bg-black border-2 border-white/10 rounded-2xl px-8 text-white outline-none" />
               
-              {/* 📊 API Surveillance Monitoring */}
               <div className="grid grid-cols-3 gap-2">
-                 {[
-                   { id: 'supabase', label: 'SUPABASE', status: syncStatus.supabase },
-                   { id: 'printful', label: 'PRINTFUL', status: syncStatus.printful },
-                   { id: 'shopify', label: 'SHOPIFY', status: syncStatus.shopify }
-                 ].map(s => (
-                   <div key={s.id} className={`p-3 rounded-xl border-2 text-center transition-all ${s.status === 'success' ? 'border-emerald-500 bg-emerald-500/10' : s.status === 'processing' ? 'border-blue-500 bg-blue-500/10 animate-pulse' : s.status === 'error' ? 'border-red-500 bg-red-500/10' : 'border-slate-800 bg-black'}`}>
-                      <p className="text-[8px] font-black text-slate-500 uppercase">{s.label}</p>
-                      <p className={`text-[10px] font-bold ${s.status === 'success' ? 'text-emerald-500' : 'text-white'}`}>{s.status.toUpperCase()}</p>
-                   </div>
-                 ))}
+                 {['SUPABASE', 'PRINTFUL', 'SHOPIFY'].map((label, idx) => {
+                   const id = label.toLowerCase() as keyof typeof syncStatus;
+                   const status = syncStatus[id];
+                   return (
+                    <div key={label} className={`p-3 rounded-xl border-2 text-center transition-all ${status === 'success' ? 'border-emerald-500 bg-emerald-500/10' : status === 'processing' ? 'border-blue-500 bg-blue-500/10 animate-pulse' : 'border-slate-800 bg-black'}`}>
+                      <p className="text-[8px] font-black text-slate-500 uppercase">{label}</p>
+                      <p className={`text-[10px] font-bold ${status === 'success' ? 'text-emerald-500' : 'text-white'}`}>{status.toUpperCase()}</p>
+                    </div>
+                   )
+                 })}
               </div>
 
               <div className="bg-black border border-white/5 rounded-2xl p-4 h-24 overflow-y-auto font-mono text-[10px] text-emerald-500/70">
                  {apiLogs.map((log, i) => <div key={i}>{log}</div>)}
-                 {apiLogs.length === 0 && <div className="opacity-30">Awaiting execution...</div>}
               </div>
 
               <button onClick={handlePublish} disabled={isPublishing} className="w-full h-28 bg-emerald-600 text-white font-black text-4xl italic rounded-[2.5rem] shadow-xl flex items-center justify-center gap-4 transition-all active:scale-95">
-                {isPublishing ? <Loader2 className="animate-spin" size={40}/> : "SHOPIFY 出品"}
+                {isPublishing ? "SENDING..." : "SHOPIFY 出品"}
               </button>
             </div>
           </div>
           
-          <div className="bg-[#13141f] rounded-[3rem] border-2 border-white/5 p-12 flex justify-center items-center shadow-2xl relative">
+          <div className="bg-[#13141f] rounded-[3rem] border-2 border-white/5 p-12 flex justify-center items-center">
             <canvas ref={canvasRef} width={400} height={500} className="bg-black rounded-3xl border border-white/5" />
           </div>
         </div>
@@ -173,14 +181,9 @@ const MasterEngine = () => {
       {currentStep === 3 && (
         <div className="text-center py-20 animate-in slide-in-from-bottom-8">
           <div className="bg-emerald-500/10 border-2 border-emerald-500/20 rounded-[3rem] p-16 max-w-2xl mx-auto space-y-8">
-            <h2 className="text-6xl font-black text-white italic tracking-tighter">ALL SYNCED!</h2>
-            <div className="flex justify-center gap-4">
-              <Badge className="bg-emerald-500 text-black px-4 py-1">SUPABASE: OK</Badge>
-              <Badge className="bg-emerald-500 text-black px-4 py-1">PRINTFUL: OK</Badge>
-              <Badge className="bg-emerald-500 text-black px-4 py-1">SHOPIFY: OK</Badge>
-            </div>
-            <p className="text-slate-400 font-bold">全てのAPIが正常に承認されました。Shopifyストアに商品が公開されています。</p>
-            <button onClick={() => window.open('https://z5ju1n-vs.myshopify.com/admin/products', '_blank')} className="h-20 px-12 bg-white text-black font-black rounded-2xl text-xl hover:bg-emerald-500 transition-all">Shopifyストアを確認 ↗</button>
+            <h2 className="text-6xl font-black text-white italic tracking-tighter uppercase">Success</h2>
+            <button onClick={() => window.open('https://z5ju1n-vs.myshopify.com/admin/products', '_blank')} className="h-20 px-12 bg-white text-black font-black rounded-2xl text-xl hover:bg-emerald-500 transition-all">Shopifyを確認 ↗</button>
+            <p className="text-xs text-slate-500 underline cursor-pointer" onClick={() => setCurrentStep(1)}>次の商品を作る</p>
           </div>
         </div>
       )}
