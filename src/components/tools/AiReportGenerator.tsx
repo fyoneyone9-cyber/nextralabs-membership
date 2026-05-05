@@ -1,13 +1,11 @@
 ﻿'use client'
-import React from 'react'
-
-export default function Aireportgenerator() {
+export default function AiReportGenerator() {
   return (
-    <div style={{ padding: '40px', textAlign: 'center', backgroundColor: '#0f172a', color: '#f8fafc', minHeight: '100vh', fontFamily: 'sans-serif' }}>
-      <h1 style={{ fontSize: '3rem', fontWeight: '900' }}>NextraLabs AI Tool</h1>
-      <p style={{ fontSize: '1.5rem', marginTop: '20px' }}>System Component: AiReportGenerator</p>
-      <div style={{ marginTop: '40px', padding: '20px', border: '2px dashed #334155', borderRadius: '20px' }}>
-        現在、システムを安全に復旧させています。
+    <div style={{ padding: '80px', textAlign: 'center', backgroundColor: '#0f172a', color: '#f8fafc', minHeight: '100vh' }}>
+      <h1 style={{ fontSize: '4rem', fontWeight: '900' }}>NextraLabs AI Tool</h1>
+      <p style={{ fontSize: '2rem', marginTop: '20px', color: '#94a3b8' }}>Component: AiReportGenerator</p>
+      <div style={{ marginTop: '40px', padding: '30px', border: '4px dashed #1e293b', borderRadius: '30px', fontSize: '1.5rem' }}>
+        現在、システムを安全に復旧させています。<br />まもなく全ての機能が復活します。
       </div>
     </div>
   )

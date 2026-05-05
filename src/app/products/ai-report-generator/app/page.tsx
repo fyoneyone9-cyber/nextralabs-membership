@@ -1,5 +1,4 @@
-import AiReportGenerator from '@/components/tools/AiReportGenerator'
-
-export default function AiReportGeneratorAppPage() {
+﻿import AiReportGenerator from '@/components/tools/AiReportGenerator'
+export default function Page() {
   return <AiReportGenerator />
 }
