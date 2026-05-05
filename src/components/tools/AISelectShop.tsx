@@ -51,20 +51,19 @@ export default function AISelectShop() {
     fetchTrends();
   }, []);
 
-  // 🚀 【根本解決】画像を再点火。Unsplashの最新APIパスを使用し、確実に描画させる。
   useEffect(() => {
     if (!targetKeyword) return;
     const timer = setTimeout(() => {
-      const ts = new Date().getTime();
-      // パラメータを整理し、画像が即座に切り替わるようにランダムシード(sig)を付与
-      const query = encodeURIComponent(`${targetKeyword},${selectedStyle.kw}`);
-      const imageUrl = `https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&q=80&w=800&sig=${ts}`;
-      // 注：UnsplashのランダムAPI (source.unsplash) が廃止傾向にあるため、安定したプレースホルダへ
-      const dynamicUrl = `https://loremflickr.com/g/802/802/${selectedCategory.id},${selectedStyle.id}/all?lock=${ts}`;
-      setMockupImage(dynamicUrl);
+      refreshMockup();
     }, 500);
     return () => clearTimeout(timer);
   }, [targetKeyword, selectedStyle, selectedCategory]);
+
+  const refreshMockup = () => {
+    const ts = new Date().getTime();
+    const dynamicUrl = `https://loremflickr.com/g/802/802/${selectedCategory.id},${selectedStyle.id}/all?lock=${ts}`;
+    setMockupImage(dynamicUrl);
+  };
 
   const fetchTrends = async () => {
     try {
@@ -82,10 +81,32 @@ export default function AISelectShop() {
     setIsGenerating(true);
     setShopifyUrl(null);
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      setConceptResult(`【PRODUCT_CORE】 : \nBeLLa+Canvas 3001 Premium\n【SHOP IDENTITY】 : \n${targetKeyword.toUpperCase()}\n【STYLE】 : ${selectedStyle.label}\n【CAT】 : ${selectedCategory.label}\n【SIZE】 : ${selectedSizes.join(', ')}\n\n設計を執行完了 ✅\nSHOPIFYへの出品が完了しました！`);
-      setShopifyUrl(`https://z5ju1n-vs.myshopify.com/admin/products`);
-    } finally { setIsGenerating(false); }
+      // 1. 本物のAPI執行 (Printful -> Shopify)
+      // 憲法：画像URLを確定させ、APIにパラメータを正確に渡す
+      const res = await fetch('/api/tools/printful', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          action: 'create-product', 
+          keyword: targetKeyword, 
+          style: selectedStyle.label, 
+          sizes: selectedSizes,
+          mockupUrl: mockupImage // プレビュー画像をそのまま製品画像として同期
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        // 🚀 出品完了時のUI更新
+        setConceptResult(`【PRODUCT_CORE】 : \nBeLLa+Canvas 3001 Premium\n【SHOP IDENTITY】 : \n${targetKeyword.toUpperCase()}\n【STYLE】 : ${selectedStyle.label}\n【CAT】 : ${selectedCategory.label}\n【SIZE】 : ${selectedSizes.join(', ')}\n\n設計を執行完了 ✅\nSHOPIFYへの出品が完了しました！\nストアを確認してください。`);
+        setShopifyUrl(`https://z5ju1n-vs.myshopify.com/admin/products`);
+      } else {
+        throw new Error(data.error || '出品エラー');
+      }
+    } catch (e: any) {
+      alert(`エラー: ${e.message}`);
+    } finally { 
+      setIsGenerating(false); 
+    }
   };
 
   const toggleSize = (size: string) => {
@@ -153,7 +174,16 @@ export default function AISelectShop() {
                 <div className="flex-1 bg-[#0a0b14] rounded-[2.5rem] p-8 border border-white/5 shadow-inner flex flex-col relative overflow-hidden">
                   <div className="flex items-center gap-3 mb-6 border-b border-white/5 pb-4 text-slate-500 font-black italic uppercase text-[10px] tracking-widest">{`>_ SHOPIFY ARCHITECTURE OUTPUT`}</div>
                   <textarea value={conceptResult} readOnly className="flex-1 bg-transparent text-xl md:text-3xl text-emerald-400 font-mono italic outline-none resize-none leading-relaxed" placeholder="Ready for generation..." />
-                  {shopifyUrl && <Button onClick={() => window.open(shopifyUrl, '_blank')} className="mt-6 w-full h-20 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl italic flex items-center justify-center gap-4 shadow-xl animate-bounce"><Globe size={24}/> SHOPIFY管理画面を開く</Button>}
+                  {shopifyUrl && (
+                    <div className="mt-6 space-y-4 animate-in slide-in-from-bottom-2">
+                       <Button onClick={() => window.open(shopifyUrl, '_blank')} className="w-full h-20 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl italic flex items-center justify-center gap-4 shadow-xl animate-bounce">
+                          <Globe size={24}/> SHOPIFY管理画面
+                       </Button>
+                       <Button onClick={() => window.open('https://z5ju1n-vs.myshopify.com/', '_blank')} variant="outline" className="w-full h-12 border-emerald-500/30 text-emerald-500 font-black italic rounded-xl">
+                          ストアのフロントを確認
+                       </Button>
+                    </div>
+                  )}
                   <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none"><Sparkles size={120} className="text-emerald-500" /></div>
                 </div>
               </div>
