@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
-  ArrowRight, Mail, Zap, ChevronRight, Copy, ExternalLink, RotateCcw, Lightbulb, ClipboardPaste, Inbox, Send, ListChecks, Filter, CheckCircle2, Loader2, LogIn, Trash2, AlertCircle
+  ArrowRight, Mail, Zap, ChevronRight, Copy, ExternalLink, RotateCcw, Lightbulb, ClipboardPaste, Inbox, Send, ListChecks, Filter, CheckCircle2, Loader2, LogIn, Trash2, AlertCircle, Clock
 } from 'lucide-react'
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''
