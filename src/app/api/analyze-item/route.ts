@@ -1,53 +1,65 @@
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
+  const requestId = Math.random().toString(36).substring(7);
+  const debugLogs: any[] = [];
+  
+  const addLog = (tag: string, content: any) => {
+    debugLogs.push({ timestamp: new Date().toISOString(), tag, content });
+    console.log(`[${requestId}] ${tag}:`, JSON.stringify(content));
+  };
+
   try {
     const { image } = await req.json();
+    addLog("REQUEST_DATA_SIZE", `${(image?.length / 1024).toFixed(2)} KB`);
+
     const apiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY1;
-    if (!apiKey || !image) return NextResponse.json({ error: "No Data" }, { status: 400 });
+    addLog("API_KEY_CHECK", apiKey ? `PRESENT (Ends with: ...${apiKey.slice(-4)})` : "MISSING");
 
-    const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
-    
-    // 🌍 成功率100%を目指すための全パターン網羅
-    const attemps = [
-      { url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}` },
-      { url: `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=${apiKey}` },
-      { url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=${apiKey}` }
-    ];
+    if (!apiKey || !image) throw new Error("Missing params");
 
-    let lastError = "";
+    const base64Data = image.split(",")[1] || image;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
-    for (const attempt of attemps) {
-      try {
-        const response = await fetch(attempt.url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{
-              parts: [
-                { text: "Analyze this image for hotel lost and found. Respond with JSON: { \"item\": \"name\", \"color\": \"color\", \"brand\": \"brand\", \"features\": [\"tag\"], \"matchConfidence\": 95 }" },
-                { inline_data: { mime_type: "image/jpeg", data: base64Data } }
-              ]
-            }]
-          })
-        });
+    const requestBody = {
+      contents: [{
+        parts: [
+          { text: "Respond ONLY with raw JSON: { \"item\": \"name\", \"color\": \"color\", \"brand\": \"brand\", \"features\": [\"tag\"], \"matchConfidence\": 95 }" },
+          { inline_data: { mime_type: "image/jpeg", data: base64Data } }
+        ]
+      }]
+    };
 
-        const data = await response.json();
-        if (response.ok && data.candidates) {
-          const text = data.candidates[0].content.parts[0].text;
-          const cleanJson = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-          return NextResponse.json(JSON.parse(cleanJson));
-        }
-        lastError = data.error?.message || "Model Not Found";
-      } catch (e: any) {
-        lastError = e.message;
-        continue;
-      }
+    addLog("SENDING_TO_GOOGLE", { url: apiUrl.split("?")[0] + "?key=HIDDEN", model: "gemini-1.5-flash" });
+
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestBody)
+    });
+
+    const data = await response.json();
+    addLog("GOOGLE_RESPONSE_RAW", data);
+
+    if (!response.ok) {
+      return NextResponse.json({ 
+        error: "Google API Rejected Request", 
+        google_status: response.status,
+        google_error: data.error,
+        debug_trace: debugLogs 
+      }, { status: response.status });
     }
 
-    throw new Error(`全API試行が失敗しました。Google側でAPIが有効化されるのを待つ必要があります。(${lastError})`);
+    const text = data.candidates[0].content.parts[0].text;
+    const cleanJson = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+    
+    return NextResponse.json({
+      ...JSON.parse(cleanJson),
+      _debug: debugLogs // 成功時もデバッグ情報を付与
+    });
 
   } catch (error: any) {
-    return NextResponse.json({ error: "APIサーバー接続エラー", message: error.message }, { status: 500 });
+    addLog("FATAL_ERROR", error.message);
+    return NextResponse.json({ error: "System Failure", message: error.message, debug_trace: debugLogs }, { status: 500 });
   }
 }
