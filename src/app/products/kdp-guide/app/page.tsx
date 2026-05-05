@@ -1,11 +1,10 @@
 import KdpGuide from '@/components/tools/KdpGuide'
-import { Metadata } from 'next'
+import { AccessGate } from '@/components/auth/AccessGate'
 
-export const metadata: Metadata = {
-  title: 'Kindle出版手順ナビ | NextraLabs',
-  description: 'Amazon Kindleでの出版手順をステップ形式でガイド。アカウント設定から原稿作成・価格設定・出版申請まで迷わず進められる。',
-}
-
-export default function KdpGuideAppPage() {
-  return <KdpGuide />
+export default function Page() {
+  return (
+    <AccessGate productId="kdp-guide">
+      <KdpGuide />
+    </AccessGate>
+  )
 }

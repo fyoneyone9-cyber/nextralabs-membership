@@ -1,5 +1,10 @@
 import SnsAutoPoster from '@/components/tools/SnsAutoPoster'
+import { AccessGate } from '@/components/auth/AccessGate'
 
-export default function SnsAutoPosterAppPage() {
-  return <SnsAutoPoster />
+export default function Page() {
+  return (
+    <AccessGate productId="sns-auto-poster">
+      <SnsAutoPoster />
+    </AccessGate>
+  )
 }

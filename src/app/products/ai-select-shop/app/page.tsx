@@ -1,2 +1,10 @@
-﻿import AISelectShop from '@/components/tools/AISelectShop'
-export default function Page() { return <AISelectShop /> }
+import AISelectShop from '@/components/tools/AISelectShop'
+import { AccessGate } from '@/components/auth/AccessGate'
+
+export default function Page() {
+  return (
+    <AccessGate productId="ai-select-shop">
+      <AISelectShop />
+    </AccessGate>
+  )
+}

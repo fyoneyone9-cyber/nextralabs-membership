@@ -1,2 +1,10 @@
-﻿import ShoppingStopper from '@/components/tools/ShoppingStopper'
-export default function Page() { return <ShoppingStopper /> }
+import ShoppingStopper from '@/components/tools/ShoppingStopper'
+import { AccessGate } from '@/components/auth/AccessGate'
+
+export default function Page() {
+  return (
+    <AccessGate productId="shopping-stopper">
+      <ShoppingStopper />
+    </AccessGate>
+  )
+}
