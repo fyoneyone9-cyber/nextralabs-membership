@@ -9,10 +9,10 @@ import {
 
 // SNSハブ（媒体別）
 const WEAPONS = [
-  { id: 'twitter', label: 'X (Twitter)', icon: Twitter, color: 'text-blue-400', prompt: "あなたはプロのX運用担当者です。以下の【トレンド】と【戦略パーツ】を元に、インプレッションが最大化する140文字以内の投稿を3パターン作成してください。" },
-  { id: 'instagram', label: 'Instagram', icon: Instagram, color: 'text-pink-500', prompt: "あなたは人気インスタグラマーです。以下の【トレンド】と【戦略パーツ】を組み合わせて、情緒的なキャプションとハッシュタグ15個を作成してください。" },
-  { id: 'tiktok', label: 'TikTok / Reels', icon: Video, color: 'text-rose-500', prompt: "あなたはバズ動画作家です。以下の【トレンド】と【戦略パーツ】を元に、最初の3秒で惹きつける動画台本を作成してください。" },
-  { id: 'threads', label: 'Threads', icon: MessageSquare, color: 'text-slate-200', prompt: "あなたはコラムニストです。以下の【トレンド】と【戦略パーツ】について、深い共感を生む長文を構成してください。" },
+  { id: 'twitter', label: 'X (Twitter)', icon: Twitter, color: 'text-blue-400', prompt: "あなたはプロのX運用担当者です。以下の【トレンド】と【戦略パーツ】を元に、インプレッションが最大化する140文字以内の投稿を3パターン作成してください。\n\n【制約条件】:\n・余計な挨拶や解説（「〜を作成しました」等）は一切省き、投稿本文のみを出力してください。\n・各パターンは「---」で区切ってください。" },
+  { id: 'instagram', label: 'Instagram', icon: Instagram, color: 'text-pink-500', prompt: "あなたは人気インスタグラマーです。以下の【トレンド】と【戦略パーツ】を組み合わせて、情緒的なキャプションとハッシュタグ15個を作成してください。\n\n【制約条件】:\n・余計な挨拶や解説は一切省き、投稿本文とハッシュタグのみを出力してください。\n・各パターンは「---」で区切ってください。" },
+  { id: 'tiktok', label: 'TikTok / Reels', icon: Video, color: 'text-rose-500', prompt: "あなたはバズ動画作家です。以下の【トレンド】と【戦略パーツ】を元に、最初の3秒で惹きつける動画台本を作成してください。\n\n【制約条件】:\n・余計な解説は省き、台本の内容のみを出力してください。" },
+  { id: 'threads', label: 'Threads', icon: MessageSquare, color: 'text-slate-200', prompt: "あなたはコラムニストです。以下の【トレンド】と【戦略パーツ】について、深い共感を生む長文を構成してください。\n\n【制約条件】:\n・余計な挨拶は省き、本文のみを出力してください。" },
 ];
 
 // 戦略パーツ（以前のプリセットをパーツ化）
@@ -91,16 +91,29 @@ export default function SnsAutoPoster() {
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {trends.map((t, i) => (
-              <Button 
-                key={i} 
-                variant="outline" 
-                onClick={() => setInputData(prev => prev ? `${prev}\n【トレンド】：${t}` : `【トレンド】：${t}`)}
-                className="h-24 border-2 border-slate-800 bg-slate-950 text-slate-200 font-black text-xs md:text-sm uppercase italic hover:bg-red-600 hover:text-white rounded-2xl whitespace-normal p-3 transition-all active:scale-95 shadow-lg"
-              >
-                {t}
-              </Button>
-            ))}
+            {trends.map((t, i) => {
+              const isActive = inputData.includes(`【トレンド】：${t}`);
+              return (
+                <Button 
+                  key={i} 
+                  variant="outline" 
+                  onClick={() => setInputData(prev => {
+                    const line = `【トレンド】：${t}`;
+                    if (prev.includes(line)) {
+                      return prev.split('\n').filter(l => l !== line).join('\n');
+                    }
+                    return prev ? `${prev}\n${line}` : line;
+                  })}
+                  className={`h-24 border-2 font-black text-xs md:text-sm uppercase italic rounded-2xl whitespace-normal p-3 transition-all active:scale-95 shadow-lg ${
+                    isActive 
+                    ? 'bg-red-600 border-red-400 text-white' 
+                    : 'border-slate-800 bg-slate-950 text-slate-200 hover:bg-red-600 hover:text-white'
+                  }`}
+                >
+                  {t}
+                </Button>
+              );
+            })}
           </div>
         </div>
 
@@ -111,16 +124,28 @@ export default function SnsAutoPoster() {
             <p className="text-xs font-black uppercase italic tracking-widest">② Strategy Parts (Combine)</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {STRATEGY_PARTS.map((p, i) => (
-              <Button 
-                key={i} 
-                variant="outline" 
-                onClick={() => setInputData(prev => prev ? `${prev}\n${p.content}` : p.content)}
-                className="h-24 border-2 border-slate-800 bg-slate-900 text-orange-400 font-black text-xs md:text-sm uppercase italic hover:bg-orange-600 hover:text-white rounded-2xl whitespace-normal p-3 transition-all active:scale-95 shadow-lg"
-              >
-                {p.label}
-              </Button>
-            ))}
+            {STRATEGY_PARTS.map((p, i) => {
+              const isActive = inputData.includes(p.content);
+              return (
+                <Button 
+                  key={i} 
+                  variant="outline" 
+                  onClick={() => setInputData(prev => {
+                    if (prev.includes(p.content)) {
+                      return prev.split('\n').filter(l => l !== p.content).join('\n');
+                    }
+                    return prev ? `${prev}\n${p.content}` : p.content;
+                  })}
+                  className={`h-24 border-2 font-black text-xs md:text-sm uppercase italic rounded-2xl whitespace-normal p-3 transition-all active:scale-95 shadow-lg ${
+                    isActive 
+                    ? 'bg-orange-600 border-orange-400 text-white' 
+                    : 'border-slate-800 bg-slate-900 text-orange-400 hover:bg-orange-600 hover:text-white'
+                  }`}
+                >
+                  {p.label}
+                </Button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -130,8 +155,16 @@ export default function SnsAutoPoster() {
         <div className="flex gap-2 min-w-[800px]">
           {WEAPONS.map((w) => (
             <button
+              id={`weapon-${w.id}`}
               key={w.id}
-              onClick={() => setActiveWeapon(w.id)}
+              onClick={() => {
+                setActiveWeapon(w.id);
+                // ボタンを押したときに詳細入力エリアへスムーズにスクロール
+                setTimeout(() => {
+                  const el = document.getElementById('generation-area');
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+              }}
               className={`flex-1 flex flex-col items-center justify-center py-6 px-2 rounded-2xl transition-all duration-300 gap-2 border-2 ${activeWeapon === w.id ? 'bg-red-600 border-red-400 scale-105 shadow-xl text-white' : 'bg-slate-950 border-transparent text-slate-500 hover:text-white hover:bg-slate-900'}`}
             >
               {React.createElement(w.icon, { size: 32, className: activeWeapon === w.id ? 'text-white' : w.color })}
@@ -141,58 +174,87 @@ export default function SnsAutoPoster() {
         </div>
       </div>
 
-      {activeWeapon && (
-        <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3.5rem] p-8 md:p-16 shadow-[0_40px_100px_rgba(0,0,0,0.6)] relative overflow-hidden animate-in zoom-in-95">
-          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-600 via-orange-600 to-red-600" />
-          
-          <div className="grid lg:grid-cols-2 gap-12 text-left">
-            <div className="space-y-8">
-              <div className="bg-slate-950 p-8 rounded-[2.5rem] border border-slate-800 shadow-inner">
-                <div className="flex justify-between items-center mb-4">
-                  <p className="text-[10px] font-black text-red-500 uppercase italic tracking-widest">Post Generation Command</p>
-                  <Button onClick={() => setInputData('')} variant="ghost" size="sm" className="text-slate-500 hover:text-red-500 font-black"><Trash2 size={16} /> CLEAR</Button>
+      <div id="generation-area" className="pt-10">
+        {activeWeapon && (
+          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3.5rem] p-8 md:p-16 shadow-[0_40px_100px_rgba(0,0,0,0.6)] relative overflow-hidden animate-in zoom-in-95">
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-600 via-orange-600 to-red-600" />
+            
+            <div className="grid lg:grid-cols-2 gap-12 text-left">
+              <div className="space-y-8">
+                <div className="bg-slate-950 p-8 rounded-[2.5rem] border border-slate-800 shadow-inner">
+                  <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center gap-2">
+                      <p className="text-[10px] font-black text-red-500 uppercase italic tracking-widest">Target: {currentWeapon?.label}</p>
+                      <Badge className="bg-red-600/20 text-red-500 border-none text-[8px]">COMMAND ACTIVE</Badge>
+                    </div>
+                    <Button onClick={() => setInputData('')} variant="ghost" size="sm" className="text-slate-500 hover:text-red-500 font-black"><Trash2 size={16} /> CLEAR</Button>
+                  </div>
+                  <textarea 
+                    value={inputData} 
+                    onChange={(e) => setInputData(e.target.value)} 
+                    placeholder="上のトレンドと戦略パーツを組み合わせてください..." 
+                    className="w-full h-80 bg-slate-900 border-2 border-slate-800 rounded-3xl p-8 text-xl text-white font-bold focus:border-red-600 outline-none shadow-inner leading-relaxed" 
+                  />
                 </div>
-                <textarea 
-                  value={inputData} 
-                  onChange={(e) => setInputData(e.target.value)} 
-                  placeholder="上のトレンドと戦略パーツを組み合わせてください..." 
-                  className="w-full h-80 bg-slate-900 border-2 border-slate-800 rounded-3xl p-8 text-xl text-white font-bold focus:border-red-600 outline-none shadow-inner leading-relaxed" 
-                />
-              </div>
-              <div className="space-y-4">
-                <Button onClick={() => handleCopy(`${currentWeapon?.prompt}\n\n【組み合わせデータ】：\n${inputData}`)} disabled={!inputData} className="w-full h-24 text-2xl font-black rounded-2xl transition-all shadow-xl bg-red-600 text-white hover:bg-red-500">
-                  {copied ? '✅ 錬成指示をコピー完了' : '最強SNS投稿を錬成する'}
-                </Button>
-                <div className="grid grid-cols-3 gap-3">
-                  <Button variant="outline" className="h-16 border-2 border-slate-800 font-black uppercase italic hover:bg-red-600/10 rounded-xl" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE</Button>
-                  <Button variant="outline" className="h-16 border-2 border-slate-800 font-black uppercase italic hover:bg-red-600/10 rounded-xl" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</Button>
-                  <Button variant="outline" className="h-16 border-2 border-slate-800 font-black uppercase italic hover:bg-red-600/10 rounded-xl" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</Button>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 flex flex-col gap-6 shadow-inner min-h-[500px] relative overflow-hidden">
-              <div className="flex items-center justify-between relative z-10">
-                <div className="flex items-center gap-3 text-red-400"><Send size={32} /><h4 className="text-sm font-black uppercase italic tracking-widest text-white">Master Feed</h4></div>
-                {score && <div className="text-right leading-none"><span className="text-[10px] font-black text-red-400 uppercase italic">Buzz Score</span><br/><span className="text-5xl font-black text-white italic">{score}%</span></div>}
-              </div>
-              <textarea value={report} onChange={(e) => setReport(e.target.value)} placeholder="AIからの投稿案を貼り付けてください..." className="flex-1 bg-slate-900 border-2 border-slate-800 rounded-3xl p-8 text-base text-slate-100 focus:border-red-600 outline-none font-medium leading-relaxed italic relative z-10 shadow-inner" />
-              
-              {report && (
-                <div className="space-y-4 animate-in slide-in-from-bottom-4 relative z-10">
-                  <p className="text-center text-xs font-black text-slate-500 uppercase italic">Next: Create visuals for this post?</p>
-                  <Button 
-                    onClick={() => window.open('https://membership-site-nextralabos.vercel.app/products/prompt-master/app', '_blank')}
-                    className="w-full h-20 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-400 hover:to-amber-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-4 text-xl italic"
-                  >
-                    <Sparkles /> 画像生成プロンプトを作成する <ExternalLink />
+                <div className="space-y-4">
+                  <Button onClick={() => handleCopy(`${currentWeapon?.prompt}\n\n【組み合わせデータ】：\n${inputData}`)} disabled={!inputData} className="w-full h-24 text-2xl font-black rounded-2xl transition-all shadow-xl bg-red-600 text-white hover:bg-red-500">
+                    {copied ? '✅ 錬成指示をコピー完了' : '最強SNS投稿を錬成する'}
                   </Button>
+                  <div className="grid grid-cols-3 gap-3">
+                    <Button variant="outline" className="h-16 border-2 border-slate-800 font-black uppercase italic hover:bg-red-600/10 rounded-xl" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE</Button>
+                    <Button variant="outline" className="h-16 border-2 border-slate-800 font-black uppercase italic hover:bg-red-600/10 rounded-xl" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</Button>
+                    <Button variant="outline" className="h-16 border-2 border-slate-800 font-black uppercase italic hover:bg-red-600/10 rounded-xl" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</Button>
+                  </div>
                 </div>
-              )}
+              </div>
+
+              <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 flex flex-col gap-6 shadow-inner min-h-[500px] relative overflow-hidden">
+                <div className="flex items-center justify-between relative z-10">
+                  <div className="flex items-center gap-3 text-red-400"><Send size={32} /><h4 className="text-sm font-black uppercase italic tracking-widest text-white">Master Feed</h4></div>
+                  {score && <div className="text-right leading-none"><span className="text-[10px] font-black text-red-400 uppercase italic">Buzz Score</span><br/><span className="text-5xl font-black text-white italic">{score}%</span></div>}
+                </div>
+                
+                <div className="flex-1 flex flex-col gap-4 relative z-10">
+                  <textarea 
+                    value={report} 
+                    onChange={(e) => setReport(e.target.value)} 
+                    placeholder="AIからの投稿案を貼り付けてください..." 
+                    className="flex-1 bg-slate-900 border-2 border-slate-800 rounded-3xl p-8 text-base text-slate-100 focus:border-red-600 outline-none font-medium leading-relaxed italic shadow-inner" 
+                  />
+                  {report && (
+                    <Button 
+                      onClick={() => {
+                        // 投稿本文のみを抽出（「パターン1：」などの見出しや区切り線を除去する簡易クリーンアップ）
+                        const cleaned = report
+                          .replace(/パターン\d：.*?\n/g, '')
+                          .replace(/---/g, '')
+                          .trim();
+                        handleCopy(cleaned);
+                      }} 
+                      variant="outline" 
+                      className="border-2 border-slate-800 hover:bg-slate-800 text-xs font-black italic"
+                    >
+                      {copied ? '✅ コピー完了' : '📋 本文のみをコピーして投稿へ'}
+                    </Button>
+                  )}
+                </div>
+                
+                {report && (
+                  <div className="space-y-4 animate-in slide-in-from-bottom-4 relative z-10">
+                    <p className="text-center text-xs font-black text-slate-500 uppercase italic">Next: Create visuals for this post?</p>
+                    <Button 
+                      onClick={() => window.open('https://membership-site-nextralabos.vercel.app/products/prompt-master/app', '_blank')}
+                      className="w-full h-20 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-400 hover:to-amber-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-4 text-xl italic"
+                    >
+                      <Sparkles /> 画像生成プロンプトを作成する <ExternalLink />
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        </Card>
-      )}
+          </Card>
+        )}
+      </div>
       <div className="text-center opacity-20 mt-20"><p className="text-[10px] font-black uppercase tracking-[0.5em] italic">Trend Strategy Engine • NextraLabs 2026</p></div>
     </div>
   )
