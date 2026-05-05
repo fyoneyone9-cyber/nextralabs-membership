@@ -8,7 +8,11 @@ import {
 } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
-const DANGER_KEYWORDS = ["即日現金", "身分証不要", "テレグラム", "Telegram", "シグナル", "Signal", "運び屋", "受け子", "出し子", "高額報酬", "ホワイト案件", "裏バイト", "未経験歓迎", "ノルマなし"];
+const DANGER_KEYWORDS = [
+  "即日現金", "身分証不要", "テレグラム", "Telegram", "シグナル", "Signal", "運び屋", "受け子", "出し子", 
+  "高額報酬", "ホワイト案件", "裏バイト", "未経験歓迎", "ノルマなし", "amezen", "amazen", "楽天カード", 
+  "重要なお知らせ", "本人確認", "異常なアクティビティ", "ログイン制限", "差し押さえ"
+];
 
 export default function ScamDefender() {
   const [inputText, setInputText] = useState('');
@@ -21,11 +25,21 @@ export default function ScamDefender() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const performRealtimeAnalysis = (text: string, sender: string, subject: string) => {
-    const fullText = `${text} ${sender} ${subject}`;
-    const found = DANGER_KEYWORDS.filter(word => fullText.includes(word));
-    setDetectedWords(found);
-    const score = Math.min(100, found.length * 25 + (fullText.length > 50 ? 10 : 0));
-    setRiskScore(score);
+    const foundInText = DANGER_KEYWORDS.filter(word => text.toLowerCase().includes(word.toLowerCase()));
+    const foundInSender = DANGER_KEYWORDS.filter(word => sender.toLowerCase().includes(word.toLowerCase()));
+    const foundInSubject = DANGER_KEYWORDS.filter(word => subject.toLowerCase().includes(word.toLowerCase()));
+    
+    const uniqueFound = Array.from(new Set([...foundInText, ...foundInSender, ...foundInSubject]));
+    setDetectedWords(uniqueFound);
+    
+    // スコア計算をより敏感に（リアルタイムで動く実感を強化）
+    let score = 0;
+    if (uniqueFound.length > 0) score += 30 + (uniqueFound.length * 15);
+    if (sender.includes('@') && !sender.includes('.')) score += 20; // 不正なドメイン形式
+    if (text.length > 100) score += 10;
+    
+    setRiskScore(Math.min(100, score));
+    
     if (!systemOnline && (text.length > 0 || sender.length > 0 || subject.length > 0)) setSystemOnline(true);
     if (text.length === 0 && sender.length === 0 && subject.length === 0 && !image) setSystemOnline(false);
   };
