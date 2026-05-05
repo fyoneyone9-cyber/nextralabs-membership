@@ -241,7 +241,7 @@ export default function AiKonkatsuCoach() {
                   key={i} 
                   variant="outline" 
                   onClick={() => setInputData(p.content)} 
-                  className="h-24 border-2 border-slate-800 bg-slate-900 text-slate-300 font-black text-[10px] uppercase italic hover:bg-pink-600/10 hover:border-pink-500/50 rounded-2xl whitespace-normal p-3 leading-tight transition-all active:scale-95 shadow-lg flex items-center justify-center text-center"
+                  className="h-28 border-2 border-slate-800 bg-slate-900 text-slate-200 font-black text-xs md:text-sm uppercase italic hover:bg-pink-600/10 hover:border-pink-500/50 rounded-2xl whitespace-normal p-4 leading-tight transition-all active:scale-95 shadow-lg flex items-center justify-center text-center tracking-tighter"
                  >
                    {p.label}
                  </Button>
