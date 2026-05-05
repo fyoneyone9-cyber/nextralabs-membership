@@ -1,10 +1,10 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
-  ArrowRight, ClipboardPaste, Zap, ChevronRight, Copy, ExternalLink, RotateCcw, Lightbulb, Calendar, BookOpen, Clock, Target, ListChecks
+  ArrowRight, ClipboardPaste, Zap, ChevronRight, Copy, ExternalLink, RotateCcw, Lightbulb, Calendar, BookOpen, Clock, Target, ListChecks, CheckCircle2, Download, MousePointerClick
 } from 'lucide-react'
 
 const TABS = [
@@ -12,27 +12,52 @@ const TABS = [
   { id: 'schedule', label: '② 最適日程', icon: Calendar },
 ];
 
+const PRESETS = [
+  'ITパスポート', '基本情報技術者', '応用情報技術者', 'CompTIA Security+', 'AWS認定', 'TOEIC 800点'
+];
+
 export default function ExamScheduler() {
   const [activeTab, setActiveTab] = useState('input');
   const [copied, setCopied] = useState(false);
   const [examGoal, setExamGoal] = useState('');
-  const [finalSchedule, setFinalSchedule] = useState('');
+  const [scheduleResult, setScheduleResult] = useState('');
+  const [selectedPreset, setSelectedPreset] = useState('');
 
-  const FINAL_PROMPT = `あなたは難関資格試験を数多く突破してきた、超効率的学習スケジューラーです。
-以下の【目標試験と現在のレベル】に基づき、逆算した「最短合格スケジュール」を作成してください。
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
-1. 【学習フェーズ】: 基礎固め、演習、直前対策の具体的な期間と重点項目。
-2. 【週間ルーティン】: 平日・休日の時間配分と、科目別の配分比率。
-3. 【学習のハック】: 暗記を爆速にする方法や、モチベーション維持の秘策。
+  const FINAL_PROMPT = `あなたは難関試験を数多く突破してきた超効率学習スケジューラーです。
+以下の【目標試験と現在のレベル】に基づき、最短合格のための「逆算スケジュール」を作成してください。
 
-【目標試験と現在のレベル】:
-${examGoal || '（ここに受験する試験名と、現在の理解度を入力してください）'}`;
+1. 【フェーズ別計画】: 基礎(40%)、演習(40%)、総復習(20%)の具体的期間。
+2. 【週間ルーティン】: 毎日実行すべき最低限のタスク。
+3. 【Googleカレンダー登録用データ】: 
+   以下の形式で、主要な学習マイルストーンを出力してください。
+   ・MM/DD: [学習内容] (h)
+
+【目標試験とレベル】:
+${examGoal || selectedPreset || '（目標試験名と理解度）'}`;
+
+  const renderGuide = (steps: string[]) => (
+    <div className="bg-slate-900 border border-emerald-600/30 rounded-xl p-5 mb-8 flex items-start gap-4">
+      <div className="w-12 h-12 bg-emerald-600/10 rounded-xl flex items-center justify-center shrink-0 shadow-lg"><Lightbulb className="w-6 h-6 text-emerald-500" /></div>
+      <div className="space-y-1 text-left">
+        <p className="text-[10px] font-black text-emerald-500 uppercase italic tracking-widest">Planner Guide</p>
+        {steps.map((s, i) => (
+          <p key={i} className="text-sm text-slate-300 font-bold leading-tight flex items-center gap-2"><span className="text-emerald-500 italic">#{i+1}</span> {s}</p>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-slate-950">
       <div className="text-center space-y-1">
-        <Badge className="bg-emerald-600 text-white font-black italic tracking-widest px-4 py-1 text-[10px] uppercase rounded-full shadow-lg">LEARNING OPTIMIZER</Badge>
-        <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl">AI 試験スケジューラー</h1>
+        <Badge className="bg-emerald-600 text-white font-black italic tracking-widest px-4 py-1 text-[10px] uppercase rounded-full">STUDY OPTIMIZER</Badge>
+        <h1 className="text-4xl md:text-7xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl">Exam Scheduler</h1>
       </div>
 
       <div className="w-full overflow-x-auto pb-4 scrollbar-hide">
@@ -47,33 +72,54 @@ ${examGoal || '（ここに受験する試験名と、現在の理解度を入�
 
       <div className="mt-4">
         {activeTab === 'input' && (
-          <Card className="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-8 md:p-12 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
-            <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase mb-8 flex items-center gap-3"><Target className="text-emerald-500" /> ① 目標設定</h3>
-            <div className="grid lg:grid-cols-2 gap-10">
-              <div className="space-y-4 text-left">
-                 <textarea value={examGoal} onChange={(e) => setExamGoal(e.target.value)} placeholder="例：ITパスポート試験、1ヶ月で合格したい。現在は参考書を読み始めたばかり..." className="w-full h-64 bg-slate-950 border-2 border-slate-800 rounded-2xl p-4 text-xs text-slate-200 focus:border-emerald-500 outline-none font-medium shadow-inner" />
-                 {examGoal && (
-                    <div className="space-y-4">
-                       <Button onClick={() => { navigator.clipboard.writeText(FINAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className={`w-full h-16 font-black rounded-xl transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-emerald-600 text-white'}`}>計画指示をコピー</Button>
-                       <div className="grid grid-cols-2 gap-3"><Button variant="outline" className="h-10 border-slate-800 text-[8px] font-black uppercase" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT ↗</Button><Button variant="outline" className="h-10 border-slate-800 text-[8px] font-black uppercase" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI ↗</Button></div>
-                    </div>
-                 )}
+          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-16 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
+            <h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-10 flex items-center gap-4 text-emerald-500"><Target /> ① 学習目標の設定</h3>
+            {renderGuide(['試験名を選択または入力して指示をコピー', 'AIに計画を作らせる', 'AIが返したスケジュールを右のエリアに戻す'])}
+            
+            <div className="grid lg:grid-cols-2 gap-12">
+              <div className="space-y-6">
+                 <div className="flex flex-wrap gap-2 mb-4">
+                    {PRESETS.map(p => (
+                      <button key={p} onClick={() => {setSelectedPreset(p); setExamGoal(p)}} className={`px-4 py-2 rounded-xl text-[10px] font-black transition-all ${selectedPreset === p ? 'bg-emerald-600 text-white' : 'bg-slate-950 text-slate-500 border border-slate-800'}`}>{p}</button>
+                    ))}
+                 </div>
+                 <textarea value={examGoal} onChange={(e) => setExamGoal(e.target.value)} placeholder="受験する試験と現在の知識レベルを入力..." className="w-full h-64 bg-slate-950 border-2 border-slate-800 rounded-2xl p-6 text-base text-slate-200 focus:border-emerald-500 outline-none font-medium shadow-inner" />
+                 <Button onClick={() => handleCopy(FINAL_PROMPT)} className={`w-full h-20 font-black text-2xl rounded-2xl shadow-2xl transition-all ${copied ? 'bg-indigo-600 text-white' : 'bg-emerald-600 text-white hover:bg-emerald-500'}`}>計画作成指示をコピー</Button>
+                 <div className="grid grid-cols-2 gap-4">
+                    <Button variant="outline" className="h-12 border-slate-800 text-xs font-black uppercase" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE ↗</Button>
+                    <Button variant="outline" className="h-12 border-slate-800 text-xs font-black uppercase" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT ↗</Button>
+                 </div>
               </div>
-              <div className="bg-slate-950 rounded-[2.5rem] p-8 border border-slate-800 space-y-4 shadow-2xl flex flex-col justify-center text-left">
-                 <div className="flex items-center gap-3"><ClipboardPaste className="h-6 w-6 text-emerald-500" /><h3 className="text-lg font-black text-white italic uppercase">AIの計画を戻す</h3></div>
-                 <textarea value={finalSchedule} onChange={(e) => setFinalSchedule(e.target.value)} placeholder="AIからのスケジュール案をペースト..." className="w-full h-64 bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 text-[10px] text-slate-300 focus:border-emerald-500 outline-none font-medium leading-relaxed" />
+              <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 space-y-6 shadow-2xl flex flex-col justify-center text-left">
+                 <div className="flex items-center gap-4"><ClipboardPaste className="h-8 w-8 text-emerald-500" /><h3 className="text-xl font-black text-white italic uppercase tracking-tighter">スケジュールを戻す</h3></div>
+                 <textarea value={scheduleResult} onChange={(e) => setScheduleResult(e.target.value)} placeholder="AIが作成した学習日程をここにペースト..." className="w-full h-80 bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 text-sm text-slate-300 focus:border-emerald-500 outline-none font-medium leading-relaxed font-mono" />
               </div>
             </div>
-            {finalSchedule && <Button onClick={() => setActiveTab('schedule')} className="w-full h-16 mt-8 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-3 uppercase italic group">② 最適日程を確認 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></Button>}
+            {scheduleResult && (
+               <Button onClick={() => setActiveTab('schedule')} className="w-full h-20 mt-10 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-4 uppercase italic text-xl group">
+                  ② 合格ロードマップを確認 <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition-transform" />
+               </Button>
+            )}
           </Card>
         )}
+
         {activeTab === 'schedule' && (
-          <div className="animate-in fade-in zoom-in space-y-8 text-center">
-            <Card className="bg-slate-900 border border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl border-l-8 border-l-emerald-600 text-left">
-               <h3 className="text-3xl font-black text-white italic uppercase mb-8 flex items-center justify-center gap-3"><Clock className="text-emerald-500 animate-pulse" /> 逆算合格ロードマップ</h3>
-               <div className="bg-slate-950 rounded-2xl p-8 border border-slate-800 text-sm text-slate-200 leading-relaxed whitespace-pre-wrap shadow-inner italic">{finalSchedule || "データがありません。"}</div>
+          <div className="animate-in fade-in zoom-in space-y-8 text-center pb-20">
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[4rem] p-10 md:p-20 shadow-2xl border-l-8 border-l-emerald-600 relative overflow-hidden">
+               <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white"><Clock className="w-80 h-80" /></div>
+               <h3 className="text-4xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 relative z-10"><CheckCircle2 className="text-emerald-500 animate-pulse w-12 h-12" /> 合格への最短日程</h3>
+               <div className="bg-slate-950 rounded-[2.5rem] p-12 border border-slate-800 text-lg text-slate-200 leading-relaxed text-left whitespace-pre-wrap shadow-inner font-mono relative z-10">
+                  {scheduleResult || "データがありません。"}
+               </div>
+               <div className="mt-12 p-8 bg-emerald-500/10 border border-emerald-500/20 rounded-3xl relative z-10 flex items-center justify-between">
+                  <div className="text-left">
+                     <p className="text-emerald-500 font-black uppercase italic tracking-widest text-lg">Next Action</p>
+                     <p className="text-slate-400 text-sm font-bold">この計画をGoogleカレンダーに登録して、毎日自動でリマインドを受け取りましょう。</p>
+                  </div>
+                  <Button variant="outline" className="h-16 border-emerald-500 text-emerald-500 hover:bg-emerald-500 hover:text-white font-black px-10 rounded-2xl transition-all flex items-center gap-2"><MousePointerClick /> Google連携して登録</Button>
+               </div>
             </Card>
-            <Button onClick={() => { setExamGoal(''); setFinalSchedule(''); setActiveTab('input'); }} variant="outline" className="w-full h-16 border-2 border-slate-800 text-slate-500 hover:bg-slate-800 font-black rounded-2xl uppercase italic"><RotateCcw className="mr-2 h-5 w-5" /> 別の計画を立てる</Button>
+            <Button onClick={() => { setExamGoal(''); setScheduleResult(''); setActiveTab('input'); }} variant="outline" className="w-full h-16 border-2 border-slate-800 text-slate-500 hover:bg-slate-800 font-black rounded-2xl uppercase italic"><RotateCcw className="mr-2 h-5 w-5" /> 計画を立て直す</Button>
           </div>
         )}
       </div>
