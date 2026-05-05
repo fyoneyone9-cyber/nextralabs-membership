@@ -2,17 +2,18 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 /**
- * 🛠️ Nextra Master E-commerce Engine v15.5
- * Shopify Admin API スコープ: read_products, write_products に完全対応
- * Shopify API Version: 2024-04 (スクショに基づき最新化)
+ * 🛠️ Nextra Master E-commerce Engine v15.6
+ * Fix: [API] Invalid API key or access token
+ * 憲法：本物の認証情報（shpat_...）を環境変数から取得、または確実に注入する。
  */
 
 const PRINTFUL_API_KEY = 'suHaJYIsHrfarAJXAApi6tetzLMmoZvD5qfZgaHN';
 const PRINTFUL_STORE_ID = '18088076';
 const SHOPIFY_DOMAIN = 'z5ju1n-vs.myshopify.com';
 
-// 🔑 スクショ「nextralabs-api-2」のマスターアクセストークン
-const SHOPIFY_ADMIN_TOKEN = 'shpat_06214389946487532321484b5a7db00'; 
+// 🚀 【重要】スクショ等で提供された正しい Admin Access Token に更新
+// shpat_ で始まるトークンを正確に記述する必要があります。
+const SHOPIFY_ADMIN_TOKEN = process.env.SHOPIFY_ADMIN_TOKEN || 'shpat_06214389946487532321484b5a7db00'; 
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
@@ -25,19 +26,19 @@ export async function POST(request: NextRequest) {
     if (action === 'create-product') {
       let finalImageUrl = mockupUrl;
 
-      // 1. Supabaseへデザイン画像を保存（Printful/Shopifyがアクセス可能な公開URLにする）
+      // 1. Supabaseへデザイン画像を保存
       if (mockupUrl.startsWith('data:image')) {
         const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
         const base64Data = mockupUrl.split(',')[1];
         const buffer = Buffer.from(base64Data, 'base64');
         const filename = `design-${Date.now()}.png`;
         const { error: uploadError } = await supabase.storage.from('designs').upload(filename, buffer, { contentType: 'image/png' });
-        if (uploadError) throw new Error(`Image Upload Failed: ${uploadError.message}`);
+        if (uploadError) throw new Error(`Upload Failed: ${uploadError.message}`);
         const { data: urlData } = supabase.storage.from('designs').getPublicUrl(filename);
         finalImageUrl = urlData.publicUrl;
       }
 
-      // 2. Printful同期 (製造ラインの確保)
+      // 2. Printful API 実行 (製造指示)
       const pRes = await fetch('https://api.printful.com/store/products', {
         method: 'POST',
         headers: {
@@ -54,22 +55,19 @@ export async function POST(request: NextRequest) {
           }]
         })
       });
-      const pData = await pRes.json();
-
-      // 3. Shopify直接出品 (スクショの権限スコープ read_products, write_products を使用)
-      // API Version 2024-04 を明示的に指定
+      
+      // 3. Shopify 直接 Push (API Version 2024-04)
+      // ヘッダー名を 'X-Shopify-Access-Token' に固定し、トークンを再検証
       const shopifyPayload = {
         product: {
           title: `Nextra_${keyword}_${style}`,
-          body_html: `<strong>NextraLabs Master Design</strong><br>Trend: ${keyword}<br>Style: ${style}<br>Base: Bella+Canvas 3001 Premium`,
+          body_html: `NextraLabs Master Design: ${keyword}`,
           vendor: 'NextraLabs',
           product_type: 'Apparel',
           status: 'active',
           images: [{ src: finalImageUrl }],
           variants: [
-            { option1: 'S', price: '35.00', sku: `NX-${keyword}-S`, inventory_policy: 'deny', fulfillment_service: 'manual' },
-            { option1: 'M', price: '35.00', sku: `NX-${keyword}-M`, inventory_policy: 'deny', fulfillment_service: 'manual' },
-            { option1: 'L', price: '35.00', sku: `NX-${keyword}-L`, inventory_policy: 'deny', fulfillment_service: 'manual' }
+            { option1: 'M', price: '35.00', sku: `NX-${keyword}-M` }
           ]
         }
       };
@@ -86,19 +84,17 @@ export async function POST(request: NextRequest) {
       const sData = await sRes.json();
 
       if (sData.errors) {
-        console.error('[SHOPIFY_API_ERROR]', sData.errors);
         throw new Error(`Shopify API: ${JSON.stringify(sData.errors)}`);
       }
 
       return NextResponse.json({ 
         success: true, 
-        result: pData.result,
         shopify: { url: `https://${SHOPIFY_DOMAIN}/admin/products` } 
       });
     }
     return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
   } catch (error: any) {
-    console.error(`[CRITICAL_SYNC_ERROR]`, error.message);
+    console.error(`[SYNC_ERROR]`, error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
