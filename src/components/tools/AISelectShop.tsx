@@ -10,8 +10,8 @@ import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const TABS = [
   { id: 'concept', label: '① 商品コンセプト解析', icon: ShoppingBag },
-  { id: 'printful', label: '② Printful連携', icon: Printer },
-  { id: 'shopify', label: '③ Shopify公開', icon: Globe },
+  { id: 'printful', label: '② PRINTFUL連携', icon: Printer },
+  { id: 'shopify', label: '③ SHOPIFY公開', icon: Globe },
 ];
 
 export default function AISelectShop() {
@@ -33,116 +33,126 @@ export default function AISelectShop() {
   const useSample = () => {
     const sampleUrl = "https://membership-site-nextralabos.vercel.app/samples/design-sample.jpg";
     setImage(sampleUrl);
-    const a = document.createElement("a"); 
-    a.href = sampleUrl; 
-    a.download = "shop_design_sample.jpg"; 
-    a.click();
-    alert("サンプルデザインを保存しました。AIへ投げてショップ構築を開始しましょう！");
   };
 
-  const PROMPTS = {
-    concept: `あなたはEC構築のプロです。添付された【デザイン案】を元に、在庫ゼロショップの設計図を出力してください。\n\n1. 【ターゲット層】: この商品を欲しがる客層。\n2. 【販売ストーリー】: 商品名とキャッチコピー。\n3. 【利益計算指示】: 製造コストと適正販売価格。`,
-    printful: `Printfulでオンデマンド生産を行うための製品設定情報を生成してください。`,
-    shopify: `Shopifyに登録するためのSEOタイトル、商品説明、タグを生成してください。`
-  };
+  const PROMPT = `あなたはEC構築のプロです。添付された【デザイン案】を元に、在庫ゼロショップの設計図を出力してください。
 
-  const renderGuide = (steps: string[]) => (
-    <div className="bg-slate-900/80 border-2 border-indigo-600/30 rounded-2xl p-6 mb-8 flex items-start gap-4 shadow-xl">
-      <div className="w-12 h-12 bg-indigo-600/10 rounded-xl flex items-center justify-center shrink-0 border border-indigo-500/20"><Lightbulb className="text-indigo-500 w-6 h-6" /></div>
-      <div className="space-y-1">
-        <p className="text-xs font-black text-indigo-500 uppercase tracking-widest italic opacity-70">Ecommerce Protocol</p>
-        <div className="space-y-1">
-          {steps.map((s, i) => (
-            <p key={i} className="text-sm md:text-base text-slate-300 font-bold flex items-center gap-2 leading-tight">
-              <span className="text-indigo-500 italic">#{i+1}</span> {s}
-            </p>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+1. 【ターゲット層】: この商品を欲しがる客層。
+2. 【販売ストーリー】: 商品名とキャッチコピー。
+3. 【利益計算指示】: 製造コストと適正販売価格。`;
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-slate-950 text-left">
-      <div className="text-center space-y-3">
-        <Badge className="bg-indigo-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-[0_0_20px_rgba(79,70,229,0.4)]">Dropshipping Engine v5.0</Badge>
-        <h1 className="text-5xl md:text-[7rem] font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">AI Select Shop</h1>
+      {/* 🚀 HEADER: 完璧なバランス */}
+      <div className="text-center space-y-3 mb-16">
+        <h1 className="text-6xl md:text-[9rem] font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">AI SELECT SHOP</h1>
       </div>
 
-      <div className="overflow-x-auto pb-4 scrollbar-hide">
-        <div className="bg-slate-900 border border-slate-800 p-1 flex min-w-[700px] md:min-w-full rounded-2xl shadow-2xl">
-          {TABS.map((tab) => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex-1 py-5 px-2 rounded-xl font-black text-sm uppercase italic transition-all flex items-center justify-center gap-2 relative ${activeTab === tab.id ? 'bg-indigo-600 text-white shadow-xl scale-[1.02] z-10' : 'text-slate-500 hover:text-white'}`}>
-              <tab.icon className="w-5 h-5" /> <span>{tab.label}</span>
-            </button>
-          ))}
-        </div>
+      {/* 🛠️ NAVIGATION: スクショ通りのタブ */}
+      <div className="flex gap-1 bg-[#1a1b26]/50 p-1 rounded-2xl border border-white/5 mb-12">
+        {TABS.map((tab) => (
+          <button 
+            key={tab.id} 
+            onClick={() => setActiveTab(tab.id)} 
+            className={`flex-1 py-4 px-2 rounded-xl font-black text-[10px] md:text-sm uppercase italic transition-all flex items-center justify-center gap-3 ${
+              activeTab === tab.id 
+              ? 'bg-[#5845e0] text-white shadow-2xl shadow-indigo-500/20' 
+              : 'text-slate-500 hover:text-slate-300'
+            }`}
+          >
+            <tab.icon size={18} /> <span>{tab.label}</span>
+          </button>
+        ))}
       </div>
 
+      {/* 🔮 MAIN CONTENT: 完全再現 */}
       <div className="mt-4">
         {activeTab === 'concept' && (
-          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3.5rem] p-8 md:p-16 shadow-[0_40px_100px_rgba(0,0,0,0.6)] animate-in fade-in slide-in-from-bottom-4 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600" />
-            <h3 className="text-2xl md:text-5xl font-black text-white italic uppercase tracking-tighter mb-10 flex items-center gap-4 text-indigo-400">
-              <ShoppingBag size={48} /> ① 商品コンセプト解析
-            </h3>
+          <div className="bg-[#13141f] border border-white/10 rounded-[3rem] p-10 md:p-20 shadow-2xl relative overflow-hidden animate-in fade-in zoom-in-95">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#7c3aed] to-transparent opacity-50" />
             
-            {renderGuide([
-              'デザイン案やロゴをアップロード',
-              '設計指示をコピーしてAI三台体制へ投げ、画像をドロップ',
-              'AIが作ったショップ設計図を右に戻す'
-            ])}
+            <h2 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter mb-12 flex items-center gap-6">
+              <div className="w-16 h-16 rounded-2xl border-2 border-white/10 flex items-center justify-center bg-white/5 shadow-inner">
+                <ShoppingBag size={40} />
+              </div>
+              ① 商品コンセプト解析
+            </h2>
+            
+            {/* ECOMMERCE PROTOCOL GUIDE */}
+            <div className="bg-[#0a0b14] border border-white/5 rounded-3xl p-8 mb-12 flex items-start gap-6 shadow-inner relative group">
+              <div className="w-10 h-10 rounded-full border border-indigo-500/30 flex items-center justify-center shrink-0">
+                <Lightbulb size={20} className="text-indigo-500" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] font-black text-indigo-400/70 uppercase tracking-[0.2em] italic mb-2">Ecommerce Protocol</p>
+                <div className="space-y-1 text-xs md:text-sm font-bold text-slate-400">
+                  <p className="flex items-center gap-3"><span className="text-indigo-500 italic">#1</span> デザイン案やロゴをアップロード</p>
+                  <p className="flex items-center gap-3"><span className="text-indigo-500 italic">#2</span> 設計指示をコピーしてAI三台体制へ投げ、画像をドロップ</p>
+                  <p className="flex items-center gap-3"><span className="text-indigo-500 italic">#3</span> AIが作ったショップ設計図を右に戻す</p>
+                </div>
+              </div>
+            </div>
 
-            <div className="grid lg:grid-cols-2 gap-12 text-left">
-              {/* LEFT: DROP & PROMPT */}
-              <div className="space-y-8">
+            <div className="grid lg:grid-cols-2 gap-12">
+              {/* LEFT: DROP DESIGN ZONE */}
+              <div className="space-y-6">
                 {!image ? (
-                  <div className="space-y-4">
-                    <div className="border-4 border-dashed border-slate-800 rounded-[2.5rem] p-20 hover:bg-slate-950 transition-all cursor-pointer bg-slate-950/50 shadow-inner group text-center" onClick={() => fileInputRef.current?.click()}>
-                      <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
-                      <Upload className="h-16 w-16 text-slate-800 group-hover:text-indigo-500 mx-auto mb-4 transition-colors" />
-                      <p className="text-2xl text-slate-700 font-black italic uppercase tracking-widest group-hover:text-slate-500">Drop Design</p>
-                    </div>
-                    <Button onClick={useSample} variant="outline" className="w-full border-slate-800 text-slate-500 font-black italic h-16 rounded-2xl hover:bg-slate-800 flex items-center justify-center gap-3 uppercase shadow-lg">
-                      <Download size={20} /> サンプルを保存して試す
-                    </Button>
+                  <div 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="border-2 border-dashed border-white/10 rounded-[2.5rem] aspect-square flex flex-col items-center justify-center gap-8 cursor-pointer hover:bg-white/5 transition-all group relative overflow-hidden"
+                  >
+                    <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
+                    <Upload size={64} className="text-slate-800 group-hover:text-indigo-500 transition-colors" />
+                    <p className="text-3xl text-slate-700 font-black italic uppercase tracking-[0.2em] group-hover:text-slate-500">Drop Design</p>
                   </div>
                 ) : (
-                  <div className="space-y-8 animate-in zoom-in-95">
-                    <div className="relative aspect-square rounded-[3rem] overflow-hidden border-4 border-indigo-600/20 shadow-2xl bg-black group">
-                      <img src={image} alt="Target" className="object-contain w-full h-full" />
-                      <Button onClick={() => setImage(null)} className="absolute top-6 right-6 bg-black/50 hover:bg-red-600 p-2 rounded-full h-12 w-12 text-white border-2 border-white/20 transition-all">✕</Button>
-                      <div className="absolute bottom-6 left-6 flex items-center gap-2">
-                        <Badge className="bg-indigo-600 text-white font-black italic animate-pulse">DESIGN_LOADED</Badge>
-                      </div>
-                    </div>
-                    <div className="space-y-4">
-                      <Button onClick={() => { navigator.clipboard.writeText(PROMPTS.concept); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className={`w-full h-20 text-xl font-black rounded-2xl transition-all shadow-xl ${copied ? 'bg-emerald-500 text-slate-950 scale-95' : 'bg-indigo-600 text-white hover:bg-indigo-500'}`}>
-                        {copied ? '✅ 指示をコピー完了' : '設計指示をコピーする'}
-                      </Button>
-                      <div className="grid grid-cols-3 gap-3">
-                         <Button variant="outline" className="h-14 border-2 border-slate-800 text-xs font-black uppercase italic hover:bg-slate-900 rounded-xl" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</Button>
-                         <Button variant="outline" className="h-14 border-2 border-slate-800 text-xs font-black uppercase italic hover:bg-slate-900 rounded-xl" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</Button>
-                         <Button variant="outline" className="h-14 border-2 border-slate-800 text-xs font-black uppercase italic hover:bg-slate-900 rounded-xl" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE</Button>
-                      </div>
+                  <div className="relative aspect-square rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl bg-black group animate-in zoom-in-95">
+                    <img src={image} alt="Design" className="object-contain w-full h-full p-8" />
+                    <Button onClick={() => setImage(null)} className="absolute top-6 right-6 bg-black/50 hover:bg-red-600 p-2 rounded-full h-12 w-12 text-white transition-all">✕</Button>
+                  </div>
+                )}
+                
+                <button 
+                  onClick={useSample}
+                  className="w-full h-14 bg-[#0a0b14] border border-white/5 rounded-2xl text-[10px] font-black text-slate-500 uppercase italic flex items-center justify-center gap-2 hover:bg-white/5 transition-all"
+                >
+                  <Download size={14} /> サンプルを保存して試す
+                </button>
+
+                {image && (
+                  <div className="space-y-4 animate-in slide-in-from-bottom-4">
+                    <Button 
+                      onClick={() => { navigator.clipboard.writeText(PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} 
+                      className={`w-full h-20 text-xl font-black rounded-2xl transition-all shadow-2xl ${copied ? 'bg-emerald-500 text-slate-950 scale-95' : 'bg-[#5845e0] text-white hover:bg-indigo-500'}`}
+                    >
+                      {copied ? '✅ 指示をコピー完了' : '設計指示をコピーする'}
+                    </Button>
+                    <div className="grid grid-cols-3 gap-3">
+                       <Button variant="outline" className="h-14 border-white/5 bg-[#0a0b14] text-[9px] font-black uppercase italic hover:bg-white/5 rounded-xl text-slate-400" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</Button>
+                       <Button variant="outline" className="h-14 border-white/5 bg-[#0a0b14] text-[9px] font-black uppercase italic hover:bg-white/5 rounded-xl text-slate-400" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</Button>
+                       <Button variant="outline" className="h-14 border-white/5 bg-[#0a0b14] text-[9px] font-black uppercase italic hover:bg-white/5 rounded-xl text-slate-400" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE</Button>
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* RIGHT: RESULT FEED */}
-              <div className="bg-slate-950 rounded-[3.5rem] p-10 border border-slate-800 shadow-inner flex flex-col gap-6 relative overflow-hidden">
-                 <div className="flex items-center gap-4 relative z-10">
-                    <div className="w-12 h-12 bg-indigo-600/20 rounded-2xl flex items-center justify-center border border-indigo-500/20">
-                      <ClipboardPaste className="text-indigo-400" />
+              {/* RIGHT: RESULT PANEL */}
+              <div className="bg-[#0a0b14] rounded-[3.5rem] p-8 md:p-12 border border-white/5 shadow-inner flex flex-col gap-6 relative">
+                 <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
+                        <ClipboardPaste className="text-indigo-400" size={24} />
+                      </div>
+                      <h3 className="text-2xl md:text-3xl font-black text-white italic uppercase tracking-tighter">設計図を戻す</h3>
                     </div>
-                    <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">設計図を戻す</h3>
+                    <Activity size={32} className="text-indigo-500/20 animate-pulse" />
                  </div>
+                 
                  <textarea 
                    value={conceptResult} 
                    onChange={(e) => setConceptResult(e.target.value)} 
                    placeholder="AIから届いた設計図をここにペースト..." 
-                   className="flex-1 bg-slate-900 border-2 border-slate-800 rounded-[2rem] p-8 text-sm text-slate-300 focus:border-indigo-500 outline-none font-mono italic shadow-inner min-h-[400px]" 
+                   className="flex-1 bg-[#13141f] border border-white/5 rounded-[2.5rem] p-10 text-sm md:text-base text-slate-300 focus:border-indigo-500 outline-none font-mono italic shadow-inner min-h-[400px] leading-relaxed" 
                  />
                  
                  {conceptResult && (
@@ -150,57 +160,48 @@ export default function AISelectShop() {
                       ② 製品化ステップへ進む <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition-transform" />
                     </Button>
                  )}
-
-                 {/* 装飾 */}
-                 <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
-                    <Activity size={100} className="text-indigo-500" />
-                 </div>
               </div>
             </div>
-          </Card>
-        )}
-        
-        {/* ② Printful */}
-        {activeTab === 'printful' && (
-          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3.5rem] p-16 animate-in zoom-in-95 text-center relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600" />
-            <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-6">
-              <Printer size={64} className="text-indigo-500" /> ② Printful 連携
-            </h3>
-            {renderGuide(['製造コストを計算する', 'AIが生成したメタデータをPrintfulへ入力'])}
-            <div className="max-w-2xl mx-auto space-y-8">
-              <Button onClick={() => window.open('https://www.printful.com', '_blank')} className="w-full h-24 bg-white text-black hover:bg-indigo-600 hover:text-white font-black rounded-2xl text-2xl shadow-2xl flex items-center justify-center gap-4 transition-all">
-                Printful Dashboardを開く <ExternalLink size={32} />
-              </Button>
-              <Button onClick={() => setActiveTab('shopify')} className="w-full h-16 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl italic shadow-lg flex items-center justify-center gap-3">
-                ③ Shopify公開へ進む <ArrowRight />
-              </Button>
-            </div>
-          </Card>
+          </div>
         )}
 
-        {/* ③ Shopify */}
-        {activeTab === 'shopify' && (
-          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3.5rem] p-16 animate-in zoom-in-95 text-center relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600" />
-            <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-6">
-              <Globe size={64} className="text-indigo-500" /> ③ Shopify 公開
+        {/* ② PRINTFUL連携 */}
+        {activeTab === 'printful' && (
+          <div className="bg-[#13141f] border border-white/10 rounded-[3rem] p-20 animate-in zoom-in-95 text-center relative overflow-hidden">
+            <h3 className="text-5xl font-black text-white italic uppercase mb-12 flex items-center justify-center gap-6">
+              <Printer size={64} className="text-indigo-500" /> ② PRINTFUL 連携
             </h3>
-            {renderGuide(['メタデータを同期してショップ完成！', '世界中へ販売を開始'])}
-            <div className="max-w-2xl mx-auto space-y-8">
-              <Button onClick={() => window.open('https://www.shopify.com', '_blank')} className="w-full h-24 bg-white text-black hover:bg-indigo-600 hover:text-white font-black rounded-2xl text-2xl shadow-2xl flex items-center justify-center gap-4 transition-all">
-                Shopify Adminを開く <ExternalLink size={32} />
+            <div className="max-w-2xl mx-auto space-y-12">
+              <Button onClick={() => window.open('https://www.printful.com', '_blank')} className="w-full h-28 bg-white text-black hover:bg-indigo-500 hover:text-white font-black rounded-[2rem] text-3xl shadow-2xl transition-all">
+                Printful Dashboard ↗
               </Button>
-              <Button onClick={() => setActiveTab('concept')} variant="outline" className="w-full h-16 border-2 border-slate-800 text-slate-500 hover:text-white font-black rounded-xl italic flex items-center justify-center gap-3">
-                <RotateCcw /> 最初から設計し直す
+              <Button onClick={() => setActiveTab('shopify')} className="w-full h-16 bg-emerald-600 text-white font-black rounded-2xl italic flex items-center justify-center gap-3">
+                ③ SHOPIFY公開へ進む <ArrowRight />
               </Button>
             </div>
-          </Card>
+          </div>
+        )}
+
+        {/* ③ SHOPIFY公開 */}
+        {activeTab === 'shopify' && (
+          <div className="bg-[#13141f] border border-white/10 rounded-[3rem] p-20 animate-in zoom-in-95 text-center relative overflow-hidden">
+            <h3 className="text-5xl font-black text-white italic uppercase mb-12 flex items-center justify-center gap-6">
+              <Globe size={64} className="text-indigo-500" /> ③ SHOPIFY 公開
+            </h3>
+            <div className="max-w-2xl mx-auto space-y-12">
+              <Button onClick={() => window.open('https://www.shopify.com', '_blank')} className="w-full h-28 bg-white text-black hover:bg-indigo-500 hover:text-white font-black rounded-[2rem] text-3xl shadow-2xl transition-all">
+                Shopify Admin ↗
+              </Button>
+              <button onClick={() => setActiveTab('concept')} className="text-slate-500 hover:text-white font-black uppercase italic underline text-xs">
+                最初から設計し直す
+              </button>
+            </div>
+          </div>
         )}
       </div>
 
       <DebugPanel data={{ activeTab, image, conceptResult }} toolId="ai-select-shop" />
-      <div className="text-center opacity-20 mt-20"><p className="text-[10px] font-black uppercase tracking-[0.5em] italic">Global Dropshipping OS • NextraLabs 2026</p></div>
+      <div className="text-center opacity-20 mt-20 font-black uppercase tracking-[0.5em] italic text-[10px]">Global Dropshipping OS • NextraLabs 2026</div>
     </div>
   )
 }
