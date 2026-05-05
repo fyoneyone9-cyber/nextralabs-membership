@@ -253,17 +253,18 @@ export default function SnsAutoPoster() {
                   )}
                 </div>
                 
-                {report && (
-                  <div className="space-y-4 animate-in slide-in-from-bottom-4 relative z-10">
-                    <p className="text-center text-xs font-black text-slate-500 uppercase italic">Next: Create visuals for this post?</p>
-                    <Button 
-                      onClick={() => window.open('https://membership-site-nextralabos.vercel.app/products/prompt-master/app', '_blank')}
-                      className="w-full h-20 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-400 hover:to-amber-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-4 text-xl italic"
-                    >
-                      <Sparkles /> 画像生成プロンプトを作成する <ExternalLink />
-                    </Button>
-                  </div>
-                )}
+                {/* 画像生成プロンプトマスターへの導線 - 常に表示 */}
+                <div className="space-y-4 pt-4 border-t border-slate-800/50 relative z-10">
+                  <p className="text-center text-xs font-black text-slate-500 uppercase italic">Next: Need visuals for this post?</p>
+                  <Button 
+                    onClick={() => window.open('/products/prompt-master/app', '_blank')}
+                    className="w-full h-20 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-400 hover:to-amber-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-4 text-xl italic group transition-all hover:scale-[1.02]"
+                  >
+                    <Sparkles className="animate-pulse" /> 
+                    画像生成プロンプトを作成する 
+                    <ExternalLink className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  </Button>
+                </div>
               </div>
             </div>
           </Card>
