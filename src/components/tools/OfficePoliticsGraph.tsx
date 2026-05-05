@@ -103,6 +103,22 @@ export default function OfficePoliticsGraph() {
     }
   };
 
+  const useSample = () => {
+    setIsProcessing(true);
+    const sample = "Date,From,To,Action\n2026-05-01,部長A,課長B,Meeting\n2026-05-01,課長B,新人C,Mention\n2026-05-02,部長A,人事D,Private";
+    setCsvData(sample);
+    const blob = new Blob([sample], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "office_politics_sample.csv";
+    a.click();
+    setTimeout(() => {
+      setFile(new File([blob], "sample_log.csv", { type: "text/csv" }));
+      setIsProcessing(false);
+    }, 800);
+  };
+
   const FINAL_PROMPT = `あなたは組織心理学と社内政治のプロコンサルタントです。\n以下の【ログデータ】を分析し、派閥・キーマン・裏の力関係をリアルに出力し、最後にMermaid.js形式のgraph TDコード（日本語ノード名 A["名前"] の形式）を作成してください。\n\n【データ】:\n${csvData.substring(0, 2000)}`;
 
   return (
@@ -145,8 +161,13 @@ export default function OfficePoliticsGraph() {
             <div className="grid lg:grid-cols-2 gap-10">
               <div className="space-y-6">
                 {!file ? (
-                  <div className="border-4 border-dashed border-slate-800 rounded-[2.5rem] p-16 text-center hover:bg-slate-950 transition-all cursor-pointer bg-slate-900/50 shadow-inner group" onClick={() => fileInputRef.current?.click()}>
-                    <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".csv" /><Upload className="h-12 w-12 text-slate-700 mx-auto mb-4 group-hover:text-indigo-500" /><p className="text-lg text-slate-500 font-black italic uppercase">ログCSVをドロップ</p>
+                  <div className="space-y-4">
+                    <div className="border-4 border-dashed border-slate-800 rounded-[2.5rem] p-16 text-center hover:bg-slate-950 transition-all cursor-pointer bg-slate-900/50 shadow-inner group" onClick={() => fileInputRef.current?.click()}>
+                      <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".csv" /><Upload className="h-12 w-12 text-slate-700 mx-auto mb-4 group-hover:text-indigo-500" /><p className="text-lg text-slate-500 font-black italic uppercase">ログCSVをドロップ</p>
+                    </div>
+                    <Button onClick={useSample} variant="outline" className="w-full h-16 border-slate-800 text-slate-400 font-black italic rounded-2xl hover:bg-slate-800 flex items-center justify-center gap-3 uppercase">
+                      <Download size={20} /> サンプルCSVを保存して試す
+                    </Button>
                   </div>
                 ) : (
                   <div className="bg-slate-950 border-2 border-indigo-600/30 rounded-3xl p-6 space-y-6 text-center shadow-xl">
