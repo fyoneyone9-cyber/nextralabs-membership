@@ -104,13 +104,16 @@ export default function SnsAutoPoster() {
                     }
                     return prev ? `${prev}\n${line}` : line;
                   })}
-                  className={`h-24 border-2 font-black text-xs md:text-sm uppercase italic rounded-2xl whitespace-normal p-3 transition-all active:scale-95 shadow-lg ${
+                  className={`h-24 border-2 font-black text-xs md:text-sm uppercase italic rounded-2xl whitespace-normal p-3 transition-all active:scale-95 shadow-[0_0_20px_rgba(220,38,38,0)] ${
                     isActive 
-                    ? 'bg-red-600 border-red-400 text-white' 
+                    ? 'bg-red-600 border-white text-white shadow-[0_0_20px_rgba(220,38,38,0.6)] scale-95 ring-4 ring-red-500/50' 
                     : 'border-slate-800 bg-slate-950 text-slate-200 hover:bg-red-600 hover:text-white'
                   }`}
                 >
-                  {t}
+                  <div className="flex flex-col items-center gap-1">
+                    {isActive && <CheckCircle2 size={14} className="animate-bounce" />}
+                    <span>{t}</span>
+                  </div>
                 </Button>
               );
             })}
@@ -136,13 +139,16 @@ export default function SnsAutoPoster() {
                     }
                     return prev ? `${prev}\n${p.content}` : p.content;
                   })}
-                  className={`h-24 border-2 font-black text-xs md:text-sm uppercase italic rounded-2xl whitespace-normal p-3 transition-all active:scale-95 shadow-lg ${
+                  className={`h-24 border-2 font-black text-xs md:text-sm uppercase italic rounded-2xl whitespace-normal p-3 transition-all active:scale-95 shadow-[0_0_20px_rgba(249,115,22,0)] ${
                     isActive 
-                    ? 'bg-orange-600 border-orange-400 text-white' 
+                    ? 'bg-orange-600 border-white text-white shadow-[0_0_20px_rgba(249,115,22,0.6)] scale-95 ring-4 ring-orange-500/50' 
                     : 'border-slate-800 bg-slate-900 text-orange-400 hover:bg-orange-600 hover:text-white'
                   }`}
                 >
-                  {p.label}
+                  <div className="flex flex-col items-center gap-1">
+                    {isActive && <CheckCircle2 size={14} className="animate-bounce" />}
+                    <span>{p.label}</span>
+                  </div>
                 </Button>
               );
             })}
@@ -150,6 +156,7 @@ export default function SnsAutoPoster() {
         </div>
       </div>
 
+      {/* 媒体選択ハブ */}
       {/* 媒体選択ハブ */}
       <div className="bg-slate-900 border border-slate-800 p-2 rounded-[2rem] shadow-2xl overflow-x-auto scrollbar-hide">
         <div className="flex gap-2 min-w-[800px]">
@@ -165,9 +172,16 @@ export default function SnsAutoPoster() {
                   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 100);
               }}
-              className={`flex-1 flex flex-col items-center justify-center py-6 px-2 rounded-2xl transition-all duration-300 gap-2 border-2 ${activeWeapon === w.id ? 'bg-red-600 border-red-400 scale-105 shadow-xl text-white' : 'bg-slate-950 border-transparent text-slate-500 hover:text-white hover:bg-slate-900'}`}
+              className={`flex-1 flex flex-col items-center justify-center py-6 px-2 rounded-2xl transition-all duration-300 gap-2 border-2 ${
+                activeWeapon === w.id 
+                ? 'bg-red-600 border-white scale-105 shadow-[0_0_30px_rgba(220,38,38,0.8)] text-white ring-4 ring-red-500/50' 
+                : 'bg-slate-950 border-transparent text-slate-500 hover:text-white hover:bg-slate-900'
+              }`}
             >
-              {React.createElement(w.icon, { size: 32, className: activeWeapon === w.id ? 'text-white' : w.color })}
+              <div className="relative">
+                {React.createElement(w.icon, { size: 32, className: activeWeapon === w.id ? 'text-white' : w.color })}
+                {activeWeapon === w.id && <CheckCircle2 size={16} className="absolute -top-2 -right-2 text-white animate-bounce" />}
+              </div>
               <p className="text-[12px] font-black uppercase italic leading-none">{w.label}</p>
             </button>
           ))}
