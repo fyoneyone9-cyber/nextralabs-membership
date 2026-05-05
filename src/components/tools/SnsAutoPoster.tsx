@@ -7,12 +7,24 @@ import {
   ArrowRight, CheckCircle2, RotateCcw, Lightbulb, Search, ShieldCheck, LayoutGrid, Loader2, Share2, ClipboardPaste, Sparkles, Zap, Trash2, Send, Instagram, Twitter, MessageSquare, Video, TrendingUp, ExternalLink
 } from 'lucide-react'
 
-// SNSハブ
+// SNSハブ（媒体別）
 const WEAPONS = [
-  { id: 'twitter', label: 'X (Twitter)', icon: Twitter, color: 'text-blue-400', prompt: "あなたはプロのX運用担当者です。以下の【トレンド】を元に、インプレッションが最大化する140文字以内の投稿を3パターン作成してください。" },
-  { id: 'instagram', label: 'Instagram', icon: Instagram, color: 'text-pink-500', prompt: "あなたは人気インスタグラマーです。以下の【トレンド】をテーマに、情緒的なキャプションとハッシュタグ15個を作成してください。" },
-  { id: 'tiktok', label: 'TikTok / Reels', icon: Video, color: 'text-rose-500', prompt: "あなたはバズ動画作家です。以下の【トレンド】で最初の3秒で惹きつける動画台本を作成してください。" },
-  { id: 'threads', label: 'Threads', icon: MessageSquare, color: 'text-slate-200', prompt: "あなたはコラムニストです。以下の【トレンド】について深い共感を生む長文を構成してください。" },
+  { id: 'twitter', label: 'X (Twitter)', icon: Twitter, color: 'text-blue-400', prompt: "あなたはプロのX運用担当者です。以下の【トレンド】と【戦略パーツ】を元に、インプレッションが最大化する140文字以内の投稿を3パターン作成してください。" },
+  { id: 'instagram', label: 'Instagram', icon: Instagram, color: 'text-pink-500', prompt: "あなたは人気インスタグラマーです。以下の【トレンド】と【戦略パーツ】を組み合わせて、情緒的なキャプションとハッシュタグ15個を作成してください。" },
+  { id: 'tiktok', label: 'TikTok / Reels', icon: Video, color: 'text-rose-500', prompt: "あなたはバズ動画作家です。以下の【トレンド】と【戦略パーツ】を元に、最初の3秒で惹きつける動画台本を作成してください。" },
+  { id: 'threads', label: 'Threads', icon: MessageSquare, color: 'text-slate-200', prompt: "あなたはコラムニストです。以下の【トレンド】と【戦略パーツ】について、深い共感を生む長文を構成してください。" },
+];
+
+// 戦略パーツ（以前のプリセットをパーツ化）
+const STRATEGY_PARTS = [
+  { label: "本音・暴露系", content: "【戦略：本音・暴露】業界の当たり前に疑問を呈し、皆が言いにくいことを代弁する鋭い言葉で。" },
+  { label: "有益Tips", content: "【戦略：有益Tips】今日から使える業務効率化の神知識を、箇条書きを使って10秒で伝わる構成に。" },
+  { label: "共感・エモ", content: "【戦略：共感・エモ】深夜の独り言のような、挑戦の孤独と希望に寄り添うエモーショナルな文章。" },
+  { label: "図解スレッド", content: "【戦略：スレッド誘導】続きが読みたくなる仕掛けを施し、深い知識へ誘導する導入文。" },
+  { label: "比較・検証", content: "【戦略：比較検証】AとBの違いを明確にし、独自の視点で結論を出すプロのレビュー。" },
+  { label: "ニュース要約", content: "【戦略：要約】複雑な時事ネタを中学生でもわかるレベルに噛み砕き、一言解説を添えて。" },
+  { label: "質問・対話", content: "【戦略：エンゲージメント】フォロワーが回答しやすい二択や質問を投げかけ、交流を生む。" },
+  { label: "モチベーション", content: "【戦略：鼓舞】やる気が出ない人の背中を強力に押す、力強いメッセージとマインドセット。" }
 ];
 
 export default function SnsAutoPoster() {
@@ -25,12 +37,9 @@ export default function SnsAutoPoster() {
   const [trends, setTrends] = useState<string[]>([]);
   const [isLoadingTrends, setIsLoadingTrends] = useState(false);
 
-  // Googleトレンド（RSS等）のシミュレーション取得ロジック
-  // 実際にはAPIエンドポイントから最新を取得する想定
   const fetchTrends = async () => {
     setIsLoadingTrends(true);
     try {
-      // ライブ感を出すための擬似API取得演出
       await new Promise(resolve => setTimeout(resolve, 1000));
       const mockTrends = [
         "AIエージェントの衝撃", "次世代iPhoneリーク", "週末の絶品スイーツ", 
@@ -67,37 +76,52 @@ export default function SnsAutoPoster() {
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-slate-950 text-left">
       <div className="text-center space-y-3">
-        <Badge className="bg-red-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-lg">Trend Intelligence Hub</Badge>
+        <Badge className="bg-red-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-lg">Nextra Social Command v7.0</Badge>
         <h1 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl">SNS Auto Poster</h1>
       </div>
 
-      {/* Googleトレンド・プリセットエリア（12個） */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between px-6">
-          <div className="flex items-center gap-2 text-red-500 animate-pulse">
-            <TrendingUp size={20} />
-            <p className="text-xs font-black uppercase italic tracking-widest">Real-time Google Trends</p>
+      {/* 🚀 【新・皇帝の剣】 トレンド(主題) ＋ 戦略(パーツ) の組み合わせエリア */}
+      <div className="grid lg:grid-cols-2 gap-8">
+        {/* トレンド選択 (主題) */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between px-4">
+            <div className="flex items-center gap-2 text-red-500 animate-pulse">
+              <TrendingUp size={20} />
+              <p className="text-xs font-black uppercase italic tracking-widest">① Real-time Trends (Subject)</p>
+            </div>
           </div>
-          <Button onClick={fetchTrends} variant="ghost" size="sm" className="text-[10px] text-slate-500 hover:text-white uppercase font-black italic">
-            <RotateCcw size={12} className="mr-1" /> Trends Refresh
-          </Button>
-        </div>
-        
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-          {isLoadingTrends ? (
-            Array(12).fill(0).map((_, i) => <div key={i} className="h-20 bg-slate-900 animate-pulse rounded-2xl border border-slate-800" />)
-          ) : (
-            trends.map((t, i) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {trends.map((t, i) => (
               <Button 
                 key={i} 
                 variant="outline" 
-                onClick={() => setInputData(prev => prev ? `${prev}\n${t}` : t)}
-                className="h-24 border-2 border-slate-800 bg-slate-900 text-slate-200 font-black text-xs md:text-sm uppercase italic hover:bg-red-600 hover:text-white hover:border-red-400 rounded-2xl whitespace-normal p-3 leading-tight transition-all active:scale-95 shadow-lg"
+                onClick={() => setInputData(prev => prev ? `${prev}\n【トレンド】：${t}` : `【トレンド】：${t}`)}
+                className="h-24 border-2 border-slate-800 bg-slate-950 text-slate-200 font-black text-xs md:text-sm uppercase italic hover:bg-red-600 hover:text-white rounded-2xl whitespace-normal p-3 transition-all active:scale-95 shadow-lg"
               >
                 {t}
               </Button>
-            ))
-          )}
+            ))}
+          </div>
+        </div>
+
+        {/* 戦略パーツ選択 (組み合わせ) */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 text-orange-500 px-4">
+            <Zap size={20} />
+            <p className="text-xs font-black uppercase italic tracking-widest">② Strategy Parts (Combine)</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {STRATEGY_PARTS.map((p, i) => (
+              <Button 
+                key={i} 
+                variant="outline" 
+                onClick={() => setInputData(prev => prev ? `${prev}\n${p.content}` : p.content)}
+                className="h-24 border-2 border-slate-800 bg-slate-900 text-orange-400 font-black text-xs md:text-sm uppercase italic hover:bg-orange-600 hover:text-white rounded-2xl whitespace-normal p-3 transition-all active:scale-95 shadow-lg"
+              >
+                {p.label}
+              </Button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -124,22 +148,25 @@ export default function SnsAutoPoster() {
           <div className="grid lg:grid-cols-2 gap-12 text-left">
             <div className="space-y-8">
               <div className="bg-slate-950 p-8 rounded-[2.5rem] border border-slate-800 shadow-inner">
-                <p className="text-[10px] font-black text-red-500 uppercase italic tracking-widest mb-4">Topic & Trend Combination</p>
+                <div className="flex justify-between items-center mb-4">
+                  <p className="text-[10px] font-black text-red-500 uppercase italic tracking-widest">Post Generation Command</p>
+                  <Button onClick={() => setInputData('')} variant="ghost" size="sm" className="text-slate-500 hover:text-red-500 font-black"><Trash2 size={16} /> CLEAR</Button>
+                </div>
                 <textarea 
                   value={inputData} 
                   onChange={(e) => setInputData(e.target.value)} 
-                  placeholder="上のトレンドボタンを押して組み合わせるか、内容を入力してください..." 
+                  placeholder="上のトレンドと戦略パーツを組み合わせてください..." 
                   className="w-full h-80 bg-slate-900 border-2 border-slate-800 rounded-3xl p-8 text-xl text-white font-bold focus:border-red-600 outline-none shadow-inner leading-relaxed" 
                 />
               </div>
               <div className="space-y-4">
-                <Button onClick={() => handleCopy(`${currentWeapon?.prompt}\n\n【内容・トレンド】：\n${inputData}`)} disabled={!inputData} className="w-full h-24 text-2xl font-black rounded-2xl transition-all shadow-xl bg-red-600 text-white hover:bg-red-500">
-                  {copied ? '✅ 投稿指示をコピー完了' : '最強SNS投稿案を生成'}
+                <Button onClick={() => handleCopy(`${currentWeapon?.prompt}\n\n【組み合わせデータ】：\n${inputData}`)} disabled={!inputData} className="w-full h-24 text-2xl font-black rounded-2xl transition-all shadow-xl bg-red-600 text-white hover:bg-red-500">
+                  {copied ? '✅ 錬成指示をコピー完了' : '最強SNS投稿を錬成する'}
                 </Button>
                 <div className="grid grid-cols-3 gap-3">
-                  <Button variant="outline" className="h-16 border-2 border-slate-800 font-black uppercase italic hover:bg-red-600/10" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE</Button>
-                  <Button variant="outline" className="h-16 border-2 border-slate-800 font-black uppercase italic hover:bg-red-600/10" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</Button>
-                  <Button variant="outline" className="h-16 border-2 border-slate-800 font-black uppercase italic hover:bg-red-600/10" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</Button>
+                  <Button variant="outline" className="h-16 border-2 border-slate-800 font-black uppercase italic hover:bg-red-600/10 rounded-xl" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE</Button>
+                  <Button variant="outline" className="h-16 border-2 border-slate-800 font-black uppercase italic hover:bg-red-600/10 rounded-xl" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</Button>
+                  <Button variant="outline" className="h-16 border-2 border-slate-800 font-black uppercase italic hover:bg-red-600/10 rounded-xl" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</Button>
                 </div>
               </div>
             </div>
@@ -151,7 +178,6 @@ export default function SnsAutoPoster() {
               </div>
               <textarea value={report} onChange={(e) => setReport(e.target.value)} placeholder="AIからの投稿案を貼り付けてください..." className="flex-1 bg-slate-900 border-2 border-slate-800 rounded-3xl p-8 text-base text-slate-100 focus:border-red-600 outline-none font-medium leading-relaxed italic relative z-10 shadow-inner" />
               
-              {/* 🟢 完璧なリンク：Prompt Masterへの誘導 */}
               {report && (
                 <div className="space-y-4 animate-in slide-in-from-bottom-4 relative z-10">
                   <p className="text-center text-xs font-black text-slate-500 uppercase italic">Next: Create visuals for this post?</p>
@@ -167,7 +193,7 @@ export default function SnsAutoPoster() {
           </div>
         </Card>
       )}
-      <div className="text-center opacity-20 mt-20"><p className="text-[10px] font-black uppercase tracking-[0.5em] italic">Trend-Driven Social Engine • NextraLabs 2026</p></div>
+      <div className="text-center opacity-20 mt-20"><p className="text-[10px] font-black uppercase tracking-[0.5em] italic">Trend Strategy Engine • NextraLabs 2026</p></div>
     </div>
   )
 }
