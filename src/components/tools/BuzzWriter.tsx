@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ArrowRight, ClipboardPaste, Zap, ChevronRight, Copy, ExternalLink, RotateCcw, Lightbulb, TrendingUp, Send, PenTool, MessageSquare, Sparkles } from 'lucide-react'
+import { ArrowRight, ClipboardPaste, Zap, ChevronRight, Copy, ExternalLink, RotateCcw, Lightbulb, TrendingUp, Send, PenTool, MessageSquare, Sparkles, CheckCircle2 } from 'lucide-react'
 
 const TABS = [
   { id: 'input', label: '① 下書き入力', icon: PenTool },
@@ -16,9 +16,15 @@ export default function BuzzWriter() {
   const [draft, setDraft] = useState('');
   const [buzzResult, setBuzzResult] = useState('');
 
-  const FINAL_PROMPT = `あなたはSNSマーケティングの天才です。以下の【投稿の下書き】を分析し、バズるための改善案を出してください。
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
-1. 【フックの強化】: 1行目でスクロールを止める強烈な書き出し案。
+  const FINAL_PROMPT = `あなたはSNSマーケティングの天才です。以下の【投稿の下書き】を分析し、バズるための改善案を出力してください。
+
+1. 【フックの強化】: 1行目でスクロールを止めるための、強烈な書き出し案。
 2. 【共感の設計】: 読み手が思わず「保存」したくなる心理的トリガー。
 3. 【バズる完成稿】: 拡散されやすい形式に整えた最終稿。
 
@@ -26,13 +32,15 @@ export default function BuzzWriter() {
 ${draft || '（未入力）'}`;
 
   const renderGuide = (steps: string[]) => (
-    <div className="bg-slate-900 border-2 border-red-600/50 rounded-2xl p-5 md:p-8 mb-8 flex items-start gap-4">
-      <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg"><Lightbulb className="text-white" /></div>
+    <div className="bg-slate-900 border-2 border-red-600/50 rounded-2xl p-6 mb-8 flex items-start gap-4">
+      <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg text-white"><Lightbulb className="text-white" /></div>
       <div className="space-y-1">
         <p className="text-sm font-black text-white uppercase italic tracking-widest opacity-70">Viral Protocol</p>
-        {steps.map((s, i) => (
-          <p key={i} className="text-xs md:text-base text-slate-300 font-bold flex items-center gap-2 leading-tight"><span className="text-red-500 italic">#{i+1}</span> {s}</p>
-        ))}
+        <div className="space-y-1">
+          {steps.map((s, i) => (
+            <p key={i} className="text-xs md:text-lg text-slate-200 font-bold flex items-center gap-2 md:gap-4 leading-tight"><span className="text-red-500 italic">#{i+1}</span> {s}</p>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -41,13 +49,13 @@ ${draft || '（未入力）'}`;
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-slate-950">
       <div className="text-center space-y-2">
         <Badge className="bg-red-600 text-white font-black italic tracking-widest px-4 py-1 text-[10px] uppercase rounded-full shadow-lg">VIRAL ENGINE</Badge>
-        <h1 className="text-4xl md:text-7xl font-black text-white uppercase italic tracking-tighter leading-tight drop-shadow-xl">AI バズ文章コーチ</h1>
+        <h1 className="text-5xl md:text-7xl font-black text-white uppercase italic tracking-tighter drop-shadow-xl leading-tight">AI バズ文章コーチ</h1>
       </div>
 
       <div className="overflow-x-auto pb-4 scrollbar-hide">
-        <div className="bg-slate-900 border border-slate-800 p-1 flex min-w-[400px] md:min-w-full rounded-2xl shadow-2xl">
+        <div className="bg-slate-900 border border-slate-800 p-2 flex min-w-[500px] md:min-w-full rounded-2xl shadow-2xl">
           {TABS.map((tab) => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex-1 py-4 px-2 rounded-xl font-black text-sm uppercase italic transition-all flex items-center justify-center gap-2 relative ${activeTab === tab.id ? 'bg-red-600 text-white shadow-xl scale-[1.03] z-10' : 'text-slate-500 hover:text-white'}`}>
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex-1 py-5 px-2 rounded-xl font-black text-sm uppercase italic transition-all flex items-center justify-center gap-2 relative ${activeTab === tab.id ? 'bg-red-600 text-white shadow-xl scale-[1.03] z-10' : 'text-slate-500 hover:text-white hover:bg-slate-800'}`}>
               <tab.icon className="w-5 h-5" /> <span>{tab.label}</span>
             </button>
           ))}
@@ -58,28 +66,28 @@ ${draft || '（未入力）'}`;
         {activeTab === 'input' && (
           <Card className="bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in slide-in-from-bottom-4 text-center">
             <h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 text-red-500"><PenTool /> ① 下書き入力</h3>
-            {renderGuide(['SNS投稿の下書きを入力', '指示をコピーしてAIへ投げ、添削させる', 'AIの回答を右のエリアに戻す'])}
+            {renderGuide(['SNS投稿の下書きやネタを入力する', '分析指示をコピーしてAI三台体制へ投げる', 'AIが作成したバズる文章を右のエリアに戻す'])}
             <div className="grid lg:grid-cols-2 gap-12 text-left">
               <div className="space-y-6">
-                 <textarea value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="下書きをペースト..." className="w-full h-64 bg-slate-950 border-2 border-slate-800 rounded-2xl p-6 text-base text-slate-200 focus:border-red-600 outline-none font-medium shadow-inner leading-relaxed" />
+                 <textarea value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="SNS投稿案をペースト..." className="w-full h-64 bg-slate-950 border-2 border-slate-800 rounded-2xl p-6 text-base text-slate-200 focus:border-red-600 outline-none font-medium shadow-inner leading-relaxed" />
                  {draft && (
                     <div className="space-y-4">
-                       <Button onClick={() => { navigator.clipboard.writeText(FINAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className={`w-full h-16 font-black rounded-xl transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-red-600 text-white'}`}>バズ指示をコピー</Button>
+                       <Button onClick={() => { handleCopy(FINAL_PROMPT); }} className={`w-full h-16 font-black rounded-xl transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-red-600 text-white hover:bg-red-500'}`}>バズ指示をコピー</Button>
                        <div className="grid grid-cols-3 gap-2">
-                          <Button variant="outline" className="h-10 border-slate-800 text-[8px] font-black uppercase italic" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</Button>
-                          <Button variant="outline" className="h-10 border-slate-800 text-[8px] font-black uppercase italic" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</Button>
                           <Button variant="outline" className="h-10 border-slate-800 text-[8px] font-black uppercase italic" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE</Button>
+                          <Button variant="outline" className="h-10 border-slate-800 text-[8px] font-black uppercase italic" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</Button>
+                          <Button variant="outline" className="h-10 border-slate-800 text-[8px] font-black uppercase italic" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</Button>
                        </div>
                     </div>
                  )}
               </div>
-              <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 space-y-6 shadow-2xl flex flex-col justify-center">
+              <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 space-y-6 shadow-2xl flex flex-col justify-center text-left">
                  <div className="flex items-center gap-4"><ClipboardPaste className="h-8 w-8 text-red-500" /><h3 className="text-xl font-black text-white italic uppercase tracking-tighter">AIの添削を戻す</h3></div>
-                 <textarea value={buzzResult} onChange={(e) => setBuzzResult(e.target.value)} placeholder="AIからの添削結果をここにペースト..." className="w-full h-80 bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 text-sm text-slate-300 focus:border-red-600 outline-none font-medium leading-relaxed font-mono" />
+                 <textarea value={buzzResult} onChange={(e) => setBuzzResult(e.target.value)} placeholder="AIからの回答をここにペースト..." className="w-full h-80 bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 text-sm text-slate-300 focus:border-red-600 outline-none font-medium leading-relaxed font-mono" />
               </div>
             </div>
             {buzzResult && (
-               <Button onClick={() => setActiveTab('report')} className="w-full h-20 mt-10 bg-red-600 hover:bg-red-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-4 uppercase italic text-xl group">
+               <Button onClick={() => setActiveTab('report')} className="w-full h-20 mt-10 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-4 uppercase italic text-xl group">
                   ② バズ文章を確認 <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition-transform" />
                </Button>
             )}
@@ -91,7 +99,7 @@ ${draft || '（未入力）'}`;
             <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-10 md:p-20 shadow-2xl border-l-8 border-l-red-600 relative overflow-hidden text-left">
                <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white"><TrendingUp className="w-80 h-80" /></div>
                <h3 className="text-4xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 relative z-10"><Sparkles className="text-yellow-500 animate-pulse w-12 h-12" /> バズ文章完成レポート</h3>
-               <div className="bg-slate-950 rounded-[2.5rem] p-12 border border-slate-800 text-lg text-slate-200 leading-relaxed text-left whitespace-pre-wrap shadow-inner italic relative z-10">
+               <div className="bg-slate-950 rounded-[2.5rem] p-12 border border-slate-800 text-lg text-slate-200 leading-relaxed text-left whitespace-pre-wrap shadow-inner italic relative z-10 font-medium">
                   {buzzResult || "データがありません。"}
                </div>
             </Card>
