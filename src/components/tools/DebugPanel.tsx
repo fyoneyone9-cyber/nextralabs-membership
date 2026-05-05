@@ -36,21 +36,28 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
   const runApiTest = async () => {
     console.log('[TEST] Universal API Surveillance Start...');
     const endpoints = [
-      { id: 'trends', name: 'Google Trends', url: '/api/trends' },
-      { id: 'gmail', name: 'Gmail Engine', url: '/api/tools/gmail-fetch' },
-      { id: 'printful', name: 'Printful Cloud', url: '/api/tools/printful' },
-      { id: 'shopify', name: 'Shopify Admin', url: '/api/tools/printful' }, 
-      { id: 'staysee', name: 'Staysee PMS', url: '/api/tools/staysee-ai-finder' },
-      { id: 'recipe', name: 'AI Recipe', url: '/api/tools/ai-recipe' }
+      { id: 'trends', name: 'Trends', url: '/api/trends' },
+      { id: 'gmail', name: 'Gmail', url: '/api/tools/gmail-fetch' },
+      { id: 'printful', name: 'Printful', url: '/api/tools/printful' },
+      { id: 'shopify', name: 'Shopify', url: '/api/tools/printful' },
+      { id: 'imagery', name: 'Imagery', url: 'https://loremflickr.com/10/10/all' },
+      { id: 'staysee', name: 'Staysee', url: '/api/tools/staysee-ai-finder' }
     ];
     
     const results: any = {};
     for (const ep of endpoints) {
       try {
-        const body = ep.id === 'shopify' ? { action: 'shopify-test' } : { action: 'test' };
-        const res = await fetch(ep.url, { method: 'POST', body: JSON.stringify(body) }).catch(() => fetch(ep.url));
-        results[ep.id] = { status: res.status, ok: res.ok };
-        console.log(`[SURVEILLANCE] ${res.ok ? '✅' : '⚠️'} ${ep.name}: ${res.status}`);
+        const start = Date.now();
+        let res;
+        if (ep.id === 'imagery') {
+          res = await fetch(ep.url, { mode: 'no-cors' });
+          results[ep.id] = { status: 'LIVE', ok: true };
+        } else {
+          const body = ep.id === 'shopify' ? { action: 'shopify-test' } : { action: 'test' };
+          res = await fetch(ep.url, { method: 'POST', body: JSON.stringify(body) }).catch(() => fetch(ep.url));
+          results[ep.id] = { status: res.status, ok: res.ok };
+        }
+        console.log(`[SURVEILLANCE] ${results[ep.id].ok ? '✅' : '⚠️'} ${ep.name}: ${results[ep.id].status} (${Date.now() - start}ms)`);
       } catch (e) {
         results[ep.id] = { status: 'OFFLINE', ok: false };
         console.error(`[SURVEILLANCE] ❌ ${ep.name} CRITICAL_FAILURE`);
@@ -61,7 +68,7 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
 
   return (
     <div className="fixed bottom-6 left-6 z-[9999] flex flex-col items-start">
-      <button onClick={() => setIsOpen(!isOpen)} className={`flex items-center gap-3 px-4 py-2 rounded-xl border transition-all duration-500 ${isOpen ? 'bg-slate-800 border-white/20 text-white' : 'bg-transparent border-white/5 text-slate-700 hover:text-slate-400'}`}>
+      <button onClick={() => setIsOpen(!isOpen)} className={`flex items-center gap-3 px-4 py-2 rounded-xl border transition-all duration-500 ${isOpen ? 'bg-slate-800 border-white/20 text-white' : 'bg-transparent border-white/5 text-slate-700 hover:border-white/10 hover:text-slate-400'}`}>
         <Activity className="h-4 w-4" />
         <span className="text-[10px] font-bold uppercase tracking-[0.2em]">System Debug</span>
       </button>
@@ -83,9 +90,8 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
                 </div>
               </div>
 
-              {/* 📊 API監視マトリクス */}
               <div className="grid grid-cols-6 gap-2">
-                 {['trends', 'gmail', 'printful', 'shopify', 'staysee', 'recipe'].map(id => (
+                 {['trends', 'gmail', 'printful', 'shopify', 'imagery', 'staysee'].map(id => (
                    <div key={id} className={`p-2 rounded-lg border text-center transition-all ${apiHealth?.[id]?.ok ? 'bg-emerald-500/10 border-emerald-500/50' : 'bg-red-500/10 border-red-500/50'}`}>
                       <p className="text-[8px] font-black uppercase text-slate-500">{id}</p>
                       <p className="text-[10px] font-bold text-white">{apiHealth?.[id]?.status || '---'}</p>
@@ -101,7 +107,7 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
               </div>
             </div>
           )}
-          <div className="flex justify-between items-center"><span className="text-[8px] text-slate-800 font-bold uppercase">Ultimate Surveillance v9.0</span><button onClick={() => setIsOpen(false)} className="text-slate-600 hover:text-white text-[10px] font-bold uppercase underline">Close</button></div>
+          <div className="flex justify-between items-center"><span className="text-[8px] text-slate-800 font-bold uppercase">Surveillance v10.0</span><button onClick={() => setIsOpen(false)} className="text-slate-600 hover:text-white text-[10px] font-bold uppercase underline">Close</button></div>
         </div>
       )}
     </div>
