@@ -28,13 +28,40 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
     checkUser()
 
     const originalError = console.error;
+    const originalLog = console.log;
+    const originalWarn = console.warn;
+
+    const captureLog = (type: string, ...args: any[]) => {
+      const msg = args.map(arg => {
+        if (arg instanceof Error) return `${arg.name}: ${arg.message}\n${arg.stack}`;
+        if (typeof arg === 'object') {
+          try { return JSON.stringify(arg, null, 2); } catch { return String(arg); }
+        }
+        return String(arg);
+      }).join(' ');
+      
+      setConsoleErrors(prev => [...prev.slice(-50), `[${new Date().toLocaleTimeString()}][${type}] ${msg}`]);
+    };
+
     console.error = (...args: any[]) => {
-      const msg = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' ');
-      setConsoleErrors(prev => [...prev.slice(-30), `[${new Date().toLocaleTimeString()}] ${msg}`]);
+      captureLog('ERROR', ...args);
       originalError.apply(console, args);
     };
-    return () => { console.error = originalError; };
-  }, [supabase.auth]);
+    console.log = (...args: any[]) => {
+      captureLog('LOG', ...args);
+      originalLog.apply(console, args);
+    };
+    console.warn = (...args: any[]) => {
+      captureLog('WARN', ...args);
+      originalWarn.apply(console, args);
+    };
+
+    return () => { 
+      console.error = originalError; 
+      console.log = originalLog;
+      console.warn = originalWarn;
+    };
+  }, []); // supabase依存を外して確実に初期化
 
   const handleAuth = () => {
     if (password === '2026') setIsAuth(true)
@@ -73,10 +100,19 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
                 <div className="flex items-center gap-3"><Unlock className="h-4 w-4 text-emerald-500" /><span className="text-sm font-black uppercase">Diagnostic Live</span></div>
                 <Button onClick={() => { navigator.clipboard.writeText(JSON.stringify(data, null, 2)); setCopied(true); setTimeout(() => setCopied(false), 2000) }} className="h-8 bg-slate-800 text-[10px] rounded-lg">{copied ? "COPIED" : "REPORT TO AI"}</Button>
               </div>
-              <div className="bg-black p-6 rounded-2xl border border-white/5 overflow-auto max-h-[350px]">
-                <pre className="text-emerald-500/70 font-mono text-[10px] leading-relaxed">
-                  {JSON.stringify(data, null, 2)}
-                </pre>
+              <div className="bg-black p-6 rounded-2xl border border-white/5 overflow-auto max-h-[350px] space-y-4">
+                <div className="space-y-2">
+                  <p className="text-[10px] font-black text-slate-500 uppercase">Console Logs (F12 Mirror)</p>
+                  <div className="bg-slate-900/50 p-4 rounded-xl font-mono text-[10px] leading-relaxed text-emerald-500/80 whitespace-pre-wrap border border-white/5">
+                    {consoleErrors.length > 0 ? consoleErrors.join('\n') : "No logs captured yet..."}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-[10px] font-black text-slate-500 uppercase">Component Data</p>
+                  <pre className="text-blue-400/70 font-mono text-[10px] leading-relaxed bg-slate-900/50 p-4 rounded-xl border border-white/5">
+                    {JSON.stringify(data, null, 2)}
+                  </pre>
+                </div>
               </div>
             </div>
           )}
