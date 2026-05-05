@@ -3,12 +3,14 @@ import React, { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   ArrowRight, 
   Upload, 
   CheckCircle2, 
   Youtube, 
   FileVideo, 
+  FileAudio, 
   FileText,
   Zap,
   ChevronRight,
@@ -17,219 +19,195 @@ import {
   ExternalLink,
   Sparkles,
   Download,
-  Save,
-  RotateCcw
+  Volume2,
+  Image as ImageIcon,
+  Type,
+  Music,
+  Clapperboard,
+  Scissors
 } from 'lucide-react'
 
-const STEPS = [
-  { id: 1, label: 'STEP 01', title: '素材取り込み', desc: '動画・音声・URLの準備' },
-  { id: 2, label: 'STEP 02', title: 'AIプロンプト生成', desc: '指示をコピーしてAI実行' },
-  { id: 3, label: 'STEP 03', title: '結果保存', desc: '生成された成果物を保存' }
-];
-
-const MAJOR_AI = [
-  { id: 'gemini', name: 'GEMINI', url: 'https://gemini.google.com', icon: '💎', color: 'bg-blue-600' },
-  { id: 'chatgpt', name: 'CHATGPT', url: 'https://chatgpt.com', icon: '🟢', color: 'bg-emerald-600' },
-  { id: 'claude', name: 'CLAUDE', url: 'https://claude.ai', icon: '🟠', color: 'bg-orange-600' }
+const GENRES = [
+  '🎭 エンタメ', '📚 教育・解説', '📷 Vlog', '💻 テック・IT', '💼 ビジネス',
+  '🎮 ゲーム実況', '🍳 料理', '✈️ 旅行', '📰 ニュース', '🎤 対談'
 ];
 
 export default function YoutubeProducer() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [youtubeUrl, setYoutubeUrl] = useState('');
-  const [transcript, setTranscript] = useState('');
-  const [finalResult, setFinalResult] = useState('');
+  const [activeTab, setActiveTab] = useState('transcribe');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedGenre, setSelectedGenre] = useState(GENRES[0]);
   const [copied, setCopied] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const simulateUpload = () => {
-    setIsUploading(true);
-    setUploadProgress(0);
-    const interval = setInterval(() => {
-      setUploadProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsUploading(false);
-          setTranscript('（文字起こし結果）本日の動画ではAI副業について解説します。1.市場調査 2.ツール選定 3.コンテンツ作成...');
-          setCurrentStep(2);
-          return 100;
-        }
-        return prev + 10;
-      });
-    }, 150);
-  };
-
-  const handleCopy = () => {
-    const prompt = `以下の文字起こしデータをもとに、YouTubeの「台本案」「タイトル5選」「サムネイル構成案」を作成してください。\n\n【文字起こし】\n${transcript}`;
-    navigator.clipboard.writeText(prompt);
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleDownload = () => {
-    const element = document.createElement("a");
-    const file = new Blob([finalResult], {type: 'text/plain'});
-    element.href = URL.createObjectURL(file);
-    element.download = "youtube_producer_result.txt";
-    document.body.appendChild(element);
-    element.click();
-  };
-
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-20">
+    <div className="max-w-6xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20">
       <div className="text-center space-y-2">
-        <h1 className="text-5xl md:text-7xl font-black text-white uppercase italic tracking-tighter">AI YouTube PRODUCER</h1>
-        <div className="flex items-center justify-center gap-2 text-red-500 font-bold tracking-[0.3em] text-xs md:text-sm">
-          <Sparkles className="h-4 w-4" /> NEXTRALABS CREATIVE PIPELINE
-        </div>
+        <Badge className="bg-red-500/10 text-red-500 border-red-500/20 mb-2">
+          <Clapperboard className="w-3 h-3 mr-1" /> NEXTRALABS ORIGINAL
+        </Badge>
+        <h1 className="text-5xl md:text-6xl font-black text-white uppercase italic tracking-tighter">AI YouTube Producer</h1>
+        <p className="text-slate-400 font-bold tracking-widest text-xs uppercase">Post-Production Automation Hub</p>
       </div>
 
-      {/* PROGRESS BAR */}
-      <div className="bg-slate-900/50 border border-slate-800 rounded-[2rem] p-6 max-w-4xl mx-auto shadow-xl">
-        <div className="flex items-center justify-between relative px-4">
-          <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-800 -z-10 -translate-y-1/2" />
-          {STEPS.map((s, i) => (
-            <div key={s.id} className="flex flex-col items-center gap-2 bg-slate-950 px-2 md:px-6 py-2 rounded-2xl border border-transparent transition-all">
-              <div 
-                className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${
-                  currentStep === s.id ? 'bg-red-600 border-red-400 text-white scale-125 shadow-[0_0_15px_rgba(220,38,38,0.6)]' : 
-                  currentStep > s.id ? 'bg-emerald-500 border-emerald-400 text-white' : 
-                  'bg-slate-900 border-slate-700 text-slate-500'
-                }`}
-              >
-                {currentStep > s.id ? <CheckCircle2 className="h-5 w-5" /> : <span className="font-black text-sm italic">{s.id}</span>}
-              </div>
-              <div className="text-center">
-                <p className={`text-[10px] font-black uppercase tracking-widest ${currentStep === s.id ? 'text-red-500' : 'text-slate-500'}`}>{s.title}</p>
-                <p className="text-[8px] text-slate-600 font-bold hidden md:block">{s.desc}</p>
-              </div>
-            </div>
-          ))}
+      {/* 🟢 THE 6-STEP PIPELINE TABS */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <div className="overflow-x-auto pb-4">
+          <TabsList className="bg-slate-900 border border-slate-800 p-1 h-auto flex min-w-[800px] rounded-2xl">
+            <TabsTrigger value="transcribe" className="flex-1 py-4 rounded-xl data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold text-xs uppercase italic"><Volume2 className="w-4 h-4 mr-2" /> ① 文字起こし</TabsTrigger>
+            <TabsTrigger value="script" className="flex-1 py-4 rounded-xl data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold text-xs uppercase italic"><FileText className="w-4 h-4 mr-2" /> ② 台本作成</TabsTrigger>
+            <TabsTrigger value="character" className="flex-1 py-4 rounded-xl data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold text-xs uppercase italic"><Scissors className="w-4 h-4 mr-2" /> ③ 人物画像</TabsTrigger>
+            <TabsTrigger value="thumbnail" className="flex-1 py-4 rounded-xl data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold text-xs uppercase italic"><ImageIcon className="w-4 h-4 mr-2" /> ④ サムネイル</TabsTrigger>
+            <TabsTrigger value="seo" className="flex-1 py-4 rounded-xl data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold text-xs uppercase italic"><Type className="w-4 h-4 mr-2" /> ⑤ タイトル/SEO</TabsTrigger>
+            <TabsTrigger value="bgm" className="flex-1 py-4 rounded-xl data-[state=active]:bg-red-600 data-[state=active]:text-white font-bold text-xs uppercase italic"><Music className="w-4 h-4 mr-2" /> ⑥ BGM</TabsTrigger>
+          </TabsList>
         </div>
-      </div>
 
-      <div className="max-w-4xl mx-auto">
-        {/* STEP 01: INPUT */}
-        {currentStep === 1 && (
-          <div className="grid md:grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 shadow-2xl hover:border-red-500/50 transition-all group cursor-pointer" onClick={() => !isUploading && fileInputRef.current?.click()}>
-              <input type="file" ref={fileInputRef} onChange={simulateUpload} className="hidden" accept="video/*,audio/*" />
-              <div className="h-full flex flex-col items-center justify-center text-center space-y-6 py-10">
-                <div className="w-20 h-20 bg-slate-950 rounded-[2rem] flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
-                  {isUploading ? <Loader2 className="h-10 w-10 text-red-500 animate-spin" /> : <Upload className="h-10 w-10 text-red-500" />}
-                </div>
-                <div>
-                  <h4 className="text-2xl font-black text-white italic uppercase tracking-tighter">File Upload</h4>
-                  <p className="text-slate-500 mt-1 font-bold text-xs uppercase">Video / Audio</p>
-                </div>
-                {isUploading && (
-                  <div className="w-full space-y-2">
-                    <div className="h-1.5 w-full bg-slate-950 rounded-full overflow-hidden">
-                      <div className="h-full bg-red-600 transition-all duration-300" style={{ width: `${uploadProgress}%` }}></div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </Card>
-
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 shadow-2xl">
-              <div className="h-full flex flex-col justify-center space-y-6">
-                <div className="flex items-center gap-3">
-                  <Youtube className="h-6 w-6 text-red-600" />
-                  <h4 className="text-2xl font-black text-white italic uppercase tracking-tighter">YouTube URL</h4>
-                </div>
-                <input 
-                  type="text" 
-                  value={youtubeUrl}
-                  onChange={(e) => setYoutubeUrl(e.target.value)}
-                  placeholder="Paste video link..." 
-                  className="w-full bg-slate-950 border-2 border-slate-800 rounded-2xl p-4 text-sm focus:border-red-600 outline-none text-white shadow-inner font-mono" 
-                />
-                <Button onClick={simulateUpload} disabled={!youtubeUrl || isUploading} className="w-full h-14 bg-white text-black hover:bg-red-600 hover:text-white font-black text-lg rounded-2xl shadow-xl transition-all uppercase italic">
-                  Fetch Content <ChevronRight className="ml-1 h-5 w-5" />
-                </Button>
-              </div>
-            </Card>
-          </div>
-        )}
-
-        {/* STEP 02: COPY & REDIRECT */}
-        {currentStep === 2 && (
-          <div className="space-y-8 animate-in fade-in zoom-in duration-500">
+        <div className="mt-8">
+          {/* ① 文字起こし (FFmpeg WASM Simulator) */}
+          <TabsContent value="transcribe" className="animate-in fade-in slide-in-from-bottom-4">
             <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl">
-              <div className="space-y-8">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-2xl font-black text-white italic uppercase flex items-center gap-3"><FileText className="text-red-500" /> 文字起こしプレビュー</h4>
-                  <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1 font-bold">READY</Badge>
-                </div>
-                <div className="bg-slate-950 border-2 border-slate-800 rounded-2xl p-6 h-40 overflow-y-auto text-slate-400 text-sm font-medium leading-relaxed">{transcript}</div>
+              <div className="grid md:grid-cols-2 gap-10">
                 <div className="space-y-6">
-                  <div className="flex items-center gap-3"><Zap className="h-6 w-6 text-yellow-500 fill-yellow-500" /><h4 className="text-xl font-black text-white uppercase italic tracking-tighter">最強プロンプトをコピー</h4></div>
-                  <Button onClick={handleCopy} className={`w-full h-20 font-black text-2xl rounded-2xl shadow-2xl transition-all duration-300 ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-red-600 text-white hover:bg-red-500'}`}>
-                    {copied ? '✅ COPIED!' : 'プロンプトをコピー'}
-                  </Button>
-                  <div className={`pt-6 transition-all duration-700 ${copied ? 'opacity-100 translate-y-0' : 'opacity-40'}`}>
-                    <p className="text-center text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">貼り付け先AIを選択</p>
-                    <div className="grid grid-cols-3 gap-4">
-                      {MAJOR_AI.map(ai => (
-                        <a key={ai.id} href={ai.url} target="_blank" rel="noopener noreferrer" className={`${ai.color} h-16 rounded-xl flex flex-col items-center justify-center gap-1 hover:scale-105 transition-all shadow-xl group`}>
-                          <span className="text-xl">{ai.icon}</span><span className="font-black text-[9px] tracking-tighter text-white/90">{ai.name}</span>
-                        </a>
-                      ))}
+                  <div className="w-16 h-16 bg-red-600/10 rounded-2xl flex items-center justify-center"><Volume2 className="h-8 w-8 text-red-500" /></div>
+                  <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">音声を抽出・圧縮</h3>
+                  <p className="text-slate-400 font-medium leading-relaxed">
+                    ブラウザ内で動画から音声を抜き出し、AIに渡しやすいMP3に変換します。<br />
+                    <span className="text-red-500 font-bold">※サーバーには一切送信されません（プライバシー安全）</span>
+                  </p>
+                  <div className="border-2 border-dashed border-slate-800 rounded-3xl p-10 text-center hover:bg-slate-950 transition-all group cursor-pointer relative">
+                    <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="video/*,audio/*" />
+                    <Upload className="h-10 w-10 text-slate-700 group-hover:text-red-500 mx-auto mb-4" />
+                    <p className="text-slate-500 font-bold">動画ファイルをドロップ</p>
+                  </div>
+                </div>
+                <div className="bg-slate-950 rounded-[2.5rem] p-8 border border-slate-800 flex flex-col justify-center space-y-6">
+                  <div className="space-y-2">
+                    <p className="text-xs font-black text-slate-500 uppercase tracking-widest">Recommended AI for Transcription</p>
+                    <div className="flex gap-2">
+                      <Button variant="outline" className="flex-1 border-slate-800 text-slate-300 font-bold italic" onClick={() => window.open('https://chatgpt.com', '_blank')}>ChatGPT</Button>
+                      <Button variant="outline" className="flex-1 border-slate-800 text-slate-300 font-bold italic" onClick={() => window.open('https://gemini.google.com', '_blank')}>Gemini</Button>
                     </div>
-                    <div className="mt-8 text-center">
-                      <Button variant="ghost" onClick={() => setCurrentStep(3)} className="text-slate-400 hover:text-white font-black italic">
-                        生成が終わったら次へ進む <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </div>
+                  </div>
+                  <div className="p-6 bg-slate-900 rounded-2xl border border-white/5">
+                    <p className="text-sm font-bold text-white mb-2 italic">最強の指示書（コピーしてAIへ）</p>
+                    <p className="text-xs text-slate-500 mb-4 font-mono leading-relaxed">「以下の音声ファイルから、重要な発言を逃さず一言一句文字起こししてください。誤字脱字は文脈から補正してください。」</p>
+                    <Button onClick={() => handleCopy("以下の音声ファイルから、重要な発言を逃さず一言一句文字起こししてください。誤字脱字は文脈から補正してください。")} className="w-full bg-red-600 hover:bg-red-500 text-white font-black rounded-xl h-12 uppercase italic">{copied ? '✅ COPIED' : '指示をコピー'}</Button>
                   </div>
                 </div>
               </div>
             </Card>
-          </div>
-        )}
+          </TabsContent>
 
-        {/* STEP 03: SAVE & EXPORT */}
-        {currentStep === 3 && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-700">
+          {/* ② 台本作成 */}
+          <TabsContent value="script" className="animate-in fade-in slide-in-from-bottom-4">
             <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl">
-              <div className="space-y-8">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-6">
-                  <div className="flex items-center gap-3">
-                    <Save className="h-6 w-6 text-emerald-500" />
-                    <h4 className="text-2xl font-black text-white italic uppercase tracking-tighter">生成結果を保存</h4>
-                  </div>
+              <div className="space-y-8 text-center max-w-2xl mx-auto">
+                <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">台本プロンプトを生成</h3>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {GENRES.map(g => (
+                    <Button key={g} variant={selectedGenre === g ? 'default' : 'outline'} onClick={() => setSelectedGenre(g)} className={`rounded-xl font-bold h-10 ${selectedGenre === g ? 'bg-red-600 border-red-400' : 'border-slate-800 text-slate-400'}`}>{g}</Button>
+                  ))}
                 </div>
-                
-                <p className="text-slate-400 text-sm font-bold italic">AIが生成した台本やタイトルをここに貼り付けて保存できます</p>
-                <textarea 
-                  value={finalResult} 
-                  onChange={(e) => setFinalResult(e.target.value)} 
-                  placeholder="AIの回答をここに貼り付けてください..." 
-                  className="w-full h-80 bg-slate-950 border-2 border-slate-800 rounded-[2rem] p-8 text-slate-200 focus:border-emerald-500 outline-none shadow-inner" 
-                />
-
-                <div className="flex flex-col md:flex-row gap-4">
-                  <Button 
-                    onClick={handleDownload}
-                    disabled={!finalResult}
-                    className="flex-1 h-16 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xl rounded-2xl shadow-xl transition-all"
-                  >
-                    <Download className="mr-2" /> テキストファイルで保存
-                  </Button>
-                  <Button 
-                    onClick={() => { setFinalResult(''); setCurrentStep(1); }}
-                    variant="outline"
-                    className="h-16 border-slate-800 text-slate-400 hover:bg-slate-900 px-8 rounded-2xl font-black italic uppercase"
-                  >
-                    <RotateCcw className="mr-2 h-4 w-4" /> 最初から
-                  </Button>
+                <div className="p-8 bg-slate-950 rounded-[2rem] border-2 border-slate-800 text-left relative group">
+                  <div className="absolute top-4 right-4"><Zap className="text-yellow-500 fill-yellow-500" /></div>
+                  <p className="text-sm font-bold text-slate-300 mb-4 italic">ジャンル：{selectedGenre}</p>
+                  <p className="text-xs text-slate-500 leading-relaxed font-mono">
+                    「あなたはプロのYouTube作家です。先程の文字起こしをもとに、視聴者を飽きさせない【{selectedGenre}】向けの台本を作成してください。構成はオープニング、本編、エンディングの3部構成とし、各セクションの尺の目安も入れてください。」
+                  </p>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4 pt-4">
+                  <Button onClick={() => handleCopy(`あなたはプロのYouTube作家です。先程の文字起こしをもとに、視聴者を飽きさせない【${selectedGenre}】向けの台本を作成してください。構成はオープニング、本編、エンディングの3部構成とし、各セクションの尺の目安も入れてください。`)} className="h-16 bg-red-600 hover:bg-red-500 text-white font-black text-xl rounded-2xl shadow-xl italic uppercase">{copied ? '✅ COPIED' : '指示をコピー'}</Button>
+                  <Button variant="outline" onClick={() => window.open('https://claude.ai', '_blank')} className="h-16 border-slate-800 text-slate-300 font-black text-xl rounded-2xl italic uppercase">CLAUDEを開く <ExternalLink className="ml-2 w-5 h-5" /></Button>
                 </div>
               </div>
             </Card>
-          </div>
-        )}
+          </TabsContent>
+
+          {/* ③ 人物画像 */}
+          <TabsContent value="character" className="animate-in fade-in slide-in-from-bottom-4">
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-12 shadow-2xl text-center">
+              <div className="max-w-xl mx-auto space-y-8">
+                <div className="w-20 h-20 bg-yellow-500/10 rounded-3xl flex items-center justify-center mx-auto"><Scissors className="h-10 w-10 text-yellow-500" /></div>
+                <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">登場人物のイラスト生成</h3>
+                <p className="text-slate-400 font-medium italic leading-relaxed">台本から登場人物を自動でリストアップし、一貫性のあるアニメ風イラストを生成する指示をコピーします。</p>
+                <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 text-left font-mono text-xs text-slate-500">
+                  「この台本に登場する主要人物をリストアップしてください。その後、各キャラクターの特徴を捉えた、YouTube解説動画で使いやすい高品質なアニメ風立ち絵を生成してください。」
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Button onClick={() => handleCopy("この台本に登場する主要人物をリストアップしてください。その後、各キャラクターの特徴を捉えた、YouTube解説動画で使いやすい高品質なアニメ風立ち絵を生成してください。")} className="h-14 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl italic uppercase">{copied ? '✅ COPIED' : '指示をコピー'}</Button>
+                  <Button variant="outline" onClick={() => window.open('https://chatgpt.com', '_blank')} className="h-14 border-slate-800 text-slate-300 font-black rounded-xl italic uppercase">DALL-E 3 (GPT) <ExternalLink className="ml-2 w-4 h-4" /></Button>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
+
+          {/* ④ サムネイル */}
+          <TabsContent value="thumbnail" className="animate-in fade-in slide-in-from-bottom-4">
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-12 shadow-2xl text-center">
+              <div className="max-w-xl mx-auto space-y-8">
+                <div className="w-20 h-20 bg-emerald-500/10 rounded-3xl flex items-center justify-center mx-auto"><ImageIcon className="h-10 w-10 text-emerald-500" /></div>
+                <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">最強サムネイル案</h3>
+                <p className="text-slate-400 font-medium italic leading-relaxed">クリック率を最大化する3パターンのデザイン構成と、具体的な画像生成プロンプトを作成します。</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {['🔥 インパクト系', '💡 情報・解決系', '😢 感情・共感系'].map(tag => (
+                    <Badge key={tag} className="bg-slate-950 border-slate-800 text-slate-400 py-2 justify-center">{tag}</Badge>
+                  ))}
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Button onClick={() => handleCopy("この動画の内容に最適な、YouTubeサムネイル案を3パターン（インパクト重視、情報量重視、感情重視）提案してください。サイズは16:9とし、入れるべきキャッチコピーと画像構成、背景、色の指定を含めてください。")} className="h-14 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl italic uppercase">{copied ? '✅ COPIED' : '指示をコピー'}</Button>
+                  <Button variant="outline" onClick={() => window.open('https://www.canva.com', '_blank')} className="h-14 border-slate-800 text-slate-300 font-black rounded-xl italic uppercase">CANVAを開く <ExternalLink className="ml-2 w-4 h-4" /></Button>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
+
+          {/* ⑤ タイトル/SEO */}
+          <TabsContent value="seo" className="animate-in fade-in slide-in-from-bottom-4">
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-12 shadow-2xl text-center">
+              <div className="max-w-xl mx-auto space-y-8">
+                <div className="w-20 h-20 bg-blue-500/10 rounded-3xl flex items-center justify-center mx-auto"><Type className="h-10 w-10 text-blue-500" /></div>
+                <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">SEO最適化セット</h3>
+                <p className="text-slate-400 font-medium italic leading-relaxed">Google検索とYouTube検索の両方で有利になる、タイトル・タグ・説明文のセットです。</p>
+                <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 text-left font-mono text-[10px] text-slate-500 space-y-2">
+                  <p>・SEO最適化タイトル5案</p>
+                  <p>・ハッシュタグ15個（ボリューム順）</p>
+                  <p>・クリックされる動画説明文（チャプター付き）</p>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Button onClick={() => handleCopy("この動画をYouTubeに投稿します。SEOに最適化された、クリックされやすいタイトルを5案出してください。また、関連ハッシュタグを15個、動画のチャプターを含む魅力的な説明文を作成してください。")} className="h-14 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl italic uppercase">{copied ? '✅ COPIED' : '指示をコピー'}</Button>
+                  <Button variant="outline" onClick={() => window.open('https://gemini.google.com', '_blank')} className="h-14 border-slate-800 text-slate-300 font-black rounded-xl italic uppercase">GEMINI (SEO推奨) <ExternalLink className="ml-2 w-4 h-4" /></Button>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
+
+          {/* ⑥ BGM */}
+          <TabsContent value="bgm" className="animate-in fade-in slide-in-from-bottom-4">
+            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-12 shadow-2xl text-center">
+              <div className="max-w-xl mx-auto space-y-8">
+                <div className="w-20 h-20 bg-purple-500/10 rounded-3xl flex items-center justify-center mx-auto"><Music className="h-10 w-10 text-purple-500" /></div>
+                <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">BGM & サウンド生成</h3>
+                <p className="text-slate-400 font-medium italic leading-relaxed">動画の雰囲気に合わせたBGM生成プロンプトや、おすすめのフリー音源サイトへ誘導します。</p>
+                <div className="flex justify-center gap-4">
+                   <a href="https://suno.com" target="_blank" className="bg-slate-950 border border-slate-800 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-600/10 transition-colors">Suno AI</a>
+                   <a href="https://dova-s.jp" target="_blank" className="bg-slate-950 border border-slate-800 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-600/10 transition-colors">DOVA-SYNDROME</a>
+                </div>
+                <div className="grid md:grid-cols-1">
+                  <Button onClick={() => handleCopy("この動画の台本の雰囲気に合わせた、YouTubeのバックグラウンドで流すのに最適なBGMの構成案と、音楽生成AI用のプロンプトを作成してください。")} className="h-14 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl italic uppercase">{copied ? '✅ COPIED' : '指示をコピー'}</Button>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
+        </div>
+      </Tabs>
+
+      <div className="mt-16 text-center text-slate-500">
+         <p className="text-[10px] font-black uppercase tracking-widest italic">Powered by NextraLabs — AIの力を、あなたの日常に。</p>
       </div>
     </div>
   )
