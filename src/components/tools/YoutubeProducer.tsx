@@ -9,7 +9,11 @@ import { ArrowRight, Video, FileText, Users, ImageIcon, Music, Type, Download, C
 
 const STEPS = [
   { id: 1, label: '素材取り込み', what: '動画・音声の解析準備', how: '動画または音声ファイルをアップロード。AIが扱いやすい形式に自動抽出します。', result: '文字起こし用の音声データ' },
-  { id: 2, label: '台本作成', what: 'ストーリー構築', how: '生成されたプロンプトをコピーしてAIに渡してください。', result: 'プロ級の動画台本' }
+  { id: 2, label: '台本作成', what: 'ストーリー構築', how: '生成されたプロンプトをコピーしてAIに渡してください。', result: 'プロ級の動画台本' },
+  { id: 3, label: 'キャラ設定', what: '登場人物の定義', how: '台本から魅力的なキャラ像をAIに提案させます。', result: '詳細なキャラ設定案' },
+  { id: 4, label: 'サムネイル', what: 'クリック率最大化デザイン', how: 'デザインの天才DALL-E 3等にサムネイル案を依頼します。', result: 'インパクトのある構図案' },
+  { id: 5, label: 'タイトル/タグ', what: 'YouTube SEO最適化', how: '検索アルゴリズムに最適化したタイトルを作成します。', result: '検索に強いタイトルとタグ' },
+  { id: 6, label: 'BGM作成', what: '感情を揺さぶる音の魔法', how: '動画の雰囲気にマッチするBGMプロンプトを作成します。', result: 'オリジナルBGM' }
 ]
 
 const MAJOR_AI = [
@@ -52,19 +56,42 @@ export default function YoutubeProducer() {
         <h1 className='text-5xl md:text-7xl font-black text-white uppercase italic leading-none tracking-tighter'>YouTube Producer</h1>
       </div>
 
+      <div className='flex items-center justify-center max-w-6xl mx-auto overflow-x-auto pb-10 px-10'>
+        <div className='flex items-center justify-between w-full min-w-[800px]'>
+          {STEPS.map((s, i) => (
+            <div key={s.id} className='flex items-center flex-1 last:flex-none'>
+              <div className={lex flex-col items-center gap-3 transition-all }>
+                <div className={w-14 h-14 rounded-2xl flex items-center justify-center border-2 }>
+                  {currentStep > s.id ? <CheckCircle2 className='h-8 w-8' /> : <s.icon className='h-8 w-8' />}
+                </div>
+                <span className='text-[10px] font-black uppercase tracking-widest mt-2'>{s.label}</span>
+              </div>
+              {i < STEPS.length - 1 && <div className={h-1 flex-1 mx-4 rounded-full transition-all mb-8 } />}
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className='max-w-4xl mx-auto bg-indigo-600 p-10 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden text-left'>
         <div className='absolute top-0 right-0 p-8 opacity-10'><HelpCircle className='h-40 w-40' /></div>
-        <div className='relative z-10 space-y-6'>
+        <div className='relative z-10 space-y-6 text-left'>
           <div className='flex items-center gap-4'>
             <Badge className='bg-white text-indigo-600 font-black px-6 py-2 text-xl rounded-2xl shadow-xl'>STEP 0{currentStep}</Badge>
             <h3 className='text-4xl font-black italic uppercase tracking-tighter'>{currentInfo.what}</h3>
           </div>
           <p className='text-2xl font-bold leading-relaxed opacity-95'>{currentInfo.how}</p>
+          <div className='bg-black/20 p-6 rounded-3xl border border-white/10 flex items-center gap-4'>
+             <div className='p-3 bg-emerald-500 rounded-2xl shadow-lg'><Zap className='h-8 w-8 text-slate-950 fill-current' /></div>
+             <div>
+               <p className='text-emerald-300 font-black text-xl italic uppercase tracking-widest leading-none mb-1'>Expected Success:</p>
+               <p className='text-white font-bold text-lg'>{currentInfo.result}</p>
+             </div>
+          </div>
         </div>
       </div>
 
       <div className='animate-in fade-in slide-in-from-bottom-8 duration-700'>
-        <Card className='bg-slate-900 border-2 border-slate-800 rounded-[4rem] p-16 shadow-2xl max-w-5xl mx-auto overflow-hidden'>
+        <Card className='bg-slate-900 border-2 border-slate-800 rounded-[4.5rem] p-16 shadow-2xl max-w-5xl mx-auto overflow-hidden'>
           {currentStep === 1 ? (
              <div className='space-y-12'>
                 <input ref={fileRef} type='file' accept='video/*,audio/*' onChange={(e) => { const f = e.target.files[0]; if(f){setSelectedFile(f); extractAudio(f)}} } className='hidden' />
@@ -80,7 +107,7 @@ export default function YoutubeProducer() {
                         <a href={extractedAudioUrl} download='nextra-audio.mp3' className='w-full h-32 bg-blue-600 hover:bg-blue-500 text-white font-black text-3xl rounded-[2.5rem] shadow-2xl flex items-center justify-center gap-6'>
                            <Download className='h-12 w-12' /> 音声を保存
                         </a>
-                        <Button onClick={() => { navigator.clipboard.writeText('詳細に漏れのないように文字起こしして。'); setCopiedId('tr') }} className={'w-full h-32 font-black text-3xl rounded-[2.5rem] shadow-2xl transition-all ' + (copiedId === 'tr' ? 'bg-emerald-500 text-slate-950' : 'bg-white text-black')}>指示をコピー</Button>
+                        <Button onClick={() => { navigator.clipboard.writeText('詳細に漏れのないように文字起こしして。'); setCopiedId('tr'); setTimeout(() => setCopiedId(null), 3000) }} className={'w-full h-32 font-black text-4xl rounded-[2.5rem] shadow-2xl transition-all ' + (copiedId === 'tr' ? 'bg-emerald-500 text-slate-950' : 'bg-white text-black')}>指示をコピー</Button>
                     </div>
                     <div className='grid grid-cols-3 gap-6 pt-12 border-t border-white/5'>
                       {MAJOR_AI.map(ai => (
@@ -93,24 +120,34 @@ export default function YoutubeProducer() {
                   </div>
                 )}
                 <div className='space-y-8 pt-12 border-t border-slate-800'>
-                  <Label className='text-3xl font-black text-white flex items-center gap-4 italic uppercase'><MessageSquareText className='h-12 w-12 text-red-500' /> Result Paste Area</Label>
-                  <textarea value={inputText} onChange={(e) => setInputText(e.target.value)} placeholder='AIの結果を貼り付け...' className='w-full h-96 bg-slate-950 border-2 border-slate-800 rounded-[3rem] p-12 text-3xl font-medium focus:border-red-600 text-white' />
+                  <Label className='text-3xl font-black text-white flex items-center gap-4 italic uppercase text-left'><MessageSquareText className='h-12 w-12 text-red-500' /> Result Paste Area</Label>
+                  <textarea value={inputText} onChange={(e) => setInputText(e.target.value)} placeholder='AIから返ってきたテキストを貼り付け...' className='w-full h-96 bg-slate-950 border-2 border-slate-800 rounded-[3rem] p-12 text-3xl font-medium focus:border-red-600 text-white shadow-inner' />
                   <Button onClick={() => setCurrentStep(2)} disabled={!inputText} className='w-full h-32 bg-red-600 text-white font-black text-4xl rounded-[3rem] shadow-2xl mt-12 gap-6 uppercase italic'>Next Stage <ArrowRight className='h-12 w-12' /></Button>
                 </div>
              </div>
           ) : (
              <div className='space-y-16'>
-                <div className='flex justify-between items-center mb-4'><h2 className='text-4xl font-black text-white uppercase italic tracking-tighter'>Step 02: Scripting</h2></div>
-                <div className='bg-slate-950 p-12 rounded-[3.5rem] border-2 border-white/5 font-mono text-2xl text-slate-300 leading-relaxed mb-10 max-h-[600px] overflow-y-auto shadow-inner text-left'>{inputText}</div>
-                <div className='grid grid-cols-1 md:grid-cols-3 gap-8 pt-12 border-t border-white/10'>
-                   {MAJOR_AI.map(ai => (
-                     <a key={ai.id} href={ai.url} target='_blank' className={'p-10 rounded-[3rem] border-2 bg-slate-950 flex flex-col items-center justify-center gap-6 hover:scale-105 transition-all shadow-xl ' + (currentStep === 2 && ai.id === 'claude' ? 'border-orange-500' : 'border-white/5 opacity-80')}>
-                       {currentStep === 2 && ai.id === 'claude' && <Badge className='absolute -top-4 bg-orange-600 text-white font-black px-6 py-2 text-base uppercase mb-4 shadow-lg'>Recommended</Badge>}
-                       <span className='text-8xl'>{ai.icon}</span>
-                       <span className='font-black text-white text-4xl uppercase tracking-tighter'>{ai.name}</span>
-                     </a>
-                   ))}
+                <div className='flex justify-between items-center mb-4'><h2 className='text-4xl font-black text-white uppercase italic tracking-tighter'>Step 0{currentStep}: {currentInfo.label}</h2><Button variant='ghost' onClick={() => setCurrentStep(1)} className='text-slate-500 font-bold text-2xl uppercase'>← Back</Button></div>
+                <div className='space-y-8'>
+                   <Label className='text-emerald-400 font-black uppercase text-sm tracking-[0.4em] flex items-center gap-4 px-4'><Zap className='h-6 w-6' /> 1. Copy Prompt</Label>
+                   <div className='bg-slate-950 p-12 rounded-[3.5rem] border-2 border-white/5 font-mono text-3xl text-slate-300 leading-relaxed mb-10 max-h-[600px] overflow-y-auto shadow-inner text-left'>以下の文字起こしを元にYouTube台本を書いて。:\n\n{inputText}</div>
+                   <Button onClick={() => { navigator.clipboard.writeText('YouTube台本を書いて：'+inputText); setCopiedId('pr'); setTimeout(() => setCopiedId(null), 3000) }} className={'w-full h-32 font-black text-4xl rounded-[2.5rem] shadow-2xl transition-all ' + (copiedId === 'pr' ? 'bg-emerald-500 text-slate-950' : 'bg-white text-black')}>
+                      {copiedId === 'pr' ? '✅ COPIED' : 'プロンプトをコピー'}
+                   </Button>
                 </div>
+                <div className='space-y-8 pt-12 border-t border-white/10'>
+                   <Label className='text-blue-400 font-black uppercase text-sm tracking-[0.4em] flex items-center gap-4 px-4'><Globe className='h-6 w-6' /> 2. Choose AI (Gemini ➔ GPT ➔ Claude)</Label>
+                   <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
+                     {MAJOR_AI.map(ai => (
+                       <a key={ai.id} href={ai.url} target='_blank' className={'p-10 rounded-[3rem] border-2 bg-slate-950 flex flex-col items-center justify-center gap-6 hover:scale-105 transition-all shadow-xl ' + (currentStep === 2 && ai.id === 'claude' ? 'border-orange-500 ring-4 ring-orange-500/10 scale-110' : 'border-white/5 opacity-80')}>
+                         {currentStep === 2 && ai.id === 'claude' && <Badge className='absolute -top-4 bg-orange-600 text-white font-black px-6 py-2 text-base uppercase mb-4 shadow-lg animate-pulse'>Recommended</Badge>}
+                         <span className='text-8xl'>{ai.icon}</span>
+                         <span className='font-black text-white text-4xl uppercase tracking-tighter'>{ai.name}</span>
+                       </a>
+                     ))}
+                   </div>
+                </div>
+                {currentStep < 6 && <Button onClick={() => setCurrentStep(currentStep + 1)} className='w-full h-32 bg-slate-800 text-white font-black text-3xl rounded-[3rem] mt-16 border-b-8 border-slate-950 uppercase italic tracking-widest'>Next Stage <ArrowRight className='ml-4 h-10 w-10' /></Button>}
              </div>
           )}
         </Card>
