@@ -124,6 +124,32 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
                 </div>
                 <div className="flex gap-2">
                   <Button 
+                    onClick={async () => {
+                      console.log('[TEST] Starting API Connectivity Test...');
+                      const endpoints = [
+                        { name: 'Trends API', url: '/api/trends' },
+                        { name: 'Gmail Fetch', url: '/api/tools/gmail-fetch' },
+                        { name: 'Gmail Action', url: '/api/tools/gmail-action' },
+                        { name: 'Printful API', url: '/api/tools/printful' }
+                      ];
+                      for (const ep of endpoints) {
+                        try {
+                          const start = Date.now();
+                          const res = await fetch(ep.url, { method: 'POST', body: JSON.stringify({}) }).catch(() => fetch(ep.url));
+                          const duration = Date.now() - start;
+                          if (res.ok) console.log(`[TEST] ✅ ${ep.name}: OK (${duration}ms)`);
+                          else console.warn(`[TEST] ⚠️ ${ep.name}: HTTP ${res.status} (${duration}ms)`);
+                        } catch (e) {
+                          console.error(`[TEST] ❌ ${ep.name}: FAILED`, e);
+                        }
+                      }
+                      console.log('[TEST] Connectivity Test Completed.');
+                    }}
+                    className="h-8 bg-amber-600 hover:bg-amber-500 text-[10px] font-black rounded-lg px-4 flex items-center gap-2"
+                  >
+                    <Zap size={12} /> API TEST
+                  </Button>
+                  <Button 
                     onClick={takeScreenshot}
                     className="h-8 bg-pink-600 hover:bg-pink-500 text-[10px] font-black rounded-lg px-4 flex items-center gap-2"
                   >
