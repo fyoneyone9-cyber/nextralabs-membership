@@ -1,107 +1,134 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ArrowRight, Search, Ticket, Zap, ChevronRight, Copy, ExternalLink, RotateCcw, Lightbulb, ClipboardPaste, Calendar, MapPin, Info, Sparkles, CheckCircle2 } from 'lucide-react'
+import { 
+  ArrowRight, Search, Ticket, Zap, ChevronRight, Copy, ExternalLink, RotateCcw, Lightbulb, Calendar, MapPin, CheckCircle2, Loader2, LogIn, RefreshCw, XCircle
+} from 'lucide-react'
 
-const TABS = [
-  { id: 'input', label: '① 案件入力', icon: Search },
-  { id: 'report', label: '② 確保戦略', icon: Ticket },
-];
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''
+const GOOGLE_SCOPES = 'https://www.googleapis.com/auth/calendar.events'
 
 export default function TicketScout() {
-  const [activeTab, setActiveTab] = useState('input');
-  const [copied, setCopied] = useState(false);
-  const [eventInfo, setEventInfo] = useState('');
-  const [scoutResult, setScoutResult] = useState('');
+  const [artistName, setArtistName] = useState('');
+  const [googleToken, setGoogleToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState<any[]>([]);
+  const [authLoading, setAuthLoading] = useState(false);
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  useEffect(() => {
+    const hash = new URLSearchParams(window.location.hash.slice(1))
+    const token = hash.get('access_token')
+    if (token) { setGoogleToken(token); window.history.replaceState(null, '', window.location.pathname); }
+  }, []);
+
+  const handleGoogleAuth = useCallback(() => {
+    setAuthLoading(true)
+    const params = new URLSearchParams({
+      client_id: GOOGLE_CLIENT_ID,
+      redirect_uri: window.location.href.split('?')[0].split('#')[0],
+      response_type: 'token',
+      scope: GOOGLE_SCOPES,
+      prompt: 'consent',
+    })
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`
+  }, []);
+
+  const handleSearch = async () => {
+    if (!artistName) return;
+    setLoading(true);
+    try {
+      const res = await fetch('/api/tools/ticket-scout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ artist: artistName, googleAccessToken: googleToken }),
+      });
+      const data = await res.json();
+      setResults(data.events || []);
+    } catch (e) {
+      alert("検索に失敗しました。");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const FINAL_PROMPT = `あなたはプロのチケットスカウトです。
-以下の【案件情報】を元に、最速かつ確実にチケットを確保するための「勝利の戦略」を提示してください。
-
-1. 【確保難易度】: 倍率予想と希少性。
-2. 【販売ルートの全把握】: FC先行、e+、ローチケ、ぴあ、一般販売の全日程とURL。
-3. 【スカウトの秘策】: サーバー混雑対策、リセール狙いのタイミング。`;
-
-  const renderGuide = (steps: string[]) => (
-    <div className="bg-slate-900 border-2 border-indigo-600/50 rounded-2xl p-5 md:p-8 mb-8 flex items-start gap-4 shadow-xl">
-      <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg"><Lightbulb className="text-white" /></div>
-      <div className="space-y-1">
-        <p className="text-sm font-black text-indigo-400 uppercase italic tracking-widest">Scout Protocol</p>
-        {steps.map((s, i) => (
-          <p key={i} className="text-xs md:text-base text-slate-300 font-bold flex items-center gap-2 leading-tight"><span className="text-indigo-500 italic">#{i+1}</span> {s}</p>
-        ))}
-      </div>
-    </div>
-  );
-
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-slate-950">
+    <div className="max-w-6xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-slate-950">
       <div className="text-center space-y-2">
-        <Badge className="bg-indigo-600 text-white font-black italic tracking-widest px-4 py-1 text-[10px] uppercase rounded-full">EVENT INTELLIGENCE</Badge>
-        <h1 className="text-5xl md:text-7xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl">Ticket Scout AI</h1>
+        <Badge className="bg-indigo-600 text-white font-black italic tracking-widest px-4 py-1 text-[10px] uppercase rounded-full">EVENT INTELLIGENCE ENGINE</Badge>
+        <h1 className="text-4xl md:text-7xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl">Ticket Scout</h1>
       </div>
 
-      <div className="overflow-x-auto pb-4 scrollbar-hide">
-        <div className="bg-slate-900 border border-slate-800 p-1 flex min-w-[400px] md:min-w-full rounded-2xl shadow-2xl">
-          {TABS.map((tab) => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex-1 py-4 px-2 rounded-xl font-black text-sm uppercase italic transition-all flex items-center justify-center gap-2 relative ${activeTab === tab.id ? 'bg-indigo-600 text-white shadow-xl scale-[1.03] z-10' : 'text-slate-500 hover:text-white'}`}>
-              <tab.icon className="w-5 h-5" /> <span>{tab.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-4">
-        {activeTab === 'input' && (
-          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in slide-in-from-bottom-4 text-center">
-            <h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 text-indigo-400"><Search /> ① 案件入力</h3>
-            {renderGuide(['イベント名やチケット販売サイトのURLを入力', 'スカウト指示をコピーしてAIへ投げ、調査させる', 'AIが返した販売スケジュールと戦略を右に戻す'])}
-            <div className="grid lg:grid-cols-2 gap-12 text-left">
-              <div className="space-y-6">
-                 <textarea value={eventInfo} onChange={(e) => setEventInfo(e.target.value)} placeholder="例：King Gnu 2026 ドームツアー 東京公演のチケット情報..." className="w-full h-64 bg-slate-950 border-2 border-slate-800 rounded-2xl p-6 text-base text-slate-200 focus:border-indigo-500 outline-none font-medium shadow-inner" />
-                 {eventInfo && (
-                    <div className="space-y-4">
-                       <Button onClick={() => { navigator.clipboard.writeText(FINAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className={`w-full h-16 font-black rounded-xl transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-indigo-600 text-white'}`}>スカウト指示をコピー</Button>
-                       <div className="grid grid-cols-2 gap-4">
-                          <Button variant="outline" className="h-12 border-slate-800 text-xs font-black uppercase italic" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI ↗</Button>
-                          <Button variant="outline" className="h-12 border-slate-800 text-xs font-black uppercase italic" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT ↗</Button>
-                       </div>
-                    </div>
-                 )}
-              </div>
-              <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 space-y-6 shadow-2xl flex flex-col justify-center">
-                 <div className="flex items-center gap-4"><ClipboardPaste className="h-8 w-8 text-indigo-400" /><h3 className="text-xl font-black text-white italic uppercase tracking-tighter">AIの調査結果を戻す</h3></div>
-                 <textarea value={scoutResult} onChange={(e) => setScoutResult(e.target.value)} placeholder="AIからの日程案等をここにペースト..." className="w-full h-80 bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 text-sm text-slate-300 focus:border-indigo-500 outline-none font-medium font-mono" />
-              </div>
+      {/* STEP 1: AUTH */}
+      <Card className={`bg-slate-900 border-4 transition-all ${googleToken ? 'border-indigo-500/50 shadow-2xl' : 'border-slate-800'}`}>
+        <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-6">
+            <div className={`w-16 h-16 rounded-3xl flex items-center justify-center shadow-2xl ${googleToken ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-500'}`}>
+              <Calendar className="w-8 h-8" />
             </div>
-            {scoutResult && (
-               <Button onClick={() => setActiveTab('report')} className="w-full h-20 mt-10 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-4 uppercase italic text-xl group">
-                  ② 最終確保戦略を確認 <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition-transform" />
-               </Button>
-            )}
-          </Card>
-        )}
-
-        {activeTab === 'report' && (
-          <div className="animate-in fade-in zoom-in space-y-8 text-center pb-20">
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-10 md:p-20 shadow-2xl border-l-8 border-l-indigo-600 relative overflow-hidden text-left">
-               <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white"><Ticket className="w-80 h-80" /></div>
-               <h3 className="text-4xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 relative z-10"><Sparkles className="text-indigo-400 animate-pulse w-12 h-12" /> Ticket Scout Mission</h3>
-               <div className="bg-slate-950 rounded-[2.5rem] p-12 border border-slate-800 text-lg text-slate-200 leading-relaxed whitespace-pre-wrap shadow-inner italic relative z-10">
-                  {scoutResult || "データがありません。"}
-               </div>
-            </Card>
-            <Button onClick={() => { setEventInfo(''); setScoutResult(''); setActiveTab('input'); }} variant="outline" className="w-full h-16 border-2 border-slate-800 text-slate-500 hover:bg-slate-800 font-black rounded-2xl uppercase italic"><RotateCcw className="mr-2 h-5 w-5" /> 最初からやり直す</Button>
+            <div className="text-left">
+              <p className="text-xl font-black text-white italic uppercase tracking-tighter">{googleToken ? 'Google Calendar Connected' : 'Google カレンダー連携'}</p>
+              <p className="text-sm text-slate-500 font-bold">発売日を自動登録するためにログインしてください</p>
+            </div>
           </div>
-        )}
-      </div>
+          {!googleToken && (
+            <Button onClick={handleGoogleAuth} className="h-14 bg-white text-black hover:bg-slate-200 font-black px-10 rounded-2xl text-lg uppercase shadow-xl">Connect Google ↗</Button>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* SEARCH SECTION */}
+      <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-16 shadow-2xl">
+         <div className="space-y-10">
+            <div className="text-center space-y-4">
+              <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter flex items-center justify-center gap-4"><Search className="text-indigo-500 w-10 h-10" /> アーティスト検索</h3>
+              <p className="text-slate-500 font-bold italic">e+、ローチケ、ぴあ を一括検索します</p>
+            </div>
+            <div className="max-w-2xl mx-auto flex flex-col md:flex-row gap-4">
+               <input 
+                 type="text" 
+                 value={artistName} 
+                 onChange={e => setArtistName(e.target.value)}
+                 placeholder="例：米津玄師, King Gnu, YOASOBI..." 
+                 className="flex-1 h-20 bg-slate-950 border-4 border-slate-800 rounded-3xl px-8 text-2xl text-white font-black italic focus:border-indigo-600 outline-none transition-all shadow-inner"
+               />
+               <Button onClick={handleSearch} disabled={loading || !artistName} className="h-20 bg-indigo-600 hover:bg-indigo-500 text-white font-black px-12 rounded-3xl text-2xl uppercase italic shadow-2xl group">
+                 {loading ? <Loader2 className="animate-spin" /> : <><Search className="mr-2 group-hover:scale-110 transition-transform" /> Scout Now</>}
+               </Button>
+            </div>
+         </div>
+      </Card>
+
+      {/* RESULTS */}
+      {results.length > 0 && (
+        <div className="space-y-6 animate-in slide-in-from-bottom-10">
+          <div className="flex items-center justify-between px-4">
+            <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter flex items-center gap-3"><Ticket className="text-emerald-500" /> Detected Live Events</h3>
+            <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">{results.length}件の公演を発見</Badge>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {results.map((event, i) => (
+              <Card key={i} className="bg-slate-900 border-2 border-slate-800 p-8 rounded-[2.5rem] hover:border-indigo-500/50 transition-all shadow-xl">
+                 <div className="space-y-4 text-left">
+                    <p className="text-xs font-black text-indigo-500 uppercase tracking-widest italic">{event.source || 'PLAYGUIDE'}</p>
+                    <h4 className="text-xl font-black text-white leading-tight">{event.title}</h4>
+                    <div className="flex flex-wrap gap-4 pt-4 border-t border-slate-800">
+                       <div className="flex items-center gap-2 text-slate-400 font-bold text-xs"><Calendar className="w-4 h-4" /> {event.date || '未定'}</div>
+                       <div className="flex items-center gap-2 text-slate-400 font-bold text-xs"><MapPin className="w-4 h-4" /> {event.venue || '未定'}</div>
+                    </div>
+                    <div className="pt-4 flex gap-2">
+                       <Button variant="outline" className="flex-1 h-12 border-slate-800 text-slate-300 font-black text-xs uppercase" onClick={() => window.open(event.link, '_blank')}>Buy Tickets ↗</Button>
+                       {googleToken && (
+                         <Button className="bg-emerald-600 text-white font-black px-6 h-12 rounded-xl text-xs uppercase"><Calendar className="w-4 h-4 mr-1" /> Added</Button>
+                       )}
+                    </div>
+                 </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
