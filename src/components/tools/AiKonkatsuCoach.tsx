@@ -115,13 +115,13 @@ export default function AiKonkatsuCoach() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [visiblePresets, setVisiblePresets] = useState<any[]>([]);
 
-  // 武器を切り替えたとき、ランダムに4つ選ぶ
+  // 武器を切り替えたとき、ランダムに12個選ぶ
   useEffect(() => {
     if (activeWeapon) {
       const weapon = WEAPONS.find(w => w.id === activeWeapon);
       if (weapon && weapon.presets) {
         const shuffled = [...weapon.presets].sort(() => 0.5 - Math.random());
-        setVisiblePresets(shuffled.slice(0, 4));
+        setVisiblePresets(shuffled.slice(0, 12));
       }
     }
   }, [activeWeapon]);
@@ -187,17 +187,26 @@ export default function AiKonkatsuCoach() {
         /* 機能実行状態：憲法準拠の一本道 */
         <div className="space-y-6 animate-in zoom-in-95">
           {/* プリセットを独立した大きな選択エリアとして配置 */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-             {visiblePresets.map((p, i) => (
-               <Button 
-                key={i} 
-                variant="outline" 
-                onClick={() => setInputData(p.content)} 
-                className="h-24 border-2 border-slate-800 bg-slate-900 text-slate-300 font-black text-xs uppercase italic hover:bg-pink-600/10 hover:border-pink-500/50 rounded-3xl whitespace-normal p-4 leading-tight transition-all active:scale-95 shadow-lg flex items-center justify-center text-center"
-               >
-                 {p.label}
-               </Button>
-             ))}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between px-4">
+              <div className="flex items-center gap-2 text-pink-500 animate-pulse">
+                <Sparkles size={16} />
+                <p className="text-[10px] font-black uppercase italic tracking-widest">Random Strategic Presets</p>
+              </div>
+              <p className="text-[9px] text-slate-500 font-bold italic">※リロードや武器切替のたびに、AIが新しい戦略を12個提案します</p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+               {visiblePresets.map((p, i) => (
+                 <Button 
+                  key={i} 
+                  variant="outline" 
+                  onClick={() => setInputData(p.content)} 
+                  className="h-24 border-2 border-slate-800 bg-slate-900 text-slate-300 font-black text-[10px] uppercase italic hover:bg-pink-600/10 hover:border-pink-500/50 rounded-2xl whitespace-normal p-3 leading-tight transition-all active:scale-95 shadow-lg flex items-center justify-center text-center"
+                 >
+                   {p.label}
+                 </Button>
+               ))}
+            </div>
           </div>
 
           <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3.5rem] p-8 md:p-16 shadow-[0_40px_100px_rgba(0,0,0,0.6)] relative overflow-hidden">
