@@ -25,43 +25,43 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
       try {
         const { data: { user } } = await supabase.auth.getUser()
         if (user?.email === 'f.yoneyone9@gmail.com') setIsAuth(true)
-      } catch (e) { console.warn(e) }
+      } catch (e) { /* ignore */ }
     }
     checkUser()
 
     const originalError = window.console.error;
     const originalLog = window.console.log;
-    const originalWarn = window.console.warn;
 
-    const captureLog = (type: string, ...args: any[]) => {
-      const msg = args.map(arg => {
-        if (arg instanceof Error) return `${arg.name}: ${arg.message}\n${arg.stack}`;
-        if (typeof arg === 'object') {
-          try { return JSON.stringify(arg, null, 2); } catch { return String(arg); }
-        }
-        return String(arg);
-      }).join(' ');
-      
-      setConsoleErrors(prev => [...prev.slice(-50), `[${new Date().toLocaleTimeString()}][${type}] ${msg}`]);
-    };
-
-    window.console.error = (...args: any[]) => {
-      captureLog('ERROR', ...args);
+    const wrapError = (...args: any[]) => {
+      try {
+        const msg = args.map(arg => {
+          try {
+            return typeof arg === 'object' ? JSON.stringify(arg) : String(arg);
+          } catch { return "[Complex Object]"; }
+        }).join(' ');
+        setConsoleErrors(prev => [...prev.slice(-20), `[${new Date().toLocaleTimeString()}][ERR] ${msg}`]);
+      } catch (e) { /* fail silent */ }
       originalError.apply(window.console, args);
     };
-    window.console.log = (...args: any[]) => {
-      captureLog('LOG', ...args);
+
+    const wrapLog = (...args: any[]) => {
+      try {
+        const msg = args.map(arg => {
+          try {
+            return typeof arg === 'object' ? JSON.stringify(arg) : String(arg);
+          } catch { return "[Complex Object]"; }
+        }).join(' ');
+        setConsoleErrors(prev => [...prev.slice(-20), `[${new Date().toLocaleTimeString()}][LOG] ${msg}`]);
+      } catch (e) { /* fail silent */ }
       originalLog.apply(window.console, args);
     };
-    window.console.warn = (...args: any[]) => {
-      captureLog('WARN', ...args);
-      originalWarn.apply(window.console, args);
-    };
+
+    window.console.error = wrapError;
+    window.console.log = wrapLog;
 
     return () => { 
       window.console.error = originalError; 
       window.console.log = originalLog;
-      window.console.warn = originalWarn;
     };
   }, []); 
 
