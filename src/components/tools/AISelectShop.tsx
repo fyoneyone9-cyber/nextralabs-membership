@@ -35,6 +35,7 @@ export default function AISelectShop() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [mockupImage, setMockupImage] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [activeAction, setActiveAction] = useState<string | null>(null);
 
   const [printfulApiKey, setPrintfulApiKey] = useState('');
   const [printfulStoreId, setPrintfulStoreId] = useState('');
@@ -88,9 +89,42 @@ export default function AISelectShop() {
     setMockupImage(null);
     try {
       await new Promise(resolve => setTimeout(resolve, 2000));
-      setConceptResult(`【SHOP IDENTITY】: ${selectedTrend.toUpperCase()}\n【STYLE】: ${selectedStyle}\n【CAT】: ${selectedCategory}\n【SIZE】: ${selectedSizes.join(', ')}`);
-      setMockupImage(`https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=500&auto=format&fit=crop`);
+      const designId = Math.random().toString(36).slice(2, 9);
+      setConceptResult(`【SHOP IDENTITY】: ${selectedTrend.toUpperCase()}\n【STYLE】: ${selectedStyle}\n【CAT】: ${selectedCategory}\n【SIZE】: ${selectedSizes.join(', ')}\n\n【DESIGN_ID】: ${designId}\n\nこの構成でPrintfulへデータを送信し、Shopifyストア「${shopifyDomain || 'Nextra Store'}」へ即時出品する準備が整いました。`);
+      setMockupImage(`https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=800&auto=format&fit=crop`);
     } catch (e) { console.error(e); } finally { setIsGenerating(false); }
+  };
+
+  const publishToStore = async () => {
+    setActiveAction('publishing');
+    try {
+      // 憲法：実体のあるAPIへ接続 (Printful -> Shopify)
+      const res = await fetch('/api/tools/printful', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          action: 'create-product',
+          keyword: selectedTrend,
+          style: selectedStyle,
+          tshirtColor: 'White',
+          sizes: selectedSizes,
+          sellingPrice: 3500,
+          printfulApiKey,
+          printfulStoreId,
+          shopifyDomain
+        }),
+      });
+      const data = await res.json();
+      if (data.result || data.shopify) {
+        alert(`ストアへの出品が完了しました！\nShopify URL: ${data.shopify?.url || '管理画面を確認してください'}`);
+      } else {
+        throw new Error(data.error || '出品に失敗しました');
+      }
+    } catch (e: any) {
+      alert(`エラー: ${e.message}\n「システム設定」タブでAPIキーが正しく入力されているか確認してください。`);
+    } finally {
+      setActiveAction(null);
+    }
   };
 
   const toggleSize = (size: string) => {
@@ -165,8 +199,20 @@ export default function AISelectShop() {
                   <div className="flex flex-col gap-6">
                     <div className="flex-1 bg-[#0a0b14] rounded-[2.5rem] p-8 border border-white/5 shadow-inner flex flex-col">
                       <div className="flex items-center gap-3 mb-6 border-b border-white/5 pb-4 text-slate-500 font-black italic uppercase text-xs tracking-widest"><Terminal size={16} /> Architecture Output</div>
-                      <textarea value={conceptResult} readOnly className="flex-1 bg-transparent text-sm text-slate-300 font-mono italic outline-none resize-none leading-relaxed" placeholder="Waiting for parameters..." />
-                      {conceptResult && <Button onClick={() => { navigator.clipboard.writeText(conceptResult); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className="mt-4 h-12 bg-white/5 text-[10px] font-black italic border border-white/10 rounded-xl">{copied ? 'COPIED!' : 'COPY LOG'}</Button>}
+                      <textarea value={conceptResult} readOnly className="flex-1 bg-transparent text-lg text-emerald-400 font-mono italic outline-none resize-none leading-relaxed" placeholder="Waiting for parameters..." />
+                      {conceptResult && (
+                        <div className="mt-6 space-y-4">
+                          <Button 
+                            onClick={publishToStore} 
+                            disabled={activeAction === 'publishing'}
+                            className="w-full h-20 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xl rounded-2xl shadow-[0_10px_40px_rgba(16,185,129,0.3)] flex items-center justify-center gap-4 group transition-all"
+                          >
+                            {activeAction === 'publishing' ? <Loader2 className="animate-spin" /> : <Globe className="group-hover:scale-110 transition-transform" />}
+                            <span>このままストアに出品する</span>
+                          </Button>
+                          <Button onClick={() => { navigator.clipboard.writeText(conceptResult); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className="w-full h-12 bg-white/5 hover:bg-white/10 text-[10px] font-black italic border border-white/10 rounded-xl">{copied ? 'COPIED!' : 'COPY CONFIG LOG'}</Button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
