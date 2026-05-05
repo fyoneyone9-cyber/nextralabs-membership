@@ -87,7 +87,6 @@ export default function YoutubeProducer() {
         <p className="text-slate-400 font-bold tracking-widest text-xs uppercase">Post-Production Automation Hub</p>
       </div>
 
-      {/* 🔴 LOCKED TABS SYSTEM */}
       <div className="w-full">
         <div className="overflow-x-auto pb-4">
           <div className="bg-slate-900 border border-slate-800 p-1 flex min-w-[800px] rounded-2xl">
@@ -133,7 +132,7 @@ export default function YoutubeProducer() {
                       <p className="text-slate-500 font-bold italic">動画をドロップして開始</p>
                     </div>
                   ) : (
-                    <div className="bg-slate-950 border-2 border-red-600 rounded-3xl p-6 space-y-4 shadow-[0_0_20px_rgba(220,38,38,0.2)]">
+                    <div className="bg-slate-950 border-2 border-red-600 rounded-3xl p-6 space-y-6 shadow-[0_0_20px_rgba(220,38,38,0.2)]">
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center shadow-lg">
                           {isProcessing ? <Loader2 className="animate-spin text-white h-5 w-5" /> : <Download className="text-white h-5 w-5" />}
@@ -153,10 +152,14 @@ export default function YoutubeProducer() {
                           >
                             <Download className="w-4 h-4" /> MP3をパソコンに保存
                           </a>
-                          <div className="flex items-center gap-2 text-emerald-500 justify-center">
-                            <ArrowRight className="h-4 w-4 animate-bounce rotate-90" />
-                            <p className="text-[10px] font-black uppercase tracking-widest italic">ロック解除！②へ進めます</p>
-                          </div>
+                          
+                          {/* 🟢 NEXT STEP BUTTON */}
+                          <Button 
+                            onClick={() => setActiveTab('script')}
+                            className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl shadow-[0_10px_20px_rgba(16,185,129,0.3)] transition-all flex items-center justify-center gap-2 group animate-bounce-subtle"
+                          >
+                            ② 台本作成へ進む <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                          </Button>
                         </div>
                       )}
                     </div>
@@ -196,26 +199,37 @@ export default function YoutubeProducer() {
                 <Button onClick={() => handleCopy(`あなたはプロのYouTube作家です。台本を作成してください。ジャンル：${selectedGenre}`)} className="h-16 bg-red-600 hover:bg-red-500 text-white font-black text-xl rounded-2xl shadow-xl italic uppercase">{copied ? '✅ COPIED' : '台本指示をコピー'}</Button>
                 <Button variant="outline" onClick={() => window.open('https://claude.ai', '_blank')} className="h-16 border-slate-800 text-slate-300 font-black text-xl rounded-2xl italic uppercase">CLAUDEを開く</Button>
               </div>
+              <div className="mt-12 flex justify-center">
+                <Button onClick={() => setActiveTab('character')} variant="ghost" className="text-slate-500 hover:text-white font-black italic uppercase">③ 人物画像へ進む →</Button>
+              </div>
             </Card>
           )}
           
-          {/* ... ③〜⑥ も同様に activeTab チェックで表示（略） ... */}
           {activeTab === 'character' && (
             <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-12 shadow-2xl text-center">
                <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">登場人物のイラスト生成</h3>
                <Button onClick={() => handleCopy("人物イラストを生成してください。")} className="h-14 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl italic uppercase mt-8">指示をコピー</Button>
+               <div className="mt-12 flex justify-center">
+                <Button onClick={() => setActiveTab('thumbnail')} variant="ghost" className="text-slate-500 hover:text-white font-black italic uppercase">④ サムネイルへ進む →</Button>
+              </div>
             </Card>
           )}
           {activeTab === 'thumbnail' && (
             <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-12 shadow-2xl text-center">
                <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">最強サムネイル案</h3>
                <Button onClick={() => handleCopy("サムネ案を出してください。")} className="h-14 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl italic uppercase mt-8">指示をコピー</Button>
+               <div className="mt-12 flex justify-center">
+                <Button onClick={() => setActiveTab('seo')} variant="ghost" className="text-slate-500 hover:text-white font-black italic uppercase">⑤ タイトル/SEOへ進む →</Button>
+              </div>
             </Card>
           )}
           {activeTab === 'seo' && (
             <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-12 shadow-2xl text-center">
                <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">SEO最適化セット</h3>
                <Button onClick={() => handleCopy("タイトルとタグを出してください。")} className="h-14 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl italic uppercase mt-8">指示をコピー</Button>
+               <div className="mt-12 flex justify-center">
+                <Button onClick={() => setActiveTab('bgm')} variant="ghost" className="text-slate-500 hover:text-white font-black italic uppercase">⑥ BGMへ進む →</Button>
+              </div>
             </Card>
           )}
           {activeTab === 'bgm' && (
