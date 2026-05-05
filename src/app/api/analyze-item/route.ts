@@ -1,50 +1,72 @@
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
+  const diagnosticTrace: any[] = [];
+  const log = (step: string, data: any) => diagnosticTrace.push({ time: new Date().toISOString(), step, data });
+
   try {
     const { image } = await req.json();
+    log("1_REQUEST_RECEIVED", { size: image?.length, type: typeof image });
+
+    // 🔑 Key Scan
     const apiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY1;
-    if (!apiKey || !image) return NextResponse.json({ error: "No Data" }, { status: 400 });
-
-    const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
-
-    // 🚀 【真の最終形態】v1betaではなく v1 を使用。
-    // URLの models/ の後に直接 ID を書くことで、Google側のURL組み立てミスを物理的に防ぎます。
-    const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-    const requestBody = {
-      contents: [{
-        parts: [
-          { text: "Analyze this lost item image. Return ONLY a clean JSON object: { \"item\": \"品目\", \"color\": \"色\", \"brand\": \"ブランド\", \"features\": [\"特徴\"], \"matchConfidence\": 95 }" },
-          { inline_data: { mime_type: "image/jpeg", data: base64Data } }
-        ]
-      }],
-      generationConfig: {
-        // v1仕様では responseMimeType が正解
-        responseMimeType: "application/json",
-        temperature: 0.1
-      }
-    };
-
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody)
+    log("2_KEY_SCAN", { 
+      found: !!apiKey, 
+      prefix: apiKey?.substring(0, 7), 
+      length: apiKey?.length,
+      all_keys: Object.keys(process.env).filter(k => k.includes("KEY"))
     });
 
-    const data = await response.json();
+    if (!apiKey) throw new Error("CRITICAL: API_KEY_MISSING_IN_VERCEL");
 
-    if (!response.ok) {
-      throw new Error(`Google Critical Error: ${data.error?.message || "Access Denied"}`);
+    const base64Data = image.split(",")[1] || image;
+    
+    // 🌍 Multi-Strategy Attack (最も成功率の高い順に試行)
+    const strategies = [
+      { v: "v1", m: "gemini-1.5-flash", desc: "Official V1 Flash" },
+      { v: "v1beta", m: "gemini-1.5-flash", desc: "Beta Flash" },
+      { v: "v1beta", m: "gemini-pro-vision", desc: "Legacy Vision" }
+    ];
+
+    let successResponse = null;
+    let errors: any[] = [];
+
+    for (const s of strategies) {
+      log(`3_TRYING_${s.desc}`, { url: `/${s.v}/models/${s.m}` });
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/${s.v}/models/${s.m}:generateContent?key=${apiKey}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: "Analyze this image. Return JSON ONLY." }, { inline_data: { mime_type: "image/jpeg", data: base64Data } }] }],
+            generationConfig: { responseMimeType: "application/json" }
+          })
+        });
+        const resData = await response.json();
+        if (response.ok) {
+          successResponse = resData;
+          log(`4_SUCCESS_WITH_${s.desc}`, { status: response.status });
+          break;
+        } else {
+          errors.push({ strategy: s.desc, status: response.status, msg: resData.error?.message });
+        }
+      } catch (e: any) {
+        errors.push({ strategy: s.desc, error: e.message });
+      }
     }
 
-    const text = data.candidates[0].content.parts[0].text;
-    return NextResponse.json(JSON.parse(text));
+    if (successResponse) {
+      const text = successResponse.candidates[0].content.parts[0].text;
+      return NextResponse.json({ ...JSON.parse(text), _trace: diagnosticTrace });
+    }
+
+    return NextResponse.json({ 
+      error: "ALL_STRATEGIES_FAILED", 
+      details: errors, 
+      _trace: diagnosticTrace 
+    }, { status: 500 });
 
   } catch (error: any) {
-    return NextResponse.json({ 
-      error: "AI解析エンジン最終同期中", 
-      message: error.message 
-    }, { status: 500 });
+    return NextResponse.json({ error: "SYSTEM_FATAL", message: error.message, _trace: diagnosticTrace }, { status: 500 });
   }
 }
