@@ -4,10 +4,9 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
-  ArrowRight, CheckCircle2, Copy, RotateCcw, Lightbulb, Search, ShieldCheck, LayoutGrid, Loader2, FileText, ClipboardPaste, Sparkles, Zap, Trash2, FileSearch, Send, Layout, MessageSquare, BarChart3, Briefcase, Target, ShieldAlert
+  ArrowRight, CheckCircle2, RotateCcw, LayoutGrid, Loader2, ClipboardPaste, ShieldCheck, MessageSquare, BarChart3, Briefcase, Target, ShieldAlert
 } from 'lucide-react'
 
-// 皇帝の剣：レポート作成の5大武器（ハブ）
 const WEAPONS = [
   { 
     id: 'meeting', 
@@ -42,7 +41,7 @@ const WEAPONS = [
     icon: BarChart3, 
     color: 'text-emerald-500', 
     bg: 'bg-emerald-500/10',
-    prompt: "あなたは管理職・メンターです。断片的な業務ログから、今日の成果、発生した課題、そして成長に繋がる学びを整理した、上司が納得するプロ仕様の日報を作成してください。",
+    prompt: "あなたは管理職・メンターです。断片的な業務ログから、今日の成果、発生した課題、成長に繋がる学びを整理した、上司が納得するプロ仕様の日報を作成してください。",
     presets: [
       { label: "多忙な1日のログ", content: "午前：資料作成。午後：外回り3件、トラブル対応1件。残業2時間。明日は企画書の締め切り。疲労困憊だが収穫はあった。" },
       { label: "トラブル・反省の週報", content: "顧客へのメール返信が遅れ、クレーム一歩手前に。原因はタスク管理不足。対策として朝一のタスク整理を徹底する。" }
@@ -85,11 +84,9 @@ export default function AiReportGenerator() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [visiblePresets, setVisiblePresets] = useState<any[]>([]);
 
-  // 憲法：工程の定義
   const STEPS = ["用途を選択", "素材を入力", "AI解析依頼", "最終判定"];
   const activeStepIndex = !activeWeapon ? 0 : (report ? 3 : 2);
 
-  // 武器切り替え時にプリセット表示
   useEffect(() => {
     if (activeWeapon) {
       const weapon = WEAPONS.find(w => w.id === activeWeapon);
@@ -97,7 +94,6 @@ export default function AiReportGenerator() {
     }
   }, [activeWeapon]);
 
-  // 憲法：自動スコアリング演出（Document Quality）
   useEffect(() => {
     if (report && !score) {
       setIsProcessing(true);
@@ -123,7 +119,6 @@ export default function AiReportGenerator() {
         <h1 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl">AI レポート作成</h1>
       </div>
 
-      {/* 憲法：全体工程プログレスバー */}
       <div className="max-w-4xl mx-auto px-4 overflow-x-auto pb-4">
         <div className="flex items-center justify-between min-w-[600px] relative">
           <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-800 -translate-y-1/2 z-0" />
@@ -138,7 +133,6 @@ export default function AiReportGenerator() {
         </div>
       </div>
 
-      {/* 皇帝の剣：マルチツール・ハブ */}
       <div className="bg-slate-900 border border-slate-800 p-2 rounded-[2rem] shadow-2xl overflow-x-auto scrollbar-hide">
         <div className="flex gap-2 min-w-[800px]">
           {WEAPONS.map((w) => (
@@ -147,7 +141,7 @@ export default function AiReportGenerator() {
               onClick={() => { setActiveWeapon(w.id); setInputData(''); setReport(''); setScore(null); }}
               className={`flex-1 flex flex-col items-center justify-center py-5 px-2 rounded-2xl transition-all duration-300 gap-2 border-2 ${activeWeapon === w.id ? 'bg-slate-200 border-white scale-105 shadow-xl text-slate-950' : 'bg-slate-950 border-transparent text-slate-500 hover:text-white hover:bg-slate-900'}`}
             >
-              <w.icon size={24} />
+              {React.createElement(w.icon, { size: 24 })}
               <div className="text-center">
                 <p className="text-[10px] font-black uppercase italic leading-none mb-1">{w.label}</p>
                 <p className={`text-[8px] font-bold opacity-60 ${activeWeapon === w.id ? 'text-slate-800' : ''}`}>{w.desc}</p>
@@ -162,7 +156,7 @@ export default function AiReportGenerator() {
            {WEAPONS.map((w) => (
              <Card key={w.id} onClick={() => setActiveWeapon(w.id)} className="bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] p-8 hover:border-slate-500 transition-all cursor-pointer group shadow-2xl relative overflow-hidden h-64 flex flex-col justify-center items-center text-center">
                 <div className={`absolute top-0 right-0 w-32 h-32 ${w.bg} blur-3xl -mr-16 -mt-16 group-hover:opacity-100 opacity-30 transition-opacity`} />
-                <div className={`w-16 h-16 ${w.bg} ${w.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}><w.icon size={32} /></div>
+                <div className={`w-16 h-16 ${w.bg} ${w.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}>{React.createElement(w.icon, { size: 32 })}</div>
                 <h3 className="text-2xl font-black text-white italic uppercase mb-2">{w.label}</h3>
                 <p className="text-slate-500 font-bold text-sm">{w.desc}</p>
              </Card>
@@ -176,11 +170,11 @@ export default function AiReportGenerator() {
              ))}
           </div>
 
-          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3.5rem] p-8 md:p-16 shadow-2xl relative overflow-hidden">
+          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3.5rem] p-8 md:p-16 shadow-[0_40px_100px_rgba(0,0,0,0.6)] relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-slate-500 via-slate-200 to-slate-500" />
             
             <div className="flex justify-between items-center mb-10 text-left">
-              <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase flex items-center gap-4"><w.icon size={40} className="text-slate-400" /> {currentWeapon?.label}</h3>
+              <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase flex items-center gap-4">{React.createElement(currentWeapon!.icon, { size: 40, className: "text-slate-400" })} {currentWeapon?.label}</h3>
               <Button onClick={() => setActiveWeapon(null)} variant="ghost" className="text-slate-500 font-black italic uppercase hover:text-white"><LayoutGrid size={16} className="mr-2" /> 用途を選び直す</Button>
             </div>
 
@@ -191,7 +185,7 @@ export default function AiReportGenerator() {
                   <textarea value={inputData} onChange={(e) => setInputData(e.target.value)} placeholder="会議の断片メモや、報告したい事実関係を入力してください..." className="w-full h-80 bg-slate-900 border-2 border-slate-800 rounded-3xl p-8 text-lg text-white font-bold focus:border-slate-500 outline-none shadow-inner" />
                 </div>
                 <div className="space-y-4">
-                  <Button onClick={() => handleCopy(`${currentWeapon?.prompt}\n\n【素材データ】：\n${inputData}`)} className={`w-full h-20 text-xl font-black rounded-2xl transition-all shadow-xl ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-slate-200 text-slate-950 hover:bg-white'}`}>
+                  <Button onClick={() => handleCopy(`${currentWeapon?.prompt}\n\n【素材データ】：\n${inputData}`)} className={`w-full h-16 font-black rounded-xl transition-all shadow-xl ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-slate-200 text-slate-950 hover:bg-white'}`}>
                     {copied ? '✅ 指示をコピーしました' : '最強解析指示をコピー'}
                   </Button>
                   <div className="grid grid-cols-3 gap-3">

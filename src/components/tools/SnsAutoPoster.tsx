@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
-  ArrowRight, CheckCircle2, Copy, RotateCcw, Lightbulb, Search, ShieldCheck, LayoutGrid, Loader2, Share2, ClipboardPaste, Sparkles, Zap, Trash2, Send, Hash, Instagram, Twitter, MessageSquare, Video
+  ArrowRight, CheckCircle2, RotateCcw, Lightbulb, Search, ShieldCheck, LayoutGrid, Loader2, Share2, ClipboardPaste, Sparkles, Zap, Trash2, Send, Instagram, Twitter, MessageSquare, Video
 } from 'lucide-react'
 
 // 皇帝の剣：SNSハブ（武器選択）
@@ -133,7 +133,7 @@ export default function SnsAutoPoster() {
               onClick={() => { setActiveWeapon(w.id); setInputData(''); setReport(''); setScore(null); }}
               className={`flex-1 flex flex-col items-center justify-center py-5 px-2 rounded-2xl transition-all duration-300 gap-2 border-2 ${activeWeapon === w.id ? 'bg-red-600 border-red-400 scale-105 shadow-xl text-white' : 'bg-slate-950 border-transparent text-slate-500 hover:text-white hover:bg-slate-900'}`}
             >
-              <w.icon size={24} className={activeWeapon === w.id ? 'text-white' : w.color} />
+              {React.createElement(w.icon, { size: 24, className: activeWeapon === w.id ? 'text-white' : w.color })}
               <div className="text-center">
                 <p className="text-[10px] font-black uppercase italic leading-none mb-1">{w.label}</p>
                 <p className={`text-[8px] font-bold opacity-60 ${activeWeapon === w.id ? 'text-white' : ''}`}>{w.desc}</p>
@@ -148,7 +148,7 @@ export default function SnsAutoPoster() {
            {WEAPONS.map((w) => (
              <Card key={w.id} onClick={() => setActiveWeapon(w.id)} className="bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] p-8 hover:border-red-500 transition-all cursor-pointer group shadow-2xl relative overflow-hidden h-56 flex flex-col justify-center items-center text-center">
                 <div className={`absolute top-0 right-0 w-32 h-32 ${w.bg} blur-3xl -mr-16 -mt-16 group-hover:opacity-100 opacity-30 transition-opacity`} />
-                <div className={`w-16 h-16 ${w.bg} ${w.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}><w.icon size={32} /></div>
+                <div className={`w-16 h-16 ${w.bg} ${w.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}>{React.createElement(w.icon, { size: 32 })}</div>
                 <h3 className="text-2xl font-black text-white italic uppercase mb-2">{w.label}</h3>
                 <p className="text-slate-500 font-bold text-sm">{w.desc}</p>
              </Card>
@@ -166,7 +166,7 @@ export default function SnsAutoPoster() {
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-600 via-orange-600 to-red-600" />
             
             <div className="flex justify-between items-center mb-10 text-left">
-              <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase flex items-center gap-4"><w.icon size={40} className={currentWeapon?.color} /> {currentWeapon?.label}</h3>
+              <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase flex items-center gap-4">{React.createElement(currentWeapon!.icon, { size: 40, className: currentWeapon!.color })} {currentWeapon?.label}</h3>
               <Button onClick={() => setActiveWeapon(null)} variant="ghost" className="text-slate-500 font-black italic uppercase hover:text-white"><LayoutGrid size={16} className="mr-2" /> 媒体を選び直す</Button>
             </div>
 
@@ -177,7 +177,7 @@ export default function SnsAutoPoster() {
                   <textarea value={inputData} onChange={(e) => setInputData(e.target.value)} placeholder="投稿したいトピックや断片的なメモを入力してください..." className="w-full h-80 bg-slate-900 border-2 border-slate-800 rounded-3xl p-8 text-lg text-white font-bold focus:border-red-600 outline-none shadow-inner leading-relaxed" />
                 </div>
                 <div className="space-y-4">
-                  <Button onClick={() => handleCopy(`${currentWeapon?.prompt}\n\n【トピック内容】：\n${inputData}`)} className={`w-full h-20 text-xl font-black rounded-2xl transition-all shadow-xl ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-red-600 text-white hover:bg-red-500'}`}>
+                  <Button onClick={() => handleCopy(`${currentWeapon?.prompt}\n\n【トピック内容】：\n${inputData}`)} className={`w-full h-16 font-black rounded-xl transition-all shadow-xl ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-red-600 text-white hover:bg-red-500'}`}>
                     {copied ? '✅ 投稿案をコピー完了' : '最強SNS投稿案を生成'}
                   </Button>
                   <div className="grid grid-cols-3 gap-3">
