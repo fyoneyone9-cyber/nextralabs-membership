@@ -40,7 +40,8 @@ export default function SnsAutoPoster() {
   const fetchTrends = async () => {
     setIsLoadingTrends(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // 実際は外部API(Google Trends等)を叩く想定だが、現在は固定リストをシャッフル
+      await new Promise(resolve => setTimeout(resolve, 800));
       const mockTrends = [
         "AIエージェントの衝撃", "次世代iPhoneリーク", "週末の絶品スイーツ", 
         "メタバースの今", "リモートワーク革命", "注目のスタートアップ",
@@ -88,6 +89,11 @@ export default function SnsAutoPoster() {
             <div className="flex items-center gap-2 text-red-500 animate-pulse">
               <TrendingUp size={20} />
               <p className="text-xs font-black uppercase italic tracking-widest">① Real-time Trends (Subject)</p>
+            </div>
+            {/* API連携ステータスの可視化 */}
+            <div className="flex items-center gap-2 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">
+              <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+              <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">API: MOCK_MODE (FIXED_DATA)</span>
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
