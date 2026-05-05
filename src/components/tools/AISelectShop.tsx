@@ -1,23 +1,22 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useRef } from 'react'
-// 🛠️ 使用されている全てのコンポーネントを網羅
-import { Button } from '@/components/ui/button'
+// 屏・・菴ｿ逕ｨ縺輔ｌ縺ｦ縺・ｋ蜈ｨ縺ｦ縺ｮ繧ｳ繝ｳ繝昴・繝阪Φ繝医ｒ邯ｲ鄒・import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-// 🛠️ 使用されている全てのアイコンを網羅 (CheckCircle2含む)
+// 屏・・菴ｿ逕ｨ縺輔ｌ縺ｦ縺・ｋ蜈ｨ縺ｦ縺ｮ繧｢繧､繧ｳ繝ｳ繧堤ｶｲ鄒・(CheckCircle2蜷ｫ繧)
 import { 
   TrendingUp, Palette, Rocket, ChevronRight, Settings, 
   Info, ShoppingCart, HelpCircle, Zap, CheckCircle2 
 } from 'lucide-react'
-import { DebugPanel } from './DebugPanel'
+
 
 const STEPS = [
-  { id: 1, what: "トレンドをキャッチ", how: "AIが解析した最新の検索トレンドから、今売れるキーワードを選択しましょう。", result: "物販の核心となる「売れるテーマ」が決まります。" },
-  { id: 2, what: "デザインを確定", how: "選んだキーワードに基づき、AIがTシャツデザインを自動生成。スタイルや色を調整して仕上げます。", result: "ショップに出品可能なオリジナルデザインが完成します。" },
-  { id: 3, what: "ショップ管理", how: "完成したデザインの確認と、Shopify/Printfulへの出品・同期を行います。", result: "あなたのネットショップに商品が並び、販売がスタートします。" }
+  { id: 1, what: "繝医Ξ繝ｳ繝峨ｒ繧ｭ繝｣繝・メ", how: "AI縺瑚ｧ｣譫舌＠縺滓怙譁ｰ縺ｮ讀懃ｴ｢繝医Ξ繝ｳ繝峨°繧峨∽ｻ雁｣ｲ繧後ｋ繧ｭ繝ｼ繝ｯ繝ｼ繝峨ｒ驕ｸ謚槭＠縺ｾ縺励ｇ縺・・, result: "迚ｩ雋ｩ縺ｮ譬ｸ蠢・→縺ｪ繧九悟｣ｲ繧後ｋ繝・・繝槭阪′豎ｺ縺ｾ繧翫∪縺吶・ },
+  { id: 2, what: "繝・じ繧､繝ｳ繧堤｢ｺ螳・, how: "驕ｸ繧薙□繧ｭ繝ｼ繝ｯ繝ｼ繝峨↓蝓ｺ縺･縺阪、I縺卦繧ｷ繝｣繝・ョ繧ｶ繧､繝ｳ繧定・蜍慕函謌舌ゅせ繧ｿ繧､繝ｫ繧・牡繧定ｪｿ謨ｴ縺励※莉穂ｸ翫￡縺ｾ縺吶・, result: "繧ｷ繝ｧ繝・・縺ｫ蜃ｺ蜩∝庄閭ｽ縺ｪ繧ｪ繝ｪ繧ｸ繝翫Ν繝・じ繧､繝ｳ縺悟ｮ梧・縺励∪縺吶・ },
+  { id: 3, what: "繧ｷ繝ｧ繝・・邂｡逅・, how: "螳梧・縺励◆繝・じ繧､繝ｳ縺ｮ遒ｺ隱阪→縲ヾhopify/Printful縺ｸ縺ｮ蜃ｺ蜩√・蜷梧悄繧定｡後＞縺ｾ縺吶・, result: "縺ゅ↑縺溘・繝阪ャ繝医す繝ｧ繝・・縺ｫ蝠・刀縺御ｸｦ縺ｳ縲∬ｲｩ螢ｲ縺後せ繧ｿ繝ｼ繝医＠縺ｾ縺吶・ }
 ]
 
 export default function AISelectShop() {
@@ -28,8 +27,8 @@ export default function AISelectShop() {
   
   useEffect(() => {
     setTrends([
-      { id: '1', name: '猫耳サイバーパンク', traffic: '500K' },
-      { id: '2', name: '昭和レトロポップ', traffic: '200K' }
+      { id: '1', name: '迪ｫ閠ｳ繧ｵ繧､繝舌・繝代Φ繧ｯ', traffic: '500K' },
+      { id: '2', name: '譏ｭ蜥後Ξ繝医Ο繝昴ャ繝・, traffic: '200K' }
     ]);
   }, [])
 
@@ -51,7 +50,7 @@ export default function AISelectShop() {
           </div>
           <p className="text-xl md:text-2xl font-bold leading-relaxed opacity-95">{currentInfo.how}</p>
           <div className="flex items-center gap-3 text-slate-900 font-black text-lg bg-emerald-400/50 w-fit px-6 py-2 rounded-2xl border border-white/20">
-            <Zap className="h-6 w-6 fill-current" /> 成功報酬：{currentInfo.result}
+            <Zap className="h-6 w-6 fill-current" /> 謌仙粥蝣ｱ驟ｬ・嘴currentInfo.result}
           </div>
         </div>
       </div>
@@ -78,9 +77,9 @@ export default function AISelectShop() {
                 <Input value={designKeyword} onChange={(e) => setDesignKeyword(e.target.value)} className="bg-slate-950 border-slate-700 h-24 text-4xl font-black text-white rounded-3xl px-10 focus:border-emerald-500 transition-all" />
               </div>
               <Button onClick={() => setCurrentStep(3)} className="w-full h-32 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-4xl rounded-[3rem] shadow-2xl shadow-emerald-500/30 gap-4">
-                完成：ショップへ出品する <Rocket className="h-12 w-12" />
+                螳梧・・壹す繝ｧ繝・・縺ｸ蜃ｺ蜩√☆繧・<Rocket className="h-12 w-12" />
               </Button>
-              <button onClick={() => setCurrentStep(1)} className="w-full text-slate-500 text-lg font-bold hover:text-white transition-colors underline">← トレンド選択に戻る</button>
+              <button onClick={() => setCurrentStep(1)} className="w-full text-slate-500 text-lg font-bold hover:text-white transition-colors underline">竊・繝医Ξ繝ｳ繝蛾∈謚槭↓謌ｻ繧・/button>
             </div>
           </Card>
         )}
@@ -91,12 +90,13 @@ export default function AISelectShop() {
                <CheckCircle2 className="h-12 w-12 text-slate-950" />
              </div>
              <h2 className="text-5xl font-black text-white uppercase tracking-tighter italic">Successfully Ready!</h2>
-             <Button onClick={() => setCurrentStep(1)} className="bg-white text-slate-950 px-16 h-24 rounded-3xl font-black text-2xl hover:bg-slate-200 shadow-xl transition-all hover:scale-105">最初から作り直す</Button>
+             <Button onClick={() => setCurrentStep(1)} className="bg-white text-slate-950 px-16 h-24 rounded-3xl font-black text-2xl hover:bg-slate-200 shadow-xl transition-all hover:scale-105">譛蛻昴°繧我ｽ懊ｊ逶ｴ縺・/Button>
           </div>
         )}
       </div>
 
-      <DebugPanel data={debugData} toolId="ai-select-shop" />
+      
     </div>
   )
 }
+

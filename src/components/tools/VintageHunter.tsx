@@ -1,4 +1,5 @@
-'use client'
+﻿'use client'
+
 
 import React, { useState, useCallback, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
@@ -64,11 +65,11 @@ export default function VintageHunter() {
   ]
 
   const extractCondition = (text: string): string => {
-    if (text.includes('新品') || text.includes('未使用') || text.includes('タグ付き')) return '新品'
-    if (text.includes('美品') || text.includes('極美')) return '未使用に近い'
-    if (text.includes('良品') || text.includes('良好')) return '目立った傷や汚れなし'
-    if (text.includes('傷') || text.includes('汚れ') || text.includes('ジャンク')) return '傷や汚れあり'
-    return 'やや傷や汚れあり'
+    if (text.includes('譁ｰ蜩・) || text.includes('譛ｪ菴ｿ逕ｨ') || text.includes('繧ｿ繧ｰ莉倥″')) return '譁ｰ蜩・
+    if (text.includes('鄒主刀') || text.includes('讌ｵ鄒・)) return '譛ｪ菴ｿ逕ｨ縺ｫ霑代＞'
+    if (text.includes('濶ｯ蜩・) || text.includes('濶ｯ螂ｽ')) return '逶ｮ遶九▲縺溷す繧・ｱ壹ｌ縺ｪ縺・
+    if (text.includes('蛯ｷ') || text.includes('豎壹ｌ') || text.includes('繧ｸ繝｣繝ｳ繧ｯ')) return '蛯ｷ繧・ｱ壹ｌ縺ゅｊ'
+    return '繧・ｄ蛯ｷ繧・ｱ壹ｌ縺ゅｊ'
   }
 
   const extractSize = (title: string): string => {
@@ -85,12 +86,12 @@ export default function VintageHunter() {
       const config = await configRes.json()
 
       if (!config.rakuten?.appId) {
-        alert('API設定がありません')
+        alert('API險ｭ螳壹′縺ゅｊ縺ｾ縺帙ｓ')
         return
       }
 
       // 2. Call Rakuten API directly from browser (requires Referer header)
-      const searchKeyword = [filters.brand, filters.keywords, '古着 ヴィンテージ'].filter(Boolean).join(' ')
+      const searchKeyword = [filters.brand, filters.keywords, '蜿､逹 繝ｴ繧｣繝ｳ繝・・繧ｸ'].filter(Boolean).join(' ')
       const params = new URLSearchParams({
         applicationId: config.rakuten.appId,
         accessKey: config.rakuten.accessKey,
@@ -146,7 +147,7 @@ export default function VintageHunter() {
           gradientTo: gradient[1],
           initials: brandName.substring(0, 2).toUpperCase(),
           description: desc.substring(0, 120),
-          category: 'トップス',
+          category: '繝医ャ繝励せ',
           listingUrl: item.itemUrl || '',
           source: 'rakuten',
         }
@@ -158,11 +159,11 @@ export default function VintageHunter() {
         const dealScore = Math.max(0, (1 - priceRatio) * 60)
         const rarityScore = item.rarity * 0.25
         const conditionScore =
-          item.condition === '新品' ? 15 :
-          item.condition === '未使用に近い' ? 13 :
-          item.condition === '目立った傷や汚れなし' ? 10 :
-          item.condition === 'やや傷や汚れあり' ? 6 :
-          item.condition === '傷や汚れあり' ? 3 : 1
+          item.condition === '譁ｰ蜩・ ? 15 :
+          item.condition === '譛ｪ菴ｿ逕ｨ縺ｫ霑代＞' ? 13 :
+          item.condition === '逶ｮ遶九▲縺溷す繧・ｱ壹ｌ縺ｪ縺・ ? 10 :
+          item.condition === '繧・ｄ蛯ｷ繧・ｱ壹ｌ縺ゅｊ' ? 6 :
+          item.condition === '蛯ｷ繧・ｱ壹ｌ縺ゅｊ' ? 3 : 1
         const aiScore = Math.min(100, Math.max(0, Math.round(dealScore + rarityScore + conditionScore)))
         return { ...item, aiScore }
       })
@@ -171,7 +172,7 @@ export default function VintageHunter() {
       setTotalResults(scoredItems.length)
     } catch (err) {
       console.error('Search failed:', err)
-      alert('検索に失敗しました。')
+      alert('讀懃ｴ｢縺ｫ螟ｱ謨励＠縺ｾ縺励◆縲・)
     } finally {
       setLoading(false)
     }
@@ -225,10 +226,10 @@ export default function VintageHunter() {
   }
 
   const getScoreLabel = (score: number) => {
-    if (score >= 80) return '🔥 超お買い得'
-    if (score >= 60) return '✨ お買い得'
-    if (score >= 40) return '👍 まずまず'
-    return '📊 普通'
+    if (score >= 80) return '櫨 雜・♀雋ｷ縺・ｾ・
+    if (score >= 60) return '笨ｨ 縺願ｲｷ縺・ｾ・
+    if (score >= 40) return '総 縺ｾ縺壹∪縺・
+    return '投 譎ｮ騾・
   }
 
   return (
@@ -241,8 +242,8 @@ export default function VintageHunter() {
               VH
             </div>
             <div>
-              <h1 className="text-sm font-semibold text-white">AI古着お買い得ハンター</h1>
-              <p className="text-xs text-gray-500">AI搭載ヴィンテージ検索</p>
+              <h1 className="text-sm font-semibold text-white">AI蜿､逹縺願ｲｷ縺・ｾ励ワ繝ｳ繧ｿ繝ｼ</h1>
+              <p className="text-xs text-gray-500">AI謳ｭ霈峨Χ繧｣繝ｳ繝・・繧ｸ讀懃ｴ｢</p>
             </div>
           </div>
           <Button
@@ -251,8 +252,7 @@ export default function VintageHunter() {
             onClick={() => setShowWebhookPanel(!showWebhookPanel)}
             className="text-xs border-amber-800/50 text-amber-400 hover:text-amber-300 bg-transparent"
           >
-            🔔 Discord通知設定
-          </Button>
+            粕 Discord騾夂衍險ｭ螳・          </Button>
         </div>
       </div>
 
@@ -261,7 +261,7 @@ export default function VintageHunter() {
         {showWebhookPanel && (
           <Card className="bg-[#1a1408] border-amber-900/30 mb-6">
             <CardContent className="p-4">
-              <h3 className="text-sm font-semibold text-amber-400 mb-3">🔔 Discord Webhook設定</h3>
+              <h3 className="text-sm font-semibold text-amber-400 mb-3">粕 Discord Webhook險ｭ螳・/h3>
               <div className="flex gap-2">
                 <Input
                   value={webhookUrl}
@@ -271,19 +271,18 @@ export default function VintageHunter() {
                 />
                 <Button
                   size="sm"
-                  onClick={() => handleNotify({ id: 'test', title: 'テスト通知', brand: 'Test', price: 1000, marketPrice: 2000, condition: '良好', size: 'M', listedAt: new Date().toISOString(), rarity: 50, aiScore: 85, gradientFrom: '#f59e0b', gradientTo: '#ea580c', initials: 'TS', description: 'テスト通知です', category: 'トップス', listingUrl: 'https://jp.mercari.com/search?keyword=Test' })}
+                  onClick={() => handleNotify({ id: 'test', title: '繝・せ繝磯夂衍', brand: 'Test', price: 1000, marketPrice: 2000, condition: '濶ｯ螂ｽ', size: 'M', listedAt: new Date().toISOString(), rarity: 50, aiScore: 85, gradientFrom: '#f59e0b', gradientTo: '#ea580c', initials: 'TS', description: '繝・せ繝磯夂衍縺ｧ縺・, category: '繝医ャ繝励せ', listingUrl: 'https://jp.mercari.com/search?keyword=Test' })}
                   disabled={!webhookUrl || webhookStatus === 'sending'}
                   className="bg-amber-600 hover:bg-amber-700 text-white border-0"
                 >
-                  {webhookStatus === 'sending' ? '送信中...' :
-                   webhookStatus === 'success' ? '✓ 送信完了' :
-                   webhookStatus === 'error' ? '✗ 失敗' :
-                   'テスト送信'}
+                  {webhookStatus === 'sending' ? '騾∽ｿ｡荳ｭ...' :
+                   webhookStatus === 'success' ? '笨・騾∽ｿ｡螳御ｺ・ :
+                   webhookStatus === 'error' ? '笨・螟ｱ謨・ :
+                   '繝・せ繝磯∽ｿ｡'}
                 </Button>
               </div>
               <p className="text-xs text-gray-600 mt-2">
-                Discordサーバーの設定 → 連携サービス → ウェブフック でURLを取得できます
-              </p>
+                Discord繧ｵ繝ｼ繝舌・縺ｮ險ｭ螳・竊・騾｣謳ｺ繧ｵ繝ｼ繝薙せ 竊・繧ｦ繧ｧ繝悶ヵ繝・け 縺ｧURL繧貞叙蠕励〒縺阪∪縺・              </p>
             </CardContent>
           </Card>
         )}
@@ -293,7 +292,7 @@ export default function VintageHunter() {
           <CardContent className="p-4">
             <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-3">
               <div>
-                <Label className="text-xs text-gray-400 mb-1 block">ブランド</Label>
+                <Label className="text-xs text-gray-400 mb-1 block">繝悶Λ繝ｳ繝・/Label>
                 <Input
                   value={filters.brand}
                   onChange={(e) => setFilters(f => ({ ...f, brand: e.target.value }))}
@@ -302,47 +301,47 @@ export default function VintageHunter() {
                 />
               </div>
               <div>
-                <Label className="text-xs text-gray-400 mb-1 block">キーワード</Label>
+                <Label className="text-xs text-gray-400 mb-1 block">繧ｭ繝ｼ繝ｯ繝ｼ繝・/Label>
                 <Input
                   value={filters.keywords}
                   onChange={(e) => setFilters(f => ({ ...f, keywords: e.target.value }))}
-                  placeholder="ボックスロゴ, 90s..."
+                  placeholder="繝懊ャ繧ｯ繧ｹ繝ｭ繧ｴ, 90s..."
                   className="bg-[#0d0a07] border-amber-900/30 text-white placeholder-gray-600 h-9 text-sm"
                 />
               </div>
               <div>
-                <Label className="text-xs text-gray-400 mb-1 block">下限価格</Label>
+                <Label className="text-xs text-gray-400 mb-1 block">荳矩剞萓｡譬ｼ</Label>
                 <Input
                   type="number"
                   value={filters.minPrice}
                   onChange={(e) => setFilters(f => ({ ...f, minPrice: e.target.value }))}
-                  placeholder="¥1,000"
+                  placeholder="ﾂ･1,000"
                   className="bg-[#0d0a07] border-amber-900/30 text-white placeholder-gray-600 h-9 text-sm"
                 />
               </div>
               <div>
-                <Label className="text-xs text-gray-400 mb-1 block">上限価格</Label>
+                <Label className="text-xs text-gray-400 mb-1 block">荳企剞萓｡譬ｼ</Label>
                 <Input
                   type="number"
                   value={filters.maxPrice}
                   onChange={(e) => setFilters(f => ({ ...f, maxPrice: e.target.value }))}
-                  placeholder="¥50,000"
+                  placeholder="ﾂ･50,000"
                   className="bg-[#0d0a07] border-amber-900/30 text-white placeholder-gray-600 h-9 text-sm"
                 />
               </div>
               <div>
-                <Label className="text-xs text-gray-400 mb-1 block">状態</Label>
+                <Label className="text-xs text-gray-400 mb-1 block">迥ｶ諷・/Label>
                 <select
                   value={filters.condition}
                   onChange={(e) => setFilters(f => ({ ...f, condition: e.target.value }))}
                   className="w-full h-9 rounded-md border border-amber-900/30 bg-[#0d0a07] text-white text-sm px-3"
                 >
-                  <option value="all">すべて</option>
-                  <option value="新品">新品</option>
-                  <option value="未使用に近い">未使用に近い</option>
-                  <option value="目立った傷や汚れなし">目立った傷や汚れなし</option>
-                  <option value="やや傷や汚れあり">やや傷や汚れあり</option>
-                  <option value="傷や汚れあり">傷や汚れあり</option>
+                  <option value="all">縺吶∋縺ｦ</option>
+                  <option value="譁ｰ蜩・>譁ｰ蜩・/option>
+                  <option value="譛ｪ菴ｿ逕ｨ縺ｫ霑代＞">譛ｪ菴ｿ逕ｨ縺ｫ霑代＞</option>
+                  <option value="逶ｮ遶九▲縺溷す繧・ｱ壹ｌ縺ｪ縺・>逶ｮ遶九▲縺溷す繧・ｱ壹ｌ縺ｪ縺・/option>
+                  <option value="繧・ｄ蛯ｷ繧・ｱ壹ｌ縺ゅｊ">繧・ｄ蛯ｷ繧・ｱ壹ｌ縺ゅｊ</option>
+                  <option value="蛯ｷ繧・ｱ壹ｌ縺ゅｊ">蛯ｷ繧・ｱ壹ｌ縺ゅｊ</option>
                 </select>
               </div>
             </div>
@@ -351,7 +350,7 @@ export default function VintageHunter() {
               disabled={loading}
               className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white border-0 font-medium"
             >
-              {loading ? '🔍 検索中...' : '🔍 古着を検索'}
+              {loading ? '剥 讀懃ｴ｢荳ｭ...' : '剥 蜿､逹繧呈､懃ｴ｢'}
             </Button>
           </CardContent>
         </Card>
@@ -362,16 +361,16 @@ export default function VintageHunter() {
             <div className="text-sm text-gray-400">
               {totalResults > 0 ? (
                 <>
-                  <span className="text-amber-400 font-bold">{totalResults}</span>件中
-                  <span className="text-white font-bold ml-1">{displayItems.length}</span>件表示
+                  <span className="text-amber-400 font-bold">{totalResults}</span>莉ｶ荳ｭ
+                  <span className="text-white font-bold ml-1">{displayItems.length}</span>莉ｶ陦ｨ遉ｺ
                 </>
               ) : (
-                '結果なし'
+                '邨先棡縺ｪ縺・
               )}
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
-                <Label className="text-xs text-gray-500">最低スコア:</Label>
+                <Label className="text-xs text-gray-500">譛菴弱せ繧ｳ繧｢:</Label>
                 <input
                   type="range"
                   min="0"
@@ -388,10 +387,10 @@ export default function VintageHunter() {
                 onChange={(e) => setSortBy(e.target.value as any)}
                 className="h-8 rounded-md border border-amber-900/30 bg-[#1a1408] text-white text-xs px-2"
               >
-                <option value="aiScore">AIスコア順</option>
-                <option value="priceLow">価格が安い順</option>
-                <option value="priceHigh">価格が高い順</option>
-                <option value="newest">新着順</option>
+                <option value="aiScore">AI繧ｹ繧ｳ繧｢鬆・/option>
+                <option value="priceLow">萓｡譬ｼ縺悟ｮ峨＞鬆・/option>
+                <option value="priceHigh">萓｡譬ｼ縺碁ｫ倥＞鬆・/option>
+                <option value="newest">譁ｰ逹鬆・/option>
               </select>
             </div>
           </div>
@@ -400,20 +399,20 @@ export default function VintageHunter() {
         {/* Results Grid */}
         {!hasSearched ? (
           <div className="text-center py-20">
-            <div className="text-5xl mb-4">🔍</div>
-            <p className="text-gray-400 mb-2">ブランドやキーワードを入力して検索</p>
-            <p className="text-gray-600 text-sm">AIが自動でお買い得品をスコアリングします</p>
+            <div className="text-5xl mb-4">剥</div>
+            <p className="text-gray-400 mb-2">繝悶Λ繝ｳ繝峨ｄ繧ｭ繝ｼ繝ｯ繝ｼ繝峨ｒ蜈･蜉帙＠縺ｦ讀懃ｴ｢</p>
+            <p className="text-gray-600 text-sm">AI縺瑚・蜍輔〒縺願ｲｷ縺・ｾ怜刀繧偵せ繧ｳ繧｢繝ｪ繝ｳ繧ｰ縺励∪縺・/p>
           </div>
         ) : loading ? (
           <div className="text-center py-20">
-            <div className="text-5xl mb-4 animate-bounce">👗</div>
-            <p className="text-amber-400">データを検索中...</p>
+            <div className="text-5xl mb-4 animate-bounce">送</div>
+            <p className="text-amber-400">繝・・繧ｿ繧呈､懃ｴ｢荳ｭ...</p>
           </div>
         ) : displayItems.length === 0 ? (
           <div className="text-center py-20">
-            <div className="text-5xl mb-4">😢</div>
-            <p className="text-gray-400">条件に合う商品が見つかりませんでした</p>
-            <p className="text-gray-600 text-sm mt-1">検索条件を変えてお試しください</p>
+            <div className="text-5xl mb-4">个</div>
+            <p className="text-gray-400">譚｡莉ｶ縺ｫ蜷医≧蝠・刀縺瑚ｦ九▽縺九ｊ縺ｾ縺帙ｓ縺ｧ縺励◆</p>
+            <p className="text-gray-600 text-sm mt-1">讀懃ｴ｢譚｡莉ｶ繧貞､峨∴縺ｦ縺願ｩｦ縺励￥縺縺輔＞</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -439,8 +438,7 @@ export default function VintageHunter() {
                     {/* Deal indicator */}
                     {item.aiScore >= 80 && (
                       <div className="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">
-                        🔥 お買い得
-                      </div>
+                        櫨 縺願ｲｷ縺・ｾ・                      </div>
                     )}
                   </div>
                   <div className="p-3">
@@ -457,11 +455,11 @@ export default function VintageHunter() {
                     </h3>
                     <div className="flex items-baseline gap-2">
                       <span className="text-lg font-bold text-amber-400">
-                        ¥{item.price.toLocaleString()}
+                        ﾂ･{item.price.toLocaleString()}
                       </span>
                       {item.price < item.marketPrice && (
                         <span className="text-xs text-gray-500 line-through">
-                          ¥{item.marketPrice.toLocaleString()}
+                          ﾂ･{item.marketPrice.toLocaleString()}
                         </span>
                       )}
                     </div>
@@ -501,8 +499,7 @@ export default function VintageHunter() {
                 onClick={() => setSelectedItem(null)}
                 className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70"
               >
-                ✕
-              </button>
+                笨・              </button>
             </div>
 
             <div className="p-6 space-y-4">
@@ -521,20 +518,20 @@ export default function VintageHunter() {
 
               {/* Price Analysis */}
               <div className="bg-[#0d0a07] rounded-lg p-4 border border-amber-900/20">
-                <h4 className="text-sm font-semibold text-amber-400 mb-3">💰 価格分析</h4>
+                <h4 className="text-sm font-semibold text-amber-400 mb-3">腸 萓｡譬ｼ蛻・梵</h4>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <div className="text-xs text-gray-500">出品価格</div>
-                    <div className="text-xl font-bold text-amber-400">¥{selectedItem.price.toLocaleString()}</div>
+                    <div className="text-xs text-gray-500">蜃ｺ蜩∽ｾ｡譬ｼ</div>
+                    <div className="text-xl font-bold text-amber-400">ﾂ･{selectedItem.price.toLocaleString()}</div>
                   </div>
                   <div>
-                    <div className="text-xs text-gray-500">推定相場</div>
-                    <div className="text-xl font-bold text-gray-300">¥{selectedItem.marketPrice.toLocaleString()}</div>
+                    <div className="text-xs text-gray-500">謗ｨ螳夂嶌蝣ｴ</div>
+                    <div className="text-xl font-bold text-gray-300">ﾂ･{selectedItem.marketPrice.toLocaleString()}</div>
                   </div>
                 </div>
                 {selectedItem.price < selectedItem.marketPrice && (
                   <div className="mt-2 text-sm text-emerald-400">
-                    💡 相場より <span className="font-bold">¥{(selectedItem.marketPrice - selectedItem.price).toLocaleString()}</span> お得 (
+                    庁 逶ｸ蝣ｴ繧医ｊ <span className="font-bold">ﾂ･{(selectedItem.marketPrice - selectedItem.price).toLocaleString()}</span> 縺雁ｾ・(
                     {Math.round((1 - selectedItem.price / selectedItem.marketPrice) * 100)}%OFF)
                   </div>
                 )}
@@ -542,20 +539,20 @@ export default function VintageHunter() {
 
               {/* AI Analysis */}
               <div className="bg-[#0d0a07] rounded-lg p-4 border border-amber-900/20">
-                <h4 className="text-sm font-semibold text-amber-400 mb-3">🤖 AI分析</h4>
+                <h4 className="text-sm font-semibold text-amber-400 mb-3">､・AI蛻・梵</h4>
                 <div className="flex items-center gap-3 mb-3">
                   <div className={`text-3xl font-bold ${getScoreColor(selectedItem.aiScore)}`}>
                     {selectedItem.aiScore}
                   </div>
                   <div>
                     <div className="text-sm font-medium text-white">{getScoreLabel(selectedItem.aiScore)}</div>
-                    <div className="text-xs text-gray-500">AI総合スコア / 100</div>
+                    <div className="text-xs text-gray-500">AI邱丞粋繧ｹ繧ｳ繧｢ / 100</div>
                   </div>
                 </div>
                 <div className="space-y-2">
                   <div>
                     <div className="flex justify-between text-xs mb-1">
-                      <span className="text-gray-400">割安度</span>
+                      <span className="text-gray-400">蜑ｲ螳牙ｺｦ</span>
                       <span className="text-white">{Math.round(Math.max(0, (1 - selectedItem.price / selectedItem.marketPrice) * 60))}/60</span>
                     </div>
                     <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
@@ -564,7 +561,7 @@ export default function VintageHunter() {
                   </div>
                   <div>
                     <div className="flex justify-between text-xs mb-1">
-                      <span className="text-gray-400">レア度</span>
+                      <span className="text-gray-400">繝ｬ繧｢蠎ｦ</span>
                       <span className="text-white">{Math.round(selectedItem.rarity * 0.25)}/25</span>
                     </div>
                     <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
@@ -573,20 +570,20 @@ export default function VintageHunter() {
                   </div>
                   <div>
                     <div className="flex justify-between text-xs mb-1">
-                      <span className="text-gray-400">コンディション</span>
+                      <span className="text-gray-400">繧ｳ繝ｳ繝・ぅ繧ｷ繝ｧ繝ｳ</span>
                       <span className="text-white">
-                        {selectedItem.condition === '新品' ? '15' :
-                         selectedItem.condition === '未使用に近い' ? '13' :
-                         selectedItem.condition === '目立った傷や汚れなし' ? '10' :
-                         selectedItem.condition === 'やや傷や汚れあり' ? '6' : '3'}/15
+                        {selectedItem.condition === '譁ｰ蜩・ ? '15' :
+                         selectedItem.condition === '譛ｪ菴ｿ逕ｨ縺ｫ霑代＞' ? '13' :
+                         selectedItem.condition === '逶ｮ遶九▲縺溷す繧・ｱ壹ｌ縺ｪ縺・ ? '10' :
+                         selectedItem.condition === '繧・ｄ蛯ｷ繧・ｱ壹ｌ縺ゅｊ' ? '6' : '3'}/15
                       </span>
                     </div>
                     <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
                       <div className="h-full bg-amber-500 rounded-full" style={{
-                        width: `${(selectedItem.condition === '新品' ? 100 :
-                                   selectedItem.condition === '未使用に近い' ? 87 :
-                                   selectedItem.condition === '目立った傷や汚れなし' ? 67 :
-                                   selectedItem.condition === 'やや傷や汚れあり' ? 40 : 20)}%`
+                        width: `${(selectedItem.condition === '譁ｰ蜩・ ? 100 :
+                                   selectedItem.condition === '譛ｪ菴ｿ逕ｨ縺ｫ霑代＞' ? 87 :
+                                   selectedItem.condition === '逶ｮ遶九▲縺溷す繧・ｱ壹ｌ縺ｪ縺・ ? 67 :
+                                   selectedItem.condition === '繧・ｄ蛯ｷ繧・ｱ壹ｌ縺ゅｊ' ? 40 : 20)}%`
                       }} />
                     </div>
                   </div>
@@ -594,7 +591,7 @@ export default function VintageHunter() {
               </div>
 
               <div className="text-xs text-gray-600">
-                出品日時: {new Date(selectedItem.listedAt).toLocaleString('ja-JP')}
+                蜃ｺ蜩∵律譎・ {new Date(selectedItem.listedAt).toLocaleString('ja-JP')}
               </div>
 
               <div className="flex flex-col gap-2">
@@ -606,11 +603,10 @@ export default function VintageHunter() {
                     className="w-full"
                   >
                     <Button className="w-full bg-rose-700 hover:bg-rose-800 text-white border-0 text-base">
-                      🛒 楽天の商品ページを見る（実データ）
-                    </Button>
+                      將 讌ｽ螟ｩ縺ｮ蝠・刀繝壹・繧ｸ繧定ｦ九ｋ・亥ｮ溘ョ繝ｼ繧ｿ・・                    </Button>
                   </a>
                 )}
-                <div className="text-xs text-gray-400 mb-1">🔍 他サイトで同じ商品を比較する（検索結果ページが開きます）</div>
+                <div className="text-xs text-gray-400 mb-1">剥 莉悶し繧､繝医〒蜷後§蝠・刀繧呈ｯ碑ｼ・☆繧具ｼ域､懃ｴ｢邨先棡繝壹・繧ｸ縺碁幕縺阪∪縺呻ｼ・/div>
                 <div className="grid grid-cols-3 gap-2">
                   <a
                     href={`https://jp.mercari.com/search?keyword=${encodeURIComponent(selectedItem.brand + ' ' + selectedItem.title.substring(0, 30))}`}
@@ -618,7 +614,7 @@ export default function VintageHunter() {
                     rel="noopener noreferrer"
                   >
                     <Button className="w-full bg-red-500 hover:bg-red-600 text-white border-0 text-sm">
-                      メルカリ
+                      繝｡繝ｫ繧ｫ繝ｪ
                     </Button>
                   </a>
                   <a
@@ -627,7 +623,7 @@ export default function VintageHunter() {
                     rel="noopener noreferrer"
                   >
                     <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white border-0 text-sm">
-                      ヤフオク
+                      繝､繝輔が繧ｯ
                     </Button>
                   </a>
                   <a
@@ -636,7 +632,7 @@ export default function VintageHunter() {
                     rel="noopener noreferrer"
                   >
                     <Button className="w-full bg-rose-700 hover:bg-rose-800 text-white border-0 text-sm">
-                      楽天
+                      讌ｽ螟ｩ
                     </Button>
                   </a>
                 </div>
@@ -646,23 +642,25 @@ export default function VintageHunter() {
                     disabled={webhookStatus === 'sending'}
                     className="flex-1 bg-[#5865f2] hover:bg-[#4752c4] text-white border-0"
                   >
-                    {webhookStatus === 'sending' ? '送信中...' :
-                     webhookStatus === 'success' ? '✓ Discord送信済み' :
-                     '🔔 Discordに通知'}
+                    {webhookStatus === 'sending' ? '騾∽ｿ｡荳ｭ...' :
+                     webhookStatus === 'success' ? '笨・Discord騾∽ｿ｡貂医∩' :
+                     '粕 Discord縺ｫ騾夂衍'}
                   </Button>
                   <Button
                     variant="outline"
                     onClick={() => setSelectedItem(null)}
                     className="border-amber-900/30 text-gray-300 bg-transparent"
                   >
-                    閉じる
-                  </Button>
+                    髢峨§繧・                  </Button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       )}
-    </div>
+    
+      </div>
   )
 }
+
+

@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from 'next'
-import { Noto_Sans_JP } from 'next/font/google' // 🚀 プロ推奨フォント
+import { Noto_Sans_JP } from 'next/font/google'
 import './globals.css'
 import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
+import { DebugPanel } from '@/components/tools/DebugPanel' // 🛠️ 共通デバッガーをインポート
 
-// 🎨 Noto Sans JP をサイト全体に適用
 const notoPlain = Noto_Sans_JP({ 
   subsets: ['latin'],
   weight: ['400', '500', '700', '900'],
@@ -23,8 +23,8 @@ export const metadata: Metadata = {
   verification: {
     google: 'P-zm2rdcV0kWAXrKxANacp5a5hbx8tkjlPeclNkiLlg',
   },
-  title: { default: 'NextraLabs | AIツール使い放題メンバーシップ — 月額¥980〜', template: '%s | NextraLabs' },
-  description: 'NextraLabsは月額¥980から使えるAIツールのメンバーシップです。20以上のAIツールが使い放題。',
+  title: { default: 'NextraLabs | AIツール使い放題メンバーシップ', template: '%s | NextraLabs' },
+  description: 'NextraLabsは月額¥980から使えるAIツールのメンバーシップです。',
   manifest: '/manifest.json',
   metadataBase: new URL('https://membership-site-nextralabos.vercel.app'),
 }
@@ -42,6 +42,8 @@ export default function RootLayout({
             <Header />
             <main className="flex-1">{children}</main>
             <Footer />
+            {/* 🐞 全ページ・全システム共通のステルス・デバッガー */}
+            <DebugPanel data={null} toolId="global_system" />
           </div>
         </Providers>
       </body>

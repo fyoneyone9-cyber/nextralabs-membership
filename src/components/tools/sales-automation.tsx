@@ -1,4 +1,5 @@
-'use client';
+﻿'use client'
+;
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -14,7 +15,7 @@ export default function SalesAutomation() {
   const [prompt, setPrompt] = useState('');
   const [isCopied, setIsCopied] = useState(false);
 
-  // 企業プリセット
+  // 莨∵･ｭ繝励Μ繧ｻ繝・ヨ
   const presets = [
     { name: 'TOYOTA', domain: 'toyota.jp' },
     { name: 'SONY', domain: 'sony.jp' },
@@ -24,28 +25,28 @@ export default function SalesAutomation() {
   ];
 
   const handleCopyAndGo = (url: string) => {
-    if (!domain) return toast.error("企業ドメインを入力してください");
+    if (!domain) return toast.error("莨∵･ｭ繝峨Γ繧､繝ｳ繧貞・蜉帙＠縺ｦ縺上□縺輔＞");
     
-    // プロンプトをクライアント側で一瞬で生成（500エラーの心配なし）
+    // 繝励Ο繝ｳ繝励ヨ繧偵け繝ｩ繧､繧｢繝ｳ繝亥・縺ｧ荳迸ｬ縺ｧ逕滓・・・00繧ｨ繝ｩ繝ｼ縺ｮ蠢・・縺ｪ縺暦ｼ・
     const magicPrompt = `
-あなたは超一流のインサイドセールス担当者です。
-以下の企業に対し、NextraLabsのAI自動化ソリューションを提案する最高の営業メールを執筆してください。
+縺ゅ↑縺溘・雜・ｸ豬√・繧､繝ｳ繧ｵ繧､繝峨そ繝ｼ繝ｫ繧ｹ諡・ｽ楢・〒縺吶・
+莉･荳九・莨∵･ｭ縺ｫ蟇ｾ縺励¨extraLabs縺ｮAI閾ｪ蜍募喧繧ｽ繝ｪ繝･繝ｼ繧ｷ繝ｧ繝ｳ繧呈署譯医☆繧区怙鬮倥・蝟ｶ讌ｭ繝｡繝ｼ繝ｫ繧貞濤遲・＠縺ｦ縺上□縺輔＞縲・
 
-【ターゲット企業データ】
-・企業ドメイン: ${domain}
-・担当者名: ${targetPerson || "ご担当者"}様
-・特記事項: ${prompt || "特になし"}
+縲舌ち繝ｼ繧ｲ繝・ヨ莨∵･ｭ繝・・繧ｿ縲・
+繝ｻ莨∵･ｭ繝峨Γ繧､繝ｳ: ${domain}
+繝ｻ諡・ｽ楢・錐: ${targetPerson || "縺疲球蠖楢・}讒・
+繝ｻ迚ｹ險倅ｺ矩・ ${prompt || "迚ｹ縺ｫ縺ｪ縺・}
 
-【実行指示】
-1. あなたの持つ最新のGoogle検索機能を使い、${domain} の事業内容や最新ニュースを特定した上で、その企業特有の課題を鋭く推測してください。
-2. NextraLabsが提供するAI技術（画像解析、業務自動化、顧客対応AI等）が、その企業の利益にどう直結するか具体的に提案してください。
-3. 相手の価値を尊重し、返信率を最大化する「知性的で熱意のある文章」を日本語で作成してください。
-4. 件名案も「思わず開きたくなるタイトル」を3つ添えてください。
+縲仙ｮ溯｡梧欠遉ｺ縲・
+1. 縺ゅ↑縺溘・謖√▽譛譁ｰ縺ｮGoogle讀懃ｴ｢讖溯・繧剃ｽｿ縺・・{domain} 縺ｮ莠区･ｭ蜀・ｮｹ繧・怙譁ｰ繝九Η繝ｼ繧ｹ繧堤音螳壹＠縺滉ｸ翫〒縲√◎縺ｮ莨∵･ｭ迚ｹ譛峨・隱ｲ鬘後ｒ驪ｭ縺乗耳貂ｬ縺励※縺上□縺輔＞縲・
+2. NextraLabs縺梧署萓帙☆繧帰I謚陦難ｼ育判蜒剰ｧ｣譫舌∵･ｭ蜍呵・蜍募喧縲・｡ｧ螳｢蟇ｾ蠢廣I遲会ｼ峨′縲√◎縺ｮ莨∵･ｭ縺ｮ蛻ｩ逶翫↓縺ｩ縺・峩邨舌☆繧九°蜈ｷ菴鍋噪縺ｫ謠先｡医＠縺ｦ縺上□縺輔＞縲・
+3. 逶ｸ謇九・萓｡蛟､繧貞ｰ企㍾縺励∬ｿ比ｿ｡邇・ｒ譛螟ｧ蛹悶☆繧九檎衍諤ｧ逧・〒辭ｱ諢上・縺ゅｋ譁・ｫ縲阪ｒ譌･譛ｬ隱槭〒菴懈・縺励※縺上□縺輔＞縲・
+4. 莉ｶ蜷肴｡医ｂ縲梧昴ｏ縺夐幕縺阪◆縺上↑繧九ち繧､繝医Ν縲阪ｒ3縺､豺ｻ縺医※縺上□縺輔＞縲・
 `;
     
     navigator.clipboard.writeText(magicPrompt.trim());
     setIsCopied(true);
-    toast.success("戦略鑑定文をコピーしました！貼り付けるだけです。");
+    toast.success("謌ｦ逡･髑大ｮ壽枚繧偵さ繝斐・縺励∪縺励◆・∬ｲｼ繧贋ｻ倥￠繧九□縺代〒縺吶・);
     
     setTimeout(() => {
       window.open(url, '_blank');
@@ -56,7 +57,7 @@ export default function SalesAutomation() {
     <div className="max-w-6xl mx-auto p-4 min-h-screen font-sans bg-slate-50/50 text-left text-slate-900 antialiased">
       <Card className="border-none bg-white shadow-2xl rounded-[3.5rem] overflow-hidden">
         <div className="flex flex-col lg:flex-row min-h-[750px]">
-          {/* 左側：分析セクション */}
+          {/* 蟾ｦ蛛ｴ・壼・譫舌そ繧ｯ繧ｷ繝ｧ繝ｳ */}
           <div className="lg:w-1/2 p-12 bg-slate-900 text-white flex flex-col justify-between relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-emerald-400 to-indigo-600"></div>
             <div className="space-y-12">
@@ -85,35 +86,35 @@ export default function SalesAutomation() {
 
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block ml-1">2. Target Identity</label>
-                  <Input placeholder="担当者名" className="bg-black/40 border-slate-800 text-white h-14 rounded-[1.2rem] text-lg font-bold" value={targetPerson} onChange={(e) => setTargetPerson(e.target.value)} />
+                  <Input placeholder="諡・ｽ楢・錐" className="bg-black/40 border-slate-800 text-white h-14 rounded-[1.2rem] text-lg font-bold" value={targetPerson} onChange={(e) => setTargetPerson(e.target.value)} />
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block ml-1">3. Custom Request</label>
-                  <Textarea placeholder="相手の課題、自社の強みなど..." className="bg-black/40 border-slate-800 text-white min-h-[120px] rounded-[1.5rem] font-bold text-lg p-5" value={prompt} onChange={(e) => setPrompt(e.target.value)} />
+                  <Textarea placeholder="逶ｸ謇九・隱ｲ鬘後∬・遉ｾ縺ｮ蠑ｷ縺ｿ縺ｪ縺ｩ..." className="bg-black/40 border-slate-800 text-white min-h-[120px] rounded-[1.5rem] font-bold text-lg p-5" value={prompt} onChange={(e) => setPrompt(e.target.value)} />
                 </div>
               </div>
             </div>
             
             <div className="p-6 bg-white/5 rounded-[2rem] border border-white/5 flex items-start gap-4 backdrop-blur-sm shadow-inner">
                <HelpCircle className="text-blue-400 w-6 h-6 mt-1 flex-shrink-0" />
-               <p className="text-slate-400 text-xs font-bold leading-relaxed">ドメインを入力するだけで、AIがその企業の最新状況をリサーチ。世界最高峰のAI知能（Gemini Pro等）の能力を最大化するプロンプトを構築します。</p>
+               <p className="text-slate-400 text-xs font-bold leading-relaxed">繝峨Γ繧､繝ｳ繧貞・蜉帙☆繧九□縺代〒縲、I縺後◎縺ｮ莨∵･ｭ縺ｮ譛譁ｰ迥ｶ豕√ｒ繝ｪ繧ｵ繝ｼ繝√ゆｸ也阜譛鬮伜ｳｰ縺ｮAI遏･閭ｽ・・emini Pro遲会ｼ峨・閭ｽ蜉帙ｒ譛螟ｧ蛹悶☆繧九・繝ｭ繝ｳ繝励ヨ繧呈ｧ狗ｯ峨＠縺ｾ縺吶・/p>
             </div>
           </div>
 
-          {/* 右側：ポータルセクション */}
+          {/* 蜿ｳ蛛ｴ・壹・繝ｼ繧ｿ繝ｫ繧ｻ繧ｯ繧ｷ繝ｧ繝ｳ */}
           <div className="lg:w-1/2 p-12 flex flex-col bg-white overflow-hidden border-l border-slate-100">
             <div className="flex-1 space-y-12">
               <div className="text-center space-y-6">
                  <div className="space-y-2">
                     <p className="text-[11px] font-black text-slate-900 uppercase tracking-[0.4em]">Step 2: Launch Analysis</p>
-                    <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest">ボタンを押すと鑑定文が自動コピーされます</p>
+                    <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest">繝懊ち繝ｳ繧呈款縺吶→髑大ｮ壽枚縺瑚・蜍輔さ繝斐・縺輔ｌ縺ｾ縺・/p>
                  </div>
                  
                  <div className="grid grid-cols-1 gap-5">
                     <Button onClick={() => handleCopyAndGo('https://gemini.google.com/')} className="h-28 bg-blue-600 hover:bg-blue-500 text-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(37,99,235,0.3)] flex flex-col items-center justify-center group active:scale-95 transition-all border-none relative overflow-hidden">
-                      <div className="flex items-center gap-4 text-3xl font-black italic tracking-tighter uppercase relative z-10 text-white"><Sparkles className="w-8 h-8 text-amber-300" /> Geminiで鑑定</div>
-                      <span className="text-[10px] text-blue-100 font-black uppercase tracking-widest relative z-10 opacity-90">最新リサーチ ＋ Groundingに最強</span>
+                      <div className="flex items-center gap-4 text-3xl font-black italic tracking-tighter uppercase relative z-10 text-white"><Sparkles className="w-8 h-8 text-amber-300" /> Gemini縺ｧ髑大ｮ・/div>
+                      <span className="text-[10px] text-blue-100 font-black uppercase tracking-widest relative z-10 opacity-90">譛譁ｰ繝ｪ繧ｵ繝ｼ繝・・・Grounding縺ｫ譛蠑ｷ</span>
                       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                     </Button>
                     <div className="grid grid-cols-2 gap-5">
@@ -127,13 +128,13 @@ export default function SalesAutomation() {
                 <div className="p-10 bg-red-50 rounded-[3rem] border-4 border-red-100 animate-in fade-in slide-in-from-top-6 shadow-2xl relative overflow-hidden text-left">
                    <div className="absolute -top-6 -right-6 w-32 h-32 bg-red-100 rounded-full opacity-30 flex items-center justify-center"><AlertCircle className="w-16 h-16 text-red-500" /></div>
                    <div className="flex flex-col gap-1 mb-8">
-                     <div className="flex items-center gap-3 text-red-700 font-black italic text-2xl uppercase tracking-tight text-left">貼り付けるだけ！</div>
-                     <p className="text-red-600 font-black text-xs tracking-widest uppercase opacity-80">鑑定文はすでにコピーされています</p>
+                     <div className="flex items-center gap-3 text-red-700 font-black italic text-2xl uppercase tracking-tight text-left">雋ｼ繧贋ｻ倥￠繧九□縺托ｼ・/div>
+                     <p className="text-red-600 font-black text-xs tracking-widest uppercase opacity-80">髑大ｮ壽枚縺ｯ縺吶〒縺ｫ繧ｳ繝斐・縺輔ｌ縺ｦ縺・∪縺・/p>
                    </div>
                    <div className="space-y-6 text-lg text-red-950 font-black leading-tight text-left">
-                     <p className="flex items-start gap-4 transition-all hover:translate-x-1"><span className="bg-red-600 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm flex-shrink-0 mt-0.5 shadow-md font-sans font-black">1</span><span>AIアプリが起動したら、入力欄を長押し</span></p>
-                     <p className="flex items-start gap-4 transition-all hover:translate-x-1"><span className="bg-red-600 text-white w-8 h-8 rounded-xl flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-md font-sans font-black">2</span><span>そのまま <span className="underline decoration-red-500 decoration-[3px] underline-offset-4 font-black text-red-600">「貼り付け」</span> して送信！</span></p>
-                     <p className="flex items-start gap-4 transition-all hover:translate-x-1"><span className="bg-red-600 text-white w-8 h-8 rounded-xl flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-md font-sans font-black">3</span><span>最強の提案メールが生成されます</span></p>
+                     <p className="flex items-start gap-4 transition-all hover:translate-x-1"><span className="bg-red-600 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm flex-shrink-0 mt-0.5 shadow-md font-sans font-black">1</span><span>AI繧｢繝励Μ縺瑚ｵｷ蜍輔＠縺溘ｉ縲∝・蜉帶ｬ・ｒ髟ｷ謚ｼ縺・/span></p>
+                     <p className="flex items-start gap-4 transition-all hover:translate-x-1"><span className="bg-red-600 text-white w-8 h-8 rounded-xl flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-md font-sans font-black">2</span><span>縺昴・縺ｾ縺ｾ <span className="underline decoration-red-500 decoration-[3px] underline-offset-4 font-black text-red-600">縲瑚ｲｼ繧贋ｻ倥￠縲・/span> 縺励※騾∽ｿ｡・・/span></p>
+                     <p className="flex items-start gap-4 transition-all hover:translate-x-1"><span className="bg-red-600 text-white w-8 h-8 rounded-xl flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-md font-sans font-black">3</span><span>譛蠑ｷ縺ｮ謠先｡医Γ繝ｼ繝ｫ縺檎函謌舌＆繧後∪縺・/span></p>
                    </div>
                 </div>
               )}
@@ -145,6 +146,9 @@ export default function SalesAutomation() {
           </div>
         </div>
       </Card>
-    </div>
+    
+      </div>
   );
 }
+
+

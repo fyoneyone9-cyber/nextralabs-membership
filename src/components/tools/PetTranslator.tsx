@@ -1,4 +1,5 @@
-'use client'
+﻿'use client'
+
 
 import React, { useRef, useEffect, useState, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
@@ -27,13 +28,13 @@ interface Settings {
 }
 
 const EMOTIONS: Record<string, { emoji: string; nameJa: string }> = {
-  happy: { emoji: '😸', nameJa: '幸せ' },
-  lonely: { emoji: '😿', nameJa: '寂しい' },
-  hungry: { emoji: '🍽️', nameJa: 'お腹空いた' },
-  angry: { emoji: '😾', nameJa: '怒り' },
-  relaxed: { emoji: '😌', nameJa: 'リラックス' },
-  excited: { emoji: '🤩', nameJa: '興奮' },
-  anxious: { emoji: '😰', nameJa: '不安' },
+  happy: { emoji: '从', nameJa: '蟷ｸ縺・ },
+  lonely: { emoji: '仭', nameJa: '蟇ゅ＠縺・ },
+  hungry: { emoji: '鎖・・, nameJa: '縺願・遨ｺ縺・◆' },
+  angry: { emoji: '仞', nameJa: '諤偵ｊ' },
+  relaxed: { emoji: '・', nameJa: '繝ｪ繝ｩ繝・け繧ｹ' },
+  excited: { emoji: '､ｩ', nameJa: '闊亥･ｮ' },
+  anxious: { emoji: '于', nameJa: '荳榊ｮ・ },
 }
 
 function analyzeEmotion(
@@ -158,7 +159,7 @@ function EmotionChart({ history }: { history: EmotionRecord[] }) {
       ctx.fillStyle = '#6b7280'
       ctx.font = '12px sans-serif'
       ctx.textAlign = 'center'
-      ctx.fillText('データ収集中...', w / 2, h / 2)
+      ctx.fillText('繝・・繧ｿ蜿朱寔荳ｭ...', w / 2, h / 2)
       return
     }
 
@@ -202,12 +203,12 @@ function EmotionChart({ history }: { history: EmotionRecord[] }) {
     ctx.fillStyle = '#9ca3af'
     ctx.font = '10px sans-serif'
     ctx.textAlign = 'left'
-    ctx.fillText('動き', w - 95, 13)
+    ctx.fillText('蜍輔″', w - 95, 13)
 
     ctx.fillStyle = '#6366f1'
     ctx.fillRect(w - 55, 8, 10, 3)
     ctx.fillStyle = '#9ca3af'
-    ctx.fillText('音量', w - 40, 13)
+    ctx.fillText('髻ｳ驥・, w - 40, 13)
 
     // Y axis labels
     ctx.fillStyle = '#4b5563'
@@ -238,7 +239,7 @@ export default function PetTranslator() {
   const streamRef = useRef<MediaStream | null>(null)
 
   const [isRunning, setIsRunning] = useState(false)
-  const [currentEmotion, setCurrentEmotion] = useState<Emotion>({ name: 'relaxed', emoji: '😌', confidence: 0 })
+  const [currentEmotion, setCurrentEmotion] = useState<Emotion>({ name: 'relaxed', emoji: '・', confidence: 0 })
   const [motionLevel, setMotionLevel] = useState(0)
   const [volumeLevel, setVolumeLevel] = useState(0)
   const [lowBand, setLowBand] = useState(0)
@@ -265,7 +266,7 @@ export default function PetTranslator() {
     const now = Date.now()
     if (!notificationsEnabled || now - lastNotification < 60000) return
     if (emotion.confidence >= settings.notificationThreshold) {
-      new Notification('🐾 ペット翻訳モニター', {
+      new Notification('誓 繝壹ャ繝育ｿｻ險ｳ繝｢繝九ち繝ｼ', {
         body: `${emotion.emoji} ${EMOTIONS[emotion.name].nameJa} (${emotion.confidence}%)`,
         icon: '/favicon.ico',
       })
@@ -298,7 +299,7 @@ export default function PetTranslator() {
       setIsRunning(true)
     } catch (err) {
       console.error('Failed to start monitoring:', err)
-      alert('カメラとマイクへのアクセスを許可してください。')
+      alert('繧ｫ繝｡繝ｩ縺ｨ繝槭う繧ｯ縺ｸ縺ｮ繧｢繧ｯ繧ｻ繧ｹ繧定ｨｱ蜿ｯ縺励※縺上□縺輔＞縲・)
     }
   }, [])
 
@@ -431,13 +432,13 @@ export default function PetTranslator() {
   }, [stopMonitoring])
 
   const emotionMessages: Record<string, string[]> = {
-    happy: ['ご機嫌だニャ〜♪', '今すごく幸せだよ！', '一緒にいると楽しいな♪'],
-    lonely: ['早く帰ってきて…', 'ひとりは寂しいよ', 'そばにいてほしいな…'],
-    hungry: ['お腹空いたニャ！', 'ごはんまだ？', 'おやつちょうだい！'],
-    angry: ['怒ってるんだからね！', '触らないで！', 'シャー！'],
-    relaxed: ['zzz…気持ちいい…', 'まったりタイム', 'のんびりしてるよ'],
-    excited: ['わーい！楽しい！', 'テンション上がる！', '遊ぼう遊ぼう！'],
-    anxious: ['なんか不安…', '怖いよ…', '大丈夫かな…'],
+    happy: ['縺疲ｩ溷ｫ後□繝九Ε縲懌飭', '莉翫☆縺斐￥蟷ｸ縺帙□繧茨ｼ・, '荳邱偵↓縺・ｋ縺ｨ讌ｽ縺励＞縺ｪ笙ｪ'],
+    lonely: ['譌ｩ縺丞ｸｰ縺｣縺ｦ縺阪※窶ｦ', '縺ｲ縺ｨ繧翫・蟇ゅ＠縺・ｈ', '縺昴・縺ｫ縺・※縺ｻ縺励＞縺ｪ窶ｦ'],
+    hungry: ['縺願・遨ｺ縺・◆繝九Ε・・, '縺斐・繧薙∪縺・・, '縺翫ｄ縺､縺｡繧・≧縺縺・ｼ・],
+    angry: ['諤偵▲縺ｦ繧九ｓ縺縺九ｉ縺ｭ・・, '隗ｦ繧峨↑縺・〒・・, '繧ｷ繝｣繝ｼ・・],
+    relaxed: ['zzz窶ｦ豌玲戟縺｡縺・＞窶ｦ', '縺ｾ縺｣縺溘ｊ繧ｿ繧､繝', '縺ｮ繧薙・繧翫＠縺ｦ繧九ｈ'],
+    excited: ['繧上・縺・ｼ∵･ｽ縺励＞・・, '繝・Φ繧ｷ繝ｧ繝ｳ荳翫′繧具ｼ・, '驕翫⊂縺・♀縺ｼ縺・ｼ・],
+    anxious: ['縺ｪ繧薙°荳榊ｮ俄ｦ', '諤悶＞繧遺ｦ', '螟ｧ荳亥､ｫ縺九↑窶ｦ'],
   }
 
   const getMessage = (emotionName: string) => {
@@ -451,10 +452,10 @@ export default function PetTranslator() {
       <div className="border-b border-[#1a1a2e] bg-[#0a0a14]/90 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">🐾</span>
+            <span className="text-2xl">誓</span>
             <div>
-              <h1 className="text-sm font-semibold text-white">AIペット翻訳モニター</h1>
-              <p className="text-xs text-gray-500">リアルタイム感情分析</p>
+              <h1 className="text-sm font-semibold text-white">AI繝壹ャ繝育ｿｻ險ｳ繝｢繝九ち繝ｼ</h1>
+              <p className="text-xs text-gray-500">繝ｪ繧｢繝ｫ繧ｿ繧､繝諢滓ュ蛻・梵</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -464,16 +465,14 @@ export default function PetTranslator() {
               onClick={() => setShowSettings(!showSettings)}
               className="text-xs border-gray-700 text-gray-300 hover:text-white bg-transparent"
             >
-              ⚙️ 設定
-            </Button>
+              笞呻ｸ・險ｭ螳・            </Button>
             {!isRunning ? (
               <Button
                 size="sm"
                 onClick={startMonitoring}
                 className="text-xs bg-violet-600 hover:bg-violet-700 border-0"
               >
-                ▶️ モニタリング開始
-              </Button>
+                笆ｶ・・繝｢繝九ち繝ｪ繝ｳ繧ｰ髢句ｧ・              </Button>
             ) : (
               <Button
                 size="sm"
@@ -481,7 +480,7 @@ export default function PetTranslator() {
                 onClick={stopMonitoring}
                 className="text-xs"
               >
-                ⏹ 停止
+                竢ｹ 蛛懈ｭ｢
               </Button>
             )}
           </div>
@@ -493,10 +492,10 @@ export default function PetTranslator() {
         {showSettings && (
           <Card className="bg-[#12121f] border-[#2a2a3e] mb-6">
             <CardContent className="p-4">
-              <h3 className="text-sm font-semibold text-white mb-4">⚙️ 設定</h3>
+              <h3 className="text-sm font-semibold text-white mb-4">笞呻ｸ・險ｭ螳・/h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <Label className="text-xs text-gray-400">ペットの種類</Label>
+                  <Label className="text-xs text-gray-400">繝壹ャ繝医・遞ｮ鬘・/Label>
                   <div className="flex gap-2 mt-1">
                     <button
                       onClick={() => setSettings(s => ({ ...s, petType: 'cat' }))}
@@ -506,7 +505,7 @@ export default function PetTranslator() {
                           : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                       }`}
                     >
-                      🐱 猫
+                      棲 迪ｫ
                     </button>
                     <button
                       onClick={() => setSettings(s => ({ ...s, petType: 'dog' }))}
@@ -516,13 +515,13 @@ export default function PetTranslator() {
                           : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                       }`}
                     >
-                      🐕 犬
+                      枢 迥ｬ
                     </button>
                   </div>
                 </div>
                 <div>
                   <Label className="text-xs text-gray-400">
-                    感度: {settings.sensitivity}%
+                    諢溷ｺｦ: {settings.sensitivity}%
                   </Label>
                   <input
                     type="range"
@@ -535,7 +534,7 @@ export default function PetTranslator() {
                 </div>
                 <div>
                   <Label className="text-xs text-gray-400">
-                    通知閾値: {settings.notificationThreshold}%
+                    騾夂衍髢ｾ蛟､: {settings.notificationThreshold}%
                   </Label>
                   <input
                     type="range"
@@ -551,7 +550,7 @@ export default function PetTranslator() {
                     onClick={requestNotificationPermission}
                     className="mt-2 text-xs border-gray-700 text-gray-300 bg-transparent w-full"
                   >
-                    🔔 通知を許可する {notificationsEnabled ? '✓' : ''}
+                    粕 騾夂衍繧定ｨｱ蜿ｯ縺吶ｋ {notificationsEnabled ? '笨・ : ''}
                   </Button>
                 </div>
               </div>
@@ -578,9 +577,9 @@ export default function PetTranslator() {
                   {!isRunning && (
                     <div className="absolute inset-0 flex items-center justify-center bg-[#0a0a14]/80">
                       <div className="text-center">
-                        <div className="text-5xl mb-4">📷</div>
-                        <p className="text-gray-400 mb-2">カメラ映像がここに表示されます</p>
-                        <p className="text-gray-600 text-sm">「モニタリング開始」を押してください</p>
+                        <div className="text-5xl mb-4">胴</div>
+                        <p className="text-gray-400 mb-2">繧ｫ繝｡繝ｩ譏蜒上′縺薙％縺ｫ陦ｨ遉ｺ縺輔ｌ縺ｾ縺・/p>
+                        <p className="text-gray-600 text-sm">縲後Δ繝九ち繝ｪ繝ｳ繧ｰ髢句ｧ九阪ｒ謚ｼ縺励※縺上□縺輔＞</p>
                       </div>
                     </div>
                   )}
@@ -592,8 +591,7 @@ export default function PetTranslator() {
                         <span className="text-xs text-white/80 bg-black/50 px-2 py-0.5 rounded">LIVE</span>
                       </div>
                       <div className="absolute top-3 right-3 bg-black/50 px-2 py-1 rounded text-xs text-white">
-                        {settings.petType === 'cat' ? '🐱' : '🐕'} {settings.petType === 'cat' ? '猫' : '犬'}モード
-                      </div>
+                        {settings.petType === 'cat' ? '棲' : '枢'} {settings.petType === 'cat' ? '迪ｫ' : '迥ｬ'}繝｢繝ｼ繝・                      </div>
                     </>
                   )}
                 </div>
@@ -605,7 +603,7 @@ export default function PetTranslator() {
               <Card className="bg-[#12121f] border-[#2a2a3e]">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-gray-400">⚡ 動きレベル</span>
+                    <span className="text-xs text-gray-400">笞｡ 蜍輔″繝ｬ繝吶Ν</span>
                     <span className="text-sm font-bold text-emerald-400">{motionLevel.toFixed(0)}%</span>
                   </div>
                   <div className="h-2 bg-[#1a1a2e] rounded-full overflow-hidden">
@@ -619,7 +617,7 @@ export default function PetTranslator() {
               <Card className="bg-[#12121f] border-[#2a2a3e]">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-gray-400">🔊 音量レベル</span>
+                    <span className="text-xs text-gray-400">矧 髻ｳ驥上Ξ繝吶Ν</span>
                     <span className="text-sm font-bold text-indigo-400">{volumeLevel.toFixed(0)}%</span>
                   </div>
                   <div className="h-2 bg-[#1a1a2e] rounded-full overflow-hidden">
@@ -635,11 +633,11 @@ export default function PetTranslator() {
             {/* Audio Bands */}
             <Card className="bg-[#12121f] border-[#2a2a3e]">
               <CardContent className="p-4">
-                <div className="text-xs text-gray-400 mb-3">🎵 周波数帯域分析</div>
+                <div className="text-xs text-gray-400 mb-3">七 蜻ｨ豕｢謨ｰ蟶ｯ蝓溷・譫・/div>
                 <div className="grid grid-cols-3 gap-3">
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs text-gray-500">低音域</span>
+                      <span className="text-xs text-gray-500">菴朱浹蝓・/span>
                       <span className="text-xs font-mono text-red-400">{lowBand.toFixed(0)}%</span>
                     </div>
                     <div className="h-1.5 bg-[#1a1a2e] rounded-full overflow-hidden">
@@ -648,7 +646,7 @@ export default function PetTranslator() {
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs text-gray-500">中音域</span>
+                      <span className="text-xs text-gray-500">荳ｭ髻ｳ蝓・/span>
                       <span className="text-xs font-mono text-yellow-400">{midBand.toFixed(0)}%</span>
                     </div>
                     <div className="h-1.5 bg-[#1a1a2e] rounded-full overflow-hidden">
@@ -657,7 +655,7 @@ export default function PetTranslator() {
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs text-gray-500">高音域</span>
+                      <span className="text-xs text-gray-500">鬮倬浹蝓・/span>
                       <span className="text-xs font-mono text-blue-400">{highBand.toFixed(0)}%</span>
                     </div>
                     <div className="h-1.5 bg-[#1a1a2e] rounded-full overflow-hidden">
@@ -671,7 +669,7 @@ export default function PetTranslator() {
             {/* History Chart */}
             <Card className="bg-[#12121f] border-[#2a2a3e]">
               <CardContent className="p-4">
-                <div className="text-xs text-gray-400 mb-3">📈 リアルタイム履歴（過去5分）</div>
+                <div className="text-xs text-gray-400 mb-3">嶋 繝ｪ繧｢繝ｫ繧ｿ繧､繝螻･豁ｴ・磯℃蜴ｻ5蛻・ｼ・/div>
                 <EmotionChart history={history} />
               </CardContent>
             </Card>
@@ -684,10 +682,10 @@ export default function PetTranslator() {
               <CardContent className="p-6 text-center">
                 <div className="text-7xl mb-3">{currentEmotion.emoji}</div>
                 <div className="text-xl font-bold text-white mb-1">
-                  {EMOTIONS[currentEmotion.name]?.nameJa || '分析中'}
+                  {EMOTIONS[currentEmotion.name]?.nameJa || '蛻・梵荳ｭ'}
                 </div>
                 <div className="text-sm text-gray-400 mb-4">
-                  信頼度: {currentEmotion.confidence}%
+                  菫｡鬆ｼ蠎ｦ: {currentEmotion.confidence}%
                 </div>
                 <div className="w-full h-2 bg-[#1a1a2e] rounded-full overflow-hidden mb-4">
                   <div
@@ -697,8 +695,7 @@ export default function PetTranslator() {
                 </div>
                 <div className="bg-[#0a0a14] rounded-lg p-4 border border-[#2a2a3e]">
                   <p className="text-sm text-gray-200 leading-relaxed">
-                    🐾 「{getMessage(currentEmotion.name)}」
-                  </p>
+                    誓 縲鶏getMessage(currentEmotion.name)}縲・                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -706,7 +703,7 @@ export default function PetTranslator() {
             {/* All Emotions Quick View */}
             <Card className="bg-[#12121f] border-[#2a2a3e]">
               <CardContent className="p-4">
-                <div className="text-xs text-gray-400 mb-3">感情一覧</div>
+                <div className="text-xs text-gray-400 mb-3">諢滓ュ荳隕ｧ</div>
                 <div className="grid grid-cols-2 gap-2">
                   {Object.entries(EMOTIONS).map(([key, val]) => (
                     <div
@@ -730,12 +727,11 @@ export default function PetTranslator() {
             {/* Recent History */}
             <Card className="bg-[#12121f] border-[#2a2a3e]">
               <CardContent className="p-4">
-                <div className="text-xs text-gray-400 mb-3">🕐 最近の感情変化</div>
+                <div className="text-xs text-gray-400 mb-3">武 譛霑代・諢滓ュ螟牙喧</div>
                 <div className="space-y-2 max-h-48 overflow-y-auto">
                   {history.length === 0 ? (
                     <p className="text-xs text-gray-600 text-center py-4">
-                      モニタリング開始で記録が表示されます
-                    </p>
+                      繝｢繝九ち繝ｪ繝ｳ繧ｰ髢句ｧ九〒險倬鹸縺瑚｡ｨ遉ｺ縺輔ｌ縺ｾ縺・                    </p>
                   ) : (
                     [...history].reverse().slice(0, 20).map((record, i) => (
                       <div key={i} className="flex items-center gap-2 text-xs">
@@ -758,6 +754,9 @@ export default function PetTranslator() {
           </div>
         </div>
       </div>
-    </div>
+    
+      </div>
   )
 }
+
+

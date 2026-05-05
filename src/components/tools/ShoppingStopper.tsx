@@ -1,4 +1,5 @@
-'use client'
+﻿'use client'
+
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
@@ -50,27 +51,27 @@ const STORAGE_KEYS = {
   activeLock: 'shopping-stopper-active-lock',
 }
 
-const CATEGORIES = ['ファッション', 'ガジェット', '食品', '趣味', '日用品', 'その他']
+const CATEGORIES = ['繝輔ぃ繝・す繝ｧ繝ｳ', '繧ｬ繧ｸ繧ｧ繝・ヨ', '鬟溷刀', '雜｣蜻ｳ', '譌･逕ｨ蜩・, '縺昴・莉・]
 
 const LOCK_DURATIONS = [
-  { label: '1時間', value: 3600000 },
-  { label: '3時間', value: 10800000 },
-  { label: '6時間', value: 21600000 },
-  { label: '12時間', value: 43200000 },
-  { label: '24時間', value: 86400000 },
+  { label: '1譎る俣', value: 3600000 },
+  { label: '3譎る俣', value: 10800000 },
+  { label: '6譎る俣', value: 21600000 },
+  { label: '12譎る俣', value: 43200000 },
+  { label: '24譎る俣', value: 86400000 },
 ]
 
 const WISDOM_QUOTES = [
-  '「本当に必要なものは、3日経っても欲しいもの」',
-  '「衝動買いの80%は1週間後に後悔する」',
-  '「その金額を時給に換算してみよう」',
-  '「去年買って使わなかったものを思い出して」',
-  '「欲しいと思った瞬間が一番危険」',
-  '「貯金は未来の自分へのプレゼント」',
-  '「安いから買うのではなく、必要だから買う」',
-  '「カートに入れるのと、購入ボタンを押すのは別のこと」',
-  '「持たない豊かさを知ろう」',
-  '「今の感情は一時的。判断は冷静な時に」',
+  '縲梧悽蠖薙↓蠢・ｦ√↑繧ゅ・縺ｯ縲・譌･邨後▲縺ｦ繧よｬｲ縺励＞繧ゅ・縲・,
+  '縲瑚｡晏虚雋ｷ縺・・80%縺ｯ1騾ｱ髢灘ｾ後↓蠕梧ｔ縺吶ｋ縲・,
+  '縲後◎縺ｮ驥鷹｡阪ｒ譎らｵｦ縺ｫ謠帷ｮ励＠縺ｦ縺ｿ繧医≧縲・,
+  '縲悟悉蟷ｴ雋ｷ縺｣縺ｦ菴ｿ繧上↑縺九▲縺溘ｂ縺ｮ繧呈昴＞蜃ｺ縺励※縲・,
+  '縲梧ｬｲ縺励＞縺ｨ諤昴▲縺溽椪髢薙′荳逡ｪ蜊ｱ髯ｺ縲・,
+  '縲瑚ｲｯ驥代・譛ｪ譚･縺ｮ閾ｪ蛻・∈縺ｮ繝励Ξ繧ｼ繝ｳ繝医・,
+  '縲悟ｮ峨＞縺九ｉ雋ｷ縺・・縺ｧ縺ｯ縺ｪ縺上∝ｿ・ｦ√□縺九ｉ雋ｷ縺・・,
+  '縲後き繝ｼ繝医↓蜈･繧後ｋ縺ｮ縺ｨ縲∬ｳｼ蜈･繝懊ち繝ｳ繧呈款縺吶・縺ｯ蛻･縺ｮ縺薙→縲・,
+  '縲梧戟縺溘↑縺・ｱ翫°縺輔ｒ遏･繧阪≧縲・,
+  '縲御ｻ翫・諢滓ュ縺ｯ荳譎ら噪縲ょ愛譁ｭ縺ｯ蜀ｷ髱吶↑譎ゅ↓縲・,
 ]
 
 const DEFAULT_SETTINGS: Settings = {
@@ -220,13 +221,13 @@ export default function ShoppingStopper() {
               }`}
             >
               <span className="text-red-300 text-sm font-medium">
-                {breathPhase === 'inhale' ? '吸う...' : breathPhase === 'hold' ? '止める...' : '吐く...'}
+                {breathPhase === 'inhale' ? '蜷ｸ縺・..' : breathPhase === 'hold' ? '豁｢繧√ｋ...' : '蜷舌￥...'}
               </span>
             </div>
           </div>
 
-          <h1 className="text-3xl font-bold text-white mb-2">🛑 冷却期間中</h1>
-          <p className="text-red-400 text-xl font-bold mb-2">本当に必要ですか？</p>
+          <h1 className="text-3xl font-bold text-white mb-2">尅 蜀ｷ蜊ｴ譛滄俣荳ｭ</h1>
+          <p className="text-red-400 text-xl font-bold mb-2">譛ｬ蠖薙↓蠢・ｦ√〒縺吶°・・/p>
 
           {/* Countdown */}
           <div className="text-5xl font-mono font-bold text-white mb-4">
@@ -251,17 +252,17 @@ export default function ShoppingStopper() {
           {/* Past regrets */}
           {regretPurchases.length > 0 && (
             <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 mb-4">
-              <p className="text-gray-400 text-sm mb-2">📋 過去の後悔した買い物</p>
+              <p className="text-gray-400 text-sm mb-2">搭 驕主悉縺ｮ蠕梧ｔ縺励◆雋ｷ縺・黄</p>
               {regretPurchases.map(p => (
                 <div key={p.id} className="text-gray-500 text-sm">
-                  😰 {p.name} — ¥{p.price.toLocaleString()}
+                  于 {p.name} 窶・ﾂ･{p.price.toLocaleString()}
                 </div>
               ))}
             </div>
           )}
 
           <p className="text-gray-600 text-xs">
-            興奮度 {activeLock.excitementLevel}% で発動 ・ タイマー終了まで閉じられません
+            闊亥･ｮ蠎ｦ {activeLock.excitementLevel}% 縺ｧ逋ｺ蜍・繝ｻ 繧ｿ繧､繝槭・邨ゆｺ・∪縺ｧ髢峨§繧峨ｌ縺ｾ縺帙ｓ
           </p>
         </div>
       </div>
@@ -269,10 +270,10 @@ export default function ShoppingStopper() {
   }
 
   const tabs = [
-    { id: 'monitor' as const, label: 'モニター', emoji: '📷' },
-    { id: 'history' as const, label: '履歴', emoji: '📋' },
-    { id: 'analysis' as const, label: '分析', emoji: '📊' },
-    { id: 'settings' as const, label: '設定', emoji: '⚙️' },
+    { id: 'monitor' as const, label: '繝｢繝九ち繝ｼ', emoji: '胴' },
+    { id: 'history' as const, label: '螻･豁ｴ', emoji: '搭' },
+    { id: 'analysis' as const, label: '蛻・梵', emoji: '投' },
+    { id: 'settings' as const, label: '險ｭ螳・, emoji: '笞呻ｸ・ },
   ]
 
   return (
@@ -282,8 +283,8 @@ export default function ShoppingStopper() {
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-xl">🛑</span>
-              <h1 className="text-lg font-bold">AI買い物依存ストッパー</h1>
+              <span className="text-xl">尅</span>
+              <h1 className="text-lg font-bold">AI雋ｷ縺・黄萓晏ｭ倥せ繝医ャ繝代・</h1>
             </div>
           </div>
           {/* Tabs */}
@@ -347,7 +348,7 @@ function MonitorTab({ onTriggerLock }: { onTriggerLock: (level: number, settings
       }
       setCameraActive(true)
     } catch (err) {
-      setCameraError('カメラへのアクセスが拒否されました。ブラウザの設定を確認してください。')
+      setCameraError('繧ｫ繝｡繝ｩ縺ｸ縺ｮ繧｢繧ｯ繧ｻ繧ｹ縺梧拠蜷ｦ縺輔ｌ縺ｾ縺励◆縲ゅヶ繝ｩ繧ｦ繧ｶ縺ｮ險ｭ螳壹ｒ遒ｺ隱阪＠縺ｦ縺上□縺輔＞縲・)
     }
   }, [])
 
@@ -493,10 +494,10 @@ function MonitorTab({ onTriggerLock }: { onTriggerLock: (level: number, settings
   }, [stopCamera])
 
   const getScoreColor = (score: number) => {
-    if (score < 30) return { color: 'text-green-400', bg: 'bg-green-500', label: '😌 冷静' }
-    if (score < 60) return { color: 'text-yellow-400', bg: 'bg-yellow-500', label: '🤔 注意' }
-    if (score < 80) return { color: 'text-orange-400', bg: 'bg-orange-500', label: '😤 高揚' }
-    return { color: 'text-red-400', bg: 'bg-red-500', label: '🔥 危険' }
+    if (score < 30) return { color: 'text-green-400', bg: 'bg-green-500', label: '・ 蜀ｷ髱・ }
+    if (score < 60) return { color: 'text-yellow-400', bg: 'bg-yellow-500', label: '､・豕ｨ諢・ }
+    if (score < 80) return { color: 'text-orange-400', bg: 'bg-orange-500', label: '丶 鬮俶恕' }
+    return { color: 'text-red-400', bg: 'bg-red-500', label: '櫨 蜊ｱ髯ｺ' }
   }
 
   const scoreInfo = getScoreColor(excitementScore)
@@ -508,7 +509,7 @@ function MonitorTab({ onTriggerLock }: { onTriggerLock: (level: number, settings
         {/* Video Feed */}
         <Card className="bg-gray-900 border-gray-800">
           <CardContent className="p-4">
-            <h3 className="text-sm font-medium text-gray-400 mb-3">📷 カメラ映像</h3>
+            <h3 className="text-sm font-medium text-gray-400 mb-3">胴 繧ｫ繝｡繝ｩ譏蜒・/h3>
             <div className="relative aspect-[4/3] bg-gray-950 rounded-lg overflow-hidden mb-3">
               <video
                 ref={videoRef}
@@ -521,8 +522,8 @@ function MonitorTab({ onTriggerLock }: { onTriggerLock: (level: number, settings
               <canvas ref={canvasRef} className="hidden" />
               {!cameraActive && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-500">
-                  <span className="text-4xl mb-2">📷</span>
-                  <p className="text-sm">カメラが停止中です</p>
+                  <span className="text-4xl mb-2">胴</span>
+                  <p className="text-sm">繧ｫ繝｡繝ｩ縺悟●豁｢荳ｭ縺ｧ縺・/p>
                 </div>
               )}
               {cameraActive && (
@@ -543,15 +544,14 @@ function MonitorTab({ onTriggerLock }: { onTriggerLock: (level: number, settings
                   onClick={startCamera}
                   className="w-full bg-red-600 hover:bg-red-700"
                 >
-                  📷 カメラを起動
-                </Button>
+                  胴 繧ｫ繝｡繝ｩ繧定ｵｷ蜍・                </Button>
               ) : (
                 <Button
                   onClick={stopCamera}
                   variant="outline"
                   className="w-full border-gray-700 text-gray-300 hover:bg-gray-800"
                 >
-                  ⏹ カメラを停止
+                  竢ｹ 繧ｫ繝｡繝ｩ繧貞●豁｢
                 </Button>
               )}
             </div>
@@ -561,7 +561,7 @@ function MonitorTab({ onTriggerLock }: { onTriggerLock: (level: number, settings
         {/* Excitement Gauge */}
         <Card className="bg-gray-900 border-gray-800">
           <CardContent className="p-4">
-            <h3 className="text-sm font-medium text-gray-400 mb-3">🔥 興奮度メーター</h3>
+            <h3 className="text-sm font-medium text-gray-400 mb-3">櫨 闊亥･ｮ蠎ｦ繝｡繝ｼ繧ｿ繝ｼ</h3>
 
             {/* Main Gauge */}
             <div className="flex flex-col items-center mb-6">
@@ -595,28 +595,28 @@ function MonitorTab({ onTriggerLock }: { onTriggerLock: (level: number, settings
                 <div
                   className="absolute top-0 h-3 w-0.5 bg-white"
                   style={{ left: `${settings.excitementThreshold}%` }}
-                  title={`閾値: ${settings.excitementThreshold}%`}
+                  title={`髢ｾ蛟､: ${settings.excitementThreshold}%`}
                 />
               </div>
               <div className="flex justify-between w-full text-xs text-gray-500 mt-1">
-                <span>0% 冷静</span>
-                <span>閾値 {settings.excitementThreshold}%</span>
-                <span>100% 危険</span>
+                <span>0% 蜀ｷ髱・/span>
+                <span>髢ｾ蛟､ {settings.excitementThreshold}%</span>
+                <span>100% 蜊ｱ髯ｺ</span>
               </div>
             </div>
 
             {/* Detail metrics */}
             <div className="grid grid-cols-3 gap-2 text-center">
               <div className="bg-gray-950 rounded-lg p-2">
-                <p className="text-xs text-gray-500">顔検出</p>
+                <p className="text-xs text-gray-500">鬘疲､懷・</p>
                 <p className="text-sm font-bold text-gray-300">{skinRatio}%</p>
               </div>
               <div className="bg-gray-950 rounded-lg p-2">
-                <p className="text-xs text-gray-500">動き</p>
+                <p className="text-xs text-gray-500">蜍輔″</p>
                 <p className="text-sm font-bold text-gray-300">{motionLevel}%</p>
               </div>
               <div className="bg-gray-950 rounded-lg p-2">
-                <p className="text-xs text-gray-500">表情変化</p>
+                <p className="text-xs text-gray-500">陦ｨ諠・､牙喧</p>
                 <p className="text-sm font-bold text-gray-300">{Math.round(brightnessVar)}%</p>
               </div>
             </div>
@@ -624,13 +624,12 @@ function MonitorTab({ onTriggerLock }: { onTriggerLock: (level: number, settings
             {/* Lock button */}
             {excitementScore >= settings.excitementThreshold && (
               <div className="mt-4 p-3 bg-red-950/50 border border-red-500/30 rounded-lg text-center">
-                <p className="text-red-400 text-sm mb-2">⚠️ 興奮度が閾値を超えています！</p>
+                <p className="text-red-400 text-sm mb-2">笞・・闊亥･ｮ蠎ｦ縺碁明蛟､繧定ｶ・∴縺ｦ縺・∪縺呻ｼ・/p>
                 <Button
                   onClick={() => onTriggerLock(excitementScore, settings)}
                   className="bg-red-600 hover:bg-red-700"
                 >
-                  🛑 冷却ロックを発動
-                </Button>
+                  尅 蜀ｷ蜊ｴ繝ｭ繝・け繧堤匱蜍・                </Button>
               </div>
             )}
 
@@ -642,8 +641,7 @@ function MonitorTab({ onTriggerLock }: { onTriggerLock: (level: number, settings
                 className="w-full border-gray-700 text-gray-400 hover:bg-gray-800"
                 size="sm"
               >
-                🔒 手動でロックを発動
-              </Button>
+                白 謇句虚縺ｧ繝ｭ繝・け繧堤匱蜍・              </Button>
             </div>
           </CardContent>
         </Card>
@@ -712,12 +710,12 @@ function HistoryTab() {
     }
 
     // Fashion and gadgets have higher regret rates
-    if (purchase.category === 'ファッション') regretProb += 10
-    if (purchase.category === 'ガジェット') regretProb += 8
+    if (purchase.category === '繝輔ぃ繝・す繝ｧ繝ｳ') regretProb += 10
+    if (purchase.category === '繧ｬ繧ｸ繧ｧ繝・ヨ') regretProb += 8
 
     // Essentials have lower regret
-    if (purchase.category === '日用品') regretProb -= 15
-    if (purchase.category === '食品') regretProb -= 10
+    if (purchase.category === '譌･逕ｨ蜩・) regretProb -= 15
+    if (purchase.category === '鬟溷刀') regretProb -= 10
 
     return Math.min(95, Math.max(5, regretProb))
   }
@@ -728,30 +726,30 @@ function HistoryTab() {
       <Card className="bg-gray-900 border-gray-800">
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-gray-400">📋 購入履歴</h3>
+            <h3 className="text-sm font-medium text-gray-400">搭 雉ｼ蜈･螻･豁ｴ</h3>
             <Button
               onClick={() => setShowForm(!showForm)}
               size="sm"
               className={showForm ? 'bg-gray-700' : 'bg-red-600 hover:bg-red-700'}
             >
-              {showForm ? '✕ 閉じる' : '＋ 購入を追加'}
+              {showForm ? '笨・髢峨§繧・ : '・・雉ｼ蜈･繧定ｿｽ蜉'}
             </Button>
           </div>
 
           {showForm && (
             <div className="bg-gray-950 rounded-lg p-4 mb-4 space-y-3">
               <div>
-                <Label className="text-gray-400 text-xs">商品名</Label>
+                <Label className="text-gray-400 text-xs">蝠・刀蜷・/Label>
                 <Input
                   value={formName}
                   onChange={e => setFormName(e.target.value)}
-                  placeholder="例: ワイヤレスイヤホン"
+                  placeholder="萓・ 繝ｯ繧､繝､繝ｬ繧ｹ繧､繝､繝帙Φ"
                   className="bg-gray-900 border-gray-700 text-white mt-1"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label className="text-gray-400 text-xs">金額（円）</Label>
+                  <Label className="text-gray-400 text-xs">驥鷹｡搾ｼ亥・・・/Label>
                   <Input
                     type="number"
                     value={formPrice}
@@ -761,7 +759,7 @@ function HistoryTab() {
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-400 text-xs">カテゴリ</Label>
+                  <Label className="text-gray-400 text-xs">繧ｫ繝・ざ繝ｪ</Label>
                   <select
                     value={formCategory}
                     onChange={e => setFormCategory(e.target.value)}
@@ -774,7 +772,7 @@ function HistoryTab() {
                 </div>
               </div>
               <div>
-                <Label className="text-gray-400 text-xs">購入日</Label>
+                <Label className="text-gray-400 text-xs">雉ｼ蜈･譌･</Label>
                 <Input
                   type="date"
                   value={formDate}
@@ -783,7 +781,7 @@ function HistoryTab() {
                 />
               </div>
               <Button onClick={addPurchase} className="w-full bg-red-600 hover:bg-red-700">
-                追加する
+                霑ｽ蜉縺吶ｋ
               </Button>
             </div>
           )}
@@ -791,9 +789,9 @@ function HistoryTab() {
           {/* Purchase List */}
           {purchases.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
-              <span className="text-4xl mb-2 block">📝</span>
-              <p>購入履歴がありません</p>
-              <p className="text-xs">「購入を追加」から記録を始めましょう</p>
+              <span className="text-4xl mb-2 block">統</span>
+              <p>雉ｼ蜈･螻･豁ｴ縺後≠繧翫∪縺帙ｓ</p>
+              <p className="text-xs">縲瑚ｳｼ蜈･繧定ｿｽ蜉縲阪°繧芽ｨ倬鹸繧貞ｧ九ａ縺ｾ縺励ｇ縺・/p>
             </div>
           ) : (
             <div className="space-y-2 max-h-[600px] overflow-y-auto">
@@ -816,10 +814,10 @@ function HistoryTab() {
                           </Badge>
                         </div>
                         <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
-                          <span>¥{p.price.toLocaleString()}</span>
+                          <span>ﾂ･{p.price.toLocaleString()}</span>
                           <span>{p.date}</span>
                           <span className={regret > 60 ? 'text-red-400' : regret > 40 ? 'text-yellow-400' : 'text-green-400'}>
-                            後悔確率: {regret}%
+                            蠕梧ｔ遒ｺ邇・ {regret}%
                           </span>
                         </div>
                       </div>
@@ -827,17 +825,16 @@ function HistoryTab() {
                         onClick={() => deletePurchase(p.id)}
                         className="text-gray-600 hover:text-red-400 text-xs ml-2"
                       >
-                        ✕
-                      </button>
+                        笨・                      </button>
                     </div>
 
                     {/* Rating */}
                     <div className="flex items-center gap-2 mt-2">
-                      <span className="text-xs text-gray-500">評価:</span>
+                      <span className="text-xs text-gray-500">隧穂ｾ｡:</span>
                       {[
-                        { val: 'satisfied' as const, emoji: '😍', label: '満足' },
-                        { val: 'neutral' as const, emoji: '😐', label: '普通' },
-                        { val: 'regret' as const, emoji: '😰', label: '後悔' },
+                        { val: 'satisfied' as const, emoji: '・', label: '貅雜ｳ' },
+                        { val: 'neutral' as const, emoji: '・', label: '譎ｮ騾・ },
+                        { val: 'regret' as const, emoji: '于', label: '蠕梧ｔ' },
                       ].map(r => (
                         <button
                           key={r.val}
@@ -927,14 +924,14 @@ function AnalysisTab() {
       ctx.fillStyle = '#6b7280'
       ctx.font = '11px sans-serif'
       ctx.textAlign = 'center'
-      ctx.fillText(month.substring(5) + '月', x + barWidth / 2, height - padding.bottom + 16)
+      ctx.fillText(month.substring(5) + '譛・, x + barWidth / 2, height - padding.bottom + 16)
 
       // Value label
       ctx.fillStyle = '#9ca3af'
       ctx.font = '10px sans-serif'
       const label = monthlySpend[month] >= 10000
-        ? `¥${(monthlySpend[month] / 10000).toFixed(1)}万`
-        : `¥${monthlySpend[month].toLocaleString()}`
+        ? `ﾂ･${(monthlySpend[month] / 10000).toFixed(1)}荳㌔
+        : `ﾂ･${monthlySpend[month].toLocaleString()}`
       ctx.fillText(label, x + barWidth / 2, y - 5)
     })
   }, [purchases])
@@ -984,10 +981,10 @@ function AnalysisTab() {
       {/* Quick Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { label: '総支出', value: `¥${totalSpend.toLocaleString()}`, emoji: '💰', color: 'text-white' },
-          { label: '後悔率', value: `${regretRate}%`, emoji: '😰', color: regretRate > 50 ? 'text-red-400' : 'text-green-400' },
-          { label: '今週のロック', value: `${locksThisWeek}回`, emoji: '🔒', color: 'text-orange-400' },
-          { label: '推定節約額', value: `¥${savedAmount.toLocaleString()}`, emoji: '💪', color: 'text-green-400' },
+          { label: '邱乗髪蜃ｺ', value: `ﾂ･${totalSpend.toLocaleString()}`, emoji: '腸', color: 'text-white' },
+          { label: '蠕梧ｔ邇・, value: `${regretRate}%`, emoji: '于', color: regretRate > 50 ? 'text-red-400' : 'text-green-400' },
+          { label: '莉企ｱ縺ｮ繝ｭ繝・け', value: `${locksThisWeek}蝗杼, emoji: '白', color: 'text-orange-400' },
+          { label: '謗ｨ螳夂ｯ邏・｡・, value: `ﾂ･${savedAmount.toLocaleString()}`, emoji: '潮', color: 'text-green-400' },
         ].map(stat => (
           <Card key={stat.label} className="bg-gray-900 border-gray-800">
             <CardContent className="p-4 text-center">
@@ -1003,23 +1000,23 @@ function AnalysisTab() {
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
         <Card className="bg-gray-900 border-gray-800">
           <CardContent className="p-4 text-center">
-            <span className="text-2xl">🏆</span>
-            <p className="text-xl font-bold text-yellow-400">{getStreak()}日</p>
-            <p className="text-xs text-gray-500">衝動買いゼロ連続</p>
+            <span className="text-2xl">醇</span>
+            <p className="text-xl font-bold text-yellow-400">{getStreak()}譌･</p>
+            <p className="text-xs text-gray-500">陦晏虚雋ｷ縺・ぞ繝ｭ騾｣邯・/p>
           </CardContent>
         </Card>
         <Card className="bg-gray-900 border-gray-800">
           <CardContent className="p-4 text-center">
-            <span className="text-2xl">😍</span>
+            <span className="text-2xl">・</span>
             <p className="text-xl font-bold text-green-400">{satisfiedRate}%</p>
-            <p className="text-xs text-gray-500">満足率</p>
+            <p className="text-xs text-gray-500">貅雜ｳ邇・/p>
           </CardContent>
         </Card>
         <Card className="bg-gray-900 border-gray-800">
           <CardContent className="p-4 text-center">
-            <span className="text-2xl">📦</span>
-            <p className="text-xl font-bold text-white">{purchases.length}件</p>
-            <p className="text-xs text-gray-500">総購入数</p>
+            <span className="text-2xl">逃</span>
+            <p className="text-xl font-bold text-white">{purchases.length}莉ｶ</p>
+            <p className="text-xs text-gray-500">邱剰ｳｼ蜈･謨ｰ</p>
           </CardContent>
         </Card>
       </div>
@@ -1027,7 +1024,7 @@ function AnalysisTab() {
       {/* Monthly Chart */}
       <Card className="bg-gray-900 border-gray-800">
         <CardContent className="p-4">
-          <h3 className="text-sm font-medium text-gray-400 mb-3">📊 月別支出推移</h3>
+          <h3 className="text-sm font-medium text-gray-400 mb-3">投 譛亥挨謾ｯ蜃ｺ謗ｨ遘ｻ</h3>
           {purchases.length > 0 ? (
             <canvas
               ref={chartRef}
@@ -1036,7 +1033,7 @@ function AnalysisTab() {
             />
           ) : (
             <div className="text-center py-8 text-gray-500">
-              <p>データがありません。購入履歴を追加してください。</p>
+              <p>繝・・繧ｿ縺後≠繧翫∪縺帙ｓ縲りｳｼ蜈･螻･豁ｴ繧定ｿｽ蜉縺励※縺上□縺輔＞縲・/p>
             </div>
           )}
         </CardContent>
@@ -1045,7 +1042,7 @@ function AnalysisTab() {
       {/* Category Breakdown */}
       <Card className="bg-gray-900 border-gray-800">
         <CardContent className="p-4">
-          <h3 className="text-sm font-medium text-gray-400 mb-3">📂 カテゴリ別分析</h3>
+          <h3 className="text-sm font-medium text-gray-400 mb-3">唐 繧ｫ繝・ざ繝ｪ蛻･蛻・梵</h3>
           {categoryBreakdown.length > 0 ? (
             <div className="space-y-3">
               {categoryBreakdown.map(cat => {
@@ -1055,7 +1052,7 @@ function AnalysisTab() {
                     <div className="flex items-center justify-between text-sm mb-1">
                       <span className="text-gray-300">{cat.category}</span>
                       <span className="text-gray-400">
-                        ¥{cat.total.toLocaleString()} ({cat.count}件)
+                        ﾂ･{cat.total.toLocaleString()} ({cat.count}莉ｶ)
                       </span>
                     </div>
                     <div className="w-full bg-gray-800 rounded-full h-2">
@@ -1070,7 +1067,7 @@ function AnalysisTab() {
             </div>
           ) : (
             <div className="text-center py-4 text-gray-500">
-              <p>データがありません</p>
+              <p>繝・・繧ｿ縺後≠繧翫∪縺帙ｓ</p>
             </div>
           )}
         </CardContent>
@@ -1110,7 +1107,7 @@ function SettingsTab() {
     a.download = `shopping-stopper-backup-${new Date().toISOString().split('T')[0]}.json`
     a.click()
     URL.revokeObjectURL(url)
-    setMessage('✅ データをエクスポートしました')
+    setMessage('笨・繝・・繧ｿ繧偵お繧ｯ繧ｹ繝昴・繝医＠縺ｾ縺励◆')
     setTimeout(() => setMessage(''), 3000)
   }
 
@@ -1124,19 +1121,19 @@ function SettingsTab() {
       }
       if (data.locks) saveToStorage(STORAGE_KEYS.locks, data.locks)
       setImportText('')
-      setMessage('✅ データをインポートしました')
+      setMessage('笨・繝・・繧ｿ繧偵う繝ｳ繝昴・繝医＠縺ｾ縺励◆')
       setTimeout(() => setMessage(''), 3000)
     } catch {
-      setMessage('❌ JSONの形式が正しくありません')
+      setMessage('笶・JSON縺ｮ蠖｢蠑上′豁｣縺励￥縺ゅｊ縺ｾ縺帙ｓ')
       setTimeout(() => setMessage(''), 3000)
     }
   }
 
   const resetAll = () => {
-    if (!confirm('すべてのデータを削除しますか？この操作は取り消せません。')) return
+    if (!confirm('縺吶∋縺ｦ縺ｮ繝・・繧ｿ繧貞炎髯､縺励∪縺吶°・溘％縺ｮ謫堺ｽ懊・蜿悶ｊ豸医○縺ｾ縺帙ｓ縲・)) return
     Object.values(STORAGE_KEYS).forEach(key => localStorage.removeItem(key))
     setSettings(DEFAULT_SETTINGS)
-    setMessage('✅ すべてのデータをリセットしました')
+    setMessage('笨・縺吶∋縺ｦ縺ｮ繝・・繧ｿ繧偵Μ繧ｻ繝・ヨ縺励∪縺励◆')
     setTimeout(() => setMessage(''), 3000)
   }
 
@@ -1151,10 +1148,10 @@ function SettingsTab() {
       {/* Threshold */}
       <Card className="bg-gray-900 border-gray-800">
         <CardContent className="p-4">
-          <h3 className="text-sm font-medium text-gray-400 mb-4">🎯 興奮度閾値</h3>
+          <h3 className="text-sm font-medium text-gray-400 mb-4">識 闊亥･ｮ蠎ｦ髢ｾ蛟､</h3>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-300">ロック発動の閾値</span>
+              <span className="text-sm text-gray-300">繝ｭ繝・け逋ｺ蜍輔・髢ｾ蛟､</span>
               <span className="text-lg font-bold text-red-400">{settings.excitementThreshold}%</span>
             </div>
             <input
@@ -1166,8 +1163,8 @@ function SettingsTab() {
               className="w-full accent-red-500"
             />
             <div className="flex justify-between text-xs text-gray-500">
-              <span>50% (敏感)</span>
-              <span>90% (緩め)</span>
+              <span>50% (謨乗─)</span>
+              <span>90% (邱ｩ繧・</span>
             </div>
           </div>
         </CardContent>
@@ -1176,7 +1173,7 @@ function SettingsTab() {
       {/* Lock Duration */}
       <Card className="bg-gray-900 border-gray-800">
         <CardContent className="p-4">
-          <h3 className="text-sm font-medium text-gray-400 mb-4">⏱️ ロック時間</h3>
+          <h3 className="text-sm font-medium text-gray-400 mb-4">竢ｱ・・繝ｭ繝・け譎る俣</h3>
           <div className="grid grid-cols-5 gap-2">
             {LOCK_DURATIONS.map(d => (
               <button
@@ -1198,22 +1195,22 @@ function SettingsTab() {
       {/* Export/Import */}
       <Card className="bg-gray-900 border-gray-800">
         <CardContent className="p-4">
-          <h3 className="text-sm font-medium text-gray-400 mb-4">💾 データ管理</h3>
+          <h3 className="text-sm font-medium text-gray-400 mb-4">沈 繝・・繧ｿ邂｡逅・/h3>
           <div className="space-y-3">
             <Button
               onClick={exportData}
               variant="outline"
               className="w-full border-gray-700 text-gray-300 hover:bg-gray-800"
             >
-              📤 データをエクスポート (JSON)
+              豆 繝・・繧ｿ繧偵お繧ｯ繧ｹ繝昴・繝・(JSON)
             </Button>
 
             <div>
-              <Label className="text-gray-400 text-xs">データインポート</Label>
+              <Label className="text-gray-400 text-xs">繝・・繧ｿ繧､繝ｳ繝昴・繝・/Label>
               <textarea
                 value={importText}
                 onChange={e => setImportText(e.target.value)}
-                placeholder="エクスポートしたJSONを貼り付けてください"
+                placeholder="繧ｨ繧ｯ繧ｹ繝昴・繝医＠縺櫟SON繧定ｲｼ繧贋ｻ倥￠縺ｦ縺上□縺輔＞"
                 className="w-full bg-gray-950 border border-gray-700 text-white rounded-md px-3 py-2 text-sm mt-1 h-24 resize-none"
               />
               <Button
@@ -1222,8 +1219,7 @@ function SettingsTab() {
                 size="sm"
                 className="mt-1 bg-gray-700 hover:bg-gray-600"
               >
-                📥 インポート
-              </Button>
+                踏 繧､繝ｳ繝昴・繝・              </Button>
             </div>
           </div>
         </CardContent>
@@ -1232,19 +1228,21 @@ function SettingsTab() {
       {/* Danger Zone */}
       <Card className="bg-gray-900 border-red-900/50">
         <CardContent className="p-4">
-          <h3 className="text-sm font-medium text-red-400 mb-4">⚠️ 危険ゾーン</h3>
+          <h3 className="text-sm font-medium text-red-400 mb-4">笞・・蜊ｱ髯ｺ繧ｾ繝ｼ繝ｳ</h3>
           <p className="text-xs text-gray-500 mb-3">
-            すべての購入履歴、ロック記録、設定を削除します。この操作は取り消せません。
-          </p>
+            縺吶∋縺ｦ縺ｮ雉ｼ蜈･螻･豁ｴ縲√Ο繝・け險倬鹸縲∬ｨｭ螳壹ｒ蜑企勁縺励∪縺吶ゅ％縺ｮ謫堺ｽ懊・蜿悶ｊ豸医○縺ｾ縺帙ｓ縲・          </p>
           <Button
             onClick={resetAll}
             variant="outline"
             className="border-red-800 text-red-400 hover:bg-red-950"
           >
-            🗑️ すべてのデータをリセット
+            卵・・縺吶∋縺ｦ縺ｮ繝・・繧ｿ繧偵Μ繧ｻ繝・ヨ
           </Button>
         </CardContent>
       </Card>
-    </div>
+    
+      </div>
   )
 }
+
+

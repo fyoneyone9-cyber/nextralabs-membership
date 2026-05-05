@@ -1,14 +1,15 @@
-'use client'
+﻿'use client'
+
 
 import { useState, useCallback } from 'react'
 
 // Types
 interface EmployeeInfo {
   companyName: string
-  employeeType: '正社員' | '契約社員' | 'パート・アルバイト'
+  employeeType: '豁｣遉ｾ蜩｡' | '螂醍ｴ・､ｾ蜩｡' | '繝代・繝医・繧｢繝ｫ繝舌う繝・
   startDate: string
   resignDate: string
-  reason: '一身上の都合' | '会社都合' | '契約期間満了' | 'その他'
+  reason: '荳霄ｫ荳翫・驛ｽ蜷・ | '莨夂､ｾ驛ｽ蜷・ | '螂醍ｴ・悄髢捺ｺ莠・ | '縺昴・莉・
   customReason: string
   fullName: string
   department: string
@@ -29,7 +30,7 @@ interface CheckItem {
 
 interface AgencyInfo {
   name: string
-  type: '弁護士型' | '労働組合型' | '民間型'
+  type: '蠑∬ｭｷ螢ｫ蝙・ | '蜉ｴ蜒咲ｵ・粋蝙・ | '豌鷹俣蝙・
   price: string
   features: string[]
   risks: string
@@ -38,10 +39,10 @@ interface AgencyInfo {
 
 const defaultInfo: EmployeeInfo = {
   companyName: '',
-  employeeType: '正社員',
+  employeeType: '豁｣遉ｾ蜩｡',
   startDate: '',
   resignDate: '',
-  reason: '一身上の都合',
+  reason: '荳霄ｫ荳翫・驛ｽ蜷・,
   customReason: '',
   fullName: '',
   department: '',
@@ -52,65 +53,65 @@ const defaultInfo: EmployeeInfo = {
 }
 
 const defaultChecklist: CheckItem[] = [
-  { id: 'c1', label: '退職届・退職願の作成', category: '書類準備', description: '本ツールで自動生成できます', done: false, dueOffset: 30 },
-  { id: 'c2', label: '上司への退職意思の伝達', category: '報告', description: '退職届提出の2週間〜1ヶ月前に口頭で伝えるのがマナー', done: false, dueOffset: 45 },
-  { id: 'c3', label: '退職届の提出', category: '書類準備', description: '法律上は2週間前までに提出すれば退職可能（民法627条）', done: false, dueOffset: 14 },
-  { id: 'c4', label: '有給休暇の残日数確認', category: '権利確認', description: '退職日までに消化するか、買取交渉をする', done: false, dueOffset: 30 },
-  { id: 'c5', label: '引継ぎ資料の作成', category: '引継ぎ', description: '担当業務の一覧、手順書、連絡先リスト等', done: false, dueOffset: 21 },
-  { id: 'c6', label: '私物の整理・持ち帰り', category: '退職準備', description: '少しずつ持ち帰る。最終日にまとめると目立つ', done: false, dueOffset: 14 },
-  { id: 'c7', label: '健康保険の切替手続き', category: '社会保険', description: '国民健康保険 or 任意継続（退職後20日以内に手続き）', done: false, dueOffset: 0 },
-  { id: 'c8', label: '国民年金への切替', category: '社会保険', description: '退職後14日以内に市区町村役場で手続き', done: false, dueOffset: 0 },
-  { id: 'c9', label: '離職票の受取', category: '退職後', description: '会社から届くのを確認（届かない場合はハローワークに相談）', done: false, dueOffset: -10 },
-  { id: 'c10', label: '失業保険の申請', category: '退職後', description: '離職票を持ってハローワークへ（退職後早めに）', done: false, dueOffset: -14 },
-  { id: 'c11', label: '源泉徴収票の受取', category: '退職後', description: '年末調整 or 確定申告に必要', done: false, dueOffset: -30 },
-  { id: 'c12', label: '退職金の確認', category: '権利確認', description: '就業規則で退職金規定を確認。支給時期も要チェック', done: false, dueOffset: 14 },
-  { id: 'c13', label: '競業避止義務の確認', category: '権利確認', description: '誓約書に署名した場合でも、不当に広い範囲は無効の可能性あり', done: false, dueOffset: 14 },
-  { id: 'c14', label: '住民税の支払い方法確認', category: '税金', description: '退職月によって一括徴収 or 普通徴収に切替', done: false, dueOffset: 7 },
+  { id: 'c1', label: '騾閨ｷ螻翫・騾閨ｷ鬘倥・菴懈・', category: '譖ｸ鬘樊ｺ門ｙ', description: '譛ｬ繝・・繝ｫ縺ｧ閾ｪ蜍慕函謌舌〒縺阪∪縺・, done: false, dueOffset: 30 },
+  { id: 'c2', label: '荳雁昇縺ｸ縺ｮ騾閨ｷ諢乗昴・莨晞＃', category: '蝣ｱ蜻・, description: '騾閨ｷ螻頑署蜃ｺ縺ｮ2騾ｱ髢薙・繝ｶ譛亥燕縺ｫ蜿｣鬆ｭ縺ｧ莨昴∴繧九・縺後・繝翫・', done: false, dueOffset: 45 },
+  { id: 'c3', label: '騾閨ｷ螻翫・謠仙・', category: '譖ｸ鬘樊ｺ門ｙ', description: '豕募ｾ倶ｸ翫・2騾ｱ髢灘燕縺ｾ縺ｧ縺ｫ謠仙・縺吶ｌ縺ｰ騾閨ｷ蜿ｯ閭ｽ・域ｰ第ｳ・27譚｡・・, done: false, dueOffset: 14 },
+  { id: 'c4', label: '譛臥ｵｦ莨第嚊縺ｮ谿区律謨ｰ遒ｺ隱・, category: '讓ｩ蛻ｩ遒ｺ隱・, description: '騾閨ｷ譌･縺ｾ縺ｧ縺ｫ豸亥喧縺吶ｋ縺九∬ｲｷ蜿紋ｺ､貂峨ｒ縺吶ｋ', done: false, dueOffset: 30 },
+  { id: 'c5', label: '蠑慕ｶ吶℃雉・侭縺ｮ菴懈・', category: '蠑慕ｶ吶℃', description: '諡・ｽ捺･ｭ蜍吶・荳隕ｧ縲∵焔鬆・嶌縲・｣邨｡蜈医Μ繧ｹ繝育ｭ・, done: false, dueOffset: 21 },
+  { id: 'c6', label: '遘∫黄縺ｮ謨ｴ逅・・謖√■蟶ｰ繧・, category: '騾閨ｷ貅門ｙ', description: '蟆代＠縺壹▽謖√■蟶ｰ繧九よ怙邨よ律縺ｫ縺ｾ縺ｨ繧√ｋ縺ｨ逶ｮ遶九▽', done: false, dueOffset: 14 },
+  { id: 'c7', label: '蛛･蠎ｷ菫晞匱縺ｮ蛻・崛謇狗ｶ壹″', category: '遉ｾ莨壻ｿ晞匱', description: '蝗ｽ豌大▼蠎ｷ菫晞匱 or 莉ｻ諢冗ｶ咏ｶ夲ｼ磯閨ｷ蠕・0譌･莉･蜀・↓謇狗ｶ壹″・・, done: false, dueOffset: 0 },
+  { id: 'c8', label: '蝗ｽ豌大ｹｴ驥代∈縺ｮ蛻・崛', category: '遉ｾ莨壻ｿ晞匱', description: '騾閨ｷ蠕・4譌･莉･蜀・↓蟶ょ玄逕ｺ譚大ｽｹ蝣ｴ縺ｧ謇狗ｶ壹″', done: false, dueOffset: 0 },
+  { id: 'c9', label: '髮｢閨ｷ逾ｨ縺ｮ蜿怜叙', category: '騾閨ｷ蠕・, description: '莨夂､ｾ縺九ｉ螻翫￥縺ｮ繧堤｢ｺ隱搾ｼ亥ｱ翫°縺ｪ縺・ｴ蜷医・繝上Ο繝ｼ繝ｯ繝ｼ繧ｯ縺ｫ逶ｸ隲・ｼ・, done: false, dueOffset: -10 },
+  { id: 'c10', label: '螟ｱ讌ｭ菫晞匱縺ｮ逕ｳ隲・, category: '騾閨ｷ蠕・, description: '髮｢閨ｷ逾ｨ繧呈戟縺｣縺ｦ繝上Ο繝ｼ繝ｯ繝ｼ繧ｯ縺ｸ・磯閨ｷ蠕梧掠繧√↓・・, done: false, dueOffset: -14 },
+  { id: 'c11', label: '貅先ｳ牙ｾｴ蜿守･ｨ縺ｮ蜿怜叙', category: '騾閨ｷ蠕・, description: '蟷ｴ譛ｫ隱ｿ謨ｴ or 遒ｺ螳夂筏蜻翫↓蠢・ｦ・, done: false, dueOffset: -30 },
+  { id: 'c12', label: '騾閨ｷ驥代・遒ｺ隱・, category: '讓ｩ蛻ｩ遒ｺ隱・, description: '蟆ｱ讌ｭ隕丞援縺ｧ騾閨ｷ驥題ｦ丞ｮ壹ｒ遒ｺ隱阪よ髪邨ｦ譎よ悄繧りｦ√メ繧ｧ繝・け', done: false, dueOffset: 14 },
+  { id: 'c13', label: '遶ｶ讌ｭ驕ｿ豁｢鄒ｩ蜍吶・遒ｺ隱・, category: '讓ｩ蛻ｩ遒ｺ隱・, description: '隱鍋ｴ・嶌縺ｫ鄂ｲ蜷阪＠縺溷ｴ蜷医〒繧ゅ∽ｸ榊ｽ薙↓蠎・＞遽・峇縺ｯ辟｡蜉ｹ縺ｮ蜿ｯ閭ｽ諤ｧ縺ゅｊ', done: false, dueOffset: 14 },
+  { id: 'c14', label: '菴乗ｰ醍ｨ弱・謾ｯ謇輔＞譁ｹ豕慕｢ｺ隱・, category: '遞朱≡', description: '騾閨ｷ譛医↓繧医▲縺ｦ荳諡ｬ蠕ｴ蜿・or 譎ｮ騾壼ｾｴ蜿弱↓蛻・崛', done: false, dueOffset: 7 },
 ]
 
 const agencies: AgencyInfo[] = [
   {
-    name: '弁護士法人みやび etc.',
-    type: '弁護士型',
-    price: '¥50,000〜¥100,000',
-    features: ['未払い残業代の交渉・請求が可能', '損害賠償請求にも対応', '法的トラブルに全面対応', '有給消化の交渉'],
-    risks: '費用が高い',
-    recommendation: '未払い残業代がある方、パワハラ等で揉めそうな方',
+    name: '蠑∬ｭｷ螢ｫ豕穂ｺｺ縺ｿ繧・・ etc.',
+    type: '蠑∬ｭｷ螢ｫ蝙・,
+    price: 'ﾂ･50,000縲慊･100,000',
+    features: ['譛ｪ謇輔＞谿区･ｭ莉｣縺ｮ莠､貂峨・隲区ｱゅ′蜿ｯ閭ｽ', '謳榊ｮｳ雉蜆溯ｫ区ｱゅ↓繧ょｯｾ蠢・, '豕慕噪繝医Λ繝悶Ν縺ｫ蜈ｨ髱｢蟇ｾ蠢・, '譛臥ｵｦ豸亥喧縺ｮ莠､貂・],
+    risks: '雋ｻ逕ｨ縺碁ｫ倥＞',
+    recommendation: '譛ｪ謇輔＞谿区･ｭ莉｣縺後≠繧区婿縲√ヱ繝ｯ繝上Λ遲峨〒謠峨ａ縺昴≧縺ｪ譁ｹ',
   },
   {
-    name: '退職代行SARABA etc.',
-    type: '労働組合型',
-    price: '¥24,000〜¥30,000',
-    features: ['団体交渉権あり（法的に保護）', '有給消化の交渉可能', '退職条件の交渉可能', '比較的安価'],
-    risks: '訴訟対応はできない',
-    recommendation: '有給消化・退職条件の交渉が必要な方',
+    name: '騾閨ｷ莉｣陦郡ARABA etc.',
+    type: '蜉ｴ蜒咲ｵ・粋蝙・,
+    price: 'ﾂ･24,000縲慊･30,000',
+    features: ['蝗｣菴謎ｺ､貂画ｨｩ縺ゅｊ・域ｳ慕噪縺ｫ菫晁ｭｷ・・, '譛臥ｵｦ豸亥喧縺ｮ莠､貂牙庄閭ｽ', '騾閨ｷ譚｡莉ｶ縺ｮ莠､貂牙庄閭ｽ', '豈碑ｼ・噪螳我ｾ｡'],
+    risks: '險ｴ險溷ｯｾ蠢懊・縺ｧ縺阪↑縺・,
+    recommendation: '譛臥ｵｦ豸亥喧繝ｻ騾閨ｷ譚｡莉ｶ縺ｮ莠､貂峨′蠢・ｦ√↑譁ｹ',
   },
   {
-    name: 'EXIT, モームリ etc.',
-    type: '民間型',
-    price: '¥10,000〜¥20,000',
-    features: ['最安値クラス', '対応スピードが早い', '手続きがシンプル'],
-    risks: '交渉権なし（伝達のみ）。会社が拒否した場合の対応力に限界',
-    recommendation: '円満退職で、ただ伝えてほしいだけの方',
+    name: 'EXIT, 繝｢繝ｼ繝繝ｪ etc.',
+    type: '豌鷹俣蝙・,
+    price: 'ﾂ･10,000縲慊･20,000',
+    features: ['譛螳牙､繧ｯ繝ｩ繧ｹ', '蟇ｾ蠢懊せ繝斐・繝峨′譌ｩ縺・, '謇狗ｶ壹″縺後す繝ｳ繝励Ν'],
+    risks: '莠､貂画ｨｩ縺ｪ縺暦ｼ井ｼ晞＃縺ｮ縺ｿ・峨ゆｼ夂､ｾ縺梧拠蜷ｦ縺励◆蝣ｴ蜷医・蟇ｾ蠢懷鴨縺ｫ髯千阜',
+    recommendation: '蜀・ｺ騾閨ｷ縺ｧ縲√◆縺莨昴∴縺ｦ縺ｻ縺励＞縺縺代・譁ｹ',
   },
 ]
 
 // Utility
 function formatDate(dateStr: string): string {
-  if (!dateStr) return '____年__月__日'
+  if (!dateStr) return '____蟷ｴ__譛・_譌･'
   const d = new Date(dateStr)
   const year = d.getFullYear()
   const reiwa = year - 2018
-  return `令和${reiwa}年${d.getMonth() + 1}月${d.getDate()}日`
+  return `莉､蜥・{reiwa}蟷ｴ${d.getMonth() + 1}譛・{d.getDate()}譌･`
 }
 
 function calcOvertimePay(salary: number, overtimeHours: number, months: number): { total: number; hourly: number; details: string } {
   if (!salary || !overtimeHours || !months) return { total: 0, hourly: 0, details: '' }
-  // 月給 ÷ 所定労働時間(160h) × 1.25 × 残業時間 × 月数
+  // 譛育ｵｦ ﾃｷ 謇螳壼感蜒肴凾髢・160h) ﾃ・1.25 ﾃ・谿区･ｭ譎る俣 ﾃ・譛域焚
   const hourly = Math.round(salary / 160)
   const overtimeRate = Math.round(hourly * 1.25)
   const total = overtimeRate * overtimeHours * months
-  const details = `時給相当: ¥${hourly.toLocaleString()} × 割増率1.25 = ¥${overtimeRate.toLocaleString()}/h × ${overtimeHours}h × ${months}ヶ月`
+  const details = `譎らｵｦ逶ｸ蠖・ ﾂ･${hourly.toLocaleString()} ﾃ・蜑ｲ蠅礼紫1.25 = ﾂ･${overtimeRate.toLocaleString()}/h ﾃ・${overtimeHours}h ﾃ・${months}繝ｶ譛・
   return { total, hourly, details }
 }
 
@@ -123,11 +124,11 @@ export default function ResignationAssistant() {
   const [rightsAnswer, setRightsAnswer] = useState('')
 
   const tabs = [
-    { id: 'letter' as const, label: '📝 退職届生成', icon: '📝' },
-    { id: 'overtime' as const, label: '💰 残業代計算', icon: '💰' },
-    { id: 'checklist' as const, label: '✅ チェックリスト', icon: '✅' },
-    { id: 'agencies' as const, label: '⚖️ 退職代行比較', icon: '⚖️' },
-    { id: 'rights' as const, label: '🛡️ 権利Q&A', icon: '🛡️' },
+    { id: 'letter' as const, label: '統 騾閨ｷ螻顔函謌・, icon: '統' },
+    { id: 'overtime' as const, label: '腸 谿区･ｭ莉｣險育ｮ・, icon: '腸' },
+    { id: 'checklist' as const, label: '笨・繝√ぉ繝・け繝ｪ繧ｹ繝・, icon: '笨・ },
+    { id: 'agencies' as const, label: '笞厄ｸ・騾閨ｷ莉｣陦梧ｯ碑ｼ・, icon: '笞厄ｸ・ },
+    { id: 'rights' as const, label: '孱・・讓ｩ蛻ｩQ&A', icon: '孱・・ },
   ]
 
   const updateInfo = useCallback((key: keyof EmployeeInfo, value: string | number) => {
@@ -144,16 +145,16 @@ export default function ResignationAssistant() {
 
   // Generate resignation letter text
   const generateLetter = () => {
-    const type = info.reason === '一身上の都合' || info.reason === 'その他' ? '退職届' : '退職届'
-    const reasonText = info.reason === 'その他' ? info.customReason : info.reason
+    const type = info.reason === '荳霄ｫ荳翫・驛ｽ蜷・ || info.reason === '縺昴・莉・ ? '騾閨ｷ螻・ : '騾閨ｷ螻・
+    const reasonText = info.reason === '縺昴・莉・ ? info.customReason : info.reason
     return {
       type,
       date: formatDate(info.resignDate),
       today: formatDate(new Date().toISOString().split('T')[0]),
-      company: info.companyName || '○○○株式会社',
-      name: info.fullName || '○○ ○○',
-      department: info.department || '○○部',
-      reason: reasonText || '一身上の都合',
+      company: info.companyName || '笳銀雷笳区ｪ蠑丈ｼ夂､ｾ',
+      name: info.fullName || '笳銀雷 笳銀雷',
+      department: info.department || '笳銀雷驛ｨ',
+      reason: reasonText || '荳霄ｫ荳翫・驛ｽ蜷・,
     }
   }
 
@@ -161,12 +162,12 @@ export default function ResignationAssistant() {
 
   // Rights Q&A
   const rightsDatabase: Record<string, string> = {
-    '有給': `【有給休暇について】\n退職時の有給消化は労働者の権利です（労働基準法39条）。会社は時季変更権を行使できますが、退職日以降に変更する日がないため、実質的に拒否できません。\n\n残日数の計算：入社6ヶ月後に10日付与、以後1年ごとに増加（最大20日/年）。\n\n⚠️ 有給買取は法的義務ではありません（任意）。`,
-    '退職金': `【退職金について】\n退職金は法律上の義務ではなく、就業規則や退職金規程に基づきます。\n\n確認すべき点：\n・就業規則に退職金規定があるか\n・勤続年数の条件を満たしているか\n・自己都合退職の場合の減額率\n・支給時期（退職後1〜2ヶ月が一般的）\n\n⚠️ 規定があるのに支払われない場合は労基署に相談。`,
-    '競業避止': `【競業避止義務について】\n退職後の競業避止義務（同業他社への転職制限）は、以下の条件を満たさないと無効とされる判例が多いです：\n\n・制限期間が合理的（1〜2年程度）\n・地域的制限が合理的\n・代償措置がある（退職金の上乗せ等）\n・制限される業務範囲が明確\n\n⚠️ 不当に広い範囲の誓約書は無効の可能性大。弁護士に相談を推奨。`,
-    '残業代': `【未払い残業代について】\n時効は3年（2020年4月以降の分）。それ以前は2年。\n\n請求に必要なもの：\n・タイムカード/勤怠記録のコピー\n・給与明細\n・雇用契約書\n・就業規則\n\nまず本ツールの残業代シミュレーターで概算を確認し、正確な金額は弁護士に相談してください。`,
-    '失業保険': `【失業保険について】\n・自己都合退職：待機期間7日 + 給付制限2ヶ月後から支給\n・会社都合退職：待機期間7日後から支給\n\n受給条件：退職前2年間に12ヶ月以上の被保険者期間\n\n手続き：離職票を持ってハローワークへ。\n⚠️ 退職後すぐに手続きしないと受給開始が遅れます。`,
-    '2週間': `【2週間前の退職について】\n民法627条により、期間の定めのない雇用契約（正社員等）は、退職の意思表示から2週間で退職が成立します。\n\n就業規則で「1ヶ月前」等と定めていても、民法が優先されます。\n\n⚠️ ただし、円満退職のためには就業規則に従うのがベター。\n⚠️ 契約社員の場合はこの規定は適用されません。`,
+    '譛臥ｵｦ': `縲先怏邨ｦ莨第嚊縺ｫ縺､縺・※縲曾n騾閨ｷ譎ゅ・譛臥ｵｦ豸亥喧縺ｯ蜉ｴ蜒崎・・讓ｩ蛻ｩ縺ｧ縺呻ｼ亥感蜒榊渕貅匁ｳ・9譚｡・峨ゆｼ夂､ｾ縺ｯ譎ょｭ｣螟画峩讓ｩ繧定｡御ｽｿ縺ｧ縺阪∪縺吶′縲・閨ｷ譌･莉･髯阪↓螟画峩縺吶ｋ譌･縺後↑縺・◆繧√∝ｮ溯ｳｪ逧・↓諡貞凄縺ｧ縺阪∪縺帙ｓ縲・n\n谿区律謨ｰ縺ｮ險育ｮ暦ｼ壼・遉ｾ6繝ｶ譛亥ｾ後↓10譌･莉倅ｸ弱∽ｻ･蠕・蟷ｴ縺斐→縺ｫ蠅怜刈・域怙螟ｧ20譌･/蟷ｴ・峨・n\n笞・・譛臥ｵｦ雋ｷ蜿悶・豕慕噪鄒ｩ蜍吶〒縺ｯ縺ゅｊ縺ｾ縺帙ｓ・井ｻｻ諢擾ｼ峨Ａ,
+    '騾閨ｷ驥・: `縲宣閨ｷ驥代↓縺､縺・※縲曾n騾閨ｷ驥代・豕募ｾ倶ｸ翫・鄒ｩ蜍吶〒縺ｯ縺ｪ縺上∝ｰｱ讌ｭ隕丞援繧・閨ｷ驥題ｦ冗ｨ九↓蝓ｺ縺･縺阪∪縺吶・n\n遒ｺ隱阪☆縺ｹ縺咲せ・喀n繝ｻ蟆ｱ讌ｭ隕丞援縺ｫ騾閨ｷ驥題ｦ丞ｮ壹′縺ゅｋ縺欺n繝ｻ蜍､邯壼ｹｴ謨ｰ縺ｮ譚｡莉ｶ繧呈ｺ縺溘＠縺ｦ縺・ｋ縺欺n繝ｻ閾ｪ蟾ｱ驛ｽ蜷磯閨ｷ縺ｮ蝣ｴ蜷医・貂幃｡咲紫\n繝ｻ謾ｯ邨ｦ譎よ悄・磯閨ｷ蠕・縲・繝ｶ譛医′荳闊ｬ逧・ｼ噂n\n笞・・隕丞ｮ壹′縺ゅｋ縺ｮ縺ｫ謾ｯ謇輔ｏ繧後↑縺・ｴ蜷医・蜉ｴ蝓ｺ鄂ｲ縺ｫ逶ｸ隲・Ａ,
+    '遶ｶ讌ｭ驕ｿ豁｢': `縲千ｫｶ讌ｭ驕ｿ豁｢鄒ｩ蜍吶↓縺､縺・※縲曾n騾閨ｷ蠕後・遶ｶ讌ｭ驕ｿ豁｢鄒ｩ蜍呻ｼ亥酔讌ｭ莉也､ｾ縺ｸ縺ｮ霆｢閨ｷ蛻ｶ髯撰ｼ峨・縲∽ｻ･荳九・譚｡莉ｶ繧呈ｺ縺溘＆縺ｪ縺・→辟｡蜉ｹ縺ｨ縺輔ｌ繧句愛萓九′螟壹＞縺ｧ縺呻ｼ喀n\n繝ｻ蛻ｶ髯先悄髢薙′蜷育炊逧・ｼ・縲・蟷ｴ遞句ｺｦ・噂n繝ｻ蝨ｰ蝓溽噪蛻ｶ髯舌′蜷育炊逧Ыn繝ｻ莉｣蜆滓蒔鄂ｮ縺後≠繧具ｼ磯閨ｷ驥代・荳贋ｹ励○遲会ｼ噂n繝ｻ蛻ｶ髯舌＆繧後ｋ讌ｭ蜍咏ｯ・峇縺梧・遒ｺ\n\n笞・・荳榊ｽ薙↓蠎・＞遽・峇縺ｮ隱鍋ｴ・嶌縺ｯ辟｡蜉ｹ縺ｮ蜿ｯ閭ｽ諤ｧ螟ｧ縲ょｼ∬ｭｷ螢ｫ縺ｫ逶ｸ隲・ｒ謗ｨ螂ｨ縲Ａ,
+    '谿区･ｭ莉｣': `縲先悴謇輔＞谿区･ｭ莉｣縺ｫ縺､縺・※縲曾n譎ょ柑縺ｯ3蟷ｴ・・020蟷ｴ4譛井ｻ･髯阪・蛻・ｼ峨ゅ◎繧御ｻ･蜑阪・2蟷ｴ縲・n\n隲区ｱゅ↓蠢・ｦ√↑繧ゅ・・喀n繝ｻ繧ｿ繧､繝繧ｫ繝ｼ繝・蜍､諤險倬鹸縺ｮ繧ｳ繝斐・\n繝ｻ邨ｦ荳取・邏ｰ\n繝ｻ髮・畑螂醍ｴ・嶌\n繝ｻ蟆ｱ讌ｭ隕丞援\n\n縺ｾ縺壽悽繝・・繝ｫ縺ｮ谿区･ｭ莉｣繧ｷ繝溘Η繝ｬ繝ｼ繧ｿ繝ｼ縺ｧ讎らｮ励ｒ遒ｺ隱阪＠縲∵ｭ｣遒ｺ縺ｪ驥鷹｡阪・蠑∬ｭｷ螢ｫ縺ｫ逶ｸ隲・＠縺ｦ縺上□縺輔＞縲Ａ,
+    '螟ｱ讌ｭ菫晞匱': `縲仙､ｱ讌ｭ菫晞匱縺ｫ縺､縺・※縲曾n繝ｻ閾ｪ蟾ｱ驛ｽ蜷磯閨ｷ・壼ｾ・ｩ滓悄髢・譌･ + 邨ｦ莉伜宛髯・繝ｶ譛亥ｾ後°繧画髪邨ｦ\n繝ｻ莨夂､ｾ驛ｽ蜷磯閨ｷ・壼ｾ・ｩ滓悄髢・譌･蠕後°繧画髪邨ｦ\n\n蜿礼ｵｦ譚｡莉ｶ・夐閨ｷ蜑・蟷ｴ髢薙↓12繝ｶ譛井ｻ･荳翫・陲ｫ菫晞匱閠・悄髢貼n\n謇狗ｶ壹″・夐屬閨ｷ逾ｨ繧呈戟縺｣縺ｦ繝上Ο繝ｼ繝ｯ繝ｼ繧ｯ縺ｸ縲・n笞・・騾閨ｷ蠕後☆縺舌↓謇狗ｶ壹″縺励↑縺・→蜿礼ｵｦ髢句ｧ九′驕・ｌ縺ｾ縺吶Ａ,
+    '2騾ｱ髢・: `縲・騾ｱ髢灘燕縺ｮ騾閨ｷ縺ｫ縺､縺・※縲曾n豌第ｳ・27譚｡縺ｫ繧医ｊ縲∵悄髢薙・螳壹ａ縺ｮ縺ｪ縺・寐逕ｨ螂醍ｴ・ｼ域ｭ｣遉ｾ蜩｡遲会ｼ峨・縲・閨ｷ縺ｮ諢乗晁｡ｨ遉ｺ縺九ｉ2騾ｱ髢薙〒騾閨ｷ縺梧・遶九＠縺ｾ縺吶・n\n蟆ｱ讌ｭ隕丞援縺ｧ縲・繝ｶ譛亥燕縲咲ｭ峨→螳壹ａ縺ｦ縺・※繧ゅ∵ｰ第ｳ輔′蜆ｪ蜈医＆繧後∪縺吶・n\n笞・・縺溘□縺励∝・貅騾閨ｷ縺ｮ縺溘ａ縺ｫ縺ｯ蟆ｱ讌ｭ隕丞援縺ｫ蠕薙≧縺ｮ縺後・繧ｿ繝ｼ縲・n笞・・螂醍ｴ・､ｾ蜩｡縺ｮ蝣ｴ蜷医・縺薙・隕丞ｮ壹・驕ｩ逕ｨ縺輔ｌ縺ｾ縺帙ｓ縲Ａ,
   }
 
   const handleRightsQuery = () => {
@@ -180,16 +181,16 @@ export default function ResignationAssistant() {
       }
     }
     if (!answer) {
-      answer = `申し訳ありません。「${rightsQuery}」に関する情報は現在のデータベースにありません。\n\n以下のキーワードで検索できます：\n・有給\n・退職金\n・競業避止\n・残業代\n・失業保険\n・2週間\n\n具体的な法律相談は弁護士や社労士にご相談ください。`
+      answer = `逕ｳ縺苓ｨｳ縺ゅｊ縺ｾ縺帙ｓ縲ゅ・{rightsQuery}縲阪↓髢｢縺吶ｋ諠・ｱ縺ｯ迴ｾ蝨ｨ縺ｮ繝・・繧ｿ繝吶・繧ｹ縺ｫ縺ゅｊ縺ｾ縺帙ｓ縲・n\n莉･荳九・繧ｭ繝ｼ繝ｯ繝ｼ繝峨〒讀懃ｴ｢縺ｧ縺阪∪縺呻ｼ喀n繝ｻ譛臥ｵｦ\n繝ｻ騾閨ｷ驥曾n繝ｻ遶ｶ讌ｭ驕ｿ豁｢\n繝ｻ谿区･ｭ莉｣\n繝ｻ螟ｱ讌ｭ菫晞匱\n繝ｻ2騾ｱ髢貼n\n蜈ｷ菴鍋噪縺ｪ豕募ｾ狗嶌隲・・蠑∬ｭｷ螢ｫ繧・､ｾ蜉ｴ螢ｫ縺ｫ縺皮嶌隲・￥縺縺輔＞縲Ａ
     }
     setRightsAnswer(answer)
   }
 
   // Copy letter to clipboard
   const copyLetter = () => {
-    const text = `${letter.today}\n\n${letter.company}\n代表取締役社長 殿\n\n${letter.type}\n\nこのたび、${letter.reason}により、${letter.date}をもって退職いたしたく、ここにお届けいたします。\n\n${letter.today}\n${letter.department}\n${letter.name}`
+    const text = `${letter.today}\n\n${letter.company}\n莉｣陦ｨ蜿也ｷ蠖ｹ遉ｾ髟ｷ 谿ｿ\n\n${letter.type}\n\n縺薙・縺溘・縲・{letter.reason}縺ｫ繧医ｊ縲・{letter.date}繧偵ｂ縺｣縺ｦ騾閨ｷ縺・◆縺励◆縺上√％縺薙↓縺雁ｱ翫￠縺・◆縺励∪縺吶・n\n${letter.today}\n${letter.department}\n${letter.name}`
     navigator.clipboard.writeText(text)
-    alert('退職届をクリップボードにコピーしました')
+    alert('騾閨ｷ螻翫ｒ繧ｯ繝ｪ繝・・繝懊・繝峨↓繧ｳ繝斐・縺励∪縺励◆')
   }
 
   return (
@@ -197,9 +198,9 @@ export default function ResignationAssistant() {
       {/* Header */}
       <div className="border-b border-gray-800 bg-[#0f0f1a]">
         <div className="max-w-6xl mx-auto px-4 py-6">
-          <div className="text-4xl mb-2">📝</div>
-          <h1 className="text-2xl font-bold">退職あんしんAI</h1>
-          <p className="text-gray-400 mt-1">退職届生成 × 残業代計算 × 完全チェックリスト</p>
+          <div className="text-4xl mb-2">統</div>
+          <h1 className="text-2xl font-bold">騾閨ｷ縺ゅｓ縺励ｓAI</h1>
+          <p className="text-gray-400 mt-1">騾閨ｷ螻顔函謌・ﾃ・谿区･ｭ莉｣險育ｮ・ﾃ・螳悟・繝√ぉ繝・け繝ｪ繧ｹ繝・/p>
         </div>
       </div>
 
@@ -229,62 +230,62 @@ export default function ResignationAssistant() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Input Form */}
             <div className="space-y-6">
-              <h2 className="text-xl font-bold">退職届テンプレート生成</h2>
+              <h2 className="text-xl font-bold">騾閨ｷ螻翫ユ繝ｳ繝励Ξ繝ｼ繝育函謌・/h2>
               <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6 space-y-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">氏名</label>
+                  <label className="block text-sm text-gray-400 mb-1">豌丞錐</label>
                   <input
-                    type="text" placeholder="米山 文貴"
+                    type="text" placeholder="邀ｳ螻ｱ 譁・ｲｴ"
                     value={info.fullName} onChange={e => updateInfo('fullName', e.target.value)}
                     className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">会社名</label>
+                  <label className="block text-sm text-gray-400 mb-1">莨夂､ｾ蜷・/label>
                   <input
-                    type="text" placeholder="株式会社○○○"
+                    type="text" placeholder="譬ｪ蠑丈ｼ夂､ｾ笳銀雷笳・
                     value={info.companyName} onChange={e => updateInfo('companyName', e.target.value)}
                     className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">所属部署</label>
+                  <label className="block text-sm text-gray-400 mb-1">謇螻樣Κ鄂ｲ</label>
                   <input
-                    type="text" placeholder="営業部"
+                    type="text" placeholder="蝟ｶ讌ｭ驛ｨ"
                     value={info.department} onChange={e => updateInfo('department', e.target.value)}
                     className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm text-gray-400 mb-1">雇用形態</label>
+                    <label className="block text-sm text-gray-400 mb-1">髮・畑蠖｢諷・/label>
                     <select
                       value={info.employeeType} onChange={e => updateInfo('employeeType', e.target.value)}
                       className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                     >
-                      <option>正社員</option>
-                      <option>契約社員</option>
-                      <option>パート・アルバイト</option>
+                      <option>豁｣遉ｾ蜩｡</option>
+                      <option>螂醍ｴ・､ｾ蜩｡</option>
+                      <option>繝代・繝医・繧｢繝ｫ繝舌う繝・/option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm text-gray-400 mb-1">退職理由</label>
+                    <label className="block text-sm text-gray-400 mb-1">騾閨ｷ逅・罰</label>
                     <select
                       value={info.reason} onChange={e => updateInfo('reason', e.target.value)}
                       className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                     >
-                      <option>一身上の都合</option>
-                      <option>会社都合</option>
-                      <option>契約期間満了</option>
-                      <option>その他</option>
+                      <option>荳霄ｫ荳翫・驛ｽ蜷・/option>
+                      <option>莨夂､ｾ驛ｽ蜷・/option>
+                      <option>螂醍ｴ・悄髢捺ｺ莠・/option>
+                      <option>縺昴・莉・/option>
                     </select>
                   </div>
                 </div>
-                {info.reason === 'その他' && (
+                {info.reason === '縺昴・莉・ && (
                   <div>
-                    <label className="block text-sm text-gray-400 mb-1">退職理由（詳細）</label>
+                    <label className="block text-sm text-gray-400 mb-1">騾閨ｷ逅・罰・郁ｩｳ邏ｰ・・/label>
                     <input
-                      type="text" placeholder="具体的な理由を入力"
+                      type="text" placeholder="蜈ｷ菴鍋噪縺ｪ逅・罰繧貞・蜉・
                       value={info.customReason} onChange={e => updateInfo('customReason', e.target.value)}
                       className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                     />
@@ -292,14 +293,14 @@ export default function ResignationAssistant() {
                 )}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm text-gray-400 mb-1">入社日</label>
+                    <label className="block text-sm text-gray-400 mb-1">蜈･遉ｾ譌･</label>
                     <input
                       type="date" value={info.startDate} onChange={e => updateInfo('startDate', e.target.value)}
                       className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-gray-400 mb-1">退職希望日</label>
+                    <label className="block text-sm text-gray-400 mb-1">騾閨ｷ蟶梧悍譌･</label>
                     <input
                       type="date" value={info.resignDate} onChange={e => updateInfo('resignDate', e.target.value)}
                       className="w-full bg-[#1a1a2e] border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
@@ -312,22 +313,21 @@ export default function ResignationAssistant() {
             {/* Preview */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold">プレビュー</h2>
+                <h2 className="text-xl font-bold">繝励Ξ繝薙Η繝ｼ</h2>
                 <button
                   onClick={copyLetter}
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors"
                 >
-                  📋 コピー
+                  搭 繧ｳ繝斐・
                 </button>
               </div>
               <div className="bg-white text-gray-900 rounded-xl p-8 shadow-xl font-serif leading-loose min-h-[500px]">
                 <p className="text-right mb-8">{letter.today}</p>
                 <p className="mb-1">{letter.company}</p>
-                <p className="mb-8">代表取締役社長 殿</p>
+                <p className="mb-8">莉｣陦ｨ蜿也ｷ蠖ｹ遉ｾ髟ｷ 谿ｿ</p>
                 <h2 className="text-center text-2xl font-bold mb-8 tracking-[0.5em]">{letter.type}</h2>
                 <p className="text-base leading-8 mb-8">
-                  このたび、{letter.reason}により、{letter.date}をもって退職いたしたく、ここにお届けいたします。
-                </p>
+                  縺薙・縺溘・縲＋letter.reason}縺ｫ繧医ｊ縲＋letter.date}繧偵ｂ縺｣縺ｦ騾閨ｷ縺・◆縺励◆縺上√％縺薙↓縺雁ｱ翫￠縺・◆縺励∪縺吶・                </p>
                 <div className="text-right mt-12 space-y-1">
                   <p>{letter.today}</p>
                   <p>{letter.department}</p>
@@ -341,14 +341,13 @@ export default function ResignationAssistant() {
         {/* Tab: Overtime */}
         {activeTab === 'overtime' && (
           <div className="max-w-3xl mx-auto space-y-8">
-            <h2 className="text-xl font-bold">💰 未払い残業代シミュレーター</h2>
+            <h2 className="text-xl font-bold">腸 譛ｪ謇輔＞谿区･ｭ莉｣繧ｷ繝溘Η繝ｬ繝ｼ繧ｿ繝ｼ</h2>
             <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-sm text-amber-300">
-              ⚠️ この計算結果はあくまで概算です。正確な金額は社労士・弁護士にご確認ください。時効は3年（2020年4月以降）です。
-            </div>
+              笞・・縺薙・險育ｮ礼ｵ先棡縺ｯ縺ゅ￥縺ｾ縺ｧ讎らｮ励〒縺吶よｭ｣遒ｺ縺ｪ驥鷹｡阪・遉ｾ蜉ｴ螢ｫ繝ｻ蠑∬ｭｷ螢ｫ縺ｫ縺皮｢ｺ隱阪￥縺縺輔＞縲よ凾蜉ｹ縺ｯ3蟷ｴ・・020蟷ｴ4譛井ｻ･髯搾ｼ峨〒縺吶・            </div>
             <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">月給（額面）</label>
+                  <label className="block text-sm text-gray-400 mb-1">譛育ｵｦ・磯｡埼擇・・/label>
                   <input
                     type="number" placeholder="250000"
                     value={info.monthlySalary || ''} onChange={e => updateInfo('monthlySalary', Number(e.target.value))}
@@ -356,7 +355,7 @@ export default function ResignationAssistant() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">月平均残業時間</label>
+                  <label className="block text-sm text-gray-400 mb-1">譛亥ｹｳ蝮・ｮ区･ｭ譎る俣</label>
                   <input
                     type="number" placeholder="30"
                     value={info.monthlyOvertimeHours || ''} onChange={e => updateInfo('monthlyOvertimeHours', Number(e.target.value))}
@@ -364,7 +363,7 @@ export default function ResignationAssistant() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">未払い月数</label>
+                  <label className="block text-sm text-gray-400 mb-1">譛ｪ謇輔＞譛域焚</label>
                   <input
                     type="number" placeholder="12"
                     value={info.unpaidMonths || ''} onChange={e => updateInfo('unpaidMonths', Number(e.target.value))}
@@ -377,13 +376,13 @@ export default function ResignationAssistant() {
             {overtimeResult.total > 0 && (
               <div className="bg-[#13131e] rounded-xl border border-green-500/30 p-6">
                 <div className="text-center mb-4">
-                  <div className="text-sm text-gray-400 mb-1">概算 未払い残業代</div>
-                  <div className="text-5xl font-bold text-green-400">¥{overtimeResult.total.toLocaleString()}</div>
+                  <div className="text-sm text-gray-400 mb-1">讎らｮ・譛ｪ謇輔＞谿区･ｭ莉｣</div>
+                  <div className="text-5xl font-bold text-green-400">ﾂ･{overtimeResult.total.toLocaleString()}</div>
                 </div>
                 <div className="text-sm text-gray-400 bg-[#1a1a2e] rounded-lg p-4 font-mono">
-                  <p>計算式:</p>
+                  <p>險育ｮ怜ｼ・</p>
                   <p>{overtimeResult.details}</p>
-                  <p className="mt-2 text-xs text-gray-500">※ 所定労働時間を160h/月として計算。深夜残業(50%)・休日残業(35%)は含まれていません。</p>
+                  <p className="mt-2 text-xs text-gray-500">窶ｻ 謇螳壼感蜒肴凾髢薙ｒ160h/譛医→縺励※險育ｮ励よｷｱ螟懈ｮ区･ｭ(50%)繝ｻ莨第律谿区･ｭ(35%)縺ｯ蜷ｫ縺ｾ繧後※縺・∪縺帙ｓ縲・/p>
                 </div>
               </div>
             )}
@@ -394,10 +393,9 @@ export default function ResignationAssistant() {
         {activeTab === 'checklist' && (
           <div className="max-w-3xl mx-auto space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold">✅ 退職完全チェックリスト</h2>
+              <h2 className="text-xl font-bold">笨・騾閨ｷ螳悟・繝√ぉ繝・け繝ｪ繧ｹ繝・/h2>
               <span className="text-sm text-gray-400">
-                {completedChecks}/{totalChecks} 完了
-              </span>
+                {completedChecks}/{totalChecks} 螳御ｺ・              </span>
             </div>
             {/* Progress bar */}
             <div className="w-full bg-gray-800 rounded-full h-3">
@@ -407,7 +405,7 @@ export default function ResignationAssistant() {
               />
             </div>
 
-            {['書類準備', '報告', '権利確認', '引継ぎ', '退職準備', '社会保険', '税金', '退職後'].map(category => {
+            {['譖ｸ鬘樊ｺ門ｙ', '蝣ｱ蜻・, '讓ｩ蛻ｩ遒ｺ隱・, '蠑慕ｶ吶℃', '騾閨ｷ貅門ｙ', '遉ｾ莨壻ｿ晞匱', '遞朱≡', '騾閨ｷ蠕・].map(category => {
               const items = checklist.filter(c => c.category === category)
               if (items.length === 0) return null
               return (
@@ -427,7 +425,7 @@ export default function ResignationAssistant() {
                         <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5 ${
                           item.done ? 'bg-green-500 border-green-500' : 'border-gray-600'
                         }`}>
-                          {item.done && <span className="text-xs text-white">✓</span>}
+                          {item.done && <span className="text-xs text-white">笨・/span>}
                         </div>
                         <div>
                           <div className={`text-sm font-medium ${item.done ? 'line-through text-gray-500' : ''}`}>
@@ -447,20 +445,19 @@ export default function ResignationAssistant() {
         {/* Tab: Agencies */}
         {activeTab === 'agencies' && (
           <div className="max-w-4xl mx-auto space-y-8">
-            <h2 className="text-xl font-bold">⚖️ 退職代行サービス比較</h2>
+            <h2 className="text-xl font-bold">笞厄ｸ・騾閨ｷ莉｣陦後し繝ｼ繝薙せ豈碑ｼ・/h2>
             <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-sm text-amber-300">
-              ⚠️ 以下は一般的な情報です。料金・サービス内容は変更される場合があります。最新情報は各サービスの公式サイトでご確認ください。
-            </div>
+              笞・・莉･荳九・荳闊ｬ逧・↑諠・ｱ縺ｧ縺吶よ侭驥代・繧ｵ繝ｼ繝薙せ蜀・ｮｹ縺ｯ螟画峩縺輔ｌ繧句ｴ蜷医′縺ゅｊ縺ｾ縺吶よ怙譁ｰ諠・ｱ縺ｯ蜷・し繝ｼ繝薙せ縺ｮ蜈ｬ蠑上し繧､繝医〒縺皮｢ｺ隱阪￥縺縺輔＞縲・            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {agencies.map((agency, i) => (
                 <div key={i} className={`bg-[#13131e] rounded-xl border p-6 ${
-                  agency.type === '弁護士型' ? 'border-red-500/30' :
-                  agency.type === '労働組合型' ? 'border-blue-500/30' :
+                  agency.type === '蠑∬ｭｷ螢ｫ蝙・ ? 'border-red-500/30' :
+                  agency.type === '蜉ｴ蜒咲ｵ・粋蝙・ ? 'border-blue-500/30' :
                   'border-gray-700'
                 }`}>
                   <div className={`text-xs font-bold px-2 py-1 rounded inline-block mb-3 ${
-                    agency.type === '弁護士型' ? 'bg-red-500/20 text-red-400' :
-                    agency.type === '労働組合型' ? 'bg-blue-500/20 text-blue-400' :
+                    agency.type === '蠑∬ｭｷ螢ｫ蝙・ ? 'bg-red-500/20 text-red-400' :
+                    agency.type === '蜉ｴ蜒咲ｵ・粋蝙・ ? 'bg-blue-500/20 text-blue-400' :
                     'bg-gray-700 text-gray-300'
                   }`}>
                     {agency.type}
@@ -470,13 +467,13 @@ export default function ResignationAssistant() {
                   <ul className="space-y-2 mb-4">
                     {agency.features.map((f, j) => (
                       <li key={j} className="text-sm text-gray-400 flex items-start gap-2">
-                        <span className="text-green-400 flex-shrink-0">✓</span> {f}
+                        <span className="text-green-400 flex-shrink-0">笨・/span> {f}
                       </li>
                     ))}
                   </ul>
-                  <div className="text-xs text-red-400 mb-3">⚠️ {agency.risks}</div>
+                  <div className="text-xs text-red-400 mb-3">笞・・{agency.risks}</div>
                   <div className="text-xs text-gray-500 bg-[#1a1a2e] rounded-lg p-3">
-                    💡 おすすめ: {agency.recommendation}
+                    庁 縺翫☆縺吶ａ: {agency.recommendation}
                   </div>
                 </div>
               ))}
@@ -487,13 +484,13 @@ export default function ResignationAssistant() {
         {/* Tab: Rights */}
         {activeTab === 'rights' && (
           <div className="max-w-3xl mx-auto space-y-6">
-            <h2 className="text-xl font-bold">🛡️ 退職時の権利Q&A</h2>
+            <h2 className="text-xl font-bold">孱・・騾閨ｷ譎ゅ・讓ｩ蛻ｩQ&A</h2>
             <div className="bg-[#13131e] rounded-xl border border-gray-800 p-6">
-              <label className="block text-sm text-gray-400 mb-2">気になるキーワードを入力してください</label>
+              <label className="block text-sm text-gray-400 mb-2">豌励↓縺ｪ繧九く繝ｼ繝ｯ繝ｼ繝峨ｒ蜈･蜉帙＠縺ｦ縺上□縺輔＞</label>
               <div className="flex gap-3">
                 <input
                   type="text"
-                  placeholder="有給、退職金、競業避止、残業代、失業保険、2週間..."
+                  placeholder="譛臥ｵｦ縲・閨ｷ驥代∫ｫｶ讌ｭ驕ｿ豁｢縲∵ｮ区･ｭ莉｣縲∝､ｱ讌ｭ菫晞匱縲・騾ｱ髢・.."
                   value={rightsQuery}
                   onChange={e => setRightsQuery(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && handleRightsQuery()}
@@ -503,11 +500,11 @@ export default function ResignationAssistant() {
                   onClick={handleRightsQuery}
                   className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors"
                 >
-                  検索
+                  讀懃ｴ｢
                 </button>
               </div>
               <div className="flex flex-wrap gap-2 mt-3">
-                {['有給', '退職金', '競業避止', '残業代', '失業保険', '2週間'].map(keyword => (
+                {['譛臥ｵｦ', '騾閨ｷ驥・, '遶ｶ讌ｭ驕ｿ豁｢', '谿区･ｭ莉｣', '螟ｱ讌ｭ菫晞匱', '2騾ｱ髢・].map(keyword => (
                   <button
                     key={keyword}
                     onClick={() => { setRightsQuery(keyword); setTimeout(() => { setRightsQuery(keyword); handleRightsQuery() }, 0) }}
@@ -526,6 +523,9 @@ export default function ResignationAssistant() {
           </div>
         )}
       </div>
-    </div>
+    
+      </div>
   )
 }
+
+

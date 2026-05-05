@@ -1,4 +1,5 @@
-'use client';
+﻿'use client'
+;
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -14,7 +15,7 @@ export default function DisasterAgent() {
   const [result, setResult] = useState<any>(null);
 
   const startEmergencySync = () => {
-    if (!familyEmail) return toast.error("先に家族の連絡先を入力してください");
+    if (!familyEmail) return toast.error("蜈医↓螳ｶ譌上・騾｣邨｡蜈医ｒ蜈･蜉帙＠縺ｦ縺上□縺輔＞");
     setStatus('detecting');
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
@@ -31,14 +32,14 @@ export default function DisasterAgent() {
           await new Promise(r => setTimeout(r, 1000));
           setResult(data);
           setStatus('done');
-          toast.success("緊急通知が完了しました");
+          toast.success("邱頑･騾夂衍縺悟ｮ御ｺ・＠縺ｾ縺励◆");
         } catch (error) {
-          toast.error("通信エラーが発生しました");
+          toast.error("騾壻ｿ｡繧ｨ繝ｩ繝ｼ縺檎匱逕溘＠縺ｾ縺励◆");
           setStatus('idle');
         }
       },
       () => {
-        toast.error("位置情報の取得に失敗しました");
+        toast.error("菴咲ｽｮ諠・ｱ縺ｮ蜿門ｾ励↓螟ｱ謨励＠縺ｾ縺励◆");
         setStatus('idle');
       }
     );
@@ -54,14 +55,14 @@ export default function DisasterAgent() {
               <div className="flex items-center gap-4 text-left"><div className="p-3 bg-red-600 rounded-2xl shadow-lg animate-bounce text-left"><ShieldAlert className="w-8 h-8 text-white" /></div><div><h1 className="text-3xl font-black italic tracking-tighter uppercase text-white">AI Disaster Agent</h1></div></div>
               <div className="space-y-8 text-left">
                 <div className="p-6 bg-white/5 rounded-3xl border border-white/5 space-y-4 text-left"><label className="text-[10px] font-black text-red-300 uppercase tracking-widest block text-left">Family Contact</label><Input placeholder="family@example.com" className="bg-black/40 border-red-900/50 text-white h-14 rounded-xl text-lg font-bold" value={familyEmail} onChange={(e) => setFamilyEmail(e.target.value)} /></div>
-                <Button onClick={startEmergencySync} disabled={status !== 'idle' && status !== 'done'} className="w-full bg-red-600 hover:bg-red-500 h-28 rounded-[2.5rem] text-3xl font-black shadow-2xl flex flex-col items-center justify-center gap-2"><div className="flex items-center gap-3"><Bell className="w-8 h-8" /><span>緊急避難・通知</span></div></Button>
+                <Button onClick={startEmergencySync} disabled={status !== 'idle' && status !== 'done'} className="w-full bg-red-600 hover:bg-red-500 h-28 rounded-[2.5rem] text-3xl font-black shadow-2xl flex flex-col items-center justify-center gap-2"><div className="flex items-center gap-3"><Bell className="w-8 h-8" /><span>邱頑･驕ｿ髮｣繝ｻ騾夂衍</span></div></Button>
               </div>
             </div>
             <div className="p-6 bg-black/40 rounded-[2rem] border border-white/5 space-y-3 text-left">
               <div className="flex items-center justify-between text-left"><p className="text-xs font-black text-red-500 uppercase tracking-widest text-left">Live Status</p><div className={`h-2 w-2 rounded-full ${status !== 'idle' ? 'bg-red-500 animate-ping' : 'bg-slate-700'}`} /></div>
               <div className="space-y-2 text-left">
-                <div className={`flex items-center gap-3 text-sm font-bold ${status !== 'idle' ? 'text-white' : 'text-slate-600'}`}><CheckCircle2 className={`w-4 h-4 ${status !== 'idle' ? 'text-red-500' : 'text-slate-800'}`} />GPSロック完了</div>
-                <div className={`flex items-center gap-3 text-sm font-bold ${status === 'done' ? 'text-white' : 'text-slate-600'}`}><CheckCircle2 className={`w-4 h-4 ${status === 'done' ? 'text-red-500' : 'text-slate-800'}`} />自動送信完了</div>
+                <div className={`flex items-center gap-3 text-sm font-bold ${status !== 'idle' ? 'text-white' : 'text-slate-600'}`}><CheckCircle2 className={`w-4 h-4 ${status !== 'idle' ? 'text-red-500' : 'text-slate-800'}`} />GPS繝ｭ繝・け螳御ｺ・/div>
+                <div className={`flex items-center gap-3 text-sm font-bold ${status === 'done' ? 'text-white' : 'text-slate-600'}`}><CheckCircle2 className={`w-4 h-4 ${status === 'done' ? 'text-red-500' : 'text-slate-800'}`} />閾ｪ蜍暮∽ｿ｡螳御ｺ・/div>
               </div>
             </div>
           </div>
@@ -72,8 +73,8 @@ export default function DisasterAgent() {
               <div className="flex-1 min-h-0 bg-slate-50 border-2 border-slate-100 rounded-[2.5rem] flex flex-col overflow-hidden shadow-inner p-8 text-left">
                 {result ? (
                   <div className="space-y-6 text-left">
-                    <div className="space-y-2 text-left"><p className="text-red-600 font-black flex items-center gap-2 text-left"><Zap className="w-5 h-5" />最優先避難所</p><p className="text-3xl font-black text-slate-900 text-left">{result.shelters[0].name}</p></div>
-                    <div className="h-px bg-slate-200" /><div className="space-y-2 text-left"><p className="text-blue-600 font-black flex items-center gap-2 text-left"><Mail className="w-5 h-5" />送信済みメッセージ</p><div className="bg-white p-6 rounded-2xl border border-slate-100 text-sm font-bold text-slate-600 italic text-left">{result.emergencyMessage}</div></div>
+                    <div className="space-y-2 text-left"><p className="text-red-600 font-black flex items-center gap-2 text-left"><Zap className="w-5 h-5" />譛蜆ｪ蜈磯∩髮｣謇</p><p className="text-3xl font-black text-slate-900 text-left">{result.shelters[0].name}</p></div>
+                    <div className="h-px bg-slate-200" /><div className="space-y-2 text-left"><p className="text-blue-600 font-black flex items-center gap-2 text-left"><Mail className="w-5 h-5" />騾∽ｿ｡貂医∩繝｡繝・そ繝ｼ繧ｸ</p><div className="bg-white p-6 rounded-2xl border border-slate-100 text-sm font-bold text-slate-600 italic text-left">{result.emergencyMessage}</div></div>
                   </div>
                 ) : (
                   <div className="flex-1 flex flex-col items-center justify-center text-slate-200 text-center py-20"><MapPin className="w-12 h-12 opacity-20 mb-4" /><p className="font-black uppercase tracking-[0.3em] text-slate-300">Ready</p></div>
@@ -83,6 +84,9 @@ export default function DisasterAgent() {
           </div>
         </div>
       </Card>
-    </div>
+    
+      </div>
   );
 }
+
+

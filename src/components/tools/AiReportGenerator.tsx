@@ -1,4 +1,5 @@
-'use client'
+﻿'use client'
+
 
 import { useState, useCallback, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
@@ -19,7 +20,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 
-// ─── Types ───────────────────────────────────────────────
+// 笏笏笏 Types 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
 type ReportTemplate = 'weekly' | 'monthly' | 'project' | 'research'
 
 interface TemplateConfig {
@@ -29,62 +30,62 @@ interface TemplateConfig {
   headerPrefix: string
 }
 
-// ─── Template Definitions ────────────────────────────────
+// 笏笏笏 Template Definitions 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
 const templates: Record<ReportTemplate, TemplateConfig> = {
   weekly: {
-    label: '週次報告',
-    emoji: '📅',
+    label: '騾ｱ谺｡蝣ｱ蜻・,
+    emoji: '套',
     sections: [
-      { title: '今週のサマリー', instruction: '今週の活動の概要を記述してください。' },
-      { title: '実施事項', instruction: '今週実施した主要なタスクや活動を記述してください。' },
-      { title: '進捗状況', instruction: '各タスクの進捗状況を記述してください。' },
-      { title: '課題・懸念事項', instruction: '現在の課題や懸念事項を記述してください。' },
-      { title: '来週の計画', instruction: '来週の予定・計画を記述してください。' },
+      { title: '莉企ｱ縺ｮ繧ｵ繝槭Μ繝ｼ', instruction: '莉企ｱ縺ｮ豢ｻ蜍輔・讎りｦ√ｒ險倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '螳滓命莠矩・, instruction: '莉企ｱ螳滓命縺励◆荳ｻ隕√↑繧ｿ繧ｹ繧ｯ繧・ｴｻ蜍輔ｒ險倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '騾ｲ謐礼憾豕・, instruction: '蜷・ち繧ｹ繧ｯ縺ｮ騾ｲ謐礼憾豕√ｒ險倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '隱ｲ鬘後・諛ｸ蠢ｵ莠矩・, instruction: '迴ｾ蝨ｨ縺ｮ隱ｲ鬘後ｄ諛ｸ蠢ｵ莠矩・ｒ險倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '譚･騾ｱ縺ｮ險育判', instruction: '譚･騾ｱ縺ｮ莠亥ｮ壹・險育判繧定ｨ倩ｿｰ縺励※縺上□縺輔＞縲・ },
     ],
-    headerPrefix: '週次報告書',
+    headerPrefix: '騾ｱ谺｡蝣ｱ蜻頑嶌',
   },
   monthly: {
-    label: '月次報告',
-    emoji: '📊',
+    label: '譛域ｬ｡蝣ｱ蜻・,
+    emoji: '投',
     sections: [
-      { title: '月次サマリー', instruction: '今月の活動の概要を記述してください。' },
-      { title: '目標達成状況', instruction: '月初に設定した目標の達成状況を記述してください。' },
-      { title: '主要な成果', instruction: '今月の主要な成果や実績を記述してください。' },
-      { title: 'KPI・数値レポート', instruction: '重要な数値やKPIの推移を記述してください。' },
-      { title: '課題と改善策', instruction: '発生した課題と今後の改善策を記述してください。' },
-      { title: '来月の方針', instruction: '来月の方針や計画を記述してください。' },
+      { title: '譛域ｬ｡繧ｵ繝槭Μ繝ｼ', instruction: '莉頑怦縺ｮ豢ｻ蜍輔・讎りｦ√ｒ險倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '逶ｮ讓咎＃謌千憾豕・, instruction: '譛亥・縺ｫ險ｭ螳壹＠縺溽岼讓吶・驕疲・迥ｶ豕√ｒ險倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '荳ｻ隕√↑謌先棡', instruction: '莉頑怦縺ｮ荳ｻ隕√↑謌先棡繧・ｮ溽ｸｾ繧定ｨ倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: 'KPI繝ｻ謨ｰ蛟､繝ｬ繝昴・繝・, instruction: '驥崎ｦ√↑謨ｰ蛟､繧КPI縺ｮ謗ｨ遘ｻ繧定ｨ倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '隱ｲ鬘後→謾ｹ蝟・ｭ・, instruction: '逋ｺ逕溘＠縺溯ｪｲ鬘後→莉雁ｾ後・謾ｹ蝟・ｭ悶ｒ險倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '譚･譛医・譁ｹ驥・, instruction: '譚･譛医・譁ｹ驥昴ｄ險育判繧定ｨ倩ｿｰ縺励※縺上□縺輔＞縲・ },
     ],
-    headerPrefix: '月次報告書',
+    headerPrefix: '譛域ｬ｡蝣ｱ蜻頑嶌',
   },
   project: {
-    label: 'プロジェクト報告',
-    emoji: '🚀',
+    label: '繝励Ο繧ｸ繧ｧ繧ｯ繝亥ｱ蜻・,
+    emoji: '噫',
     sections: [
-      { title: 'プロジェクト概要', instruction: 'プロジェクトの目的と背景を記述してください。' },
-      { title: '現状分析', instruction: '現在の進捗状況と分析結果を記述してください。' },
-      { title: '実施内容', instruction: '実施した作業や対応内容を記述してください。' },
-      { title: 'リスク・課題', instruction: '認識しているリスクと課題を記述してください。' },
-      { title: '提案・次のステップ', instruction: '今後の提案やアクションプランを記述してください。' },
-      { title: 'スケジュール', instruction: '今後のスケジュールやマイルストーンを記述してください。' },
+      { title: '繝励Ο繧ｸ繧ｧ繧ｯ繝域ｦりｦ・, instruction: '繝励Ο繧ｸ繧ｧ繧ｯ繝医・逶ｮ逧・→閭梧勹繧定ｨ倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '迴ｾ迥ｶ蛻・梵', instruction: '迴ｾ蝨ｨ縺ｮ騾ｲ謐礼憾豕√→蛻・梵邨先棡繧定ｨ倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '螳滓命蜀・ｮｹ', instruction: '螳滓命縺励◆菴懈･ｭ繧・ｯｾ蠢懷・螳ｹ繧定ｨ倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '繝ｪ繧ｹ繧ｯ繝ｻ隱ｲ鬘・, instruction: '隱崎ｭ倥＠縺ｦ縺・ｋ繝ｪ繧ｹ繧ｯ縺ｨ隱ｲ鬘後ｒ險倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '謠先｡医・谺｡縺ｮ繧ｹ繝・ャ繝・, instruction: '莉雁ｾ後・謠先｡医ｄ繧｢繧ｯ繧ｷ繝ｧ繝ｳ繝励Λ繝ｳ繧定ｨ倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '繧ｹ繧ｱ繧ｸ繝･繝ｼ繝ｫ', instruction: '莉雁ｾ後・繧ｹ繧ｱ繧ｸ繝･繝ｼ繝ｫ繧・・繧､繝ｫ繧ｹ繝医・繝ｳ繧定ｨ倩ｿｰ縺励※縺上□縺輔＞縲・ },
     ],
-    headerPrefix: 'プロジェクト報告書',
+    headerPrefix: '繝励Ο繧ｸ繧ｧ繧ｯ繝亥ｱ蜻頑嶌',
   },
   research: {
-    label: '調査レポート',
-    emoji: '🔍',
+    label: '隱ｿ譟ｻ繝ｬ繝昴・繝・,
+    emoji: '剥',
     sections: [
-      { title: '背景', instruction: '調査の背景と目的を記述してください。' },
-      { title: '調査方法', instruction: '調査の手法やアプローチを記述してください。' },
-      { title: '調査結果', instruction: '調査結果の詳細を記述してください。' },
-      { title: '分析・考察', instruction: '調査結果の分析と考察を記述してください。' },
-      { title: '提案', instruction: '調査結果に基づく提案を記述してください。' },
-      { title: 'まとめ', instruction: '全体のまとめと結論を記述してください。' },
+      { title: '閭梧勹', instruction: '隱ｿ譟ｻ縺ｮ閭梧勹縺ｨ逶ｮ逧・ｒ險倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '隱ｿ譟ｻ譁ｹ豕・, instruction: '隱ｿ譟ｻ縺ｮ謇区ｳ輔ｄ繧｢繝励Ο繝ｼ繝√ｒ險倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '隱ｿ譟ｻ邨先棡', instruction: '隱ｿ譟ｻ邨先棡縺ｮ隧ｳ邏ｰ繧定ｨ倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '蛻・梵繝ｻ閠・ｯ・, instruction: '隱ｿ譟ｻ邨先棡縺ｮ蛻・梵縺ｨ閠・ｯ溘ｒ險倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '謠先｡・, instruction: '隱ｿ譟ｻ邨先棡縺ｫ蝓ｺ縺･縺乗署譯医ｒ險倩ｿｰ縺励※縺上□縺輔＞縲・ },
+      { title: '縺ｾ縺ｨ繧・, instruction: '蜈ｨ菴薙・縺ｾ縺ｨ繧√→邨占ｫ悶ｒ險倩ｿｰ縺励※縺上□縺輔＞縲・ },
     ],
-    headerPrefix: '調査レポート',
+    headerPrefix: '隱ｿ譟ｻ繝ｬ繝昴・繝・,
   },
 }
 
-// ─── Report Generator Logic ─────────────────────────────
+// 笏笏笏 Report Generator Logic 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
 function expandBulletsToReport(
   title: string,
   bullets: string,
@@ -94,19 +95,19 @@ function expandBulletsToReport(
   const config = templates[template]
   const bulletList = bullets
     .split('\n')
-    .map(l => l.replace(/^[\s\-\*•·]+/, '').trim())
+    .map(l => l.replace(/^[\s\-\*窶｢ﾂｷ]+/, '').trim())
     .filter(l => l.length > 0)
 
   const now = new Date()
-  const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`
+  const dateStr = `${now.getFullYear()}蟷ｴ${now.getMonth() + 1}譛・{now.getDate()}譌･`
 
   let report = ''
-  report += `# ${config.headerPrefix}：${title}\n\n`
-  report += `**作成日:** ${dateStr}  \n`
+  report += `# ${config.headerPrefix}・・{title}\n\n`
+  report += `**菴懈・譌･:** ${dateStr}  \n`
   if (authorName.trim()) {
-    report += `**作成者:** ${authorName}  \n`
+    report += `**菴懈・閠・** ${authorName}  \n`
   }
-  report += `**テンプレート:** ${config.emoji} ${config.label}  \n`
+  report += `**繝・Φ繝励Ξ繝ｼ繝・** ${config.emoji} ${config.label}  \n`
   report += '\n---\n\n'
 
   // Distribute bullets across sections
@@ -130,12 +131,12 @@ function expandBulletsToReport(
   })
 
   report += '---\n\n'
-  report += `*本レポートは「AIレポートジェネレーター」により${dateStr}に作成されました。*\n`
+  report += `*譛ｬ繝ｬ繝昴・繝医・縲窟I繝ｬ繝昴・繝医ず繧ｧ繝阪Ξ繝ｼ繧ｿ繝ｼ縲阪↓繧医ｊ${dateStr}縺ｫ菴懈・縺輔ｌ縺ｾ縺励◆縲・\n`
 
   return report
 }
 
-// ─── Simple Markdown Renderer ────────────────────────────
+// 笏笏笏 Simple Markdown Renderer 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
 function renderMarkdown(md: string): string {
   return md
     .replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold mb-4 text-foreground">$1</h1>')
@@ -149,7 +150,7 @@ function renderMarkdown(md: string): string {
     .replace(/  \n/g, '<br/>')
 }
 
-// ─── Component ───────────────────────────────────────────
+// 笏笏笏 Component 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
 export default function AiReportGenerator() {
   const [title, setTitle] = useState('')
   const [bullets, setBullets] = useState('')
@@ -190,7 +191,7 @@ export default function AiReportGenerator() {
   const bulletCount = useMemo(() => {
     return bullets
       .split('\n')
-      .map(l => l.replace(/^[\s\-\*•·]+/, '').trim())
+      .map(l => l.replace(/^[\s\-\*窶｢ﾂｷ]+/, '').trim())
       .filter(l => l.length > 0).length
   }, [bullets])
 
@@ -206,15 +207,14 @@ export default function AiReportGenerator() {
             className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-4 transition-colors"
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
-            ツール紹介ページに戻る
-          </Link>
+            繝・・繝ｫ邏ｹ莉九・繝ｼ繧ｸ縺ｫ謌ｻ繧・          </Link>
           <div className="flex items-center gap-3 mb-2">
             <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-emerald-500">
               <FileText className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold">AIレポートジェネレーター</h1>
-              <p className="text-sm text-muted-foreground">箇条書きを入力 → ビジネスレポートを自動生成</p>
+              <h1 className="text-2xl md:text-3xl font-bold">AI繝ｬ繝昴・繝医ず繧ｧ繝阪Ξ繝ｼ繧ｿ繝ｼ</h1>
+              <p className="text-sm text-muted-foreground">邂・擅譖ｸ縺阪ｒ蜈･蜉・竊・繝薙ず繝阪せ繝ｬ繝昴・繝医ｒ閾ｪ蜍慕函謌・/p>
             </div>
           </div>
         </div>
@@ -226,7 +226,7 @@ export default function AiReportGenerator() {
               <CardContent className="p-6 space-y-4">
                 {/* Template Selector */}
                 <div>
-                  <label className="text-sm font-medium mb-2 block">📋 テンプレート選択</label>
+                  <label className="text-sm font-medium mb-2 block">搭 繝・Φ繝励Ξ繝ｼ繝磯∈謚・/label>
                   <div className="grid grid-cols-2 gap-2">
                     {(Object.entries(templates) as [ReportTemplate, TemplateConfig][]).map(([key, t]) => (
                       <Button
@@ -244,7 +244,7 @@ export default function AiReportGenerator() {
 
                 {/* Sections Preview */}
                 <div className="bg-muted/50 rounded-lg p-3">
-                  <p className="text-xs font-medium mb-2 text-muted-foreground">このテンプレートのセクション構成：</p>
+                  <p className="text-xs font-medium mb-2 text-muted-foreground">縺薙・繝・Φ繝励Ξ繝ｼ繝医・繧ｻ繧ｯ繧ｷ繝ｧ繝ｳ讒区・・・/p>
                   <div className="flex flex-wrap gap-1">
                     {templates[template].sections.map((s, i) => (
                       <Badge key={i} variant="secondary" className="text-xs">{s.title}</Badge>
@@ -254,9 +254,9 @@ export default function AiReportGenerator() {
 
                 {/* Report Title */}
                 <div>
-                  <label className="text-sm font-medium mb-2 block">📝 レポートタイトル</label>
+                  <label className="text-sm font-medium mb-2 block">統 繝ｬ繝昴・繝医ち繧､繝医Ν</label>
                   <Input
-                    placeholder="例: 2024年Q1 マーケティング施策の振り返り"
+                    placeholder="萓・ 2024蟷ｴQ1 繝槭・繧ｱ繝・ぅ繝ｳ繧ｰ譁ｽ遲悶・謖ｯ繧願ｿ斐ｊ"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     className="text-base"
@@ -265,9 +265,9 @@ export default function AiReportGenerator() {
 
                 {/* Author Name */}
                 <div>
-                  <label className="text-sm font-medium mb-2 block">👤 作成者名（任意）</label>
+                  <label className="text-sm font-medium mb-2 block">側 菴懈・閠・錐・井ｻｻ諢擾ｼ・/label>
                   <Input
-                    placeholder="例: 山田太郎"
+                    placeholder="萓・ 螻ｱ逕ｰ螟ｪ驛・
                     value={authorName}
                     onChange={(e) => setAuthorName(e.target.value)}
                   />
@@ -276,21 +276,20 @@ export default function AiReportGenerator() {
                 {/* Bullet Points */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm font-medium">📌 箇条書きメモ</label>
+                    <label className="text-sm font-medium">東 邂・擅譖ｸ縺阪Γ繝｢</label>
                     <Badge variant="outline" className="text-xs">
-                      {bulletCount}項目
+                      {bulletCount}鬆・岼
                     </Badge>
                   </div>
                   <Textarea
-                    placeholder={`各行に1つずつ箇条書きで入力してください。\n例:\n- 売上が前月比15%増加\n- 新規顧客を20社獲得\n- SNS広告のCPA改善\n- チーム2名増員完了\n- 来月はコンテンツマーケに注力予定`}
+                    placeholder={`蜷・｡後↓1縺､縺壹▽邂・擅譖ｸ縺阪〒蜈･蜉帙＠縺ｦ縺上□縺輔＞縲・n萓・\n- 螢ｲ荳翫′蜑肴怦豈・5%蠅怜刈\n- 譁ｰ隕城｡ｧ螳｢繧・0遉ｾ迯ｲ蠕予n- SNS蠎・相縺ｮCPA謾ｹ蝟Ыn- 繝√・繝2蜷榊｢怜藤螳御ｺ・n- 譚･譛医・繧ｳ繝ｳ繝・Φ繝・・繝ｼ繧ｱ縺ｫ豕ｨ蜉帑ｺ亥ｮ啻}
                     value={bullets}
                     onChange={(e) => setBullets(e.target.value)}
                     rows={10}
                     className="font-mono text-sm"
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    ヒント: 箇条書きは各セクションに自動で振り分けられます。多めに書くとより充実したレポートになります。
-                  </p>
+                    繝偵Φ繝・ 邂・擅譖ｸ縺阪・蜷・そ繧ｯ繧ｷ繝ｧ繝ｳ縺ｫ閾ｪ蜍輔〒謖ｯ繧雁・縺代ｉ繧後∪縺吶ょ､壹ａ縺ｫ譖ｸ縺上→繧医ｊ蜈・ｮ溘＠縺溘Ξ繝昴・繝医↓縺ｪ繧翫∪縺吶・                  </p>
                 </div>
 
                 {/* Generate Button */}
@@ -300,9 +299,9 @@ export default function AiReportGenerator() {
                   className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white text-lg py-6"
                 >
                   {isGenerating ? (
-                    <><RefreshCw className="h-5 w-5 mr-2 animate-spin" />生成中...</>
+                    <><RefreshCw className="h-5 w-5 mr-2 animate-spin" />逕滓・荳ｭ...</>
                   ) : (
-                    <><Sparkles className="h-5 w-5 mr-2" />レポートを生成する</>
+                    <><Sparkles className="h-5 w-5 mr-2" />繝ｬ繝昴・繝医ｒ逕滓・縺吶ｋ</>
                   )}
                 </Button>
               </CardContent>
@@ -323,7 +322,7 @@ export default function AiReportGenerator() {
                       className={viewMode === 'preview' ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0' : ''}
                     >
                       <Eye className="h-4 w-4 mr-1" />
-                      プレビュー
+                      繝励Ξ繝薙Η繝ｼ
                     </Button>
                     <Button
                       variant={viewMode === 'markdown' ? 'default' : 'outline'}
@@ -338,15 +337,14 @@ export default function AiReportGenerator() {
                   <div className="flex gap-2">
                     <Button variant="outline" size="sm" onClick={copyToClipboard}>
                       {copied ? (
-                        <><Check className="h-4 w-4 mr-1 text-green-500" />コピー済</>
+                        <><Check className="h-4 w-4 mr-1 text-green-500" />繧ｳ繝斐・貂・/>
                       ) : (
-                        <><Copy className="h-4 w-4 mr-1" />コピー</>
+                        <><Copy className="h-4 w-4 mr-1" />繧ｳ繝斐・</>
                       )}
                     </Button>
                     <Button variant="outline" size="sm" onClick={downloadAsText}>
                       <Download className="h-4 w-4 mr-1" />
-                      ダウンロード
-                    </Button>
+                      繝繧ｦ繝ｳ繝ｭ繝ｼ繝・                    </Button>
                   </div>
                 </div>
 
@@ -370,8 +368,7 @@ export default function AiReportGenerator() {
                 <div className="text-center">
                   <Button variant="outline" onClick={generate} className="gap-2">
                     <RefreshCw className="h-4 w-4" />
-                    再生成する
-                  </Button>
+                    蜀咲函謌舌☆繧・                  </Button>
                 </div>
               </>
             ) : (
@@ -380,10 +377,9 @@ export default function AiReportGenerator() {
                   <div className="inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-green-500/10 mb-4">
                     <FileText className="h-10 w-10 text-green-500" />
                   </div>
-                  <h3 className="text-lg font-medium mb-2">レポートがここに表示されます</h3>
+                  <h3 className="text-lg font-medium mb-2">繝ｬ繝昴・繝医′縺薙％縺ｫ陦ｨ遉ｺ縺輔ｌ縺ｾ縺・/h3>
                   <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                    左のフォームにタイトルと箇条書きメモを入力して「レポートを生成する」をクリックしてください。
-                  </p>
+                    蟾ｦ縺ｮ繝輔か繝ｼ繝縺ｫ繧ｿ繧､繝医Ν縺ｨ邂・擅譖ｸ縺阪Γ繝｢繧貞・蜉帙＠縺ｦ縲後Ξ繝昴・繝医ｒ逕滓・縺吶ｋ縲阪ｒ繧ｯ繝ｪ繝・け縺励※縺上□縺輔＞縲・                  </p>
                 </div>
               </div>
             )}
@@ -395,14 +391,16 @@ export default function AiReportGenerator() {
       <div className="mt-8 border rounded-xl p-4 bg-muted/30 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="flex-1">
           <span className="text-[10px] text-muted-foreground font-medium mr-2">PR</span>
-          <span className="text-sm">⚡ 仕事が速い人が使っているアイテムを見る</span>
-          <p className="text-xs text-muted-foreground mt-0.5">レポート作成が終わったら次は「作業環境」を整えよう。デスク周り・効率化グッズを探そう。</p>
+          <span className="text-sm">笞｡ 莉穂ｺ九′騾溘＞莠ｺ縺御ｽｿ縺｣縺ｦ縺・ｋ繧｢繧､繝・Β繧定ｦ九ｋ</span>
+          <p className="text-xs text-muted-foreground mt-0.5">繝ｬ繝昴・繝井ｽ懈・縺檎ｵゅｏ縺｣縺溘ｉ谺｡縺ｯ縲御ｽ懈･ｭ迺ｰ蠅・阪ｒ謨ｴ縺医ｈ縺・ゅョ繧ｹ繧ｯ蜻ｨ繧翫・蜉ｹ邇・喧繧ｰ繝・ぜ繧呈爾縺昴≧縲・/p>
         </div>
-        <a href="https://www.amazon.co.jp/s?k=仕事効率化+デスク+グッズ&tag=nextralabs-22" target="_blank" rel="noopener noreferrer sponsored"
+        <a href="https://www.amazon.co.jp/s?k=莉穂ｺ句柑邇・喧+繝・せ繧ｯ+繧ｰ繝・ぜ&tag=nextralabs-22" target="_blank" rel="noopener noreferrer sponsored"
           className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold transition-colors">
-          チェックする →
-        </a>
+          繝√ぉ繝・け縺吶ｋ 竊・        </a>
       </div>
-    </div>
+    
+      </div>
   )
 }
+
+

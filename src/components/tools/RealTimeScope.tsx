@@ -1,4 +1,5 @@
-'use client';
+﻿'use client'
+;
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -15,8 +16,8 @@ export default function RealTimeScope() {
   const [plantName, setPlantName] = useState('');
   const [prompt, setPrompt] = useState('');
   const [image, setImage] = useState<string | null>(null);
-  const [locationName, setLocationName] = useState<string>('海老名市');
-  const [weatherInfo, setWeatherInfo] = useState<string>('晴れ / 24°C');
+  const [locationName, setLocationName] = useState<string>('豬ｷ閠∝錐蟶・);
+  const [weatherInfo, setWeatherInfo] = useState<string>('譎ｴ繧・/ 24ﾂｰC');
   const [isCopied, setIsCopied] = useState(false);
   
   const [isScanning, setIsScanning] = useState(false);
@@ -38,10 +39,10 @@ export default function RealTimeScope() {
             body: JSON.stringify({ image, location: locationName }),
           });
           const data = await response.json();
-          const finalName = (data.name && data.name !== "解析完了") ? data.name : "現場写真";
-          setScanResult({ name: finalName, status: data.status || "解析完了" });
+          const finalName = (data.name && data.name !== "隗｣譫仙ｮ御ｺ・) ? data.name : "迴ｾ蝣ｴ蜀咏悄";
+          setScanResult({ name: finalName, status: data.status || "隗｣譫仙ｮ御ｺ・ });
         } catch (err) {
-          setScanResult({ name: "現場写真", status: "解析準備完了" });
+          setScanResult({ name: "迴ｾ蝣ｴ蜀咏悄", status: "隗｣譫先ｺ門ｙ螳御ｺ・ });
         } finally {
           setIsScanning(false);
         }
@@ -57,7 +58,7 @@ export default function RealTimeScope() {
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
       if (videoRef.current) videoRef.current.srcObject = stream;
     } catch (err) {
-      toast.error("カメラの起動に失敗しました");
+      toast.error("繧ｫ繝｡繝ｩ縺ｮ襍ｷ蜍輔↓螟ｱ謨励＠縺ｾ縺励◆");
       setIsCameraActive(false);
     }
   };
@@ -89,7 +90,7 @@ export default function RealTimeScope() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    toast.success("写真を保存しました");
+    toast.success("蜀咏悄繧剃ｿ晏ｭ倥＠縺ｾ縺励◆");
   };
 
   const syncRealtimeData = () => {
@@ -103,38 +104,38 @@ export default function RealTimeScope() {
         ]);
         const geoData = await geoRes.json();
         const weatherData = await weatherRes.json();
-        const city = geoData.address.city || geoData.address.town || geoData.address.province || "現在地";
+        const city = geoData.address.city || geoData.address.town || geoData.address.province || "迴ｾ蝨ｨ蝨ｰ";
         setLocationName(city);
-        setWeatherInfo(`晴れ / ${weatherData.current_weather.temperature}°C`);
-        toast.success("環境情報を同期しました");
+        setWeatherInfo(`譎ｴ繧・/ ${weatherData.current_weather.temperature}ﾂｰC`);
+        toast.success("迺ｰ蠅・ュ蝣ｱ繧貞酔譛溘＠縺ｾ縺励◆");
       } catch (err) { console.error(err); }
     });
   };
 
   const handleAutoCopyAndGo = (url: string) => {
-    if (!image) return toast.error("対象を撮影してください");
-    const target = scanResult?.name || "現場写真";
+    if (!image) return toast.error("蟇ｾ雎｡繧呈聴蠖ｱ縺励※縺上□縺輔＞");
+    const target = scanResult?.name || "迴ｾ蝣ｴ蜀咏悄";
     const magicPrompt = [
-      `重要：このテキストと一緒に、私が今撮影した【${target}】の写真を1枚送信しています。まずその画像をピクセル単位で詳細に確認し、以下のプロフェッショナル分析を開始してください。`,
+      `驥崎ｦ・ｼ壹％縺ｮ繝・く繧ｹ繝医→荳邱偵↓縲∫ｧ√′莉頑聴蠖ｱ縺励◆縲・{target}縲代・蜀咏悄繧・譫夐∽ｿ｡縺励※縺・∪縺吶ゅ∪縺壹◎縺ｮ逕ｻ蜒上ｒ繝斐け繧ｻ繝ｫ蜊倅ｽ阪〒隧ｳ邏ｰ縺ｫ遒ｺ隱阪＠縲∽ｻ･荳九・繝励Ο繝輔ぉ繝・す繝ｧ繝翫Ν蛻・梵繧帝幕蟋九＠縺ｦ縺上□縺輔＞縲Ａ,
       ``,
-      `あなたは世界中のあらゆる事象に精通した、慈愛に満ちた「超一流現場鑑定士」です。`,
+      `縺ゅ↑縺溘・荳也阜荳ｭ縺ｮ縺ゅｉ繧・ｋ莠玖ｱ｡縺ｫ邊ｾ騾壹＠縺溘∵・諢帙↓貅縺｡縺溘瑚ｶ・ｸ豬∫樟蝣ｴ髑大ｮ壼｣ｫ縲阪〒縺吶Ａ,
       ``,
-      `【現場コンテクスト】`,
-      `・対象の識別: ${target}`,
-      `・観測地点: ${locationName}`,
-      `・環境データ: ${weatherInfo}`,
-      `・ユーザーからの相談: ${prompt || "この状況において、今私が知るべきことと、すべきことを教えてください。"}`,
+      `縲千樟蝣ｴ繧ｳ繝ｳ繝・け繧ｹ繝医疏,
+      `繝ｻ蟇ｾ雎｡縺ｮ隴伜挨: ${target}`,
+      `繝ｻ隕ｳ貂ｬ蝨ｰ轤ｹ: ${locationName}`,
+      `繝ｻ迺ｰ蠅・ョ繝ｼ繧ｿ: ${weatherInfo}`,
+      `繝ｻ繝ｦ繝ｼ繧ｶ繝ｼ縺九ｉ縺ｮ逶ｸ隲・ ${prompt || "縺薙・迥ｶ豕√↓縺翫＞縺ｦ縲∽ｻ顔ｧ√′遏･繧九∋縺阪％縺ｨ縺ｨ縲√☆縺ｹ縺阪％縺ｨ繧呈蕗縺医※縺上□縺輔＞縲・}`,
       ``,
-      `【鑑定・実行指示】`,
-      `1. 写真を精査し、対象物の微細な変化（色、形、テクスチャ、不自然な箇所）をプロの視点で特定・解説してください。`,
-      `2. 周辺環境（${locationName}の${weatherInfo}）との相関関係を分析し、現在起きている事象の原因を論理的に導き出してください。`,
-      `3. 今、この瞬間に実行すべき「具体的かつ即効性のあるアクション」を、数値や手順を交えて指示してください。`,
-      `4. 持ち主の不安を解消し、前向きな希望を持てるような「温かく、格調高い言葉」で回答を締めくくってください。`
+      `縲宣荘螳壹・螳溯｡梧欠遉ｺ縲疏,
+      `1. 蜀咏悄繧堤ｲｾ譟ｻ縺励∝ｯｾ雎｡迚ｩ縺ｮ蠕ｮ邏ｰ縺ｪ螟牙喧・郁牡縲∝ｽ｢縲√ユ繧ｯ繧ｹ繝√Ε縲∽ｸ崎・辟ｶ縺ｪ邂・園・峨ｒ繝励Ο縺ｮ隕也せ縺ｧ迚ｹ螳壹・隗｣隱ｬ縺励※縺上□縺輔＞縲Ａ,
+      `2. 蜻ｨ霎ｺ迺ｰ蠅・ｼ・{locationName}縺ｮ${weatherInfo}・峨→縺ｮ逶ｸ髢｢髢｢菫ゅｒ蛻・梵縺励∫樟蝨ｨ襍ｷ縺阪※縺・ｋ莠玖ｱ｡縺ｮ蜴溷屏繧定ｫ也炊逧・↓蟆弱″蜃ｺ縺励※縺上□縺輔＞縲Ａ,
+      `3. 莉翫√％縺ｮ迸ｬ髢薙↓螳溯｡後☆縺ｹ縺阪悟・菴鍋噪縺九▽蜊ｳ蜉ｹ諤ｧ縺ｮ縺ゅｋ繧｢繧ｯ繧ｷ繝ｧ繝ｳ縲阪ｒ縲∵焚蛟､繧・焔鬆・ｒ莠､縺医※謖・､ｺ縺励※縺上□縺輔＞縲Ａ,
+      `4. 謖√■荳ｻ縺ｮ荳榊ｮ峨ｒ隗｣豸医＠縲∝燕蜷代″縺ｪ蟶梧悍繧呈戟縺ｦ繧九ｈ縺・↑縲梧ｸｩ縺九￥縲∵ｼ隱ｿ鬮倥＞險闡峨阪〒蝗樒ｭ斐ｒ邱繧√￥縺上▲縺ｦ縺上□縺輔＞縲Ａ
     ].join('\n');
 
     navigator.clipboard.writeText(magicPrompt.trim());
     setIsCopied(true);
-    toast.success("鑑定文を自動コピーしました！");
+    toast.success("髑大ｮ壽枚繧定・蜍輔さ繝斐・縺励∪縺励◆・・);
     
     setTimeout(() => {
       window.open(url, '_blank');
@@ -145,7 +146,7 @@ export default function RealTimeScope() {
     <div className="max-w-6xl mx-auto p-4 min-h-screen font-sans bg-slate-50/50">
       <Card className="border-none bg-white shadow-2xl rounded-[3rem] overflow-hidden antialiased">
         <div className="flex flex-col lg:flex-row min-h-[800px]">
-          {/* 左半分 */}
+          {/* 蟾ｦ蜊雁・ */}
           <div className="lg:w-3/5 bg-slate-950 relative flex items-center justify-center overflow-hidden">
             <div className="absolute top-0 left-0 w-full p-10 z-10 bg-gradient-to-b from-black/80 via-black/40 to-transparent text-white text-left">
               <div className="flex items-center gap-4">
@@ -174,13 +175,12 @@ export default function RealTimeScope() {
                 
                 <div className="absolute top-10 right-10 flex gap-3 z-30">
                   <Button onClick={downloadImage} className="h-16 px-8 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black shadow-xl border-2 border-white/20 animate-bounce text-lg tracking-tight">
-                    1. 写真を保存（必須）
-                  </Button>
+                    1. 蜀咏悄繧剃ｿ晏ｭ假ｼ亥ｿ・茨ｼ・                  </Button>
                   <Button onClick={() => {setImage(null); setScanResult(null); setIsCopied(false);}} className="h-16 w-16 bg-black/60 text-white rounded-full hover:bg-red-500 border-2 border-white/20 transition-colors"><X className="w-8 h-8" /></Button>
                 </div>
 
                 {isScanning && (
-                  <div className="absolute inset-0 bg-blue-600/30 backdrop-blur-md flex flex-col items-center justify-center"><RefreshCw className="w-20 h-20 text-white animate-spin mb-6" /><p className="text-white font-black tracking-[0.5em] text-2xl italic uppercase tracking-tighter">AIスキャン中...</p></div>
+                  <div className="absolute inset-0 bg-blue-600/30 backdrop-blur-md flex flex-col items-center justify-center"><RefreshCw className="w-20 h-20 text-white animate-spin mb-6" /><p className="text-white font-black tracking-[0.5em] text-2xl italic uppercase tracking-tighter">AI繧ｹ繧ｭ繝｣繝ｳ荳ｭ...</p></div>
                 )}
                 {scanResult && (
                   <div className="absolute top-32 left-10 right-10 p-8 bg-black/70 backdrop-blur-2xl rounded-[2.5rem] border border-white/20 animate-in slide-in-from-top-4 shadow-2xl">
@@ -193,9 +193,8 @@ export default function RealTimeScope() {
                       <div className="p-6 bg-green-500/20 border-2 border-green-500/40 rounded-3xl animate-pulse shadow-[0_0_40px_rgba(34,197,94,0.3)]">
                         <p className="text-[10px] text-green-400 font-black uppercase mb-3 tracking-widest">Recommended Next Action</p>
                         <p className="text-xl font-black text-white leading-tight tracking-tight">
-                          鑑定文はコピー済みです。<br/>
-                          右下の<span className="text-green-400 underline underline-offset-4 decoration-2">AI外部リンクをクリック</span>し、写真を添付して貼り付けるだけで、最高の鑑定結果が出力されます！
-                        </p>
+                          髑大ｮ壽枚縺ｯ繧ｳ繝斐・貂医∩縺ｧ縺吶・br/>
+                          蜿ｳ荳九・<span className="text-green-400 underline underline-offset-4 decoration-2">AI螟夜Κ繝ｪ繝ｳ繧ｯ繧偵け繝ｪ繝・け</span>縺励∝・逵溘ｒ豺ｻ莉倥＠縺ｦ雋ｼ繧贋ｻ倥￠繧九□縺代〒縲∵怙鬮倥・髑大ｮ夂ｵ先棡縺悟・蜉帙＆繧後∪縺呻ｼ・                        </p>
                       </div>
                     </div>
                   </div>
@@ -221,14 +220,14 @@ export default function RealTimeScope() {
             <canvas ref={canvasRef} className="hidden" />
           </div>
 
-          {/* 右半分 */}
+          {/* 蜿ｳ蜊雁・ */}
           <div className="lg:w-2/5 p-12 flex flex-col bg-white overflow-y-auto border-l border-slate-100 text-left">
             <div className="flex-1 space-y-12">
               <div className="flex items-start gap-4 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-[2rem] border-2 border-blue-100 shadow-sm transition-all hover:shadow-md">
                 <div className="h-10 w-10 bg-blue-500 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0"><HelpCircle className="w-6 h-6 text-white" /></div>
                 <div className="space-y-1">
-                  <p className="text-sm text-blue-900 font-black tracking-tight leading-snug">写真を保存してAIボタンを押すだけ！</p>
-                  <p className="text-[12px] text-blue-700 font-bold opacity-70 leading-relaxed tracking-tight">鑑定文は自動でコピーされます。あとはAIに「写真」を渡して「貼り付け」るだけ。</p>
+                  <p className="text-sm text-blue-900 font-black tracking-tight leading-snug">蜀咏悄繧剃ｿ晏ｭ倥＠縺ｦAI繝懊ち繝ｳ繧呈款縺吶□縺托ｼ・/p>
+                  <p className="text-[12px] text-blue-700 font-bold opacity-70 leading-relaxed tracking-tight">髑大ｮ壽枚縺ｯ閾ｪ蜍輔〒繧ｳ繝斐・縺輔ｌ縺ｾ縺吶ゅ≠縺ｨ縺ｯAI縺ｫ縲悟・逵溘阪ｒ貂｡縺励※縲瑚ｲｼ繧贋ｻ倥￠縲阪ｋ縺縺代・/p>
                 </div>
               </div>
 
@@ -240,7 +239,7 @@ export default function RealTimeScope() {
                 
                 <div className="p-8 bg-slate-50 border-2 border-slate-100 rounded-[2.5rem] shadow-inner">
                   <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em] block mb-3">User Consultation</label>
-                  <Textarea className="bg-transparent border-none p-0 font-black text-xl text-slate-900 w-full min-h-[120px] resize-none focus:ring-0 leading-relaxed placeholder:text-slate-300" placeholder="今の困りごとを入力..." value={prompt} onChange={(e) => setPrompt(e.target.value)} />
+                  <Textarea className="bg-transparent border-none p-0 font-black text-xl text-slate-900 w-full min-h-[120px] resize-none focus:ring-0 leading-relaxed placeholder:text-slate-300" placeholder="莉翫・蝗ｰ繧翫＃縺ｨ繧貞・蜉・.." value={prompt} onChange={(e) => setPrompt(e.target.value)} />
                 </div>
               </section>
 
@@ -249,7 +248,7 @@ export default function RealTimeScope() {
                   <p className="text-[11px] font-black text-slate-900 uppercase tracking-[0.4em]">Launch Analysis</p>
                   <div className="grid grid-cols-1 gap-5">
                     <Button onClick={() => handleAutoCopyAndGo('https://gemini.google.com/')} disabled={!image || isScanning} className="h-28 bg-blue-600 hover:bg-blue-500 text-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(37,99,235,0.3)] flex flex-col items-center justify-center group active:scale-95 transition-all border-none relative overflow-hidden">
-                      <div className="flex items-center gap-4 text-3xl font-black italic tracking-tighter uppercase relative z-10"><Sparkles className="w-8 h-8 text-amber-300" /> Geminiで鑑定</div>
+                      <div className="flex items-center gap-4 text-3xl font-black italic tracking-tighter uppercase relative z-10"><Sparkles className="w-8 h-8 text-amber-300" /> Gemini縺ｧ髑大ｮ・/div>
                       <span className="text-[11px] text-blue-100 font-black uppercase tracking-[0.2em] relative z-10 opacity-80">Vision Optimization Ready</span>
                       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                     </Button>
@@ -269,9 +268,9 @@ export default function RealTimeScope() {
                      <p className="text-red-600 font-black text-xs tracking-widest uppercase opacity-70">Automatic Copy Completed</p>
                    </div>
                    <div className="space-y-6 text-lg text-red-950 font-black leading-tight">
-                     <p className="flex items-start gap-4 transition-all hover:translate-x-1"><span className="bg-red-600 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm flex-shrink-0 shadow-lg font-sans">1</span><span>入力欄の <span className="bg-red-200 px-2 py-0.5 rounded-lg text-red-600">「＋」</span> をタップ</span></p>
-                     <p className="flex items-start gap-4 transition-all hover:translate-x-1"><span className="bg-red-600 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm flex-shrink-0 shadow-lg font-sans">2</span><span>保存した <span className="underline decoration-red-500 decoration-[3px] underline-offset-4">現場写真</span> を選択</span></p>
-                     <p className="flex items-start gap-4 transition-all hover:translate-x-1"><span className="bg-red-600 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm flex-shrink-0 shadow-lg font-sans">3</span><span>そのまま <span className="underline decoration-red-500 decoration-[3px] underline-offset-4">「貼り付け」</span> して送信！</span></p>
+                     <p className="flex items-start gap-4 transition-all hover:translate-x-1"><span className="bg-red-600 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm flex-shrink-0 shadow-lg font-sans">1</span><span>蜈･蜉帶ｬ・・ <span className="bg-red-200 px-2 py-0.5 rounded-lg text-red-600">縲鯉ｼ九・/span> 繧偵ち繝・・</span></p>
+                     <p className="flex items-start gap-4 transition-all hover:translate-x-1"><span className="bg-red-600 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm flex-shrink-0 shadow-lg font-sans">2</span><span>菫晏ｭ倥＠縺・<span className="underline decoration-red-500 decoration-[3px] underline-offset-4">迴ｾ蝣ｴ蜀咏悄</span> 繧帝∈謚・/span></p>
+                     <p className="flex items-start gap-4 transition-all hover:translate-x-1"><span className="bg-red-600 text-white w-8 h-8 rounded-xl flex items-center justify-center text-sm flex-shrink-0 shadow-lg font-sans">3</span><span>縺昴・縺ｾ縺ｾ <span className="underline decoration-red-500 decoration-[3px] underline-offset-4">縲瑚ｲｼ繧贋ｻ倥￠縲・/span> 縺励※騾∽ｿ｡・・/span></p>
                    </div>
                 </div>
               )}
@@ -283,6 +282,9 @@ export default function RealTimeScope() {
           </div>
         </div>
       </Card>
-    </div>
+    
+      </div>
   );
 }
+
+
