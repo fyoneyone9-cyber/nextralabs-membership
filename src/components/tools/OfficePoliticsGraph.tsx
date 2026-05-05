@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
-  ArrowRight, Users, ClipboardPaste, Zap, ChevronRight, Copy, ExternalLink, Sparkles, RotateCcw, Lightbulb, Network, ShieldAlert, Target, FileSpreadsheet, Upload, Loader2, Share2, Download, HelpCircle, FileText, FileSearch
+  ArrowRight, Users, ClipboardPaste, Zap, ChevronRight, Copy, ExternalLink, Sparkles, RotateCcw, Lightbulb, Network, ShieldAlert, Target, FileSpreadsheet, Upload, Loader2, Share2, Download, HelpCircle, FileText, FileSearch, AlertTriangle
 } from 'lucide-react'
 
 const TABS = [
@@ -30,8 +30,11 @@ export default function OfficePoliticsGraph() {
       script.async = true;
       script.onload = () => {
         const m = (window as any).mermaid;
-        m.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
-        m.contentLoaded();
+        m.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose', fontFamilies: 'sans-serif' });
+        if (mermaidRef.current) {
+          mermaidRef.current.removeAttribute('data-processed');
+          m.contentLoaded();
+        }
       };
       document.body.appendChild(script);
     }
@@ -57,11 +60,17 @@ export default function OfficePoliticsGraph() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // 🔴 CONSTITUTIONAL DATA-DRIVEN PROMPT (FIXED FOR SYNTAX)
   const FINAL_PROMPT = `あなたは組織政治のプロコンサルタントです。
 以下の【ログデータ】を分析し、次の2点を出力してください。
 
 1. 【分析レポート】: 主要な派閥構造、隠れたキーマン、推奨される立ち回り方を辛辣に詳しく。
-2. 【Mermaidコード】: 分析を視覚化したgraph TD形式のコード（派閥はsubgraph）。
+2. 【Mermaidコード】: graph TD形式で視覚化したコード。
+
+【Mermaidコード作成時の絶対ルール】:
+・日本語のノード名は必ずダブルクォーテーションで囲むこと（例: A["営業部長A"] --> B["新人C"]）
+・対立は赤色(-- 対立 -->)、協力は青色(-- 協力 -->)のスタイルを適用。
+・派閥ごとに subgraph でまとめること。
 
 【ログデータ】:
 ${csvData.substring(0, 3000)}`;
@@ -69,11 +78,11 @@ ${csvData.substring(0, 3000)}`;
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20">
       <div className="text-center space-y-1">
-        <Badge className="bg-indigo-600 text-white font-black italic tracking-widest px-4 py-1 text-[10px] uppercase rounded-full">OFFICE LENS AI</Badge>
+        <Badge className="bg-indigo-600 text-white font-black italic tracking-widest px-4 py-1 text-[10px] uppercase rounded-full shadow-lg">OFFICE LENS AI</Badge>
         <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter">Politics Intelligence</h1>
       </div>
 
-      <div className="w-full overflow-x-auto pb-4 scrollbar-hide">
+      <div className="w-full overflow-x-auto pb-4">
         <div className="bg-slate-900 border border-slate-800 p-1 flex min-w-[400px] md:min-w-full rounded-2xl shadow-2xl">
           {TABS.map((tab) => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex-1 py-4 px-2 rounded-xl font-black text-sm uppercase italic transition-all flex items-center justify-center gap-2 relative ${activeTab === tab.id ? 'bg-indigo-600 text-white shadow-xl scale-[1.02] z-10' : 'text-slate-500 hover:text-white'}`}>
@@ -123,21 +132,26 @@ ${csvData.substring(0, 3000)}`;
         {activeTab === 'graph' && (
           <div className="space-y-8 animate-in fade-in zoom-in">
             <div className="grid lg:grid-cols-3 gap-8">
-              {/* LEFT: REPORT AREA */}
               <Card className="lg:col-span-1 bg-slate-900 border border-slate-800 rounded-[3rem] p-8 shadow-2xl h-fit">
                  <div className="flex items-center gap-3 mb-6"><FileText className="text-indigo-500" /><h3 className="text-xl font-black text-white uppercase italic tracking-tighter">分析レポート</h3></div>
-                 <div className="bg-slate-950 rounded-2xl p-6 border border-slate-800 h-[500px] overflow-y-auto text-xs text-slate-300 font-medium leading-relaxed whitespace-pre-wrap shadow-inner italic">
+                 <div className="bg-slate-950 rounded-2xl p-6 border border-slate-800 h-[600px] overflow-y-auto text-xs text-slate-300 font-medium leading-relaxed whitespace-pre-wrap shadow-inner italic">
                     {analysisReport || "（レポートが入力されていません）"}
                  </div>
               </Card>
 
-              {/* RIGHT: GRAPH AREA */}
-              <Card className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-[3rem] p-8 shadow-2xl">
+              <Card className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-[3rem] p-8 shadow-2xl relative">
                  <div className="flex items-center gap-3 mb-6"><Network className="text-emerald-500" /><h3 className="text-xl font-black text-white uppercase italic tracking-tighter">組織相関図</h3></div>
-                 <div className="bg-white rounded-[2.5rem] p-10 min-h-[500px] flex items-center justify-center border-8 border-slate-800 shadow-inner overflow-x-auto">
-                    <div ref={mermaidRef} className="mermaid w-full text-center">
+                 <div className="bg-white rounded-[2.5rem] p-10 min-h-[600px] flex items-center justify-center border-8 border-slate-800 shadow-inner overflow-x-auto">
+                    <div ref={mermaidRef} className="mermaid w-full text-center text-slate-900">
                       {mermaidCode || "graph TD\n  A[No Data] --> B[Check Step 1]"}
                     </div>
+                 </div>
+                 {/* ERROR GUIDE OVERLAY IF SYNTAX ERROR OCCURS */}
+                 <div className="mt-4 p-4 bg-red-600/10 border border-red-600/20 rounded-2xl flex items-start gap-4">
+                    <AlertTriangle className="w-5 h-5 text-red-600 shrink-0 mt-1" />
+                    <p className="text-[10px] text-slate-500 leading-relaxed font-bold">
+                       ※ エラーが出る場合はAIに「日本語のノード名は全てダブルクォーテーションで囲んで出力し直して」と指示してください。
+                    </p>
                  </div>
               </Card>
             </div>
