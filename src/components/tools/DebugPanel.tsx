@@ -39,7 +39,8 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
       { id: 'trends', name: 'Google Trends', url: '/api/trends' },
       { id: 'gmail', name: 'Gmail Engine', url: '/api/tools/gmail-fetch' },
       { id: 'printful', name: 'Printful Cloud', url: '/api/tools/printful' },
-      { id: 'shopify', name: 'Shopify Admin', url: '/api/tools/printful' }, // shopify-testアクションを使用
+      { id: 'shopify', name: 'Shopify Admin', url: '/api/tools/printful' }, 
+      { id: 'staysee', name: 'Staysee PMS', url: '/api/tools/staysee-ai-finder' },
       { id: 'recipe', name: 'AI Recipe', url: '/api/tools/ai-recipe' }
     ];
     
@@ -83,8 +84,8 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
               </div>
 
               {/* 📊 API監視マトリクス */}
-              <div className="grid grid-cols-5 gap-2">
-                 {['trends', 'gmail', 'printful', 'shopify', 'recipe'].map(id => (
+              <div className="grid grid-cols-6 gap-2">
+                 {['trends', 'gmail', 'printful', 'shopify', 'staysee', 'recipe'].map(id => (
                    <div key={id} className={`p-2 rounded-lg border text-center transition-all ${apiHealth?.[id]?.ok ? 'bg-emerald-500/10 border-emerald-500/50' : 'bg-red-500/10 border-red-500/50'}`}>
                       <p className="text-[8px] font-black uppercase text-slate-500">{id}</p>
                       <p className="text-[10px] font-bold text-white">{apiHealth?.[id]?.status || '---'}</p>

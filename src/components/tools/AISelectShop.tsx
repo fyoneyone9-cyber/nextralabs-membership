@@ -49,19 +49,19 @@ export default function AISelectShop() {
 
   const [shopifyInfo, setShopifyInfo] = useState<any>(null);
 
-  // 🛠️ 以前の完璧だったURLパラメータ自動取得
+  // 以前の完璧だったURLパラメータ自動取得
   useEffect(() => {
     if (typeof window === 'undefined') return;
     fetchTrends();
     checkShopifyHealth();
   }, []);
 
-  // 🚀 【解決】自動画像切り替えエンジン
+  // 🚀 【完全復旧】自動画像切り替えエンジン
   const prevParams = useRef("");
   useEffect(() => {
     if (!targetKeyword) return;
     const currentParams = `${targetKeyword}-${selectedStyle.id}-${selectedCategory}`;
-    if (prevParams.current === currentParams) return; // 重複発火防止
+    if (prevParams.current === currentParams) return; 
     
     prevParams.current = currentParams;
     const timer = setTimeout(() => {
@@ -72,11 +72,9 @@ export default function AISelectShop() {
 
   const refreshMockup = () => {
     const timestamp = new Date().getTime();
-    const uniqueSeed = `${targetKeyword}-${selectedStyle.id}-${timestamp}`;
-    // 憲法：画像不変問題を根絶。LoremFlickrのキーワードを強化。
     const imageUrl = `https://loremflickr.com/800/800/${selectedCategory.toLowerCase()},${selectedStyle.kw},design?lock=${timestamp}`;
     setMockupImage(imageUrl);
-    console.log(`[ENGINE] Auto-Reflow Imagery: ${uniqueSeed}`);
+    console.log(`[ENGINE] Auto-Reflow Imagery Active: ${targetKeyword}`);
   };
 
   const fetchTrends = async () => {
@@ -115,6 +113,10 @@ export default function AISelectShop() {
     } finally { setIsGenerating(false); }
   };
 
+  const toggleSize = (size: string) => {
+    setSelectedSizes(prev => prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]);
+  };
+
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-slate-950 text-left">
       <div className="text-center space-y-3 mb-16">
@@ -137,12 +139,24 @@ export default function AISelectShop() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-red-500 font-black italic text-xs uppercase tracking-widest"><TrendingUp size={16} /> Google Trends</div>
-                  <Badge variant="outline" className="text-[9px] font-black border-emerald-500/30 text-emerald-500 animate-pulse uppercase">Linked</Badge>
+                  <Badge variant="outline" className={`text-[9px] font-black border-emerald-500/30 text-emerald-500 animate-pulse uppercase`}>Linked</Badge>
                 </div>
-                <div className="grid grid-cols-1 gap-2 max-h-[180px] overflow-y-auto pr-2 custom-scrollbar">
-                  {trends.map((t, i) => (
-                    <Button key={i} variant="outline" onClick={() => setTargetKeyword(t)} className={`h-12 justify-start px-6 border-2 font-black text-xs uppercase italic rounded-xl transition-all ${targetKeyword === t ? 'bg-[#5845e0] border-white text-white shadow-lg scale-95' : 'border-white/5 bg-[#0a0b14] text-slate-400'}`}>{t}</Button>
-                  ))}
+                {/* 🚀 トレンド選択肢の復活 */}
+                <div className="grid grid-cols-1 gap-2 max-h-[220px] overflow-y-auto pr-2 custom-scrollbar">
+                  {isLoadingTrends ? (
+                    Array(4).fill(0).map((_, i) => <div key={i} className="h-12 bg-white/5 rounded-xl animate-pulse" />)
+                  ) : (
+                    trends.map((t, i) => (
+                      <Button 
+                        key={i} 
+                        variant="outline" 
+                        onClick={() => setTargetKeyword(t)} 
+                        className={`h-12 justify-start px-6 border-2 font-black text-[10px] md:text-xs uppercase italic rounded-xl transition-all ${targetKeyword === t ? 'bg-[#5845e0] border-white text-white shadow-lg scale-95' : 'border-white/5 bg-[#0a0b14] text-slate-400 hover:border-indigo-500'}`}
+                      >
+                        {t}
+                      </Button>
+                    ))
+                  )}
                 </div>
               </div>
               <div className="space-y-4 pt-4 border-t border-white/5">
@@ -186,18 +200,7 @@ export default function AISelectShop() {
           </div>
         </div>
       )}
-      {/* Settings tab consistent with Master UI */}
-      {activeTab === 'settings' && (
-        <Card className="bg-[#13141f] border-2 border-white/10 rounded-[3rem] p-12 md:p-24 animate-in zoom-in-95 text-center">
-           <div className="max-w-xl mx-auto space-y-8">
-              <h2 className="text-4xl font-black text-white italic uppercase flex items-center justify-center gap-4"><Settings className="text-indigo-500" /> System Settings</h2>
-              <p className="text-slate-500 italic">マスターキーは既に埋め込まれています。個別の調整が必要な場合のみ編集してください。</p>
-              <Button onClick={() => setActiveTab('concept')} className="h-16 bg-[#5845e0] text-white font-black rounded-xl px-12 italic">設計画面へ戻る</Button>
-           </div>
-        </Card>
-      )}
-
-      <DebugPanel data={{ mockupImage, targetKeyword, selectedStyle }} toolId="ai-select-shop" />
+      <DebugPanel data={{ targetKeyword, selectedStyle, trends }} toolId="ai-select-shop" />
     </div>
   )
 }
