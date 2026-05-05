@@ -39,14 +39,15 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
       { id: 'trends', name: 'Google Trends', url: '/api/trends' },
       { id: 'gmail', name: 'Gmail Engine', url: '/api/tools/gmail-fetch' },
       { id: 'printful', name: 'Printful Cloud', url: '/api/tools/printful' },
-      { id: 'recipe', name: 'AI Recipe', url: '/api/tools/ai-recipe' },
-      { id: 'disaster', name: 'Disaster Guard', url: '/api/tools/disaster-agent' }
+      { id: 'shopify', name: 'Shopify Admin', url: '/api/tools/printful' }, // shopify-testアクションを使用
+      { id: 'recipe', name: 'AI Recipe', url: '/api/tools/ai-recipe' }
     ];
     
     const results: any = {};
     for (const ep of endpoints) {
       try {
-        const res = await fetch(ep.url, { method: 'POST', body: JSON.stringify({ action: 'test' }) }).catch(() => fetch(ep.url));
+        const body = ep.id === 'shopify' ? { action: 'shopify-test' } : { action: 'test' };
+        const res = await fetch(ep.url, { method: 'POST', body: JSON.stringify(body) }).catch(() => fetch(ep.url));
         results[ep.id] = { status: res.status, ok: res.ok };
         console.log(`[SURVEILLANCE] ${res.ok ? '✅' : '⚠️'} ${ep.name}: ${res.status}`);
       } catch (e) {
@@ -83,7 +84,7 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
 
               {/* 📊 API監視マトリクス */}
               <div className="grid grid-cols-5 gap-2">
-                 {['trends', 'gmail', 'printful', 'recipe', 'disaster'].map(id => (
+                 {['trends', 'gmail', 'printful', 'shopify', 'recipe'].map(id => (
                    <div key={id} className={`p-2 rounded-lg border text-center transition-all ${apiHealth?.[id]?.ok ? 'bg-emerald-500/10 border-emerald-500/50' : 'bg-red-500/10 border-red-500/50'}`}>
                       <p className="text-[8px] font-black uppercase text-slate-500">{id}</p>
                       <p className="text-[10px] font-bold text-white">{apiHealth?.[id]?.status || '---'}</p>
