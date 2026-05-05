@@ -119,6 +119,7 @@ export default function OfficePoliticsGraph() {
     }, 800);
   };
 
+  const renderGuide = (steps: string[]) => (
     <div className="bg-slate-900 border-2 border-indigo-600/50 rounded-2xl p-5 md:p-8 mb-8 flex items-start gap-4 shadow-xl">
       <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg"><Lightbulb className="text-white" /></div>
       <div className="space-y-1">
