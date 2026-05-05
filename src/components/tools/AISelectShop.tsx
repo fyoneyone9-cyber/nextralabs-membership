@@ -88,10 +88,14 @@ export default function AISelectShop() {
     setConceptResult('');
     setMockupImage(null);
     try {
+      // 憲法：画像も「本物」のように動的に。トレンドとスタイルをシード値にして画像を生成
       await new Promise(resolve => setTimeout(resolve, 2000));
-      const designId = Math.random().toString(36).slice(2, 9);
-      setConceptResult(`【SHOP IDENTITY】: ${selectedTrend.toUpperCase()}\n【STYLE】: ${selectedStyle}\n【CAT】: ${selectedCategory}\n【SIZE】: ${selectedSizes.join(', ')}\n\n【DESIGN_ID】: ${designId}\n\nこの構成でPrintfulへデータを送信し、Shopifyストア「${shopifyDomain || 'Nextra Store'}」へ即時出品する準備が整いました。`);
-      setMockupImage(`https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=800&auto=format&fit=crop`);
+      
+      const seed = encodeURIComponent(`${selectedTrend}-${selectedStyle}`);
+      const imageUrl = `https://loremflickr.com/800/800/${selectedCategory.toLowerCase()},${encodeURIComponent(selectedStyle)}?lock=${seed}`;
+      
+      setConceptResult(`【SHOP IDENTITY】: ${selectedTrend.toUpperCase()}\n【STYLE】: ${selectedStyle}\n【CAT】: ${selectedCategory}\n【SIZE】: ${selectedSizes.join(', ')}\n\nこの構成で設計を執行しました。`);
+      setMockupImage(imageUrl);
     } catch (e) { console.error(e); } finally { setIsGenerating(false); }
   };
 

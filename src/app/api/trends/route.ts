@@ -3,57 +3,45 @@ import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  // 接続先リスト: 官公庁・公共放送系の安定したRSSを優先
-  const RSS_SOURCES = [
-    { name: 'NHK_NEWS_LIVE', url: 'https://www.nhk.or.jp/rss/news/cat0.xml' }, // 主要ニュース
-    { name: 'JCAST_NEWS_LIVE', url: 'https://www.j-cast.com/index.xml' },      // トレンド・話題
-    { name: 'GOV_NEWS_LIVE', url: 'https://www.kantei.go.jp/jp/headline.xml' } // 首相官邸（究極の公的ソース）
-  ];
+  // Google Trends RSS 日本版
+  const RSS_URL = 'https://trends.google.com/trends/trendingsearches/daily/rss?geo=JP';
   
-  for (const source of RSS_SOURCES) {
-    try {
-      console.log(`[Trends API] Attempting Public RSS: ${source.name} (${source.url})`);
+  try {
+    const response = await fetch(RSS_URL, {
+      cache: 'no-store',
+      headers: {
+        'Accept': 'application/rss+xml, application/xml, text/xml',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+      },
+    });
 
-      const response = await fetch(source.url, {
-        cache: 'no-store',
-        headers: {
-          'Accept': 'application/rss+xml, application/xml, text/xml',
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-        },
-      });
-
-      if (!response.ok) continue;
-
+    if (response.ok) {
       const xml = await response.text();
-      const items = xml.split('<item>');
-      if (items.length <= 1) continue;
-      
-      items.shift();
-      const trends = items
-        .map(item => {
-          const titleMatch = item.match(/<title>([^<]+)<\/title>/);
-          if (!titleMatch) return null;
-          // NHK等のRSSに含まれる余計な装飾をクリーンアップ
-          return titleMatch[1]
-            .replace('<![CDATA[', '')
-            .replace(']]>', '')
-            .replace(/&amp;/g, '&')
-            .replace(/&quot;/g, '"')
-            .trim();
-        })
-        .filter(Boolean)
-        .slice(0, 12);
+      const items = xml.split('<item>').slice(1, 13);
+      const trends = items.map(item => {
+        const titleMatch = item.match(/<title>([^<]+)<\/title>/);
+        return titleMatch ? titleMatch[1].replace('<![CDATA[', '').replace(']]>', '').trim() : null;
+      }).filter(Boolean);
 
       if (trends.length > 0) {
-        console.log(`[Trends API] Success with Public Source: ${source.name}`);
-        return NextResponse.json({ trends, source: source.name, isLive: true });
+        return NextResponse.json({ trends, source: 'GOOGLE_TRENDS_LIVE', isLive: true });
       }
-    } catch (e) {
-      console.error(`[Trends API] Failed Public Source ${source.name}:`, e);
     }
-  }
+    throw new Error('Google Trends RSS failed');
 
-  // 公共RSSが全滅した場合の最終手段（憲法準拠ステータス）
-  const fallback = ["AIエージェントの衝撃", "次世代iPhoneリーク", "週末の絶品スイーツ", "メタバースの今", "リモートワーク革命", "注目のスタートアップ"];
-  return NextResponse.json({ trends: fallback, source: 'LOCAL_FALLBACK_STRICT', isLive: false });
+  } catch (error) {
+    // GoogleがダメならNewsAPIへフォールバック
+    try {
+      const NEWS_URL = `https://newsapi.org/v2/top-headlines?country=jp&pageSize=12&apiKey=5a687f8f94d348a68868673a903487c8`;
+      const nRes = await fetch(NEWS_URL, { cache: 'no-store' });
+      if (nRes.ok) {
+        const nData = await nRes.json();
+        const nTrends = nData.articles?.map((a: any) => a.title.split(' - ')[0].trim()).slice(0, 12);
+        if (nTrends && nTrends.length > 0) return NextResponse.json({ trends: nTrends, source: 'NEWS_API_FALLBACK', isLive: true });
+      }
+    } catch (e) { /* ignore */ }
+
+    // 最終手段
+    return NextResponse.json({ trends: ["AIエージェント", "働き方改革", "次世代デバイス"], isLive: false });
+  }
 }
