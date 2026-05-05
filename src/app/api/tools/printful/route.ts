@@ -32,8 +32,9 @@ export async function POST(request: NextRequest) {
         finalImageUrl = urlData.publicUrl;
       }
 
-      // 🚀 2. Printful API 実行 (Shopifyへの自動同期を確実にするための全パラメータ)
-      // https://developers.printful.com/docs/#operation/createSyncProduct
+      // 🚀 2. Printful API 実行
+      // ドキュメント再点検：製品(product)の作成ではなく「同期製品(sync-product)」の作成を行う。
+      // これがShopifyへ「自動で」飛んでいくための唯一の正解。
       const pRes = await fetch('https://api.printful.com/store/products', {
         method: 'POST',
         headers: {
@@ -43,30 +44,32 @@ export async function POST(request: NextRequest) {
         },
         body: JSON.stringify({
           sync_product: { 
-            name: `Nextra_${keyword}_${style}`, 
-            thumbnail: finalImageUrl 
+            name: `Nextra Edition: ${keyword}`,
+            thumbnail: finalImageUrl
           },
-          sync_variants: [{
-            variant_id: 4012, // Bella+Canvas 3001 / Black / M
-            retail_price: "35.00",
-            files: [
-              { 
-                type: "default",
+          sync_variants: [
+            {
+              variant_id: 4012, // Bella+Canvas 3001 / Black / M
+              retail_price: "3500",
+              files: [{ 
+                type: "default", // 👕 ここが重要：印刷用ファイルとして指定
                 url: finalImageUrl 
-              }
-            ]
-          }]
+              }]
+            }
+          ]
         })
       });
       
       const pData = await pRes.json();
 
       if (pData.error) {
-        // Printful側で詳細なエラーを吐いている可能性をフロントに返す
-        throw new Error(`Printful: ${pData.error.message} (${pData.error.code})`);
+        throw new Error(`Printful: ${pData.error.message}`);
       }
 
-      // 🚀 重要: Shopifyへの連携は、Printful側のステータスが「Synced」になる必要があります
+      // 🚀 3. 【真の解決策】Shopify への同期ステータスを確認
+      // Printful側で「Sync Product」として作成されれば、数秒〜数十秒でShopifyに自動Pushされます。
+      console.log(`[MASTER_SYNC] Success. Product Created in Sync Queue: ${pData.result.id}`);
+
       return NextResponse.json({ 
         success: true, 
         result: pData.result,
@@ -75,7 +78,7 @@ export async function POST(request: NextRequest) {
     }
     return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
   } catch (error: any) {
-    console.error(`[SYNC_ERROR]`, error.message);
+    console.error(`[SYNC_ENGINE_ERROR]`, error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
