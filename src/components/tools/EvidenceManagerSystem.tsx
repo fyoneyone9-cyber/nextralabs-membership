@@ -55,14 +55,14 @@ const MasterEngine = () => {
       <div className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-6 md:p-10 shadow-2xl space-y-8 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent opacity-30" />
         
-        <div className="bg-[#0a0b14] border border-white/5 rounded-3xl p-6 flex items-start gap-5 shadow-inner text-left">
-          <div className="w-10 h-10 rounded-full border border-amber-500/30 flex items-center justify-center shrink-0 text-amber-500 font-bold">!</div>
-          <div className="space-y-1">
-            <p className="text-[10px] font-black text-amber-500/70 uppercase tracking-[0.2em] italic mb-2">運用プロトコル</p>
-            <div className="space-y-1 text-xs font-bold text-slate-400">
-              <p className="flex items-center gap-3"><span className="text-amber-600 italic">#1</span> ダウンロードフォルダ内をAIが自動分析</p>
-              <p className="flex items-center gap-3"><span className="text-amber-600 italic">#2</span> YouTube制作物などの「意味のある実績」を自動分類</p>
-              <p className="flex items-center gap-3"><span className="text-amber-600 italic">#3</span> 不要なゴミを掃除し、フォルダ構造を最新化</p>
+        <div className="bg-[#0a0b14] border border-white/5 rounded-3xl p-6 md:p-10 flex items-start gap-6 shadow-inner text-left">
+          <div className="w-14 h-14 rounded-2xl border border-amber-500/30 flex items-center justify-center shrink-0 text-amber-500 font-bold text-2xl bg-amber-500/5">!</div>
+          <div className="space-y-3">
+            <p className="text-[12px] font-black text-amber-500 uppercase tracking-[0.3em] italic mb-2">運用プロトコル / SYSTEM GUIDE</p>
+            <div className="space-y-3 text-sm md:text-xl font-black text-slate-200">
+              <p className="flex items-center gap-4 leading-snug"><span className="text-amber-500 italic text-2xl">#1</span> ダウンロードフォルダ内をAIが自動分析</p>
+              <p className="flex items-center gap-4 leading-snug"><span className="text-amber-500 italic text-2xl">#2</span> YouTube制作物などの「意味のある実績」を自動分類</p>
+              <p className="flex items-center gap-4 leading-snug"><span className="text-amber-600 italic text-2xl">#3</span> 不要なゴミを掃除し、フォルダ構造を最新化</p>
             </div>
           </div>
         </div>
