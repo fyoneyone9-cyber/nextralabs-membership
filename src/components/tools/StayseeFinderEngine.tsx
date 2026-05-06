@@ -1,22 +1,21 @@
 'use client'
 import React, { useState, useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-
-// 外部コンポーネントのインポート
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
   ArrowRight, Upload, CheckCircle2, Zap, Copy, ExternalLink, 
   RotateCcw, Lightbulb, ClipboardPaste, PackageSearch, 
   Building2, UserSearch, Camera, Loader2, Download, FileImage, 
-  Settings, Shield, Printer, FileText 
+  Settings, Shield, Printer, FileText, Smartphone, Truck, Box
 } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const TABS = [
   { id: 'scan', label: '① 拾得物スキャン', icon: Camera },
   { id: 'match', label: '② 顧客マッチング', icon: UserSearch },
-  { id: 'insights', label: '③ 経営レポート', icon: Building2 },
+  { id: 'kiosk', label: '③ 無人キオスク', icon: Smartphone },
+  { id: 'insights', label: '④ 経営レポート', icon: Building2 },
 ];
 
 const MasterEngine = () => {
@@ -32,9 +31,13 @@ const MasterEngine = () => {
   const [isGeneratingCert, setIsGeneratingCert] = useState(false);
   const [insightData, setInsightData] = useState<any>(null);
   const [isGeneratingInsight, setIsGeneratingInsight] = useState(false);
+  
+  // キオスク用ステート
+  const [kioskStatus, setKioskStatus] = useState('WAITING');
+  const [labelData, setLabelData] = useState<any>(null);
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // マウントチェック
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
@@ -75,23 +78,27 @@ const MasterEngine = () => {
     }
   };
 
-  const generateInsight = async () => {
-    setIsGeneratingInsight(true);
+  const startKioskSync = async () => {
+    setKioskStatus('PRINTING');
     try {
-      const historyData = matchResult ? { latestMatch: matchResult } : { sample: "302号室でのコンセント付近の忘れ物頻発" };
-      const res = await fetch('/api/tools/staysee-ai-finder/insights', {
+      // 実際には特定された宿泊者住所を使用
+      const mockShipping = { name: "米山 文貴", address: "神奈川県海老名市...", tel: "080-3207-8422" };
+      const res = await fetch('/api/tools/staysee-ai-finder/kiosk', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ historyData }),
+        body: JSON.stringify({ 
+          action: 'generate-label',
+          matchData: certData || { itemName: "鑑定済み物品" },
+          shippingInfo: mockShipping
+        }),
       });
       const data = await res.json();
       if (data.success) {
-        setInsightData(data.insightData);
+        setLabelData(data);
+        setKioskStatus('COMPLETED');
       }
     } catch (e) {
-      alert('レポート生成エラー');
-    } finally {
-      setIsGeneratingInsight(false);
+      setKioskStatus('ERROR');
     }
   };
 
@@ -137,15 +144,15 @@ const MasterEngine = () => {
 あなたはホテル管理システム（PMS）の専門家です。今添付した【忘れ物の写真】を元に,Stayseeの宿泊履歴から持ち主を特定するための詳細分析を行ってください。`;
 
   return (
-    <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-[#050507] border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)] print:border-0 print:shadow-none print:my-0 print:p-0">
-      <div className="text-center space-y-1 md:space-y-2">
-        <Badge className="bg-blue-600 text-white font-black italic px-3 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full shadow-lg">HOTEL DX ENGINE</Badge>
-        <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter drop-shadow-xl leading-none">Staysee AI Finder</h1>
-        <div className="inline-block bg-emerald-600 text-white font-black px-4 py-0.5 rounded-full uppercase italic text-[8px] md:text-[10px] tracking-widest shadow-lg">v3.1-MASTER</div>
+    <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-[#050507] border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)] print:border-0 print:shadow-none print:my-0 print:p-0">
+      <div className="text-center space-y-2 print:hidden">
+        <Badge className="bg-blue-600 text-white font-black italic px-4 py-1 text-[10px] uppercase rounded-full shadow-lg">HOTEL DX ENGINE</Badge>
+        <h1 className="text-3xl md:text-6xl font-black text-white uppercase italic tracking-tighter drop-shadow-xl leading-none">Staysee AI Finder</h1>
+        <div className="inline-block bg-emerald-600 text-white font-black px-6 py-1 rounded-full uppercase italic text-[10px] tracking-widest shadow-lg">v3.2-MASTER</div>
       </div>
 
       <div className="overflow-x-auto pb-4 scrollbar-hide print:hidden">
-        <div className="bg-slate-900/50 border border-white/5 p-2 flex min-w-[500px] md:min-w-full rounded-2xl gap-2">
+        <div className="bg-slate-900/50 border border-white/5 p-2 flex min-w-[600px] md:min-w-full rounded-2xl gap-2">
           {TABS.map((tab) => (
             <button key={tab.id} onClick={() => { setActiveTab(tab.id); setShowSettings(false); }} className={`flex-1 py-5 px-2 rounded-xl font-black text-[10px] md:text-sm uppercase italic transition-all flex items-center justify-center gap-2 relative ${activeTab === tab.id && !showSettings ? 'bg-emerald-600 text-white shadow-xl scale-[1.03] z-10' : 'text-slate-500 hover:text-white'}`}>
               <tab.icon className="w-5 h-5" /> <span>{tab.label}</span>
@@ -168,7 +175,7 @@ const MasterEngine = () => {
           </Card>
         ) : activeTab === 'scan' ? (
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in text-center print:hidden">
-            <h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 text-emerald-400"><PackageSearch /> ① 拾得物スキャン</h3>
+            <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 text-emerald-400"><PackageSearch /> ① 拾得物スキャン</h3>
             <div className="grid lg:grid-cols-2 gap-12 text-left">
               <div className="space-y-6 text-center">
                 {!image ? (
@@ -204,7 +211,7 @@ const MasterEngine = () => {
                     <div className="flex items-center gap-4 text-white font-black italic uppercase"><ClipboardPaste className="text-emerald-400" /> Staysee 同期</div>
                     <button onClick={() => searchStaysee('latest')} disabled={isApiLoading} className="h-10 bg-emerald-600 text-white px-6 rounded-xl font-black italic text-[10px] uppercase shadow-lg">LIVE SYNC</button>
                  </div>
-                 <textarea value={matchResult} onChange={(e) => setMatchResult(e.target.value)} placeholder="同期ボタンでデータを取得..." className="w-full h-80 bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 text-sm text-slate-300 focus:border-emerald-500 outline-none font-mono italic shadow-inner leading-relaxed" />
+                 <textarea value={matchResult} onChange={(e) => setMatchResult(e.target.value)} placeholder="同期ボタンでデータを取得..." className="w-full h-80 bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 text-sm text-slate-200 focus:border-emerald-500 outline-none font-mono italic shadow-inner leading-relaxed" />
               </div>
             </div>
             {matchResult && (
@@ -221,7 +228,7 @@ const MasterEngine = () => {
                   <div className="flex flex-col items-center gap-4 text-center">
                     <Shield className="text-emerald-500 w-24 h-24 animate-pulse print:text-emerald-600 print:w-16 print:h-16 print:animate-none" />
                     <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter leading-none print:text-black print:text-3xl">AI Official Certificate</h3>
-                    <div className="bg-emerald-600 text-white px-8 py-2 rounded-full font-black italic text-sm shadow-lg leading-none print:bg-emerald-100 print:text-emerald-800 print:border print:border-emerald-200">NextraLabs Verification v3.1-MASTER</div>
+                    <div className="bg-emerald-600 text-white px-8 py-2 rounded-full font-black italic text-sm shadow-lg leading-none print:bg-emerald-100 print:text-emerald-800 print:border print:border-emerald-200">NextraLabs Verification v3.2-MASTER</div>
                   </div>
 
                   {certData ? (
@@ -229,9 +236,7 @@ const MasterEngine = () => {
                       <div className="space-y-6">
                         <div className="aspect-video bg-black rounded-[3rem] border-2 border-white/10 overflow-hidden relative shadow-2xl print:rounded-xl print:border-slate-200 print:shadow-none print:bg-slate-50">
                           <img src={image || ''} className="w-full h-full object-contain p-8 print:p-2" />
-                          <div className="absolute top-6 left-6 bg-emerald-500 text-slate-950 font-black px-4 py-1 rounded-full text-[10px] italic leading-none print:hidden">ORIGINAL EVIDENCE</div>
                         </div>
-                        <div className="hidden print:block text-[10px] font-mono text-slate-400 text-center uppercase tracking-widest border-t border-slate-100 pt-2">Management Node: NextraLabs-Verified-PMS</div>
                       </div>
                       <div className="space-y-6 text-left bg-slate-950/80 p-10 rounded-[3rem] border border-white/5 shadow-inner print:bg-white print:border-2 print:border-slate-100 print:p-6 print:rounded-2xl print:shadow-none">
                          <div className="grid grid-cols-1 gap-4">
@@ -242,28 +247,73 @@ const MasterEngine = () => {
                             <div className="bg-white/5 p-4 rounded-2xl border border-white/5 print:bg-slate-50 print:border-slate-200"><p className="text-[8px] font-black text-slate-500 uppercase">Grade</p><p className="text-2xl font-black text-emerald-400 italic print:text-emerald-700">{certData.status}</p></div>
                             <div className="bg-white/5 p-4 rounded-2xl border border-white/5 print:bg-slate-50 print:border-slate-200"><p className="text-[8px] font-black text-slate-500 uppercase">Expiry</p><p className="text-xs font-black text-white print:text-black">{certData.expiry}</p></div>
                          </div>
-                         <div><p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Description</p><p className="text-sm text-slate-300 italic print:text-slate-700 print:not-italic">{certData.description}</p></div>
-                         <div className="pt-4 border-t border-white/5 print:border-slate-100"><p className="text-sm text-emerald-400 font-bold italic leading-relaxed print:text-slate-600 print:not-italic">" {certData.message} "</p></div>
                          <button onClick={() => window.print()} className="w-full h-16 bg-white text-black font-black rounded-2xl shadow-xl hover:bg-emerald-500 hover:text-white transition-all uppercase italic flex items-center justify-center gap-3 mt-4 print:hidden"><Printer className="w-6 h-6" /> Print Certificate</button>
                       </div>
                     </div>
                   ) : (
                     <div className="bg-slate-950/80 rounded-[3rem] p-16 border-2 border-white/5 text-2xl text-slate-100 italic text-center">{matchResult || "Data Pending..."}</div>
                   )}
-
-                  <div className="p-8 bg-emerald-600 border-4 border-emerald-500 rounded-3xl shadow-[0_0_50px_rgba(16,185,129,0.4)] animate-in zoom-in-95 duration-500 text-center space-y-4 print:hidden">
-                      <div className="flex items-center justify-center gap-4 text-white font-black italic uppercase tracking-widest text-xl">
-                        <span className="animate-ping">✅</span> OFFICIAL VERIFICATION SECURED <span className="animate-ping">✅</span>
-                      </div>
-                      <p className="text-white text-lg font-black italic leading-relaxed">
-                        証明書が発行されました。このURLまたは印刷物を宿泊者へ提示し、<br/>
-                        NextraLabsによる厳格な拾得物管理をアピールしてください。
-                      </p>
-                  </div>
                </div>
             </Card>
             <button onClick={() => { setImage(null); setMatchResult(''); setCertData(null); setActiveTab('scan'); }} className="w-full h-20 border-2 border-white/10 text-slate-600 hover:text-white hover:bg-white/5 font-black rounded-3xl uppercase italic transition-all flex items-center justify-center gap-4 text-xl active:scale-95 print:hidden"><RotateCcw className="w-6 h-6" /> RESET PROTOCOL</button>
           </div>
+        ) : activeTab === 'kiosk' ? (
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in text-center space-y-12">
+            <div className="flex flex-col items-center gap-4">
+               <div className="w-20 h-20 bg-emerald-600/10 rounded-3xl flex items-center justify-center border-2 border-emerald-500/20 shadow-xl">
+                 <Smartphone className="w-10 h-10 text-emerald-500" />
+               </div>
+               <h3 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter">無人フロント・キオスク</h3>
+               <Badge className="bg-emerald-500 text-slate-950 font-black italic">Unmanned Operations v1.0</Badge>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-10 text-left">
+              <div className="space-y-6">
+                <div className="bg-[#0a0b14] border-2 border-white/5 rounded-[2rem] p-8 space-y-6 shadow-inner relative overflow-hidden">
+                   <div className="absolute top-0 right-0 p-6 opacity-5"><Truck className="w-24 h-24 text-white" /></div>
+                   <h4 className="text-xl font-black text-white italic uppercase flex items-center gap-3"><Box className="text-emerald-500" /> 発送プロトコル</h4>
+                   <p className="text-sm text-slate-400 font-bold leading-relaxed">宿泊者が特定されている場合、ここから自動で発送ラベルを作成し、無人受取の準備を開始できます。</p>
+                   
+                   <button 
+                    onClick={startKioskSync}
+                    disabled={kioskStatus === 'PRINTING' || !matchResult}
+                    className={`w-full h-24 ${kioskStatus === 'PRINTING' ? 'bg-slate-800' : 'bg-white text-slate-950 hover:bg-emerald-500 hover:text-white'} font-black rounded-2xl shadow-2xl flex items-center justify-center gap-4 text-xl uppercase italic transition-all active:scale-95 disabled:opacity-30`}
+                   >
+                     {kioskStatus === 'PRINTING' ? <Loader2 className="animate-spin" /> : <Printer />}
+                     発送ラベルを生成
+                   </button>
+                </div>
+              </div>
+
+              <div className="bg-black rounded-[2rem] p-8 border border-white/5 shadow-inner min-h-[300px] flex flex-col">
+                 <div className="flex items-center gap-3 text-emerald-500 font-black italic uppercase text-xs mb-6"><Zap size={16} /> Printer Queue Output</div>
+                 <div className="flex-1 font-mono text-sm space-y-4">
+                    {labelData ? (
+                      <div className="animate-in slide-in-from-right-4">
+                        <pre className="text-emerald-400 leading-relaxed bg-[#0a0b14] p-6 rounded-xl border border-emerald-500/20 shadow-lg">{labelData.labelContent}</pre>
+                        <button onClick={() => window.print()} className="w-full mt-6 h-14 bg-emerald-600 text-white font-black rounded-xl shadow-lg flex items-center justify-center gap-2 uppercase italic text-xs hover:bg-emerald-500 transition-all">
+                           <Printer size={16} /> プリンターへ送信 (Print)
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="h-full flex items-center justify-center opacity-10">
+                        <p className="text-center font-black uppercase italic tracking-widest leading-loose">Waiting for Label Trigger...<br/>(Match required)</p>
+                      </div>
+                    )}
+                 </div>
+              </div>
+            </div>
+            
+            <div className="bg-emerald-600/5 border-2 border-emerald-500/20 rounded-[2rem] p-8 italic shadow-inner">
+               <div className="flex items-center gap-3 text-emerald-500 mb-2">
+                  <Lightbulb size={20} />
+                  <p className="text-xs font-black uppercase tracking-widest">Kiosk Intelligence</p>
+               </div>
+               <p className="text-slate-400 text-sm font-bold leading-relaxed">
+                  スマートホテリエ（iPad）との連携により、深夜や無人時でもAIが忘れ物の返却受付・精算・ラベル発行までを完全無人化します。
+               </p>
+            </div>
+          </Card>
         ) : (
           <div className="animate-in fade-in zoom-in space-y-8 text-left pb-20">
             <Card className="bg-[#0f111a] border-4 border-blue-500/50 rounded-[4rem] p-10 md:p-16 shadow-2xl relative overflow-hidden print:border-0 print:shadow-none print:p-0 print:bg-white print:text-black print:rounded-none">
