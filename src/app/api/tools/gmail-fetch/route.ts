@@ -5,8 +5,8 @@ export async function POST(req: Request) {
     const { accessToken } = await req.json();
     if (!accessToken) return NextResponse.json({ error: 'Access token is required' }, { status: 400 });
 
-    // 憲法：本物のデータを取得（最新15件に拡大）
-    const listRes = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=15', {
+    // 憲法：本物のデータを取得（最新20件に固定してクレジット保護）
+    const listRes = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=20', {
       headers: { 'Authorization': `Bearer ${accessToken}` },
     });
     const listData = await listRes.json();

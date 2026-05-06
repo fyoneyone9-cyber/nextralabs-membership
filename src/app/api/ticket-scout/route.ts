@@ -183,7 +183,12 @@ export async function POST(req: NextRequest) {
     })
 
     // Geminiグラウンディングで検索
-    const events = await searchTicketsWithGemini(artist.trim(), selectedSites)
+    let events = await searchTicketsWithGemini(artist.trim(), selectedSites)
+    
+    // 🛡️ クレジット保護：直近20件までに制限
+    if (events.length > 20) {
+      events = events.slice(0, 20)
+    }
 
     // カレンダー登録
     const calendarResults: { event: TicketEvent; success: boolean; error?: string }[] = []
