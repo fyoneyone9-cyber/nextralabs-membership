@@ -123,10 +123,19 @@ const MasterEngine = () => {
               >
                 {copied ? '✅ COPY COMPLETE' : '防衛指示をコピー'}
               </button>
-              <div className="grid grid-cols-3 gap-3">
-                 <button className="h-14 bg-[#0a0b14] border border-white/5 rounded-xl text-[9px] font-black uppercase italic text-slate-500" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</button>
-                 <button className="h-14 bg-[#0a0b14] border border-white/5 rounded-xl text-[9px] font-black uppercase italic text-slate-500" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</button>
-                 <button className="h-14 bg-[#0a0b14] border border-white/5 rounded-xl text-[9px] font-black uppercase italic text-slate-500" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE</button>
+              <div className="grid grid-cols-3 gap-4">
+                 <button className="h-24 bg-white/5 border-2 border-white/10 rounded-2xl text-xs font-black uppercase italic text-slate-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all flex flex-col items-center justify-center gap-2" onClick={() => window.open('https://chatgpt.com', '_blank')}>
+                    <span className="text-2xl">💬</span>
+                    CHATGPT
+                 </button>
+                 <button className="h-24 bg-white/5 border-2 border-white/10 rounded-2xl text-xs font-black uppercase italic text-slate-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all flex flex-col items-center justify-center gap-2" onClick={() => window.open('https://gemini.google.com', '_blank')}>
+                    <span className="text-2xl">✨</span>
+                    GEMINI
+                 </button>
+                 <button className="h-24 bg-white/5 border-2 border-white/10 rounded-2xl text-xs font-black uppercase italic text-slate-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all flex flex-col items-center justify-center gap-2" onClick={() => window.open('https://claude.ai', '_blank')}>
+                    <span className="text-2xl">❄️</span>
+                    CLAUDE
+                 </button>
               </div>
             </div>
           </div>
