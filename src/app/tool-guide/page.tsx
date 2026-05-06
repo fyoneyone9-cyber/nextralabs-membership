@@ -1,12 +1,8 @@
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ArrowRight, Mail, Briefcase, Wallet, Shield, Building2, Youtube, Table, UserPlus, Sofa, Play, Zap } from 'lucide-react'
-
-export const metadata = {
-  title: 'AIツール説明・ディレクトリ | NextraLabs',
-  description: 'NextraLabsが提供する最新AIツールの詳細解説。あなたのビジネスと生活を革新するマスタモデルを紹介します。',
-}
 
 const TOOL_DIRECTORY = [
   { id: 'staysee-ai-finder', name: 'Staysee AI Finder', desc: 'ホテル・民泊の忘れ物対応をAIで完全自動化。', icon: Building2, color: 'text-emerald-500' },
@@ -17,7 +13,7 @@ const TOOL_DIRECTORY = [
   { id: 'youtube-producer', name: 'AI YouTubeプロデューサー', desc: 'トレンドと戦略からバズる動画台本を全自動生成。', icon: Youtube, color: 'text-red-500' },
 ];
 
-export default function ToolGuidePage() {
+const ToolGuideContent = () => {
   return (
     <div className="min-h-screen bg-[#050507] text-slate-200 font-sans pb-32">
       <div className="max-w-6xl mx-auto px-4 py-20 space-y-16">
@@ -29,15 +25,15 @@ export default function ToolGuidePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
           {TOOL_DIRECTORY.map((tool) => (
             <Link key={tool.id} href={`/products/${tool.id}`}>
-              <Card className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-8 hover:border-emerald-500/50 transition-all group shadow-2xl relative overflow-hidden h-64 flex flex-col justify-center">
-                <div className="flex items-center gap-6">
+              <Card className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-8 hover:border-emerald-500/50 transition-all group shadow-2xl relative overflow-hidden h-64 flex flex-col justify-center text-left">
+                <div className="flex items-center gap-6 text-left">
                   <div className={`w-20 h-20 bg-white/5 ${tool.color} rounded-[2rem] flex items-center justify-center border-2 border-white/5 group-hover:scale-110 transition-transform shadow-inner`}>
                     <tool.icon size={40} />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 text-left">
                     <h3 className="text-2xl font-black text-white italic uppercase mb-2 group-hover:text-emerald-400 transition-colors">{tool.name}</h3>
                     <p className="text-slate-400 text-sm font-bold leading-relaxed">{tool.desc}</p>
                     <div className="flex items-center gap-2 mt-4 text-emerald-500 text-[10px] font-black uppercase tracking-widest italic">
@@ -52,4 +48,13 @@ export default function ToolGuidePage() {
       </div>
     </div>
   )
+}
+
+const NoSSRWrapper = dynamic(() => Promise.resolve(ToolGuideContent), {
+  ssr: false,
+  loading: () => <div className="min-h-screen bg-[#050507]" />
+})
+
+export default function ToolGuidePage() {
+  return <NoSSRWrapper />
 }
