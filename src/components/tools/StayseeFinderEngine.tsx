@@ -6,13 +6,14 @@ import {
   ArrowRight, Upload, CheckCircle2, Zap, Copy, ExternalLink, 
   RotateCcw, Lightbulb, ClipboardPaste, PackageSearch, 
   Building2, UserSearch, Camera, Loader2, Download, FileImage, 
-  Settings, Shield, Printer 
+  Settings, Shield, Printer, FileText 
 } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const TABS = [
   { id: 'scan', label: '① 拾得物スキャン', icon: Camera },
   { id: 'match', label: '② 顧客マッチング', icon: UserSearch },
+  { id: 'insights', label: '③ 経営レポート', icon: Building2 },
 ];
 
 export default function StayseeFinderEngine() {
@@ -26,6 +27,8 @@ export default function StayseeFinderEngine() {
   const [userApiKey, setUserApiKey] = useState('');
   const [certData, setCertData] = useState<any>(null);
   const [isGeneratingCert, setIsGeneratingCert] = useState(false);
+  const [insightData, setInsightData] = useState<any>(null);
+  const [isGeneratingInsight, setIsGeneratingInsight] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -61,6 +64,26 @@ export default function StayseeFinderEngine() {
       alert('証明書生成エラー');
     } finally {
       setIsGeneratingCert(false);
+    }
+  };
+
+  const generateInsight = async () => {
+    setIsGeneratingInsight(true);
+    try {
+      const historyData = matchResult ? { latestMatch: matchResult } : { sample: "302号室でのコンセント付近の忘れ物頻発" };
+      const res = await fetch('/api/tools/staysee-ai-finder/insights', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ historyData }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setInsightData(data.insightData);
+      }
+    } catch (e) {
+      alert('レポート生成エラー');
+    } finally {
+      setIsGeneratingInsight(false);
     }
   };
 
@@ -110,7 +133,7 @@ export default function StayseeFinderEngine() {
       <div className="text-center space-y-2">
         <Badge className="bg-blue-600 text-white font-black italic px-4 py-1 text-[10px] uppercase rounded-full shadow-lg">HOTEL DX ENGINE</Badge>
         <h1 className="text-4xl md:text-7xl font-black text-white uppercase italic tracking-tighter drop-shadow-xl leading-none">Staysee AI Finder</h1>
-        <div className="inline-block bg-emerald-600 text-white font-black px-6 py-1 rounded-full uppercase italic text-[10px] tracking-widest shadow-lg">v3.0-MASTER</div>
+        <div className="inline-block bg-emerald-600 text-white font-black px-6 py-1 rounded-full uppercase italic text-[10px] tracking-widest shadow-lg">v3.1-MASTER</div>
       </div>
 
       <div className="overflow-x-auto pb-4 scrollbar-hide">
@@ -173,7 +196,7 @@ export default function StayseeFinderEngine() {
                     <div className="flex items-center gap-4 text-white font-black italic uppercase"><ClipboardPaste className="text-emerald-400" /> Staysee 同期</div>
                     <button onClick={() => searchStaysee('latest')} disabled={isApiLoading} className="h-10 bg-emerald-600 text-white px-6 rounded-xl font-black italic text-[10px] uppercase shadow-lg">LIVE SYNC</button>
                  </div>
-                 <textarea value={matchResult} onChange={(e) => setMatchResult(e.target.value)} placeholder="同期ボタンでデータを取得..." className="w-full h-80 bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 text-sm text-slate-300 focus:border-emerald-500 outline-none font-mono italic leading-relaxed" />
+                 <textarea value={matchResult} onChange={(e) => setMatchResult(e.target.value)} placeholder="同期ボタンでデータを取得..." className="w-full h-80 bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 text-sm text-slate-300 focus:border-emerald-500 outline-none font-mono italic shadow-inner leading-relaxed" />
               </div>
             </div>
             {matchResult && (
@@ -182,7 +205,7 @@ export default function StayseeFinderEngine() {
                </button>
             )}
           </Card>
-        ) : (
+        ) : activeTab === 'match' ? (
           <div className="animate-in fade-in zoom-in space-y-8 text-left pb-20">
             <Card className="bg-[#13141f] border-4 border-emerald-500/50 rounded-[4rem] p-10 md:p-20 shadow-[0_0_100px_rgba(16,185,129,0.1)] border-l-[16px] border-l-emerald-600 relative overflow-hidden">
                <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white"><Building2 className="w-96 h-96" /></div>
@@ -190,7 +213,7 @@ export default function StayseeFinderEngine() {
                   <div className="flex flex-col items-center gap-4 text-center">
                     <Shield className="text-emerald-500 w-24 h-24 animate-pulse" />
                     <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter leading-none">AI Official Certificate</h3>
-                    <div className="bg-emerald-600 text-white px-8 py-2 rounded-full font-black italic text-sm shadow-lg leading-none">NextraLabs Verification v3.0-MASTER</div>
+                    <div className="bg-emerald-600 text-white px-8 py-2 rounded-full font-black italic text-sm shadow-lg leading-none">NextraLabs Verification v3.1-MASTER</div>
                   </div>
 
                   {certData ? (
@@ -219,6 +242,47 @@ export default function StayseeFinderEngine() {
                </div>
             </Card>
             <button onClick={() => { setImage(null); setMatchResult(''); setCertData(null); setActiveTab('scan'); }} className="w-full h-20 border-2 border-white/10 text-slate-600 hover:text-white hover:bg-white/5 font-black rounded-3xl uppercase italic transition-all flex items-center justify-center gap-4 text-xl active:scale-95"><RotateCcw className="w-6 h-6" /> RESET PROTOCOL</button>
+          </div>
+        ) : (
+          <div className="animate-in fade-in zoom-in space-y-8 text-left pb-20">
+            <Card className="bg-[#0f111a] border-4 border-blue-500/50 rounded-[4rem] p-10 md:p-16 shadow-2xl relative overflow-hidden">
+               <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white"><Zap className="w-96 h-96" /></div>
+               <div className="relative z-10 space-y-10">
+                  <div className="flex flex-col items-center gap-4 text-center">
+                    <div className="p-5 bg-blue-600 rounded-3xl shadow-xl shadow-blue-500/20"><Building2 className="text-white w-12 h-12" /></div>
+                    <h3 className="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none">Hospitality Insight Report</h3>
+                    <div className="bg-blue-600 text-white px-8 py-2 rounded-full font-black italic text-xs shadow-lg uppercase">Strategic Management Advisory v1.0-MASTER</div>
+                  </div>
+
+                  {!insightData ? (
+                    <div className="flex flex-col items-center justify-center py-20 gap-8">
+                       <p className="text-slate-400 text-lg italic text-center max-w-md">Stayseeの稼働データと忘れ物の傾向をAIがクロス分析し、ホテルの品質向上と経営改善のアドバイスを提出します。</p>
+                       <button onClick={generateInsight} disabled={isGeneratingInsight} className="h-24 px-16 bg-blue-600 hover:bg-blue-500 text-white font-black text-2xl rounded-3xl shadow-2xl transition-all active:scale-95 flex items-center gap-4 italic uppercase">{isGeneratingInsight ? 'Analyzing...' : '経営レポートを生成する 📊'}</button>
+                    </div>
+                  ) : (
+                    <div className="grid lg:grid-cols-3 gap-8">
+                       <div className="lg:col-span-2 space-y-8">
+                          <div className="bg-slate-950/80 p-10 rounded-[3rem] border border-white/5 shadow-inner"><p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-4 italic">Executive Summary</p><p className="text-xl text-white font-bold leading-relaxed italic">{insightData.summary}</p></div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                             {insightData.findings.map((f: any, i: number) => (
+                               <div key={i} className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10 space-y-4">
+                                  <div className="flex items-center gap-3"><Badge className="bg-blue-500 text-white font-black">{f.room}</Badge><p className="text-white font-black text-sm uppercase italic">POINT</p></div>
+                                  <p className="text-slate-300 text-sm italic font-bold">{f.trend}</p>
+                                  <div className="pt-4 border-t border-white/5"><p className="text-xs font-black text-emerald-400 uppercase mb-2">Recommendation</p><p className="text-slate-200 text-sm font-bold leading-relaxed">{f.action}</p></div>
+                               </div>
+                             ))}
+                          </div>
+                       </div>
+                       <div className="space-y-8">
+                          <div className="bg-emerald-600/10 border-2 border-emerald-500/30 p-8 rounded-[2.5rem] shadow-xl"><p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-4 italic">ROI Projection</p><p className="text-3xl font-black text-white italic leading-tight">{insightData.roi}</p></div>
+                          <div className="bg-[#1a1c2e] p-8 rounded-[2.5rem] border border-blue-500/20 shadow-inner"><p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-4 italic">Strategic Tip</p><p className="text-sm text-slate-300 leading-relaxed font-bold italic">"{insightData.executiveMessage}"</p></div>
+                          <button onClick={() => window.print()} className="w-full h-20 bg-white text-black font-black rounded-2xl shadow-xl hover:bg-blue-600 transition-all uppercase italic flex items-center justify-center gap-4">EXPORT REPORT</button>
+                       </div>
+                    </div>
+                  )}
+               </div>
+            </Card>
+            <button onClick={() => { setInsightData(null); setActiveTab('scan'); }} className="w-full h-20 border-2 border-white/10 text-slate-600 hover:text-white hover:bg-white/5 font-black rounded-3xl uppercase italic transition-all flex items-center justify-center gap-4 text-xl active:scale-95"><RotateCcw className="w-6 h-6" /> EXIT REPORTING</button>
           </div>
         )}
       </div>
