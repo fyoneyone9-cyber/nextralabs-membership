@@ -64,8 +64,23 @@ const MasterEngine = () => {
     setSelectedGenre(genre);
     const genreLine = `【ジャンル】：${genre}`;
     setInputData(prev => {
-      const lines = prev.split('\n').filter(l => !l.startsWith('【ジャンル】：'));
-      return `${genreLine}\n${lines.join('\n')}`.trim();
+      // 既存のジャンル行を削除し、常に1行目に新ジャンルを入れる
+      const otherLines = prev.split('\n').filter(l => !l.startsWith('【ジャンル】：'));
+      return [genreLine, ...otherLines].join('\n').trim();
+    });
+  };
+
+  // 🚀 【本物化】戦略パレット選択時の挙動
+  const toggleStrategy = (strategy: any) => {
+    const strategyLine = strategy.content;
+    setInputData(prev => {
+      if (prev.includes(strategyLine)) {
+        // すでに選択済みなら削除
+        return prev.split('\n').filter(l => l !== strategyLine).join('\n').trim();
+      } else {
+        // 未選択なら追加
+        return `${prev}\n${strategyLine}`.trim();
+      }
     });
   };
 
@@ -241,7 +256,7 @@ const MasterEngine = () => {
                   return (
                     <button 
                       key={i} 
-                      onClick={() => setInputData(prev => prev.includes(p.content) ? prev.split('\n').filter(l => l !== p.content).join('\n') : (prev ? `${prev}\n${p.content}` : p.content))} 
+                      onClick={() => toggleStrategy(p)} 
                       className={`h-24 border-2 font-black text-xs md:text-sm uppercase italic rounded-2xl transition-all shadow-lg flex flex-col items-center justify-center gap-2 ${isActive ? 'bg-orange-600 border-white text-white scale-95' : 'border-white/5 bg-black text-slate-500 hover:border-orange-500/50'}`}
                     >
                       <span className="text-2xl">{p.label.split(' ')[0]}</span>
