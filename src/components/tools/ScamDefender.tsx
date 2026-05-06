@@ -1,8 +1,9 @@
 'use client'
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 import { 
   ShieldAlert, ShieldCheck, Zap, ExternalLink, AlertOctagon, Info, Activity, Terminal, Eye, Lock, Camera, Upload, Trash2, ClipboardPaste, ArrowRight
 } from 'lucide-react'
@@ -11,7 +12,7 @@ import { DebugPanel } from '@/components/tools/DebugPanel'
 const DANGER_KEYWORDS = [
   "即日現金", "身分証不要", "テレグラム", "Telegram", "シグナル", "Signal", "運び屋", "受け子", "出し子", 
   "高額報酬", "ホワイト案件", "裏バイト", "未経験歓迎", "ノルマなし", "amezen", "amazen", "楽天カード", 
-  "重要なお知らせ", "本人確認", "異常なアクティビティ", "ログイン制限", "差し押さえ"
+  "重要なお知らせ", "本人確認", "異常なアクティビティ", "ログイン制限", "差し押さえ", "アカウント停止"
 ];
 
 export default function ScamDefender() {
@@ -24,29 +25,43 @@ export default function ScamDefender() {
   const [systemOnline, setSystemOnline] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const performRealtimeAnalysis = (text: string, sender: string, subject: string) => {
-    const foundInText = DANGER_KEYWORDS.filter(word => text.toLowerCase().includes(word.toLowerCase()));
-    const foundInSender = DANGER_KEYWORDS.filter(word => sender.toLowerCase().includes(word.toLowerCase()));
-    const foundInSubject = DANGER_KEYWORDS.filter(word => subject.toLowerCase().includes(word.toLowerCase()));
+  // 🚀 【完全連動】1文字ずつの変化をリアルタイム検知するロジック
+  const performRealtimeAnalysis = useCallback((text: string, sender: string, subject: string) => {
+    const fullText = `${text} ${sender} ${subject}`.toLowerCase();
     
-    const uniqueFound = Array.from(new Set([...foundInText, ...foundInSender, ...foundInSubject]));
-    setDetectedWords(uniqueFound);
+    // キーワード検知（大文字小文字無視）
+    const found = DANGER_KEYWORDS.filter(word => 
+      fullText.includes(word.toLowerCase())
+    );
     
-    // スコア計算をより敏感に（リアルタイムで動く実感を強化）
+    setDetectedWords(found);
+
+    // スコア計算の感度を最大化
     let score = 0;
-    if (uniqueFound.length > 0) score += 30 + (uniqueFound.length * 15);
-    if (sender.includes('@') && !sender.includes('.')) score += 20; // 不正なドメイン形式
-    if (text.length > 100) score += 10;
+    if (found.length > 0) {
+      score = 40 + (found.length * 15); // 見つかった時点で40%スタート
+    }
     
+    // ドメイン偽装の特別検知 (amezen / amazan等)
+    if (sender.toLowerCase().includes('amezen') || sender.toLowerCase().includes('amazen')) {
+      score += 30;
+    }
+    
+    // 緊急性を煽る言葉
+    if (subject.includes('停止') || subject.includes('制限') || subject.includes('重要')) {
+      score += 20;
+    }
+
     setRiskScore(Math.min(100, score));
     
-    if (!systemOnline && (text.length > 0 || sender.length > 0 || subject.length > 0)) setSystemOnline(true);
-    if (text.length === 0 && sender.length === 0 && subject.length === 0 && !image) setSystemOnline(false);
-  };
+    // システム稼働状態
+    const isActive = text.length > 0 || sender.length > 0 || subject.length > 0 || !!image;
+    setSystemOnline(isActive);
+  }, [image]);
 
   useEffect(() => {
     performRealtimeAnalysis(inputText, senderInfo, subjectInfo);
-  }, [inputText, senderInfo, subjectInfo]);
+  }, [inputText, senderInfo, subjectInfo, performRealtimeAnalysis]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -72,7 +87,7 @@ export default function ScamDefender() {
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-slate-950 text-left">
       <div className="text-center space-y-3">
-        <Badge className="bg-red-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-[0_0_20px_rgba(220,38,38,0.4)]">Cyber scanner engine v5.1</Badge>
+        <Badge className="bg-red-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-[0_0_20px_rgba(220,38,38,0.4)]">Cyber scanner engine v5.5-MASTER</Badge>
         <h1 className="text-5xl md:text-[8rem] font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">Scam Defender</h1>
       </div>
 
@@ -85,7 +100,7 @@ export default function ScamDefender() {
                 <div className="flex items-center gap-2 text-red-500 font-black italic tracking-widest text-xs uppercase">
                   <Activity size={16} className="animate-pulse" /> Cyber Analysis Node
                 </div>
-                <Badge variant="outline" className={`text-[10px] font-black italic uppercase ${systemOnline ? 'border-red-500/30 text-red-500' : 'border-slate-800 text-slate-700'}`}>
+                <Badge variant="outline" className={`text-[9px] font-black italic uppercase ${systemOnline ? 'border-red-500/30 text-red-500' : 'border-slate-800 text-slate-700'}`}>
                   {systemOnline ? 'SCANNING' : 'IDLE'}
                 </Badge>
              </div>
