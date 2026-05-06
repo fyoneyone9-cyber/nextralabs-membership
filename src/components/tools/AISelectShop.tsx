@@ -4,11 +4,11 @@ import dynamic from 'next/dynamic'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 
 /**
- * 🚀 AI Select Shop: Masterpiece v20.0 (ULTIMATE MASTER)
- * 【修正】Tシャツ色復活、文字はみ出し防止、デザイン装飾の追加
- * 1. Tシャツカラー選択（白・黒・ネイビー）の完全復旧。
- * 2. 文字サイズ自動調整（長文でもはみ出さない）。
- * 3. デザイン装飾（日の丸、フレーム、グリッチ等）をジャンル別に実装。
+ * 🚀 AI Select Shop: Masterpiece v21.0 (ULTIMATE MASTER)
+ * 【修正】装飾の豪華化・バリエーション拡充
+ * 1. 日の丸、エンブレム、ボックス、スラッシュ等の豪華装飾を実装。
+ * 2. ジャンルごとに「背景＋文字」のレイヤー構造を精密化。
+ * 3. 文字サイズと配置の黄金比を再計算。
  */
 
 const MasterEngine = () => {
@@ -25,14 +25,14 @@ const MasterEngine = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const STYLES = [
-    { id: 'minimal', name: 'ミニマル', emoji: '⬜', colors: ['#ffffff', '#888888'] },
+    { id: 'japanese', name: '和風・日の丸', emoji: '⛩️', colors: ['#c0392b', '#ffffff'] },
     { id: 'street', name: 'ストリート', emoji: '🏙️', colors: ['#ffdd00', '#000000'] },
     { id: 'retro', name: 'レトロ', emoji: '📻', colors: ['#ff6b35', '#f7c59f'] },
     { id: 'cyberpunk', name: 'サイバー', emoji: '🌃', colors: ['#00ffff', '#ff00ff'] },
     { id: 'kawaii', name: 'かわいい', emoji: '🎀', colors: ['#ffb7c5', '#fff0f5'] },
     { id: 'typography', name: '文字装飾', emoji: '🔤', colors: ['#ffffff', '#00ff88'] },
     { id: 'graffiti', name: 'グラフィティ', emoji: '🎨', colors: ['#ff003c', '#00ffff'] },
-    { id: 'japanese', name: '和風・日の丸', emoji: '⛩️', colors: ['#c0392b', '#ffffff'] },
+    { id: 'minimal', name: 'ミニマル', emoji: '⬜', colors: ['#ffffff', '#000000'] },
     { id: 'sports', name: 'スポーツ', emoji: '⚡', colors: ['#0077b6', '#90e0ef'] },
     { id: 'vintage', name: 'ビンテージ', emoji: '🏺', colors: ['#c8a96e', '#f5e6be'] },
     { id: 'neon_sign', name: 'ネオン', emoji: '💡', colors: ['#39ff14', '#00ff00'] },
@@ -56,7 +56,7 @@ const MasterEngine = () => {
       const d = await r.json();
       if (d.trends) setTrends(d.trends.map((t: string, i: number) => ({ id: i, name: t })));
     } catch {
-      setTrends([{id:1, name:'AI Select Shop'}, {id:2, name:'NextraLabs'}, {id:3, name:'Masterpiece'}]);
+      setTrends([{id:1, name:'丸亀製麺'}, {id:2, name:'自衛隊'}, {id:3, name:'福島'}]);
     } finally { setIsLoading(false); }
   };
 
@@ -70,60 +70,91 @@ const MasterEngine = () => {
     // 背景
     ctx.fillStyle = '#0f0f1a'; ctx.fillRect(0, 0, w, h);
     
-    // T-shirt Body (Bella+Canvas 3001)
+    // T-shirt Body
     const currentTColor = TSHIRT_COLORS.find(c => c.id === tshirtColor) || TSHIRT_COLORS[1];
     ctx.fillStyle = currentTColor.hex; 
     ctx.beginPath();
-    ctx.moveTo(w*0.15, h*0.12); ctx.lineTo(w*0.05, h*0.28); ctx.lineTo(w*0.2, h*0.35);
-    ctx.lineTo(w*0.2, h*0.9); ctx.lineTo(w*0.8, h*0.9); ctx.lineTo(w*0.8, h*0.35);
-    ctx.lineTo(w*0.95, h*0.28); ctx.lineTo(w*0.85, h*0.12); ctx.lineTo(w*0.6, h*0.08);
-    ctx.quadraticCurveTo(w*0.5, h*0.15, w*0.4, h*0.08);
+    ctx.moveTo(w*0.2, h*0.1); ctx.lineTo(w*0.8, h*0.1); ctx.lineTo(w*0.95, h*0.3); ctx.lineTo(w*0.8, h*0.35);
+    ctx.lineTo(w*0.8, h*0.9); ctx.lineTo(w*0.2, h*0.9); ctx.lineTo(w*0.2, h*0.35); ctx.lineTo(w*0.05, h*0.3);
     ctx.closePath(); ctx.fill();
-    // 襟元の影
-    ctx.strokeStyle = "rgba(0,0,0,0.1)"; ctx.lineWidth = 4; ctx.stroke();
 
     const cx = w/2, cy = h*0.48;
     const currentStyle = STYLES.find(s => s.id === style);
-    const colors = currentStyle?.colors || ['#ffffff'];
+    const colors = currentStyle?.colors || ['#ffffff', '#000000'];
 
     ctx.save();
-    // 🚀 はみ出し防止のクリッピング
-    ctx.beginPath(); ctx.rect(w*0.22, h*0.2, w*0.56, h*0.6); ctx.clip();
+    // クリッピング
+    ctx.beginPath(); ctx.rect(w*0.22, h*0.15, w*0.56, h*0.65); ctx.clip();
 
-    // 文字サイズ動的調整
-    let fontSize = 45;
+    let fontSize = 42;
     if (keyword.length > 5) fontSize = 32;
     if (keyword.length > 10) fontSize = 22;
 
     switch(style) {
       case 'japanese':
-        ctx.beginPath(); ctx.arc(cx, cy, w*0.22, 0, Math.PI*2); ctx.fillStyle = colors[0]; ctx.fill();
-        ctx.fillStyle = colors[1]; ctx.font = `bold ${fontSize}px serif`; ctx.textAlign = 'center';
-        keyword.split('').forEach((ch, i) => ctx.fillText(ch, cx, cy - (keyword.length * (fontSize/2.5)) + i*(fontSize*1.2)));
+        // 🇯🇵 豪華な日の丸装飾
+        ctx.beginPath();
+        ctx.arc(cx, cy, w * 0.22, 0, Math.PI * 2);
+        ctx.fillStyle = colors[0];
+        ctx.fill();
+        ctx.strokeStyle = "rgba(0,0,0,0.1)"; ctx.lineWidth = 10; ctx.stroke();
+        // 縦書き
+        ctx.fillStyle = colors[1];
+        ctx.font = `900 ${fontSize}px "Hiragino Mincho ProN", serif`;
+        ctx.textAlign = 'center';
+        const chars = keyword.split('');
+        chars.forEach((ch, i) => ctx.fillText(ch, cx, cy - (chars.length * (fontSize/2)) + i*(fontSize*1.1)));
         break;
-      case 'cyberpunk':
-        ctx.shadowColor = colors[0]; ctx.shadowBlur = 15;
-        ctx.fillStyle = colors[0]; ctx.font = `900 ${fontSize*1.2}px Impact`; ctx.textAlign = 'center';
-        ctx.fillText(keyword.toUpperCase(), cx, cy);
-        // 装飾ライン
-        ctx.strokeStyle = colors[1]; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(cx-60, cy-fontSize); ctx.lineTo(cx+60, cy-fontSize); ctx.stroke();
+
+      case 'street':
+        // 🏙️ 豪華なストリートエンブレム
+        ctx.fillStyle = colors[0];
+        ctx.fillRect(cx - w*0.25, cy - fontSize*0.8, w*0.5, fontSize*1.6);
+        ctx.strokeStyle = colors[1]; ctx.lineWidth = 3;
+        ctx.strokeRect(cx - w*0.26, cy - fontSize*0.9, w*0.52, fontSize*1.8);
+        ctx.fillStyle = colors[1];
+        ctx.font = `900 ${fontSize}px Impact`;
+        ctx.fillText(keyword.toUpperCase(), cx, cy + fontSize*0.35);
         break;
+
       case 'minimal':
-        ctx.fillStyle = colors[0]; ctx.font = `bold ${fontSize}px "Helvetica"`; ctx.textAlign = 'center';
-        ctx.fillText(keyword, cx, cy);
-        ctx.strokeStyle = colors[0]; ctx.lineWidth = 2;
-        ctx.strokeRect(cx-70, cy-fontSize, 140, fontSize*2);
+        // ⬜ ミニマル・ダブルフレーム
+        ctx.strokeStyle = colors[0]; ctx.lineWidth = 4;
+        ctx.strokeRect(cx - w*0.25, cy - fontSize, w*0.5, fontSize*2);
+        ctx.strokeRect(cx - w*0.22, cy - fontSize*0.8, w*0.44, fontSize*1.6);
+        ctx.fillStyle = colors[0];
+        ctx.font = `bold ${fontSize}px Arial`;
+        ctx.fillText(keyword, cx, cy + fontSize*0.3);
         break;
-      case 'neon_sign':
+
+      case 'cyberpunk':
+        // 🌃 サイバー・グリッチ装飾
         ctx.shadowColor = colors[0]; ctx.shadowBlur = 20;
-        ctx.strokeStyle = colors[0]; ctx.lineWidth = 3;
-        ctx.font = `bold ${fontSize}px monospace`; ctx.textAlign = 'center';
-        ctx.strokeText(keyword.toUpperCase(), cx, cy);
-        ctx.fillStyle = "#ffffff"; ctx.fillText(keyword.toUpperCase(), cx, cy);
+        ctx.fillStyle = colors[0];
+        ctx.font = `900 ${fontSize*1.3}px monospace`;
+        ctx.fillText(keyword.toUpperCase(), cx, cy);
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = colors[1]; ctx.lineWidth = 1;
+        for(let i=-2; i<=2; i++) {
+          ctx.beginPath(); ctx.moveTo(cx-80, cy + i*15); ctx.lineTo(cx+80, cy + i*15); ctx.stroke();
+        }
         break;
+
+      case 'sports':
+        // ⚡ スポーツ・スラッシュ背景
+        ctx.fillStyle = colors[0];
+        ctx.beginPath();
+        ctx.moveTo(cx-100, cy-50); ctx.lineTo(cx+100, cy-30); ctx.lineTo(cx+80, cy+50); ctx.lineTo(cx-120, cy+30);
+        ctx.fill();
+        ctx.fillStyle = colors[1];
+        ctx.font = `900 ${fontSize*1.2}px Impact`;
+        ctx.rotate(-0.05);
+        ctx.fillText(keyword.toUpperCase(), cx, cy + 15);
+        break;
+
       default:
-        ctx.fillStyle = colors[0]; ctx.font = `900 ${fontSize*1.2}px Impact`; ctx.textAlign = 'center';
+        ctx.fillStyle = colors[0];
+        ctx.font = `900 ${fontSize*1.2}px Impact`;
         ctx.fillText(keyword.toUpperCase(), cx, cy);
     }
     ctx.restore();
@@ -155,7 +186,7 @@ const MasterEngine = () => {
     <div className="max-w-7xl mx-auto space-y-12 pb-32 text-left">
       <div className="text-center">
         <h1 className="text-6xl md:text-[8rem] font-black text-white uppercase italic tracking-tighter leading-none">AI SELECT SHOP</h1>
-        <div className="inline-block bg-[#5845e0] text-white font-black px-10 py-2 rounded-full uppercase italic text-sm mt-4 tracking-widest shadow-2xl">v20.0-MASTER</div>
+        <div className="inline-block bg-[#5845e0] text-white font-black px-10 py-2 rounded-full uppercase italic text-sm mt-4 tracking-widest shadow-2xl">v21.0-ULTIMATE MASTER</div>
       </div>
 
       <div className="flex gap-4 justify-center bg-[#1a1b26]/50 p-2 rounded-3xl border border-white/5 max-w-2xl mx-auto">
@@ -202,8 +233,8 @@ const MasterEngine = () => {
                {isPublishing ? <Loader2 className="animate-spin" size={40} /> : "SHOPIFY 出品"}
             </button>
           </div>
-          <div className="bg-[#13141f] rounded-[3.5rem] border-2 border-white/5 p-12 flex justify-center items-center relative overflow-hidden">
-            <canvas ref={canvasRef} width={400} height={500} className="bg-black rounded-3xl border border-white/5 shadow-2xl" />
+          <div className="bg-[#13141f] rounded-[3rem] border-2 border-white/5 p-12 flex justify-center items-center relative overflow-hidden shadow-2xl">
+            <canvas ref={canvasRef} width={400} height={500} className="bg-black rounded-3xl border border-white/5 shadow-inner" />
           </div>
         </div>
       )}
