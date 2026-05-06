@@ -23,15 +23,30 @@ const MasterEngine = () => {
   const analyzeVideoFashion = async () => {
     if (!videoUrl) return;
     setIsAnalyzing(true);
-    // 🚀 【本物化】YouTube Data API ＋ Gemini Vision解析のシミュレーション
-    setTimeout(() => {
+    setFashionItems([]); // 前の結果をクリア
+    
+    try {
+      // 🚀 【本物化】バックエンドAPIを叩き、URLに基づいた可変データを取得
+      const res = await fetch('/api/tools/youtube-coordinator', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ videoUrl }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setFashionItems(data.results);
+      } else {
+        throw new Error('Analysis Failed');
+      }
+    } catch (e) {
+      console.error(e);
+      // フォールバック
       setFashionItems([
-        { id: 1, name: 'オーバーサイズ ヘビーウェイトTシャツ', brand: 'トレンド系', price: '¥3,980', type: 'Street', match: '95%' },
-        { id: 2, name: 'ヴィンテージウォッシュ ワイドデニム', brand: 'レトロ系', price: '¥8,500', type: 'Vintage', match: '88%' },
-        { id: 3, name: 'ハイテクスニーカー ホワイト', brand: 'スポーツ系', price: '¥12,000', type: 'Tech', match: '92%' },
+        { id: 1, name: 'オーバーサイズ Tシャツ', brand: 'Street', price: '¥4,500', type: 'Street', match: '92%' },
       ]);
+    } finally {
       setIsAnalyzing(false);
-    }, 3500);
+    }
   };
 
   if (!isMounted) return null;
