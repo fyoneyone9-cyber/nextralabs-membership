@@ -3,12 +3,13 @@ import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Zap, Rocket, Lightbulb, CheckCircle2, ChevronRight } from 'lucide-react'
+import { Zap, Rocket, Lightbulb, CheckCircle2, ChevronRight, AlertTriangle, ShieldCheck } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const MasterEngine = () => {
   const [activeTab, setActiveTab] = useState('audit');
   const [answers, setAnswers] = useState<Record<number, boolean>>({});
+  const [checklist, setChecklist] = useState<Record<number, boolean>>({});
   const [roadmapInput, setRoadmapInput] = useState('');
   const [roadmapResult, setRoadmapResult] = useState('');
   const [price, setPrice] = useState(5000);
@@ -28,10 +29,33 @@ const MasterEngine = () => {
     "人の悩みを聞いて解決策を考えるのが得意だ"
   ];
 
+  const LIFESTYLE_CHECKLIST = [
+    { cat: "基盤", q: "週に最低5〜10時間を副業に充てる余裕がある" },
+    { cat: "規則", q: "本業の会社で副業が認められている" },
+    { cat: "環境", q: "自宅にPCや通信環境など集中できる場所がある" },
+    { cat: "体力", q: "本業後や休日に活動できる体力・気力がある" },
+    { cat: "武器", q: "人から教えを請われるような得意分野がある" },
+    { cat: "独学", q: "分からないことを自分でググって解決できる" },
+    { cat: "IT", q: "ドキュメントやZoomなどのツールを抵抗なく使える" },
+    { cat: "管理", q: "納期や約束の時間を厳守できる" },
+    { cat: "責任", q: "トラブル時に人のせいにせず自分で対処できる" },
+    { cat: "自走", q: "誰からも指示されなくても目標を決めて動ける" },
+    { cat: "切替", q: "本業と副業のメンタル的な切り替えができる" },
+    { cat: "理解", q: "始めた直後は時給0円の期間があることを許容できる" },
+    { cat: "税務", q: "年間20万超の利益で確定申告を行う準備がある" },
+    { cat: "投資", q: "必要なツールに無理のない範囲で投資できる" }
+  ];
+
+  const checkCount = Object.values(checklist).filter(Boolean).length;
+  const checkStatus = checkCount >= 12 ? { label: "副業適性バッチリ！", color: "text-emerald-500", desc: "すぐに準備を始めましょう。" } 
+                    : checkCount >= 8 ? { label: "準備中...", color: "text-amber-500", desc: "不足項目をクリアしてからスタート。" }
+                    : { label: "要注意", color: "text-red-500", desc: "まずは生活習慣の見直しから。" };
+
   const getAuditPrompt = () => {
     const selected = QUESTIONS.filter((_, i) => answers[i]).join('\n・');
+    const checkedItems = LIFESTYLE_CHECKLIST.filter((_, i) => checklist[i]).map(item => item.q).join('\n・');
     return `あなたはプロの副業コンサルタントです。
-以下の「成功法則」に基づき、私の特性に最適なAI副業を3つ提案してください。
+以下の「成功法則」と私の現状に基づき、最適なAI副業を3つ提案してください。
 
 【副業成功の鉄則】
 1. 即金性のある作業で成功体験を積む（1ヶ月目目標：1万円）
@@ -40,6 +64,10 @@ const MasterEngine = () => {
 
 【私の特性】
 ・${selected || "特になし（初心者）"}
+
+【ライフスタイル・準備状況】
+・${checkedItems || "未確認"}
+（現在の適性スコア: ${checkCount}/${LIFESTYLE_CHECKLIST.length}）
 
 【回答フォーマット】
 ■提案1：[副業名]
@@ -77,68 +105,88 @@ const MasterEngine = () => {
           <div className="inline-block bg-[#5845e0] text-white font-black px-4 py-0.5 rounded-full uppercase italic text-[8px] md:text-sm tracking-widest shadow-2xl">MASTER v2.0</div>
         </div>
 
-        <div className="bg-[#13141f] border border-white/5 rounded-3xl p-8 max-w-4xl mx-auto flex items-start gap-6 shadow-inner">
+        <div className="bg-[#13141f] border border-white/5 rounded-3xl p-6 max-w-4xl mx-auto flex items-start gap-6 shadow-inner text-left">
           <div className="w-10 h-10 rounded-full border border-[#5845e0]/30 flex items-center justify-center shrink-0 text-[#5845e0] font-bold">!</div>
-          <div className="space-y-1 text-left">
-            <p className="text-[10px] font-black text-[#5845e0]/70 uppercase tracking-[0.2em] italic mb-2 text-left">Production Protocol</p>
-            <div className="space-y-1 text-xs md:text-sm font-bold text-slate-400 text-left">
-              <p className="flex items-center gap-3"><span className="text-[#5845e0] italic">#1</span> 適性診断にチェックを入れ「診断指示」をコピー</p>
-              <p className="flex items-center gap-3"><span className="text-[#5845e0] italic">#2</span> 下のAIボタンから貼り付けて、即金性のある副業を特定</p>
-              <p className="flex items-center gap-3"><span className="text-[#5845e0] italic">#3</span> 特定した副業を「②ロードマップ」に入れ、0→1の手順を錬成</p>
+          <div className="space-y-1">
+            <p className="text-[10px] font-black text-[#5845e0]/70 uppercase tracking-[0.2em] italic mb-2">Production Protocol</p>
+            <div className="space-y-1 text-xs md:text-sm font-bold text-slate-400">
+              <p className="flex items-center gap-3"><span className="text-[#5845e0] italic">#1</span> 適性・生活環境にチェックを入れ「診断指示」をコピー</p>
+              <p className="flex items-center gap-3"><span className="text-[#5845e0] italic">#2</span> 下のAIボタンから貼り付けて、自分に合う副業を特定</p>
+              <p className="flex items-center gap-3"><span className="text-[#5845e0] italic">#3</span> 特定した副業を「②ロードマップ」に入れ、手順を錬成</p>
             </div>
           </div>
         </div>
 
         <div className="flex gap-1 bg-[#1a1b26]/50 p-1.5 rounded-2xl border border-white/5 max-w-4xl mx-auto">
-          {[
-            { id: 'audit', label: '① 適性診断' },
-            { id: 'roadmap', label: '② ロードマップ' },
-            { id: 'calc', label: '③ 収益計算' },
-          ].map((tab) => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex-1 py-4 px-2 rounded-xl font-black text-xs md:text-sm uppercase italic transition-all ${activeTab === tab.id ? 'bg-[#5845e0] text-white shadow-xl' : 'text-slate-500 hover:text-slate-300'}`}>
-              {tab.label}
-            </button>
+          {[{ id: 'audit', label: '① 適性診断' }, { id: 'roadmap', label: '② ロードマップ' }, { id: 'calc', label: '③ 収益計算' }].map((tab) => (
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex-1 py-4 px-2 rounded-xl font-black text-xs md:text-sm uppercase italic transition-all ${activeTab === tab.id ? 'bg-[#5845e0] text-white shadow-xl' : 'text-slate-500 hover:text-slate-300'}`}>{tab.label}</button>
           ))}
         </div>
 
         <div className="mt-4 max-w-5xl mx-auto">
           {activeTab === 'audit' && (
-            <div className="bg-[#13141f] border border-white/10 rounded-[3rem] p-6 md:p-16 shadow-2xl relative animate-in fade-in text-left">
-              <h2 className="text-2xl md:text-4xl font-black text-white italic uppercase text-center mb-10 flex items-center justify-center gap-3"><Zap className="text-[#5845e0]" /> 副業適性診断</h2>
-              <div className="grid lg:grid-cols-2 gap-12 text-left">
-                <div className="space-y-4">
-                  {QUESTIONS.map((q, i) => (
-                    <div key={i} className="flex items-center justify-between p-6 bg-[#0a0b14] border border-white/5 rounded-2xl cursor-pointer hover:border-[#5845e0]/50 transition-all group" onClick={() => setAnswers(prev => ({...prev, [i]: !prev[i]}))}>
-                      <span className="font-bold text-slate-300 group-hover:text-white transition-colors">{q}</span>
-                      <div className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center ${answers[i] ? 'bg-[#5845e0] border-white' : 'border-white/10'}`}>
-                        {answers[i] && <span className="text-white font-bold">✓</span>}
+            <div className="space-y-8 animate-in fade-in">
+              {/* 生活習慣・環境チェックリスト */}
+              <div className="bg-[#13141f] border border-white/10 rounded-[3rem] p-6 md:p-12 shadow-2xl relative">
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-3"><ShieldCheck className="text-emerald-500" /> <h2 className="text-xl md:text-2xl font-black text-white italic uppercase">生活習慣・環境チェック</h2></div>
+                  <div className="text-right leading-none">
+                    <p className="text-[10px] font-black text-slate-500 uppercase italic mb-1">Checked Items</p>
+                    <p className="text-3xl font-black text-white italic">{checkCount} <span className="text-xs text-slate-500">/ {LIFESTYLE_CHECKLIST.length}</span></p>
+                  </div>
+                </div>
+                
+                <div className="grid md:grid-cols-2 gap-x-10 gap-y-3 mb-10 text-left">
+                  {LIFESTYLE_CHECKLIST.map((item, i) => (
+                    <div key={i} className="flex items-center gap-3 p-3 bg-black/20 rounded-xl border border-white/5 cursor-pointer hover:border-emerald-500/30 transition-all group" onClick={() => setChecklist(prev => ({...prev, [i]: !prev[i]}))}>
+                      <div className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 ${checklist[i] ? 'bg-emerald-500 border-emerald-400' : 'border-white/10'}`}>
+                        {checklist[i] && <CheckCircle2 size={12} className="text-slate-950" />}
                       </div>
+                      <span className="text-[11px] font-bold text-slate-400 group-hover:text-slate-200"><Badge variant="outline" className="mr-2 text-[8px] opacity-50 px-1 py-0">{item.cat}</Badge>{item.q}</span>
                     </div>
                   ))}
                 </div>
-                <div className="bg-[#0a0b14] rounded-[2.5rem] p-10 border border-white/5 flex flex-col items-center justify-center space-y-8 shadow-inner relative overflow-hidden">
-                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#5845e0] to-transparent opacity-30" />
-                   <div className="text-center space-y-2">
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Ready to Analyze</p>
-                      <p className="text-slate-400 text-xs font-bold italic">チェックを入れたら指示をコピー</p>
+
+                <div className={`p-6 rounded-2xl border-2 flex items-center gap-6 ${checkCount >= 8 ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-red-500/5 border-red-500/20'}`}>
+                   <div className="text-3xl">🎯</div>
+                   <div>
+                      <p className={`text-xl font-black italic ${checkStatus.color}`}>{checkStatus.label}</p>
+                      <p className="text-xs text-slate-400 font-bold italic">{checkStatus.desc}</p>
                    </div>
-                   <button onClick={() => handleCopy(getAuditPrompt())} className={`w-full h-24 text-xl md:text-2xl font-black rounded-3xl transition-all shadow-2xl border-b-8 ${copied ? 'bg-emerald-500 border-emerald-800 scale-95' : 'bg-[#5845e0] border-[#3e2fb1] hover:bg-[#6c5ae6] text-white'}`}>
-                      {copied ? '✅ COPY COMPLETE' : '指示をコピー'}
-                   </button>
-                   <div className="grid grid-cols-3 gap-3 w-full">
-                      <button onClick={() => window.open('https://chatgpt.com', '_blank')} className="h-20 bg-white/5 border-2 border-emerald-500/30 rounded-2xl text-[10px] font-black uppercase italic text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg">
-                        <span className="text-xl">💬</span>
-                        CHATGPT
-                      </button>
-                      <button onClick={() => window.open('https://gemini.google.com', '_blank')} className="h-20 bg-white/5 border-2 border-blue-500/30 rounded-2xl text-[10px] font-black uppercase italic text-blue-400 hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-1 shadow-lg">
-                        <span className="text-xl">✨</span>
-                        GEMINI
-                      </button>
-                      <button onClick={() => window.open('https://claude.ai', '_blank')} className="h-20 bg-white/5 border-2 border-orange-500/30 rounded-2xl text-[10px] font-black uppercase italic text-orange-400 hover:bg-orange-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg">
-                        <span className="text-xl">❄️</span>
-                        CLAUDE
-                      </button>
-                   </div>
+                </div>
+              </div>
+
+              {/* 副業特性診断 */}
+              <div className="bg-[#13141f] border border-white/10 rounded-[3rem] p-6 md:p-12 shadow-2xl relative text-left">
+                <div className="flex items-center gap-3 mb-8"><Zap className="text-[#5845e0]" /> <h2 className="text-xl md:text-2xl font-black text-white italic uppercase">副業スキル・特性診断</h2></div>
+                <div className="grid lg:grid-cols-2 gap-12 text-left">
+                  <div className="space-y-4">
+                    {QUESTIONS.map((q, i) => (
+                      <div key={i} className="flex items-center justify-between p-6 bg-[#0a0b14] border border-white/5 rounded-2xl cursor-pointer hover:border-[#5845e0]/50 transition-all group" onClick={() => setAnswers(prev => ({...prev, [i]: !prev[i]}))}>
+                        <span className="font-bold text-slate-300 group-hover:text-white transition-colors">{q}</span>
+                        <div className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center ${answers[i] ? 'bg-[#5845e0] border-white' : 'border-white/10'}`}>
+                          {answers[i] && <span className="text-white font-bold">✓</span>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="bg-[#0a0b14] rounded-[2.5rem] p-8 border border-white/5 flex flex-col items-center justify-center space-y-6 shadow-inner relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#5845e0] to-transparent opacity-30" />
+                    <button onClick={() => handleCopy(getAuditPrompt())} className={`w-full h-24 text-xl md:text-2xl font-black rounded-3xl transition-all shadow-2xl border-b-8 ${copied ? 'bg-emerald-500 border-emerald-800 scale-95' : 'bg-[#5845e0] border-[#3e2fb1] hover:bg-[#6c5ae6] text-white'}`}>
+                        {copied ? '✅ COPY COMPLETE' : '診断指示をコピー'}
+                    </button>
+                    <div className="grid grid-cols-3 gap-3 w-full">
+                        <button onClick={() => window.open('https://chatgpt.com', '_blank')} className="h-20 bg-white/5 border-2 border-emerald-500/30 rounded-2xl text-[10px] font-black uppercase italic text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg">
+                          <span className="text-xl">💬</span> CHATGPT
+                        </button>
+                        <button onClick={() => window.open('https://gemini.google.com', '_blank')} className="h-20 bg-white/5 border-2 border-blue-500/30 rounded-2xl text-[10px] font-black uppercase italic text-blue-400 hover:bg-blue-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg">
+                          <span className="text-xl">✨</span> GEMINI
+                        </button>
+                        <button onClick={() => window.open('https://claude.ai', '_blank')} className="h-20 bg-white/5 border-2 border-orange-500/30 rounded-2xl text-[10px] font-black uppercase italic text-orange-400 hover:bg-orange-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg">
+                          <span className="text-xl">❄️</span> CLAUDE
+                        </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -154,11 +202,9 @@ const MasterEngine = () => {
                        <p className="text-xs font-bold text-slate-400 italic">選んだ副業名を入れて指示をコピー。AIが具体的手順を教えます。</p>
                     </div>
                     <textarea value={roadmapInput} onChange={(e) => setRoadmapInput(e.target.value)} placeholder="例: AI画像生成によるSNS運用代行" className="w-full h-48 bg-[#0a0b14] border-2 border-white/10 rounded-[2rem] p-8 text-lg text-white outline-none focus:border-emerald-500 shadow-inner leading-relaxed italic" />
-                    <div className="grid grid-cols-1 gap-4">
-                      <button onClick={() => handleCopy(getRoadmapPrompt())} className={`w-full h-20 text-xl font-black rounded-3xl transition-all shadow-xl border-b-8 ${copied ? 'bg-emerald-500 border-emerald-800' : 'bg-emerald-600 border-emerald-800 hover:bg-emerald-500 text-white'}`}>
-                        {copied ? '✅ COPY COMPLETE' : '作成指示をコピー'}
-                      </button>
-                    </div>
+                    <button onClick={() => handleCopy(getRoadmapPrompt())} className={`w-full h-20 text-xl font-black rounded-3xl transition-all shadow-xl border-b-8 ${copied ? 'bg-emerald-500 border-emerald-800' : 'bg-emerald-600 border-emerald-800 hover:bg-emerald-500 text-white'}`}>
+                      {copied ? '✅ COPY COMPLETE' : '作成指示をコピー'}
+                    </button>
                  </div>
                  <textarea value={roadmapResult} onChange={(e) => setRoadmapResult(e.target.value)} placeholder="AIが教えてくれた具体的な手順をここに保存..." className="w-full h-[360px] bg-[#0a0b14] border-2 border-white/10 rounded-[2.5rem] p-8 text-sm text-slate-300 focus:border-emerald-500 outline-none shadow-inner leading-relaxed italic" />
               </div>
@@ -193,16 +239,17 @@ const MasterEngine = () => {
           )}
         </div>
       </div>
-      <DebugPanel data={{ activeTab, hasAnswers: Object.keys(answers).length > 0 }} toolId="ai-sidejob-master" />
+      <DebugPanel data={{ activeTab, checkCount, roadmapLen: roadmapResult.length }} toolId="ai-sidejob-master" />
+      <div className="text-center opacity-10 mt-10 font-black uppercase tracking-[0.5em] italic text-[10px]">Sidejob Automation OS • NextraLabs 2026</div>
     </div>
   )
 }
 
-const AiSidejobWithNoSSR = dynamic(() => Promise.resolve(MasterEngine), {
+const NoSSRWrapper = dynamic(() => Promise.resolve(MasterEngine), {
   ssr: false,
   loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Initializing Master Node...</div>
 })
 
-export default function NoSSRWrapper() {
-  return <AiSidejobWithNoSSR />;
+export default function NoSSRWrapperExport() {
+  return <NoSSRWrapper />;
 }
