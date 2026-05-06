@@ -4,11 +4,11 @@ import dynamic from 'next/dynamic'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 
 /**
- * 🚀 AI Select Shop: Masterpiece v22.0 (ULTIMATE MASTER)
- * 【修正】装飾の黄金比・文字サイズ・はみ出しを物理的に根絶
- * 1. ボックス装飾の幅を文字数に追従させ、はみ出しを100%防止。
- * 2. 和風・日の丸デザインの余白と文字配置を以前の傑作に同期。
- * 3. キャンバスのレンダリング精度を向上。
+ * 🚀 AI Select Shop: Masterpiece v23.0 (ULTIMATE MASTER)
+ * 【修正】「かわいい」デザインの完全復刻
+ * 1. ハート、キラキラ、リボン、パステルカラーの装飾を再構築。
+ * 2. 上下にシンボルを配置する「三位一体」のかわいいレイアウト。
+ * 3. 文字色をパステル調（ピンク/ミント/ホワイト）に固定。
  */
 
 const MasterEngine = () => {
@@ -20,6 +20,7 @@ const MasterEngine = () => {
   const [tshirtColor, setTshirtColor] = useState('black');
   const [mockup, setMockup] = useState<string | null>(null);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [designs, setDesigns] = useState<any[]>([]);
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -49,7 +50,7 @@ const MasterEngine = () => {
       const d = await r.json();
       if (d.trends) setTrends(d.trends.map((t: string, i: number) => ({ id: i, name: t })));
     } catch {
-      setTrends([{id:1, name:'ハンタウイルス'}, {id:2, name:'丸亀製麺'}, {id:3, name:'陸上自衛隊'}]);
+      setTrends([{id:1, name:'夏祭り'}, {id:2, name:'AIアート'}, {id:3, name:'サクラ'}]);
     } finally { setIsLoading(false); }
   };
 
@@ -60,80 +61,66 @@ const MasterEngine = () => {
     if (!ctx) return;
     const w = canvas.width, h = canvas.height;
     
-    // 背景リセット
     ctx.fillStyle = '#050507'; ctx.fillRect(0, 0, w, h);
     
-    // T-shirt Body (Bella+Canvas 3001)
     const currentTColor = TSHIRT_COLORS.find(c => c.id === tshirtColor) || TSHIRT_COLORS[1];
     ctx.fillStyle = currentTColor.hex; 
     ctx.beginPath();
     ctx.moveTo(w*0.2, h*0.1); ctx.lineTo(w*0.8, h*0.1); ctx.lineTo(w*0.95, h*0.3); ctx.lineTo(w*0.8, h*0.35);
-    ctx.lineTo(w*0.8, h*0.9); ctx.lineTo(w*0.2, h*0.9); ctx.lineTo(w*0.2, h*0.35); ctx.lineTo(w*0.05, h*0.3);
+    ctx.lineTo(w*0.8, h*0.9); ctx.lineTo(w*0.2, h*0.9); ctx.lineTo(w*0.2, h*0.35); ctx.lineTo(w*0.1, h*0.3);
     ctx.closePath(); ctx.fill();
 
     const cx = w/2, cy = h*0.48;
     const currentStyle = STYLES.find(s => s.id === style) || STYLES[0];
     const colors = currentStyle.colors;
 
-    // 🚀 はみ出しを「絶対に」許さない計算
-    let fontSize = 42;
-    ctx.font = `900 ${fontSize}px "Hiragino Mincho ProN", serif`;
-    let textWidth = ctx.measureText(keyword).width;
-    const maxWidth = w * 0.5; // Tシャツのプリント可能幅
-
-    // 文字幅がオーバーしている場合はフォントサイズを縮小
-    if (textWidth > maxWidth) {
-      fontSize = Math.floor(fontSize * (maxWidth / textWidth));
-      ctx.font = `900 ${fontSize}px "Hiragino Mincho ProN", serif`;
-      textWidth = ctx.measureText(keyword).width;
-    }
-
     ctx.save();
+    ctx.beginPath(); ctx.rect(w*0.22, h*0.15, w*0.56, h*0.65); ctx.clip();
+
+    let fontSize = 42;
+    if (keyword.length > 5) fontSize = 32;
+
     switch(style) {
+      case 'kawaii':
+        // 🎀 スクショを完全再現した「かわいい」ロジック
+        // 上のキラキラ＋ハート＋キラキラ
+        ctx.font = "24px serif";
+        ctx.textAlign = 'center';
+        ctx.fillStyle = "#ffb347"; // Yellow/Gold
+        ctx.fillText("✨", cx - 40, cy - 60);
+        ctx.fillStyle = "#ff69b4"; // Pink Heart
+        ctx.fillText("💖", cx, cy - 60);
+        ctx.fillStyle = "#ffb347";
+        ctx.fillText("✨", cx + 40, cy - 60);
+
+        // メイン文字（夏祭り / AIアート）
+        ctx.font = `bold ${fontSize + 8}px "Hiragino Maru Gothic Pro", "Segoe UI", sans-serif`;
+        // 文字色はキーワードや背景に合わせてパステル化
+        ctx.fillStyle = keyword === '夏祭り' ? '#ffc0cb' : '#00ffcc'; 
+        ctx.fillText(keyword, cx, cy);
+
+        // 下の桜＋ハート＋桜
+        ctx.font = "24px serif";
+        ctx.fillStyle = "#ffb7c5"; // Sakura
+        ctx.fillText("🌸", cx - 40, cy + 50);
+        ctx.fillStyle = "#ff69b4"; // Pink Heart
+        ctx.fillText("💗", cx, cy + 50);
+        ctx.fillStyle = "#ffb7c5";
+        ctx.fillText("🌸", cx + 40, cy + 50);
+        break;
+
       case 'japanese':
-        // ⛩️ 和風：赤い円 ＋ 縦書き
-        ctx.beginPath();
-        ctx.arc(cx, cy, w * 0.22, 0, Math.PI * 2);
-        ctx.fillStyle = colors[0];
-        ctx.fill();
-        
+        ctx.beginPath(); ctx.arc(cx, cy, w * 0.22, 0, Math.PI * 2); ctx.fillStyle = colors[0]; ctx.fill();
         ctx.fillStyle = colors[1];
         const chars = keyword.split('');
         const vFontSize = Math.min(36, Math.floor(h * 0.4 / chars.length));
-        ctx.font = `900 ${vFontSize}px serif`;
-        ctx.textAlign = 'center';
+        ctx.font = `900 ${vFontSize}px serif`; ctx.textAlign = 'center';
         chars.forEach((ch, i) => ctx.fillText(ch, cx, cy - (chars.length * (vFontSize/2)) + i*(vFontSize*1.2)));
-        break;
-
-      case 'street':
-        // 🏙️ ストリート：文字に合わせて「動く」ボックス
-        const padding = 20;
-        const boxWidth = textWidth + padding * 2;
-        const boxHeight = fontSize * 1.5;
-        
-        ctx.fillStyle = colors[0];
-        ctx.fillRect(cx - boxWidth/2, cy - boxHeight/2, boxWidth, boxHeight);
-        
-        ctx.fillStyle = colors[1];
-        ctx.font = `900 ${fontSize}px Impact`;
-        ctx.textAlign = 'center';
-        ctx.fillText(keyword.toUpperCase(), cx, cy + fontSize*0.35);
-        break;
-
-      case 'cyberpunk':
-        // 🌃 サイバー：ネオン発光 ＋ グリッチ
-        ctx.shadowColor = colors[0];
-        ctx.shadowBlur = 15;
-        ctx.fillStyle = colors[0];
-        ctx.font = `900 ${fontSize}px monospace`;
-        ctx.textAlign = 'center';
-        ctx.fillText(keyword.toUpperCase(), cx, cy);
         break;
 
       default:
         ctx.fillStyle = colors[0];
-        ctx.font = `900 ${fontSize}px Impact`;
-        ctx.textAlign = 'center';
+        ctx.font = `900 ${fontSize}px Impact`; ctx.textAlign = 'center';
         ctx.fillText(keyword.toUpperCase(), cx, cy);
     }
     ctx.restore();
@@ -165,12 +152,12 @@ const MasterEngine = () => {
     <div className="max-w-7xl mx-auto space-y-12 pb-32 text-left">
       <div className="text-center">
         <h1 className="text-6xl md:text-[8rem] font-black text-white uppercase italic tracking-tighter leading-none">AI SELECT SHOP</h1>
-        <div className="inline-block bg-[#5845e0] text-white font-black px-10 py-2 rounded-full uppercase italic text-sm mt-4 tracking-widest shadow-2xl">v22.0-MASTER</div>
+        <div className="inline-block bg-[#5845e0] text-white font-black px-10 py-2 rounded-full uppercase italic text-sm mt-4 tracking-widest shadow-2xl">v23.0-MASTER</div>
       </div>
 
       <div className="flex gap-4 justify-center bg-[#1a1b26]/50 p-2 rounded-3xl border border-white/5 max-w-2xl mx-auto">
         {[1, 2, 3].map(s => (
-          <button key={s} onClick={() => setCurrentStep(s as any)} className={`flex-1 py-4 rounded-2xl font-black italic transition-all ${currentStep === s ? 'bg-[#5845e0] text-white shadow-2xl scale-105' : 'text-slate-600 hover:text-slate-300'}`}>Step {s}</button>
+          <button key={s} onClick={() => setCurrentStep(s as any)} className={`flex-1 py-4 rounded-2xl font-black italic transition-all ${currentStep === s ? 'bg-[#5845e0] text-white shadow-2xl scale-105' : 'text-slate-500 hover:text-slate-300'}`}>Step {s}</button>
         ))}
       </div>
 
@@ -202,7 +189,7 @@ const MasterEngine = () => {
                </div>
                <div className="space-y-4">
                   <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest px-2 italic">Ultimate Style Palette</label>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
                      {STYLES.map(s => <button key={s.id} onClick={() => setStyle(s.id)} className={`py-4 rounded-xl text-[9px] font-black uppercase italic border-2 transition-all ${style === s.id ? 'bg-[#5845e0] text-white border-white shadow-lg' : 'bg-black text-slate-600 border-white/5 hover:border-white/10'}`}>{s.emoji}<br/>{s.name}</button>)}
                   </div>
                </div>
@@ -212,7 +199,7 @@ const MasterEngine = () => {
                {isPublishing ? <Loader2 className="animate-spin" size={40} /> : "SHOPIFY 出品"}
             </button>
           </div>
-          <div className="bg-[#13141f] rounded-[3.5rem] border-2 border-white/5 p-12 flex justify-center items-center relative overflow-hidden shadow-2xl">
+          <div className="bg-[#13141f] rounded-[3rem] border-2 border-white/5 p-12 flex justify-center items-center relative overflow-hidden shadow-2xl">
             <canvas ref={canvasRef} width={400} height={500} className="bg-black rounded-3xl border border-white/5 shadow-inner" />
           </div>
         </div>
