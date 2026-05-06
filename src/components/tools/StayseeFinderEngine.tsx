@@ -1,6 +1,8 @@
 'use client'
 import React, { useState, useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
+
+// 外部コンポーネントのインポート
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
@@ -32,15 +34,24 @@ const MasterEngine = () => {
   const [isGeneratingInsight, setIsGeneratingInsight] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // マウントチェック
+  const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
-    const savedKey = localStorage.getItem('staysee_user_api_key');
-    if (savedKey) setUserApiKey(savedKey);
+    setIsMounted(true);
+    if (typeof window !== 'undefined') {
+      const savedKey = localStorage.getItem('staysee_user_api_key');
+      if (savedKey) setUserApiKey(savedKey);
+    }
   }, []);
 
+  if (!isMounted) return null;
+
   const saveApiKey = () => {
-    localStorage.setItem('staysee_user_api_key', userApiKey);
-    alert('Staysee APIキーを保存しました');
-    setShowSettings(false);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('staysee_user_api_key', userApiKey);
+      alert('Staysee APIキーを保存しました');
+      setShowSettings(false);
+    }
   };
 
   const generateCert = async () => {
@@ -307,5 +318,8 @@ const StayseeFinderEngineWithNoSSR = dynamic(() => Promise.resolve(MasterEngine)
 })
 
 export default function NoSSRWrapper() {
-  return <StayseeFinderEngineWithNoSSR />
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => { setIsMounted(true); }, []);
+  if (!isMounted) return <div className="min-h-screen bg-[#050507]" />;
+  return <StayseeFinderEngineWithNoSSR />;
 }
