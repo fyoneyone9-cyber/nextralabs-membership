@@ -175,7 +175,12 @@ const MasterEngine = () => {
                   </div>
                </div>
 
-               <button onClick={() => { localStorage.removeItem('nextra_google_token'); setGoogleToken(null); }} className="w-full mt-8 text-slate-700 hover:text-red-500 text-[10px] font-black uppercase italic underline tracking-widest">Terminate Session</button>
+               <button 
+                 onClick={() => { if(confirm('セッションを終了しログアウトしますか？')) { localStorage.removeItem('nextra_google_token'); setGoogleToken(null); } }} 
+                 className="w-full mt-10 h-14 bg-red-600/10 hover:bg-red-600 border-2 border-red-600/30 hover:border-red-500 text-red-500 hover:text-white text-xs font-black uppercase italic rounded-xl transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+               >
+                 <span>⚠️</span> TERMINATE SESSION
+               </button>
             </div>
           </div>
 
