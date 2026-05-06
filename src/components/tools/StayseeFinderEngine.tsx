@@ -21,7 +21,31 @@ export default function StayseeFinderEngine() {
   const [isApiLoading, setIsApiLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [userApiKey, setUserApiKey] = useState('');
+  const [certData, setCertData] = useState<any>(null);
+  const [isGeneratingCert, setIsGeneratingCert] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const generateCert = async () => {
+    if (!image) return;
+    setIsGeneratingCert(true);
+    try {
+      const res = await fetch('/api/tools/staysee-ai-finder/generate-cert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image, matchResult }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCertData(data.certData);
+        setActiveTab('match');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('証明書生成エラー');
+    } finally {
+      setIsGeneratingCert(false);
+    }
+  };
 
   useEffect(() => {
     const savedKey = localStorage.getItem('staysee_user_api_key');
@@ -218,8 +242,12 @@ export default function StayseeFinderEngine() {
               </div>
             </div>
             {matchResult && (
-               <button onClick={() => setActiveTab('match')} className="w-full h-24 mt-12 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-3xl shadow-[0_20px_50px_rgba(16,185,129,0.3)] flex items-center justify-center gap-4 uppercase italic text-2xl group transition-all active:scale-95 border-b-4 border-emerald-800 active:border-b-0">
-                  ② 顧客マッチングを確認 <ArrowRight className="w-10 h-10 group-hover:translate-x-2 transition-transform" />
+               <button 
+                onClick={generateCert} 
+                disabled={isGeneratingCert}
+                className="w-full h-24 mt-12 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-3xl shadow-[0_20px_50px_rgba(16,185,129,0.3)] flex items-center justify-center gap-4 uppercase italic text-2xl group transition-all active:scale-95 border-b-4 border-emerald-800 active:border-b-0"
+               >
+                  {isGeneratingCert ? 'GENERATING CERTIFICATE...' : '② AI保管証明書を発行 📜'}
                </button>
             )}
           </Card>
@@ -229,21 +257,82 @@ export default function StayseeFinderEngine() {
           <div className="animate-in fade-in zoom-in space-y-8 text-center pb-20 text-left">
             <Card className="bg-[#13141f] border-4 border-emerald-500/50 rounded-[4rem] p-10 md:p-20 shadow-[0_0_100px_rgba(16,185,129,0.1)] border-l-[16px] border-l-emerald-600 relative overflow-hidden">
                <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white"><Building2 className="w-96 h-96" /></div>
-               <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase mb-16 flex items-center justify-center gap-6 relative z-10"><UserSearch className="text-emerald-500 animate-pulse w-16 h-16" /> Staysee 照合レポート</h3>
-               <div className="bg-slate-950/80 rounded-[3rem] p-16 border-2 border-white/5 text-2xl text-slate-100 leading-loose italic whitespace-pre-wrap shadow-inner relative z-10 font-sans tracking-tight">
-                  {matchResult || "データがありません。"}
+               
+               <div className="relative z-10 space-y-12">
+                  <div className="flex flex-col items-center gap-4">
+                    <Shield className="text-emerald-500 w-24 h-24 animate-pulse" />
+                    <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter">AI Official Certificate</h3>
+                    <div className="bg-emerald-600 text-white px-8 py-2 rounded-full font-black italic text-sm shadow-lg">NextraLabs Verification v3.0-MASTER</div>
+                  </div>
+
+                  {certData ? (
+                    <div className="grid lg:grid-cols-2 gap-10">
+                      {/* Left: Visual Evidence */}
+                      <div className="space-y-6">
+                        <div className="aspect-square bg-black rounded-[3rem] border-2 border-white/10 overflow-hidden relative shadow-2xl">
+                          <img src={image || ''} className="w-full h-full object-contain p-8" />
+                          <div className="absolute top-6 left-6 bg-emerald-500 text-slate-950 font-black px-4 py-1 rounded-full text-[10px] italic">ORIGINAL EVIDENCE</div>
+                        </div>
+                        <div className="bg-white p-4 rounded-2xl flex items-center justify-center shadow-xl">
+                          {/* 簡易的なQRコード風デザイン */}
+                          <div className="w-full aspect-square bg-slate-100 rounded-xl flex items-center justify-center border-4 border-slate-200">
+                             <div className="text-[10px] font-black text-slate-400 text-center">CERT_ID:<br/>{certData.certId}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right: Analytical Data */}
+                      <div className="space-y-6 text-left">
+                        <div className="bg-slate-950/80 p-10 rounded-[3rem] border border-white/5 shadow-inner space-y-6">
+                           <div>
+                              <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2">Item Classification</p>
+                              <p className="text-3xl font-black text-white italic">{certData.itemName}</p>
+                           </div>
+                           <div className="grid grid-cols-2 gap-4">
+                              <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
+                                 <p className="text-[8px] font-black text-slate-500 uppercase">Grade Status</p>
+                                 <p className="text-2xl font-black text-emerald-400 italic">{certData.status}</p>
+                              </div>
+                              <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
+                                 <p className="text-[8px] font-black text-slate-500 uppercase">Expiry Date</p>
+                                 <p className="text-xs font-black text-white">{certData.expiry}</p>
+                              </div>
+                           </div>
+                           <div>
+                              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Detailed Description</p>
+                              <p className="text-sm text-slate-300 leading-relaxed italic">{certData.description}</p>
+                           </div>
+                           <div className="pt-6 border-t border-white/5">
+                              <p className="text-sm text-emerald-400 font-bold leading-relaxed italic">" {certData.message} "</p>
+                           </div>
+                        </div>
+                        
+                        <button 
+                          onClick={() => { window.print(); }}
+                          className="w-full h-16 bg-white text-black font-black rounded-2xl shadow-xl hover:bg-emerald-500 hover:text-white transition-all active:scale-95 uppercase italic flex items-center justify-center gap-3"
+                        >
+                          <Printer className="w-6 h-6" /> Print Certificate
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-slate-950/80 rounded-[3rem] p-16 border-2 border-white/5 text-2xl text-slate-100 leading-loose italic whitespace-pre-wrap shadow-inner text-center">
+                       {matchResult || "データがありません。"}
+                    </div>
+                  )}
+
+                  <div className="p-8 bg-emerald-600 border-4 border-emerald-500 rounded-3xl shadow-[0_0_50px_rgba(16,185,129,0.4)] animate-in zoom-in-95 duration-500 text-center space-y-4">
+                      <div className="flex items-center justify-center gap-4 text-white font-black italic uppercase tracking-widest text-xl">
+                        <span className="animate-ping">✅</span> OFFICIAL VERIFICATION SECURED <span className="animate-ping">✅</span>
+                      </div>
+                      <p className="text-white text-lg font-black italic leading-relaxed">
+                        証明書が発行されました。このURLまたは印刷物を宿泊者へ提示し、<br/>
+                        NextraLabsによる厳格な拾得物管理をアピールしてください。
+                      </p>
+                  </div>
                </div>
-               <div className="mt-12 p-8 bg-emerald-600 border-4 border-emerald-500 rounded-3xl shadow-[0_0_50px_rgba(16,185,129,0.4)] animate-in zoom-in-95 duration-500 text-center space-y-4 relative z-10">
-                   <div className="flex items-center justify-center gap-4 text-white font-black italic uppercase tracking-widest text-xl">
-                      <span className="animate-ping">✅</span> MATCHING ANALYSIS COMPLETE <span className="animate-ping">✅</span>
-                   </div>
-                   <p className="text-white text-lg font-black italic leading-relaxed">
-                      照合完了：提示された情報をStayseeで即座に検索し、<br/>
-                      顧客への連絡または拾得物リストへの登録を行ってください。
-                   </p>
-                </div>
             </Card>
-            <button onClick={() => { setImage(null); setMatchResult(''); setActiveTab('scan'); }} className="w-full h-20 border-2 border-white/10 text-slate-600 hover:text-white hover:bg-white/5 font-black rounded-3xl uppercase italic transition-all flex items-center justify-center gap-4 text-xl shadow-xl active:scale-95"><RotateCcw className="w-6 h-6" /> RESET PROTOCOL</button>
+            <button onClick={() => { setImage(null); setMatchResult(''); setCertData(null); setActiveTab('scan'); }} className="w-full h-20 border-2 border-white/10 text-slate-600 hover:text-white hover:bg-white/5 font-black rounded-3xl uppercase italic transition-all flex items-center justify-center gap-4 text-xl shadow-xl active:scale-95"><RotateCcw className="w-6 h-6" /> RESET PROTOCOL</button>
           </div>
         )}
       </div>
