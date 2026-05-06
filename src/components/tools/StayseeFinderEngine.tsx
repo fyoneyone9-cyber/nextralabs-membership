@@ -1,9 +1,11 @@
 'use client'
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ArrowRight, Upload, CheckCircle2, Zap, Copy, ExternalLink, RotateCcw, Lightbulb, ClipboardPaste, PackageSearch, Building2, UserSearch, Camera, Loader2, Download, FileImage } from 'lucide-react'
+
+import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const TABS = [
   { id: 'scan', label: '① 拾得物スキャン', icon: Camera },
@@ -245,6 +247,7 @@ export default function StayseeFinderEngine() {
           </div>
         )}
       </div>
+      <DebugPanel data={{ activeTab, hasImage: !!image, hasResult: !!matchResult }} toolId="staysee-finder-master" />
     </div>
   )
 }
