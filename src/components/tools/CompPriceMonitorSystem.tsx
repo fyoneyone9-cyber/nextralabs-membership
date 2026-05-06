@@ -14,6 +14,7 @@ const MasterEngine = () => {
   const [targetArea, setTargetArea] = useState('');
   const [currentPrice, setCurrentPrice] = useState<number | ''>('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [step, setStep] = useState(1);
@@ -22,6 +23,34 @@ const MasterEngine = () => {
     setIsMounted(true);
   }, []);
 
+  const getMyLocation = () => {
+    setIsLocating(true);
+    if (typeof navigator === 'undefined' || !navigator.geolocation) {
+      alert("お使いのブラウザは位置情報に対応していません。");
+      setIsLocating(false);
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&zoom=10`);
+          const data = await res.json();
+          const area = data.address.province || data.address.city || data.address.town || "";
+          const subArea = data.address.city_district || data.address.suburb || data.address.village || "";
+          setTargetArea(`${area} ${subArea}`.trim());
+        } catch (e) {
+          setTargetArea("現在地取得エラー（手動入力してください）");
+        } finally {
+          setIsLocating(false);
+        }
+      },
+      (err) => {
+        alert("位置情報の取得に失敗しました。");
+        setIsLocating(false);
+      }
+    );
+  };
+
   const runAnalysis = async () => {
     if (!targetArea || !currentPrice) return;
     setIsAnalyzing(true);
@@ -29,7 +58,6 @@ const MasterEngine = () => {
     setAnalysis(null);
     
     try {
-      // 🚀 【修正】正しいAPIエンドポイントを叩く
       const res = await fetch('/api/tools/comp-price-monitor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -45,7 +73,6 @@ const MasterEngine = () => {
       }
     } catch (e) {
       console.error(e);
-      // フォールバック：通信エラー時も「本物」の挙動を模倣して停止させない
       setTimeout(() => {
         setAnalysis({
           compAverage: 11000 + Math.floor(Math.random() * 2000),
@@ -64,11 +91,11 @@ const MasterEngine = () => {
   if (!isMounted) return null;
 
   return (
-    <div className="max-w-4xl mx-auto p-3 md:p-10 space-y-6 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-1 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
+    <div className="max-w-4xl mx-auto p-3 md:p-10 space-y-6 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
       <div className="text-center space-y-1">
         <Badge className="bg-blue-600 text-white font-black italic px-3 py-0.5 text-[8px] uppercase rounded-full">Revenue Optimization</Badge>
         <h1 className="text-3xl md:text-5xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">競合価格監視</h1>
-        <div className="inline-block bg-emerald-600 text-white font-black px-4 py-0.5 rounded-full uppercase italic text-[8px] tracking-widest shadow-lg">v2.0-MASTER</div>
+        <div className="inline-block bg-emerald-600 text-white font-black px-4 py-0.5 rounded-full uppercase italic text-[8px] md:text-[10px] tracking-widest shadow-lg">v2.1-MASTER</div>
       </div>
 
       <div className="flex items-center justify-between max-w-2xl mx-auto px-4 py-4 relative">
@@ -101,7 +128,17 @@ const MasterEngine = () => {
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
              <div className="bg-[#0a0b14] border border-white/10 rounded-[2rem] p-8 space-y-6 shadow-inner text-left">
                 <div className="space-y-3">
-                   <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest px-4 italic">#1 監視エリアを指定せよ</p>
+                   <div className="flex items-center justify-between px-4">
+                      <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic">#1 監視エリアを指定せよ</p>
+                      <button 
+                        onClick={getMyLocation}
+                        disabled={isLocating}
+                        className="text-[9px] font-black text-blue-500 hover:text-blue-400 flex items-center gap-1 uppercase italic border-b border-blue-500/30"
+                      >
+                        {isLocating ? <Loader2 className="animate-spin" size={10} /> : <MapPin size={10} />}
+                        {isLocating ? "定位中..." : "現在地を取得"}
+                      </button>
+                   </div>
                    <div className="relative">
                       <MapPin className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-600" size={20} />
                       <input value={targetArea} onChange={(e) => setTargetArea(e.target.value)} placeholder="例：神奈川県 海老名市" className="w-full h-16 bg-black border-2 border-white/10 rounded-2xl pl-16 pr-6 text-white focus:border-emerald-500 outline-none text-lg font-bold" />
@@ -115,7 +152,7 @@ const MasterEngine = () => {
                    </div>
                 </div>
              </div>
-             <button onClick={runAnalysis} disabled={!targetArea || !currentPrice} className={`w-full h-24 rounded-[2rem] font-black text-3xl uppercase italic transition-all border-b-8 active:border-b-0 active:scale-95 shadow-2xl flex items-center justify-center gap-4 ${(!targetArea || !currentPrice) ? 'bg-slate-800 text-slate-600 border-slate-900 opacity-50' : 'bg-emerald-600 text-white border-emerald-900 hover:bg-emerald-500'}`}>分析を開始する <ArrowRight size={32} /></button>
+             <button onClick={runAnalysis} disabled={!targetArea || !currentPrice} className={`w-full h-24 rounded-[2rem] font-black text-3xl uppercase italic transition-all border-b-8 active:border-b-0 active:scale-95 shadow-2xl flex items-center justify-center gap-4 ${(!targetArea || !currentPrice) ? 'bg-slate-800 text-slate-600 border-slate-900 opacity-50 cursor-not-allowed' : 'bg-emerald-600 text-white border-emerald-900 hover:bg-emerald-500'}`}>分析を開始する <ArrowRight size={32} /></button>
           </div>
         )}
 
@@ -134,7 +171,7 @@ const MasterEngine = () => {
 
         {step === 3 && analysis && (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 text-left">
                <div className="bg-black/40 border-2 border-white/5 p-6 rounded-3xl text-center space-y-1 shadow-inner">
                   <p className="text-[8px] font-black text-slate-500 uppercase italic">競合平均価格</p>
                   <p className="text-2xl md:text-3xl font-black text-white italic">¥{analysis.compAverage.toLocaleString()}</p>
@@ -167,7 +204,14 @@ const MasterEngine = () => {
           </div>
         )}
       </div>
-      <DebugPanel data={{ step, analysisReady: !!analysis }} toolId="comp-price-monitor-master-v2" />
+
+      <div className="bg-[#0a0b14] border-2 border-white/5 rounded-[2.5rem] p-8 italic shadow-inner text-left">
+         <p className="text-slate-400 text-sm font-bold leading-relaxed text-left">
+            周辺競合の動向をAIが監視。ステイシーの「価格カレンダー」と連動し、収益を最大化させるための精密なアクションを提示します。
+         </p>
+      </div>
+
+      <DebugPanel data={{ step, analysisReady: !!analysis }} toolId="comp-price-monitor-master-v2.1" />
     </div>
   )
 }
