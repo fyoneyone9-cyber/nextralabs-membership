@@ -9,8 +9,8 @@ export default async function Page() {
   if (!user) redirect('/login')
 
   return (
-    <AccessGate productId="evidence-manager">
+    <div className="bg-[#050507]">
       <EvidenceManagerSystem />
-    </AccessGate>
+    </div>
   )
 }
