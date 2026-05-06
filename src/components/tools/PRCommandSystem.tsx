@@ -5,9 +5,10 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { 
-  Sparkles, Send, Calendar, ListChecks, Loader2, Copy, Activity, FileText, Globe, RefreshCw, BarChart3, Rocket, ShieldCheck, Zap
+  Sparkles, Send, Calendar, ListChecks, Loader2, Copy, Activity, FileText, Globe, RefreshCw, BarChart3, Rocket, ShieldCheck, Zap, UserPlus
 } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
+import { AccessGate } from '@/components/tools/AccessGate'
 
 const MASTER_TOOLS = [
   { id: 'ai-select-shop', name: 'AIセレクトショップ', desc: 'トレンド分析×在庫ゼロ出品OS' },
