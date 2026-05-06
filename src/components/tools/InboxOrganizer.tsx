@@ -211,40 +211,45 @@ const MasterEngine = () => {
                               <div className="flex items-center gap-6 mt-6">
                                 <button 
                                   onClick={() => setExpandedId(expandedId === email.id ? null : email.id)} 
-                                  className="h-12 bg-white/5 border border-white/10 px-6 rounded-xl text-blue-500 text-xs font-black uppercase hover:bg-white/10 transition-all flex items-center gap-2"
+                                  className="h-12 bg-white/10 border border-white/20 px-8 rounded-xl text-white text-sm font-black uppercase hover:bg-white/20 transition-all flex items-center gap-2"
                                 >
-                                   📄 {expandedId === email.id ? 'Close' : 'Read Full'}
+                                   📄 {expandedId === email.id ? 'CLOSE CONTENT' : 'READ FULL CONTENT'}
                                 </button>
                                 <button 
                                   onClick={() => trashEmail(email.id)} 
-                                  className="h-12 bg-red-600/10 border border-red-500/20 px-6 rounded-xl text-red-500 text-xs font-black uppercase hover:bg-red-600 hover:text-white transition-all flex items-center gap-2"
+                                  className="h-12 bg-red-600/20 border border-red-500/30 px-8 rounded-xl text-red-500 text-sm font-black uppercase hover:bg-red-600 hover:text-white transition-all flex items-center gap-2"
                                 >
-                                   🗑️ Trash
+                                   🗑️ TRASH
                                 </button>
                               </div>
                               {expandedId === email.id && (
-                                <div className="mt-4 p-6 bg-slate-900/50 rounded-2xl text-slate-300 text-sm italic border border-white/5 animate-in slide-in-from-top-2">{email.body}</div>
+                                <div className="mt-6 p-10 bg-slate-900 border-2 border-white/10 rounded-[2.5rem] text-slate-200 text-lg italic border border-white/5 animate-in slide-in-from-top-4 shadow-inner leading-relaxed overflow-x-auto whitespace-pre-wrap">
+                                   <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4 border-b border-white/5 pb-2">Full Message Source</div>
+                                   {email.body}
+                                </div>
                               )}
                            </div>
 
-                           <div className="flex flex-col gap-6 items-start">
+                           <div className="flex flex-col gap-8 items-start">
                               <button 
                                 onClick={() => generateAiReply(email)} 
-                                className="h-14 bg-white text-black hover:bg-blue-600 hover:text-white font-black italic text-sm rounded-xl px-10 shadow-xl transition-all uppercase active:scale-95"
+                                className="h-20 w-full md:w-auto bg-white text-black hover:bg-blue-600 hover:text-white font-black italic text-xl rounded-2xl px-16 shadow-2xl transition-all uppercase active:scale-95 border-b-4 border-slate-300 active:border-b-0"
                               >
-                                 AI返信ドラフトを生成
+                                 AI返信ドラフトを自動生成 🚀
                               </button>
 
-                              <div className="w-full bg-[#0a0b14] rounded-[2.5rem] p-10 border border-blue-600/20 shadow-inner relative">
-                                 <div className="text-blue-500 font-black italic uppercase text-[10px] tracking-[0.2em] mb-8">AI OUTPUT</div>
+                              <div className="w-full bg-[#0a0b14] rounded-[3rem] p-12 border-2 border-blue-600/30 shadow-[0_0_50px_rgba(37,99,235,0.1)] relative">
+                                 <div className="text-blue-500 font-black italic uppercase text-xs tracking-[0.4em] mb-10 flex items-center gap-4">
+                                    <span className="w-3 h-3 bg-blue-500 rounded-full animate-pulse" /> AI INTELLIGENCE OUTPUT
+                                 </div>
                                  
-                                 <div className="min-h-[100px] mb-8">
+                                 <div className="min-h-[200px] mb-10">
                                    {isGenerating[email.id] ? (
-                                     <div className="text-slate-600 italic animate-pulse">Analyzing context & drafting reply...</div>
+                                     <div className="text-blue-400 text-xl italic animate-pulse font-black uppercase">Analyzing context & deep drafting...</div>
                                    ) : (
-                                     <pre className="text-lg text-slate-200 whitespace-pre-wrap font-sans italic leading-relaxed">
-                                       {replyTexts[email.id] || "生成ボタンを押すとここに返信案が表示されます。"}
-                                     </pre>
+                                     <div className="text-2xl text-white whitespace-pre-wrap font-sans italic leading-loose tracking-tight bg-white/5 p-10 rounded-[2rem] border border-white/5 shadow-inner">
+                                       {replyTexts[email.id] || "生成ボタンを押すと、ここにNextra Intelligenceによる最適な返信案が表示されます。"}
+                                     </div>
                                    )}
                                  </div>
 
