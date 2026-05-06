@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Card, CardContent } from '@/components/ui/card'
@@ -63,7 +63,7 @@ const MasterEngine = () => {
     if (!image || !matchResult) return;
     setIsProfiling(true);
     try {
-      const res = await fetch('/api/tools/staysee-ai-finder/profile', {
+      const res = await fetch('/api/products/staysee-ai-finder/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image, stayseeData: matchResult }),
@@ -83,7 +83,7 @@ const MasterEngine = () => {
     if (!image) return;
     setIsGeneratingCert(true);
     try {
-      const res = await fetch('/api/tools/staysee-ai-finder/generate-cert', {
+      const res = await fetch('/api/products/staysee-ai-finder/generate-cert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image, matchResult }),
@@ -102,7 +102,7 @@ const MasterEngine = () => {
   const generateMonetize = async () => {
     setIsGeneratingMonetize(true);
     try {
-      const res = await fetch('/api/tools/staysee-ai-finder/monetize', {
+      const res = await fetch('/api/products/staysee-ai-finder/monetize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -125,7 +125,7 @@ const MasterEngine = () => {
     setKioskStatus('PRINTING');
     try {
       const mockShipping = { name: "米山 文貴", address: "神奈川県海老名市...", tel: "080-3207-8422" };
-      const res = await fetch('/api/tools/staysee-ai-finder/kiosk', {
+      const res = await fetch('/api/products/staysee-ai-finder/kiosk', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -147,7 +147,7 @@ const MasterEngine = () => {
   const searchStaysee = async (query: string) => {
     setIsApiLoading(true);
     try {
-      const res = await fetch('/api/tools/staysee-ai-finder', {
+      const res = await fetch('/api/products/staysee-ai-finder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'search-booking', query, userApiKey }),

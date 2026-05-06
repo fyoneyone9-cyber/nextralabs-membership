@@ -31,7 +31,7 @@ export default function ToolGuidePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {TOOL_DIRECTORY.map((tool) => (
-            <Link key={tool.id} href={`/tools/${tool.id}`}>
+            <Link key={tool.id} href={`/products/${tool.id}`}>
               <Card className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-8 hover:border-emerald-500/50 transition-all group shadow-2xl relative overflow-hidden h-64 flex flex-col justify-center">
                 <div className="flex items-center gap-6">
                   <div className={`w-20 h-20 bg-white/5 ${tool.color} rounded-[2rem] flex items-center justify-center border-2 border-white/5 group-hover:scale-110 transition-transform shadow-inner`}>

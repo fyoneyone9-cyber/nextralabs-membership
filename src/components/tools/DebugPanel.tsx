@@ -41,7 +41,7 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
       { id: 'printful', name: 'Printful', url: '/api/tools/printful' },
       { id: 'shopify', name: 'Shopify', url: '/api/tools/printful' },
       { id: 'imagery', name: 'Imagery', url: 'https://loremflickr.com/10/10/all' },
-      { id: 'staysee', name: 'Staysee', url: '/api/tools/staysee-ai-finder' }
+      { id: 'staysee', name: 'Staysee', url: '/api/products/staysee-ai-finder' }
     ];
     
     const results: any = {};
