@@ -11,7 +11,7 @@ import {
   Phone, Archive, Spreadsheet, Network, MessageSquare, Video,
   Sofa, Play, Scissors, MapPin, Globe, UserCheck, 
   Cpu, Rocket, Database, Lock, Layers, BarChart3, Users, HeartHandshake,
-  LineChart
+  LineChart, Smartphone, Icons, Mic, Camera, Languages, Bot, Layout, Presentation
 } from 'lucide-react'
 
 // --- データ定義：米山文貴の「真の実績と圧倒的なAI武装スキル」 ---
