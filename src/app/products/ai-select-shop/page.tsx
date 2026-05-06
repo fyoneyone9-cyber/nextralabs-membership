@@ -1,7 +1,7 @@
 import React from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
-import { CheckCircle2, Store, Shirt, Zap, Rocket, ShoppingCart, ArrowRight, TrendingUp, Palette, Box } from 'lucide-react'
+import { CheckCircle2, Store, Shirt, Zap, Rocket, ShoppingCart, ArrowRight, TrendingUp, Palette, Box, Package } from 'lucide-react'
 import Link from 'next/link'
 
 export const metadata = {
