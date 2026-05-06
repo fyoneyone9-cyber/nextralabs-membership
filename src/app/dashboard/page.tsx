@@ -4,7 +4,11 @@ import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { BookOpen, Crown, User, ArrowRight, Rocket, Search, PawPrint, Network, ShieldAlert, Store } from 'lucide-react'
+import { 
+  BookOpen, Crown, User, ArrowRight, Rocket, Search, Network, 
+  ShieldAlert, Store, Mail, Briefcase, Wallet, Shield, Building2, 
+  Zap, Sparkles, Youtube, CheckCircle2
+} from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = createServerSupabaseClient()
@@ -25,138 +29,180 @@ export default async function DashboardPage() {
     .eq('status', 'active')
     .maybeSingle()
 
-  // ツール数は固定5本（古着ハンター、AIペット翻訳モニター、社内政治 相関図、AI買い物依存ストッパー、AIセレクトショップ）
   const plan = subscription?.plan
-  const toolCount = plan === 'premium' ? 21 : plan === 'standard' ? 14 : 4
+  const toolCount = plan === 'premium' ? 19 : plan === 'standard' ? 12 : 2
+  const isPremium = plan === 'premium'
 
-  const isPremium = !!subscription
+  // 5大マスタツール + 特選ツール
+  const quickTools = [
+    { id: 'staysee-ai-finder', name: 'Staysee AI Finder', icon: Building2, color: 'text-emerald-500', bg: 'bg-emerald-500/10', isModel: true },
+    { id: 'inbox-organizer', name: 'Gmail AI Accelerator', icon: Mail, color: 'text-blue-500', bg: 'bg-blue-500/10', isModel: true },
+    { id: 'ai-sidejob', name: 'AI副業スタートダッシュ', icon: Briefcase, color: 'text-indigo-500', bg: 'bg-indigo-500/10', isModel: true },
+    { id: 'money-guard', name: 'AI家計防衛シミュレーター', icon: Wallet, color: 'text-amber-500', bg: 'bg-amber-500/10', isModel: true },
+    { id: 'disaster-guard', name: 'AI防災パーソナルガイド', icon: Shield, color: 'text-sky-500', bg: 'bg-sky-500/10', isModel: true },
+    { id: 'youtube-producer', name: 'AI YouTubeプロデューサー', icon: Youtube, color: 'text-red-500', bg: 'bg-red-500/10', isModel: true },
+  ]
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">
-          ようこそ、{profile?.display_name || 'ユーザー'}さん
-        </h1>
-        <div className="flex items-center gap-2">
-          <Badge variant={isPremium ? 'premium' : 'free'}>
-            {plan === 'premium' ? 'プレミアム会員' : plan === 'standard' ? 'スタンダード会員' : '無料会員'}
-          </Badge>
-          {profile?.role === 'admin' && (
-            <Badge variant="secondary">管理者</Badge>
-          )}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              利用可能ツール
-            </CardTitle>
-            <BookOpen className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{toolCount}本</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              プラン
-            </CardTitle>
-            <Crown className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{plan === 'premium' ? 'プレミアム' : plan === 'standard' ? 'スタンダード' : '無料'}</div>
-            {!isPremium && (
-              <Link href="/pricing" className="text-xs text-primary hover:underline">
-                アップグレード →
-              </Link>
+    <div className="min-h-screen bg-[#0a0b14] text-slate-200 font-sans pb-20">
+      <div className="container mx-auto px-4 py-12 max-w-6xl space-y-10">
+        
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-10">
+          <div className="space-y-2">
+            <Badge variant="outline" className="px-4 py-1 text-xs font-black uppercase tracking-widest text-emerald-500 border-emerald-500/20">Operational Dashboard</Badge>
+            <h1 className="text-4xl md:text-6xl font-black text-white italic tracking-tighter uppercase leading-none">
+              Welcome, {profile?.display_name || 'Member'}
+            </h1>
+          </div>
+          <div className="flex items-center gap-3">
+            <Badge className={`${isPremium ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950' : 'bg-slate-800 text-slate-400'} px-6 py-2 font-black italic uppercase rounded-xl shadow-lg border-0`}>
+              {plan === 'premium' ? 'Premium Member' : plan === 'standard' ? 'Standard Member' : 'Free Member'}
+            </Badge>
+            {profile?.role === 'admin' && (
+              <Badge variant="secondary" className="bg-blue-600 text-white font-black italic px-4 py-2 rounded-xl">ADMIN</Badge>
             )}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              アカウント
-            </CardTitle>
-            <User className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-sm truncate">{user.email}</div>
-            <Link href="/profile" className="text-xs text-primary hover:underline">
-              プロフィール編集 →
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </div>
 
-      {/* Quick Access Tools */}
-      <Card className="mb-8">
-        <CardContent className="p-6">
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
-            <Rocket className="h-5 w-5 text-emerald-500" />
-            ツールにアクセス
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {[
-              { id: 'vintage-hunter', name: '古着ハンター', icon: Search, color: 'text-amber-500', bg: 'bg-amber-500/10' },
-              { id: 'office-politics-graph', name: '社内政治 相関図', icon: Network, color: 'text-indigo-500', bg: 'bg-indigo-500/10' },
-              { id: 'pet-translator', name: 'AIペット翻訳モニター', icon: PawPrint, color: 'text-violet-500', bg: 'bg-violet-500/10' },
-              { id: 'shopping-stopper', name: 'AI買い物依存ストッパー', icon: ShieldAlert, color: 'text-red-500', bg: 'bg-red-500/10' },
-              { id: 'ai-select-shop', name: 'AIセレクトショップ', icon: Store, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-            ].map((tool) => {
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2rem] shadow-xl overflow-hidden group">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Available Intelligence</CardTitle>
+              <Zap className="h-4 w-4 text-emerald-500 animate-pulse" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-4xl font-black text-white italic leading-none">{toolCount} <span className="text-sm not-italic opacity-30 tracking-widest">UNITS</span></div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2rem] shadow-xl overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Current Tier</CardTitle>
+              <Crown className="h-4 w-4 text-amber-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-black text-white italic uppercase leading-none">{plan || 'FREE'}</div>
+              {!isPremium && (
+                <Link href="/pricing" className="text-[10px] font-black text-emerald-500 hover:text-emerald-400 underline mt-2 inline-block uppercase tracking-widest italic">Upgrade Sequence →</Link>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2rem] shadow-xl overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Identified Account</CardTitle>
+              <User className="h-4 w-4 text-blue-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-sm font-bold text-white truncate">{user.email}</div>
+              <Link href="/profile" className="text-[10px] font-black text-slate-600 hover:text-white underline mt-2 inline-block uppercase tracking-widest italic">Modify Profile →</Link>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Quick Access Tools */}
+        <div className="space-y-6">
+          <div className="flex items-center justify-between px-4">
+             <h3 className="font-black italic uppercase tracking-tighter text-2xl flex items-center gap-3">
+               <Rocket className="h-6 w-6 text-emerald-500" />
+               Master Node Access
+             </h3>
+             <Link href="/products" className="text-[10px] font-black text-slate-500 hover:text-emerald-400 uppercase tracking-widest italic">View All Models ➔</Link>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {quickTools.map((tool) => {
               const Icon = tool.icon
               return (
                 <Link key={tool.id} href={`/products/${tool.id}/app`}>
-                  <div className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors group">
-                    <div className={`inline-flex h-9 w-9 items-center justify-center rounded-lg ${tool.bg} flex-shrink-0`}>
-                      <Icon className={`h-4 w-4 ${tool.color}`} />
+                  <div className={`relative h-32 p-6 rounded-[2rem] border-2 transition-all group overflow-hidden ${tool.isModel ? 'bg-black border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.1)] hover:scale-[1.03] hover:border-emerald-500' : 'bg-[#13141f] border-white/5 hover:border-white/10'}`}>
+                    {tool.isModel && (
+                      <div className="absolute top-0 right-6 bg-emerald-500 text-slate-950 text-[8px] font-black px-3 py-0.5 rounded-b-lg uppercase tracking-tighter shadow-lg">Master</div>
+                    )}
+                    <div className="flex items-start gap-4 h-full">
+                      <div className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl ${tool.bg} flex-shrink-0 transition-transform group-hover:scale-110`}>
+                        <Icon className={`h-6 w-6 ${tool.color}`} />
+                      </div>
+                      <div className="flex-1 min-w-0 pt-1">
+                        <p className="text-lg font-black text-white italic leading-tight group-hover:text-emerald-400 transition-colors uppercase truncate">{tool.name}</p>
+                        <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1 italic">Enter Unit ➔</p>
+                      </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate group-hover:text-primary transition-colors">{tool.name}</p>
-                      <p className="text-xs text-muted-foreground">ツールを開く →</p>
-                    </div>
+                    {/* Background Decorative Icon */}
+                    <Icon className={`absolute -bottom-6 -right-6 h-24 w-24 opacity-[0.03] rotate-12 transition-transform group-hover:rotate-0`} />
                   </div>
                 </Link>
               )
             })}
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardContent className="p-6">
-            <h3 className="font-semibold mb-2">ツール一覧</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              AIツールの詳細情報・購入ページはこちら。
-            </p>
-            <Link href="/products">
-              <Button variant="outline" className="gap-2">
-                ツール一覧 <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-        {!isPremium && (
-          <Card className="border-primary/50">
-            <CardContent className="p-6">
-              <h3 className="font-semibold mb-2 flex items-center gap-2">
-                <Crown className="h-4 w-4 text-amber-500" />
-                プレミアムにアップグレード
-              </h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                すべてのコンテンツにアクセスできるようになります。
-              </p>
-              <Link href="/pricing">
-                <Button className="gap-2">
-                  プランを見る <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
-            </CardContent>
+        {/* Secondary Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 shadow-2xl relative overflow-hidden group">
+            <div className="relative z-10 flex flex-col items-center text-center space-y-6">
+               <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center border-2 border-white/10 group-hover:border-emerald-500/50 transition-all">
+                  <BookOpen className="h-10 w-10 text-slate-500 group-hover:text-emerald-400 transition-colors" />
+               </div>
+               <div className="space-y-2">
+                 <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">Guide Protocol</h3>
+                 <p className="text-xs font-bold text-slate-500 italic max-w-xs mx-auto">
+                   NextraLabsの全ての機能を使いこなすための完全マニュアル。
+                 </p>
+               </div>
+               <Link href="/guide" className="w-full">
+                 <Button className="w-full h-16 bg-white text-slate-950 font-black italic rounded-2xl shadow-xl hover:bg-emerald-500 hover:text-white transition-all active:scale-95 uppercase tracking-widest">
+                   Open Guide ↗
+                 </Button>
+               </Link>
+            </div>
           </Card>
-        )}
+
+          {!isPremium ? (
+            <Card className="bg-gradient-to-br from-emerald-600 to-teal-800 border-0 rounded-[3rem] p-10 shadow-2xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-10 opacity-10 rotate-12 text-white"><Sparkles className="h-40 w-40" /></div>
+              <div className="relative z-10 flex flex-col items-center text-center space-y-6">
+                 <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center border-2 border-white/20">
+                    <Crown className="h-10 w-10 text-white animate-bounce" />
+                 </div>
+                 <div className="space-y-2">
+                   <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">Master Access</h3>
+                   <p className="text-xs font-bold text-emerald-100/70 italic max-w-xs mx-auto">
+                     全ての制限を解除し、マスタモデルの真価を解放しましょう。
+                   </p>
+                 </div>
+                 <Link href="/pricing" className="w-full">
+                   <Button className="w-full h-16 bg-white text-emerald-700 font-black italic rounded-2xl shadow-xl hover:bg-emerald-100 transition-all active:scale-95 uppercase tracking-widest border-0">
+                     Upgrade Unit ➔
+                   </Button>
+                 </Link>
+              </div>
+            </Card>
+          ) : (
+            <Card className="bg-emerald-600/5 border-4 border-emerald-500/30 rounded-[3rem] p-10 shadow-inner relative overflow-hidden">
+               <div className="flex flex-col items-center text-center space-y-6">
+                  <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center border-2 border-emerald-500/30">
+                    <CheckCircle2 className="h-10 w-10 text-emerald-400 animate-pulse" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">Active Status</h3>
+                    <p className="text-xs font-bold text-emerald-400 italic uppercase tracking-[0.2em]">
+                      All Master Nodes Synced
+                    </p>
+                    <p className="text-[10px] text-slate-500 font-bold italic mt-4 uppercase">
+                      NextraLabs Premium Intelligence Service
+                    </p>
+                  </div>
+               </div>
+            </Card>
+          )}
+        </div>
+
+        <div className="text-center opacity-10 font-black uppercase tracking-[0.5em] italic text-[8px]">
+           Operational OS • NextraLabs MASTERMODEL • 2026
+        </div>
       </div>
     </div>
   )
