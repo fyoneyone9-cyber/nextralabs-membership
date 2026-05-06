@@ -65,6 +65,18 @@ const MasterEngine = () => {
           <span>トレンド解析 ➔</span>
         </button>
 
+        <div className="grid grid-cols-3 gap-3">
+           <button className="h-16 bg-white/5 border-2 border-emerald-500/30 rounded-2xl text-[10px] font-black uppercase italic text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://chatgpt.com', '_blank')}>
+              <span className="text-xl">💬</span> CHATGPT
+           </button>
+           <button className="h-16 bg-white/5 border-2 border-blue-500/30 rounded-2xl text-[10px] font-black uppercase italic text-blue-400 hover:bg-blue-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://gemini.google.com', '_blank')}>
+              <span className="text-xl">✨</span> GEMINI
+           </button>
+           <button className="h-16 bg-white/5 border-2 border-orange-500/30 rounded-2xl text-[10px] font-black uppercase italic text-orange-400 hover:bg-orange-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://claude.ai', '_blank')}>
+              <span className="text-xl">❄️</span> CLAUDE
+           </button>
+        </div>
+
         <div className="grid grid-cols-1 gap-6">
           {predictions.length > 0 ? (
             predictions.map((p) => (
@@ -97,9 +109,14 @@ const MasterEngine = () => {
                     </div>
                     <div className="flex items-center gap-6">
                        <p className="text-3xl font-black text-white italic">{p.price}</p>
-                       <button className="h-16 px-8 bg-white text-slate-950 font-black rounded-xl shadow-lg hover:bg-orange-500 hover:text-white transition-all flex items-center gap-2 uppercase italic text-sm">
+                       <a 
+                         href={`https://search.rakuten.co.jp/search/mall/${encodeURIComponent(p.item)}/`}
+                         target="_blank"
+                         rel="noopener noreferrer"
+                         className="h-16 px-8 bg-white text-slate-950 font-black rounded-xl shadow-lg hover:bg-orange-500 hover:text-white transition-all flex items-center gap-2 uppercase italic text-sm"
+                       >
                           <ShoppingCart size={20} /> 楽天で仕入れる ➔
-                       </button>
+                       </a>
                     </div>
                  </div>
               </div>
