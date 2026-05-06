@@ -2,6 +2,8 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 
+import { DebugPanel } from '@/components/tools/DebugPanel'
+
 const MasterEngine = () => {
   const [isClient, setIsClient] = useState(false);
   const [location, setLocation] = useState<any>(null);
