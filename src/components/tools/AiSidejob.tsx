@@ -106,13 +106,13 @@ const MasterEngine = () => {
         </div>
 
         <div className="bg-[#13141f] border border-white/5 rounded-3xl p-6 max-w-4xl mx-auto flex items-start gap-6 shadow-inner text-left">
-          <div className="w-10 h-10 rounded-full border border-[#5845e0]/30 flex items-center justify-center shrink-0 text-[#5845e0] font-bold">!</div>
-          <div className="space-y-1">
-            <p className="text-[10px] font-black text-[#5845e0]/70 uppercase tracking-[0.2em] italic mb-2">Production Protocol</p>
-            <div className="space-y-1 text-xs md:text-sm font-bold text-slate-400">
-              <p className="flex items-center gap-3"><span className="text-[#5845e0] italic">#1</span> 適性・生活環境にチェックを入れ「診断指示」をコピー</p>
-              <p className="flex items-center gap-3"><span className="text-[#5845e0] italic">#2</span> 下のAIボタンから貼り付けて、自分に合う副業を特定</p>
-              <p className="flex items-center gap-3"><span className="text-[#5845e0] italic">#3</span> 特定した副業を「②ロードマップ」に入れ、手順を錬成</p>
+          <div className="w-14 h-14 rounded-2xl border border-[#5845e0]/30 flex items-center justify-center shrink-0 text-[#5845e0] font-bold text-2xl bg-[#5845e0]/5">!</div>
+          <div className="space-y-3">
+            <p className="text-[12px] font-black text-[#5845e0] uppercase tracking-[0.3em] italic mb-2">Production Protocol / SYSTEM GUIDE</p>
+            <div className="space-y-3 text-sm md:text-xl font-black text-slate-200">
+              <p className="flex items-center gap-4 leading-snug"><span className="text-[#5845e0] italic text-2xl">#1</span> 適性・生活環境にチェックを入れ「診断指示」をコピー</p>
+              <p className="flex items-center gap-4 leading-snug"><span className="text-[#5845e0] italic text-2xl">#2</span> 下のAIボタンから貼り付けて、自分に合う副業を特定</p>
+              <p className="flex items-center gap-4 leading-snug"><span className="text-[#5845e0] italic text-2xl">#3</span> 特定した副業を「②ロードマップ」に入れ、手順を錬成</p>
             </div>
           </div>
         </div>
@@ -138,11 +138,11 @@ const MasterEngine = () => {
                 
                 <div className="grid md:grid-cols-2 gap-x-10 gap-y-3 mb-10 text-left">
                   {LIFESTYLE_CHECKLIST.map((item, i) => (
-                    <div key={i} className="flex items-center gap-3 p-3 bg-black/20 rounded-xl border border-white/5 cursor-pointer hover:border-emerald-500/30 transition-all group" onClick={() => setChecklist(prev => ({...prev, [i]: !prev[i]}))}>
-                      <div className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 ${checklist[i] ? 'bg-emerald-500 border-emerald-400' : 'border-white/10'}`}>
-                        {checklist[i] && <CheckCircle2 size={12} className="text-slate-950" />}
+                    <div key={i} className="flex items-center gap-3 p-3 bg-black border border-white/20 rounded-xl cursor-pointer hover:border-emerald-500/50 transition-all group" onClick={() => setChecklist(prev => ({...prev, [i]: !prev[i]}))}>
+                      <div className={`w-6 h-6 rounded border-2 flex items-center justify-center shrink-0 ${checklist[i] ? 'bg-emerald-500 border-emerald-400' : 'border-white/20'}`}>
+                        {checklist[i] && <CheckCircle2 size={16} className="text-slate-950" />}
                       </div>
-                      <span className="text-[11px] font-bold text-slate-400 group-hover:text-slate-200"><Badge variant="outline" className="mr-2 text-[8px] opacity-50 px-1 py-0">{item.cat}</Badge>{item.q}</span>
+                      <span className="text-sm font-black text-white group-hover:text-emerald-400 transition-colors"><Badge variant="outline" className="mr-2 text-[10px] text-emerald-500 border-emerald-500/30 px-1 py-0">{item.cat}</Badge>{item.q}</span>
                     </div>
                   ))}
                 </div>
