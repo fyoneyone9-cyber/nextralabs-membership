@@ -214,25 +214,38 @@ const MasterEngine = () => {
           {activeTab === 'calc' && (
             <div className="bg-[#13141f] border border-white/10 rounded-[3rem] p-6 md:p-16 animate-in fade-in space-y-12 text-left">
               <h2 className="text-2xl md:text-4xl font-black text-white italic uppercase text-center mb-8 flex items-center justify-center gap-3">💰 収益シミュレーター</h2>
+              
+              <div className="bg-[#0a0b14] border border-white/5 rounded-3xl p-6 flex items-start gap-5 shadow-inner mb-10">
+                <div className="w-12 h-12 rounded-2xl border border-emerald-500/30 flex items-center justify-center shrink-0 text-emerald-500 font-bold text-xl bg-emerald-500/5">!</div>
+                <div className="space-y-2">
+                  <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em] italic">Profit Calculation Protocol</p>
+                  <div className="space-y-2 text-sm md:text-lg font-black text-slate-200">
+                    <p className="flex items-center gap-3 leading-snug"><span className="text-emerald-500 italic">#1</span> スライダーを左右に動かして「案件の単価」を決める</p>
+                    <p className="flex items-center gap-3 leading-snug"><span className="text-emerald-500 italic">#2</span> 下のスライダーで「1ヶ月にこなす件数」を決める</p>
+                    <p className="flex items-center gap-3 leading-snug"><span className="text-emerald-600 italic">#3</span> 下の枠に「あなたの月間予想収益」がリアルタイムで表示されます</p>
+                  </div>
+                </div>
+              </div>
+
               <div className="max-w-md mx-auto space-y-12 text-left">
                  <div className="space-y-6">
                     <div className="flex justify-between items-end px-2">
-                       <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Unit Price</span>
-                       <span className="text-2xl font-black text-white italic">¥{price.toLocaleString()}</span>
+                       <span className="text-sm font-black text-slate-400 uppercase tracking-widest italic">1回あたりの単価 (Unit Price)</span>
+                       <span className="text-3xl font-black text-white italic">¥{price.toLocaleString()}</span>
                     </div>
-                    <input type="range" min="1000" max="50000" step="500" value={price} onChange={(e) => setPrice(Number(e.target.value))} className="w-full h-1.5 bg-white/10 rounded-full appearance-none accent-[#5845e0] cursor-pointer" />
+                    <input type="range" min="1000" max="100000" step="500" value={price} onChange={(e) => setPrice(Number(e.target.value))} className="w-full h-3 bg-white/10 rounded-full appearance-none accent-emerald-500 cursor-pointer hover:accent-emerald-400 transition-all" />
                  </div>
                  <div className="space-y-6">
                     <div className="flex justify-between items-end px-2">
-                       <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Monthly Vol.</span>
-                       <span className="text-2xl font-black text-white italic">{count} <span className="text-xs">UNITS</span></span>
+                       <span className="text-sm font-black text-slate-400 uppercase tracking-widest italic">1ヶ月の件数 (Monthly Vol.)</span>
+                       <span className="text-3xl font-black text-white italic">{count} <span className="text-xs">件</span></span>
                     </div>
-                    <input type="range" min="1" max="100" step="1" value={count} onChange={(e) => setCount(Number(e.target.value))} className="w-full h-1.5 bg-white/10 rounded-full appearance-none accent-[#5845e0] cursor-pointer" />
+                    <input type="range" min="1" max="100" step="1" value={count} onChange={(e) => setCount(Number(e.target.value))} className="w-full h-3 bg-white/10 rounded-full appearance-none accent-emerald-500 cursor-pointer hover:accent-emerald-400 transition-all" />
                  </div>
-                 <div className="bg-black p-12 rounded-[3rem] border-2 border-emerald-500/30 text-center relative overflow-hidden shadow-2xl">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500 opacity-20" />
-                    <p className="text-[10px] font-black text-emerald-500 mb-4 uppercase tracking-[0.4em] italic">Monthly Revenue</p>
-                    <p className="text-6xl md:text-7xl font-black text-white italic tracking-tighter shadow-emerald-500/20 drop-shadow-2xl">¥{(price * count).toLocaleString()}</p>
+                 <div className="bg-black p-12 rounded-[3rem] border-4 border-emerald-500/50 text-center relative overflow-hidden shadow-[0_0_50px_rgba(16,185,129,0.2)]">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500 opacity-50" />
+                    <p className="text-[12px] font-black text-emerald-500 mb-4 uppercase tracking-[0.4em] italic">月間予想収益 / MONTHLY REVENUE</p>
+                    <p className="text-6xl md:text-8xl font-black text-white italic tracking-tighter drop-shadow-2xl">¥{(price * count).toLocaleString()}</p>
                  </div>
               </div>
             </div>
