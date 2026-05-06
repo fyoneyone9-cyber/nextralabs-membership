@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   const manifest = {
-    name: "NextraLabs",
+    name: "NextraLabs AI Tool Store",
     short_name: "NextraLabs",
     description: "NextraLabs AI Tool Store - 業務効率化・自動化兵器群",
     start_url: "/",
@@ -11,14 +11,10 @@ export async function GET() {
     theme_color: "#5845e0",
     icons: [
       {
-        src: "/icon-192x192.png",
-        sizes: "192x192",
-        type: "image/png"
-      },
-      {
-        src: "/icon-512x512.png",
+        src: "/icon.png",
         sizes: "512x512",
-        type: "image/png"
+        type: "image/png",
+        purpose: "any maskable"
       }
     ]
   };

@@ -5,6 +5,7 @@ import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { DebugPanel } from '@/components/tools/DebugPanel'
+import { InstallPWA } from '@/components/tools/InstallPWA'
 
 const notoPlain = Noto_Sans_JP({ 
   subsets: ['latin'],
@@ -44,6 +45,7 @@ export default function RootLayout({
             <Footer />
             {/* 🐞 復活：全ページ・全システム共通のステルス・デバッガー 🐾 */}
             <DebugPanel data={null} toolId="global_system" />
+            <InstallPWA />
           </div>
         </Providers>
       </body>
