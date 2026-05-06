@@ -209,7 +209,7 @@ export default function StayseeFinderEngine() {
                     <button 
                       onClick={() => searchStaysee('latest')} 
                       disabled={isApiLoading}
-                      className="h-10 bg-emerald-600 hover:bg-emerald-500 text-white px-6 rounded-xl font-black italic text-[10px] uppercase shadow-lg transition-all animate-pulse disabled:opacity-50"
+                      className="h-10 bg-emerald-600 hover:bg-emerald-500 text-white px-6 rounded-xl font-black italic text-[10px] uppercase shadow-lg transition-all disabled:opacity-50"
                     >
                       {isApiLoading ? 'SYNCING...' : 'LIVE SYNC STAYSEE'}
                     </button>
