@@ -208,11 +208,17 @@ const MasterEngine = () => {
                               </div>
                               <h4 className="text-3xl font-black text-white italic leading-tight tracking-tighter">{email.subject}</h4>
                               <div className="text-sm text-slate-400 font-bold leading-relaxed italic opacity-70">このメールはHTMLメールです</div>
-                              <div className="flex items-center gap-4 mt-4">
-                                <button onClick={() => setExpandedId(expandedId === email.id ? null : email.id)} className="text-blue-500 text-[10px] font-black uppercase hover:underline">
-                                   {expandedId === email.id ? 'Close' : 'Read Full'}
+                              <div className="flex items-center gap-6 mt-6">
+                                <button 
+                                  onClick={() => setExpandedId(expandedId === email.id ? null : email.id)} 
+                                  className="h-12 bg-white/5 border border-white/10 px-6 rounded-xl text-blue-500 text-xs font-black uppercase hover:bg-white/10 transition-all flex items-center gap-2"
+                                >
+                                   📄 {expandedId === email.id ? 'Close' : 'Read Full'}
                                 </button>
-                                <button onClick={() => trashEmail(email.id)} className="text-red-500 text-[10px] font-black uppercase hover:underline flex items-center gap-1">
+                                <button 
+                                  onClick={() => trashEmail(email.id)} 
+                                  className="h-12 bg-red-600/10 border border-red-500/20 px-6 rounded-xl text-red-500 text-xs font-black uppercase hover:bg-red-600 hover:text-white transition-all flex items-center gap-2"
+                                >
                                    🗑️ Trash
                                 </button>
                               </div>
@@ -243,7 +249,7 @@ const MasterEngine = () => {
                                  </div>
 
                                  <div className="flex flex-wrap gap-4">
-                                    {replyTexts[email.id] && (
+                                    {replyTexts[email.id] ? (
                                       <>
                                         <button 
                                           onClick={() => { navigator.clipboard.writeText(replyTexts[email.id]); alert('クリップボードにコピーしました'); }}
@@ -260,6 +266,30 @@ const MasterEngine = () => {
                                            {isDrafting[email.id] ? 'Saving...' : 'Gmail下書きに保存'}
                                         </button>
                                       </>
+                                    ) : (
+                                      <div className="flex flex-wrap gap-4 w-full">
+                                        <button 
+                                          onClick={() => {
+                                            const prompt = `以下のメールへの返信案を作成してください。\n\n件名: ${email.subject}\n差出人: ${email.from}\n内容: ${email.body}`;
+                                            navigator.clipboard.writeText(prompt);
+                                            alert('外部AI用のプロンプトをコピーしました。下のボタンからお好きなAIを開いて貼り付けてください。');
+                                          }}
+                                          className="h-14 bg-amber-600 hover:bg-amber-500 text-white font-black italic rounded-xl px-10 shadow-lg transition-all active:scale-95"
+                                        >
+                                           外部AI用プロンプトをコピー
+                                        </button>
+                                        <div className="grid grid-cols-3 gap-2 flex-1">
+                                          {['ChatGPT', 'Gemini', 'Claude'].map(ai => (
+                                            <button 
+                                              key={ai}
+                                              onClick={() => window.open(ai === 'ChatGPT' ? 'https://chatgpt.com' : ai === 'Gemini' ? 'https://gemini.google.com' : 'https://claude.ai', '_blank')}
+                                              className="h-14 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black text-slate-500 hover:text-white uppercase transition-all"
+                                            >
+                                              {ai}
+                                            </button>
+                                          ))}
+                                        </div>
+                                      </div>
                                     )}
 
                                     <a 
