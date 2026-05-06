@@ -7,13 +7,14 @@ import {
   ArrowRight, Upload, CheckCircle2, Zap, Copy, ExternalLink, 
   RotateCcw, Lightbulb, ClipboardPaste, PackageSearch, 
   Building2, UserSearch, Camera, Loader2, Download, FileImage, 
-  Settings, Shield, Printer, FileText, Smartphone, Truck, Box, Coins, ShoppingCart, CreditCard
+  Settings, Shield, Printer, FileText, Smartphone, Truck, Box, Coins, ShoppingCart, CreditCard,
+  UserCheck, Target, Car, Wine
 } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const TABS = [
   { id: 'scan', label: '① スキャン', icon: Camera },
-  { id: 'match', label: '② 照合', icon: UserSearch },
+  { id: 'match', label: '② 照合プロファイル', icon: UserCheck },
   { id: 'monetize', label: '③ 収益化', icon: Coins },
   { id: 'kiosk', label: '④ キオスク', icon: Smartphone },
   { id: 'insights', label: '⑤ レポート', icon: Building2 },
@@ -33,11 +34,15 @@ const MasterEngine = () => {
   const [insightData, setInsightData] = useState<any>(null);
   const [isGeneratingInsight, setIsGeneratingInsight] = useState(false);
   
-  // 収益化用ステート
+  // プロファイリング用
+  const [profileData, setProfileData] = useState<any>(null);
+  const [isProfiling, setIsProfiling] = useState(false);
+  
+  // 収益化用
   const [monetizationData, setMonetizationData] = useState<any>(null);
   const [isGeneratingMonetize, setIsGeneratingMonetize] = useState(false);
   
-  // キオスク用ステート
+  // キオスク用
   const [kioskStatus, setKioskStatus] = useState('WAITING');
   const [labelData, setLabelData] = useState<any>(null);
   
@@ -54,11 +59,23 @@ const MasterEngine = () => {
 
   if (!isMounted) return null;
 
-  const saveApiKey = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('staysee_user_api_key', userApiKey);
-      alert('Staysee APIキーを保存しました');
-      setShowSettings(false);
+  const runProfileAnalysis = async () => {
+    if (!image || !matchResult) return;
+    setIsProfiling(true);
+    try {
+      const res = await fetch('/api/tools/staysee-ai-finder/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image, stayseeData: matchResult }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setProfileData(data.profileData);
+      }
+    } catch (e) {
+      alert('分析エラー');
+    } finally {
+      setIsProfiling(false);
     }
   };
 
@@ -74,7 +91,6 @@ const MasterEngine = () => {
       const data = await res.json();
       if (data.success) {
         setCertData(data.certData);
-        setActiveTab('match');
       }
     } catch (e) {
       alert('証明書生成エラー');
@@ -90,7 +106,7 @@ const MasterEngine = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          itemInfo: certData?.itemName || "忘れ物",
+          itemInfo: certData?.itemName || "鑑定済み物品",
           hotelName: "NextraLabs Hotel" 
         }),
       });
@@ -174,7 +190,7 @@ const MasterEngine = () => {
       <div className="text-center space-y-2 print:hidden">
         <Badge className="bg-blue-600 text-white font-black italic px-4 py-1 text-[10px] uppercase rounded-full shadow-lg">HOTEL DX ENGINE</Badge>
         <h1 className="text-3xl md:text-6xl font-black text-white uppercase italic tracking-tighter drop-shadow-xl leading-none">Staysee AI Finder</h1>
-        <div className="inline-block bg-emerald-600 text-white font-black px-6 py-1 rounded-full uppercase italic text-[10px] tracking-widest shadow-lg">v3.3-MASTER</div>
+        <div className="inline-block bg-emerald-600 text-white font-black px-6 py-1 rounded-full uppercase italic text-[10px] tracking-widest shadow-lg">v3.4-MASTER</div>
       </div>
 
       <div className="overflow-x-auto pb-4 scrollbar-hide print:hidden">
@@ -201,7 +217,7 @@ const MasterEngine = () => {
           </Card>
         ) : activeTab === 'scan' ? (
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in text-center print:hidden">
-            <h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 text-emerald-400"><PackageSearch /> ① 拾得物スキャン</h3>
+            <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 text-emerald-400"><PackageSearch /> ① 拾得物スキャン</h3>
             <div className="grid lg:grid-cols-2 gap-12 text-left">
               <div className="space-y-6 text-center">
                 {!image ? (
@@ -218,6 +234,11 @@ const MasterEngine = () => {
                        <button onClick={() => setImage(null)} className="absolute top-4 right-4 bg-black/50 hover:bg-red-600 p-2 rounded-full h-10 w-10 text-white">✕</button>
                     </div>
                     <button onClick={() => { navigator.clipboard.writeText(FINAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className={`w-full h-20 text-xl font-black rounded-2xl transition-all shadow-2xl ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-blue-600 text-white'}`}>照合指示をコピー</button>
+                    <div className="grid grid-cols-3 gap-3 mt-4">
+                       <button className="h-16 bg-white/5 border-2 border-emerald-500/30 rounded-2xl text-[10px] font-black uppercase italic text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</button>
+                       <button className="h-16 bg-white/5 border-2 border-blue-500/30 rounded-2xl text-[10px] font-black uppercase italic text-blue-400 hover:bg-blue-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</button>
+                       <button className="h-16 bg-white/5 border-2 border-orange-500/30 rounded-2xl text-[10px] font-black uppercase italic text-orange-400 hover:bg-orange-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE</button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -230,57 +251,73 @@ const MasterEngine = () => {
               </div>
             </div>
             {matchResult && (
-               <button onClick={generateCert} disabled={isGeneratingCert} className="w-full h-24 mt-12 bg-emerald-600 text-white font-black rounded-[2rem] shadow-xl flex items-center justify-center gap-4 uppercase italic text-2xl group transition-all active:scale-95 border-b-4 border-emerald-800 active:border-b-0">
-                  {isGeneratingCert ? 'GENERATING...' : '② AI保管証明書を発行 📜'}
+               <button onClick={() => setActiveTab('match')} className="w-full h-24 mt-12 bg-emerald-600 text-white font-black rounded-[2rem] shadow-xl flex items-center justify-center gap-4 uppercase italic text-2xl active:scale-95 border-b-8 border-emerald-800 active:border-b-0">
+                  ② 照合プロファイルを開始 ➔
                </button>
             )}
           </Card>
         ) : activeTab === 'match' ? (
           <div className="animate-in fade-in zoom-in space-y-8 text-left pb-20 print:pb-0">
-            <Card className="bg-[#13141f] border-4 border-emerald-500/50 rounded-[4rem] p-10 md:p-20 shadow-[0_0_100px_rgba(16,185,129,0.1)] border-l-[16px] border-l-emerald-600 relative overflow-hidden print:border-0 print:shadow-none print:p-0 print:bg-white print:text-black print:rounded-none">
-               <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white print:hidden"><Building2 className="w-96 h-96" /></div>
-               <div className="relative z-10 space-y-12 print:space-y-6">
+            <Card className="bg-[#13141f] border-4 border-emerald-500/50 rounded-[4rem] p-10 md:p-16 shadow-[0_0_100px_rgba(16,185,129,0.1)] relative overflow-hidden print:bg-white print:text-black print:rounded-none">
+               <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white print:hidden"><Target className="w-96 h-96" /></div>
+               <div className="relative z-10 space-y-12">
                   <div className="flex flex-col items-center gap-4 text-center">
-                    <Shield className="text-emerald-500 w-24 h-24 animate-pulse print:text-emerald-600 print:w-16 print:h-16 print:animate-none" />
-                    <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter leading-none print:text-black print:text-3xl">AI Official Certificate</h3>
-                    <div className="bg-emerald-600 text-white px-8 py-2 rounded-full font-black italic text-sm shadow-lg leading-none print:bg-emerald-100 print:text-emerald-800 print:border print:border-emerald-200">NextraLabs Verification v3.3-MASTER</div>
+                    <UserCheck className="text-emerald-500 w-20 h-20 animate-pulse print:text-emerald-600" />
+                    <h3 className="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none print:text-black">AI Matching Profile</h3>
+                    <div className="bg-emerald-600 text-white px-8 py-2 rounded-full font-black italic text-xs shadow-lg leading-none print:bg-emerald-50 print:text-emerald-800">Nextra Profile Logic v3.4-MASTER</div>
                   </div>
 
-                  {certData ? (
-                    <div className="grid lg:grid-cols-2 gap-10 print:grid-cols-1 print:gap-4">
-                      <div className="space-y-6">
-                        <div className="aspect-video bg-black rounded-[3rem] border-2 border-white/10 overflow-hidden relative shadow-2xl print:rounded-xl print:border-slate-200 print:shadow-none print:bg-slate-50">
-                          <img src={image || ''} className="w-full h-full object-contain p-8 print:p-2" />
-                        </div>
-                      </div>
-                      <div className="space-y-6 text-left bg-slate-950/80 p-10 rounded-[3rem] border border-white/5 shadow-inner print:bg-white print:border-2 print:border-slate-100 print:p-6 print:rounded-2xl print:shadow-none">
-                         <div className="grid grid-cols-1 gap-4">
-                            <div><p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 print:text-emerald-600">Management ID</p><p className="text-xl font-mono text-white print:text-black">{certData.certId}</p></div>
-                            <div><p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 print:text-emerald-600">Item Name</p><p className="text-3xl font-black text-white italic print:text-black print:text-2xl">{certData.itemName}</p></div>
-                         </div>
-                         <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-white/5 p-4 rounded-2xl border border-white/5 print:bg-slate-50 print:border-slate-200"><p className="text-[8px] font-black text-slate-500 uppercase">Grade</p><p className="text-2xl font-black text-emerald-400 italic print:text-emerald-700">{certData.status}</p></div>
-                            <div className="bg-white/5 p-4 rounded-2xl border border-white/5 print:bg-slate-50 print:border-slate-200"><p className="text-[8px] font-black text-slate-500 uppercase">Expiry</p><p className="text-xs font-black text-white print:text-black">{certData.expiry}</p></div>
-                         </div>
-                         <button onClick={() => window.print()} className="w-full h-16 bg-white text-black font-black rounded-2xl shadow-xl hover:bg-emerald-500 hover:text-white transition-all uppercase italic flex items-center justify-center gap-3 mt-4 print:hidden"><Printer className="w-6 h-6" /> Print Certificate</button>
-                      </div>
+                  {!profileData ? (
+                    <div className="flex flex-col items-center justify-center py-20 gap-8">
+                       <p className="text-slate-400 text-lg italic text-center max-w-md">物品の属性とStayseeの宿泊履歴（お車ナンバー、宿泊プラン等）をクロス分析し、持ち主を特定します。</p>
+                       <button onClick={runProfileAnalysis} disabled={isProfiling} className="h-24 px-16 bg-white text-slate-950 font-black text-2xl rounded-3xl shadow-2xl transition-all active:scale-95 flex items-center gap-4 italic uppercase">
+                          {isProfiling ? <Loader2 className="animate-spin" /> : <Zap className="text-emerald-500" />}
+                          プロファイリング開始
+                       </button>
                     </div>
                   ) : (
-                    <div className="bg-slate-950/80 rounded-[3rem] p-16 border-2 border-white/5 text-2xl text-slate-100 italic text-center">{matchResult || "Data Pending..."}</div>
-                  )}
-
-                  <div className="p-8 bg-emerald-600 border-4 border-emerald-500 rounded-3xl shadow-[0_0_50px_rgba(16,185,129,0.4)] animate-in zoom-in-95 duration-500 text-center space-y-4 print:hidden">
-                      <div className="flex items-center justify-center gap-4 text-white font-black italic uppercase tracking-widest text-xl">
-                        <span className="animate-ping">✅</span> OFFICIAL VERIFICATION SECURED <span className="animate-ping">✅</span>
+                    <div className="grid lg:grid-cols-2 gap-10">
+                      <div className="space-y-6">
+                        <div className="aspect-square bg-black rounded-[3rem] border-2 border-white/10 overflow-hidden relative shadow-2xl">
+                          <img src={image || ''} className="w-full h-full object-contain p-8" />
+                          <div className="absolute top-6 left-6 bg-emerald-500 text-slate-950 font-black px-4 py-1 rounded-full text-[10px] italic">EVIDENCE SCAN</div>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                           {profileData.profileTags.map((tag: string, i: number) => (
+                             <Badge key={i} className="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-4 py-1.5 rounded-lg text-xs font-black italic"># {tag}</Badge>
+                           ))}
+                        </div>
                       </div>
-                      <p className="text-white text-lg font-black italic leading-relaxed">
-                        証明書が発行されました。このURLまたは印刷物を宿泊者へ提示し、<br/>
-                        NextraLabsによる厳格な拾得物管理をアピールしてください。
-                      </p>
-                  </div>
+
+                      <div className="space-y-6 text-left bg-slate-950/80 p-10 rounded-[3rem] border border-white/5 shadow-inner">
+                         <div className="flex justify-between items-center mb-4">
+                            <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic">Matching Probability</p>
+                            <div className="text-right leading-none"><p className="text-[8px] font-black text-emerald-500 italic uppercase">Confidence</p><p className="text-5xl font-black text-white italic">{profileData.certaintyLevel}</p></div>
+                         </div>
+                         <div className="pt-6 border-t border-white/5">
+                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 italic">Reasoning Logic</p>
+                            <p className="text-lg text-slate-200 leading-relaxed font-bold italic">{profileData.reasoning}</p>
+                         </div>
+                         <div className="p-6 bg-emerald-600/10 border-2 border-emerald-500/30 rounded-2xl">
+                            <p className="text-[10px] font-black text-emerald-500 uppercase mb-2 italic pl-1">Front Desk Advisor</p>
+                            <p className="text-sm text-white font-bold leading-relaxed">「 {profileData.actionAdvise} 」</p>
+                         </div>
+                         <button onClick={generateCert} disabled={isGeneratingCert} className="w-full h-16 bg-white text-black font-black rounded-2xl shadow-xl hover:bg-emerald-500 hover:text-white transition-all active:scale-95 uppercase italic flex items-center justify-center gap-3">
+                            {isGeneratingCert ? <Loader2 className="animate-spin" /> : <Shield />} 
+                            公式保管証明書を作成 ➔
+                         </button>
+                      </div>
+                    </div>
+                  )}
+                  {certData && (
+                    <div className="animate-in slide-in-from-top-4 p-8 bg-emerald-600 border-4 border-emerald-500 rounded-3xl shadow-[0_0_50px_rgba(16,185,129,0.4)] text-center space-y-4">
+                       <p className="text-white text-xl font-black italic uppercase tracking-widest flex items-center justify-center gap-4"><CheckCircle2 /> 証明書の準備が完了しました</p>
+                       <button onClick={() => window.print()} className="bg-white text-slate-950 px-10 py-3 rounded-xl font-black italic uppercase text-sm hover:scale-105 transition-all flex items-center gap-2 mx-auto"><Printer /> Print Official Certificate</button>
+                    </div>
+                  )}
                </div>
             </Card>
-            <button onClick={() => { setImage(null); setMatchResult(''); setCertData(null); setActiveTab('scan'); }} className="w-full h-20 border-2 border-white/10 text-slate-600 hover:text-white hover:bg-white/5 font-black rounded-3xl uppercase italic transition-all flex items-center justify-center gap-4 text-xl active:scale-95 print:hidden"><RotateCcw className="w-6 h-6" /> RESET PROTOCOL</button>
+            <button onClick={() => { setImage(null); setMatchResult(''); setCertData(null); setProfileData(null); setActiveTab('scan'); }} className="w-full h-20 border-2 border-white/10 text-slate-600 hover:text-white hover:bg-white/5 font-black rounded-3xl uppercase italic transition-all flex items-center justify-center gap-4 text-xl active:scale-95 print:hidden"><RotateCcw className="w-6 h-6" /> RESET PROTOCOL</button>
           </div>
         ) : activeTab === 'monetize' ? (
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in space-y-12">
@@ -307,7 +344,6 @@ const MasterEngine = () => {
                      {isGeneratingMonetize ? <Loader2 className="animate-spin" /> : <Coins />}
                      マネタイズ提案を生成
                    </button>
-                   {!certData && <p className="text-[10px] text-red-500 font-black text-center uppercase italic animate-pulse">※ まず①で鑑定を行ってください</p>}
                 </div>
               </div>
 
@@ -341,19 +377,11 @@ const MasterEngine = () => {
                       </button>
                    </div>
                  ) : (
-                   <div className="h-full flex items-center justify-center opacity-10">
-                      <p className="text-center font-black uppercase italic tracking-[0.3em] leading-loose">Waiting for Strategy...<br/>(Analysis required)</p>
+                   <div className="h-full flex items-center justify-center opacity-10 text-center">
+                      <p className="font-black uppercase italic tracking-[0.3em] leading-loose">Waiting for Monetization Strategy...</p>
                    </div>
                  )}
               </div>
-            </div>
-
-            <div className="p-8 bg-black/40 border-2 border-white/10 rounded-3xl flex items-start gap-6 shadow-inner text-left">
-               <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10"><CreditCard className="text-slate-500" /></div>
-               <div>
-                  <p className="text-emerald-500 font-black italic uppercase text-xs mb-2 tracking-widest">Payment Integration</p>
-                  <p className="text-sm text-slate-400 font-bold leading-relaxed italic">Stayseeのスマホ精算画面にこの金額を反映させ、オンラインで安全に回収できます。返送と同時にお土産を販売し、コストを利益に変えましょう。</p>
-               </div>
             </div>
           </Card>
         ) : activeTab === 'kiosk' ? (
@@ -364,14 +392,12 @@ const MasterEngine = () => {
                </div>
                <h3 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none">無人フロント・キオスク</h3>
             </div>
-
             <div className="grid lg:grid-cols-2 gap-10 text-left">
               <div className="space-y-6">
                 <div className="bg-[#0a0b14] border-2 border-white/5 rounded-[2rem] p-8 space-y-6 shadow-inner relative overflow-hidden">
                    <div className="absolute top-0 right-0 p-6 opacity-5"><Truck className="w-24 h-24 text-white" /></div>
                    <h4 className="text-xl font-black text-white italic uppercase flex items-center gap-3"><Box className="text-emerald-500" /> 発送プロトコル</h4>
                    <p className="text-sm text-slate-400 font-bold leading-relaxed">宿泊者が特定されている場合、ここから自動で発送ラベルを作成し、無人受取の準備を開始できます。</p>
-                   
                    <button 
                     onClick={startKioskSync}
                     disabled={kioskStatus === 'PRINTING' || !matchResult}
@@ -382,20 +408,17 @@ const MasterEngine = () => {
                    </button>
                 </div>
               </div>
-
               <div className="bg-black rounded-[2rem] p-8 border border-white/5 shadow-inner min-h-[300px] flex flex-col">
-                 <div className="flex items-center gap-3 text-emerald-500 font-black italic uppercase text-xs mb-6"><Zap size={16} /> Printer Queue Output</div>
+                 <div className="flex items-center gap-3 text-emerald-500 font-black italic uppercase text-xs mb-6"><Zap size={16} /> Printer Output</div>
                  <div className="flex-1 font-mono text-sm space-y-4">
                     {labelData ? (
                       <div className="animate-in slide-in-from-right-4">
                         <pre className="text-emerald-400 leading-relaxed bg-[#0a0b14] p-6 rounded-xl border border-emerald-500/20 shadow-lg">{labelData.labelContent}</pre>
-                        <button onClick={() => window.print()} className="w-full mt-6 h-14 bg-emerald-600 text-white font-black rounded-xl shadow-lg flex items-center justify-center gap-2 uppercase italic text-xs hover:bg-emerald-500 transition-all">
-                           <Printer size={16} /> プリンターへ送信 (Print)
-                        </button>
+                        <button onClick={() => window.print()} className="w-full mt-6 h-14 bg-emerald-600 text-white font-black rounded-xl shadow-lg flex items-center gap-2 justify-center uppercase italic text-xs">Print</button>
                       </div>
                     ) : (
-                      <div className="h-full flex items-center justify-center opacity-10">
-                        <p className="text-center font-black uppercase italic tracking-widest leading-loose">Waiting for Label Trigger...<br/>(Match required)</p>
+                      <div className="h-full flex items-center justify-center opacity-10 text-center">
+                        <p className="font-black uppercase italic tracking-widest">Waiting for Label Trigger...</p>
                       </div>
                     )}
                  </div>
@@ -411,31 +434,15 @@ const MasterEngine = () => {
                     <div className="p-5 bg-blue-600 rounded-3xl shadow-xl shadow-blue-500/20 print:bg-blue-100 print:shadow-none"><Building2 className="text-white w-12 h-12 print:text-blue-700" /></div>
                     <h3 className="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none print:text-black print:text-3xl">Hospitality Insight Report</h3>
                   </div>
-
                   {!insightData ? (
                     <div className="flex flex-col items-center justify-center py-20 gap-8 print:hidden">
-                       <p className="text-slate-400 text-lg italic text-center max-w-md">Stayseeの稼働データと忘れ物の傾向をAIがクロス分析し、ホテルの品質向上と経営改善のアドバイスを提出します。</p>
-                       <button onClick={generateInsight} disabled={isGeneratingInsight} className="h-24 px-16 bg-blue-600 hover:bg-blue-500 text-white font-black text-2xl rounded-3xl shadow-2xl transition-all active:scale-95 flex items-center gap-4 italic uppercase">{isGeneratingInsight ? 'Analyzing...' : '経営レポートを生成する 📊'}</button>
+                       <p className="text-slate-400 text-lg italic text-center max-w-md">Stayseeの稼働データと忘れ物の傾向をAIが分析し、経営改善のアドバイスを提出します。</p>
+                       <button onClick={generateInsight} disabled={isGeneratingInsight} className="h-24 px-16 bg-blue-600 hover:bg-blue-500 text-white font-black text-2xl rounded-3xl shadow-2xl transition-all active:scale-95 flex items-center gap-4 italic uppercase">{isGeneratingInsight ? 'Analyzing...' : 'レポートを生成 📊'}</button>
                     </div>
                   ) : (
-                    <div className="grid lg:grid-cols-3 gap-8 print:grid-cols-1">
-                       <div className="lg:col-span-2 space-y-8 print:space-y-4">
-                          <div className="bg-slate-950/80 p-10 rounded-[3rem] border border-white/5 shadow-inner print:bg-white print:border-2 print:border-slate-100 print:p-6 print:rounded-2xl"><p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-4 italic print:text-blue-600">Executive Summary</p><p className="text-xl text-white font-bold leading-relaxed italic print:text-black print:text-lg print:not-italic">{insightData.summary}</p></div>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 print:grid-cols-1">
-                             {insightData.findings.map((f: any, i: number) => (
-                               <div key={i} className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10 space-y-4 print:bg-slate-50 print:border-slate-200 print:p-4 print:rounded-xl">
-                                  <div className="flex items-center gap-3"><Badge className="bg-blue-500 text-white font-black print:bg-blue-600">{f.room}</Badge><p className="text-white font-black text-sm uppercase italic print:text-slate-500">POINT</p></div>
-                                  <p className="text-slate-300 text-sm italic font-bold print:text-black print:not-italic">{f.trend}</p>
-                                  <div className="pt-4 border-t border-white/5 print:border-slate-200"><p className="text-xs font-black text-emerald-400 uppercase mb-2 print:text-emerald-700">Recommendation</p><p className="text-slate-200 text-sm font-bold leading-relaxed print:text-slate-700">{f.action}</p></div>
-                               </div>
-                             ))}
-                          </div>
-                       </div>
-                       <div className="space-y-8 print:space-y-4">
-                          <div className="bg-emerald-600/10 border-2 border-emerald-500/30 p-8 rounded-[2.5rem] shadow-xl print:bg-emerald-50 print:border-emerald-200 print:p-6 print:rounded-2xl"><p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-4 italic">ROI Projection</p><p className="text-3xl font-black text-white italic leading-tight print:text-black print:text-2xl print:not-italic">{insightData.roi}</p></div>
-                          <div className="bg-[#1a1c2e] p-8 rounded-[2.5rem] border border-blue-500/20 shadow-inner print:bg-slate-50 print:border-slate-100 print:p-6 print:rounded-2xl"><p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-4 italic">Strategic Tip</p><p className="text-sm text-slate-300 leading-relaxed font-bold italic print:text-slate-600 print:not-italic">"{insightData.executiveMessage}"</p></div>
-                          <button onClick={() => window.print()} className="w-full h-20 bg-white text-black font-black rounded-2xl shadow-xl hover:bg-blue-600 transition-all uppercase italic flex items-center justify-center gap-4 print:hidden">PRINT REPORT</button>
-                       </div>
+                    <div className="grid lg:grid-cols-3 gap-8">
+                       <div className="lg:col-span-2 space-y-8"><div className="bg-slate-950/80 p-10 rounded-[3rem] border border-white/5 shadow-inner print:bg-white print:border-2 print:border-slate-100 print:p-6 print:rounded-2xl"><p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-4 italic print:text-blue-600">Executive Summary</p><p className="text-xl text-white font-bold leading-relaxed italic print:text-black print:text-lg print:not-italic">{insightData.summary}</p></div><div className="grid grid-cols-1 md:grid-cols-2 gap-6">{insightData.findings.map((f: any, i: number) => (<div key={i} className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10 space-y-4 print:bg-slate-50 print:border-slate-200"><div className="flex items-center gap-3"><Badge className="bg-blue-500 text-white font-black">{f.room}</Badge></div><p className="text-slate-300 text-sm italic font-bold print:text-black">{f.trend}</p><div className="pt-4 border-t border-white/5"><p className="text-xs font-black text-emerald-400 uppercase mb-2">Recommendation</p><p className="text-slate-200 text-sm font-bold leading-relaxed print:text-slate-700">{f.action}</p></div></div>))}</div></div>
+                       <div className="space-y-8"><div className="bg-emerald-600/10 border-2 border-emerald-500/30 p-8 rounded-[2.5rem] shadow-xl print:bg-emerald-50 print:border-emerald-200"><p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-4 italic">ROI Projection</p><p className="text-3xl font-black text-white italic leading-tight print:text-black">{insightData.roi}</p></div><div className="bg-[#1a1c2e] p-8 rounded-[2.5rem] border border-blue-500/20 shadow-inner print:bg-slate-50 print:border-slate-100"><p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-4 italic">Strategic Tip</p><p className="text-sm text-slate-300 leading-relaxed font-bold italic print:text-slate-600">"{insightData.executiveMessage}"</p></div><button onClick={() => window.print()} className="w-full h-20 bg-white text-black font-black rounded-2xl shadow-xl hover:bg-blue-600 transition-all uppercase italic flex items-center justify-center gap-4 print:hidden">PRINT REPORT</button></div>
                     </div>
                   )}
                </div>
