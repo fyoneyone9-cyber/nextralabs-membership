@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staysee AI Finder [Standalone MASTER v3.4]</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #050507; color: #e2e8f0; font-family: sans-serif; }
+        .emerald-border { border: 8px solid rgba(16, 185, 129, 0.5); border-radius: 4rem; box-shadow: 0 0 50px rgba(16, 185, 129, 0.1); }
+        @media print { .no-print { display: none; } .emerald-border { border: none; border-radius: 0; box-shadow: none; } body { background: white; color: black; } }
+    </style>
+</head>
+<body class="p-4 md:p-10 min-h-screen">
+    <div class="max-w-6xl mx-auto space-y-8 emerald-border p-6 md:p-12 bg-[#050507]">
+        <header class="text-center space-y-4 no-print">
+            <span class="bg-blue-600 text-white px-4 py-1 rounded-full text-xs font-black italic">HOTEL DX ENGINE [BUY-OUT VERSION]</span>
+            <h1 class="text-4xl md:text-7xl font-black italic uppercase tracking-tighter text-white">Staysee AI Finder</h1>
+            <div class="inline-block bg-emerald-600 text-white px-6 py-1 rounded-full text-xs font-black uppercase tracking-widest">v3.4-MASTER-LICENSE</div>
+        </header>
+
+        <section id="setup" class="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 no-print">
+            <h3 class="text-xl font-black text-amber-500 mb-6 flex items-center gap-2">⚙️ 設定 / API Setup</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-500 uppercase">Gemini API Key (Google AI Studio)</label>
+                    <input type="password" id="gemini-key" placeholder="AIzaSy..." class="w-full h-12 bg-black border border-white/10 rounded-xl px-4 text-white outline-none focus:border-emerald-500">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-500 uppercase">Staysee API Key</label>
+                    <input type="password" id="staysee-key" placeholder="sk_..." class="w-full h-12 bg-black border border-white/10 rounded-xl px-4 text-white outline-none focus:border-emerald-500">
+                </div>
+            </div>
+            <button onclick="saveKeys()" class="mt-6 w-full h-12 bg-white text-black font-black rounded-xl hover:bg-emerald-500 hover:text-white transition-all">ライセンスを認証して起動 / Sync Master Node</button>
+        </section>
+
+        <main id="app-main" class="grid lg:grid-cols-2 gap-10 opacity-30 pointer-events-none no-print">
+            <div class="space-y-6">
+                <div class="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-8 text-center space-y-6 shadow-2xl">
+                    <h3 class="text-2xl font-black text-white italic uppercase text-emerald-400">① 拾得物スキャン</h3>
+                    <div id="drop-zone" class="border-4 border-dashed border-white/10 rounded-[2rem] aspect-video flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-white/5 transition-all">
+                        <span class="text-5xl">📷</span>
+                        <p class="font-black italic text-slate-500">CLICK OR DROP PHOTO</p>
+                        <input type="file" id="file-input" class="hidden" accept="image/*">
+                    </div>
+                    <div id="preview-area" class="hidden relative aspect-video rounded-2xl overflow-hidden border-2 border-emerald-500/30">
+                        <img id="preview-img" class="w-full h-full object-contain">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-[#0a0b14] border-2 border-white/5 rounded-[3rem] p-8 flex flex-col gap-6 shadow-inner">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-black text-white italic uppercase">② Staysee 同期結果</h3>
+                    <button class="bg-emerald-600 text-white px-6 py-2 rounded-xl font-black text-xs">LIVE SYNC</button>
+                </div>
+                <textarea id="match-data" placeholder="Stayseeの宿泊者データを同期中..." class="flex-1 min-h-[300px] bg-[#13141f] border border-white/5 rounded-2xl p-6 text-sm text-slate-300 font-mono outline-none focus:border-emerald-500"></textarea>
+                <button onclick="alert('この機能は本番APIへの接続が必要です。')" class="h-20 bg-emerald-600 text-white font-black rounded-2xl shadow-xl text-xl italic active:scale-95 transition-all border-b-8 border-emerald-900">
+                    AI保管証明書を発行 📜
+                </button>
+            </div>
+        </main>
+
+        <footer class="text-center opacity-20 no-print">
+            <p class="text-[10px] font-black uppercase tracking-[0.5em] italic">NextraLabs Standalone OS • Authorized Master Build</p>
+        </footer>
+    </div>
+
+    <script>
+        function saveKeys() {
+            const gk = document.getElementById('gemini-key').value;
+            const sk = document.getElementById('staysee-key').value;
+            if(!gk) return alert('Gemini API Keyが必要です');
+            localStorage.setItem('gk', gk);
+            localStorage.setItem('sk', sk);
+            document.getElementById('app-main').style.opacity = '1';
+            document.getElementById('app-main').style.pointerEvents = 'auto';
+            alert('マスタノードを同期しました。');
+        }
+        
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        dropZone.onclick = () => fileInput.click();
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    document.getElementById('preview-img').src = ev.target.result;
+                    document.getElementById('preview-area').classList.remove('hidden');
+                    dropZone.classList.add('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        };
+    </script>
+</body>
+</html>
