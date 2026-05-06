@@ -87,9 +87,17 @@ const MasterEngine = () => {
                 onClick={() => fileInputRef.current?.click()}
                 className="border-2 border-dashed border-white/10 rounded-[2.5rem] aspect-video flex flex-col items-center justify-center gap-6 cursor-pointer hover:bg-white/5 transition-all group relative overflow-hidden bg-white/5"
               >
-                <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
-                <span className="text-4xl">📷</span>
-                <p className="text-2xl text-slate-700 font-black italic uppercase tracking-[0.1em] group-hover:text-slate-500 text-center px-4">Upload Receipt<br/><span className="text-xs">Save & Prep for AI</span></p>
+                <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" capture="environment" />
+                <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center border-2 border-white/10 group-hover:border-red-600 transition-all">
+                  <span className="text-5xl">📷</span>
+                </div>
+                <p className="text-3xl text-white font-black italic uppercase tracking-[0.1em] group-hover:text-red-500 text-center px-4">
+                  TAP TO SCAN<br/>
+                  <span className="text-xs text-slate-500 font-bold">RECEPT / STATEMENT</span>
+                </p>
+                <div className="absolute bottom-10 animate-bounce text-red-600/50">
+                  ▼
+                </div>
               </div>
             ) : (
               <div className="relative aspect-video rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl bg-black">
