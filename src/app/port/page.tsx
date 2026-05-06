@@ -11,7 +11,7 @@ import {
   Phone, Archive, Spreadsheet, Network, MessageSquare, Video,
   Sofa, Play, Scissors, MapPin, Globe, UserCheck, 
   Cpu, Rocket, Database, Lock, Layers, BarChart3, Users, HeartHandshake,
-  Mic, Camera, Languages, Bot, Layout, LineChart, TrendingUp, Presentation
+  LineChart
 } from 'lucide-react'
 
 // --- データ定義：米山文貴の「真の実績と圧倒的なAI武装スキル」 ---
@@ -20,7 +20,7 @@ const IDENTITY = {
   name: "米山 文貴",
   alias: "Ninja3 / NextraLabs 代表",
   motto: "「指示したら、あとは全部やってくれる人」",
-  description: "IT業界20年以上の重厚な実務経験と、最新の生成AI知能を完全同期。Pythonによるバックエンド構築から、AIを駆使したクリエイティブ制作、IoT導入、心理戦略に基づいた結婚相談所運営まで。私は一人で『戦略・開発・運用』のすべてを完結させる。私の背後にはNextraLabsの全AIリソースが常駐しており、アイデアを現実化する速度において他者の追随を許さない。",
+  description: "大手ITグループ企業での15年以上の重厚な実務経験と、最新の生成AI知能を完全同期。Pythonによるバックエンド構築から、AIを駆使したクリエイティブ制作、IoT導入、心理戦略に基づいた結婚相談所運営まで。私は一人で『戦略・開発・運用』のすべてを完結させる。私の背後にはNextraLabsの全AIリソースが常駐しており、アイデアを現実化する速度において他者の追随を許さない。",
   base: "神奈川県 海老名市"
 };
 
@@ -28,6 +28,24 @@ const STATS = [
   { label: "IT業界・実務経験", value: "20y+" },
   { label: "稼働中のAIマスタ機", value: "22基" },
   { label: "開発・制作スピード", value: "10x" }
+];
+
+const CORE_VALUE = [
+  { 
+    title: "ビジネス × 開発の一気通貫", 
+    desc: "15年以上の大手IT企業実務と、エンジニアとしてのPython開発経験を融合。経営者の悩みを技術で解決します。",
+    icon: Cpu 
+  },
+  { 
+    title: "AI 活用・コンテンツ量産", 
+    desc: "最新の生成AI（LLM, Vision, Video, Audio）を使いこなし、一人で制作会社1社分の成果物を量産します。",
+    icon: Rocket 
+  },
+  { 
+    title: "心理カウンセリング × 解決力", 
+    desc: "上級心理カウンセラーの知見を活かし、人間関係や婚活、組織の「本質的な不満」を汲み取ったシステムを設計します。",
+    icon: HeartHandshake 
+  }
 ];
 
 const SKILLS = [
@@ -40,7 +58,7 @@ const SKILLS = [
   { 
     icon: Zap, 
     title: "業務自動化・RPA構築", 
-    desc: "15年の組織実務知見をAIで自動化。Slack、Google Workspace、各種WebツールをAPIで繋ぎ、毎日のルーチンワークやデータ収集を工数ゼロの資産へ変える。", 
+    desc: "大手IT企業での15年の組織実務知見をAIで自動化。Slack、Google Workspace、各種WebツールをAPIで繋ぎ、毎日のルーチンワークやデータ収集を工数ゼロの資産へ変える。", 
     tags: ["RPA", "Webhook", "Cron自動化", "業務フロー改善"] 
   },
   { 
@@ -91,8 +109,8 @@ const MASTER_MODELS = [
 ];
 
 const CAREER = [
-  { year: "2008 - 2023", company: "PFUクオリティサービス(株)", role: "PCキッティングリーダー・営業事務（15年勤務）" },
-  { year: "2023 - 2024", company: "(株)デバイスエージェンシー", role: "IoT導入支援エンジニア（Python / API連携 / システム構築）" },
+  { year: "2008 - 2023", company: "大手ITグループ企業（富士通系列）", role: "PCキッティングリーダー・営業事務（15年勤務）" },
+  { year: "2023 - 2024", company: "ITソリューション開発企業", role: "IoT導入支援エンジニア（Python / API連携 / システム構築）" },
   { year: "2024 - 現在", company: "NextraLabs / マリッジロードジャパン", role: "代表（AIマスタツール開発・結婚相談所運営）" },
 ];
 
@@ -109,8 +127,8 @@ const MasterEngine = () => {
       {/* 🌌 Hero: Identity Node */}
       <section className="relative pt-32 pb-20 px-4 text-center">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#10b98115,transparent_50%)]" />
-        <div className="max-w-5xl mx-auto space-y-12 relative z-10">
-          <Badge className="bg-emerald-600 text-white font-black italic px-8 py-2 rounded-full uppercase text-xs tracking-[0.4em] shadow-[0_0_30px_rgba(16,185,129,0.4)] animate-pulse">Master Portfolio v2.5</Badge>
+        <div className="max-w-5xl mx-auto space-y-8 relative z-10">
+          <Badge className="bg-emerald-600 text-white font-black italic px-8 py-2 rounded-full uppercase text-xs tracking-[0.4em] shadow-lg animate-pulse">Master Portfolio v2.6</Badge>
           <div className="space-y-4">
              <h1 className="text-7xl md:text-[10rem] font-black text-white italic tracking-tighter leading-none drop-shadow-[0_10px_30px_rgba(255,255,255,0.1)]">
                {IDENTITY.name}
@@ -139,6 +157,19 @@ const MasterEngine = () => {
         ))}
       </section>
 
+      {/* 🎯 Core Values */}
+      <section className="max-w-6xl mx-auto px-4 mb-40">
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {CORE_VALUE.map(v => (
+              <div key={v.title} className="space-y-4">
+                 <div className="w-12 h-12 bg-emerald-600/10 rounded-xl flex items-center justify-center text-emerald-500"><v.icon /></div>
+                 <h3 className="text-xl font-black text-white italic uppercase">{v.title}</h3>
+                 <p className="text-sm text-slate-500 font-bold leading-relaxed">{v.desc}</p>
+              </div>
+            ))}
+         </div>
+      </section>
+
       {/* 🛠️ Skills Section: Core Expertise */}
       <section className="max-w-7xl mx-auto px-4 space-y-16 mb-48">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-l-[16px] border-emerald-500 pl-10">
@@ -165,14 +196,14 @@ const MasterEngine = () => {
 
       {/* 💼 Career Timeline */}
       <section className="max-w-4xl mx-auto px-4 space-y-16 mb-48">
-         <h2 className="text-4xl md:text-5xl font-black text-white italic uppercase text-center tracking-tighter">Career Journey</h2>
+         <h2 className="text-4xl font-black text-white italic uppercase text-center tracking-tighter">Career Journey</h2>
          <div className="space-y-10 relative">
             <div className="absolute left-[23px] top-4 bottom-0 w-0.5 bg-white/5 md:left-[135px]" />
             {CAREER.map((c, i) => (
               <div key={i} className="flex flex-col md:flex-row gap-6 md:gap-16 items-start group relative">
                  <p className="text-xl font-black text-emerald-500 italic w-40 shrink-0 md:text-right pt-1">{c.year}</p>
                  <div className="w-12 h-12 rounded-full bg-slate-900 border-4 border-emerald-500 flex items-center justify-center shrink-0 z-10 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
-                    <div className="w-2 h-2 bg-emerald-500 rounded-full" />
+                    <div className="w-2 bg-emerald-500 h-2 rounded-full" />
                  </div>
                  <div className="flex-1 pb-4">
                     <h3 className="text-2xl font-black text-white uppercase italic leading-none">{c.company}</h3>
@@ -192,15 +223,15 @@ const MasterEngine = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {MASTER_MODELS.map((model) => (
             <Link key={model.id} href={`/products/${model.id}/app`}>
-              <Card className="bg-black border-4 border-emerald-500/50 rounded-[2.5rem] p-10 hover:scale-[1.03] hover:border-emerald-500 transition-all cursor-pointer group shadow-2xl relative overflow-hidden h-56 flex flex-col justify-center">
-                <div className="absolute top-0 right-10 bg-emerald-500 text-slate-950 text-[10px] font-black px-4 py-1 rounded-b-xl uppercase tracking-tighter shadow-lg">Verified Node</div>
-                <div className="flex items-center gap-8">
+              <Card className="bg-black border-4 border-emerald-500/50 rounded-[2.5rem] p-10 hover:scale-[1.03] hover:border-emerald-500 transition-all cursor-pointer group shadow-2xl relative overflow-hidden h-56 flex flex-col justify-center text-left">
+                <div className="absolute top-0 right-10 bg-emerald-500 text-slate-950 text-[8px] font-black px-3 py-0.5 rounded-b-xl uppercase tracking-tighter shadow-lg">Verified Node</div>
+                <div className="flex items-center gap-8 text-left">
                   <div className={`w-20 h-20 ${model.bg} ${model.color} rounded-[2rem] flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform border-2 border-white/5`}>
                     <model.icon size={40} />
                   </div>
-                  <div>
+                  <div className="text-left">
                     <h3 className="text-2xl font-black text-white italic leading-tight group-hover:text-emerald-400 transition-colors uppercase">{model.name}</h3>
-                    <p className="text-[11px] font-bold text-slate-600 mt-2 uppercase tracking-widest italic">Status: ONLINE (v.MASTER)</p>
+                    <p className="text-[11px] font-bold text-slate-600 mt-2 uppercase tracking-widest italic text-left pl-0">Status: ONLINE (v.MASTER)</p>
                   </div>
                 </div>
               </Card>
@@ -228,16 +259,16 @@ const MasterEngine = () => {
       <section id="contact" className="max-w-4xl mx-auto px-4">
         <Card className="bg-gradient-to-br from-emerald-600 to-teal-800 border-0 rounded-[4rem] p-12 md:p-20 shadow-2xl relative overflow-hidden text-center space-y-10">
           <div className="absolute top-0 right-0 p-10 opacity-10 rotate-12"><Terminal size={300} className="text-white" /></div>
-          <div className="relative z-10 space-y-8">
+          <div className="relative z-10 space-y-8 text-center">
             <h3 className="text-5xl md:text-7xl font-black text-white italic uppercase tracking-tighter leading-none">Execute Your Idea</h3>
             <p className="text-emerald-100 text-lg md:text-2xl font-bold leading-relaxed max-w-2xl mx-auto px-4 text-center italic">
               「指示したら、あとは全部やる」<br/>その実行力を、あなたのビジネスに。
             </p>
             <div className="flex flex-wrap justify-center gap-6 pt-6">
-               <a href="mailto:f.yoneyone9@gmail.com" className="h-20 px-12 bg-white text-emerald-700 font-black rounded-2xl flex items-center gap-4 hover:bg-emerald-50 transition-all uppercase italic shadow-2xl text-xl">
+               <a href="mailto:f.yoneyone9@gmail.com" className="h-16 px-10 bg-white text-emerald-700 font-black rounded-2xl flex items-center gap-4 hover:bg-emerald-50 transition-all uppercase italic shadow-xl text-xl">
                  <Mail size={28} /> Email Admin
                </a>
-               <a href="https://x.com/0022_sougo" target="_blank" className="h-20 px-12 bg-black/30 text-white font-black rounded-2xl flex items-center gap-4 hover:bg-black/50 border-4 border-white/10 transition-all uppercase italic text-xl">
+               <a href="https://x.com/0022_sougo" target="_blank" className="h-16 px-10 bg-black/30 text-white font-black rounded-2xl flex items-center gap-4 hover:bg-black/50 border-4 border-white/10 transition-all uppercase italic text-xl">
                  <Zap size={28} /> 𝕏 Command
                </a>
             </div>
