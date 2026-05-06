@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Zap, Rocket, Lightbulb, CheckCircle2 } from 'lucide-react'
+import { Zap, Rocket, Lightbulb, CheckCircle2, ChevronRight } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const MasterEngine = () => {
@@ -70,7 +70,7 @@ const MasterEngine = () => {
   if (!isMounted) return null;
 
   return (
-    <div className="max-w-4xl mx-auto p-2 md:p-10 space-y-4 md:space-y-10 min-h-screen text-slate-200 font-sans pb-10 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-1 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
+    <div className="max-w-4xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-10 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-1 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
       <div className="max-w-7xl mx-auto space-y-3 md:space-y-6">
         <div className="text-center space-y-1">
           <h1 className="text-2xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none">AI副業スタートダッシュ</h1>
@@ -123,12 +123,21 @@ const MasterEngine = () => {
                       <p className="text-slate-400 text-xs font-bold italic">チェックを入れたら指示をコピー</p>
                    </div>
                    <button onClick={() => handleCopy(getAuditPrompt())} className={`w-full h-24 text-xl md:text-2xl font-black rounded-3xl transition-all shadow-2xl border-b-8 ${copied ? 'bg-emerald-500 border-emerald-800 scale-95' : 'bg-[#5845e0] border-[#3e2fb1] hover:bg-[#6c5ae6] text-white'}`}>
-                      {copied ? '✅ COPY COMPLETE' : '診断指示をコピー'}
+                      {copied ? '✅ COPY COMPLETE' : '指示をコピー'}
                    </button>
                    <div className="grid grid-cols-3 gap-3 w-full">
-                      {['CHATGPT', 'GEMINI', 'CLAUDE'].map(ai => (
-                        <button key={ai} onClick={() => window.open(ai === 'CHATGPT' ? 'https://chatgpt.com' : ai === 'GEMINI' ? 'https://gemini.google.com' : 'https://claude.ai', '_blank')} className="h-14 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black text-slate-500 hover:text-white transition-all uppercase italic">{ai}</button>
-                      ))}
+                      <button onClick={() => window.open('https://chatgpt.com', '_blank')} className="h-20 bg-white/5 border-2 border-emerald-500/30 rounded-2xl text-[10px] font-black uppercase italic text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg">
+                        <span className="text-xl">💬</span>
+                        CHATGPT
+                      </button>
+                      <button onClick={() => window.open('https://gemini.google.com', '_blank')} className="h-20 bg-white/5 border-2 border-blue-500/30 rounded-2xl text-[10px] font-black uppercase italic text-blue-400 hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-1 shadow-lg">
+                        <span className="text-xl">✨</span>
+                        GEMINI
+                      </button>
+                      <button onClick={() => window.open('https://claude.ai', '_blank')} className="h-20 bg-white/5 border-2 border-orange-500/30 rounded-2xl text-[10px] font-black uppercase italic text-orange-400 hover:bg-orange-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg">
+                        <span className="text-xl">❄️</span>
+                        CLAUDE
+                      </button>
                    </div>
                 </div>
               </div>
@@ -142,12 +151,14 @@ const MasterEngine = () => {
                  <div className="space-y-6">
                     <div className="bg-[#0a0b14] border border-white/5 rounded-[2rem] p-6 flex items-start gap-4 shadow-inner">
                        <Lightbulb className="text-emerald-400 shrink-0" />
-                       <p className="text-xs font-bold text-slate-400 italic">選んだ副業名を入れて「作成指示」をコピー。AIが具体的手順を教えます。</p>
+                       <p className="text-xs font-bold text-slate-400 italic">選んだ副業名を入れて指示をコピー。AIが具体的手順を教えます。</p>
                     </div>
                     <textarea value={roadmapInput} onChange={(e) => setRoadmapInput(e.target.value)} placeholder="例: AI画像生成によるSNS運用代行" className="w-full h-48 bg-[#0a0b14] border-2 border-white/10 rounded-[2rem] p-8 text-lg text-white outline-none focus:border-emerald-500 shadow-inner leading-relaxed italic" />
-                    <button onClick={() => handleCopy(getRoadmapPrompt())} className={`w-full h-20 text-xl font-black rounded-3xl transition-all shadow-xl border-b-8 ${copied ? 'bg-emerald-500 border-emerald-800' : 'bg-emerald-600 border-emerald-800 hover:bg-emerald-500 text-white'}`}>
-                      {copied ? '✅ COPY COMPLETE' : '作成指示をコピー'}
-                    </button>
+                    <div className="grid grid-cols-1 gap-4">
+                      <button onClick={() => handleCopy(getRoadmapPrompt())} className={`w-full h-20 text-xl font-black rounded-3xl transition-all shadow-xl border-b-8 ${copied ? 'bg-emerald-500 border-emerald-800' : 'bg-emerald-600 border-emerald-800 hover:bg-emerald-500 text-white'}`}>
+                        {copied ? '✅ COPY COMPLETE' : '作成指示をコピー'}
+                      </button>
+                    </div>
                  </div>
                  <textarea value={roadmapResult} onChange={(e) => setRoadmapResult(e.target.value)} placeholder="AIが教えてくれた具体的な手順をここに保存..." className="w-full h-[360px] bg-[#0a0b14] border-2 border-white/10 rounded-[2.5rem] p-8 text-sm text-slate-300 focus:border-emerald-500 outline-none shadow-inner leading-relaxed italic" />
               </div>
