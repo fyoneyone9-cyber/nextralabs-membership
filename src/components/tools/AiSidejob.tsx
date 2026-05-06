@@ -63,11 +63,11 @@ export default function AiSidejob() {
   if (!isClient) return <div className="min-h-screen bg-[#050507]" />;
 
   return (
-    <div className="min-h-screen bg-[#050507] text-slate-200 font-sans p-3 md:p-10 text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
-      <div className="max-w-7xl mx-auto space-y-8 md:space-y-12">
+    <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-10 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
+      <div className="max-w-7xl mx-auto space-y-4 md:space-y-8">
         <div className="text-center space-y-1 md:space-y-3">
           <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none">AI副業スタートダッシュ</h1>
-          <div className="inline-block bg-[#5845e0] text-white font-black px-10 py-2 rounded-full uppercase italic text-[8px] md:text-sm tracking-widest shadow-2xl">MASTER v2.0</div>
+          <div className="inline-block bg-[#5845e0] text-white font-black px-6 py-1 rounded-full uppercase italic text-[8px] md:text-sm tracking-widest shadow-2xl">MASTER v2.0</div>
         </div>
 
         {/* 🛡️ 完璧なガイド UI */}
