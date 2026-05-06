@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
@@ -23,6 +24,11 @@ const MasterEngine = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [scheduleDate, setScheduleDate] = useState('');
   const [status, setStatus] = useState('IDLE');
+
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => { setIsMounted(true); }, []);
+
+  if (!isMounted) return null;
 
   const generatePR = async () => {
     setIsGenerating(true);
@@ -52,8 +58,6 @@ const MasterEngine = () => {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8 animate-in fade-in duration-700">
-        
-        {/* 🛠️ LEFT: MISSION CONTROL */}
         <div className="lg:col-span-1 space-y-6">
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 shadow-xl relative overflow-hidden h-fit">
              <div className="flex items-center justify-between mb-8">
@@ -62,7 +66,6 @@ const MasterEngine = () => {
                 </div>
                 <Badge className="bg-emerald-500 text-slate-950 font-black text-[8px] uppercase italic">Master Model</Badge>
              </div>
-             
              <div className="space-y-4">
                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-2">Target Master Intelligence</p>
                 <div className="grid grid-cols-1 gap-2 max-h-[300px] overflow-y-auto scrollbar-hide p-1">
@@ -73,29 +76,23 @@ const MasterEngine = () => {
                    ))}
                 </div>
              </div>
-
              <div className="space-y-4 pt-6 border-t border-white/5">
                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-2 italic text-emerald-500">Evidence Note (Updates)</p>
                 <textarea value={updateNote} onChange={(e) => setUpdateNote(e.target.value)} className="w-full h-32 bg-black border-2 border-white/5 rounded-2xl p-4 text-xs text-slate-300 focus:border-emerald-500 outline-none shadow-inner" />
              </div>
-
              <button onClick={generatePR} disabled={isGenerating} className="w-full h-20 bg-white text-black hover:bg-emerald-600 hover:text-white font-black text-xl rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 italic active:scale-95 border-b-4 border-slate-300 active:border-b-0">
                 {isGenerating ? <Loader2 className="animate-spin" /> : <Sparkles />} 記事を自動錬成
              </button>
           </Card>
-
-          <div className="bg-emerald-600/5 border-2 border-emerald-500/20 rounded-[2rem] p-8 space-y-4 italic shadow-inner">
+          <div className="bg-emerald-600/5 border-2 border-emerald-500/20 rounded-[2rem] p-8 space-y-4 italic shadow-inner text-left">
              <p className="text-emerald-500 text-xs font-black uppercase tracking-widest flex items-center gap-2"><Zap size={14}/> Master Protocol</p>
-             <p className="text-slate-400 text-sm font-bold leading-relaxed">マスタ機の実績を「本物のPR」へと昇華。本日確定したMASTERMODELの価値を世界へ届けます。</p>
+             <p className="text-slate-400 text-sm font-bold leading-relaxed text-left">マスタ機の実績を「本物のPR」へと昇華。本日確定したMASTERMODELの価値を世界へ届けます。</p>
           </div>
         </div>
-
-        {/* 📝 CENTER: DRAFT TERMINAL */}
         <div className="lg:col-span-2 space-y-8 text-left">
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 md:p-12 shadow-2xl relative overflow-hidden flex flex-col min-h-[850px]">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-30" />
-            
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center justify-between mb-8 text-left">
                <div className="flex items-center gap-4 text-left">
                   <div className="w-12 h-12 rounded-xl bg-emerald-600/10 flex items-center justify-center border border-emerald-500/20 shadow-inner">
                     <FileText className="text-emerald-500" />
@@ -104,19 +101,12 @@ const MasterEngine = () => {
                </div>
                <button onClick={() => { navigator.clipboard.writeText(article); alert('コピーしました'); }} className="p-4 bg-white/5 rounded-xl text-slate-500 hover:text-emerald-500 transition-all"><Copy size={24}/></button>
             </div>
-
-            <textarea 
-              value={article} 
-              onChange={(e) => setArticle(e.target.value)} 
-              placeholder="生成ボタンを押すと、マスタモデルの実績に基づいたPR記事が出力されます..." 
-              className="flex-1 bg-black border-2 border-white/5 rounded-[2.5rem] p-10 text-lg text-slate-200 focus:border-emerald-500 outline-none font-sans leading-loose shadow-inner italic" 
-            />
-
+            <textarea value={article} onChange={(e) => setArticle(e.target.value)} placeholder="生成ボタンを押すと、マスタモデルの実績に基づいたPR記事が出力されます..." className="flex-1 bg-black border-2 border-white/5 rounded-[2.5rem] p-10 text-lg text-slate-200 focus:border-emerald-500 outline-none font-sans leading-loose shadow-inner italic text-left" />
             {article && (
               <div className="mt-8 pt-8 border-t border-white/5 space-y-6 animate-in slide-in-from-bottom-4">
-                 <div className="flex flex-col md:flex-row gap-6 items-end">
-                    <div className="flex-1 w-full space-y-3">
-                       <div className="flex items-center gap-2 px-4 text-slate-500">
+                 <div className="flex flex-col md:flex-row gap-6 items-end text-left">
+                    <div className="flex-1 w-full space-y-3 text-left">
+                       <div className="flex items-center gap-2 px-4 text-slate-500 text-left">
                           <Calendar size={14} />
                           <p className="text-[10px] font-black uppercase tracking-widest">Post Scheduling</p>
                        </div>
@@ -132,18 +122,20 @@ const MasterEngine = () => {
           </Card>
         </div>
       </div>
-      
       <DebugPanel data={{ status, selectedTool, articleLength: article.length }} toolId="pr-command-system-master" />
       <div className="text-center opacity-20 mt-20 font-black uppercase tracking-[0.5em] italic text-[10px]">NextraLabs MASTERMODEL PR Engine • 2026</div>
     </div>
   )
 }
 
-const NoSSRWrapper = () => {
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => { setIsMounted(true); }, []);
-  if (!isMounted) return <div className="min-h-screen bg-slate-950" />;
-  return <MasterEngine />;
-};
+const PRCommandWithNoSSR = dynamic(() => Promise.resolve(MasterEngine), {
+  ssr: false,
+  loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Initializing PR Master...</div>
+})
 
-export default NoSSRWrapper;
+export default function NoSSRWrapper() {
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => { setIsMounted(true); }, []);
+  if (!isMounted) return <div className="min-h-screen bg-[#050507]" />;
+  return <PRCommandWithNoSSR />;
+}
