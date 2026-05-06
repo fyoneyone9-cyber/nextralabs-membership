@@ -244,20 +244,28 @@ const MasterEngine = () => {
 
                                  <div className="flex flex-wrap gap-4">
                                     <button 
-                                      onClick={() => { navigator.clipboard.writeText(replyTexts[email.id]); }}
+                                      onClick={() => { navigator.clipboard.writeText(replyTexts[email.id]); alert('クリップボードにコピーしました'); }}
                                       className="h-14 bg-blue-600 hover:bg-blue-500 text-white font-black italic rounded-xl px-10 shadow-lg transition-all active:scale-95"
                                     >
                                        Copy Draft
                                     </button>
-                                    {replyTexts[email.id] && (
-                                      <button 
-                                        onClick={() => saveDraft(email)}
-                                        disabled={isDrafting[email.id]}
-                                        className="h-14 bg-white/5 hover:bg-white/10 text-slate-400 font-black italic rounded-xl px-10 border border-white/10 transition-all flex items-center gap-2"
-                                      >
-                                         {isDrafting[email.id] ? 'Saving...' : 'Gmail下書きに保存'}
-                                      </button>
-                                    )}
+                                    
+                                    <button 
+                                      onClick={() => saveDraft(email)}
+                                      disabled={isDrafting[email.id]}
+                                      className="h-14 bg-white/5 hover:bg-white/10 text-slate-400 font-black italic rounded-xl px-10 border border-white/10 transition-all flex items-center gap-2"
+                                    >
+                                       {isDrafting[email.id] ? 'Saving...' : 'Gmail下書きに保存'}
+                                    </button>
+
+                                    <a 
+                                      href={`https://mail.google.com/mail/u/0/#search/${encodeURIComponent(email.from)}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="h-14 bg-red-600/10 hover:bg-red-600/20 text-red-500 font-black italic rounded-xl px-10 border border-red-500/20 transition-all flex items-center justify-center uppercase"
+                                    >
+                                       Open Gmail ↗
+                                    </a>
                                  </div>
                               </div>
                            </div>
