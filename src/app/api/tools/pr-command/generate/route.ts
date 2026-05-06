@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 export async function POST(req: Request) {
   try {
     const { toolName, toolDescription, updateInfo, evidenceData } = await req.json();
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-04-17" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `あなたはNextraLabsの広報担当AI「PR-Command」です。
 マスタ機「${toolName}」の最新実績に基づいた、note向けの最強PR記事を日本語で作成してください。
