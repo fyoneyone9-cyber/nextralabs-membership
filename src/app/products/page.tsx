@@ -33,7 +33,8 @@ const freeTools: Product[] = [
 
 const hotelTools: Product[] = [
   { id: 'staysee-ai-finder', title: 'Staysee AI Finder', subtitle: '画像検索 × 忘れ物照合', description: '遺失物をAI画像解析でスピード特定。Staysee PMSと連携し、フロント業務の負担を激減させる宿泊施設特化型AI。', priceNote: 'プレミアム', tags: ['B2B'], icon: Building2, bgColor: 'bg-blue-500/10', iconColor: 'text-blue-400', status: 'マスタ', isModel: true },
-  { id: 'hotel-affiliate', title: 'アフィリエイト連携', subtitle: '宿紹介 × 楽天収益化OS', description: '宿泊者がSNSで宿を紹介する際、バズる紹介文と楽天アフィリエイトリンクをAIが自動生成。宿の認知拡大と収益化を同時に実現。', priceNote: 'スタンダード', tags: ['SNS'], icon: Share2, bgColor: 'bg-pink-500/10', iconColor: 'text-pink-400', status: 'NEW', isModel: true },
+  { id: 'comp-price-monitor', title: '競合価格監視', subtitle: '楽天API連携 × 価格最適化OS', description: '周辺宿の販売価格をAIが24時間監視。需給バランスを読み取り、Staysee（ステイシー）の最適な販売価格を戦略的に提案します。', priceNote: 'プレミアム', tags: ['B2B'], icon: LineChart, bgColor: 'bg-indigo-500/10', iconColor: 'text-indigo-400', status: 'NEW', isModel: true },
+  { id: 'hotel-affiliate', title: 'アフィリエイト連携', subtitle: '宿紹介 × 楽天収益化OS', description: '宿泊者がSNSで宿を紹介する際、バズる紹介文と楽天アフィリエイトリンクをAIが自動生成。宿の認知拡大と収益化を同時に実現。', priceNote: 'スタンダード', tags: ['SNS'], icon: Share2, bgColor: 'bg-pink-500/10', iconColor: 'text-pink-400', status: 'マスタ', isModel: true },
 ]
 
 const defenseTools: Product[] = [
