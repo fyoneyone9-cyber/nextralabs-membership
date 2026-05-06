@@ -61,11 +61,19 @@ export function AccessGate({ children, productId }: { children: React.ReactNode,
           'disaster-guard', 'shopping-stopper'
         ];
 
+        // ライトプランツール一覧
+        const lightIds = [
+          'sns-auto-poster', 'expense-sync', 'contact-sync', 'price-tracker'
+        ];
+
         // 判定執行
         if (premiumIds.includes(productId)) {
           if (userPlan === 'premium') setStatus('authorized');
           else setStatus('unauthorized');
         } else if (standardIds.includes(productId)) {
+          if (userPlan === 'premium' || userPlan === 'standard') setStatus('authorized');
+          else setStatus('unauthorized');
+        } else if (lightIds.includes(productId)) {
           if (userPlan === 'premium' || userPlan === 'standard' || userPlan === 'light') setStatus('authorized');
           else setStatus('unauthorized');
         } else {
