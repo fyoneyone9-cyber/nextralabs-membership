@@ -7,8 +7,8 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   try {
-    const { action, query } = await req.json();
-    const STAYSEE_API_KEY = process.env.STAYSEE_API_KEY || 'sk_b54ca47f884c30d98dc429d3cbbbc29c';
+    const { action, query, userApiKey } = await req.json();
+    const STAYSEE_API_KEY = userApiKey || process.env.STAYSEE_API_KEY || 'sk_b54ca47f884c30d98dc429d3cbbbc29c';
 
     if (action === 'search-booking') {
       // 🚀 本物のStaysee APIエンドポイント (仮定：公式ドキュメントに基づき調整)

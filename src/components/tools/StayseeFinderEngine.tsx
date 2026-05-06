@@ -17,7 +17,20 @@ export default function StayseeFinderEngine() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [matchResult, setMatchResult] = useState('');
   const [isApiLoading, setIsApiLoading] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [userApiKey, setUserApiKey] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const savedKey = localStorage.getItem('staysee_user_api_key');
+    if (savedKey) setUserApiKey(savedKey);
+  }, []);
+
+  const saveApiKey = () => {
+    localStorage.setItem('staysee_user_api_key', userApiKey);
+    alert('Staysee APIキーをブラウザに保存しました。');
+    setShowSettings(false);
+  };
 
   const searchStaysee = async (query: string) => {
     setIsApiLoading(true);
@@ -25,7 +38,11 @@ export default function StayseeFinderEngine() {
       const res = await fetch('/api/tools/staysee-ai-finder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'search-booking', query }),
+        body: JSON.stringify({ 
+          action: 'search-booking', 
+          query,
+          userApiKey: userApiKey // ユーザーが設定したキーを優先
+        }),
       });
       const data = await res.json();
       if (data.success) {
@@ -98,17 +115,47 @@ export default function StayseeFinderEngine() {
       </div>
 
       <div className="overflow-x-auto pb-4 scrollbar-hide">
-        <div className="bg-slate-900/50 border border-white/5 p-2 flex min-w-[500px] md:min-w-full rounded-2xl">
+        <div className="bg-slate-900/50 border border-white/5 p-2 flex min-w-[500px] md:min-w-full rounded-2xl gap-2">
           {TABS.map((tab) => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex-1 py-5 px-2 rounded-xl font-black text-[10px] md:text-sm uppercase italic transition-all flex items-center justify-center gap-2 relative ${activeTab === tab.id ? 'bg-emerald-600 text-white shadow-xl scale-[1.03] z-10' : 'text-slate-500 hover:text-white'}`}>
+            <button key={tab.id} onClick={() => { setActiveTab(tab.id); setShowSettings(false); }} className={`flex-1 py-5 px-2 rounded-xl font-black text-[10px] md:text-sm uppercase italic transition-all flex items-center justify-center gap-2 relative ${activeTab === tab.id && !showSettings ? 'bg-emerald-600 text-white shadow-xl scale-[1.03] z-10' : 'text-slate-500 hover:text-white'}`}>
               <tab.icon className="w-5 h-5" /> <span>{tab.label}</span>
             </button>
           ))}
+          <button onClick={() => setShowSettings(!showSettings)} className={`px-8 rounded-xl font-black text-[10px] md:text-sm uppercase italic transition-all flex items-center justify-center gap-2 ${showSettings ? 'bg-amber-500 text-black' : 'bg-white/5 text-slate-500 hover:text-white'}`}>
+            <Settings className={`w-5 h-5 ${showSettings ? 'animate-spin-slow' : ''}`} /> <span>設定</span>
+          </button>
         </div>
       </div>
 
       <div className="mt-4">
-        {activeTab === 'scan' && (
+        {showSettings ? (
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-10 md:p-20 shadow-2xl animate-in zoom-in-95 text-center space-y-8">
+            <div className="w-20 h-20 bg-amber-500/10 rounded-3xl flex items-center justify-center mx-auto border-2 border-amber-500/20">
+              <Settings className="w-10 h-10 text-amber-500" />
+            </div>
+            <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">Staysee API Configuration</h3>
+            <p className="text-slate-400 text-sm font-bold italic max-w-md mx-auto">ステイシーのAPIキーを設定することで、宿泊者データとの自動照合が可能になります。キーはブラウザに安全に保存されます。</p>
+            
+            <div className="max-w-xl mx-auto space-y-4">
+              <div className="text-left space-y-2">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4 italic">Your Staysee API Key</label>
+                <input 
+                  type="password"
+                  value={userApiKey}
+                  onChange={(e) => setUserApiKey(e.target.value)}
+                  placeholder="sk_xxxxxxxxxxxxxxxxxxxxxxxx"
+                  className="w-full h-16 bg-black border-2 border-white/10 rounded-2xl px-6 text-white focus:border-amber-500 outline-none font-mono"
+                />
+              </div>
+              <button 
+                onClick={saveApiKey}
+                className="w-full h-16 bg-amber-500 hover:bg-amber-400 text-black font-black rounded-2xl shadow-xl transition-all active:scale-95 uppercase italic"
+              >
+                Save Configuration
+              </button>
+            </div>
+          </Card>
+        ) : activeTab === 'scan' && (
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in slide-in-from-bottom-4 text-center">
             <h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 text-emerald-400"><PackageSearch /> ① 拾得物スキャン</h3>
             {renderGuide(['忘れ物を撮影してアップロード（保存）', '照合指示をコピーしてAIに画像を添付して投げる', 'AIから返ってきた結果を右側に戻す'])}
