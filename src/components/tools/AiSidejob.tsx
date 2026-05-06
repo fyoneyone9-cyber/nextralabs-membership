@@ -1,8 +1,12 @@
 'use client'
 import React, { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Zap, Rocket, Lightbulb, CheckCircle2 } from 'lucide-react'
+import { DebugPanel } from '@/components/tools/DebugPanel'
 
-export default function AiSidejob() {
-  const [isClient, setIsClient] = useState(false);
+const MasterEngine = () => {
   const [activeTab, setActiveTab] = useState('audit');
   const [answers, setAnswers] = useState<Record<number, boolean>>({});
   const [roadmapInput, setRoadmapInput] = useState('');
@@ -10,9 +14,10 @@ export default function AiSidejob() {
   const [price, setPrice] = useState(5000);
   const [count, setCount] = useState(10);
   const [copied, setCopied] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
+    setIsMounted(true);
   }, []);
 
   const QUESTIONS = [
@@ -49,28 +54,29 @@ export default function AiSidejob() {
 以下の具体的アクションを含めてステップバイステップで教えてください。
 
 1. 【準備】専用口座の開設、クラウドソーシング登録
-2. 【初動】まずは低単価でも「実績作り」と割り切る具体的な方法
+2. 【初動】まずは低単価でも「実績作り」と割り切り、具体的な方法を
 3. 【加速】AIツールを駆使して作業効率を3倍にする手順
 4. 【防御】確定申告の20万円ルール、住民税の申告、会社にバレない対策`;
   };
 
   const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (typeof navigator !== 'undefined') {
+      navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
-  if (!isClient) return <div className="min-h-screen bg-[#050507]" />;
+  if (!isMounted) return null;
 
   return (
     <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-10 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
       <div className="max-w-7xl mx-auto space-y-4 md:space-y-8">
         <div className="text-center space-y-1 md:space-y-3">
           <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none">AI副業スタートダッシュ</h1>
-          <div className="inline-block bg-[#5845e0] text-white font-black px-6 py-1 rounded-full uppercase italic text-[8px] md:text-sm tracking-widest shadow-2xl">MASTER v2.0</div>
+          <div className="inline-block bg-[#5845e0] text-white font-black px-10 py-2 rounded-full uppercase italic text-[8px] md:text-sm tracking-widest shadow-2xl">MASTER v2.0</div>
         </div>
 
-        {/* 🛡️ 完璧なガイド UI */}
         <div className="bg-[#13141f] border border-white/5 rounded-3xl p-8 max-w-4xl mx-auto flex items-start gap-6 shadow-inner">
           <div className="w-10 h-10 rounded-full border border-[#5845e0]/30 flex items-center justify-center shrink-0 text-[#5845e0] font-bold">!</div>
           <div className="space-y-1 text-left">
@@ -83,7 +89,6 @@ export default function AiSidejob() {
           </div>
         </div>
 
-        {/* 🛠️ TAB NAVIGATION */}
         <div className="flex gap-1 bg-[#1a1b26]/50 p-1.5 rounded-2xl border border-white/5 max-w-4xl mx-auto">
           {[
             { id: 'audit', label: '① 適性診断' },
@@ -98,7 +103,7 @@ export default function AiSidejob() {
 
         <div className="mt-4 max-w-5xl mx-auto">
           {activeTab === 'audit' && (
-            <div className="bg-[#13141f] border border-white/10 rounded-[3rem] p-6 md:p-16 shadow-2xl relative animate-in fade-in">
+            <div className="bg-[#13141f] border border-white/10 rounded-[3rem] p-6 md:p-16 shadow-2xl relative animate-in fade-in text-left">
               <h2 className="text-2xl md:text-4xl font-black text-white italic uppercase text-center mb-10 flex items-center justify-center gap-3"><Zap className="text-[#5845e0]" /> 副業適性診断</h2>
               <div className="grid lg:grid-cols-2 gap-12 text-left">
                 <div className="space-y-4">
@@ -115,14 +120,14 @@ export default function AiSidejob() {
                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#5845e0] to-transparent opacity-30" />
                    <div className="text-center space-y-2">
                       <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Ready to Analyze</p>
-                      <p className="text-slate-400 text-xs font-bold italic">チェックを入れたら、下のボタンで指示をコピー</p>
+                      <p className="text-slate-400 text-xs font-bold italic">チェックを入れたら指示をコピー</p>
                    </div>
                    <button onClick={() => handleCopy(getAuditPrompt())} className={`w-full h-24 text-xl md:text-2xl font-black rounded-3xl transition-all shadow-2xl border-b-8 ${copied ? 'bg-emerald-500 border-emerald-800 scale-95' : 'bg-[#5845e0] border-[#3e2fb1] hover:bg-[#6c5ae6] text-white'}`}>
                       {copied ? '✅ COPY COMPLETE' : '診断指示をコピー'}
                    </button>
                    <div className="grid grid-cols-3 gap-3 w-full">
                       {['CHATGPT', 'GEMINI', 'CLAUDE'].map(ai => (
-                        <button key={ai} onClick={() => window.open(ai === 'CHATGPT' ? 'https://chatgpt.com' : ai === 'GEMINI' ? 'https://gemini.google.com' : 'https://claude.ai', '_blank')} className="h-14 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black text-slate-500 hover:text-white hover:border-white/20 transition-all uppercase italic">{ai}</button>
+                        <button key={ai} onClick={() => window.open(ai === 'CHATGPT' ? 'https://chatgpt.com' : ai === 'GEMINI' ? 'https://gemini.google.com' : 'https://claude.ai', '_blank')} className="h-14 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black text-slate-500 hover:text-white transition-all uppercase italic">{ai}</button>
                       ))}
                    </div>
                 </div>
@@ -131,33 +136,26 @@ export default function AiSidejob() {
           )}
 
           {activeTab === 'roadmap' && (
-            <div className="bg-[#13141f] border border-white/10 rounded-[3rem] p-6 md:p-16 animate-in fade-in space-y-10">
+            <div className="bg-[#13141f] border border-white/10 rounded-[3rem] p-6 md:p-16 animate-in fade-in space-y-10 text-left">
               <h2 className="text-2xl md:text-4xl font-black text-white italic uppercase text-center mb-10 flex items-center justify-center gap-3"><Rocket className="text-emerald-400" /> 0→1ロードマップ</h2>
-              
               <div className="grid lg:grid-cols-2 gap-12 text-left">
                  <div className="space-y-6">
                     <div className="bg-[#0a0b14] border border-white/5 rounded-[2rem] p-6 flex items-start gap-4 shadow-inner">
                        <Lightbulb className="text-emerald-400 shrink-0" />
-                       <p className="text-xs font-bold text-slate-400 italic">選んだ副業名を入れて「作成指示」をコピー。AIが具体的な手順（防御策含む）を教えます。</p>
+                       <p className="text-xs font-bold text-slate-400 italic">選んだ副業名を入れて「作成指示」をコピー。AIが具体的手順を教えます。</p>
                     </div>
-                    <div className="space-y-2">
-                       <p className="text-[10px] font-black text-slate-500 uppercase px-4 italic tracking-widest">Target Sidejob</p>
-                       <textarea value={roadmapInput} onChange={(e) => setRoadmapInput(e.target.value)} placeholder="例: AI画像生成によるSNS運用代行" className="w-full h-48 bg-[#0a0b14] border-2 border-white/10 rounded-[2rem] p-8 text-lg text-white outline-none focus:border-emerald-500 shadow-inner leading-relaxed italic" />
-                    </div>
+                    <textarea value={roadmapInput} onChange={(e) => setRoadmapInput(e.target.value)} placeholder="例: AI画像生成によるSNS運用代行" className="w-full h-48 bg-[#0a0b14] border-2 border-white/10 rounded-[2rem] p-8 text-lg text-white outline-none focus:border-emerald-500 shadow-inner leading-relaxed italic" />
                     <button onClick={() => handleCopy(getRoadmapPrompt())} className={`w-full h-20 text-xl font-black rounded-3xl transition-all shadow-xl border-b-8 ${copied ? 'bg-emerald-500 border-emerald-800' : 'bg-emerald-600 border-emerald-800 hover:bg-emerald-500 text-white'}`}>
                       {copied ? '✅ COPY COMPLETE' : '作成指示をコピー'}
                     </button>
                  </div>
-                 <div className="space-y-4">
-                    <p className="text-[10px] font-black text-slate-500 uppercase px-4 italic tracking-widest">Master Roadmap Result</p>
-                    <textarea value={roadmapResult} onChange={(e) => setRoadmapResult(e.target.value)} placeholder="AIが教えてくれた具体的な手順をここに貼り付けて、いつでも確認できるように保存しましょう..." className="w-full h-[360px] bg-[#0a0b14] border-2 border-white/10 rounded-[2.5rem] p-8 text-sm text-slate-300 focus:border-emerald-500 outline-none shadow-inner leading-relaxed italic" />
-                 </div>
+                 <textarea value={roadmapResult} onChange={(e) => setRoadmapResult(e.target.value)} placeholder="AIが教えてくれた具体的な手順をここに保存..." className="w-full h-[360px] bg-[#0a0b14] border-2 border-white/10 rounded-[2.5rem] p-8 text-sm text-slate-300 focus:border-emerald-500 outline-none shadow-inner leading-relaxed italic" />
               </div>
             </div>
           )}
 
           {activeTab === 'calc' && (
-            <div className="bg-[#13141f] border border-white/10 rounded-[3rem] p-6 md:p-16 animate-in fade-in space-y-12">
+            <div className="bg-[#13141f] border border-white/10 rounded-[3rem] p-6 md:p-16 animate-in fade-in space-y-12 text-left">
               <h2 className="text-2xl md:text-4xl font-black text-white italic uppercase text-center mb-8 flex items-center justify-center gap-3">💰 収益シミュレーター</h2>
               <div className="max-w-md mx-auto space-y-12 text-left">
                  <div className="space-y-6">
@@ -184,8 +182,16 @@ export default function AiSidejob() {
           )}
         </div>
       </div>
-      <DebugPanel data={{ activeTab, hasAnswers: Object.keys(answers).length > 0, roadmapLen: roadmapResult.length }} toolId="ai-sidejob-master" />
-      <div className="text-center opacity-10 mt-20 font-black uppercase tracking-[0.5em] italic text-[10px]">Sidejob Automation OS • NextraLabs 2026</div>
+      <DebugPanel data={{ activeTab, hasAnswers: Object.keys(answers).length > 0 }} toolId="ai-sidejob-master" />
     </div>
   )
+}
+
+const AiSidejobWithNoSSR = dynamic(() => Promise.resolve(MasterEngine), {
+  ssr: false,
+  loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Initializing Master Node...</div>
+})
+
+export default function NoSSRWrapper() {
+  return <AiSidejobWithNoSSR />;
 }
