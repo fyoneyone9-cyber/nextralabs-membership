@@ -126,7 +126,7 @@ export default function StayseeFinderEngine() {
   };
 
   const FINAL_PROMPT = `【最優先：添付された画像を解析してください】
-あなたはホテル管理システム（PMS）の専門家です。今添付した【忘れ物の写真】を元に、Stayseeの宿泊履歴から持ち主を特定するための詳細分析を行ってください。`;
+あなたはホテル管理システム（PMS）の専門家です。今添付した【忘れ物の写真】を元に,Stayseeの宿泊履歴から持ち主を特定するための詳細分析を行ってください。`;
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-[#050507] border-8 border-emerald-500/50 rounded-[4rem] my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)] print:border-0 print:shadow-none print:my-0 print:p-0">
@@ -206,34 +206,36 @@ export default function StayseeFinderEngine() {
             )}
           </Card>
         ) : activeTab === 'match' ? (
-          <div className="animate-in fade-in zoom-in space-y-8 text-left pb-20">
-            <Card className="bg-[#13141f] border-4 border-emerald-500/50 rounded-[4rem] p-10 md:p-20 shadow-[0_0_100px_rgba(16,185,129,0.1)] border-l-[16px] border-l-emerald-600 relative overflow-hidden print:border-0 print:shadow-none print:p-0">
+          <div className="animate-in fade-in zoom-in space-y-8 text-left pb-20 print:pb-0">
+            <Card className="bg-[#13141f] border-4 border-emerald-500/50 rounded-[4rem] p-10 md:p-20 shadow-[0_0_100px_rgba(16,185,129,0.1)] border-l-[16px] border-l-emerald-600 relative overflow-hidden print:border-0 print:shadow-none print:p-0 print:bg-white print:text-black print:rounded-none">
                <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white print:hidden"><Building2 className="w-96 h-96" /></div>
-               <div className="relative z-10 space-y-12">
+               <div className="relative z-10 space-y-12 print:space-y-6">
                   <div className="flex flex-col items-center gap-4 text-center">
-                    <Shield className="text-emerald-500 w-24 h-24 animate-pulse print:w-16 print:h-16" />
-                    <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter leading-none">AI Official Certificate</h3>
-                    <div className="bg-emerald-600 text-white px-8 py-2 rounded-full font-black italic text-sm shadow-lg leading-none">NextraLabs Verification v3.1-MASTER</div>
+                    <Shield className="text-emerald-500 w-24 h-24 animate-pulse print:text-emerald-600 print:w-16 print:h-16 print:animate-none" />
+                    <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter leading-none print:text-black print:text-3xl">AI Official Certificate</h3>
+                    <div className="bg-emerald-600 text-white px-8 py-2 rounded-full font-black italic text-sm shadow-lg leading-none print:bg-emerald-100 print:text-emerald-800 print:border print:border-emerald-200">NextraLabs Verification v3.1-MASTER</div>
                   </div>
 
                   {certData ? (
-                    <div className="grid lg:grid-cols-2 gap-10 print:grid-cols-1">
+                    <div className="grid lg:grid-cols-2 gap-10 print:grid-cols-1 print:gap-4">
                       <div className="space-y-6">
-                        <div className="aspect-video bg-black rounded-[3rem] border-2 border-white/10 overflow-hidden relative shadow-2xl print:rounded-2xl print:border-slate-800">
-                          <img src={image || ''} className="w-full h-full object-contain p-8" />
+                        <div className="aspect-video bg-black rounded-[3rem] border-2 border-white/10 overflow-hidden relative shadow-2xl print:rounded-xl print:border-slate-200 print:shadow-none print:bg-slate-50">
+                          <img src={image || ''} className="w-full h-full object-contain p-8 print:p-2" />
                           <div className="absolute top-6 left-6 bg-emerald-500 text-slate-950 font-black px-4 py-1 rounded-full text-[10px] italic leading-none print:hidden">ORIGINAL EVIDENCE</div>
                         </div>
-                        <div className="hidden print:block text-[10px] font-mono text-slate-500 text-center">CERT_ID: {certData.certId} / DATE: {new Date().toLocaleDateString()}</div>
+                        <div className="hidden print:block text-[10px] font-mono text-slate-400 text-center uppercase tracking-widest border-t border-slate-100 pt-2">Management Node: NextraLabs-Verified-PMS</div>
                       </div>
-                      <div className="space-y-6 text-left bg-slate-950/80 p-10 rounded-[3rem] border border-white/5 shadow-inner print:bg-transparent print:border-0 print:p-0">
-                         <div><p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2">Management ID</p><p className="text-xl font-mono text-white">{certData.certId}</p></div>
-                         <div><p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2">Item Name</p><p className="text-3xl font-black text-white italic">{certData.itemName}</p></div>
-                         <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-white/5 p-4 rounded-2xl border border-white/5 print:bg-transparent print:border-slate-800"><p className="text-[8px] font-black text-slate-500 uppercase">Grade</p><p className="text-2xl font-black text-emerald-400 italic">{certData.status}</p></div>
-                            <div className="bg-white/5 p-4 rounded-2xl border border-white/5 print:bg-transparent print:border-slate-800"><p className="text-[8px] font-black text-slate-500 uppercase">Expiry</p><p className="text-xs font-black text-white">{certData.expiry}</p></div>
+                      <div className="space-y-6 text-left bg-slate-950/80 p-10 rounded-[3rem] border border-white/5 shadow-inner print:bg-white print:border-2 print:border-slate-100 print:p-6 print:rounded-2xl print:shadow-none">
+                         <div className="grid grid-cols-1 gap-4">
+                            <div><p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 print:text-emerald-600">Management ID</p><p className="text-xl font-mono text-white print:text-black">{certData.certId}</p></div>
+                            <div><p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 print:text-emerald-600">Item Name</p><p className="text-3xl font-black text-white italic print:text-black print:text-2xl">{certData.itemName}</p></div>
                          </div>
-                         <div><p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Description</p><p className="text-sm text-slate-300 italic">{certData.description}</p></div>
-                         <div className="pt-6 border-t border-white/5"><p className="text-sm text-emerald-400 font-bold italic leading-relaxed">" {certData.message} "</p></div>
+                         <div className="grid grid-cols-2 gap-4">
+                            <div className="bg-white/5 p-4 rounded-2xl border border-white/5 print:bg-slate-50 print:border-slate-200"><p className="text-[8px] font-black text-slate-500 uppercase">Grade</p><p className="text-2xl font-black text-emerald-400 italic print:text-emerald-700">{certData.status}</p></div>
+                            <div className="bg-white/5 p-4 rounded-2xl border border-white/5 print:bg-slate-50 print:border-slate-200"><p className="text-[8px] font-black text-slate-500 uppercase">Expiry</p><p className="text-xs font-black text-white print:text-black">{certData.expiry}</p></div>
+                         </div>
+                         <div><p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Description</p><p className="text-sm text-slate-300 italic print:text-slate-700 print:not-italic">{certData.description}</p></div>
+                         <div className="pt-4 border-t border-white/5 print:border-slate-100"><p className="text-sm text-emerald-400 font-bold italic leading-relaxed print:text-slate-600 print:not-italic">" {certData.message} "</p></div>
                          <button onClick={() => window.print()} className="w-full h-16 bg-white text-black font-black rounded-2xl shadow-xl hover:bg-emerald-500 hover:text-white transition-all uppercase italic flex items-center justify-center gap-3 mt-4 print:hidden"><Printer className="w-6 h-6" /> Print Certificate</button>
                       </div>
                     </div>
@@ -256,13 +258,13 @@ export default function StayseeFinderEngine() {
           </div>
         ) : (
           <div className="animate-in fade-in zoom-in space-y-8 text-left pb-20">
-            <Card className="bg-[#0f111a] border-4 border-blue-500/50 rounded-[4rem] p-10 md:p-16 shadow-2xl relative overflow-hidden print:border-0 print:shadow-none print:p-0">
+            <Card className="bg-[#0f111a] border-4 border-blue-500/50 rounded-[4rem] p-10 md:p-16 shadow-2xl relative overflow-hidden print:border-0 print:shadow-none print:p-0 print:bg-white print:text-black print:rounded-none">
                <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white print:hidden"><Zap className="w-96 h-96" /></div>
                <div className="relative z-10 space-y-10">
                   <div className="flex flex-col items-center gap-4 text-center">
-                    <div className="p-5 bg-blue-600 rounded-3xl shadow-xl shadow-blue-500/20 print:bg-slate-900"><Building2 className="text-white w-12 h-12" /></div>
-                    <h3 className="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none">Hospitality Insight Report</h3>
-                    <div className="bg-blue-600 text-white px-8 py-2 rounded-full font-black italic text-xs shadow-lg uppercase print:bg-slate-900">Strategic Management Advisory v1.0-MASTER</div>
+                    <div className="p-5 bg-blue-600 rounded-3xl shadow-xl shadow-blue-500/20 print:bg-blue-100 print:shadow-none"><Building2 className="text-white w-12 h-12 print:text-blue-700" /></div>
+                    <h3 className="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none print:text-black print:text-3xl">Hospitality Insight Report</h3>
+                    <div className="bg-blue-600 text-white px-8 py-2 rounded-full font-black italic text-xs shadow-lg uppercase print:bg-blue-50 print:text-blue-800 print:border print:border-blue-200">Strategic Management Advisory v1.0-MASTER</div>
                   </div>
 
                   {!insightData ? (
@@ -271,22 +273,22 @@ export default function StayseeFinderEngine() {
                        <button onClick={generateInsight} disabled={isGeneratingInsight} className="h-24 px-16 bg-blue-600 hover:bg-blue-500 text-white font-black text-2xl rounded-3xl shadow-2xl transition-all active:scale-95 flex items-center gap-4 italic uppercase">{isGeneratingInsight ? 'Analyzing...' : '経営レポートを生成する 📊'}</button>
                     </div>
                   ) : (
-                    <div className="grid lg:grid-cols-3 gap-8">
-                       <div className="lg:col-span-2 space-y-8">
-                          <div className="bg-slate-950/80 p-10 rounded-[3rem] border border-white/5 shadow-inner print:bg-transparent print:border-slate-800 print:p-0"><p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-4 italic">Executive Summary</p><p className="text-xl text-white font-bold leading-relaxed italic">{insightData.summary}</p></div>
+                    <div className="grid lg:grid-cols-3 gap-8 print:grid-cols-1">
+                       <div className="lg:col-span-2 space-y-8 print:space-y-4">
+                          <div className="bg-slate-950/80 p-10 rounded-[3rem] border border-white/5 shadow-inner print:bg-white print:border-2 print:border-slate-100 print:p-6 print:rounded-2xl"><p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-4 italic print:text-blue-600">Executive Summary</p><p className="text-xl text-white font-bold leading-relaxed italic print:text-black print:text-lg print:not-italic">{insightData.summary}</p></div>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 print:grid-cols-1">
                              {insightData.findings.map((f: any, i: number) => (
-                               <div key={i} className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10 space-y-4 print:bg-transparent print:border-slate-800">
-                                  <div className="flex items-center gap-3"><Badge className="bg-blue-500 text-white font-black">{f.room}</Badge><p className="text-white font-black text-sm uppercase italic">POINT</p></div>
-                                  <p className="text-slate-300 text-sm italic font-bold">{f.trend}</p>
-                                  <div className="pt-4 border-t border-white/5"><p className="text-xs font-black text-emerald-400 uppercase mb-2">Recommendation</p><p className="text-slate-200 text-sm font-bold leading-relaxed">{f.action}</p></div>
+                               <div key={i} className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10 space-y-4 print:bg-slate-50 print:border-slate-200 print:p-4 print:rounded-xl">
+                                  <div className="flex items-center gap-3"><Badge className="bg-blue-500 text-white font-black print:bg-blue-600">{f.room}</Badge><p className="text-white font-black text-sm uppercase italic print:text-slate-500">POINT</p></div>
+                                  <p className="text-slate-300 text-sm italic font-bold print:text-black print:not-italic">{f.trend}</p>
+                                  <div className="pt-4 border-t border-white/5 print:border-slate-200"><p className="text-xs font-black text-emerald-400 uppercase mb-2 print:text-emerald-700">Recommendation</p><p className="text-slate-200 text-sm font-bold leading-relaxed print:text-slate-700">{f.action}</p></div>
                                </div>
                              ))}
                           </div>
                        </div>
-                       <div className="space-y-8">
-                          <div className="bg-emerald-600/10 border-2 border-emerald-500/30 p-8 rounded-[2.5rem] shadow-xl print:bg-transparent print:border-slate-800"><p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-4 italic">ROI Projection</p><p className="text-3xl font-black text-white italic leading-tight">{insightData.roi}</p></div>
-                          <div className="bg-[#1a1c2e] p-8 rounded-[2.5rem] border border-blue-500/20 shadow-inner print:bg-transparent print:border-slate-800"><p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-4 italic">Strategic Tip</p><p className="text-sm text-slate-300 leading-relaxed font-bold italic">"{insightData.executiveMessage}"</p></div>
+                       <div className="space-y-8 print:space-y-4">
+                          <div className="bg-emerald-600/10 border-2 border-emerald-500/30 p-8 rounded-[2.5rem] shadow-xl print:bg-emerald-50 print:border-emerald-200 print:p-6 print:rounded-2xl"><p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-4 italic">ROI Projection</p><p className="text-3xl font-black text-white italic leading-tight print:text-black print:text-2xl print:not-italic">{insightData.roi}</p></div>
+                          <div className="bg-[#1a1c2e] p-8 rounded-[2.5rem] border border-blue-500/20 shadow-inner print:bg-slate-50 print:border-slate-100 print:p-6 print:rounded-2xl"><p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-4 italic">Strategic Tip</p><p className="text-sm text-slate-300 leading-relaxed font-bold italic print:text-slate-600 print:not-italic">"{insightData.executiveMessage}"</p></div>
                           <button onClick={() => window.print()} className="w-full h-20 bg-white text-black font-black rounded-2xl shadow-xl hover:bg-blue-600 transition-all uppercase italic flex items-center justify-center gap-4 print:hidden">PRINT REPORT</button>
                        </div>
                     </div>
