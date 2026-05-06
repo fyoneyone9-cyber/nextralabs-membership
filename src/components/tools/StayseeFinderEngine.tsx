@@ -16,7 +16,29 @@ export default function StayseeFinderEngine() {
   const [image, setImage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [matchResult, setMatchResult] = useState('');
+  const [isApiLoading, setIsApiLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const searchStaysee = async (query: string) => {
+    setIsApiLoading(true);
+    try {
+      const res = await fetch('/api/tools/staysee-ai-finder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'search-booking', query }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setMatchResult(JSON.stringify(data.results, null, 2));
+        alert('Staysee APIから宿泊者データを同期しました！');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Staysee API連携エラー：APIキーまたは通信設定を確認してください');
+    } finally {
+      setIsApiLoading(false);
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -133,8 +155,17 @@ export default function StayseeFinderEngine() {
               </div>
               <div className="bg-[#0a0b14] rounded-[3rem] p-10 border border-white/5 space-y-6 shadow-inner flex flex-col justify-center relative overflow-hidden">
                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-600 to-transparent opacity-30" />
-                 <div className="flex items-center gap-4"><ClipboardPaste className="h-8 w-8 text-emerald-400" /><h3 className="text-xl font-black text-white italic uppercase tracking-tighter">照合結果を戻す</h3></div>
-                 <textarea value={matchResult} onChange={(e) => setMatchResult(e.target.value)} placeholder="AIから届いたStaysee検索情報をペースト..." className="w-full h-80 bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 text-sm text-slate-300 focus:border-emerald-500 outline-none font-mono italic shadow-inner leading-relaxed" />
+                 <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4"><ClipboardPaste className="h-8 w-8 text-emerald-400" /><h3 className="text-xl font-black text-white italic uppercase tracking-tighter">照合結果（Staysee同期）</h3></div>
+                    <button 
+                      onClick={() => searchStaysee('latest')} 
+                      disabled={isApiLoading}
+                      className="h-10 bg-emerald-600 hover:bg-emerald-500 text-white px-6 rounded-xl font-black italic text-[10px] uppercase shadow-lg transition-all animate-pulse disabled:opacity-50"
+                    >
+                      {isApiLoading ? 'SYNCING...' : 'LIVE SYNC STAYSEE'}
+                    </button>
+                 </div>
+                 <textarea value={matchResult} onChange={(e) => setMatchResult(e.target.value)} placeholder="AIから届いた情報またはStaysee同期ボタンで宿泊データを取得..." className="w-full h-80 bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 text-sm text-slate-300 focus:border-emerald-500 outline-none font-mono italic shadow-inner leading-relaxed" />
               </div>
             </div>
             {matchResult && (
