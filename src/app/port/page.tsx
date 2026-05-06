@@ -1,12 +1,11 @@
-﻿'use client'
+'use client'
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
-  Zap, Globe, Shield, Rocket, Mail, Briefcase, 
-  Wallet, Building2, Youtube, ExternalLink, ArrowRight, Sparkles 
+  Zap, ArrowRight, Sparkles 
 } from 'lucide-react'
 
 // 各マスタツールのリスト
@@ -26,7 +25,7 @@ const MASTER_MODELS = [
 const PortPageContent = () => {
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => { setIsMounted(true); }, []);
-  if (!isMounted) return null;
+  if (!isMounted) return <div className="min-h-screen bg-[#050507]" />;
 
   return (
     <div className="min-h-screen bg-[#050507] text-slate-200 font-sans p-4 md:p-10 pb-32 overflow-x-hidden">
@@ -42,16 +41,16 @@ const PortPageContent = () => {
         {/* Master Node Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {MASTER_MODELS.map((model) => (
-            <Link key={model.id} href={/products/ + model.id + /app}>
+            <Link key={model.id} href={`/products/${model.id}/app`}>
               <Card className="bg-[#13141f] border-2 border-emerald-500/50 rounded-[2.5rem] p-8 hover:scale-[1.03] hover:border-emerald-500 transition-all cursor-pointer group shadow-2xl relative overflow-hidden h-48 flex flex-col justify-center">
-                <div className="absolute top-0 right-8 bg-emerald-500 text-slate-950 text-[8px] font-black px-3 py-1 rounded-b-lg uppercase tracking-tighter shadow-lg">MASTER</div>
+                <div className="absolute top-0 right-8 bg-emerald-500 text-slate-950 text-[8px] font-black px-3 py-0.5 rounded-b-lg uppercase tracking-tighter shadow-lg">MASTER</div>
                 <div className="flex items-center gap-6">
-                  <div className={w-16 h-16  + model.bg +   + model.color +  rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform}>
+                  <div className={`w-16 h-16 ${model.bg} ${model.color} rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform`}>
                     <Zap size={32} />
                   </div>
                   <div>
-                    <h3 className="text-xl font-black text-white italic leading-tight group-hover:text-emerald-400 transition-colors uppercase"> + model.name + </h3>
-                    <p className="text-[10px] font-bold text-slate-600 mt-2 uppercase tracking-widest italic">Node Status: Online ( + model.version + )</p>
+                    <h3 className="text-xl font-black text-white italic leading-tight group-hover:text-emerald-400 transition-colors uppercase">{model.name}</h3>
+                    <p className="text-[10px] font-bold text-slate-600 mt-2 uppercase tracking-widest italic">Node Status: Online ({model.version})</p>
                   </div>
                 </div>
               </Card>
