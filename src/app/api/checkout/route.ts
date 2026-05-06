@@ -3,33 +3,41 @@ import { createClient } from '@supabase/supabase-js'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe'
 
+/**
+ * 🛠️ Master Price ID Map (MEMORY.mdに基づく)
+ * 環境変数がない場合のフェイルセーフとしてハードコード
+ */
+const PRICE_IDS = {
+  light: 'price_1TSLd55HQYoJh51tKxN9A7E1', // 仮の値（必要に応じて修正）
+  standard: 'price_1TRYU05HQYoJh51tWIeoMqf0',
+  premium: 'price_1TRYVG5HQYoJh51tKFh7eI3x'
+};
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json().catch(() => ({}))
     const plan = body.plan || 'standard'
     const accessToken = body.access_token
 
-    const priceId = plan === 'premium'
-      ? process.env.STRIPE_PREMIUM_PRICE_ID
-      : plan === 'light'
-      ? process.env.STRIPE_LIGHT_PRICE_ID
-      : process.env.STRIPE_STANDARD_PRICE_ID
+    // 環境変数を優先し、なければハードコードから取得
+    let priceId = "";
+    if (plan === 'premium') priceId = process.env.STRIPE_PREMIUM_PRICE_ID || PRICE_IDS.premium;
+    else if (plan === 'light') priceId = process.env.STRIPE_LIGHT_PRICE_ID || PRICE_IDS.light;
+    else priceId = process.env.STRIPE_STANDARD_PRICE_ID || PRICE_IDS.standard;
+
+    console.log(`[CHECKOUT] Initializing for plan: ${plan}, priceId: ${priceId}`);
 
     if (!priceId) {
-      return NextResponse.json({ error: 'Price IDが設定されていません' }, { status: 500 })
+      return NextResponse.json({ error: 'Stripe Price IDが設定されていません。Vercelの環境変数を確認してください。' }, { status: 500 })
     }
 
-    // Try cookie-based auth first, then token-based
     let user: any = null
-
-    // Cookie-based (server component style)
     try {
       const supabaseServer = createServerSupabaseClient()
       const { data } = await supabaseServer.auth.getUser()
       user = data?.user
     } catch {}
 
-    // Fallback: token-based auth from client
     if (!user && accessToken) {
       try {
         const supabaseToken = createClient(
@@ -46,7 +54,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
     }
 
-    // 既存のStripe customerを確認（service roleで直接取得）
     const supabaseService = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -72,12 +79,7 @@ export async function POST(request: NextRequest) {
       customer: customerId,
       mode: 'subscription',
       payment_method_types: ['card'],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
+      line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://membership-site-nextralabos.vercel.app'}/dashboard?checkout=success`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://membership-site-nextralabos.vercel.app'}/pricing?checkout=cancel`,
       metadata: { user_id: user.id, plan },
@@ -85,10 +87,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url: session.url })
   } catch (error: any) {
-    console.error('Checkout error:', error?.message, error?.type, error?.statusCode)
+    console.error('Checkout error:', error?.message);
     return NextResponse.json(
       { error: error?.message || 'チェックアウトセッションの作成に失敗しました' },
-      { status: error?.statusCode || 500 }
+      { status: 500 }
     )
   }
 }
