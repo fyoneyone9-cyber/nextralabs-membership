@@ -62,6 +62,9 @@ export function Header() {
           <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors">
             ツール一覧
           </Link>
+          <Link href="/tool-guide" className="text-sm font-medium hover:text-primary transition-colors">
+            ツール説明
+          </Link>
           <Link href="/pricing" className="text-sm font-medium hover:text-primary transition-colors">
             料金プラン
           </Link>
@@ -134,6 +137,9 @@ export function Header() {
         <div className="md:hidden border-t bg-background px-4 py-4 space-y-3">
           <Link href="/products" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>
             ツール一覧
+          </Link>
+          <Link href="/tool-guide" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>
+            ツール説明
           </Link>
           <Link href="/pricing" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>
             料金プラン
