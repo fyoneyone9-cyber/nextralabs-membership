@@ -44,7 +44,13 @@ const MasterEngine = () => {
       <div className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-6 md:p-10 shadow-2xl space-y-8 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent opacity-30" />
         
-        <div className="bg-[#0a0b14] border border-white/5 rounded-3xl p-6 md:p-10 flex items-start gap-6 shadow-inner text-left text-left">
+        <div className="bg-[#0a0b14] border border-white/5 rounded-3xl p-6 md:p-10 flex items-start gap-6 shadow-inner text-left relative overflow-hidden">
+          <div className="absolute top-2 right-4 flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/50 shadow-[0_0_15px_rgba(34,197,94,0.4)]">
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-[10px] font-black text-green-500 uppercase tracking-tighter italic">API: CONNECTED (GOOGLE_TRENDS)</span>
+            </div>
+          </div>
           <div className="w-14 h-14 rounded-2xl border border-orange-500/30 flex items-center justify-center shrink-0 text-orange-500 font-bold text-2xl bg-orange-500/5">!</div>
           <div className="space-y-3 text-left">
             <p className="text-[12px] font-black text-orange-500 uppercase tracking-[0.3em] italic mb-2 text-left">運用プロトコル / TREND ENGINE</p>
@@ -98,11 +104,11 @@ const MasterEngine = () => {
                  </div>
 
                  <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-4 border-t border-white/5">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 text-left">
                        <div className="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center border border-white/10">
                           <Package className="text-orange-500" size={28} />
                        </div>
-                       <div>
+                       <div className="text-left">
                           <p className="text-[10px] font-black text-slate-500 uppercase">Target Item</p>
                           <p className="text-xl font-black text-white">{p.item}</p>
                        </div>
@@ -130,7 +136,7 @@ const MasterEngine = () => {
         </div>
       </div>
 
-      <div className="bg-orange-600/5 border-2 border-orange-500/20 rounded-[2.5rem] p-8 space-y-4 italic shadow-inner text-left">
+      <div className="bg-orange-600/5 border-2 border-orange-500/20 rounded-[2.5rem] p-8 italic shadow-inner text-left">
          <div className="flex items-center gap-3 text-orange-500">
             <Rocket size={20} />
             <p className="text-xs font-black uppercase tracking-widest">Master Prediction Protocol</p>
