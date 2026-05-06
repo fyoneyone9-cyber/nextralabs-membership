@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -86,7 +86,7 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
                 <div className="flex items-center gap-3"><Unlock className="h-4 w-4 text-emerald-500" /><span className="text-sm font-black uppercase">Master Surveillance</span></div>
                 <div className="flex gap-2">
                   <Link 
-                    href="https://kgiyygbt.gensparkclaw.com/" 
+                    href="/port" 
                     target="_blank" 
                     className="h-8 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-black rounded-lg px-4 flex items-center gap-2 transition-all shadow-lg active:scale-95"
                   >
