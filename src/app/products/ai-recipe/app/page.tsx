@@ -1,5 +1,5 @@
-﻿import AiRecipeScope from '@/components/products/AiRecipeScope'
-import { AccessGate } from '@/components/products/AccessGate'
+﻿import AiRecipeScope from '@/components/tools/AiRecipeScope'
+import { AccessGate } from '@/components/tools/AccessGate'
 
 export default function Page() {
   return (

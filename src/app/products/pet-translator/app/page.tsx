@@ -1,5 +1,5 @@
-﻿import PetTranslator from '@/components/products/PetTranslator'
-import { AccessGate } from '@/components/products/AccessGate'
+﻿import PetTranslator from '@/components/tools/PetTranslator'
+import { AccessGate } from '@/components/tools/AccessGate'
 
 export default function Page() {
   return (

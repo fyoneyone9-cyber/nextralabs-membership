@@ -1,5 +1,5 @@
-﻿import KdpGuide from '@/components/products/KdpGuide'
-import { AccessGate } from '@/components/products/AccessGate'
+﻿import KdpGuide from '@/components/tools/KdpGuide'
+import { AccessGate } from '@/components/tools/AccessGate'
 
 export default function Page() {
   return (

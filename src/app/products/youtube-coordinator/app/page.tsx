@@ -1,7 +1,7 @@
 ﻿import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import YoutubeCoordinatorSystem from '@/components/products/YoutubeCoordinatorSystem'
-import { AccessGate } from '@/components/products/AccessGate'
+import YoutubeCoordinatorSystem from '@/components/tools/YoutubeCoordinatorSystem'
+import { AccessGate } from '@/components/tools/AccessGate'
 
 export default async function Page() {
   const supabase = createServerSupabaseClient()

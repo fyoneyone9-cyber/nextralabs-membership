@@ -1,5 +1,5 @@
-﻿import AiKonkatsuCoach from '@/components/products/AiKonkatsuCoach'
-import { AccessGate } from '@/components/products/AccessGate'
+﻿import AiKonkatsuCoach from '@/components/tools/AiKonkatsuCoach'
+import { AccessGate } from '@/components/tools/AccessGate'
 
 export default function Page() {
   return (

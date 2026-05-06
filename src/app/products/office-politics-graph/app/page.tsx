@@ -1,5 +1,5 @@
-﻿import OfficePoliticsGraph from '@/components/products/OfficePoliticsGraph'
-import { AccessGate } from '@/components/products/AccessGate'
+﻿import OfficePoliticsGraph from '@/components/tools/OfficePoliticsGraph'
+import { AccessGate } from '@/components/tools/AccessGate'
 
 export default function Page() {
   return (

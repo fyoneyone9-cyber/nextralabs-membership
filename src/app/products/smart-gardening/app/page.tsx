@@ -1,5 +1,5 @@
-﻿import SmartGardening from '@/components/products/SmartGardening'
-import { AccessGate } from '@/components/products/AccessGate'
+﻿import SmartGardening from '@/components/tools/SmartGardening'
+import { AccessGate } from '@/components/tools/AccessGate'
 
 export default function Page() {
   return (

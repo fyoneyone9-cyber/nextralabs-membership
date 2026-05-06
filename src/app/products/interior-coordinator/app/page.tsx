@@ -1,7 +1,7 @@
 ﻿import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import InteriorCoordinatorSystem from '@/components/products/InteriorCoordinatorSystem'
-import { AccessGate } from '@/components/products/AccessGate'
+import InteriorCoordinatorSystem from '@/components/tools/InteriorCoordinatorSystem'
+import { AccessGate } from '@/components/tools/AccessGate'
 
 export default async function Page() {
   const supabase = createServerSupabaseClient()

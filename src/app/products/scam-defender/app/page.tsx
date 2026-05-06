@@ -1,5 +1,5 @@
-﻿import ScamDefender from '@/components/products/ScamDefender'
-import { AccessGate } from '@/components/products/AccessGate'
+﻿import ScamDefender from '@/components/tools/ScamDefender'
+import { AccessGate } from '@/components/tools/AccessGate'
 
 export default function Page() {
   return (

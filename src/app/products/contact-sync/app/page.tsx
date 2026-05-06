@@ -1,5 +1,5 @@
-﻿import { AccessGate } from '@/components/products/AccessGate'
-import ContactSyncSystem from '@/components/products/ContactSyncSystem'
+﻿import { AccessGate } from '@/components/tools/AccessGate'
+import ContactSyncSystem from '@/components/tools/ContactSyncSystem'
 
 export default function Page() {
   return (

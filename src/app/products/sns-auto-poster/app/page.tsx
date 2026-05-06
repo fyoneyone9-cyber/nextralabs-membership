@@ -1,5 +1,5 @@
-﻿import SnsAutoPoster from '@/components/products/SnsAutoPoster'
-import { AccessGate } from '@/components/products/AccessGate'
+﻿import SnsAutoPoster from '@/components/tools/SnsAutoPoster'
+import { AccessGate } from '@/components/tools/AccessGate'
 
 export default function Page() {
   return (

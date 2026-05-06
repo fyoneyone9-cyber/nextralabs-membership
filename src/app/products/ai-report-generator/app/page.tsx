@@ -1,5 +1,5 @@
-﻿import AiReportGenerator from '@/components/products/AiReportGenerator'
-import { AccessGate } from '@/components/products/AccessGate'
+﻿import AiReportGenerator from '@/components/tools/AiReportGenerator'
+import { AccessGate } from '@/components/tools/AccessGate'
 
 export default function Page() {
   return (

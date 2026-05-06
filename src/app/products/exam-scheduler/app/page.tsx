@@ -1,5 +1,5 @@
-﻿import ExamScheduler from '@/components/products/ExamScheduler'
-import { AccessGate } from '@/components/products/AccessGate'
+﻿import ExamScheduler from '@/components/tools/ExamScheduler'
+import { AccessGate } from '@/components/tools/AccessGate'
 
 export default function Page() {
   return (
