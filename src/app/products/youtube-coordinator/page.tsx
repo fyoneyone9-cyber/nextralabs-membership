@@ -54,34 +54,42 @@ const YoutubeSyncLpContent = () => {
           <p className="text-slate-500 font-bold uppercase italic text-center">ファッションを同期させる4つの知能</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-10">
-          <FeatureCard 
-            icon={<Icons.Search />} 
-            title="AI動画プロファイリング" 
-            desc="動画全体のバイブスをAIが読み取り。出演者が着ている服の種類やスタイル（ストリート、テック等）を特定します。"
-          />
-          <FeatureCard 
-            icon={<Icons.Zap />} 
-            title="楽天市場・リアルタイム連動" 
-            desc="特定されたアイテムの「類似品」を楽天から即座に抽出。今すぐ買える最新の在庫データを提案します。"
-          />
-          <FeatureCard 
-            icon={<Icons.Shirt />} 
-            title="スタイル自動分類" 
-            desc="単なるアイテム検索ではなく、コーデ全体の「系統」をAIが分析。あなたのワードローブに馴染むか判定します。"
-          />
-          <FeatureCard 
-            icon={<Icons.ShoppingCart />} 
-            title="一括ショッピング動線" 
-            desc="気に入ったアイテムはそのまま楽天の購入画面へ。インスピレーションから手元に届くまでの距離をゼロにします。"
-          />
+          <div className="grid md:grid-cols-2 gap-10">
+          <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-6 hover:border-red-500/30 transition-all shadow-xl group">
+            <div className="w-16 h-16 bg-red-600/10 rounded-2xl flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform text-center mx-auto md:mx-0">
+              <Search size={32} />
+            </div>
+            <h4 className="text-2xl font-black text-white italic uppercase">AI動画プロファイリング</h4>
+            <p className="text-slate-400 font-bold leading-relaxed text-sm">動画全体のバイブスをAIが読み取り。出演者が着ている服の種類やスタイル（ストリート、テック等）を特定します。</p>
+          </div>
+          <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-6 hover:border-red-500/30 transition-all shadow-xl group">
+            <div className="w-16 h-16 bg-red-600/10 rounded-2xl flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform text-center mx-auto md:mx-0">
+              <Zap size={32} />
+            </div>
+            <h4 className="text-2xl font-black text-white italic uppercase">楽天市場・リアルタイム連動</h4>
+            <p className="text-slate-400 font-bold leading-relaxed text-sm">特定されたアイテムの「類似品」を楽天から即座に抽出。今すぐ買える最新の在庫データを提案します。</p>
+          </div>
+          <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-6 hover:border-red-500/30 transition-all shadow-xl group">
+            <div className="w-16 h-16 bg-red-600/10 rounded-2xl flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform text-center mx-auto md:mx-0">
+              <Shirt size={32} />
+            </div>
+            <h4 className="text-2xl font-black text-white italic uppercase">スタイル自動分類</h4>
+            <p className="text-slate-400 font-bold leading-relaxed text-sm">単なるアイテム検索ではなく、コーデ全体の「系統」をAIが分析。あなたのワードローブに馴染むか判定します。</p>
+          </div>
+          <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-6 hover:border-red-500/30 transition-all shadow-xl group">
+            <div className="w-16 h-16 bg-red-600/10 rounded-2xl flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform text-center mx-auto md:mx-0">
+              <ShoppingCart size={32} />
+            </div>
+            <h4 className="text-2xl font-black text-white italic uppercase">一括ショッピング動線</h4>
+            <p className="text-slate-400 font-bold leading-relaxed text-sm">気に入ったアイテムはそのまま楽天の購入画面へ。インスピレーションから手元に届くまでの距離をゼロにします。</p>
+          </div>
         </div>
       </section>
 
-      {/* 🚀 CTA Section */}
+      {/* CTA Section */}
       <section className="max-w-5xl mx-auto px-4 pt-20 text-center">
         <Card className="bg-gradient-to-br from-red-600 to-rose-900 border-0 rounded-[4rem] p-12 md:p-20 shadow-2xl relative overflow-hidden text-center space-y-10">
-          <div className="absolute top-0 right-0 p-10 opacity-10 rotate-12"><Icons.Youtube size={300} className="text-white" /></div>
+          <div className="absolute top-0 right-0 p-10 opacity-10 rotate-12"><Youtube size={300} className="text-white" /></div>
           <div className="relative z-10 space-y-6 text-center">
             <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter">Sync Your Style.</h3>
             <p className="text-red-100 text-lg font-bold leading-relaxed max-w-2xl mx-auto px-4 text-center">
@@ -101,18 +109,6 @@ const YoutubeSyncLpContent = () => {
   )
 }
 
-function FeatureCard({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
-  return (
-    <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-6 hover:border-red-500/30 transition-all shadow-xl group">
-      <div className="w-16 h-16 bg-red-600/10 rounded-2xl flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform text-center mx-auto md:mx-0">
-        {icon}
-      </div>
-      <h4 className="text-2xl font-black text-white italic uppercase">{title}</h4>
-      <p className="text-slate-400 font-bold leading-relaxed text-sm">{desc}</p>
-    </div>
-  )
-}
-
 const NoSSRWrapper = dynamic(() => Promise.resolve(YoutubeSyncLpContent), {
   ssr: false,
   loading: () => <div className="min-h-screen bg-[#050507]" />
@@ -121,3 +117,4 @@ const NoSSRWrapper = dynamic(() => Promise.resolve(YoutubeSyncLpContent), {
 export default function YoutubeSyncLp() {
   return <NoSSRWrapper />
 }
+
