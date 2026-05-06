@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+﻿import { createClient } from '@supabase/supabase-js';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 /**
@@ -42,7 +42,7 @@ export async function nextraAiEngine({
   if (geminiKey) {
     try {
       const genAI = new GoogleGenerativeAI(geminiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro", systemInstruction });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", systemInstruction });
       const result = await model.generateContent(prompt);
       responseText = result.response.text();
       finalModel = "Gemini 1.5 Pro";
