@@ -43,6 +43,7 @@ const defenseTools: Product[] = [
 ]
 
 const bizTools: Product[] = [
+  { id: 'expense-sync', title: 'Expense Sync', subtitle: '経費精算の全自動・記帳OS', description: 'Expensesフォルダ内のレシート画像をAIが自動解析。金額・日付・店舗名を読み取り、スプレッドシートへ1行ずつ自動記帳します。', priceNote: 'ライト', tags: ['経理'], icon: Spreadsheet, bgColor: 'bg-emerald-500/10', iconColor: 'text-emerald-400', status: 'NEW', isModel: true },
   { id: 'ai-select-shop', title: '「在庫ゼロ」AIセレクトショップ', subtitle: 'トレンド分析 × Shopify連携', description: '流行をAIが分析し、売れるデザインを自動生成。そのままShopify経由でオンデマンド生産・出品し、在庫リスクゼロのネットショップを実現。', priceNote: 'プレミアム', tags: ['EC'], icon: Store, bgColor: 'bg-teal-500/10', iconColor: 'text-teal-400', status: '人気', isModel: true },
   { id: 'youtube-producer', title: 'AI YouTubeプロデューサー', subtitle: '最新ニュースからの全自動台本作成', description: '音声の文字起こしから、最新トレンドを反映した台本生成、サムネイル設計まで。YouTube運用の全工程をAIが代行する「最強の工場」です。', priceNote: 'プレミアム', tags: ['動画'], icon: Clapperboard, bgColor: 'bg-red-500/10', iconColor: 'text-red-400', status: '注目', isModel: true },
   { id: 'prompt-master', title: 'AI画像プロンプトマスター', subtitle: '究極の画像生成パーツ工房', description: '1000種類以上のパーツをパズルのように組み合わせ、MidjourneyやStable Diffusionで使える究極の呪文を錬成します。', priceNote: 'ライト', tags: ['画像AI'], icon: Wand2, bgColor: 'bg-purple-500/10', iconColor: 'text-purple-400', status: '必須', isModel: true },
