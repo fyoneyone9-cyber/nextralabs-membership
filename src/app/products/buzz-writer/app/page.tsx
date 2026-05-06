@@ -1,5 +1,5 @@
-import BuzzWriter from '@/components/tools/BuzzWriter'
-import { AccessGate } from '@/components/tools/AccessGate'
+﻿import BuzzWriter from '@/components/products/BuzzWriter'
+import { AccessGate } from '@/components/products/AccessGate'
 
 export default function Page() {
   return (

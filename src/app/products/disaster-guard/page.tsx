@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight, MapPin, Users, ClipboardCheck, AlertTriangle, Phone, BookOpen } from 'lucide-react'
 import { Button } from '@/components/ui/button'

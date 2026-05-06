@@ -1,7 +1,7 @@
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+﻿import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import EvidenceManagerSystem from '@/components/tools/EvidenceManagerSystem'
-import { AccessGate } from '@/components/tools/AccessGate'
+import EvidenceManagerSystem from '@/components/products/EvidenceManagerSystem'
+import { AccessGate } from '@/components/products/AccessGate'
 
 export default async function Page() {
   const supabase = createServerSupabaseClient()

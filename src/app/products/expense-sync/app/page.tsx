@@ -1,5 +1,5 @@
-import { AccessGate } from '@/components/tools/AccessGate'
-import ExpenseSyncSystem from '@/components/tools/ExpenseSyncSystem'
+﻿import { AccessGate } from '@/components/products/AccessGate'
+import ExpenseSyncSystem from '@/components/products/ExpenseSyncSystem'
 
 export default function Page() {
   return (

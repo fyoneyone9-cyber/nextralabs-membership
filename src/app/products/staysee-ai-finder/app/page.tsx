@@ -1,5 +1,5 @@
-import StayseeFinderEngine from '@/components/tools/StayseeFinderEngine'
-import { AccessGate } from '@/components/tools/AccessGate'
+﻿import StayseeFinderEngine from '@/components/products/StayseeFinderEngine'
+import { AccessGate } from '@/components/products/AccessGate'
 
 export default function Page() {
   return (

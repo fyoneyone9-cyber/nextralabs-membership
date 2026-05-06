@@ -1,5 +1,5 @@
-import MovingChecker from '@/components/tools/MovingChecker'
-import { AccessGate } from '@/components/tools/AccessGate'
+﻿import MovingChecker from '@/components/products/MovingChecker'
+import { AccessGate } from '@/components/products/AccessGate'
 
 export default function Page() {
   return (

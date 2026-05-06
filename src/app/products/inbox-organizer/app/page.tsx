@@ -1,5 +1,5 @@
-import InboxOrganizer from '@/components/tools/InboxOrganizer'
-import { AccessGate } from '@/components/tools/AccessGate'
+﻿import InboxOrganizer from '@/components/products/InboxOrganizer'
+import { AccessGate } from '@/components/products/AccessGate'
 
 export default function Page() {
   return (

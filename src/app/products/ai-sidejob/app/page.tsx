@@ -1,5 +1,5 @@
-import AiSidejob from '@/components/tools/AiSidejob'
-import { AccessGate } from '@/components/tools/AccessGate'
+﻿import AiSidejob from '@/components/products/AiSidejob'
+import { AccessGate } from '@/components/products/AccessGate'
 
 export default function Page() {
   return (

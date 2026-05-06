@@ -1,5 +1,5 @@
-import ShioTaiou from '@/components/tools/ShioTaiou'
-import { AccessGate } from '@/components/tools/AccessGate'
+﻿import ShioTaiou from '@/components/products/ShioTaiou'
+import { AccessGate } from '@/components/products/AccessGate'
 
 export default function Page() {
   return (

@@ -1,5 +1,5 @@
-import TicketScout from '@/components/tools/TicketScout'
-import { AccessGate } from '@/components/tools/AccessGate'
+﻿import TicketScout from '@/components/products/TicketScout'
+import { AccessGate } from '@/components/products/AccessGate'
 
 export default function Page() {
   return (

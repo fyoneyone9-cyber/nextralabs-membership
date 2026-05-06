@@ -1,5 +1,5 @@
-import LocationFinder from '@/components/tools/LocationFinder'
-import { AccessGate } from '@/components/tools/AccessGate'
+﻿import LocationFinder from '@/components/products/LocationFinder'
+import { AccessGate } from '@/components/products/AccessGate'
 
 export default function Page() {
   return (

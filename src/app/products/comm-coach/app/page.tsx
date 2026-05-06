@@ -1,5 +1,5 @@
-import CommCoach from '@/components/tools/CommCoach'
-import { AccessGate } from '@/components/tools/AccessGate'
+﻿import CommCoach from '@/components/products/CommCoach'
+import { AccessGate } from '@/components/products/AccessGate'
 
 export default function Page() {
   return (

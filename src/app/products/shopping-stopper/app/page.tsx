@@ -1,5 +1,5 @@
-import ShoppingStopper from '@/components/tools/ShoppingStopper'
-import { AccessGate } from '@/components/tools/AccessGate'
+﻿import ShoppingStopper from '@/components/products/ShoppingStopper'
+import { AccessGate } from '@/components/products/AccessGate'
 
 export default function Page() {
   return (

@@ -1,5 +1,5 @@
-import AISelectShop from '@/components/tools/AISelectShop'
-import { AccessGate } from '@/components/tools/AccessGate'
+﻿import AISelectShop from '@/components/products/AISelectShop'
+import { AccessGate } from '@/components/products/AccessGate'
 
 export default function Page() {
   return (

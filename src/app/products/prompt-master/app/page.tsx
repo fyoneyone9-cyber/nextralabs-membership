@@ -1,5 +1,5 @@
-import PromptMaster from '@/components/tools/PromptMaster'
-import { AccessGate } from '@/components/tools/AccessGate'
+﻿import PromptMaster from '@/components/products/PromptMaster'
+import { AccessGate } from '@/components/products/AccessGate'
 
 export default function Page() {
   return (

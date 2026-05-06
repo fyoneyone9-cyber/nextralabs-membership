@@ -1,5 +1,5 @@
-import ClosetCoach from '@/components/tools/ClosetCoach'
-import { AccessGate } from '@/components/tools/AccessGate'
+﻿import ClosetCoach from '@/components/products/ClosetCoach'
+import { AccessGate } from '@/components/products/AccessGate'
 
 export default function Page() {
   return (
