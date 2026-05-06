@@ -186,7 +186,7 @@ export default function PricingPage() {
             </ul>
             {isPaid ? (
               <Button variant="outline" className="w-full" onClick={handleManage} disabled={loadingPlan === 'manage'}>
-                {loadingPlan === 'manage' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}サブスクリプション管理
+                {loadingPlan === 'manage' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}プラン管理
               </Button>
             ) : (
               <Button className="w-full" onClick={() => handleCheckout('standard')} disabled={loadingPlan === 'standard'}>
