@@ -129,14 +129,14 @@ export default function StayseeFinderEngine() {
 あなたはホテル管理システム（PMS）の専門家です。今添付した【忘れ物の写真】を元に、Stayseeの宿泊履歴から持ち主を特定するための詳細分析を行ってください。`;
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-[#050507] border-8 border-emerald-500/50 rounded-[4rem] my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
-      <div className="text-center space-y-2">
+    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-[#050507] border-8 border-emerald-500/50 rounded-[4rem] my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)] print:border-0 print:shadow-none print:my-0 print:p-0">
+      <div className="text-center space-y-2 print:hidden">
         <Badge className="bg-blue-600 text-white font-black italic px-4 py-1 text-[10px] uppercase rounded-full shadow-lg">HOTEL DX ENGINE</Badge>
         <h1 className="text-4xl md:text-7xl font-black text-white uppercase italic tracking-tighter drop-shadow-xl leading-none">Staysee AI Finder</h1>
         <div className="inline-block bg-emerald-600 text-white font-black px-6 py-1 rounded-full uppercase italic text-[10px] tracking-widest shadow-lg">v3.1-MASTER</div>
       </div>
 
-      <div className="overflow-x-auto pb-4 scrollbar-hide">
+      <div className="overflow-x-auto pb-4 scrollbar-hide print:hidden">
         <div className="bg-slate-900/50 border border-white/5 p-2 flex min-w-[500px] md:min-w-full rounded-2xl gap-2">
           {TABS.map((tab) => (
             <button key={tab.id} onClick={() => { setActiveTab(tab.id); setShowSettings(false); }} className={`flex-1 py-5 px-2 rounded-xl font-black text-[10px] md:text-sm uppercase italic transition-all flex items-center justify-center gap-2 relative ${activeTab === tab.id && !showSettings ? 'bg-emerald-600 text-white shadow-xl scale-[1.03] z-10' : 'text-slate-500 hover:text-white'}`}>
@@ -151,7 +151,7 @@ export default function StayseeFinderEngine() {
 
       <div className="mt-4 text-left">
         {showSettings ? (
-          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-10 md:p-20 shadow-2xl animate-in zoom-in-95 text-center space-y-8">
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-10 md:p-20 shadow-2xl animate-in zoom-in-95 text-center space-y-8 print:hidden">
             <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">Staysee API Configuration</h3>
             <div className="max-w-xl mx-auto space-y-4">
               <input type="password" value={userApiKey} onChange={(e) => setUserApiKey(e.target.value)} placeholder="sk_xxxxxxxx" className="w-full h-16 bg-black border-2 border-white/10 rounded-2xl px-6 text-white focus:border-amber-500 outline-none" />
@@ -159,7 +159,7 @@ export default function StayseeFinderEngine() {
             </div>
           </Card>
         ) : activeTab === 'scan' ? (
-          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in text-center">
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in text-center print:hidden">
             <h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 text-emerald-400"><PackageSearch /> ① 拾得物スキャン</h3>
             <div className="grid lg:grid-cols-2 gap-12 text-left">
               <div className="space-y-6 text-center">
@@ -207,65 +207,76 @@ export default function StayseeFinderEngine() {
           </Card>
         ) : activeTab === 'match' ? (
           <div className="animate-in fade-in zoom-in space-y-8 text-left pb-20">
-            <Card className="bg-[#13141f] border-4 border-emerald-500/50 rounded-[4rem] p-10 md:p-20 shadow-[0_0_100px_rgba(16,185,129,0.1)] border-l-[16px] border-l-emerald-600 relative overflow-hidden">
-               <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white"><Building2 className="w-96 h-96" /></div>
+            <Card className="bg-[#13141f] border-4 border-emerald-500/50 rounded-[4rem] p-10 md:p-20 shadow-[0_0_100px_rgba(16,185,129,0.1)] border-l-[16px] border-l-emerald-600 relative overflow-hidden print:border-0 print:shadow-none print:p-0">
+               <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white print:hidden"><Building2 className="w-96 h-96" /></div>
                <div className="relative z-10 space-y-12">
                   <div className="flex flex-col items-center gap-4 text-center">
-                    <Shield className="text-emerald-500 w-24 h-24 animate-pulse" />
+                    <Shield className="text-emerald-500 w-24 h-24 animate-pulse print:w-16 print:h-16" />
                     <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter leading-none">AI Official Certificate</h3>
                     <div className="bg-emerald-600 text-white px-8 py-2 rounded-full font-black italic text-sm shadow-lg leading-none">NextraLabs Verification v3.1-MASTER</div>
                   </div>
 
                   {certData ? (
-                    <div className="grid lg:grid-cols-2 gap-10">
+                    <div className="grid lg:grid-cols-2 gap-10 print:grid-cols-1">
                       <div className="space-y-6">
-                        <div className="aspect-square bg-black rounded-[3rem] border-2 border-white/10 overflow-hidden relative shadow-2xl">
+                        <div className="aspect-video bg-black rounded-[3rem] border-2 border-white/10 overflow-hidden relative shadow-2xl print:rounded-2xl print:border-slate-800">
                           <img src={image || ''} className="w-full h-full object-contain p-8" />
-                          <div className="absolute top-6 left-6 bg-emerald-500 text-slate-950 font-black px-4 py-1 rounded-full text-[10px] italic leading-none">ORIGINAL EVIDENCE</div>
+                          <div className="absolute top-6 left-6 bg-emerald-500 text-slate-950 font-black px-4 py-1 rounded-full text-[10px] italic leading-none print:hidden">ORIGINAL EVIDENCE</div>
                         </div>
+                        <div className="hidden print:block text-[10px] font-mono text-slate-500 text-center">CERT_ID: {certData.certId} / DATE: {new Date().toLocaleDateString()}</div>
                       </div>
-                      <div className="space-y-6 text-left bg-slate-950/80 p-10 rounded-[3rem] border border-white/5 shadow-inner">
+                      <div className="space-y-6 text-left bg-slate-950/80 p-10 rounded-[3rem] border border-white/5 shadow-inner print:bg-transparent print:border-0 print:p-0">
                          <div><p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2">Management ID</p><p className="text-xl font-mono text-white">{certData.certId}</p></div>
                          <div><p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2">Item Name</p><p className="text-3xl font-black text-white italic">{certData.itemName}</p></div>
                          <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-white/5 p-4 rounded-2xl border border-white/5"><p className="text-[8px] font-black text-slate-500 uppercase">Grade</p><p className="text-2xl font-black text-emerald-400 italic">{certData.status}</p></div>
-                            <div className="bg-white/5 p-4 rounded-2xl border border-white/5"><p className="text-[8px] font-black text-slate-500 uppercase">Expiry</p><p className="text-xs font-black text-white">{certData.expiry}</p></div>
+                            <div className="bg-white/5 p-4 rounded-2xl border border-white/5 print:bg-transparent print:border-slate-800"><p className="text-[8px] font-black text-slate-500 uppercase">Grade</p><p className="text-2xl font-black text-emerald-400 italic">{certData.status}</p></div>
+                            <div className="bg-white/5 p-4 rounded-2xl border border-white/5 print:bg-transparent print:border-slate-800"><p className="text-[8px] font-black text-slate-500 uppercase">Expiry</p><p className="text-xs font-black text-white">{certData.expiry}</p></div>
                          </div>
                          <div><p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Description</p><p className="text-sm text-slate-300 italic">{certData.description}</p></div>
                          <div className="pt-6 border-t border-white/5"><p className="text-sm text-emerald-400 font-bold italic leading-relaxed">" {certData.message} "</p></div>
-                         <button onClick={() => window.print()} className="w-full h-16 bg-white text-black font-black rounded-2xl shadow-xl hover:bg-emerald-500 hover:text-white transition-all uppercase italic flex items-center justify-center gap-3 mt-4"><Printer className="w-6 h-6" /> Print Certificate</button>
+                         <button onClick={() => window.print()} className="w-full h-16 bg-white text-black font-black rounded-2xl shadow-xl hover:bg-emerald-500 hover:text-white transition-all uppercase italic flex items-center justify-center gap-3 mt-4 print:hidden"><Printer className="w-6 h-6" /> Print Certificate</button>
                       </div>
                     </div>
                   ) : (
                     <div className="bg-slate-950/80 rounded-[3rem] p-16 border-2 border-white/5 text-2xl text-slate-100 italic text-center">{matchResult || "Data Pending..."}</div>
                   )}
+
+                  <div className="p-8 bg-emerald-600 border-4 border-emerald-500 rounded-3xl shadow-[0_0_50px_rgba(16,185,129,0.4)] animate-in zoom-in-95 duration-500 text-center space-y-4 print:hidden">
+                      <div className="flex items-center justify-center gap-4 text-white font-black italic uppercase tracking-widest text-xl">
+                        <span className="animate-ping">✅</span> OFFICIAL VERIFICATION SECURED <span className="animate-ping">✅</span>
+                      </div>
+                      <p className="text-white text-lg font-black italic leading-relaxed">
+                        証明書が発行されました。このURLまたは印刷物を宿泊者へ提示し、<br/>
+                        NextraLabsによる厳格な拾得物管理をアピールしてください。
+                      </p>
+                  </div>
                </div>
             </Card>
-            <button onClick={() => { setImage(null); setMatchResult(''); setCertData(null); setActiveTab('scan'); }} className="w-full h-20 border-2 border-white/10 text-slate-600 hover:text-white hover:bg-white/5 font-black rounded-3xl uppercase italic transition-all flex items-center justify-center gap-4 text-xl active:scale-95"><RotateCcw className="w-6 h-6" /> RESET PROTOCOL</button>
+            <button onClick={() => { setImage(null); setMatchResult(''); setCertData(null); setActiveTab('scan'); }} className="w-full h-20 border-2 border-white/10 text-slate-600 hover:text-white hover:bg-white/5 font-black rounded-3xl uppercase italic transition-all flex items-center justify-center gap-4 text-xl active:scale-95 print:hidden"><RotateCcw className="w-6 h-6" /> RESET PROTOCOL</button>
           </div>
         ) : (
           <div className="animate-in fade-in zoom-in space-y-8 text-left pb-20">
-            <Card className="bg-[#0f111a] border-4 border-blue-500/50 rounded-[4rem] p-10 md:p-16 shadow-2xl relative overflow-hidden">
-               <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white"><Zap className="w-96 h-96" /></div>
+            <Card className="bg-[#0f111a] border-4 border-blue-500/50 rounded-[4rem] p-10 md:p-16 shadow-2xl relative overflow-hidden print:border-0 print:shadow-none print:p-0">
+               <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white print:hidden"><Zap className="w-96 h-96" /></div>
                <div className="relative z-10 space-y-10">
                   <div className="flex flex-col items-center gap-4 text-center">
-                    <div className="p-5 bg-blue-600 rounded-3xl shadow-xl shadow-blue-500/20"><Building2 className="text-white w-12 h-12" /></div>
+                    <div className="p-5 bg-blue-600 rounded-3xl shadow-xl shadow-blue-500/20 print:bg-slate-900"><Building2 className="text-white w-12 h-12" /></div>
                     <h3 className="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none">Hospitality Insight Report</h3>
-                    <div className="bg-blue-600 text-white px-8 py-2 rounded-full font-black italic text-xs shadow-lg uppercase">Strategic Management Advisory v1.0-MASTER</div>
+                    <div className="bg-blue-600 text-white px-8 py-2 rounded-full font-black italic text-xs shadow-lg uppercase print:bg-slate-900">Strategic Management Advisory v1.0-MASTER</div>
                   </div>
 
                   {!insightData ? (
-                    <div className="flex flex-col items-center justify-center py-20 gap-8">
+                    <div className="flex flex-col items-center justify-center py-20 gap-8 print:hidden">
                        <p className="text-slate-400 text-lg italic text-center max-w-md">Stayseeの稼働データと忘れ物の傾向をAIがクロス分析し、ホテルの品質向上と経営改善のアドバイスを提出します。</p>
                        <button onClick={generateInsight} disabled={isGeneratingInsight} className="h-24 px-16 bg-blue-600 hover:bg-blue-500 text-white font-black text-2xl rounded-3xl shadow-2xl transition-all active:scale-95 flex items-center gap-4 italic uppercase">{isGeneratingInsight ? 'Analyzing...' : '経営レポートを生成する 📊'}</button>
                     </div>
                   ) : (
                     <div className="grid lg:grid-cols-3 gap-8">
                        <div className="lg:col-span-2 space-y-8">
-                          <div className="bg-slate-950/80 p-10 rounded-[3rem] border border-white/5 shadow-inner"><p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-4 italic">Executive Summary</p><p className="text-xl text-white font-bold leading-relaxed italic">{insightData.summary}</p></div>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="bg-slate-950/80 p-10 rounded-[3rem] border border-white/5 shadow-inner print:bg-transparent print:border-slate-800 print:p-0"><p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-4 italic">Executive Summary</p><p className="text-xl text-white font-bold leading-relaxed italic">{insightData.summary}</p></div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 print:grid-cols-1">
                              {insightData.findings.map((f: any, i: number) => (
-                               <div key={i} className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10 space-y-4">
+                               <div key={i} className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10 space-y-4 print:bg-transparent print:border-slate-800">
                                   <div className="flex items-center gap-3"><Badge className="bg-blue-500 text-white font-black">{f.room}</Badge><p className="text-white font-black text-sm uppercase italic">POINT</p></div>
                                   <p className="text-slate-300 text-sm italic font-bold">{f.trend}</p>
                                   <div className="pt-4 border-t border-white/5"><p className="text-xs font-black text-emerald-400 uppercase mb-2">Recommendation</p><p className="text-slate-200 text-sm font-bold leading-relaxed">{f.action}</p></div>
@@ -274,15 +285,15 @@ export default function StayseeFinderEngine() {
                           </div>
                        </div>
                        <div className="space-y-8">
-                          <div className="bg-emerald-600/10 border-2 border-emerald-500/30 p-8 rounded-[2.5rem] shadow-xl"><p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-4 italic">ROI Projection</p><p className="text-3xl font-black text-white italic leading-tight">{insightData.roi}</p></div>
-                          <div className="bg-[#1a1c2e] p-8 rounded-[2.5rem] border border-blue-500/20 shadow-inner"><p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-4 italic">Strategic Tip</p><p className="text-sm text-slate-300 leading-relaxed font-bold italic">"{insightData.executiveMessage}"</p></div>
-                          <button onClick={() => window.print()} className="w-full h-20 bg-white text-black font-black rounded-2xl shadow-xl hover:bg-blue-600 transition-all uppercase italic flex items-center justify-center gap-4">EXPORT REPORT</button>
+                          <div className="bg-emerald-600/10 border-2 border-emerald-500/30 p-8 rounded-[2.5rem] shadow-xl print:bg-transparent print:border-slate-800"><p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-4 italic">ROI Projection</p><p className="text-3xl font-black text-white italic leading-tight">{insightData.roi}</p></div>
+                          <div className="bg-[#1a1c2e] p-8 rounded-[2.5rem] border border-blue-500/20 shadow-inner print:bg-transparent print:border-slate-800"><p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-4 italic">Strategic Tip</p><p className="text-sm text-slate-300 leading-relaxed font-bold italic">"{insightData.executiveMessage}"</p></div>
+                          <button onClick={() => window.print()} className="w-full h-20 bg-white text-black font-black rounded-2xl shadow-xl hover:bg-blue-600 transition-all uppercase italic flex items-center justify-center gap-4 print:hidden">PRINT REPORT</button>
                        </div>
                     </div>
                   )}
                </div>
             </Card>
-            <button onClick={() => { setInsightData(null); setActiveTab('scan'); }} className="w-full h-20 border-2 border-white/10 text-slate-600 hover:text-white hover:bg-white/5 font-black rounded-3xl uppercase italic transition-all flex items-center justify-center gap-4 text-xl active:scale-95"><RotateCcw className="w-6 h-6" /> EXIT REPORTING</button>
+            <button onClick={() => { setInsightData(null); setActiveTab('scan'); }} className="w-full h-20 border-2 border-white/10 text-slate-600 hover:text-white hover:bg-white/5 font-black rounded-3xl uppercase italic transition-all flex items-center justify-center gap-4 text-xl active:scale-95 print:hidden"><RotateCcw className="w-6 h-6" /> EXIT REPORTING</button>
           </div>
         )}
       </div>
