@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI画像プロンプトマスター [Standalone MASTER v2.0]</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #050507; color: #e2e8f0; font-family: sans-serif; }
+        .emerald-border { border: 8px solid rgba(16, 185, 129, 0.5); border-radius: 4rem; box-shadow: 0 0 50px rgba(16, 185, 129, 0.1); }
+        .glow-text { text-shadow: 0 0 15px rgba(16, 185, 129, 0.5); }
+    </style>
+</head>
+<body class="p-4 md:p-10 min-h-screen flex items-center justify-center">
+    <div class="max-w-4xl w-full space-y-8 emerald-border p-8 md:p-16 bg-[#050507]">
+        <header class="text-center space-y-4">
+            <span class="bg-purple-600 text-white px-4 py-1 rounded-full text-[10px] font-black italic uppercase tracking-widest">Ultimate Creative Terminal</span>
+            <h1 class="text-4xl md:text-7xl font-black italic uppercase tracking-tighter text-white glow-text">Prompt Master</h1>
+            <div class="inline-block bg-emerald-600 text-white px-6 py-1 rounded-full text-xs font-black uppercase tracking-widest shadow-lg">v2.0-MASTER-BUYOUT</div>
+        </header>
+
+        <main class="space-y-10">
+            <div class="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-10 shadow-inner">
+                <div class="flex items-center gap-4 mb-8 border-b border-white/5 pb-4">
+                    <div class="w-10 h-10 bg-emerald-600/10 rounded-xl flex items-center justify-center text-emerald-500">✨</div>
+                    <h3 class="text-xl font-black text-white italic uppercase">究極の呪文錬成プロトコル</h3>
+                </div>
+                
+                <div class="space-y-6">
+                    <p class="text-sm text-slate-400 font-bold leading-relaxed italic">
+                        被写体、スタイル、ライティング、アングルをパズルのように組み合わせるだけで、MidjourneyやStable Diffusionで「実写レベル」の出力を可能にするプロンプトを自動生成します。
+                    </p>
+                    
+                    <div class="bg-black p-6 rounded-2xl border border-white/10 shadow-2xl">
+                        <p class="text-[10px] font-black text-slate-500 uppercase mb-4">Generated Prompt Output</p>
+                        <div id="output" class="text-xl font-mono text-emerald-400 italic break-all leading-relaxed">
+                            (Select components to generate your master prompt...)
+                        </div>
+                    </div>
+
+                    <button onclick="copyPrompt()" class="w-full h-20 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl shadow-xl text-xl italic transition-all active:scale-95 border-b-8 border-emerald-900">
+                        プロンプトをコピー / COPY SPELL
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="text-center opacity-20">
+            <p class="text-[10px] font-black uppercase tracking-[0.5em] italic">NextraLabs Creative Intelligence • Standalone Build</p>
+        </footer>
+    </div>
+
+    <script>
+        function copyPrompt() {
+            const text = document.getElementById('output').innerText;
+            navigator.clipboard.writeText(text);
+            alert('究極のプロンプトをクリップボードにコピーしました。');
+        }
+    </script>
+</body>
+</html>

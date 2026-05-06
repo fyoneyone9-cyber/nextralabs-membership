@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI YouTube Producer [Standalone MASTER v2.1]</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #050507; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+        .emerald-border { border: 8px solid rgba(16, 185, 129, 0.5); border-radius: 4rem; box-shadow: 0 0 50px rgba(16, 185, 129, 0.1); }
+        .glow-text { text-shadow: 0 0 20px rgba(16, 185, 129, 0.6); }
+        .step-card { background: rgba(19, 20, 31, 0.8); border: 2px solid rgba(255, 255, 255, 0.05); border-radius: 2.5rem; transition: all 0.3s; }
+        .step-card:hover { border-color: rgba(16, 185, 129, 0.3); transform: translateY(-5px); }
+        .number-badge { background: #10b981; width: 40px; height: 40px; border-radius: 12px; display: flex; items-center; justify-center; font-weight: 900; color: white; }
+    </style>
+</head>
+<body class="p-4 md:p-10 min-h-screen">
+    <div class="max-w-6xl mx-auto space-y-10 emerald-border p-8 md:p-16 bg-[#050507]">
+        <header class="text-center space-y-4">
+            <span class="bg-red-600 text-white px-5 py-1 rounded-full text-[10px] font-black italic uppercase tracking-widest">Viral Growth Engine</span>
+            <h1 class="text-5xl md:text-8xl font-black italic uppercase tracking-tighter text-white glow-text">YouTube Producer</h1>
+            <div class="inline-block bg-emerald-600 text-white px-8 py-1 rounded-full text-xs font-black uppercase tracking-widest">v2.1-MASTER-BUILD</div>
+        </header>
+
+        <!-- API SETUP -->
+        <section class="step-card p-8">
+            <h3 class="text-xl font-black text-amber-500 mb-6 flex items-center gap-3">
+                <span class="number-badge">0</span> SYSTEM ACTIVATION
+            </h3>
+            <div class="grid md:grid-cols-1 gap-6">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-500 uppercase">Google Gemini API Key (Gemini 2.5 Flash Recommended)</label>
+                    <input type="password" id="api-key" placeholder="AIzaSy..." class="w-full h-14 bg-black border border-white/10 rounded-2xl px-6 text-white outline-none focus:border-emerald-500 transition-all">
+                </div>
+            </div>
+        </section>
+
+        <!-- MAIN WORKFLOW -->
+        <div class="grid lg:grid-cols-2 gap-8">
+            <!-- LEFT: INPUT -->
+            <div class="space-y-8">
+                <div class="step-card p-8">
+                    <h3 class="text-lg font-black text-white italic mb-6 flex items-center gap-3">
+                        <span class="number-badge">1</span> STRATEGY PALETTE
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="bg-white/5 hover:bg-emerald-600 p-4 rounded-xl text-xs font-bold transition-all">衝撃・暴露</button>
+                        <button class="bg-white/5 hover:bg-emerald-600 p-4 rounded-xl text-xs font-bold transition-all">徹底解説</button>
+                        <button class="bg-white/5 hover:bg-emerald-600 p-4 rounded-xl text-xs font-bold transition-all">ルーティン</button>
+                        <button class="bg-white/5 hover:bg-emerald-600 p-4 rounded-xl text-xs font-bold transition-all">激論・対立</button>
+                    </div>
+                </div>
+
+                <div class="step-card p-8">
+                    <h3 class="text-lg font-black text-white italic mb-6 flex items-center gap-3">
+                        <span class="number-badge">2</span> SOURCE DATA
+                    </h3>
+                    <textarea id="source-text" placeholder="動画のコンセプトや文字起こしテキストを入力..." class="w-full h-64 bg-black/50 border border-white/5 rounded-2xl p-6 text-sm text-slate-300 font-mono outline-none focus:border-emerald-500"></textarea>
+                </div>
+            </div>
+
+            <!-- RIGHT: OUTPUT -->
+            <div class="space-y-8">
+                <div class="step-card p-8 h-full flex flex-col">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-black text-white italic flex items-center gap-3">
+                            <span class="number-badge">3</span> VIRAL SCRIPT
+                        </h3>
+                        <div class="text-emerald-500 font-black text-xs">AI ANALYSIS READY</div>
+                    </div>
+                    <div id="result-display" class="flex-1 bg-black/40 border border-white/5 rounded-2xl p-6 text-sm text-emerald-400 font-mono overflow-y-auto min-h-[400px]">
+                        (Waiting for Master Command...)
+                    </div>
+                    <button onclick="alert('API連携にはサーバー環境が必要です。このHTMLはUIプレビュー版です。')" class="mt-8 h-24 bg-emerald-600 text-white font-black rounded-3xl shadow-[0_20px_50px_rgba(16,185,129,0.3)] text-2xl italic hover:scale-[1.02] active:scale-95 transition-all border-b-8 border-emerald-900 uppercase">
+                        Generate Script ??
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center opacity-30">
+            <p class="text-[10px] font-black uppercase tracking-[0.8em] italic">NextraLabs YouTube MASTEROS ? Authorized Digital Asset</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
@@ -118,7 +119,17 @@ const CAREER = [
 
 const MasterEngine = () => {
   const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => { setIsMounted(true); }, []);
+  const router = useRouter();
+
+  useEffect(() => {
+    setIsMounted(true);
+    // 認証チェック
+    const isAuth = localStorage.getItem('port_auth');
+    if (!isAuth) {
+      router.push('/port/auth');
+    }
+  }, [router]);
+
   if (!isMounted) return null;
 
   return (
