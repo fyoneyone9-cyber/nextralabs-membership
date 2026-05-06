@@ -137,11 +137,11 @@ const MasterEngine = () => {
 あなたはホテル管理システム（PMS）の専門家です。今添付した【忘れ物の写真】を元に,Stayseeの宿泊履歴から持ち主を特定するための詳細分析を行ってください。`;
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-[#050507] border-8 border-emerald-500/50 rounded-[4rem] my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)] print:border-0 print:shadow-none print:my-0 print:p-0">
-      <div className="text-center space-y-2 print:hidden">
-        <Badge className="bg-blue-600 text-white font-black italic px-4 py-1 text-[10px] uppercase rounded-full shadow-lg">HOTEL DX ENGINE</Badge>
-        <h1 className="text-4xl md:text-7xl font-black text-white uppercase italic tracking-tighter drop-shadow-xl leading-none">Staysee AI Finder</h1>
-        <div className="inline-block bg-emerald-600 text-white font-black px-6 py-1 rounded-full uppercase italic text-[10px] tracking-widest shadow-lg">v3.1-MASTER</div>
+    <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-[#050507] border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)] print:border-0 print:shadow-none print:my-0 print:p-0">
+      <div className="text-center space-y-1 md:space-y-2">
+        <Badge className="bg-blue-600 text-white font-black italic px-3 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full shadow-lg">HOTEL DX ENGINE</Badge>
+        <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter drop-shadow-xl leading-none">Staysee AI Finder</h1>
+        <div className="inline-block bg-emerald-600 text-white font-black px-4 py-0.5 rounded-full uppercase italic text-[8px] md:text-[10px] tracking-widest shadow-lg">v3.1-MASTER</div>
       </div>
 
       <div className="overflow-x-auto pb-4 scrollbar-hide print:hidden">
