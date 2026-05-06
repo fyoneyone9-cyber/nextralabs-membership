@@ -8,15 +8,15 @@ import Link from 'next/link'
 const StayseeLpContent = () => {
   return (
     <div className="min-h-screen bg-[#050507] text-slate-200 font-sans pb-32">
-      {/* Hero Section */}
+      {/* 🚀 ヒーローセクション */}
       <section className="max-w-6xl mx-auto px-4 pt-24 pb-20 text-center space-y-10">
-        <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-6 py-1 rounded-full font-black uppercase text-xs">Hotel DX Solution</Badge>
-        <h1 className="text-4xl md:text-8xl font-black text-white italic tracking-tighter uppercase leading-[1.1]">
+        <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-6 py-1 rounded-full font-black uppercase text-xs">宿泊業界特化型 AIソリューション</Badge>
+        <h1 className="text-5xl md:text-8xl font-black text-white italic tracking-tighter uppercase leading-[1.1]">
           Staysee <span className="text-emerald-500">AI</span> Finder
         </h1>
         <h2 className="text-2xl md:text-4xl font-bold text-slate-300 max-w-4xl mx-auto leading-relaxed px-4">
           忘れ物対応を「コスト」から「利益と信頼」へ。<br className="hidden md:block" />
-          Staysee API連携 ＋ AIプロ鑑定システム。
+          ステイシーAPI連携 ＋ AIプロ鑑定システム。
         </h2>
         <div className="flex flex-wrap justify-center gap-6 pt-6">
           <Link href="/products/staysee-ai-finder/app">
@@ -27,7 +27,7 @@ const StayseeLpContent = () => {
         </div>
       </section>
 
-      {/* Problem Section */}
+      {/* ⚠️ 悩み訴求セクション */}
       <section className="bg-[#13141f] py-24 border-y border-white/5">
         <div className="max-w-5xl mx-auto px-4 grid md:grid-cols-2 gap-16 items-center text-left">
           <div className="space-y-8">
@@ -36,7 +36,7 @@ const StayseeLpContent = () => {
               <li className="flex items-center gap-4"><AlertTriangle className="text-red-500 shrink-0" /> 客室の忘れ物、持ち主の特定に時間がかかる</li>
               <li className="flex items-center gap-4"><AlertTriangle className="text-red-500 shrink-0" /> 電話での特徴説明が曖昧でミスが起きやすい</li>
               <li className="flex items-center gap-4"><AlertTriangle className="text-red-500 shrink-0" /> 着払い発送の事務作業が煩雑で工数がかかる</li>
-              <li className="flex items-center gap-4"><AlertTriangle className="text-red-500 shrink-0" /> 宿泊者とのトラブルを未然に防ぎたい</li>
+              <li className="flex items-center gap-4"><AlertTriangle className="text-red-500 shrink-0" /> 宿泊者との「言った言わない」のトラブル</li>
             </ul>
           </div>
           <div className="bg-black/50 border-4 border-red-500/20 rounded-[3rem] p-10 shadow-inner">
@@ -48,11 +48,11 @@ const StayseeLpContent = () => {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* ✨ 機能紹介セクション */}
       <section className="max-w-6xl mx-auto px-4 py-32 space-y-20 text-left">
         <div className="text-center space-y-4">
-          <h3 className="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter">Core Technologies</h3>
-          <p className="text-slate-500 font-bold uppercase italic text-center">次世代のホテル運営を支える4つの知能</p>
+          <h3 className="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter">主要な4つの機能</h3>
+          <p className="text-slate-500 font-bold uppercase italic text-center">次世代のホテル運営を支える知能</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-10">
@@ -63,8 +63,8 @@ const StayseeLpContent = () => {
           </div>
           <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-6 hover:border-emerald-500/30 transition-all shadow-xl group">
             <div className="w-16 h-16 bg-emerald-600/10 rounded-2xl flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform"><Globe size={32} /></div>
-            <h4 className="text-2xl font-black text-white italic uppercase">Staysee 本物連携</h4>
-            <p className="text-slate-400 font-bold leading-relaxed text-sm">ステイシーAPIと完全同期。宿泊者名簿を読み込み、昨日その部屋にいたお客様を瞬時にリストアップします。</p>
+            <h4 className="text-2xl font-black text-white italic uppercase">ステイシー本物連携</h4>
+            <p className="text-slate-400 font-bold leading-relaxed text-sm">宿泊管理システム（Staysee）と完全同期。名簿を読み込み、昨日その部屋にいたお客様を瞬時にリストアップします。</p>
           </div>
           <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-6 hover:border-emerald-500/30 transition-all shadow-xl group">
             <div className="w-16 h-16 bg-emerald-600/10 rounded-2xl flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform"><Shield size={32} /></div>
@@ -79,19 +79,19 @@ const StayseeLpContent = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* 🚀 CTAセクション */}
       <section className="max-w-5xl mx-auto px-4 pt-20">
         <Card className="bg-gradient-to-br from-emerald-600 to-teal-800 border-0 rounded-[4rem] p-12 md:p-20 shadow-2xl relative overflow-hidden text-center space-y-10">
           <div className="absolute top-0 right-0 p-10 opacity-10 rotate-12"><Building2 size={300} className="text-white" /></div>
-          <div className="relative z-10 space-y-6">
-            <h3 className="text-3xl md:text-6xl font-black text-white italic uppercase tracking-tighter">Ready for Master Model?</h3>
+          <div className="relative z-10 space-y-6 text-center">
+            <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter">最高峰のマスタモデルを。</h3>
             <p className="text-emerald-100 text-lg font-bold leading-relaxed max-w-2xl mx-auto px-4">
               今すぐNextraLabsに参加して、あなたのホテルのホスピタリティをAIでマスタ化しましょう。
             </p>
             <div className="flex flex-wrap justify-center gap-6 pt-6">
               <Link href="/signup">
-                <button className="h-20 px-16 bg-white text-emerald-700 font-black text-2xl rounded-2xl shadow-xl hover:bg-emerald-50 transition-all active:scale-95 uppercase italic">
-                  Get Started Free
+                <button className="h-20 px-16 bg-white text-emerald-700 font-black text-2xl rounded-2xl shadow-xl hover:bg-emerald-50 transition-all active:scale-95 uppercase italic leading-none">
+                  無料で始めてみる
                 </button>
               </Link>
             </div>
