@@ -74,6 +74,9 @@ export function Header() {
           <Link href="/contact" className="text-sm font-medium hover:text-primary transition-colors">
             📩 お問い合わせ
           </Link>
+          <Link href="/port" className="text-sm font-medium hover:text-primary transition-colors text-[10px] opacity-30">
+            PORT
+          </Link>
           <a href="https://x.com/0022_sougo" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-blue-400 transition-all">
             <TwitterIcon className="h-5 w-5 fill-current" />
           </a>
