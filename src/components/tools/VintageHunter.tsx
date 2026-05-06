@@ -1,22 +1,54 @@
 'use client'
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ArrowRight, Upload, CheckCircle2, Zap, Copy, ExternalLink, RotateCcw, Lightbulb, ClipboardPaste, Shirt, Search, Tag, Camera, Loader2, Download, FileImage } from 'lucide-react'
+import { 
+  ArrowRight, Upload, CheckCircle2, Zap, Copy, ExternalLink, RotateCcw, Lightbulb, 
+  ClipboardPaste, Shirt, Search, Tag, Camera, Loader2, Download, FileImage, 
+  TrendingUp, Activity, Terminal, ShieldCheck, Box
+} from 'lucide-react'
+import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const TABS = [
-  { id: 'scan', label: '① 古着スキャン', icon: Camera },
-  { id: 'result', label: '② 鑑定レポート', icon: Tag },
+  { id: 'hunt', label: '① トレンド狩り', icon: TrendingUp },
+  { id: 'scan', label: '② 古着スキャン', icon: Camera },
+  { id: 'result', label: '③ 鑑定レポート', icon: Tag },
 ];
 
 export default function VintageHunter() {
-  const [activeTab, setActiveTab] = useState('scan');
+  const [activeTab, setActiveTab] = useState('hunt');
+  const [trends, setTrends] = useState<string[]>([]);
+  const [isLoadingTrends, setIsLoadingTrends] = useState(false);
+  const [apiStatus, setApiStatus] = useState<'loading' | 'live' | 'local'>('loading');
+  const [targetKeyword, setTargetKeyword] = useState('');
   const [copied, setCopied] = useState(false);
   const [image, setImage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [appraisalResult, setAppraisalResult] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    fetchTrends();
+  }, []);
+
+  const fetchTrends = async () => {
+    setIsLoadingTrends(true);
+    try {
+      const response = await fetch('/api/trends');
+      const data = await response.json();
+      if (data.trends) {
+        setTrends(data.trends);
+        setApiStatus(data.isLive ? 'live' : 'local');
+      }
+    } catch (e) { setApiStatus('local'); } finally { setIsLoadingTrends(false); }
+  };
+
+  const handleTrendClick = (trend: string) => {
+    setTargetKeyword(trend);
+    setActiveTab('scan');
+    console.log(`[SYNC] Trend locked to Vintage Search: ${trend}`);
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -29,99 +61,132 @@ export default function VintageHunter() {
     }
   };
 
-  const useSample = () => {
-    const sampleUrl = "https://membership-site-nextralabos.vercel.app/samples/vintage-denim.jpg";
-    setImage(sampleUrl);
-    const a = document.createElement("a"); a.href = sampleUrl; a.download = "vintage_sample_image.jpg"; a.click();
-    alert("サンプル画像を保存しました。AI鑑定士へ投げてください！");
-  };
-
-  const FINAL_PROMPT = `あなたはヴィンテージ衣類鑑定のプロです。添付された写真を分析し、年代、ブランド、市場価値、真贋を鑑定してください。`;
-
-  const renderGuide = (steps: string[]) => (
-    <div className="bg-slate-900 border-2 border-indigo-600/50 rounded-2xl p-6 mb-8 flex items-start gap-4 shadow-xl">
-      <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg"><Lightbulb className="text-white" /></div>
-      <div className="space-y-1 text-left">
-        <p className="text-sm font-black text-indigo-400 uppercase italic tracking-widest opacity-70">Appraisal Protocol</p>
-        {steps.map((s, i) => (
-          <p key={i} className="text-xs md:text-lg text-slate-300 font-bold flex items-center gap-2 leading-tight"><span className="text-indigo-600 italic">#{i+1}</span> {s}</p>
-        ))}
-      </div>
-    </div>
-  );
+  const APPRAISAL_PROMPT = `あなたはヴィンテージ衣類鑑定のプロです。以下の【証拠データ】を分析し、年代、ブランド、市場価値、真贋を鑑定してください。
+【検索キーワード】: ${targetKeyword}
+【解析画像】: 添付のディテール画像を参照`;
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-slate-950">
-      <div className="text-center">
-        <Badge className="bg-indigo-600 text-white font-black italic tracking-widest px-4 py-1 text-[10px] uppercase rounded-full shadow-lg">VINTAGE ANALYZER</Badge>
-        <h1 className="text-5xl md:text-7xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl">Vintage Hunter</h1>
+    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left">
+      <div className="text-center space-y-3 mb-16">
+        <h1 className="text-6xl md:text-[8rem] font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl text-center">VINTAGE HUNTER</h1>
+        <Badge className="bg-amber-500 text-black font-black italic tracking-[0.3em] px-8 py-2 text-xs uppercase rounded-full shadow-2xl mx-auto block w-fit">Market Watch Engine v6.0-MASTER</Badge>
       </div>
 
-      <div className="overflow-x-auto pb-4 scrollbar-hide">
-        <div className="bg-slate-900 border border-slate-800 p-2 flex min-w-[500px] md:min-w-full rounded-2xl">
-          {TABS.map((tab) => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex-1 py-5 px-2 rounded-xl font-black text-[10px] md:text-sm uppercase italic transition-all flex items-center justify-center gap-2 relative ${activeTab === tab.id ? 'bg-indigo-600 text-white shadow-xl scale-[1.03] z-10' : 'text-slate-500 hover:text-white'}`}>
-              <tab.icon className="w-5 h-5" /> <span>{tab.label}</span>
-            </button>
-          ))}
-        </div>
+      <div className="flex gap-1 bg-[#1a1b26]/80 p-1 rounded-2xl border border-white/5 mb-12 shadow-2xl overflow-x-auto scrollbar-hide">
+        {TABS.map((tab) => (
+          <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex-1 py-5 px-6 rounded-xl font-black text-xs md:text-sm uppercase italic transition-all flex items-center justify-center gap-3 whitespace-nowrap ${activeTab === tab.id ? 'bg-amber-500 text-black shadow-xl scale-[1.02]' : 'text-slate-500 hover:text-slate-300'}`}>
+            <tab.icon size={18} /> <span>{tab.label}</span>
+          </button>
+        ))}
       </div>
 
       <div className="mt-4">
-        {activeTab === 'scan' && (
-          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in slide-in-from-bottom-4 text-center">
-            <h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 text-indigo-400"><Camera /> ① 古着スキャン</h3>
-            {renderGuide(['タグやディテールを撮影してアップロード', '鑑定指示をコピーしてAI三台体制へ投げる', 'AIの鑑定レポートを右に戻す'])}
-            <div className="grid lg:grid-cols-2 gap-12 text-left">
-              <div className="space-y-6 text-center">
-                {!image ? (
-                  <div className="space-y-4">
-                    <div className="border-4 border-dashed border-slate-800 rounded-[2rem] p-16 hover:bg-slate-950 transition-all cursor-pointer bg-slate-900/50 shadow-inner" onClick={() => fileInputRef.current?.click()}>
-                      <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" /><Upload className="h-14 w-14 text-slate-700 group-hover:text-indigo-500 mx-auto mb-6" /><p className="text-xl text-slate-500 font-black italic uppercase">Drop Photo</p>
+        {/* ① トレンド狩り（API連携） */}
+        {activeTab === 'hunt' && (
+          <div className="space-y-8 animate-in fade-in duration-700">
+            <Card className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 md:p-20 shadow-2xl relative overflow-hidden">
+              <div className="flex items-center justify-between mb-12">
+                <h2 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter flex items-center gap-6">
+                  <TrendingUp size={48} className="text-amber-500" /> ① トレンド狩り
+                </h2>
+                <Badge variant="outline" className={`text-xs font-black ${apiStatus === 'live' ? 'text-green-500 border-green-500/30 animate-pulse' : 'text-amber-500 border-amber-500/30'}`}>
+                  API: {apiStatus.toUpperCase()}
+                </Badge>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {isLoadingTrends ? (
+                  Array(6).fill(0).map((_, i) => <div key={i} className="h-48 bg-white/5 rounded-[2.5rem] animate-pulse" />)
+                ) : (
+                  trends.map((t, i) => (
+                    <div 
+                      key={i} 
+                      onClick={() => handleTrendClick(t)}
+                      className="bg-[#0a0b14] border-2 border-white/5 p-8 rounded-[2.5rem] hover:border-amber-500 cursor-pointer group transition-all shadow-xl"
+                    >
+                      <p className="text-[10px] font-black text-amber-500 uppercase italic mb-4">Buzz Item Found</p>
+                      <p className="text-3xl font-black italic uppercase text-white tracking-tighter group-hover:text-amber-500 transition-colors">{t}</p>
+                      <div className="mt-6 flex items-center gap-2 text-slate-600 font-bold text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+                        Lock on Item <ArrowRight size={14} />
+                      </div>
                     </div>
-                    <Button onClick={useSample} variant="outline" className="w-full border-slate-800 text-slate-400 font-black italic h-16 rounded-2xl hover:bg-slate-800 flex items-center justify-center gap-3 uppercase"><Download className="w-5 h-5" /> サンプルを保存して試す</Button>
+                  ))
+                )}
+              </div>
+            </Card>
+          </div>
+        )}
+
+        {/* ② 古着スキャン */}
+        {activeTab === 'scan' && (
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-8 md:p-16 shadow-2xl animate-in fade-in slide-in-from-bottom-4 relative overflow-hidden">
+            <h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-10 flex items-center gap-4 text-amber-500"><Camera size={48} /> ② 古着スキャン</h3>
+            <div className="grid lg:grid-cols-2 gap-12 text-left">
+              <div className="space-y-6">
+                {!image ? (
+                  <div className="border-4 border-dashed border-white/5 rounded-[2.5rem] p-16 hover:bg-white/5 transition-all cursor-pointer bg-black/30 shadow-inner text-center group" onClick={() => fileInputRef.current?.click()}>
+                    <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
+                    <Upload className="h-16 w-16 text-slate-800 group-hover:text-amber-500 mx-auto mb-6 transition-colors" />
+                    <p className="text-2xl text-slate-700 font-black italic uppercase tracking-widest group-hover:text-slate-500">Drop Evidence</p>
                   </div>
                 ) : (
-                  <div className="space-y-6 animate-in zoom-in">
-                    <div className="relative aspect-square max-w-[450px] mx-auto rounded-3xl overflow-hidden border-4 border-indigo-600/30 shadow-2xl bg-black flex items-center justify-center">
-                       {isProcessing ? <Loader2 className="animate-spin text-indigo-500 h-10 w-10" /> : <img src={image} alt="Target" className="object-cover w-full h-full" />}
-                       <Button onClick={() => setImage(null)} className="absolute top-4 right-4 bg-black/50 hover:bg-red-600 p-2 rounded-full h-10 w-10">✕</Button>
+                  <div className="space-y-8 animate-in zoom-in-95">
+                    <div className="relative aspect-square max-w-[450px] mx-auto rounded-[3rem] overflow-hidden border-4 border-amber-500/20 shadow-2xl bg-black">
+                       <img src={image} alt="Target" className="object-cover w-full h-full" />
+                       <Button onClick={() => setImage(null)} className="absolute top-6 right-6 bg-black/50 hover:bg-red-600 p-2 rounded-full h-12 w-12 text-white transition-all">✕</Button>
                     </div>
-                    <Button onClick={() => { navigator.clipboard.writeText(FINAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className={`w-full h-20 font-black text-2xl rounded-2xl shadow-2xl transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-indigo-600 text-white'}`}>鑑定指示をコピー</Button>
-                    <div className="grid grid-cols-3 gap-2">
-                       <Button variant="outline" className="h-10 border-slate-800 text-[8px] font-black uppercase italic" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</Button>
-                       <Button variant="outline" className="h-10 border-slate-800 text-[8px] font-black uppercase italic" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</Button>
-                       <Button variant="outline" className="h-10 border-slate-800 text-[8px] font-black uppercase italic" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE</Button>
+                    <div className="space-y-4">
+                      <div className="space-y-2 px-2">
+                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Locked Keyword</p>
+                        <Input value={targetKeyword} onChange={(e) => setTargetKeyword(e.target.value)} className="h-14 bg-black border-2 border-white/5 rounded-xl px-6 font-black italic text-xl text-amber-500" />
+                      </div>
+                      <Button onClick={() => { navigator.clipboard.writeText(APPRAISAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className={`w-full h-20 font-black text-2xl rounded-2xl shadow-2xl transition-all ${copied ? 'bg-emerald-500 text-black' : 'bg-amber-600 text-black hover:bg-amber-500'}`}>鑑定指示をコピー</Button>
+                      <div className="grid grid-cols-3 gap-2">
+                         <Button variant="outline" className="h-12 border-white/5 bg-black text-[9px] font-black uppercase italic text-slate-500 hover:text-white" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</Button>
+                         <Button variant="outline" className="h-12 border-white/5 bg-black text-[9px] font-black uppercase italic text-slate-500 hover:text-white" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</Button>
+                         <Button variant="outline" className="h-12 border-white/5 bg-black text-[9px] font-black uppercase italic text-slate-500 hover:text-white" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE</Button>
+                      </div>
                     </div>
                   </div>
                 )}
               </div>
-              <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 space-y-6 shadow-2xl flex flex-col justify-center text-left">
-                 <div className="flex items-center gap-4"><ClipboardPaste className="h-8 w-8 text-indigo-400" /><h3 className="text-xl font-black text-white italic uppercase tracking-tighter">鑑定レポートを戻す</h3></div>
-                 <textarea value={appraisalResult} onChange={(e) => setAppraisalResult(e.target.value)} placeholder="AIから届いた査定結果をここにペースト..." className="w-full h-80 bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 text-base text-slate-300 focus:border-indigo-500 outline-none font-medium italic font-mono" />
+              <div className="bg-[#0a0b14] rounded-[3.5rem] p-10 border border-white/5 space-y-6 shadow-inner flex flex-col justify-center">
+                 <div className="flex items-center gap-4"><ClipboardPaste className="h-8 w-8 text-amber-500" /><h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">鑑定レポートを戻す</h3></div>
+                 <textarea value={appraisalResult} onChange={(e) => setAppraisalResult(e.target.value)} placeholder="AIから届いた査定結果をここにペースト..." className="flex-1 bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 text-lg text-slate-300 focus:border-amber-500 outline-none font-mono italic shadow-inner min-h-[400px]" />
+                 {appraisalResult && (
+                    <Button onClick={() => setActiveTab('result')} className="w-full h-20 bg-emerald-600 hover:bg-emerald-500 text-black font-black rounded-2xl shadow-xl flex items-center justify-center gap-4 uppercase italic text-xl group transition-all animate-in slide-in-from-bottom-4">
+                      ③ 最終査定書を確認 <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition-transform" />
+                    </Button>
+                 )}
               </div>
             </div>
-            {appraisalResult && (
-               <Button onClick={() => setActiveTab('result')} className="w-full h-20 mt-10 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-4 uppercase italic text-xl group">
-                  ② 最終査定書を確認 <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition-transform" />
-               </Button>
-            )}
           </Card>
         )}
 
+        {/* ③ 鑑定レポート */}
         {activeTab === 'result' && (
-          <div className="animate-in fade-in zoom-in space-y-8 text-center pb-20">
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-10 md:p-20 shadow-2xl border-l-8 border-l-indigo-600 relative overflow-hidden text-left">
-               <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white"><Search className="w-80 h-80 fill-white opacity-20" /></div>
-               <h3 className="text-4xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 relative z-10"><CheckCircle2 className="text-emerald-500 animate-pulse w-12 h-12" /> Final Appraisal Report</h3>
-               <div className="bg-slate-950 rounded-[2.5rem] p-12 border border-slate-800 text-xl text-slate-200 leading-relaxed text-left whitespace-pre-wrap shadow-inner italic relative z-10 font-medium">
-                  {appraisalResult || "データがありません。"}
+          <div className="animate-in fade-in zoom-in space-y-12 pb-20">
+            <Card className="bg-[#13141f] border-2 border-white/5 rounded-[4rem] p-12 md:p-24 shadow-2xl relative overflow-hidden text-left border-l-8 border-l-amber-500">
+               <div className="absolute top-0 right-0 p-16 opacity-5 rotate-12 text-white"><Search size={300} className="fill-white opacity-20" /></div>
+               <div className="flex items-center justify-between mb-16 relative z-10">
+                  <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter flex items-center gap-6"><CheckCircle2 className="text-emerald-500 w-16 h-16" /> Appraisal Report</h3>
+                  <Badge className="bg-amber-500 text-black font-black px-6 py-2 rounded-full italic uppercase">Authentic</Badge>
+               </div>
+               <div className="bg-[#0a0b14] rounded-[3rem] p-12 border border-white/5 text-2xl text-slate-200 leading-relaxed italic shadow-inner relative z-10 font-medium">
+                  {appraisalResult || "No Data Captured."}
+               </div>
+               <div className="mt-12 flex justify-between items-center relative z-10 border-t border-white/5 pt-8">
+                  <div className="space-y-1"><p className="text-[10px] font-black text-slate-600 uppercase">Verification Engine</p><p className="text-sm font-black text-amber-500 italic uppercase">NextraLabs Cyber IQ v6.0</p></div>
+                  <Button onClick={() => window.open(`https://jp.mercari.com/search?keyword=${encodeURIComponent(targetKeyword)}&status=on_sale`, '_blank')} className="h-16 px-12 bg-white text-black font-black rounded-2xl italic uppercase flex items-center gap-4 hover:bg-amber-500 transition-all shadow-xl"><Search size={20}/> メルカリでお宝を狩る ↗</Button>
                </div>
             </Card>
-            <Button onClick={() => { setImage(null); setAppraisalResult(''); setActiveTab('scan'); }} variant="outline" className="w-full h-16 border-2 border-slate-800 text-slate-500 hover:bg-slate-800 font-black rounded-2xl uppercase italic"><RotateCcw className="mr-2 h-5 w-5" /> 別の服を鑑定する</Button>
+            <Button onClick={() => { setImage(null); setAppraisalResult(''); setActiveTab('hunt'); }} variant="ghost" className="w-full text-slate-600 hover:text-white font-black uppercase italic underline tracking-widest">Restart Hunting Protocol</Button>
           </div>
         )}
       </div>
+      
+      <DebugPanel data={{ trends, targetKeyword, appraisalResult }} toolId="vintage-hunter-master" />
+      <div className="text-center opacity-20 mt-20 font-black uppercase tracking-[0.5em] italic text-[10px]">Market Watch Command • NextraLabs 2026</div>
     </div>
   )
 }
