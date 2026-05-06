@@ -7,7 +7,7 @@ import {
   Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, 
   ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, 
   Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, Ticket, BookOpen, 
-  Sprout, Zap, Droplets, Utensils, Building2, Hotel, Key, type LucideIcon, Lock, CreditCard, Coins, Sparkles 
+  Sprout, Zap, Droplets, Utensils, Building2, Hotel, Key, type LucideIcon, Lock, CreditCard, Coins, Sparkles, Archive
 } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -23,6 +23,7 @@ interface Product {
 const freeTools: Product[] = [
   { id: 'office-politics-graph', title: '社内政治 相関図', subtitle: '人間関係の暗部を可視化', description: '組織図には載らない「本当のパワーバランス」をAIが暴き出します。派閥争いやキーマンの特定、あなたの社内での立ち位置を数値化・相関図化。', priceNote: '無料', tags: ['無料'], icon: Network, bgColor: 'bg-indigo-500/10', iconColor: 'text-indigo-400', status: '人気', isModel: true },
   { id: 'moving-checker', title: 'AI引越し安心チェッカー', subtitle: '治安・物件リスクを徹底分析', description: '住所を入力するだけで、周辺の治安、ハザードマップ、隠れた物件リスクをAIがスコアリング。後悔しない引越しをデータでサポートします。', priceNote: '無料', tags: ['無料'], icon: Home, bgColor: 'bg-emerald-500/10', iconColor: 'text-emerald-400', status: '注目', isModel: true },
+  { id: 'evidence-manager', title: 'Evidence Manager', subtitle: 'サブスク実績の証拠管理', description: 'デスクトップをスキャンし、Shopifyの出品成功画像などの「本物の証拠」のみを選別・永久保存。不要なゴミを自動消去する実績管理システム。', priceNote: '無料', tags: ['事務'], icon: Archive, bgColor: 'bg-amber-500/10', iconColor: 'text-amber-400', status: 'NEW', isModel: true },
   { id: 'sns-auto-poster', title: 'SNSオートポスター', subtitle: 'バズを量産するマルチSNS生成', description: '今のトレンドニュースと強力な投稿戦略を掛け合わせ、X、Instagram、TikTok向けの最適な文章を秒速で錬成。ハッシュタグ提案まで完結。', priceNote: '無料', tags: ['SNS'], icon: Share2, bgColor: 'bg-blue-500/10', iconColor: 'text-blue-400', status: 'マスタ', isModel: true },
   { id: 'kdp-guide', title: 'Kindle出版完全ナビ', subtitle: '執筆から出版までの一気通貫ガイド', description: '本のネタ出し、目次構成、原稿執筆支援からKDPの複雑な登録作業まで。最短距離で電子書籍作家デビューを果たすための全工程を可視化。', priceNote: '無料', tags: ['教育'], icon: BookOpen, bgColor: 'bg-orange-500/10', iconColor: 'text-orange-400', status: '標準', isModel: true },
   { id: 'ai-report-generator', title: 'AIレポートジェネレーター', subtitle: '箇条書きからプロ級の文書を生成', description: '支離滅裂なメモや箇条書きを、論理的で説得力のあるビジネスレポートへ瞬時に変換。会議録、日報、企画書のクオリティを極限まで高めます。', priceNote: '無料', tags: ['事務'], icon: FileText, bgColor: 'bg-slate-500/10', iconColor: 'text-slate-400', status: 'マスタ', isModel: true },
@@ -30,13 +31,14 @@ const freeTools: Product[] = [
 ]
 
 const hotelTools: Product[] = [
-  { id: 'staysee-ai-finder', title: 'Staysee AI Finder', subtitle: '画像検索 × 忘れ物照合', description: '遺失物をAI画像解析でスピード特定。', priceNote: 'プレミアム', tags: ['B2B'], icon: Building2, bgColor: 'bg-blue-500/10', iconColor: 'text-blue-400', status: '新着' },
+  { id: 'staysee-ai-finder', title: 'Staysee AI Finder', subtitle: '画像検索 × 忘れ物照合', description: '遺失物をAI画像解析でスピード特定。Staysee PMSと連携し、フロント業務の負担を激減させる宿泊施設特化型AI。', priceNote: 'プレミアム', tags: ['B2B'], icon: Building2, bgColor: 'bg-blue-500/10', iconColor: 'text-blue-400', status: '新着' },
 ]
 
 const defenseTools: Product[] = [
   { id: 'scam-defender', title: 'AI詐欺ディフェンダー', subtitle: '詐欺・悪意を即座に判定', description: '不審なDM、メール、SMSをAIが徹底スキャン。最新の詐欺手口と照らし合わせ、その危険性をリアルタイムで警告。あなたのデジタル資産を守り抜きます。', priceNote: 'プレミアム', tags: ['防犯'], icon: ShieldCheck, bgColor: 'bg-red-500/10', iconColor: 'text-red-400', status: '最強', isModel: true },
   { id: 'money-guard', title: 'AI家計防衛シミュレーター', subtitle: '衝動買いの心理的抑止', description: '支出を単に記録するだけでなく、購入前の迷いをAIが客観的に分析。「今、本当に必要か？」を問いかけ、家計の致命傷を未然に防ぎます。', priceNote: 'スタンダード', tags: ['家計'], icon: Wallet, bgColor: 'bg-amber-500/10', iconColor: 'text-amber-400', status: 'NEW' },
   { id: 'disaster-guard', title: 'AI防災パーソナルガイド', subtitle: '避難ルート × 備蓄最適化', description: '現在地のハザードマップを読み込み、あなた専用の防災・備蓄プランをAIが提案。災害発生時の生存確率を最大化させるためのデジタルガイド。', priceNote: 'スタンダード', tags: ['防災'], icon: Shield, bgColor: 'bg-sky-500/10', iconColor: 'text-sky-400', status: 'NEW' },
+  { id: 'shopping-stopper', title: 'AI買い物依存ストッパー', subtitle: '散財の鎖を断ち切る', description: '特定のキーワードやサイトへの接触を制限し、冷静な判断を促す。依存のメカニズムをAIが理解し、あなたの購買行動を健全な方向へと導きます。', priceNote: 'スタンダード', tags: ['節約'], icon: ShieldAlert, bgColor: 'bg-rose-500/10', iconColor: 'text-rose-400', status: 'NEW' },
   { id: 'ai-konkatsu', title: 'AI婚活コーチ', subtitle: '戦略的成婚支援システム', description: '現在のステータスと相手の希望条件から成婚期待度を算出。データに基づいた「次の一手」を提案し、迷走しがちな婚活に終止符を打ちます。', priceNote: 'スタンダード', tags: ['恋愛'], icon: Heart, bgColor: 'bg-pink-500/10', iconColor: 'text-pink-400', status: '注目', isModel: true },
 ]
 
@@ -86,7 +88,7 @@ function ProductCard({ product }: { product: Product }) {
             {product.priceNote !== '無料' ? (
               <Lock className="h-3 w-3 text-amber-500/50" />
             ) : (
-              <Sparkles className="h-3 w-3 text-emerald-500 animate-pulse" />
+              <Sparkles className="h-3 w-3 text-emerald-400 animate-pulse" />
             )}
           </div>
         </div>
