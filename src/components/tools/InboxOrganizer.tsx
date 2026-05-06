@@ -237,32 +237,36 @@ const MasterEngine = () => {
                                      <div className="text-slate-600 italic animate-pulse">Analyzing context & drafting reply...</div>
                                    ) : (
                                      <pre className="text-lg text-slate-200 whitespace-pre-wrap font-sans italic leading-relaxed">
-                                       {replyTexts[email.id] || " "}
+                                       {replyTexts[email.id] || "生成ボタンを押すとここに返信案が表示されます。"}
                                      </pre>
                                    )}
                                  </div>
 
                                  <div className="flex flex-wrap gap-4">
-                                    <button 
-                                      onClick={() => { navigator.clipboard.writeText(replyTexts[email.id]); alert('クリップボードにコピーしました'); }}
-                                      className="h-14 bg-blue-600 hover:bg-blue-500 text-white font-black italic rounded-xl px-10 shadow-lg transition-all active:scale-95"
-                                    >
-                                       Copy Draft
-                                    </button>
-                                    
-                                    <button 
-                                      onClick={() => saveDraft(email)}
-                                      disabled={isDrafting[email.id]}
-                                      className="h-14 bg-white/5 hover:bg-white/10 text-slate-400 font-black italic rounded-xl px-10 border border-white/10 transition-all flex items-center gap-2"
-                                    >
-                                       {isDrafting[email.id] ? 'Saving...' : 'Gmail下書きに保存'}
-                                    </button>
+                                    {replyTexts[email.id] && (
+                                      <>
+                                        <button 
+                                          onClick={() => { navigator.clipboard.writeText(replyTexts[email.id]); alert('クリップボードにコピーしました'); }}
+                                          className="h-14 bg-blue-600 hover:bg-blue-500 text-white font-black italic rounded-xl px-10 shadow-lg transition-all active:scale-95"
+                                        >
+                                           Copy Draft
+                                        </button>
+                                        
+                                        <button 
+                                          onClick={() => saveDraft(email)}
+                                          disabled={isDrafting[email.id]}
+                                          className="h-14 bg-emerald-600 hover:bg-emerald-500 text-white font-black italic rounded-xl px-10 shadow-lg transition-all flex items-center gap-2 active:scale-95"
+                                        >
+                                           {isDrafting[email.id] ? 'Saving...' : 'Gmail下書きに保存'}
+                                        </button>
+                                      </>
+                                    )}
 
                                     <a 
                                       href={`https://mail.google.com/mail/u/0/#search/${encodeURIComponent(email.from)}`}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="h-14 bg-red-600/10 hover:bg-red-600/20 text-red-500 font-black italic rounded-xl px-10 border border-red-500/20 transition-all flex items-center justify-center uppercase"
+                                      className="h-14 bg-white/5 hover:bg-white/10 text-slate-400 font-black italic rounded-xl px-10 border border-white/10 transition-all flex items-center justify-center uppercase"
                                     >
                                        Open Gmail ↗
                                     </a>
