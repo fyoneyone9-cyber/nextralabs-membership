@@ -30,7 +30,8 @@ export default async function DashboardPage() {
     .maybeSingle()
 
   const plan = subscription?.plan
-  const toolCount = plan === 'premium' ? 19 : plan === 'standard' ? 12 : 2
+  const planDisplay = plan === 'premium' ? 'プレミアム会員' : plan === 'standard' ? 'スタンダード会員' : plan === 'light' ? 'ライト会員' : '無料会員'
+  const toolCount = plan === 'premium' ? 19 : plan === 'standard' ? 12 : plan === 'light' ? 4 : 2
   const isPremium = plan === 'premium'
 
   // 5大マスタツール + 特選ツール
@@ -50,17 +51,17 @@ export default async function DashboardPage() {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-10">
           <div className="space-y-2">
-            <Badge variant="outline" className="px-4 py-1 text-xs font-black uppercase tracking-widest text-emerald-500 border-emerald-500/20">Operational Dashboard</Badge>
+            <Badge variant="outline" className="px-4 py-1 text-xs font-black uppercase tracking-widest text-emerald-500 border-emerald-500/20">ダッシュボード</Badge>
             <h1 className="text-4xl md:text-6xl font-black text-white italic tracking-tighter uppercase leading-none">
-              Welcome, {profile?.display_name || 'Member'}
+              Welcome, {profile?.display_name || 'ゲスト様'}
             </h1>
           </div>
           <div className="flex items-center gap-3">
             <Badge className={`${isPremium ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950' : 'bg-slate-800 text-slate-400'} px-6 py-2 font-black italic uppercase rounded-xl shadow-lg border-0`}>
-              {plan === 'premium' ? 'Premium Member' : plan === 'standard' ? 'Standard Member' : 'Free Member'}
+              {planDisplay}
             </Badge>
             {profile?.role === 'admin' && (
-              <Badge variant="secondary" className="bg-blue-600 text-white font-black italic px-4 py-2 rounded-xl">ADMIN</Badge>
+              <Badge variant="secondary" className="bg-blue-600 text-white font-black italic px-4 py-2 rounded-xl">管理者</Badge>
             )}
           </div>
         </div>
@@ -69,35 +70,35 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2rem] shadow-xl overflow-hidden group">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Available Intelligence</CardTitle>
+              <CardTitle className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">利用可能なツール</CardTitle>
               <Zap className="h-4 w-4 text-emerald-500 animate-pulse" />
             </CardHeader>
             <CardContent>
-              <div className="text-4xl font-black text-white italic leading-none">{toolCount} <span className="text-sm not-italic opacity-30 tracking-widest">UNITS</span></div>
+              <div className="text-4xl font-black text-white italic leading-none">{toolCount} <span className="text-sm not-italic opacity-30 tracking-widest">機起動中</span></div>
             </CardContent>
           </Card>
 
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2rem] shadow-xl overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Current Tier</CardTitle>
+              <CardTitle className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">現在のプラン</CardTitle>
               <Crown className="h-4 w-4 text-amber-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-black text-white italic uppercase leading-none">{plan || 'FREE'}</div>
+              <div className="text-3xl font-black text-white italic uppercase leading-none">{planDisplay}</div>
               {!isPremium && (
-                <Link href="/pricing" className="text-[10px] font-black text-emerald-500 hover:text-emerald-400 underline mt-2 inline-block uppercase tracking-widest italic">Upgrade Sequence →</Link>
+                <Link href="/pricing" className="text-[10px] font-black text-emerald-500 hover:text-emerald-400 underline mt-2 inline-block uppercase tracking-widest italic">プランをアップグレード →</Link>
               )}
             </CardContent>
           </Card>
 
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2rem] shadow-xl overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Identified Account</CardTitle>
+              <CardTitle className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">ログインアカウント</CardTitle>
               <User className="h-4 w-4 text-blue-500" />
             </CardHeader>
             <CardContent>
               <div className="text-sm font-bold text-white truncate">{user.email}</div>
-              <Link href="/profile" className="text-[10px] font-black text-slate-600 hover:text-white underline mt-2 inline-block uppercase tracking-widest italic">Modify Profile →</Link>
+              <Link href="/profile" className="text-[10px] font-black text-slate-600 hover:text-white underline mt-2 inline-block uppercase tracking-widest italic">プロフィール編集 →</Link>
             </CardContent>
           </Card>
         </div>
@@ -107,9 +108,9 @@ export default async function DashboardPage() {
           <div className="flex items-center justify-between px-4">
              <h3 className="font-black italic uppercase tracking-tighter text-2xl flex items-center gap-3">
                <Rocket className="h-6 w-6 text-emerald-500" />
-               Master Node Access
+               マスタツール・アクセス
              </h3>
-             <Link href="/products" className="text-[10px] font-black text-slate-500 hover:text-emerald-400 uppercase tracking-widest italic">View All Models ➔</Link>
+             <Link href="/products" className="text-[10px] font-black text-slate-500 hover:text-emerald-400 uppercase tracking-widest italic">全ツールを見る ➔</Link>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -127,7 +128,7 @@ export default async function DashboardPage() {
                       </div>
                       <div className="flex-1 min-w-0 pt-1">
                         <p className="text-lg font-black text-white italic leading-tight group-hover:text-emerald-400 transition-colors uppercase truncate">{tool.name}</p>
-                        <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1 italic">Enter Unit ➔</p>
+                        <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1 italic">ツールを起動する ➔</p>
                       </div>
                     </div>
                     {/* Background Decorative Icon */}
@@ -147,14 +148,14 @@ export default async function DashboardPage() {
                   <BookOpen className="h-10 w-10 text-slate-500 group-hover:text-emerald-400 transition-colors" />
                </div>
                <div className="space-y-2">
-                 <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">Guide Protocol</h3>
+                 <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">使い方ガイド</h3>
                  <p className="text-xs font-bold text-slate-500 italic max-w-xs mx-auto">
                    NextraLabsの全ての機能を使いこなすための完全マニュアル。
                  </p>
                </div>
                <Link href="/guide" className="w-full">
                  <Button className="w-full h-16 bg-white text-slate-950 font-black italic rounded-2xl shadow-xl hover:bg-emerald-500 hover:text-white transition-all active:scale-95 uppercase tracking-widest">
-                   Open Guide ↗
+                   ガイドを開く ↗
                  </Button>
                </Link>
             </div>
@@ -168,14 +169,14 @@ export default async function DashboardPage() {
                     <Crown className="h-10 w-10 text-white animate-bounce" />
                  </div>
                  <div className="space-y-2">
-                   <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">Master Access</h3>
+                   <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">マスタアクセス</h3>
                    <p className="text-xs font-bold text-emerald-100/70 italic max-w-xs mx-auto">
                      全ての制限を解除し、マスタモデルの真価を解放しましょう。
                    </p>
                  </div>
                  <Link href="/pricing" className="w-full">
                    <Button className="w-full h-16 bg-white text-emerald-700 font-black italic rounded-2xl shadow-xl hover:bg-emerald-100 transition-all active:scale-95 uppercase tracking-widest border-0">
-                     Upgrade Unit ➔
+                     プランをアップグレード ➔
                    </Button>
                  </Link>
               </div>
@@ -187,9 +188,9 @@ export default async function DashboardPage() {
                     <CheckCircle2 className="h-10 w-10 text-emerald-400 animate-pulse" />
                   </div>
                   <div className="space-y-2">
-                    <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">Active Status</h3>
+                    <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">稼働ステータス</h3>
                     <p className="text-xs font-bold text-emerald-400 italic uppercase tracking-[0.2em]">
-                      All Master Nodes Synced
+                      すべてのマスタノードが同期中
                     </p>
                     <p className="text-[10px] text-slate-500 font-bold italic mt-4 uppercase">
                       NextraLabs Premium Intelligence Service
