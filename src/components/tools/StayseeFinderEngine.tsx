@@ -7,15 +7,16 @@ import {
   ArrowRight, Upload, CheckCircle2, Zap, Copy, ExternalLink, 
   RotateCcw, Lightbulb, ClipboardPaste, PackageSearch, 
   Building2, UserSearch, Camera, Loader2, Download, FileImage, 
-  Settings, Shield, Printer, FileText, Smartphone, Truck, Box
+  Settings, Shield, Printer, FileText, Smartphone, Truck, Box, Coins, ShoppingCart, CreditCard
 } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const TABS = [
-  { id: 'scan', label: '① 拾得物スキャン', icon: Camera },
-  { id: 'match', label: '② 顧客マッチング', icon: UserSearch },
-  { id: 'kiosk', label: '③ 無人キオスク', icon: Smartphone },
-  { id: 'insights', label: '④ 経営レポート', icon: Building2 },
+  { id: 'scan', label: '① スキャン', icon: Camera },
+  { id: 'match', label: '② 照合', icon: UserSearch },
+  { id: 'monetize', label: '③ 収益化', icon: Coins },
+  { id: 'kiosk', label: '④ キオスク', icon: Smartphone },
+  { id: 'insights', label: '⑤ レポート', icon: Building2 },
 ];
 
 const MasterEngine = () => {
@@ -31,6 +32,10 @@ const MasterEngine = () => {
   const [isGeneratingCert, setIsGeneratingCert] = useState(false);
   const [insightData, setInsightData] = useState<any>(null);
   const [isGeneratingInsight, setIsGeneratingInsight] = useState(false);
+  
+  // 収益化用ステート
+  const [monetizationData, setMonetizationData] = useState<any>(null);
+  const [isGeneratingMonetize, setIsGeneratingMonetize] = useState(false);
   
   // キオスク用ステート
   const [kioskStatus, setKioskStatus] = useState('WAITING');
@@ -78,10 +83,31 @@ const MasterEngine = () => {
     }
   };
 
+  const generateMonetize = async () => {
+    setIsGeneratingMonetize(true);
+    try {
+      const res = await fetch('/api/tools/staysee-ai-finder/monetize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          itemInfo: certData?.itemName || "忘れ物",
+          hotelName: "NextraLabs Hotel" 
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setMonetizationData(data.monetizationData);
+      }
+    } catch (e) {
+      alert('収益化提案エラー');
+    } finally {
+      setIsGeneratingMonetize(false);
+    }
+  };
+
   const startKioskSync = async () => {
     setKioskStatus('PRINTING');
     try {
-      // 実際には特定された宿泊者住所を使用
       const mockShipping = { name: "米山 文貴", address: "神奈川県海老名市...", tel: "080-3207-8422" };
       const res = await fetch('/api/tools/staysee-ai-finder/kiosk', {
         method: 'POST',
@@ -148,14 +174,14 @@ const MasterEngine = () => {
       <div className="text-center space-y-2 print:hidden">
         <Badge className="bg-blue-600 text-white font-black italic px-4 py-1 text-[10px] uppercase rounded-full shadow-lg">HOTEL DX ENGINE</Badge>
         <h1 className="text-3xl md:text-6xl font-black text-white uppercase italic tracking-tighter drop-shadow-xl leading-none">Staysee AI Finder</h1>
-        <div className="inline-block bg-emerald-600 text-white font-black px-6 py-1 rounded-full uppercase italic text-[10px] tracking-widest shadow-lg">v3.2-MASTER</div>
+        <div className="inline-block bg-emerald-600 text-white font-black px-6 py-1 rounded-full uppercase italic text-[10px] tracking-widest shadow-lg">v3.3-MASTER</div>
       </div>
 
       <div className="overflow-x-auto pb-4 scrollbar-hide print:hidden">
         <div className="bg-slate-900/50 border border-white/5 p-2 flex min-w-[600px] md:min-w-full rounded-2xl gap-2">
           {TABS.map((tab) => (
-            <button key={tab.id} onClick={() => { setActiveTab(tab.id); setShowSettings(false); }} className={`flex-1 py-5 px-2 rounded-xl font-black text-[10px] md:text-sm uppercase italic transition-all flex items-center justify-center gap-2 relative ${activeTab === tab.id && !showSettings ? 'bg-emerald-600 text-white shadow-xl scale-[1.03] z-10' : 'text-slate-500 hover:text-white'}`}>
-              <tab.icon className="w-5 h-5" /> <span>{tab.label}</span>
+            <button key={tab.id} onClick={() => { setActiveTab(tab.id); setShowSettings(false); }} className={`flex-1 py-5 px-1 rounded-xl font-black text-[9px] md:text-sm uppercase italic transition-all flex items-center justify-center gap-2 relative ${activeTab === tab.id && !showSettings ? 'bg-emerald-600 text-white shadow-xl scale-[1.03] z-10' : 'text-slate-500 hover:text-white'}`}>
+              <tab.icon className="w-4 h-4" /> <span>{tab.label}</span>
             </button>
           ))}
           <button onClick={() => setShowSettings(!showSettings)} className={`px-8 rounded-xl font-black text-[10px] md:text-sm uppercase italic transition-all flex items-center justify-center gap-2 ${showSettings ? 'bg-amber-500 text-black' : 'bg-white/5 text-slate-500 hover:text-white'}`}>
@@ -175,7 +201,7 @@ const MasterEngine = () => {
           </Card>
         ) : activeTab === 'scan' ? (
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in text-center print:hidden">
-            <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 text-emerald-400"><PackageSearch /> ① 拾得物スキャン</h3>
+            <h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 text-emerald-400"><PackageSearch /> ① 拾得物スキャン</h3>
             <div className="grid lg:grid-cols-2 gap-12 text-left">
               <div className="space-y-6 text-center">
                 {!image ? (
@@ -192,17 +218,6 @@ const MasterEngine = () => {
                        <button onClick={() => setImage(null)} className="absolute top-4 right-4 bg-black/50 hover:bg-red-600 p-2 rounded-full h-10 w-10 text-white">✕</button>
                     </div>
                     <button onClick={() => { navigator.clipboard.writeText(FINAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className={`w-full h-20 text-xl font-black rounded-2xl transition-all shadow-2xl ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-blue-600 text-white'}`}>照合指示をコピー</button>
-                    <div className="grid grid-cols-3 gap-3">
-                       <button className="h-20 bg-white/5 border-2 border-emerald-500/30 rounded-2xl text-[10px] font-black uppercase italic text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://chatgpt.com', '_blank')}>
-                          <span className="text-xl">💬</span> CHATGPT
-                       </button>
-                       <button className="h-20 bg-white/5 border-2 border-blue-500/30 rounded-2xl text-[10px] font-black uppercase italic text-blue-400 hover:bg-blue-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://gemini.google.com', '_blank')}>
-                          <span className="text-xl">✨</span> GEMINI
-                       </button>
-                       <button className="h-20 bg-white/5 border-2 border-orange-500/30 rounded-2xl text-[10px] font-black uppercase italic text-orange-400 hover:bg-orange-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://claude.ai', '_blank')}>
-                          <span className="text-xl">❄️</span> CLAUDE
-                       </button>
-                    </div>
                   </div>
                 )}
               </div>
@@ -211,11 +226,11 @@ const MasterEngine = () => {
                     <div className="flex items-center gap-4 text-white font-black italic uppercase"><ClipboardPaste className="text-emerald-400" /> Staysee 同期</div>
                     <button onClick={() => searchStaysee('latest')} disabled={isApiLoading} className="h-10 bg-emerald-600 text-white px-6 rounded-xl font-black italic text-[10px] uppercase shadow-lg">LIVE SYNC</button>
                  </div>
-                 <textarea value={matchResult} onChange={(e) => setMatchResult(e.target.value)} placeholder="同期ボタンでデータを取得..." className="w-full h-80 bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 text-sm text-slate-200 focus:border-emerald-500 outline-none font-mono italic shadow-inner leading-relaxed" />
+                 <textarea value={matchResult} onChange={(e) => setMatchResult(e.target.value)} placeholder="同期ボタンでデータを取得..." className="w-full h-80 bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 text-sm text-slate-300 focus:border-emerald-500 outline-none font-mono italic shadow-inner leading-relaxed" />
               </div>
             </div>
             {matchResult && (
-               <button onClick={generateCert} disabled={isGeneratingCert} className="w-full h-24 mt-12 bg-emerald-600 text-white font-black rounded-3xl shadow-xl flex items-center justify-center gap-4 uppercase italic text-2xl group transition-all active:scale-95 border-b-4 border-emerald-800 active:border-b-0">
+               <button onClick={generateCert} disabled={isGeneratingCert} className="w-full h-24 mt-12 bg-emerald-600 text-white font-black rounded-[2rem] shadow-xl flex items-center justify-center gap-4 uppercase italic text-2xl group transition-all active:scale-95 border-b-4 border-emerald-800 active:border-b-0">
                   {isGeneratingCert ? 'GENERATING...' : '② AI保管証明書を発行 📜'}
                </button>
             )}
@@ -228,7 +243,7 @@ const MasterEngine = () => {
                   <div className="flex flex-col items-center gap-4 text-center">
                     <Shield className="text-emerald-500 w-24 h-24 animate-pulse print:text-emerald-600 print:w-16 print:h-16 print:animate-none" />
                     <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter leading-none print:text-black print:text-3xl">AI Official Certificate</h3>
-                    <div className="bg-emerald-600 text-white px-8 py-2 rounded-full font-black italic text-sm shadow-lg leading-none print:bg-emerald-100 print:text-emerald-800 print:border print:border-emerald-200">NextraLabs Verification v3.2-MASTER</div>
+                    <div className="bg-emerald-600 text-white px-8 py-2 rounded-full font-black italic text-sm shadow-lg leading-none print:bg-emerald-100 print:text-emerald-800 print:border print:border-emerald-200">NextraLabs Verification v3.3-MASTER</div>
                   </div>
 
                   {certData ? (
@@ -253,18 +268,101 @@ const MasterEngine = () => {
                   ) : (
                     <div className="bg-slate-950/80 rounded-[3rem] p-16 border-2 border-white/5 text-2xl text-slate-100 italic text-center">{matchResult || "Data Pending..."}</div>
                   )}
+
+                  <div className="p-8 bg-emerald-600 border-4 border-emerald-500 rounded-3xl shadow-[0_0_50px_rgba(16,185,129,0.4)] animate-in zoom-in-95 duration-500 text-center space-y-4 print:hidden">
+                      <div className="flex items-center justify-center gap-4 text-white font-black italic uppercase tracking-widest text-xl">
+                        <span className="animate-ping">✅</span> OFFICIAL VERIFICATION SECURED <span className="animate-ping">✅</span>
+                      </div>
+                      <p className="text-white text-lg font-black italic leading-relaxed">
+                        証明書が発行されました。このURLまたは印刷物を宿泊者へ提示し、<br/>
+                        NextraLabsによる厳格な拾得物管理をアピールしてください。
+                      </p>
+                  </div>
                </div>
             </Card>
             <button onClick={() => { setImage(null); setMatchResult(''); setCertData(null); setActiveTab('scan'); }} className="w-full h-20 border-2 border-white/10 text-slate-600 hover:text-white hover:bg-white/5 font-black rounded-3xl uppercase italic transition-all flex items-center justify-center gap-4 text-xl active:scale-95 print:hidden"><RotateCcw className="w-6 h-6" /> RESET PROTOCOL</button>
           </div>
+        ) : activeTab === 'monetize' ? (
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in space-y-12">
+            <div className="text-center space-y-4">
+               <div className="w-20 h-20 bg-emerald-600/10 rounded-3xl flex items-center justify-center mx-auto border-2 border-emerald-500/20 shadow-xl">
+                 <Coins className="w-10 h-10 text-emerald-500" />
+               </div>
+               <h3 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none">忘れ物返却マネタイズ</h3>
+               <p className="text-slate-400 font-bold italic">返却コストを収益に変え、ホスピタリティをマーケティングへ昇華させる。</p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-12 text-left">
+              <div className="space-y-6">
+                <div className="bg-[#0a0b14] border-2 border-white/5 rounded-[2.5rem] p-8 shadow-inner space-y-6 relative overflow-hidden">
+                   <div className="absolute top-0 right-0 p-6 opacity-5 rotate-12"><ShoppingCart className="w-32 h-32 text-white" /></div>
+                   <h4 className="text-xl font-black text-white italic uppercase flex items-center gap-3"><Zap className="text-emerald-500" /> 収益最大化プロトコル</h4>
+                   <p className="text-sm text-slate-400 font-bold leading-relaxed">AIが送料・手数料を自動算出し、宿泊者への「ついで買い」を提案します。</p>
+                   
+                   <button 
+                    onClick={generateMonetize}
+                    disabled={isGeneratingMonetize || !certData}
+                    className="w-full h-24 bg-white text-slate-950 hover:bg-emerald-500 hover:text-white font-black rounded-[2rem] shadow-2xl flex items-center justify-center gap-4 text-2xl uppercase italic transition-all active:scale-95 disabled:opacity-20"
+                   >
+                     {isGeneratingMonetize ? <Loader2 className="animate-spin" /> : <Coins />}
+                     マネタイズ提案を生成
+                   </button>
+                   {!certData && <p className="text-[10px] text-red-500 font-black text-center uppercase italic animate-pulse">※ まず①で鑑定を行ってください</p>}
+                </div>
+              </div>
+
+              <div className="bg-black rounded-[3rem] p-10 border border-white/5 shadow-inner min-h-[400px] flex flex-col relative overflow-hidden">
+                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-600 to-transparent opacity-30" />
+                 <div className="flex items-center gap-4 text-emerald-500 font-black italic uppercase text-xs mb-8"><ClipboardPaste /> AI Monetize Output</div>
+                 
+                 {monetizationData ? (
+                   <div className="space-y-8 animate-in slide-in-from-right-4">
+                      <div className="grid grid-cols-2 gap-4">
+                         <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
+                            <p className="text-[10px] font-black text-slate-500 uppercase mb-2">Total Fee (預取額)</p>
+                            <p className="text-3xl font-black text-white italic">¥{monetizationData.total.toLocaleString()}</p>
+                            <p className="text-[9px] text-slate-600 mt-2 font-bold italic">手数料 ¥{monetizationData.baseFee} 込</p>
+                         </div>
+                         <div className="bg-emerald-600/10 p-6 rounded-2xl border-2 border-emerald-500/30">
+                            <p className="text-[10px] font-black text-emerald-500 uppercase mb-2">Upsell Suggestion</p>
+                            <p className="text-xl font-black text-white italic leading-tight">{monetizationData.upsellItem}</p>
+                            <p className="text-xs text-emerald-400 mt-2 font-bold italic">単価: ¥{monetizationData.upsellPrice.toLocaleString()}</p>
+                         </div>
+                      </div>
+                      <div className="bg-[#1a1b26] p-6 rounded-2xl border border-white/5 shadow-inner">
+                         <p className="text-[10px] font-black text-slate-500 uppercase mb-3 italic">Message to Guest</p>
+                         <p className="text-sm text-slate-200 leading-relaxed font-bold italic">"{monetizationData.message}"</p>
+                      </div>
+                      <button 
+                        onClick={() => { navigator.clipboard.writeText(monetizationData.message); alert('お誘いメッセージをコピーしました'); }}
+                        className="w-full h-16 bg-emerald-600 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-3 uppercase italic transition-all hover:bg-emerald-500 active:scale-95"
+                      >
+                        <Copy size={20} /> リンクと文章をコピー
+                      </button>
+                   </div>
+                 ) : (
+                   <div className="h-full flex items-center justify-center opacity-10">
+                      <p className="text-center font-black uppercase italic tracking-[0.3em] leading-loose">Waiting for Strategy...<br/>(Analysis required)</p>
+                   </div>
+                 )}
+              </div>
+            </div>
+
+            <div className="p-8 bg-black/40 border-2 border-white/10 rounded-3xl flex items-start gap-6 shadow-inner text-left">
+               <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10"><CreditCard className="text-slate-500" /></div>
+               <div>
+                  <p className="text-emerald-500 font-black italic uppercase text-xs mb-2 tracking-widest">Payment Integration</p>
+                  <p className="text-sm text-slate-400 font-bold leading-relaxed italic">Stayseeのスマホ精算画面にこの金額を反映させ、オンラインで安全に回収できます。返送と同時にお土産を販売し、コストを利益に変えましょう。</p>
+               </div>
+            </div>
+          </Card>
         ) : activeTab === 'kiosk' ? (
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in text-center space-y-12">
             <div className="flex flex-col items-center gap-4">
                <div className="w-20 h-20 bg-emerald-600/10 rounded-3xl flex items-center justify-center border-2 border-emerald-500/20 shadow-xl">
                  <Smartphone className="w-10 h-10 text-emerald-500" />
                </div>
-               <h3 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter">無人フロント・キオスク</h3>
-               <Badge className="bg-emerald-500 text-slate-950 font-black italic">Unmanned Operations v1.0</Badge>
+               <h3 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none">無人フロント・キオスク</h3>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-10 text-left">
@@ -303,16 +401,6 @@ const MasterEngine = () => {
                  </div>
               </div>
             </div>
-            
-            <div className="bg-emerald-600/5 border-2 border-emerald-500/20 rounded-[2rem] p-8 italic shadow-inner">
-               <div className="flex items-center gap-3 text-emerald-500 mb-2">
-                  <Lightbulb size={20} />
-                  <p className="text-xs font-black uppercase tracking-widest">Kiosk Intelligence</p>
-               </div>
-               <p className="text-slate-400 text-sm font-bold leading-relaxed">
-                  スマートホテリエ（iPad）との連携により、深夜や無人時でもAIが忘れ物の返却受付・精算・ラベル発行までを完全無人化します。
-               </p>
-            </div>
           </Card>
         ) : (
           <div className="animate-in fade-in zoom-in space-y-8 text-left pb-20">
@@ -322,7 +410,6 @@ const MasterEngine = () => {
                   <div className="flex flex-col items-center gap-4 text-center">
                     <div className="p-5 bg-blue-600 rounded-3xl shadow-xl shadow-blue-500/20 print:bg-blue-100 print:shadow-none"><Building2 className="text-white w-12 h-12 print:text-blue-700" /></div>
                     <h3 className="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none print:text-black print:text-3xl">Hospitality Insight Report</h3>
-                    <div className="bg-blue-600 text-white px-8 py-2 rounded-full font-black italic text-xs shadow-lg uppercase print:bg-blue-50 print:text-blue-800 print:border print:border-blue-200">Strategic Management Advisory v1.0-MASTER</div>
                   </div>
 
                   {!insightData ? (
