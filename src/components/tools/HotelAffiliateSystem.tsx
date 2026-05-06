@@ -125,6 +125,12 @@ const MasterEngine = () => {
             {isGenerating ? <Loader2 className="animate-spin w-10 h-10" /> : <Sparkles className="w-10 h-10" />}
             <span>紹介文を自動錬成 ➔</span>
           </button>
+
+          <div className="grid grid-cols-3 gap-3">
+             <button onClick={() => window.open('https://chatgpt.com', '_blank')} className="h-16 bg-white/5 border-2 border-emerald-500/30 rounded-2xl flex items-center justify-center text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all shadow-lg"><span className="text-xl">💬</span> <span className="ml-2 text-[10px] font-black uppercase">ChatGPT</span></button>
+             <button onClick={() => window.open('https://gemini.google.com', '_blank')} className="h-16 bg-white/5 border-2 border-blue-500/30 rounded-2xl flex items-center justify-center text-blue-400 hover:bg-blue-500 hover:text-white transition-all shadow-lg"><span className="text-xl">✨</span> <span className="ml-2 text-[10px] font-black uppercase">Gemini</span></button>
+             <button onClick={() => window.open('https://claude.ai', '_blank')} className="h-16 bg-white/5 border-2 border-orange-500/30 rounded-2xl flex items-center justify-center text-orange-400 hover:bg-orange-500 hover:text-white transition-all shadow-lg"><span className="text-xl">❄️</span> <span className="ml-2 text-[10px] font-black uppercase">Claude</span></button>
+          </div>
         </div>
 
         {result && (
