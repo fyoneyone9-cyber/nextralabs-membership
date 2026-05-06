@@ -1,16 +1,16 @@
 'use client'
+
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-// 外部UIパーツのインポートを最小限にする
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
   Zap, ArrowRight, Sparkles, Mail, 
   Briefcase, Wallet, Shield, Building2, Youtube,
-  Terminal, UserCheck, Target, Search, Code, CheckCircle2, 
+  Terminal, Search, Code, CheckCircle2, 
   Phone, Archive, Spreadsheet, Network, MessageSquare, Video,
-  Sofa, Play, Scissors, Icons, MapPin, Globe
+  Sofa, Play, Scissors, MapPin, Globe, UserCheck
 } from 'lucide-react'
 
 // 各マスタツールのリスト
@@ -48,16 +48,12 @@ const WORKS = [
 ];
 
 const MasterEngine = () => {
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => { setIsMounted(true); }, []);
-  if (!isMounted) return null;
-
   return (
-    <div className="min-h-screen bg-[#050507] text-slate-200 font-sans pb-32 overflow-x-hidden text-left">
+    <div className="min-h-screen bg-[#050507] text-slate-200 font-sans pb-32 overflow-x-hidden text-left selection:bg-emerald-500/30">
       <section className="relative pt-32 pb-20 px-4 text-center">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#10b98115,transparent_50%)]" />
         <div className="max-w-5xl mx-auto space-y-8 relative z-10">
-          <Badge className="bg-emerald-600 text-white font-black italic px-6 py-1.5 rounded-full uppercase text-xs tracking-[0.3em] shadow-lg animate-pulse">Master Portfolio v2.0</Badge>
+          <Badge className="bg-emerald-600 text-white font-black italic px-6 py-1.5 rounded-full uppercase text-xs tracking-[0.3em] shadow-lg animate-pulse">Master Portfolio v2.1</Badge>
           <h1 className="text-6xl md:text-9xl font-black text-white italic tracking-tighter leading-none">米山 文貴</h1>
           <p className="text-xl md:text-2xl font-bold text-slate-400 italic max-w-3xl mx-auto leading-relaxed">「指示したら、あとは全部やってくれる人」</p>
         </div>
@@ -128,7 +124,7 @@ const MasterEngine = () => {
         </div>
       </section>
 
-      <section className="max-w-4xl mx-auto px-4 text-center">
+      <section id="contact" className="max-w-4xl mx-auto px-4 text-center">
         <Card className="bg-gradient-to-br from-emerald-600 to-teal-800 border-0 rounded-[4rem] p-12 md:p-20 shadow-2xl relative overflow-hidden space-y-10">
           <div className="absolute top-0 right-0 p-10 opacity-10 rotate-12"><Terminal size={300} className="text-white" /></div>
           <div className="relative z-10 space-y-8">
