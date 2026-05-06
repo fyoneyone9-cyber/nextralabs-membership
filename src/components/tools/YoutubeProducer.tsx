@@ -193,7 +193,15 @@ const MasterEngine = () => {
                     ) : processedFileUrl && (
                       <div className="space-y-4">
                         <a href={processedFileUrl} download="audio.mp3" className="w-full h-20 bg-white text-black font-black rounded-2xl flex items-center justify-center gap-4 uppercase italic text-lg shadow-xl hover:bg-slate-200 transition-all"><Download size={24} /> ② MP3を保存</a>
-                        <button onClick={() => handleCopy("以下の音声を正確に文字起こししてください。")} className={`w-full h-20 font-black rounded-2xl transition-all shadow-xl text-xl ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-red-600 text-white hover:bg-red-600'}`}>③ 指示をコピー</button>
+                        <div className="grid grid-cols-1 gap-3">
+                          <button onClick={() => {
+                            handleCopy("添付した音声ファイルの内容を、一言一句正確に文字起こししてください。");
+                            alert('指示をコピーしました。Geminiを開いて【MP3ファイルを貼り付け】してから、この指示を送信してください。');
+                          }} className={`w-full h-20 font-black rounded-2xl transition-all shadow-xl text-xl ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-red-600 text-white hover:bg-red-600'}`}>③ 指示をコピー</button>
+                          <button onClick={() => window.open('https://gemini.google.com', '_blank')} className="h-16 bg-white/10 border-2 border-blue-500/30 text-blue-400 font-black italic rounded-2xl uppercase hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center gap-3">
+                            <span className="text-xl">✨</span> Gemini で文字起こし 🚀
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
