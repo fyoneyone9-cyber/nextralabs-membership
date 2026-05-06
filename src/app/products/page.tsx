@@ -43,6 +43,7 @@ const defenseTools: Product[] = [
 ]
 
 const bizTools: Product[] = [
+  { id: 'trend-stock', title: 'SNSトレンド自動仕入れ', subtitle: 'バズ予測 × 楽天商品検索OS', description: 'Google TrendsとSNSのバイブスをAIが解析。「明日バズる」商品を予測し、楽天市場の在庫データと即座に同期して仕入れをサポートします。', priceNote: 'プレミアム', tags: ['物販'], icon: TrendingUp, bgColor: 'bg-orange-500/10', iconColor: 'text-orange-400', status: 'NEW', isModel: true },
   { id: 'contact-sync', title: 'Contact Sync', subtitle: '名刺の全自動・連絡先登録OS', description: '名刺の写真をAIがスキャン。名前、会社名、電話番号、メールアドレスを精密に読み取り、あなたの連絡先へ自動で1行ずつ追加します。', priceNote: 'ライト', tags: ['事務'], icon: UserPlus, bgColor: 'bg-blue-500/10', iconColor: 'text-blue-400', status: 'NEW', isModel: true },
   { id: 'interior-coordinator', title: 'Interior Sync', subtitle: '空間分析 × 楽天一括購入OS', description: 'カメラで部屋を映すとAIが今のインテリアを分析。空間に調和する家具を楽天からセット提案し、そのまま丸ごと購入できる次世代コマース体験。', priceNote: 'プレミアム', tags: ['生活'], icon: Sofa, bgColor: 'bg-teal-500/10', iconColor: 'text-teal-400', status: 'NEW', isModel: true },
   { id: 'youtube-coordinator', title: 'YouTube Sync', subtitle: '動画解析 × 楽天連動コーデOS', description: 'YouTube動画のURLを入れるだけで、AIが動画内の服を特定・スタイル分類。楽天市場から類似アイテムを即座に提案するファッション特化型エンジン。', priceNote: 'プレミアム', tags: ['生活'], icon: Play, bgColor: 'bg-red-500/10', iconColor: 'text-red-400', status: 'NEW', isModel: true },
