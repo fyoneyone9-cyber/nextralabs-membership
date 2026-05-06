@@ -32,24 +32,23 @@ const freeTools: Product[] = [
 ]
 
 const hotelTools: Product[] = [
-  { id: 'staysee-ai-finder', title: 'Staysee AI Finder', subtitle: '画像検索 × 忘れ物照合', description: '遺失物をAI画像解析でスピード特定。Staysee PMSと連携し、フロント業務の負担を激減させる宿泊施設特化型AI。', priceNote: 'プレミアム', tags: ['B2B'], icon: Building2, bgColor: 'bg-blue-500/10', iconColor: 'text-blue-400', status: '新着' },
+  { id: 'staysee-ai-finder', title: 'Staysee AI Finder', subtitle: '画像検索 × 忘れ物照合', description: '遺失物をAI画像解析でスピード特定。Staysee PMSと連携し、フロント業務の負担を激減させる宿泊施設特化型AI。', priceNote: 'プレミアム', tags: ['B2B'], icon: Building2, bgColor: 'bg-blue-500/10', iconColor: 'text-blue-400', status: 'マスタ', isModel: true },
 ]
 
 const defenseTools: Product[] = [
   { id: 'scam-defender', title: 'AI詐欺ディフェンダー', subtitle: '詐欺・悪意を即座に判定', description: '不審なDM、メール、SMSをAIが徹底スキャン。最新の詐欺手口と照らし合わせ、その危険性をリアルタイムで警告。あなたのデジタル資産を守り抜きます。', priceNote: 'プレミアム', tags: ['防犯'], icon: ShieldCheck, bgColor: 'bg-red-500/10', iconColor: 'text-red-400', status: '最強', isModel: true },
-  { id: 'money-guard', title: 'AI家計防衛シミュレーター', subtitle: '衝動買いの心理的抑止', description: '支出を単に記録するだけでなく、購入前の迷いをAIが客観的に分析。「今、本当に必要か？」を問いかけ、家計の致命傷を未然に防ぎます。', priceNote: 'スタンダード', tags: ['家計'], icon: Wallet, bgColor: 'bg-amber-500/10', iconColor: 'text-amber-400', status: 'NEW' },
-  { id: 'disaster-guard', title: 'AI防災パーソナルガイド', subtitle: '避難ルート × 備蓄最適化', description: '現在地のハザードマップを読み込み、あなた専用の防災・備蓄プランをAIが提案。災害発生時の生存確率を最大化させるためのデジタルガイド。', priceNote: 'スタンダード', tags: ['防災'], icon: Shield, bgColor: 'bg-sky-500/10', iconColor: 'text-sky-400', status: 'NEW' },
+  { id: 'money-guard', title: 'AI家計防衛シミュレーター', subtitle: '衝動買いの心理的抑止', description: '支出を単に記録するだけでなく、購入前の迷いをAIが客観的に分析。「今、本当に必要か？」を問いかけ、家計の致命傷を未然に防ぎます。', priceNote: 'スタンダード', tags: ['家計'], icon: Wallet, bgColor: 'bg-amber-500/10', iconColor: 'text-amber-400', status: 'マスタ', isModel: true },
+  { id: 'disaster-guard', title: 'AI防災パーソナルガイド', subtitle: '避難ルート × 備蓄最適化', description: '現在地のハザードマップを読み込み、あなた専用の防災・備蓄プランをAIが提案。災害発生時の生存確率を最大化させるためのデジタルガイド。', priceNote: 'スタンダード', tags: ['防災'], icon: Shield, bgColor: 'bg-sky-500/10', iconColor: 'text-sky-400', status: 'マスタ', isModel: true },
   { id: 'shopping-stopper', title: 'AI買い物依存ストッパー', subtitle: '散財の鎖を断ち切る', description: '特定のキーワードやサイトへの接触を制限し、冷静な判断を促す。依存のメカニズムをAIが理解し、あなたの購買行動を健全な方向へと導きます。', priceNote: '無料', tags: ['節約'], icon: ShieldAlert, bgColor: 'bg-rose-500/10', iconColor: 'text-rose-400', status: '最強', isModel: true },
   { id: 'ai-konkatsu', title: 'AI婚活コーチ', subtitle: '戦略的成婚支援システム', description: '現在のステータスと相手の希望条件から成婚期待度を算出。データに基づいた「次の一手」を提案し、迷走しがちな婚活に終止符を打ちます。', priceNote: 'スタンダード', tags: ['恋愛'], icon: Heart, bgColor: 'bg-pink-500/10', iconColor: 'text-pink-400', status: '注目', isModel: true },
 ]
 
 const bizTools: Product[] = [
-  { id: 'vintage-hunter', title: 'AI古着ハンター', subtitle: 'メルカリ24時間自動監視', description: '設定した条件に合う「お宝商品」をAIが常に監視し、出品された瞬間に通知。転売・仕入れのスピードをプロレベルへ引き上げます。', priceNote: 'プレミアム', tags: ['物販'], icon: Search, bgColor: 'bg-amber-500/10', iconColor: 'text-amber-400', status: '最強', isModel: true },
   { id: 'ai-select-shop', title: '「在庫ゼロ」AIセレクトショップ', subtitle: 'トレンド分析 × Shopify連携', description: '流行をAIが分析し、売れるデザインを自動生成。そのままShopify経由でオンデマンド生産・出品し、在庫リスクゼロのネットショップを実現。', priceNote: 'プレミアム', tags: ['EC'], icon: Store, bgColor: 'bg-teal-500/10', iconColor: 'text-teal-400', status: '人気', isModel: true },
   { id: 'youtube-producer', title: 'AI YouTubeプロデューサー', subtitle: '最新ニュースからの全自動台本作成', description: '音声の文字起こしから、最新トレンドを反映した台本生成、サムネイル設計まで。YouTube運用の全工程をAIが代行する「最強の工場」です。', priceNote: 'プレミアム', tags: ['動画'], icon: Clapperboard, bgColor: 'bg-red-500/10', iconColor: 'text-red-400', status: '注目', isModel: true },
   { id: 'prompt-master', title: 'AI画像プロンプトマスター', subtitle: '究極の画像生成パーツ工房', description: '1000種類以上のパーツをパズルのように組み合わせ、MidjourneyやStable Diffusionで使える究極の呪文を錬成します。', priceNote: 'ライト', tags: ['画像AI'], icon: Wand2, bgColor: 'bg-purple-500/10', iconColor: 'text-purple-400', status: '必須', isModel: true },
-  { id: 'inbox-organizer', title: 'Gmail AI Accelerator', subtitle: '未読ゼロを最速で実現', description: '受信メールをAIが瞬時に解析し、重要度別に仕分け。文脈を汲み取った返信案もワンクリックで生成し、メール対応時間を劇的に短縮。', priceNote: 'プレミアム', tags: ['Gmail'], icon: Mail, bgColor: 'bg-cyan-500/10', iconColor: 'text-cyan-400', status: 'NEW' },
-  { id: 'ai-sidejob', title: 'AI副業スタートダッシュ', subtitle: '適性診断 × 収益化ロードマップ', description: 'あなたのスキルと時間に合わせた「稼げるAI副業」を診断。具体的な始め方から収益化までのステップをロードマップ形式で提示します。', priceNote: 'ライト', tags: ['副業'], icon: Briefcase, bgColor: 'bg-indigo-500/10', iconColor: 'text-indigo-400', status: 'NEW' },
+  { id: 'inbox-organizer', title: 'Gmail AI Accelerator', subtitle: '未読ゼロを最速で実現', description: '受信メールをAIが瞬時に解析し、重要度別に仕分け。文脈を汲み取った返信案もワンクリックで生成し、メール対応時間を劇的に短縮。', priceNote: 'プレミアム', tags: ['Gmail'], icon: Mail, bgColor: 'bg-cyan-500/10', iconColor: 'text-cyan-400', status: 'マスタ', isModel: true },
+  { id: 'ai-sidejob', title: 'AI副業スタートダッシュ', subtitle: '適性診断 × 収益化ロードマップ', description: 'あなたのスキルと時間に合わせた「稼げるAI副業」を診断。具体的な始め方から収益化までのステップをロードマップ形式で提示します。', priceNote: 'ライト', tags: ['副業'], icon: Briefcase, bgColor: 'bg-indigo-500/10', iconColor: 'text-indigo-400', status: 'マスタ', isModel: true },
 ]
 
 function ProductCard({ product }: { product: Product }) {
