@@ -11,6 +11,14 @@ const TOOL_DIRECTORY = [
   { id: 'money-guard', name: 'AI家計防衛シミュレーター', desc: 'カメラ解析で衝動買いを物理的に阻止する最強の盾。', icon: Wallet, color: 'text-amber-500' },
   { id: 'disaster-guard', name: 'AI防災パーソナルガイド', desc: 'GPSと連動し、今この場所の生存戦略をAIが立案。', icon: Shield, color: 'text-sky-500' },
   { id: 'youtube-producer', name: 'AI YouTubeプロデューサー', desc: 'トレンドと戦略からバズる動画台本を全自動生成。', icon: Youtube, color: 'text-red-500' },
+  { id: 'buy-smart-nav', name: '中古・新品比較ナビ', desc: '市場価格をAIが分析し、今どちらを買うべきか判定。', icon: Scale, color: 'text-indigo-400' },
+  { id: 'sns-auto-poster', name: 'SNSオートポスター', desc: 'トレンド×戦略でバズを量産するSNS投稿エンジン。', icon: Share2, color: 'text-rose-500' },
+  { id: 'ai-select-shop', name: 'AIセレクトショップ', desc: 'トレンドを服に変えてShopifyで在庫ゼロ販売。', icon: Store, color: 'text-teal-500' },
+  { id: 'interior-coordinator', name: 'Interior Sync', desc: '空間をARスキャンし、調和する家具を楽天から提案。', icon: Sofa, color: 'text-teal-400' },
+  { id: 'youtube-coordinator', name: 'YouTube Sync', desc: '動画内の服を特定し、楽天から類似品を即座に発見。', icon: Play, color: 'text-rose-600' },
+  { id: 'evidence-manager', name: 'エビデンス・マネージャー', desc: '制作実績をAIが自動選別し、美しくアーカイブ。', icon: Archive, color: 'text-amber-600' },
+  { id: 'expense-sync', name: 'Expense Sync', desc: 'レシートから経費を自動抽出し、シートへ記帳。', icon: Table, color: 'text-emerald-400' },
+  { id: 'contact-sync', name: 'Contact Sync', desc: '名刺をスキャンし、連絡先へ自動で1行登録。', icon: UserPlus, color: 'text-cyan-500' },
 ];
 
 const ToolGuideContent = () => {
