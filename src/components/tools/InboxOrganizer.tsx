@@ -132,7 +132,7 @@ const MasterEngine = () => {
     <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-slate-950 text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)] print:border-0 print:shadow-none print:my-0 print:p-0">
       <div className="text-center space-y-1 md:space-y-3">
         <div className="inline-block bg-blue-600 text-white font-black italic tracking-widest px-4 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full shadow-lg border border-white/20">Nextra Intelligence v5.0-MASTER</div>
-        <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">Inbox Zero</h1>
+        <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">Gmail AI Accelerator</h1>
       </div>
 
       {!googleToken ? (
