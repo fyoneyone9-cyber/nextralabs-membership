@@ -19,22 +19,42 @@ export default function ShoppingStopper() {
 
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
+      // ユーザーがカメラ許可を出すための制約
+      const constraints = {
+        video: {
           facingMode: 'user',
           width: { ideal: 1280 },
           height: { ideal: 720 }
-        } 
-      });
+        },
+        audio: false // 音声は不要
+      };
+
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      
       if (videoRef.current) { 
         videoRef.current.srcObject = stream; 
+        // iOS/Safari対策: 確実に再生を開始させる
+        videoRef.current.setAttribute('playsinline', 'true');
+        try {
+          await videoRef.current.play();
+        } catch (playErr) {
+          console.error('[PLAY_ERROR]', playErr);
+        }
+        
         setIsCameraActive(true); 
         setSystemOnline(true);
         startAnalysis(); 
       }
-    } catch (err) { 
+    } catch (err: any) { 
       console.error('[CAMERA_ERROR]', err);
-      alert("カメラの起動に失敗しました。ブラウザの設定でカメラへのアクセスを許可してください。"); 
+      // エラー名をチェックして、具体的な原因を伝える
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        alert("カメラの使用がブロックされています。ブラウザのアドレスバーの「鍵マーク」からカメラを許可してください。");
+      } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+        alert("利用可能なカメラが見つかりません。");
+      } else {
+        alert(`カメラの起動に失敗しました (${err.name})。設定を確認してください。`);
+      }
     }
   };
 
