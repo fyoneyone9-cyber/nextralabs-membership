@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
-import { Moon, Sun, Menu, X, User, LogOut, Shield } from 'lucide-react'
+import { Moon, Sun, Menu, X, User, LogOut, Shield, Twitter as TwitterIcon } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import type { Profile } from '@/types'
 
@@ -75,7 +75,7 @@ export function Header() {
             📩 お問い合わせ
           </Link>
           <a href="https://x.com/0022_sougo" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-blue-400 transition-all">
-            <Twitter className="h-5 w-5 fill-current" />
+            <TwitterIcon className="h-5 w-5 fill-current" />
           </a>
           {user ? (
             <>
