@@ -131,6 +131,14 @@ const MasterEngine = () => {
              <button onClick={() => window.open('https://gemini.google.com', '_blank')} className="h-16 bg-white/5 border-2 border-blue-500/30 rounded-2xl flex items-center justify-center text-blue-400 hover:bg-blue-500 hover:text-white transition-all shadow-lg"><span className="text-xl">✨</span> <span className="ml-2 text-[10px] font-black uppercase">Gemini</span></button>
              <button onClick={() => window.open('https://claude.ai', '_blank')} className="h-16 bg-white/5 border-2 border-orange-500/30 rounded-2xl flex items-center justify-center text-orange-400 hover:bg-orange-500 hover:text-white transition-all shadow-lg"><span className="text-xl">❄️</span> <span className="ml-2 text-[10px] font-black uppercase">Claude</span></button>
           </div>
+
+          {result && (
+            <div className="grid grid-cols-3 gap-3 animate-in fade-in">
+               <button onClick={() => window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(result.postText + '\n' + result.affiliateLink)}`, '_blank')} className="h-16 bg-black border border-white/10 rounded-xl flex items-center justify-center text-blue-400 hover:bg-white/10 transition-all shadow-lg"><Twitter /></button>
+               <button onClick={() => window.open('https://www.instagram.com/', '_blank')} className="h-16 bg-black border border-white/10 rounded-xl flex items-center justify-center text-pink-500 hover:bg-white/10 transition-all shadow-lg"><Instagram /></button>
+               <button onClick={() => window.open('https://www.threads.net/', '_blank')} className="h-16 bg-black border border-white/10 rounded-xl flex items-center justify-center text-white hover:bg-white/10 transition-all shadow-lg"><MessageSquare /></button>
+            </div>
+          )}
         </div>
 
         {result && (
