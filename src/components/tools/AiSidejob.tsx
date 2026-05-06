@@ -45,7 +45,7 @@ export default function AiSidejob() {
   if (!isClient) return <div className="min-h-screen bg-[#050507]" />;
 
   return (
-    <div className="min-h-screen bg-[#050507] text-slate-200 font-sans p-4 md:p-10 text-left">
+    <div className="min-h-screen bg-[#050507] text-slate-200 font-sans p-4 md:p-10 text-left border-8 border-emerald-500/50 rounded-[4rem] my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
       <div className="max-w-7xl mx-auto space-y-12">
         <div className="text-center space-y-3">
           <h1 className="text-6xl md:text-[8rem] font-black text-white uppercase italic tracking-tighter leading-none">AI SIDEJOB</h1>
