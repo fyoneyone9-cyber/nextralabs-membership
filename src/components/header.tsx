@@ -156,6 +156,9 @@ export function Header() {
           <Link href="/contact" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>
             📩 お問い合わせ
           </Link>
+          <Link href="/port" className="block text-[10px] font-medium py-2 opacity-30" onClick={() => setMenuOpen(false)}>
+            PORT
+          </Link>
           {user ? (
             <>
               <Link href="/dashboard" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>
