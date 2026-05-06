@@ -2,7 +2,7 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ArrowRight, Mail, Briefcase, Wallet, Shield, Building2, Youtube, Table, UserPlus, Sofa, Play, Zap } from 'lucide-react'
+import { ArrowRight, Mail, Briefcase, Wallet, Shield, Building2, Youtube, Table, UserPlus, Sofa, Play, Zap, Scale, Share2, Store, Archive } from 'lucide-react'
 
 const TOOL_DIRECTORY = [
   { id: 'staysee-ai-finder', name: 'Staysee AI Finder', desc: 'ホテル・民泊の忘れ物対応をAIで完全自動化。', icon: Building2, color: 'text-emerald-500' },
