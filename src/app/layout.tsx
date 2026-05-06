@@ -22,7 +22,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   verification: {
-    google: 'P-zm2rdcV0kWAXrKxANacp5a5hbx8tkjlPeclNkiLlg',
+    google: 'google9fc5715d83add922',
   },
   title: { default: 'NextraLabs | AIツール使い放題メンバーシップ', template: '%s | NextraLabs' },
   description: 'NextraLabsは月額¥980から使えるAIツールのメンバーシップです。',
