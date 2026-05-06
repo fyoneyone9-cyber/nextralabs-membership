@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useRef, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
@@ -32,18 +33,14 @@ const MasterEngine = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedKey = localStorage.getItem('staysee_user_api_key');
-      if (savedKey) setUserApiKey(savedKey);
-    }
+    const savedKey = localStorage.getItem('staysee_user_api_key');
+    if (savedKey) setUserApiKey(savedKey);
   }, []);
 
   const saveApiKey = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('staysee_user_api_key', userApiKey);
-      alert('Staysee APIキーを保存しました');
-      setShowSettings(false);
-    }
+    localStorage.setItem('staysee_user_api_key', userApiKey);
+    alert('Staysee APIキーを保存しました');
+    setShowSettings(false);
   };
 
   const generateCert = async () => {
@@ -176,7 +173,7 @@ const MasterEngine = () => {
                        <img src={image} alt="Found" className="object-contain w-full h-full p-4" />
                        <button onClick={() => setImage(null)} className="absolute top-4 right-4 bg-black/50 hover:bg-red-600 p-2 rounded-full h-10 w-10 text-white">✕</button>
                     </div>
-                    <button onClick={() => { navigator.clipboard.writeText(FINAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className={`w-full h-20 text-xl font-black rounded-2xl transition-all shadow-2xl ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-blue-600 text-white hover:bg-blue-500'}`}>照合指示をコピー</button>
+                    <button onClick={() => { navigator.clipboard.writeText(FINAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className={`w-full h-20 text-xl font-black rounded-2xl transition-all shadow-2xl ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-blue-600 text-white'}`}>照合指示をコピー</button>
                     <div className="grid grid-cols-3 gap-3">
                        <button className="h-20 bg-white/5 border-2 border-emerald-500/30 rounded-2xl text-[10px] font-black uppercase italic text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://chatgpt.com', '_blank')}>
                           <span className="text-xl">💬</span> CHATGPT
@@ -304,11 +301,11 @@ const MasterEngine = () => {
   )
 }
 
-const NoSSRWrapper = () => {
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => { setIsMounted(true); }, []);
-  if (!isMounted) return <div className="min-h-screen bg-slate-950" />;
-  return <MasterEngine />;
-};
+const StayseeFinderEngineWithNoSSR = dynamic(() => Promise.resolve(MasterEngine), {
+  ssr: false,
+  loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Initializing Master Node...</div>
+})
 
-export default NoSSRWrapper;
+export default function NoSSRWrapper() {
+  return <StayseeFinderEngineWithNoSSR />
+}
