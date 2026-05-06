@@ -162,9 +162,20 @@ const MasterEngine = () => {
              />
              
              {appraisalResult && (
-                <div className="p-6 bg-red-600/10 border-2 border-red-600/30 rounded-3xl animate-in slide-in-from-bottom-4">
-                   <p className="text-red-500 font-black italic uppercase text-xs mb-2">🛡️ Defense Sequence Active</p>
-                   <p className="text-slate-300 text-sm font-bold italic leading-relaxed">支出の抑止が発動されました。購入ボタンを押す前にこのレポートを3回読み直してください。</p>
+                <div className="p-8 bg-red-600 border-4 border-red-500 rounded-[2rem] shadow-[0_0_50px_rgba(220,38,38,0.5)] animate-in zoom-in-95 duration-500 text-center space-y-4">
+                   <div className="flex items-center justify-center gap-4 text-white font-black italic uppercase tracking-widest text-xl">
+                      <span className="animate-ping">🚨</span> DEFENSE SEQUENCE ACTIVE <span className="animate-ping">🚨</span>
+                   </div>
+                   <p className="text-white text-lg font-black italic leading-relaxed">
+                      警告：脳がドーパミンに支配されています！<br/>
+                      今すぐブラウザを閉じ、このレポートを3回読み直してください。<br/>
+                      冷静になるまで購入ボタンを押すことは許可されません。
+                   </p>
+                   <div className="flex justify-center gap-2">
+                      {[1, 2, 3].map(i => (
+                        <div key={i} className="w-3 h-3 bg-white rounded-full animate-bounce" style={{ animationDelay: `${i * 0.2}s` }} />
+                      ))}
+                   </div>
                 </div>
              )}
           </div>
