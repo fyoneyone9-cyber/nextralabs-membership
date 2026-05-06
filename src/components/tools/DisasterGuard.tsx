@@ -128,12 +128,12 @@ const MasterEngine = () => {
                   />
                </div>
 
-               <Button 
+               <button 
                  onClick={() => { navigator.clipboard.writeText(FINAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} 
                  className={`w-full h-20 text-xl font-black rounded-2xl transition-all shadow-2xl ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-sky-600 text-white hover:bg-sky-500'}`}
                >
                  {copied ? '✅ COPY COMPLETE' : '診断指示をコピー'}
-               </Button>
+               </button>
                
                <div className="grid grid-cols-3 gap-3">
                   <button className="h-12 bg-black border border-white/5 rounded-xl text-[9px] font-black uppercase italic text-slate-500 hover:text-white" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</button>
