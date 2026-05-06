@@ -22,21 +22,6 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="text-sm font-semibold mb-3">公式パートナー</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>
-                <a 
-                  href="https://www.marriage-road.jp/" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="hover:text-primary transition-colors flex items-center gap-1"
-                >
-                  【IBJ正規加盟店】マリッジロードジャパン ↗
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
             <h4 className="text-sm font-semibold mb-3">サポート</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link href="/terms" className="hover:text-primary transition-colors">利用規約</Link></li>

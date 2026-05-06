@@ -308,10 +308,37 @@ export default function AiKonkatsuCoach() {
               </div>
             </div>
           </Card>
+
+          <div className="bg-white/5 border-2 border-pink-500/20 rounded-[2.5rem] p-8 md:p-12 italic shadow-inner mt-10">
+            <div className="flex flex-col md:flex-row items-center gap-8">
+               <div className="w-24 h-24 bg-pink-600/10 rounded-full flex items-center justify-center border-2 border-pink-500/20 shrink-0 shadow-xl">
+                 <Heart size={48} className="text-pink-500 fill-pink-500 animate-pulse" />
+               </div>
+               <div className="flex-1 text-center md:text-left space-y-4">
+                  <p className="text-pink-500 text-xs font-black uppercase tracking-widest flex items-center justify-center md:justify-start gap-2">
+                    Strategic Official Partner
+                  </p>
+                  <h4 className="text-2xl md:text-3xl font-black text-white italic leading-tight">
+                    AIを超えた「本物」の成婚サポート。
+                  </h4>
+                  <p className="text-slate-400 text-sm md:text-base font-bold leading-relaxed">
+                    AIの診断結果に基づき、プロのカウンセラーがあなたの婚活を最短距離で成功へ導きます。
+                  </p>
+                  <a 
+                    href="https://www.marriage-road.jp/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-4 bg-white text-rose-600 font-black px-10 py-5 rounded-2xl shadow-[0_10px_30px_rgba(225,29,72,0.2)] hover:bg-rose-50 transition-all active:scale-95 text-lg italic group"
+                  >
+                    【IBJ正規加盟店】マリッジロードジャパン ➔
+                  </a>
+               </div>
+            </div>
+          </div>
         </div>
       )}
 
-      <div className="text-center opacity-20"><p className="text-[10px] font-black uppercase tracking-[0.5em] italic">Marriage Road Japan 知見継承エンジン • NextraLabs 2026</p></div>
+      <div className="text-center opacity-20 mt-12"><p className="text-[10px] font-black uppercase tracking-[0.5em] italic">Marriage Road Japan 知見継承エンジン • NextraLabs 2026</p></div>
     </div>
   )
 }
