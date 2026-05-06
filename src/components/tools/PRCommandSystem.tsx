@@ -60,7 +60,7 @@ export default function PRCommandSystem() {
                 <div className="flex items-center gap-2 text-blue-500 font-black italic tracking-widest text-xs uppercase">
                   <Rocket size={16} className="animate-bounce" /> Mission Launcher
                 </div>
-                <Badge className="bg-emerald-500 text-slate-950 font-black text-[8px] uppercase italic">Standard Plan</Badge>
+                <Badge className="bg-emerald-500 text-slate-950 font-black text-[8px] uppercase italic">Free Tool</Badge>
              </div>
              
              <div className="space-y-4">
