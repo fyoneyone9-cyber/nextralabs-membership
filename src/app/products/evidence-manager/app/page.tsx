@@ -1,5 +1,16 @@
-import EvidenceSystem from '@/components/tools/EvidenceSystem'
+import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
+import EvidenceManagerSystem from '@/components/tools/EvidenceManagerSystem'
+import { AccessGate } from '@/components/tools/AccessGate'
 
-export default function Page() {
-  return <EvidenceSystem />
+export default async function Page() {
+  const supabase = createServerSupabaseClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+
+  return (
+    <AccessGate productId="evidence-manager">
+      <EvidenceManagerSystem />
+    </AccessGate>
+  )
 }
