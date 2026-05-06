@@ -105,7 +105,7 @@ function FeatureCard({ icon, title, desc }: { icon: React.ReactNode, title: stri
   return (
     <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-6 hover:border-red-500/30 transition-all shadow-xl group">
       <div className="w-16 h-16 bg-red-600/10 rounded-2xl flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform text-center mx-auto md:mx-0">
-        {React.cloneElement(icon as React.ReactElement, { size: 32 })}
+        {icon}
       </div>
       <h4 className="text-2xl font-black text-white italic uppercase">{title}</h4>
       <p className="text-slate-400 font-bold leading-relaxed text-sm">{desc}</p>
