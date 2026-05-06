@@ -2,7 +2,7 @@ import React from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
-import { CheckCircle2, Share2, Zap, Send, TrendingUp, Search, ArrowRight, MessageSquareText, ShieldCheck, AlertTriangle } from 'lucide-react'
+import { CheckCircle2, Share2, Zap, Send, TrendingUp, Search, ArrowRight, MessageSquareText, ShieldCheck, AlertTriangle, HeartHandshake } from 'lucide-react'
 import Link from 'next/link'
 
 const SnsPosterLpContent = () => {
@@ -69,6 +69,11 @@ const SnsPosterLpContent = () => {
             <div className="w-12 h-12 bg-rose-500/10 rounded-xl flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform text-center mx-auto md:mx-0"><Share2 size={24} /></div>
             <h4 className="text-xl font-black text-white uppercase italic text-left">マルチ媒体一括生成</h4>
             <p className="text-slate-400 text-sm font-bold leading-relaxed text-left text-left">X、Instagram、TikTok、Threads。各SNSのアルゴリズムに最適化された文章・構成案を一括で作成します。</p>
+          </div>
+          <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-4 hover:border-rose-500/30 transition-all group text-left text-left">
+            <div className="w-12 h-12 bg-rose-500/10 rounded-xl flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform text-center mx-auto md:mx-0"><HeartHandshake size={24} /></div>
+            <h4 className="text-xl font-black text-white uppercase italic text-left text-left">結婚相談所特化モード</h4>
+            <p className="text-slate-400 text-sm font-bold leading-relaxed text-left text-left">マリッジロードジャパンの知見を完全同期。心理学に基づいた成婚戦略・婚活Tips投稿を瞬時に生成します。</p>
           </div>
           <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-4 hover:border-rose-500/30 transition-all group text-left text-left">
             <div className="w-12 h-12 bg-rose-500/10 rounded-xl flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform text-center mx-auto md:mx-0"><CheckCircle2 size={24} /></div>

@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { 
   ArrowRight, CheckCircle2, RotateCcw, Lightbulb, Search, ShieldCheck, 
   LayoutGrid, Loader2, Share2, ClipboardPaste, Sparkles, Zap, Trash2, 
-  Send, Instagram, Twitter, MessageSquare, Video, TrendingUp, ExternalLink
+  Send, Instagram, Twitter, MessageSquare, Video, TrendingUp, ExternalLink, HeartHandshake
 } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
@@ -15,6 +15,7 @@ const WEAPONS = [
   { id: 'instagram', label: 'Instagram', icon: Instagram, color: 'text-pink-500', prompt: "あなたは人気インスタグラマーです。以下の【トレンド】と【戦略パーツ】を組み合わせて、情緒的なキャプションとハッシュタグ15個を作成してください。\n\n【制約条件】:\n・余計な挨拶や解説は一切省き、投稿本文とハッシュタグのみを出力してください。\n・各パターンは「---」で区切ってください。" },
   { id: 'tiktok', label: 'TikTok / Reels', icon: Video, color: 'text-rose-500', prompt: "あなたはバズ動画作家です。以下の【トレンド】と【戦略パーツ】を元に、最初の3秒で惹きつける動画台本を作成してください。\n\n【制約条件】:\n・余計な解説は省き、台本の内容のみを出力してください。" },
   { id: 'threads', label: 'Threads', icon: MessageSquare, color: 'text-slate-200', prompt: "あなたはコラムニストです。以下の【トレンド】と【戦略パーツ】について、深い共感を生む長文を構成してください。\n\n【制約条件】:\n・余計な挨拶は省き、本文のみを出力してください。" },
+  { id: 'konkatsu', label: '結婚相談所モード', icon: HeartHandshake, color: 'text-rose-400', prompt: "あなたは「マリッジロードジャパン」を運営するプロの婚活カウンセラーです。上級心理カウンセラーの知見を活かし、読者の成婚意欲を高め、相談所に繋げる投稿を3パターン作成してください。\n\n【制約条件】:\n・ターゲット：20代〜40代の本気で結婚したい男女\n・トーン：信頼感がありつつ、時に鋭く本質を突く語り口\n・各パターンは「---」で区切ってください。" },
 ];
 
 const STRATEGY_PARTS = [
@@ -25,7 +26,10 @@ const STRATEGY_PARTS = [
   { label: "⚖️ 比較・検証", content: "【戦略：比較検証】AとBの違いを明確にし、独自の視点で結論を出すプロのレビュー。" },
   { label: "📰 ニュース要約", content: "【戦略：要約】複雑な時事ネタを中学生でもわかるレベルに噛み砕き、一言解説を添えて。" },
   { label: "❓ 質問・対話", content: "【戦略：エンゲージメント】フォロワーが回答しやすい二択や質問を投げかけ、交流を生む。" },
-  { label: "🔥 モチベーション", content: "【戦略：鼓舞】やる気が出ない人の背中を強力に押す、力強いメッセージとマインドセット。" }
+  { label: "🔥 モチベーション", content: "【戦略：鼓舞】やる気が出ない人の背中を強力に押す、力強いメッセージとマインドセット。" },
+  { label: "💍 婚活・成婚", content: "【戦略：婚活戦略】成婚のプロが教える、婚活の「残酷な真実」と「選ばれるための具体的アクション」。" },
+  { label: "💑 心理・相性", content: "【戦略：心理分析】上級心理カウンセラーの知見から、長く続くカップルの共通点と心理的安全性。" },
+  { label: "📅 婚活ルーティン", content: "【戦略：ライフスタイル】週末の婚活パーティーやデートの準備など、成婚者が実践しているルーティン。" }
 ];
 
 const MasterEngine = () => {
