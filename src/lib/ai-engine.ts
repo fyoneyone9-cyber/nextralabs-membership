@@ -42,7 +42,7 @@ export async function nextraAiEngine({
   if (geminiKey) {
     try {
       const genAI = new GoogleGenerativeAI(geminiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", systemInstruction });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-04-17", systemInstruction });
       const result = await model.generateContent(prompt);
       responseText = result.response.text();
       finalModel = "Gemini 1.5 Pro";

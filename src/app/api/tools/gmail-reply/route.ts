@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 /**
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     const { subject, from, body } = await req.json();
     
     // 🚀 Gemini 1.5 Flash を使用して爆速生成
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-04-17" });
 
     const prompt = `あなたは有能なビジネス秘書です。以下のメール内容を解析し、状況に合わせた最適な返信案を作成してください。
 相手に失礼がなく、かつ簡潔で分かりやすい内容を心がけてください。

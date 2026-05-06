@@ -25,7 +25,7 @@ async function searchTicketsWithGemini(artist: string, sites: string[]): Promise
   const searchPrompt = `${artist} ライブ コンサート チケット 発売日 2025 2026 site:eplus.jp OR site:l-tike.com OR site:t.pia.jp について教えてください。公演名・会場・公演日・チケット発売日をできるだけ詳しく。`
 
   const step1Res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent?key=${GEMINI_API_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -72,7 +72,7 @@ ${rawText}
 情報がなければ [] を返してください。`
 
   const step2Res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent?key=${GEMINI_API_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
