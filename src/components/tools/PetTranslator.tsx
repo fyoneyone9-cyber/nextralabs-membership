@@ -1,19 +1,55 @@
 'use client'
 import React, { useState, useRef, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
+import dynamic from 'next/dynamic'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
-  ArrowRight, Upload, CheckCircle2, Zap, Copy, ExternalLink, RotateCcw, Lightbulb, ClipboardPaste, Dog, Cat, MessageCircle, Heart, Camera, Loader2, Download, Mic, Activity
+  ArrowRight, Upload, CheckCircle2, Zap, Copy, ExternalLink, RotateCcw, 
+  Lightbulb, ClipboardPaste, Dog, Cat, MessageCircle, Heart, Camera, 
+  Loader2, Download, Mic, Activity, Video, VideoOff
 } from 'lucide-react'
+import { DebugPanel } from '@/components/tools/DebugPanel'
 
-export default function PetTranslator() {
-  const [activeTab, setActiveTab] = useState('scan');
+const MasterEngine = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [analysisLevel, setAnalysisLevel] = useState(0);
-  const [image, setImage] = useState<string | null>(null);
   const [translationResult, setTranslationResult] = useState('');
+  const [isMounted, setIsMounted] = useState(false);
+  const [cameraActive, setCameraActive] = useState(false);
   
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+    return () => stopCamera();
+  }, []);
+
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' }, 
+        audio: true 
+      });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        streamRef.current = stream;
+        setCameraActive(true);
+      }
+    } catch (err) {
+      console.error("Camera error:", err);
+      alert("カメラまたはマイクの起動に失敗しました。ブラウザの設定を確認してください。");
+    }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    setCameraActive(false);
+  };
+
   // 🔴 REAL-TIME AUDIO ANALYSIS SIMULATION
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -27,86 +63,175 @@ export default function PetTranslator() {
     return () => clearInterval(interval);
   }, [isRecording]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => setImage(event.target?.result as string);
-      reader.readAsDataURL(file);
-    }
-  };
-
   const startVoiceAnalysis = () => {
+    if (!cameraActive) {
+      startCamera();
+      return;
+    }
     setIsRecording(true);
+    setTranslationResult('');
     setTimeout(() => {
       setIsRecording(false);
-      setActiveTab('result');
       setTranslationResult("「ねぇ、遊んで！今は最高にワクワクしてるんだ。そのボールを投げてくれたら、全力で追いかけるよ！」");
-    }, 3000);
+    }, 4000);
   };
 
+  if (!isMounted) return null;
+
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-slate-950">
-      <div className="text-center space-y-2">
-        <Badge className="bg-yellow-500 text-black font-black italic tracking-widest px-4 py-1 text-[10px] uppercase rounded-full shadow-lg">ANIMAL VOICE ENGINE</Badge>
-        <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl">Pet Translator</h1>
+    <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
+      <div className="text-center space-y-1 md:space-y-3">
+        <Badge className="bg-yellow-500 text-black font-black italic px-3 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full">ANIMAL EMOTION ENGINE</Badge>
+        <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">AIペット翻訳モニター</h1>
+        <div className="inline-block bg-emerald-600 text-white font-black px-4 py-0.5 rounded-full uppercase italic text-[8px] md:text-[10px] tracking-widest shadow-lg">v2.0-MASTER</div>
       </div>
 
-      <Card className="bg-slate-900 border-4 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl relative overflow-hidden">
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* 🔴 SENSORY INPUT SECTION */}
-          <div className="space-y-8">
-            <div className="relative aspect-square rounded-[3rem] overflow-hidden border-4 border-slate-800 bg-black shadow-inner flex items-center justify-center">
-              {image ? (
-                <img src={image} alt="Pet" className="object-cover w-full h-full opacity-60" />
-              ) : (
-                <div className="text-center space-y-4">
-                  <Camera className="w-16 h-16 text-slate-700 mx-auto" />
-                  <input type="file" onChange={handleFileChange} className="hidden" id="pet-upload" accept="image/*" />
-                  <label htmlFor="pet-upload" className="cursor-pointer text-indigo-400 font-black italic underline uppercase">Upload Photo</label>
+      <div className="grid lg:grid-cols-2 gap-8 animate-in fade-in duration-700">
+        {/* 🔴 SENSORY INPUT SECTION (VIDEO) */}
+        <div className="space-y-6">
+          <div className="relative aspect-video md:aspect-square rounded-[2.5rem] overflow-hidden border-4 border-white/5 bg-black shadow-2xl flex items-center justify-center">
+            {cameraActive ? (
+              <video 
+                ref={videoRef} 
+                autoPlay 
+                playsInline 
+                muted 
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="text-center space-y-6 p-10">
+                <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto border-2 border-white/10">
+                  <Video className="w-12 h-12 text-slate-700" />
                 </div>
-              )}
-              {isRecording && (
-                <div className="absolute inset-0 bg-yellow-500/20 flex flex-col items-center justify-center space-y-4 backdrop-blur-sm">
-                   <Activity className="w-20 h-20 text-yellow-500 animate-pulse" />
-                   <p className="text-2xl font-black text-white italic uppercase animate-bounce">Analyzing Voice...</p>
-                   <div className="w-64 h-2 bg-slate-900 rounded-full overflow-hidden">
-                      <div className="h-full bg-yellow-500 transition-all duration-100" style={{ width: `${analysisLevel}%` }}></div>
-                   </div>
-                </div>
-              )}
-            </div>
-            <Button 
-              onClick={startVoiceAnalysis} 
-              disabled={isRecording}
-              className="w-full h-24 bg-yellow-500 hover:bg-yellow-400 text-black font-black rounded-[2rem] shadow-2xl flex items-center justify-center gap-4 text-3xl uppercase italic group"
-            >
-              <Mic className="w-10 h-10 group-hover:scale-110 transition-transform" /> Listen & Translate
-            </Button>
+                <p className="text-xl text-slate-500 font-black italic uppercase tracking-widest">Sensory Feed Offline</p>
+                <button 
+                  onClick={startCamera}
+                  className="px-10 py-4 bg-white/5 border-2 border-white/10 rounded-2xl text-indigo-400 font-black italic uppercase hover:bg-white/10 transition-all"
+                >
+                  Activate Video Feed
+                </button>
+              </div>
+            )}
+
+            {/* Scanning Overlay */}
+            {isRecording && (
+              <div className="absolute inset-0 bg-emerald-500/10 flex flex-col items-center justify-center space-y-6 backdrop-blur-sm z-20">
+                 <div className="relative">
+                    <Activity className="w-24 h-24 text-emerald-500 animate-pulse" />
+                    <div className="absolute inset-0 bg-emerald-500 blur-2xl opacity-20 animate-pulse" />
+                 </div>
+                 <div className="space-y-2 text-center">
+                    <p className="text-2xl font-black text-white italic uppercase tracking-[0.2em] animate-bounce">Analyzing Vibe...</p>
+                    <div className="w-64 h-1.5 bg-black/40 rounded-full overflow-hidden border border-white/10">
+                        <div className="h-full bg-emerald-500 transition-all duration-100 shadow-[0_0_15px_rgba(16,185,129,0.8)]" style={{ width: `${analysisLevel}%` }}></div>
+                    </div>
+                 </div>
+              </div>
+            )}
+
+            {/* Corner Badges */}
+            {cameraActive && !isRecording && (
+              <div className="absolute top-6 left-6 flex items-center gap-2">
+                <div className="w-3 h-3 bg-red-600 rounded-full animate-pulse" />
+                <span className="text-[10px] font-black text-white uppercase italic tracking-widest drop-shadow-md">LIVE FEED</span>
+              </div>
+            )}
           </div>
 
-          {/* 🔴 RESULT / INTERFACE SECTION */}
-          <div className="flex flex-col justify-center space-y-8">
-             <div className="bg-slate-950 border-2 border-slate-800 rounded-[2.5rem] p-10 relative shadow-inner">
-                <div className="absolute -top-4 -left-4 bg-red-600 text-white p-3 rounded-2xl shadow-lg"><Heart className="w-6 h-6 fill-white" /></div>
-                <h3 className="text-2xl font-black text-white italic uppercase mb-4 tracking-tighter">Emotion Report</h3>
-                <div className="min-h-[200px] flex items-center justify-center">
-                  {translationResult ? (
-                    <p className="text-2xl md:text-3xl font-bold text-slate-200 leading-relaxed italic animate-in fade-in slide-in-from-left-4">
+          <button 
+            onClick={startVoiceAnalysis} 
+            disabled={isRecording}
+            className={`w-full h-24 ${isRecording ? 'bg-slate-800' : 'bg-emerald-600 hover:bg-emerald-500'} text-white font-black rounded-[2rem] shadow-2xl flex items-center justify-center gap-6 text-3xl uppercase italic transition-all active:scale-95 border-b-8 border-emerald-900 active:border-b-0`}
+          >
+            {isRecording ? (
+              <Loader2 className="w-10 h-10 animate-spin" />
+            ) : (
+              <>
+                <Mic className="w-10 h-10" /> 
+                <span>Translate vibe</span>
+              </>
+            )}
+          </button>
+          
+          {cameraActive && (
+            <button 
+              onClick={stopCamera}
+              className="w-full text-[10px] font-black text-slate-700 hover:text-red-500 uppercase italic tracking-[0.3em] transition-colors"
+            >
+              Terminate Sensory Feed
+            </button>
+          )}
+        </div>
+
+        {/* 🔴 RESULT / INTERFACE SECTION */}
+        <div className="flex flex-col justify-center space-y-8">
+           <div className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 relative shadow-2xl overflow-hidden min-h-[450px] flex flex-col">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-30" />
+              <div className="absolute -top-4 -left-4 bg-red-600 text-white p-4 rounded-3xl shadow-xl z-10">
+                <Heart className="w-8 h-8 fill-white" />
+              </div>
+              
+              <div className="mb-10 pt-4">
+                <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.4em] italic">Emotion Report</p>
+                <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">AI Translation</h3>
+              </div>
+
+              <div className="flex-1 flex items-center justify-center bg-black/40 rounded-[2rem] border border-white/5 p-8 shadow-inner">
+                {translationResult ? (
+                  <div className="space-y-6 animate-in fade-in zoom-in duration-500 text-center">
+                    <p className="text-2xl md:text-4xl font-black text-white leading-relaxed italic tracking-tight">
                       {translationResult}
                     </p>
-                  ) : (
-                    <p className="text-slate-600 font-bold italic text-center">AIがペットの声を聴き取るのを待機中...</p>
-                  )}
+                    <div className="flex justify-center gap-2">
+                       {[1,2,3].map(i => <div key={i} className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style={{animationDelay: `${i*0.1}s`}} />)}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center space-y-4 opacity-20">
+                    <Dog className="w-16 h-16 mx-auto mb-4" />
+                    <p className="text-lg font-black italic uppercase tracking-widest">Awaiting Sensory Input...</p>
+                  </div>
+                )}
+              </div>
+
+              {translationResult && (
+                <div className="mt-8 grid grid-cols-2 gap-4">
+                  <button 
+                    onClick={() => { navigator.clipboard.writeText(translationResult); alert('感情レポートをコピーしました'); }}
+                    className="h-14 bg-white/5 border-2 border-white/10 text-slate-400 font-black italic rounded-2xl hover:text-white transition-all uppercase text-xs"
+                  >
+                    Copy Report
+                  </button>
+                  <button className="h-14 bg-emerald-600 text-white font-black italic rounded-2xl shadow-lg transition-all active:scale-95 uppercase text-xs">
+                    Save Emotion Log
+                  </button>
                 </div>
+              )}
+           </div>
+
+           <div className="bg-emerald-600/5 border-2 border-emerald-500/20 rounded-[2rem] p-8 space-y-4 italic shadow-inner">
+             <div className="flex items-center gap-3 text-emerald-500">
+                <Zap size={20} />
+                <p className="text-xs font-black uppercase tracking-widest">Master Protocol</p>
              </div>
-             <div className="grid grid-cols-2 gap-4">
-                <Button variant="outline" className="h-16 border-slate-800 text-slate-400 font-black rounded-2xl uppercase italic hover:bg-slate-800" onClick={() => {setImage(null); setTranslationResult('')}}><RotateCcw className="mr-2" /> Reset</Button>
-                <Button className="h-16 bg-white text-black font-black rounded-2xl shadow-xl uppercase italic hover:bg-slate-200">Save Log <Download className="ml-2" /></Button>
-             </div>
-          </div>
+             <p className="text-slate-400 text-sm font-bold leading-relaxed">
+                ビデオフィードを通じてペットのわずかな表情や鳴き声をキャッチ。Nextra Emotion Engineがその深層心理をリアルタイムで言語化します。
+             </p>
+           </div>
         </div>
-      </Card>
+      </div>
+
+      <DebugPanel data={{ cameraActive, isRecording, hasResult: !!translationResult }} toolId="pet-translator-master" />
+      <div className="text-center opacity-10 mt-10 font-black uppercase tracking-[0.5em] italic text-[10px]">Animal Emotion OS • NextraLabs 2026</div>
     </div>
   )
+}
+
+const PetTranslatorWithNoSSR = dynamic(() => Promise.resolve(MasterEngine), {
+  ssr: false,
+  loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Initializing Emotion Engine...</div>
+})
+
+export default function NoSSRWrapper() {
+  return <PetTranslatorWithNoSSR />;
 }
