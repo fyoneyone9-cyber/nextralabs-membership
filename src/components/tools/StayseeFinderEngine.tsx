@@ -16,7 +16,7 @@ const TABS = [
   { id: 'insights', label: '③ 経営レポート', icon: Building2 },
 ];
 
-export default function StayseeFinderEngine() {
+const MasterEngine = () => {
   const [activeTab, setActiveTab] = useState('scan');
   const [copied, setCopied] = useState(false);
   const [image, setImage] = useState<string | null>(null);
@@ -303,3 +303,12 @@ export default function StayseeFinderEngine() {
     </div>
   )
 }
+
+const NoSSRWrapper = () => {
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => { setIsMounted(true); }, []);
+  if (!isMounted) return <div className="min-h-screen bg-slate-950" />;
+  return <MasterEngine />;
+};
+
+export default NoSSRWrapper;
