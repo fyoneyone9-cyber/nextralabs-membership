@@ -78,7 +78,7 @@ const MasterEngine = () => {
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left">
       <div className="text-center space-y-3">
-        <div className="inline-block bg-red-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-lg">Psychological Defense Command v6.0-MASTER</div>
+        <div className="inline-block bg-red-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-lg">Psychological Defense Command v7.0-MASTER</div>
         <h1 className="text-5xl md:text-[8rem] font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">Money Guard</h1>
       </div>
 
