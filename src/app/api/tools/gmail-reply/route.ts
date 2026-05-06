@@ -27,11 +27,24 @@ export async function POST(req: Request) {
 出力は「返信本文のみ」または「アドバイスのみ」としてください。余計な挨拶や解説は不要です。`;
 
     const result = await model.generateContent(prompt);
+    
+    if (!result.response) {
+      throw new Error('Geminiからの応答が空です。APIキーの制限または安全フィルターの可能性があります。');
+    }
+
     const replyText = result.response.text();
+
+    if (!replyText) {
+      throw new Error('生成されたテキストが空です。');
+    }
 
     return NextResponse.json({ reply: replyText });
   } catch (error: any) {
     console.error('[AI_REPLY_ERROR]', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    // 詳細なエラーをクライアントに返す
+    return NextResponse.json({ 
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined 
+    }, { status: 500 });
   }
 }
