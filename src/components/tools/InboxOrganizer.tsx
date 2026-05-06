@@ -88,6 +88,28 @@ const MasterEngine = () => {
     }
   };
 
+  const trashEmail = async (id: string) => {
+    if (!confirm('このメールをゴミ箱に移動しますか？')) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}/trash`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${googleToken}` },
+      });
+      if (res.ok) {
+        setEmails(prev => prev.filter(e => e.id !== id));
+      } else {
+        const err = await res.json();
+        alert('エラー: ' + (err.error?.message || '削除に失敗しました'));
+      }
+    } catch (e) {
+      console.error(e);
+      alert('通信エラーが発生しました');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const login = () => {
     const params = new URLSearchParams({
       client_id: GOOGLE_CLIENT_ID,
@@ -186,9 +208,14 @@ const MasterEngine = () => {
                               </div>
                               <h4 className="text-3xl font-black text-white italic leading-tight tracking-tighter">{email.subject}</h4>
                               <div className="text-sm text-slate-400 font-bold leading-relaxed italic opacity-70">このメールはHTMLメールです</div>
-                              <button onClick={() => setExpandedId(expandedId === email.id ? null : email.id)} className="text-blue-500 text-[10px] font-black uppercase hover:underline mt-4 text-center">
-                                 {expandedId === email.id ? 'Close' : 'Read Full'}
-                              </button>
+                              <div className="flex items-center gap-4 mt-4">
+                                <button onClick={() => setExpandedId(expandedId === email.id ? null : email.id)} className="text-blue-500 text-[10px] font-black uppercase hover:underline">
+                                   {expandedId === email.id ? 'Close' : 'Read Full'}
+                                </button>
+                                <button onClick={() => trashEmail(email.id)} className="text-red-500 text-[10px] font-black uppercase hover:underline flex items-center gap-1">
+                                   🗑️ Trash
+                                </button>
+                              </div>
                               {expandedId === email.id && (
                                 <div className="mt-4 p-6 bg-slate-900/50 rounded-2xl text-slate-300 text-sm italic border border-white/5 animate-in slide-in-from-top-2">{email.body}</div>
                               )}
