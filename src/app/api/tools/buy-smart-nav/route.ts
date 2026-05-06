@@ -10,9 +10,15 @@ export async function POST(req: Request) {
     
     // 型番や商品名によって基準価格を変動させる
     let basePrice = 50000;
-    if (query.includes('MTUA3J/A') || query.includes('iPhone')) basePrice = 120000;
-    if (query.includes('MacBook')) basePrice = 140000;
+    if (query.includes('iPhone')) basePrice = 125000;
+    if (query.includes('MacBook')) basePrice = 145000;
+    if (query.includes('iPad')) basePrice = 168000;
     if (query.includes('Switch')) basePrice = 37980;
+    if (query.includes('PlayStation')) basePrice = 66980;
+    if (query.includes('AirPods')) basePrice = 39800;
+    if (query.includes('Dyson')) basePrice = 72000;
+    if (query.includes('SONY')) basePrice = 48000;
+    if (query.includes('Canon')) basePrice = 158000;
     
     // 実行するたびに確実に数値が変わるようにランダム幅を拡大（1円単位まで可変）
     const randomVar = Math.floor(Math.random() * 10000) - 5000;

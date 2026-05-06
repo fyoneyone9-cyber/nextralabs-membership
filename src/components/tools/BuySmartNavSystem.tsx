@@ -11,9 +11,15 @@ import {
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const PRESETS = [
-  { id: 'iphone', name: 'iPhone 15 Pro', query: 'iPhone 15 Pro 128GB MTUA3J/A' },
-  { id: 'macbook', name: 'MacBook Air M3', query: 'MacBook Air M3 8GB 256GB' },
-  { id: 'switch', name: 'Nintendo Switch', query: 'Nintendo Switch 有機ELモデル' },
+  { id: 'iphone', name: 'iPhone 15 Pro', query: 'iPhone 15 Pro 128GB' },
+  { id: 'macbook', name: 'MacBook Air', query: 'MacBook Air M3 8GB 256GB' },
+  { id: 'ipad', name: 'iPad Pro M4', query: 'iPad Pro 11インチ M4' },
+  { id: 'switch', name: 'Switch 有機EL', query: 'Nintendo Switch 有機ELモデル' },
+  { id: 'ps5', name: 'PS5 Slim', query: 'PlayStation 5 CFI-2000' },
+  { id: 'airpods', name: 'AirPods Pro 2', query: 'AirPods Pro 第2世代 MagSafe' },
+  { id: 'dyson', name: 'Dyson V12', query: 'Dyson V12 Detect Slim' },
+  { id: 'sony', name: 'Sony WH-1000XM5', query: 'SONY WH-1000XM5' },
+  { id: 'canon', name: 'EOS R10', query: 'Canon EOS R10 RF-S18-150' },
 ];
 
 const MasterEngine = () => {
