@@ -85,6 +85,13 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
               <div className="flex items-center justify-between border-b border-white/5 pb-4">
                 <div className="flex items-center gap-3"><Unlock className="h-4 w-4 text-emerald-500" /><span className="text-sm font-black uppercase">Master Surveillance</span></div>
                 <div className="flex gap-2">
+                  <Link 
+                    href="https://kgiyygbt.gensparkclaw.com/" 
+                    target="_blank" 
+                    className="h-8 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-black rounded-lg px-4 flex items-center gap-2 transition-all shadow-lg active:scale-95"
+                  >
+                    <Globe size={12} /> PORT
+                  </Link>
                   <Button onClick={runApiTest} className="h-8 bg-amber-600 text-[10px] font-black rounded-lg px-4 flex items-center gap-2"><Zap size={12} /> GLOBAL TEST</Button>
                   <Button onClick={() => { navigator.clipboard.writeText(JSON.stringify({ diagnostic: new Date().toISOString(), apiHealth, logs: consoleErrors, data }, null, 2)); setCopied(true); setTimeout(() => setCopied(false), 2000) }} className="h-8 bg-white text-black text-[10px] font-black rounded-lg px-4">{copied ? "COPIED" : "REPORT"}</Button>
                 </div>
