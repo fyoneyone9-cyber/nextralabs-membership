@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
   TrendingDown, LineChart, BarChart, Loader2, ArrowRight, 
-  Search, ShoppingCart, Zap, AlertCircle, History, Clock, CheckCircle2, RefreshCw
+  Search, ShoppingCart, Zap, AlertCircle, History, Clock, CheckCircle2, RefreshCw, RotateCcw
 } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
@@ -149,10 +149,15 @@ const MasterEngine = () => {
 
               <button 
                 onClick={() => runPricePrediction()}
-                disabled={!productUrl || isAnalyzing}
-                className={`w-full h-24 ${!productUrl || isAnalyzing ? 'bg-slate-800 opacity-50' : 'bg-emerald-600 text-white border-emerald-900'} font-black rounded-[2rem] shadow-2xl flex items-center justify-center gap-6 text-3xl uppercase italic transition-all active:scale-95 border-b-8 active:border-b-0`}
+                disabled={!productUrl || isAnalyzing || step === 3}
+                className={`w-full h-24 ${!productUrl || isAnalyzing ? 'bg-slate-800 opacity-50' : step === 3 ? 'bg-emerald-500 text-slate-950 border-emerald-400' : 'bg-emerald-600 text-white border-emerald-900'} font-black rounded-[2rem] shadow-2xl flex items-center justify-center gap-6 text-3xl uppercase italic transition-all active:scale-95 border-b-8 active:border-b-0`}
               >
-                {isAnalyzing ? (
+                {step === 3 ? (
+                  <>
+                    <CheckCircle2 className="w-10 h-10" />
+                    <span>予測が完了しました ➔</span>
+                  </>
+                ) : isAnalyzing ? (
                   <>
                     <Loader2 className="w-10 h-10 animate-spin" />
                     <span>分析中...</span>
@@ -169,6 +174,23 @@ const MasterEngine = () => {
 
           {step === 3 && predictionData && (
             <div className="space-y-8 animate-in slide-in-from-bottom-8">
+              {/* 💎 予測結果サマリー */}
+              <div className="bg-emerald-500 text-slate-950 p-6 rounded-[2rem] flex items-center justify-between shadow-2xl">
+                <div className="flex items-center gap-4">
+                  <div className="bg-slate-950 text-emerald-500 w-12 h-12 rounded-full flex items-center justify-center">
+                    <CheckCircle2 size={28} />
+                  </div>
+                  <div>
+                    <h4 className="font-black uppercase italic leading-none text-xl">Prediction Complete</h4>
+                    <p className="text-[10px] font-black uppercase tracking-widest mt-1 opacity-70">AIが買い時を特定しました</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] font-black uppercase opacity-60">Status</p>
+                  <p className="font-black italic text-xl text-slate-950">Success</p>
+                </div>
+              </div>
+
               <div className="grid md:grid-cols-2 gap-6 text-left">
                  <div className="bg-black/40 border-2 border-white/5 p-8 rounded-[3rem] space-y-4">
                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic pl-2 text-left">Current Price</p>
