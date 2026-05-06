@@ -10,7 +10,12 @@ const MasterEngine = () => {
   const [appraisalResult, setAppraisalResult] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const DANGER_KEYWORDS = ["即日現金", "身分証不要", "テレグラム", "Telegram", "シグナル", "Signal", "運び屋", "受け子", "出し子", "高額報酬", "ホワイト案件", "裏バイト", "未経験歓迎", "ノルマなし"];
 
@@ -22,8 +27,8 @@ const MasterEngine = () => {
   }, []);
 
   useEffect(() => {
-    performRealtimeAnalysis(inputText);
-  }, [inputText, performRealtimeAnalysis]);
+    if (isClient) performRealtimeAnalysis(inputText);
+  }, [inputText, isClient, performRealtimeAnalysis]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -45,6 +50,8 @@ const MasterEngine = () => {
 2. 【心理的要因】: なぜこの支出が起きているか（衝動買い、ドーパミン、等）
 3. 【防衛アドバイス】: 今すぐこの支出を止めるための具体的なアクション`;
 
+  if (!isClient) return null;
+
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left">
       <div className="text-center space-y-3">
@@ -55,10 +62,9 @@ const MasterEngine = () => {
       <div className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 md:p-16 shadow-2xl relative overflow-hidden animate-in fade-in zoom-in-95">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-50" />
         
-        {/* 🚀 以前の完璧だったガイド UI */}
         <div className="bg-[#0a0b14] border border-white/5 rounded-3xl p-8 mb-12 flex items-start gap-6 shadow-inner">
           <div className="w-10 h-10 rounded-full border border-red-500/30 flex items-center justify-center shrink-0 text-red-500">
-             <Sparkles size={20} />
+             <span className="text-xl">✨</span>
           </div>
           <div className="space-y-1">
             <p className="text-[10px] font-black text-red-500/70 uppercase tracking-[0.2em] italic mb-2">Defense Protocol</p>
@@ -71,7 +77,6 @@ const MasterEngine = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* LEFT: EVIDENCE ZONE */}
           <div className="space-y-6">
             {!image ? (
               <div 
@@ -79,7 +84,7 @@ const MasterEngine = () => {
                 className="border-2 border-dashed border-white/10 rounded-[2.5rem] aspect-video flex flex-col items-center justify-center gap-6 cursor-pointer hover:bg-white/5 transition-all group relative overflow-hidden bg-white/5"
               >
                 <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
-                <Camera size={48} className="text-slate-800 group-hover:text-red-600 transition-colors" />
+                <span className="text-4xl text-slate-800 group-hover:text-red-600 transition-colors">📷</span>
                 <p className="text-2xl text-slate-700 font-black italic uppercase tracking-[0.1em] group-hover:text-slate-500">Drop Receipt/Slip</p>
               </div>
             ) : (
@@ -96,12 +101,12 @@ const MasterEngine = () => {
                 placeholder="購入を迷っている商品名や金額を自由に入力..."
                 className="w-full h-32 bg-[#0a0b14] border-2 border-white/5 rounded-2xl p-6 text-sm text-white focus:border-red-600 outline-none italic shadow-inner"
               />
-              <Button 
+              <button 
                 onClick={() => { navigator.clipboard.writeText(FINAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} 
                 className={`w-full h-20 text-xl font-black rounded-2xl transition-all shadow-2xl ${copied ? 'bg-emerald-500 text-slate-950 scale-95' : 'bg-red-600 text-white hover:bg-red-500'}`}
               >
                 {copied ? '✅ 指示をコピー完了' : '防衛指示をコピーする'}
-              </Button>
+              </button>
               <div className="grid grid-cols-3 gap-3">
                  <button className="h-14 bg-[#0a0b14] border border-white/5 rounded-xl text-[9px] font-black uppercase italic text-slate-500 hover:text-white" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</button>
                  <button className="h-14 bg-[#0a0b14] border border-white/5 rounded-xl text-[9px] font-black uppercase italic text-slate-500 hover:text-white" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</button>
@@ -110,12 +115,11 @@ const MasterEngine = () => {
             </div>
           </div>
 
-          {/* RIGHT: ADVICE PANEL */}
           <div className="bg-[#0a0b14] rounded-[3.5rem] p-10 border border-white/5 shadow-inner flex flex-col gap-6 relative">
              <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-red-600/10 flex items-center justify-center border border-red-500/20">
-                    <ShieldAlert className="text-red-500" size={24} />
+                    <span className="text-red-500 text-2xl font-black">!</span>
                   </div>
                   <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">分析結果を戻す</h3>
                 </div>
@@ -129,26 +133,23 @@ const MasterEngine = () => {
                value={appraisalResult} 
                onChange={(e) => setAppraisalResult(e.target.value)} 
                placeholder="AIからの防衛アドバイスをここにペースト..." 
-               className="flex-1 bg-[#13141f] border border-white/5 rounded-[2.5rem] p-10 text-base text-slate-300 focus:border-red-600 outline-none font-mono italic shadow-inner min-h-[400px] leading-relaxed" 
+               className="flex-1 bg-[#13141f] border border-white/5 rounded-[2.5rem] p-10 text-base text-slate-300 focus:border-red-600 outline-none font-mono leading-relaxed shadow-inner min-h-[400px] italic" 
              />
              
              {appraisalResult && (
                 <div className="p-6 bg-red-600/10 border-2 border-red-600/30 rounded-3xl animate-in slide-in-from-bottom-4">
-                   <p className="text-red-500 font-black italic uppercase text-xs mb-2 flex items-center gap-2"><ShieldCheck size={14}/> Defense Active</p>
+                   <p className="text-red-500 font-black italic uppercase text-xs mb-2 flex items-center gap-2">🛡️ Defense Active</p>
                    <p className="text-slate-300 text-sm font-bold italic leading-relaxed">支出の抑止が発動されました。冷静さを取り戻すまで、ブラウザを閉じることを推奨します。</p>
                 </div>
              )}
           </div>
         </div>
       </div>
-      <DebugPanel data={{ riskScore, imageLoaded: !!image }} toolId="money-guard-restored" />
     </div>
   );
 };
 
 const NoSSRWrapper = dynamic(() => Promise.resolve(MasterEngine), { ssr: false });
-
-import { ShieldAlert as ShieldAlertIcon, Camera as CameraIcon, Sparkles as SparklesIcon } from 'lucide-react'
 
 export default function MoneyGuard() {
   return (
