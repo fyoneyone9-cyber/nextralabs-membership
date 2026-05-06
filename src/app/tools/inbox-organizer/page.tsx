@@ -1,0 +1,104 @@
+import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
+import { CheckCircle2, Mail, Zap, Clock, ShieldCheck, ArrowRight, MessageSquareText } from 'lucide-react'
+import Link from 'next/link'
+
+export const metadata = {
+  title: 'Gmail AI Accelerator | Gmailの返信と整理をAIで爆速化 | NextraLabs',
+  description: 'AIがあなたの代わりにGmailを解析。重要メールの判別から返信ドラフト生成、下書き保存までをワンクリックで完結。ビジネスの生産性を極限まで高めます。',
+  keywords: ['Gmail 効率化', 'AI メール返信', 'Gmail 自動化', 'ビジネスメール テンプレート', 'Inbox Zero'],
+}
+
+export default function InboxLp() {
+  return (
+    <div className="min-h-screen bg-[#050507] text-slate-200 font-sans pb-32">
+      {/* 🚀 Hero Section */}
+      <section className="max-w-6xl mx-auto px-4 pt-24 pb-20 text-center space-y-10">
+        <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 px-6 py-1 rounded-full font-black uppercase text-xs">Email Intelligence OS</Badge>
+        <h1 className="text-5xl md:text-8xl font-black text-white italic tracking-tighter uppercase leading-[1.1]">
+          Gmail <span className="text-blue-500">AI</span> Accelerator
+        </h1>
+        <h2 className="text-2xl md:text-4xl font-bold text-slate-300 max-w-4xl mx-auto leading-relaxed">
+          未読メールの山を「10分」で処理。<br className="hidden md:block" />
+          AIが書く、あなたのための返信ドラフト。
+        </h2>
+        <div className="flex flex-wrap justify-center gap-6 pt-6">
+          <Link href="/products/inbox-organizer/app">
+            <button className="h-20 px-12 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-2xl shadow-[0_20px_50px_rgba(37,99,235,0.3)] transition-all active:scale-95 uppercase italic">
+              Gmailを爆速化する ➔
+            </button>
+          </Link>
+        </div>
+      </section>
+
+      {/* ⚠️ Problem Section */}
+      <section className="bg-[#13141f] py-24 border-y border-white/5">
+        <div className="max-w-5xl mx-auto px-4 grid md:grid-cols-2 gap-16 items-center">
+          <div className="space-y-8 text-left">
+            <h3 className="text-3xl font-black text-white italic uppercase tracking-tight">メール対応で1日が終わっていませんか？</h3>
+            <ul className="space-y-4 text-slate-400 font-bold">
+              <li className="flex items-center gap-4"><Clock className="text-red-500 shrink-0" /> 返信内容を考えるだけで数十分が経過する</li>
+              <li className="flex items-center gap-4"><Clock className="text-red-500 shrink-0" /> 重要なメールがメルマガに埋もれて見つからない</li>
+              <li className="flex items-center gap-4"><Clock className="text-red-500 shrink-0" /> 定型文のコピペ作業に疲弊している</li>
+            </ul>
+          </div>
+          <div className="bg-black/50 border-4 border-blue-500/20 rounded-[3rem] p-10 shadow-inner">
+             <p className="text-blue-400 text-lg italic font-black text-center leading-loose text-left">
+               その時間、AIに任せてください。<br/>
+               あなたは「送信ボタン」を押すだけです。
+             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ✨ Features Section */}
+      <section className="max-w-6xl mx-auto px-4 py-32 space-y-20">
+        <div className="text-center space-y-4">
+          <h3 className="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter">Production Efficiency</h3>
+          <p className="text-slate-500 font-bold uppercase italic">ビジネスを加速させる4つのコア機能</p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-10 text-left">
+          <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-4">
+            <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500"><MessageSquareText /></div>
+            <h4 className="text-xl font-black text-white uppercase italic">文脈を汲み取った返信案</h4>
+            <p className="text-slate-400 text-sm font-bold leading-relaxed">相手の意図をAIが正確に理解。状況に合わせた最適な敬語・トーンで返信案を秒速生成します。</p>
+          </div>
+          <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-4">
+            <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500"><Zap /></div>
+            <h4 className="text-xl font-black text-white uppercase italic">最新10件の超高速スキャン</h4>
+            <p className="text-slate-400 text-sm font-bold leading-relaxed">Gmailから直近の重要メールを抽出。一括で内容を把握し、優先順位をつけます。</p>
+          </div>
+          <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-4">
+            <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500"><CheckCircle2 /></div>
+            <h4 className="text-xl font-black text-white uppercase italic">Gmail下書き直接保存</h4>
+            <p className="text-slate-400 text-sm font-bold leading-relaxed">作成した文章をワンクリックでGmailの「下書き」へ。スマホのGmailアプリからそのまま送信可能です。</p>
+          </div>
+          <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-4">
+            <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500"><ShieldCheck /></div>
+            <h4 className="text-xl font-black text-white uppercase italic">セキュアな本物連携</h4>
+            <p className="text-slate-400 text-sm font-bold leading-relaxed">Google公式OAuth認証を使用。データの解析はGemini 2.5 Flashで安全かつ高速に行われます。</p>
+          </div>
+        </div>
+      </section>
+
+      {/* 🚀 CTA Section */}
+      <section className="max-w-5xl mx-auto px-4 pt-20">
+        <Card className="bg-gradient-to-br from-blue-600 to-indigo-900 border-0 rounded-[4rem] p-12 md:p-20 shadow-2xl relative overflow-hidden text-center space-y-10">
+          <div className="absolute top-0 right-0 p-10 opacity-10 rotate-12"><Mail size={300} className="text-white" /></div>
+          <div className="relative z-10 space-y-6">
+            <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter">Achieve Inbox Zero.</h3>
+            <p className="text-blue-100 text-lg font-bold leading-relaxed max-w-2xl mx-auto">
+              メールに奪われていた時間を、本来のクリエイティブな仕事に取り戻しましょう。
+            </p>
+            <Link href="/signup">
+              <button className="h-20 px-16 bg-white text-blue-700 font-black text-2xl rounded-2xl shadow-xl hover:bg-blue-50 transition-all active:scale-95 uppercase italic">
+                Get Started Free
+              </button>
+            </Link>
+          </div>
+        </Card>
+      </section>
+    </div>
+  )
+}
