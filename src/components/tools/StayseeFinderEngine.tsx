@@ -48,14 +48,18 @@ export default function StayseeFinderEngine() {
   };
 
   useEffect(() => {
-    const savedKey = localStorage.getItem('staysee_user_api_key');
-    if (savedKey) setUserApiKey(savedKey);
+    if (typeof window !== 'undefined') {
+      const savedKey = localStorage.getItem('staysee_user_api_key');
+      if (savedKey) setUserApiKey(savedKey);
+    }
   }, []);
 
   const saveApiKey = () => {
-    localStorage.setItem('staysee_user_api_key', userApiKey);
-    alert('Staysee APIキーをブラウザに保存しました。');
-    setShowSettings(false);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('staysee_user_api_key', userApiKey);
+      alert('Staysee APIキーをブラウザに保存しました。');
+      setShowSettings(false);
+    }
   };
 
   const searchStaysee = async (query: string) => {
