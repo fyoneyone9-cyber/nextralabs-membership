@@ -49,7 +49,7 @@ export default function AiSidejob() {
       <div className="max-w-7xl mx-auto space-y-12">
         <div className="text-center space-y-3">
           <h1 className="text-6xl md:text-[8rem] font-black text-white uppercase italic tracking-tighter leading-none">AI SIDEJOB</h1>
-          <div className="inline-block bg-[#5845e0] text-white font-black px-10 py-2 rounded-full uppercase italic text-sm tracking-widest shadow-2xl">MASTER v1.1</div>
+          <div className="inline-block bg-[#5845e0] text-white font-black px-10 py-2 rounded-full uppercase italic text-sm tracking-widest shadow-2xl">MASTER v2.0</div>
         </div>
 
         {/* 🛡️ 完璧なガイド UI */}
