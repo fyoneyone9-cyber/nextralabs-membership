@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "NextraLabs Web Launcher",
+  "version": "1.0.0",
+  "description": "NextraLabsのAIマスタツール群へ瞬時にアクセスできる公式ランチャー。",
+  "icons": {
+    "128": "icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon128.png"
+  },
+  "permissions": ["tabs"]
+}

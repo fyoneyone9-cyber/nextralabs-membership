@@ -7,7 +7,7 @@ import {
   Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, 
   ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, 
   Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, Ticket, BookOpen, 
-  Sprout, Zap, Droplets, Utensils, Building2, Hotel, Key, type LucideIcon, Lock, CreditCard, Coins, Sparkles, Archive, UserPlus, Spreadsheet
+  Sprout, Zap, Droplets, Utensils, Building2, Hotel, Key, type LucideIcon, Lock, CreditCard, Coins, Sparkles, Archive, UserPlus, Table
 } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -44,7 +44,7 @@ const defenseTools: Product[] = [
 
 const bizTools: Product[] = [
   { id: 'contact-sync', title: 'Contact Sync', subtitle: '名刺の全自動・連絡先登録OS', description: '名刺の写真をAIがスキャン。名前、会社名、電話番号、メールアドレスを精密に読み取り、あなたの連絡先へ自動で1行ずつ追加します。', priceNote: 'ライト', tags: ['事務'], icon: UserPlus, bgColor: 'bg-blue-500/10', iconColor: 'text-blue-400', status: 'NEW', isModel: true },
-  { id: 'expense-sync', title: 'Expense Sync', subtitle: '経費精算の全自動・記帳OS', description: 'Expensesフォルダ内のレシート画像をAIが自動解析。金額・日付・店舗名を読み取り、スプレッドシートへ1行ずつ自動記帳します。', priceNote: 'ライト', tags: ['経理'], icon: Spreadsheet, bgColor: 'bg-emerald-500/10', iconColor: 'text-emerald-400', status: 'NEW', isModel: true },
+  { id: 'expense-sync', title: 'Expense Sync', subtitle: '経費精算の全自動・記帳OS', description: 'Expensesフォルダ内のレシート画像をAIが自動解析。金額・日付・店舗名を読み取り、スプレッドシートへ1行ずつ自動記帳します。', priceNote: 'ライト', tags: ['経理'], icon: Table, bgColor: 'bg-emerald-500/10', iconColor: 'text-emerald-400', status: 'NEW', isModel: true },
   { id: 'ai-select-shop', title: '「在庫ゼロ」AIセレクトショップ', subtitle: 'トレンド分析 × Shopify連携', description: '流行をAIが分析し、売れるデザインを自動生成。そのままShopify経由でオンデマンド生産・出品し、在庫リスクゼロのネットショップを実現。', priceNote: 'プレミアム', tags: ['EC'], icon: Store, bgColor: 'bg-teal-500/10', iconColor: 'text-teal-400', status: '人気', isModel: true },
   { id: 'youtube-producer', title: 'AI YouTubeプロデューサー', subtitle: '最新ニュースからの全自動台本作成', description: '音声の文字起こしから、最新トレンドを反映した台本生成、サムネイル設計まで。YouTube運用の全工程をAIが代行する「最強の工場」です。', priceNote: 'プレミアム', tags: ['動画'], icon: Clapperboard, bgColor: 'bg-red-500/10', iconColor: 'text-red-400', status: '注目', isModel: true },
   { id: 'prompt-master', title: 'AI画像プロンプトマスター', subtitle: '究極の画像生成パーツ工房', description: '1000種類以上のパーツをパズルのように組み合わせ、MidjourneyやStable Diffusionで使える究極の呪文を錬成します。', priceNote: 'ライト', tags: ['画像AI'], icon: Wand2, bgColor: 'bg-purple-500/10', iconColor: 'text-purple-400', status: '必須', isModel: true },

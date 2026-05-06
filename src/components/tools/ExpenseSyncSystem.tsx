@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
-  FileText, Spreadsheet, Receipt, Loader2, CheckCircle2, 
+  FileText, Receipt, Loader2, CheckCircle2, 
   ArrowRight, Zap, FolderSearch, Table, Database, Settings
 } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
@@ -77,7 +77,7 @@ const MasterEngine = () => {
                 <Loader2 className="w-10 h-10 animate-spin" />
               ) : (
                 <>
-                  <Spreadsheet className="w-10 h-10" />
+                  <Table className="w-10 h-10" />
                   <span className="text-2xl uppercase italic tracking-tighter">同期プロトコル開始</span>
                 </>
               )}
