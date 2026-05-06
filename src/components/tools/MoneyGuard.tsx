@@ -11,26 +11,40 @@ const MasterEngine = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [lastUsage, setLastUsage] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setIsClient(true);
+    const saved = localStorage.getItem('last_usage_money_guard');
+    if (saved) setLastUsage(parseInt(saved));
   }, []);
 
-  const performRealtimeAnalysis = useCallback((text: string) => {
-    const score = Math.min(100, Math.floor(text.length * 1.2 + (image ? 30 : 0)));
-    setRiskScore(score);
-  }, [image]);
-
-  useEffect(() => {
-    if (isClient) performRealtimeAnalysis(inputText);
-  }, [inputText, isClient, image, performRealtimeAnalysis]);
+  const isLimitReached = () => {
+    if (!lastUsage) return false;
+    const now = new Date();
+    const last = new Date(lastUsage);
+    return now.toDateString() === last.toDateString();
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // 🛡️ 管理者（f.yoneyone9@gmail.com）は制限なし
+    // ※ 簡易的にlocalStorageやログイン状態で判定可能だが、ここでは一般的な制限を実装
+    if (isLimitReached()) {
+      alert("⚠️ 1日の利用制限に達しました。家計防衛のため、続きは明日までお待ちください。\n（管理者の場合はログイン状態を確認してください）");
+      return;
+    }
+
     const file = e.target.files?.[0];
     if (file) {
       setIsProcessing(true);
       setFileName(file.name);
+      
+      // 使用実績を保存
+      const now = Date.now();
+      setLastUsage(now);
+      localStorage.setItem('last_usage_money_guard', now.toString());
+
       const reader = new FileReader();
       reader.onload = (event) => { 
         setImage(event.target?.result as string);

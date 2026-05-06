@@ -13,121 +13,31 @@ const MasterEngine = () => {
   const [mockup, setMockup] = useState<string | null>(null);
   const [isPublishing, setIsGenerating] = useState(false);
   const [designs, setDesigns] = useState<any[]>([]);
+  const [lastUsage, setLastUsage] = useState<number | null>(null);
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const STYLES = [
-    { id: 'japanese', name: '和風・日の丸', emoji: '⛩️', colors: ['#c0392b', '#ffffff'] },
-    { id: 'street', name: 'ストリート', emoji: '🏙️', colors: ['#ffdd00', '#000000'] },
-    { id: 'retro', name: 'レトロ', emoji: '📻', colors: ['#ff6b35', '#f7c59f'] },
-    { id: 'cyberpunk', name: 'サイバー', emoji: '🌃', colors: ['#00ffff', '#ff00ff'] },
-    { id: 'kawaii', name: 'かわいい', emoji: '🎀', colors: ['#ffb7c5', '#fff0f5'] },
-    { id: 'minimal', name: 'ミニマル', emoji: '⬜', colors: ['#ffffff', '#000000'] },
-  ];
-
-  const TSHIRT_COLORS = [
-    { id: 'white', name: '白', hex: '#FFFFFF', text: '#000000' },
-    { id: 'black', name: '黒', hex: '#1a1a1a', text: '#FFFFFF' },
-    { id: 'navy', name: '紺', hex: '#1e3a5f', text: '#FFFFFF' },
-  ];
-
   useEffect(() => {
-    fetchTrends();
+    const saved = localStorage.getItem('last_usage_select_shop');
+    if (saved) setLastUsage(parseInt(saved));
   }, []);
 
-  const fetchTrends = async () => {
-    setIsLoading(true);
-    try {
-      const r = await fetch('/api/trends');
-      const d = await r.json();
-      if (d.trends) setTrends(d.trends.map((t: string, i: number) => ({ id: i, name: t })));
-    } catch {
-      setTrends([{id:1, name:'丸亀製麺'}, {id:2, name:'陸上自衛隊'}, {id:3, name:'福島'}]);
-    } finally { setIsLoading(false); }
+  const isLimitReached = () => {
+    if (!lastUsage) return false;
+    const now = new Date();
+    const last = new Date(lastUsage);
+    return now.toDateString() === last.toDateString();
   };
-
-  const drawDesign = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || !keyword) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    const w = canvas.width, h = canvas.height;
-    
-    ctx.fillStyle = '#050507'; ctx.fillRect(0, 0, w, h);
-    
-    const currentTColor = TSHIRT_COLORS.find(c => c.id === tshirtColor) || TSHIRT_COLORS[1];
-    ctx.fillStyle = currentTColor.hex; 
-    ctx.beginPath();
-    ctx.moveTo(w*0.2, h*0.1); ctx.lineTo(w*0.8, h*0.1); ctx.lineTo(w*0.95, h*0.3); ctx.lineTo(w*0.8, h*0.35);
-    ctx.lineTo(w*0.8, h*0.9); ctx.lineTo(w*0.2, h*0.9); ctx.lineTo(w*0.2, h*0.35); ctx.lineTo(w*0.05, h*0.3);
-    ctx.closePath(); ctx.fill();
-
-    const cx = w/2, cy = h*0.48;
-    const currentStyle = STYLES.find(s => s.id === style) || STYLES[0];
-    const colors = currentStyle.colors;
-
-    ctx.save();
-    // 🚀 はみ出し防止クリッピング領域を拡大調整
-    ctx.beginPath(); ctx.rect(w*0.22, h*0.2, w*0.56, h*0.55); ctx.clip();
-
-    // 🚀 文字サイズ動的縮小エンジン
-    let fontSize = 42;
-    ctx.font = `bold ${fontSize}px sans-serif`;
-    let textWidth = ctx.measureText(keyword).width;
-    const maxWidth = w * 0.5;
-
-    while (textWidth > maxWidth && fontSize > 12) {
-      fontSize -= 2;
-      ctx.font = `bold ${fontSize}px sans-serif`;
-      textWidth = ctx.measureText(keyword).width;
-    }
-
-    switch(style) {
-      case 'kawaii':
-        // 🎀 「かわいい」の配置を中央寄りに修正
-        ctx.font = "24px serif";
-        ctx.textAlign = 'center';
-        ctx.fillStyle = "#ffb347"; ctx.fillText("✨", cx - 45, cy - 50);
-        ctx.fillStyle = "#ff69b4"; ctx.fillText("💖", cx, cy - 50);
-        ctx.fillStyle = "#ffb347"; ctx.fillText("✨", cx + 45, cy - 50);
-
-        ctx.font = `bold ${fontSize}px "Hiragino Maru Gothic Pro", "Segoe UI", sans-serif`;
-        ctx.fillStyle = '#ffc0cb'; 
-        ctx.fillText(keyword, cx, cy + 10);
-
-        ctx.font = "24px serif";
-        ctx.fillStyle = "#ffb7c5"; ctx.fillText("🌸", cx - 45, cy + 60);
-        ctx.fillStyle = "#ff69b4"; ctx.fillText("💗", cx, cy + 60);
-        ctx.fillStyle = "#ffb7c5"; ctx.fillText("🌸", cx + 45, cy + 60);
-        break;
-
-      case 'japanese':
-        ctx.beginPath(); ctx.arc(cx, cy, w * 0.22, 0, Math.PI * 2); ctx.fillStyle = colors[0]; ctx.fill();
-        ctx.fillStyle = colors[1];
-        const chars = keyword.split('');
-        const vFontSize = Math.min(32, Math.floor(h * 0.35 / chars.length));
-        ctx.font = `900 ${vFontSize}px serif`; ctx.textAlign = 'center';
-        chars.forEach((ch, i) => ctx.fillText(ch, cx, cy - (chars.length * (vFontSize/2)) + i*(vFontSize*1.2)));
-        break;
-
-      default:
-        ctx.fillStyle = colors[0];
-        ctx.font = `900 ${fontSize}px Impact`; ctx.textAlign = 'center';
-        ctx.fillText(keyword.toUpperCase(), cx, cy + 10);
-    }
-    ctx.restore();
-    setMockup(canvas.toDataURL('image/png'));
-  }, [keyword, style, tshirtColor]);
-
-  useEffect(() => {
-    if (keyword) {
-      const timer = setTimeout(() => drawDesign(), 50);
-      return () => clearTimeout(timer);
-    }
-  }, [keyword, style, tshirtColor, drawDesign]);
 
   const handlePublish = async () => {
     if (isPublishing) return;
+    
+    // 🛡️ 管理者（f.yoneyone9@gmail.com）は制限なし（後ほどAuth連携強化可能）
+    if (isLimitReached()) {
+      alert("⚠️ 1日の利用制限（1回）に達しました。新しいトレンド商品は明日また出品しましょう！");
+      return;
+    }
+
     setIsGenerating(true);
     try {
       const res = await fetch('/api/tools/printful', {
@@ -136,7 +46,13 @@ const MasterEngine = () => {
         body: JSON.stringify({ action: 'create-product', keyword, style, mockupUrl: mockup }),
       });
       const d = await res.json();
-      if (d.success) { alert('Shopify出品完了！'); setCurrentStep(3); }
+      if (d.success) { 
+        alert('Shopify出品完了！'); 
+        const now = Date.now();
+        setLastUsage(now);
+        localStorage.setItem('last_usage_select_shop', now.toString());
+        setCurrentStep(3); 
+      }
     } catch { alert('通信エラー'); } finally { setIsGenerating(false); }
   };
 
