@@ -1,7 +1,8 @@
 'use client'
 import React, { useState, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
-
+import { Badge } from '@/components/ui/badge'
+import { Lightbulb, RotateCcw } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const MasterEngine = () => {
@@ -29,7 +30,7 @@ const MasterEngine = () => {
 
   const getMyLocation = () => {
     setIsLocating(true);
-    if (!navigator.geolocation) {
+    if (typeof navigator === 'undefined' || !navigator.geolocation) {
       alert("お使いのブラウザは位置情報に対応していません。");
       setIsLocating(false);
       return;
@@ -50,7 +51,13 @@ const MasterEngine = () => {
   };
 
   const FINAL_PROMPT = `あなたはプロの災害対策コンサルタントです。
-以下の【居住環境データ】に基づき、生存確率を最大化する「生存戦略レポート」を作成してください。
+以下の「公的機関推奨の共通防災知識」と【居住環境データ】に基づき、生存確率を最大化する「生存戦略レポート」を作成してください。
+
+【共通防災知識の鉄則】
+1. 生存優先順位「3・3・3の法則」: 3分(呼吸)、3時間(体温)、3日(水)を死守せよ。
+2. 家庭内備蓄: 最低3日分、推奨1週間分の水(1人1日3L)と食料。
+3. 発災時行動: シェイクアウト(まず低く、頭を守り、動かない)の徹底。
+4. 防御策: ブレーカー遮断、ハザードマップ確認、家族間連絡手段(171)の確立。
 
 【現在位置（座標）】: ${location ? `${location.lat}, ${location.lng}` : "未特定（日本国内）"}
 【現在の気象】: ${weather ? `気温:${weather.temperature}℃, 風速:${weather.windspeed}km/h` : "不明"}
@@ -64,16 +71,16 @@ const MasterEngine = () => {
   if (!isClient) return null;
 
   return (
-    <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
+    <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)] print:border-0 print:shadow-none print:my-0 print:p-0">
         <div className="text-center space-y-1 md:space-y-3">
           <div className="inline-block bg-sky-600 text-white font-black italic tracking-widest px-4 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full shadow-lg">Survival Command v6.0-MASTER</div>
           <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">AI防災パーソナルガイド</h1>
+          <div className="inline-block bg-emerald-600 text-white font-black px-6 py-1 rounded-full uppercase italic text-[10px] tracking-widest shadow-lg">MASTERMODEL</div>
         </div>
 
-      <div className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 md:p-16 shadow-2xl relative overflow-hidden animate-in fade-in zoom-in-95">
+      <div className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-10 md:p-16 shadow-2xl relative overflow-hidden animate-in fade-in zoom-in-95 print:hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-sky-500 to-transparent opacity-50" />
         
-        {/* 🗺️ 以前の完璧だったガイド UI */}
         <div className="bg-[#0a0b14] border border-white/5 rounded-3xl p-8 mb-12 flex items-start gap-6 shadow-inner">
           <div className="w-10 h-10 rounded-full border border-sky-500/30 flex items-center justify-center shrink-0 text-sky-500 font-bold">!</div>
           <div className="space-y-1">
@@ -87,7 +94,6 @@ const MasterEngine = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* LEFT: MISSION PARAMETERS */}
           <div className="space-y-8">
             <div className="bg-[#0a0b14] border border-white/5 rounded-[2.5rem] p-8 space-y-6 shadow-inner">
                <div className="flex items-center justify-between">
@@ -142,11 +148,11 @@ const MasterEngine = () => {
                     <span className="text-xl">💬</span>
                     CHATGPT
                   </button>
-                  <button className="h-16 bg-white/5 border-2 border-blue-500/30 rounded-2xl text-[10px] font-black uppercase italic text-blue-400 hover:bg-blue-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://gemini.google.com', '_blank')}>
+                  <button className="h-16 bg-white/5 border-2 border-blue-500/30 rounded-2xl text-[10px] font-black uppercase italic text-blue-400 hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://gemini.google.com', '_blank')}>
                     <span className="text-xl">✨</span>
                     GEMINI
                   </button>
-                  <button className="h-16 bg-white/5 border-2 border-orange-500/30 rounded-2xl text-[10px] font-black uppercase italic text-orange-400 hover:bg-orange-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://claude.ai', '_blank')}>
+                  <button className="h-16 bg-white/5 border-2 border-orange-500/30 rounded-2xl text-[10px] font-black uppercase italic text-orange-400 hover:bg-orange-500 hover:text-white transition-all flex items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://claude.ai', '_blank')}>
                     <span className="text-xl">❄️</span>
                     CLAUDE
                   </button>
@@ -154,7 +160,6 @@ const MasterEngine = () => {
             </div>
           </div>
 
-          {/* RIGHT: COMMAND OUTPUT */}
           <div className="bg-[#0a0b14] rounded-[3.5rem] p-10 border border-white/5 shadow-inner flex flex-col gap-6 relative">
              <div className="flex items-center gap-4 mb-2">
                 <div className="w-12 h-12 rounded-xl bg-sky-600/10 flex items-center justify-center border border-sky-500/20">
@@ -184,12 +189,11 @@ const MasterEngine = () => {
   );
 };
 
-const NoSSRWrapper = dynamic(() => Promise.resolve(MasterEngine), { ssr: false });
+const NoSSRWrapper = dynamic(() => Promise.resolve(MasterEngine), {
+  ssr: false,
+  loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Initializing Disaster Master...</div>
+})
 
 export default function DisasterGuard() {
-  return (
-    <div className="min-h-screen bg-[#050507] text-gray-100 font-sans p-4 md:p-10 overflow-x-hidden text-left">
-      <NoSSRWrapper />
-    </div>
-  );
+  return <NoSSRWrapper />;
 }
