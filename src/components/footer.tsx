@@ -18,7 +18,6 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link href="/products" className="hover:text-primary transition-colors">ツール一覧</Link></li>
               <li><Link href="/tool-guide" className="hover:text-primary transition-colors">ツール説明</Link></li>
-              <li><Link href="/port" className="hover:text-primary transition-colors">PORT</Link></li>
               <li><a href="https://nextralabos.booth.pm/items/8321436" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center gap-1 text-emerald-400 font-bold">公式BOOTHショップ ↗</a></li>
               <li><Link href="/pricing" className="hover:text-primary transition-colors">料金プラン</Link></li>
             </ul>
@@ -30,6 +29,7 @@ export function Footer() {
               <li><Link href="/privacy" className="hover:text-primary transition-colors">プライバシーポリシー</Link></li>
               <li><Link href="/tokusho" className="hover:text-primary transition-colors">特定商取引法に基づく表記</Link></li>
               <li><Link href="/contact" className="hover:text-primary transition-colors">お問い合わせ</Link></li>
+              <li><Link href="/port" className="hover:text-primary transition-colors text-[10px] opacity-50">PORT</Link></li>
             </ul>
           </div>
         </div>
