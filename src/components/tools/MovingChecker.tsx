@@ -41,12 +41,13 @@ const ENTRY_MODES = [
 ];
 
 const MasterEngine = () => {
-  const [mode, setMode] = useState<'selection' | 'area' | 'room' | 'contract'>('selection');
+  const [mode, setMode] = useState('selection');
   const [report, setReport] = useState('');
-  const [score, setScore] = useState<number | null>(null);
+  const [score, setScore] = useState(null);
   const [copied, setCopied] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [image, setImage] = useState(null);
+  const fileInputRef = useRef(null);
 
   // エリア調査用フォーム
   const [pref, setPref] = useState('');
@@ -61,27 +62,21 @@ const MasterEngine = () => {
     if (report && !score) {
       setIsProcessing(true);
       setTimeout(() => {
-        setScore(70 + Math.floor(Math.random() * 25));
+        const baseScore = 70 + Math.floor(Math.random() * 25);
+        setScore(baseScore);
         setIsProcessing(false);
       }, 1500);
     }
   }, [report, score]);
 
-  const getSteps = () => {
-    const common = ["状況を選択"];
-    const current = ENTRY_MODES.find(m => m.id === mode);
-    if (!current) return common;
-    return [...common, ...current.steps, "最終判定"];
-  };
+  if (!isMounted) return null;
 
-  const currentSteps = getSteps();
-  const activeStepIndex = mode === 'selection' ? 0 : (report ? currentSteps.length - 1 : 2);
+  const currentSteps = mode === 'selection' ? ["状況を選択"] : [...(ENTRY_MODES.find(m => m.id === mode)?.steps || []), "最終判定"];
+  const activeStepIndex = mode === 'selection' ? 0 : (report ? currentSteps.length - 1 : 1);
 
   const getPrompt = () => {
     if (mode === 'area') {
-      return `あなたはプロの防犯・地域分析コンサルタントです。以下のエリアについて、公的データに基づき治安・地盤・利便性の観点からリスク分析を行い、「S〜D」のランク判定と具体的な注意点を出力してください。
-【調査エリア】：${pref} ${city}（最寄り：${station}駅）
-【補足メモ】：${memo || "特になし"}`;
+      return `あなたはプロの防犯・地域分析コンサルタントです。以下のエリアについて、公的データに基づき治安・地盤・利便性の観点からリスク分析を行い、「S〜D」のランク判定と具体的な注意点を出力してください。\n【調査エリア】：${pref} ${city}（最寄り：${station}駅）\n【補足メモ】：${memo || "特になし"}`;
     }
     if (mode === 'room') {
       return `あなたは不動産管理のスペシャリストです。添付された内見写真から、壁のひび割れ、カビの予兆、設備の劣化、清掃状態、建付けの歪みなど、素人が見落としがちな不備を徹底的に洗い出し、入居前に確認・交渉すべきポイントをリストアップしてください。`;
@@ -92,13 +87,26 @@ const MasterEngine = () => {
     return '';
   };
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = (text) => {
+    if (typeof navigator !== 'undefined') {
+      navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
-  if (!isMounted) return null;
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setIsProcessing(true);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImage(event.target?.result);
+        setIsProcessing(false);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-10 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
@@ -125,7 +133,7 @@ const MasterEngine = () => {
       {mode === 'selection' && (
         <div className="grid md:grid-cols-3 gap-6 animate-in fade-in">
           {ENTRY_MODES.map((item) => (
-            <Card key={item.id} onClick={() => setMode(item.id as any)} className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 hover:border-indigo-500 transition-all cursor-pointer group shadow-xl relative overflow-hidden">
+            <Card key={item.id} onClick={() => setMode(item.id)} className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 hover:border-indigo-500 transition-all cursor-pointer group shadow-xl relative overflow-hidden">
               <div className={`w-14 h-14 ${item.bg} ${item.color} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform`}><item.icon size={28} /></div>
               <h3 className="text-xl font-black text-white italic mb-2 uppercase">{item.label}</h3>
               <p className="text-slate-500 font-bold text-xs mb-6 leading-relaxed">{item.desc}</p>
@@ -145,10 +153,10 @@ const MasterEngine = () => {
           
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-xl md:text-3xl font-black text-white italic uppercase flex items-center gap-4">
-              {ENTRY_MODES.find(m => m.id === mode)?.icon && React.createElement(ENTRY_MODES.find(m => m.id === mode)!.icon, { className: "text-indigo-500", size: 32 })}
+              {ENTRY_MODES.find(m => m.id === mode)?.icon && React.createElement(ENTRY_MODES.find(m => m.id === mode).icon, { className: "text-indigo-500", size: 32 })}
               {ENTRY_MODES.find(m => m.id === mode)?.label}
             </h3>
-            <button onClick={() => { setMode('selection'); setReport(''); setScore(null); }} className="text-slate-500 font-black italic uppercase text-[10px] hover:text-white flex items-center gap-2 transition-all"><RotateCcw size={14} /> 選択に戻る</button>
+            <button onClick={() => { setMode('selection'); setReport(''); setScore(null); setImage(null); }} className="text-slate-500 font-black italic uppercase text-[10px] hover:text-white flex items-center gap-2 transition-all"><RotateCcw size={14} /> 選択に戻る</button>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-10 text-left">
@@ -162,7 +170,7 @@ const MasterEngine = () => {
                     </div>
                     <div className="space-y-2">
                        <label className="text-[10px] font-black text-slate-500 uppercase px-4 italic">市区町村</label>
-                       <input value={city} onChange={(e) => setCity(city === e.target.value ? city : e.target.value)} placeholder="海老名市" className="w-full h-14 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-6 text-sm text-white focus:border-indigo-500 outline-none transition-all" />
+                       <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="海老名市" className="w-full h-14 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-6 text-sm text-white focus:border-indigo-500 outline-none transition-all" />
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -175,8 +183,24 @@ const MasterEngine = () => {
                   </div>
                 </div>
               )}
-              {mode !== 'area' && (
-                <textarea value={memo} onChange={(e) => setMemo(e.target.value)} placeholder={mode === 'contract' ? "契約書の内容を貼り付けてください..." : "不備についてのメモを入力..."} className="w-full h-48 bg-black/40 border-2 border-white/5 rounded-[2rem] p-6 text-sm text-white focus:border-indigo-500 outline-none shadow-inner italic" />
+              {mode === 'room' && (
+                <div className="space-y-6">
+                  {!image ? (
+                    <div className="border-4 border-dashed border-white/10 rounded-[2.5rem] aspect-video flex flex-col items-center justify-center gap-6 cursor-pointer hover:bg-white/5 bg-white/5 shadow-inner group relative overflow-hidden" onClick={() => fileInputRef.current?.click()}>
+                      <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
+                      <Upload className="h-16 w-16 text-slate-700" />
+                      <p className="text-xl text-white font-black italic uppercase">内見写真をドロップ</p>
+                    </div>
+                  ) : (
+                    <div className="relative aspect-video rounded-[2.5rem] overflow-hidden border-4 border-indigo-600/30 shadow-2xl bg-black flex items-center justify-center">
+                       <img src={image} alt="Room" className="max-h-full max-w-full object-contain" />
+                       <button onClick={() => setImage(null)} className="absolute top-6 right-6 bg-black/50 hover:bg-red-600 p-2 rounded-full h-12 w-12 text-white">✕</button>
+                    </div>
+                  )}
+                </div>
+              )}
+              {mode === 'contract' && (
+                <textarea value={memo} onChange={(e) => setMemo(e.target.value)} placeholder="契約書や重要事項説明書のテキストを貼り付けてください..." className="w-full h-48 bg-black/40 border-2 border-white/5 rounded-[2rem] p-6 text-sm text-white focus:border-indigo-500 outline-none shadow-inner italic" />
               )}
 
               <div className="space-y-4">
@@ -205,7 +229,7 @@ const MasterEngine = () => {
         </Card>
       )}
 
-      <DebugPanel data={{ mode, articleLength: report.length }} toolId="moving-checker-master" />
+      <DebugPanel data={{ mode, reportLen: report.length }} toolId="moving-checker-master" />
       <div className="text-center opacity-10 mt-10 font-black uppercase tracking-[0.5em] italic text-[10px]">Living Intelligence OS • NextraLabs 2026</div>
     </div>
   )
@@ -217,5 +241,8 @@ const MovingCheckerWithNoSSR = dynamic(() => Promise.resolve(MasterEngine), {
 })
 
 export default function NoSSRWrapper() {
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => { setIsMounted(true); }, []);
+  if (!isMounted) return <div className="min-h-screen bg-[#050507]" />;
   return <MovingCheckerWithNoSSR />;
 }
