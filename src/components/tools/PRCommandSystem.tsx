@@ -1,11 +1,9 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
 import { 
-  Sparkles, Send, Calendar, ListChecks, Loader2, Copy, Activity, FileText, Globe, RefreshCw, BarChart3, Rocket, ShieldCheck, Zap, UserPlus, Settings, RotateCcw
+  Sparkles, Send, Calendar, Loader2, Copy, FileText, Rocket, Zap, RotateCcw
 } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
@@ -18,7 +16,7 @@ const MASTER_TOOLS = [
   { id: 'ai-select-shop', name: 'AIセレクトショップ', desc: 'トレンド分析×在庫ゼロ出品OS' }
 ];
 
-export default function PRCommandSystem() {
+const MasterEngine = () => {
   const [selectedTool, setSelectedTool] = useState(MASTER_TOOLS[0]);
   const [updateNote, setUpdateNote] = useState('Staysee本物API連携成功。AI保管証明書（鑑定書）の自動発行機能、印刷レイアウト最適化、v3.1-MASTERへの昇格完了。');
   const [article, setArticle] = useState('');
@@ -95,7 +93,7 @@ export default function PRCommandSystem() {
         {/* 📝 CENTER: DRAFT TERMINAL */}
         <div className="lg:col-span-2 space-y-8 text-left">
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 md:p-12 shadow-2xl relative overflow-hidden flex flex-col min-h-[850px]">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-30" />
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-30" />
             
             <div className="flex items-center justify-between mb-8">
                <div className="flex items-center gap-4 text-left">
@@ -120,7 +118,7 @@ export default function PRCommandSystem() {
                     <div className="flex-1 w-full space-y-3">
                        <div className="flex items-center gap-2 px-4 text-slate-500">
                           <Calendar size={14} />
-                          <p className="text-[10px] font-black uppercase tracking-widest">Schedule to Note</p>
+                          <p className="text-[10px] font-black uppercase tracking-widest">Post Scheduling</p>
                        </div>
                        <input type="datetime-local" value={scheduleDate} onChange={(e) => setScheduleDate(e.target.value)} className="w-full h-16 bg-black border-2 border-white/5 rounded-2xl px-6 text-emerald-400 font-black focus:border-emerald-500" />
                     </div>
@@ -140,3 +138,12 @@ export default function PRCommandSystem() {
     </div>
   )
 }
+
+const NoSSRWrapper = () => {
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => { setIsMounted(true); }, []);
+  if (!isMounted) return <div className="min-h-screen bg-slate-950" />;
+  return <MasterEngine />;
+};
+
+export default NoSSRWrapper;
