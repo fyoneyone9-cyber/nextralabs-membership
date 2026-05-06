@@ -1,19 +1,13 @@
 'use client'
-import React, { useState, useEffect, useCallback } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { 
-  Mail, Zap, Clock, ListChecks, Filter, CheckCircle2, Loader2, LogIn, Trash2, Send, 
-  ArrowRight, ShieldCheck, Sparkles, RefreshCw, Inbox, Archive, MessageSquareQuote, ChevronRight, Activity, Terminal, ExternalLink, X, ChevronDown, ChevronUp, FileEdit
-} from 'lucide-react'
-import { DebugPanel } from '@/components/tools/DebugPanel'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
+import dynamic from 'next/dynamic'
 
+// ==================== Constants ====================
 const GOOGLE_CLIENT_ID = '239583936801-ev71grs66ehp0kn3kahr2bdrl0v9iidj.apps.googleusercontent.com'
 const GOOGLE_SCOPES = 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.compose'
 
-export default function InboxOrganizer() {
+// ==================== Client Side Engine ====================
+const MasterEngine = () => {
   const [googleToken, setGoogleToken] = useState<string | null>(null);
   const [emails, setEmails] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -31,8 +25,12 @@ export default function InboxOrganizer() {
     const token = hash.get('access_token')
     if (token) { 
       setGoogleToken(token); 
+      localStorage.setItem('nextra_google_token', token);
       window.history.replaceState(null, '', window.location.pathname); 
       fetchEmails(token); 
+    } else {
+      const saved = localStorage.getItem('nextra_google_token');
+      if (saved) setGoogleToken(saved);
     }
   }, []);
 
@@ -46,9 +44,9 @@ export default function InboxOrganizer() {
         body: JSON.stringify({ accessToken: token }),
       });
       const data = await res.json();
-      setEmails(data.messages || []);
+      if (data.messages) setEmails(data.messages);
     } catch (e) { 
-      console.error('[GMAIL_FETCH_ERROR]', e); 
+      console.error('[FETCH_ERR]', e); 
     } finally { 
       setLoading(false);
       setTimeout(() => setScanning(false), 500);
@@ -56,15 +54,14 @@ export default function InboxOrganizer() {
   };
 
   const handleAction = async (messageId: string, action: 'archive' | 'trash') => {
+    if (!confirm(`このメールを${action === 'trash' ? '削除' : 'アーカイブ'}しますか？`)) return;
     try {
       const res = await fetch('/api/tools/gmail-action', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ accessToken: googleToken, messageId, action }),
       });
-      if (res.ok) {
-        setEmails(prev => prev.filter(e => e.id !== messageId));
-      }
+      if (res.ok) setEmails(prev => prev.filter(e => e.id !== messageId));
     } catch (e) { console.error(e); }
   };
 
@@ -80,228 +77,159 @@ export default function InboxOrganizer() {
       });
       const data = await res.json();
       setReplyText(data.reply);
-      
-      // 🚀 【新機能】生成完了後に自動でGmail下書き保存を実行
-      if (data.reply) {
-        saveDraftToGmail(email.threadId || email.id, data.reply);
-      }
-    } catch (e) { console.error(e); } finally {
-      setIsGenerating(false);
-    }
+      if (data.reply) saveDraft(email.id, data.reply);
+    } catch (e) { console.error(e); } finally { setIsGenerating(false); }
   };
 
-  const saveDraftToGmail = async (threadId: string, text: string) => {
+  const saveDraft = async (threadId: string, text: string) => {
     setIsDrafting(true);
     try {
-      const res = await fetch('/api/tools/gmail-draft', {
+      await fetch('/api/tools/gmail-draft', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ accessToken: googleToken, threadId, replyBody: text }),
       });
-      if (res.ok) {
-        console.log('[SYSTEM] Draft saved to Gmail successfully.');
-      }
-    } catch (e) {
-      console.error('[DRAFT_SAVE_FAILED]', e);
-    } finally {
-      setIsDrafting(false);
-    }
+    } catch (e) { console.error(e); } finally { setIsDrafting(false); }
   };
 
-  const handleGoogleAuth = useCallback(() => {
+  const login = () => {
     const params = new URLSearchParams({
       client_id: GOOGLE_CLIENT_ID,
-      redirect_uri: window.location.href.split('?')[0].split('#')[0],
+      redirect_uri: window.location.origin + window.location.pathname,
       response_type: 'token',
       scope: GOOGLE_SCOPES,
       prompt: 'consent',
-    })
-    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`
-  }, []);
+    });
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
+  };
 
   const quadrants = [
-    { id: 'urgent_important', label: '🔥 今すぐ対応', color: 'border-red-600 text-red-500 bg-red-600/5', icon: Zap },
-    { id: 'urgent_not_important', label: '⚡ 早めに対応', color: 'border-amber-500 text-amber-500 bg-amber-500/5', icon: Clock },
-    { id: 'not_urgent_important', label: '📌 計画して対応', color: 'border-blue-500 text-blue-500 bg-blue-500/5', icon: ListChecks },
-    { id: 'not_urgent_not_important', label: '📂 後回し/ゴミ箱', color: 'border-slate-800 text-slate-500 bg-slate-900/50', icon: Filter },
+    { id: 'urgent_important', label: '🔥 今すぐ対応', color: 'border-red-600 text-red-500 bg-red-600/5' },
+    { id: 'urgent_not_important', label: '⚡ 早めに対応', color: 'border-amber-500 text-amber-500 bg-amber-500/5' },
+    { id: 'not_urgent_important', label: '📌 計画して対応', color: 'border-blue-500 text-blue-500 bg-blue-500/5' },
+    { id: 'not_urgent_not_important', label: '📂 後回し/ゴミ箱', color: 'border-slate-800 text-slate-500 bg-slate-900/50' },
   ];
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-slate-950 text-left">
       <div className="text-center space-y-3">
-        <Badge className="bg-blue-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-[0_0_20px_rgba(37,99,235,0.4)]">GMAIL AI ACCELERATOR v4.2-ULTIMATE</Badge>
-        <h1 className="text-5xl md:text-[8rem] font-black text-white uppercase italic tracking-tighter drop-shadow-2xl leading-none">Inbox Zero</h1>
+        <div className="inline-block bg-blue-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-lg">GMAIL AI ACCELERATOR v4.2-MASTER</div>
+        <h1 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl leading-none">Inbox Zero</h1>
       </div>
 
       {!googleToken ? (
-        <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3.5rem] p-12 md:p-24 text-center space-y-10 shadow-[0_40px_100px_rgba(0,0,0,0.6)] relative overflow-hidden animate-in zoom-in-95">
-           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-600" />
-           <div className="w-32 h-32 bg-blue-600/10 rounded-[2.5rem] flex items-center justify-center mx-auto border-2 border-blue-500/30 shadow-[0_0_50px_rgba(37,99,235,0.2)]">
-              <Mail className="w-16 h-16 text-blue-500 animate-pulse" />
+        <div className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-12 md:p-24 text-center space-y-10 shadow-2xl relative overflow-hidden">
+           <div className="w-32 h-32 bg-blue-600/10 rounded-[2.5rem] flex items-center justify-center mx-auto border-2 border-blue-500/30">
+              <div className="w-16 h-16 bg-blue-500 rounded-full animate-pulse" />
            </div>
            <div className="space-y-4">
-              <h2 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter">Accelerate Your Workflow</h2>
-              <p className="text-slate-500 font-bold text-lg max-w-xl mx-auto leading-relaxed italic">GmailをAIと直結。重要度の自動分類と、返信ドラフトの自動保存を「秒速」で開始しましょう。</p>
+              <h2 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter">Accelerate Workflow</h2>
+              <p className="text-slate-500 font-bold text-lg max-w-xl mx-auto italic">GmailをAIと直結。重要度の自動分類と、返信ドラフトの自動保存を開始しましょう。</p>
            </div>
-           <Button onClick={handleGoogleAuth} className="h-24 bg-white text-black hover:bg-blue-600 hover:text-white font-black px-16 rounded-[2rem] text-3xl uppercase italic shadow-2xl transition-all active:scale-95 group">
-              Connect Gmail <ExternalLink className="ml-4 group-hover:translate-x-2 transition-transform" size={32} />
-           </Button>
-        </Card>
+           <button onClick={login} className="h-24 bg-white text-black hover:bg-blue-600 hover:text-white font-black px-16 rounded-[2rem] text-3xl uppercase italic shadow-2xl transition-all active:scale-95">
+              Connect Gmail ↗
+           </button>
+        </div>
       ) : (
         <div className="grid lg:grid-cols-3 gap-8 animate-in fade-in duration-700">
           <div className="lg:col-span-1 space-y-6">
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] p-8 shadow-xl relative overflow-hidden h-fit">
+            <div className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 shadow-xl relative overflow-hidden">
                <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-2 text-blue-500 font-black italic tracking-widest text-xs uppercase">
-                    <Activity size={16} /> Scanning Engine
-                  </div>
-                  <Badge variant="outline" className="text-[10px] border-green-500/30 text-green-500 font-black italic uppercase animate-pulse">Live Link</Badge>
+                  <div className="text-blue-500 font-black italic tracking-widest text-xs uppercase">Scanning Engine</div>
+                  <div className="text-[10px] border border-green-500/30 text-green-500 px-2 py-0.5 rounded font-black italic uppercase animate-pulse">Live Link</div>
                </div>
-               
-               <Button onClick={() => fetchEmails(googleToken)} disabled={loading} className="w-full h-20 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-2xl shadow-lg flex items-center justify-center gap-4 group italic">
-                  {loading ? <Loader2 className="animate-spin" /> : <RefreshCw className="group-hover:rotate-180 transition-transform duration-500" />}
-                  最新メールを解析
-               </Button>
-
+               <button onClick={() => fetchEmails(googleToken)} className="w-full h-20 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-2xl shadow-lg flex items-center justify-center gap-4 transition-all active:scale-95 italic">
+                  SYNC & ANALYZE
+               </button>
                <div className="mt-8 space-y-4">
-                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800 pb-2">解析ステータス</p>
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800 pb-2 italic">Analysis Stats</p>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 text-center">
-                       <p className="text-[9px] font-bold text-slate-600 uppercase">取得済み</p>
+                    <div className="bg-black p-4 rounded-2xl border border-white/5 text-center">
+                       <p className="text-[9px] font-bold text-slate-600 uppercase">Fetched</p>
                        <p className="text-2xl font-black text-white italic">{emails.length}</p>
                     </div>
-                    <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 text-center">
-                       <p className="text-[9px] font-bold text-slate-600 uppercase">AI分類</p>
+                    <div className="bg-black p-4 rounded-2xl border border-white/5 text-center">
+                       <p className="text-[9px] font-bold text-slate-600 uppercase">AI Sorted</p>
                        <p className="text-2xl font-black text-blue-500 italic">{emails.length > 0 ? '100%' : '0%'}</p>
                     </div>
                   </div>
                </div>
-
-               <Button onClick={() => setGoogleToken(null)} variant="ghost" className="w-full mt-8 text-slate-700 hover:text-red-500 text-[10px] font-black uppercase italic tracking-widest underline border border-white/5">Terminate Session</Button>
-            </Card>
-
-            <div className="bg-blue-600/5 border-2 border-blue-500/20 rounded-[2rem] p-8 space-y-4 italic shadow-inner">
-               <p className="text-blue-500 text-xs font-black uppercase tracking-widest flex items-center gap-2"><Sparkles size={14}/> AI Intelligence</p>
-               <p className="text-slate-400 text-sm font-bold leading-relaxed">全ての返信案は、生成と同時にあなたのGmailの「下書き」フォルダに自動保存されます。</p>
+               <button onClick={() => { localStorage.removeItem('nextra_google_token'); setGoogleToken(null); }} className="w-full mt-8 text-slate-700 hover:text-red-500 text-[10px] font-black uppercase italic underline tracking-widest">Terminate Session</button>
             </div>
           </div>
 
           <div className="lg:col-span-2 space-y-8">
              <div className="grid grid-cols-2 gap-4">
-                {quadrants.map(q => {
-                  const Icon = q.icon;
-                  return (
-                    <div key={q.id} className={`p-4 rounded-2xl border-2 flex items-center justify-between shadow-lg ${q.color}`}>
-                       <div className="flex items-center gap-3"><Icon size={18}/><span className="text-xs font-black uppercase italic">{q.label}</span></div>
-                       <span className="text-lg font-black italic">{loading ? '...' : emails.filter(e => e.quadrant === q.id).length}</span>
-                    </div>
-                  );
-                })}
+                {quadrants.map(q => (
+                  <div key={q.id} className={`p-4 rounded-2xl border-2 flex items-center justify-between shadow-lg ${q.color}`}>
+                     <span className="text-xs font-black uppercase italic">{q.label}</span>
+                     <span className="text-lg font-black italic">{loading ? '...' : emails.filter(e => e.quadrant === q.id).length}</span>
+                  </div>
+                ))}
              </div>
 
-             <div className="bg-slate-900/50 border-2 border-slate-800 rounded-[3rem] p-10 min-h-[600px] shadow-inner space-y-6">
-                <div className="flex items-center gap-3 text-slate-500 font-black italic uppercase text-xs tracking-[0.3em]">
-                   <Activity size={16} /> Live Mail Feed
-                </div>
-
+             <div className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 min-h-[600px] shadow-inner space-y-6">
+                <div className="text-slate-500 font-black italic uppercase text-xs tracking-[0.3em]">Live Mail Feed</div>
                 <div className="space-y-4">
                    {loading || scanning ? (
-                      Array(3).fill(0).map((_, i) => (<div key={i} className="h-28 bg-slate-950 border border-slate-800 rounded-3xl animate-pulse" />))
+                      Array(3).fill(0).map((_, i) => <div key={i} className="h-28 bg-black border border-white/5 rounded-3xl animate-pulse" />)
                    ) : emails.length > 0 ? (
                       emails.map((email, i) => (
-                        <div key={i} className="bg-slate-950 border border-slate-800 rounded-[2rem] p-8 hover:border-blue-500/50 transition-all group shadow-xl relative overflow-hidden">
-                           <div className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 transition-opacity flex gap-3 z-20">
-                              <Button onClick={() => handleAction(email.id, 'archive')} variant="outline" size="sm" className="bg-slate-900 border-slate-700 hover:border-blue-500 hover:text-blue-500"><Archive size={18}/></Button>
-                              <Button onClick={() => handleAction(email.id, 'trash')} variant="outline" size="sm" className="bg-slate-900 border-slate-700 hover:border-red-500 hover:text-red-500"><Trash2 size={18}/></Button>
+                        <div key={i} className="bg-black border border-white/5 rounded-[2rem] p-8 hover:border-blue-500/50 transition-all group shadow-xl relative overflow-hidden">
+                           <div className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 transition-opacity flex gap-3">
+                              <button onClick={() => handleAction(email.id, 'archive')} className="p-2 bg-slate-900 border border-white/10 rounded-lg text-slate-400 hover:text-blue-500">ARCHIVE</button>
+                              <button onClick={() => handleAction(email.id, 'trash')} className="p-2 bg-slate-900 border border-white/10 rounded-lg text-slate-400 hover:text-red-500">TRASH</button>
                            </div>
-                           <div className="flex items-start gap-6">
-                              <div className="w-14 h-14 bg-blue-600/10 rounded-2xl flex items-center justify-center shrink-0 border border-blue-500/20"><Mail className="text-blue-500" size={28} /></div>
-                              <div className="flex-1 space-y-2 min-w-0 text-left">
-                                 <p className="text-xs font-black text-blue-500 uppercase italic tracking-wider">{email.from}</p>
-                                 <h4 className="text-2xl font-black text-white italic leading-tight">{email.subject}</h4>
-                                 
-                                 <div className="relative mt-4">
-                                    <div className={`text-sm text-slate-400 font-bold leading-relaxed italic ${expandedId === email.id ? '' : 'line-clamp-2'}`}>
-                                       {email.body}
-                                    </div>
-                                    <button 
-                                      onClick={() => setExpandedId(expandedId === email.id ? null : email.id)}
-                                      className="text-blue-500 text-[10px] font-black uppercase mt-2 hover:underline flex items-center gap-1"
-                                    >
-                                       {expandedId === email.id ? <><ChevronUp size={12}/>本文を閉じる</> : <><ChevronDown size={12}/>全文を表示</>}
-                                    </button>
-                                 </div>
-                              </div>
+                           <div className="flex flex-col text-left">
+                              <p className="text-xs font-black text-blue-500 uppercase italic tracking-wider mb-1">{email.from}</p>
+                              <h4 className="text-2xl font-black text-white italic leading-tight mb-4">{email.subject}</h4>
+                              <div className={`text-sm text-slate-400 font-bold leading-relaxed italic ${expandedId === email.id ? '' : 'line-clamp-2'}`}>{email.body}</div>
+                              <button onClick={() => setExpandedId(expandedId === email.id ? null : email.id)} className="text-blue-500 text-[10px] font-black uppercase mt-2 hover:underline">
+                                 {expandedId === email.id ? 'Close' : 'Read Full'}
+                              </button>
                            </div>
-
-                           <div className="mt-8 pt-8 border-t border-slate-800/50 flex flex-col gap-6">
-                              <Button 
-                                onClick={() => generateAiReply(email)} 
-                                size="lg" 
-                                className={`w-full md:w-fit bg-white text-black font-black italic text-sm rounded-xl px-10 h-14 hover:bg-blue-600 hover:text-white transition-all shadow-xl flex items-center justify-center gap-3 ${activeReplyId === email.id ? 'ring-4 ring-blue-500/20' : ''}`}
-                              >
-                                 <Sparkles size={18} className="animate-pulse" /> AI返信ドラフトを生成
-                              </Button>
-                              
+                           <div className="mt-8 pt-8 border-t border-white/5 flex flex-col gap-6">
+                              <button onClick={() => generateAiReply(email)} className="w-fit bg-white text-black font-black italic text-sm rounded-xl px-10 h-14 hover:bg-blue-600 hover:text-white transition-all shadow-xl uppercase">AI返信ドラフトを生成</button>
                               {activeReplyId === email.id && (
-                                 <div className="bg-slate-900 rounded-[2.5rem] p-10 border border-blue-600/30 animate-in slide-in-from-top-4 relative shadow-inner">
-                                    <button onClick={() => setActiveReplyId(null)} className="absolute top-6 right-6 text-slate-500 hover:text-white bg-slate-950 p-2 rounded-full"><X size={20}/></button>
+                                 <div className="bg-[#0a0b14] rounded-[2.5rem] p-10 border border-blue-600/30 animate-in slide-in-from-top-4 relative shadow-inner">
+                                    <button onClick={() => setActiveReplyId(null)} className="absolute top-6 right-6 text-slate-500 hover:text-white">✕</button>
                                     <div className="flex items-center justify-between mb-6">
-                                       <div className="flex items-center gap-3 text-blue-500 font-black italic uppercase text-xs tracking-[0.2em]">
-                                          <Activity size={16} /> AI Intelligence Output
-                                       </div>
-                                       {isDrafting && (
-                                          <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 animate-pulse">Syncing to Gmail...</Badge>
-                                       )}
-                                       {!isDrafting && replyText && (
-                                          <Badge variant="outline" className="text-emerald-500 border-emerald-500/30 flex items-center gap-1"><FileEdit size={10}/> Saved as Draft</Badge>
-                                       )}
+                                       <div className="text-blue-500 font-black italic uppercase text-xs tracking-[0.2em]">AI Output</div>
+                                       {isDrafting && <div className="text-[10px] text-emerald-500 animate-pulse font-black italic">Syncing to Gmail...</div>}
+                                       {!isDrafting && replyText && <div className="text-[10px] text-emerald-500 font-black italic">✅ Saved to Drafts</div>}
                                     </div>
-                                    {isGenerating ? (
-                                       <div className="py-12 flex flex-col items-center gap-4 text-slate-500 italic">
-                                          <Loader2 className="animate-spin text-blue-500" size={40}/>
-                                          <p className="text-sm font-black uppercase tracking-widest animate-pulse">Analyzing context & drafting response...</p>
-                                       </div>
-                                    ) : (
-                                       <div className="space-y-6">
-                                          <div className="bg-slate-950 p-8 rounded-3xl border border-slate-800 text-base text-slate-200 whitespace-pre-wrap font-sans leading-relaxed italic shadow-inner">
-                                             {replyText}
-                                          </div>
-                                          <div className="flex flex-wrap gap-4">
-                                            <Button 
-                                              onClick={() => { 
-                                                navigator.clipboard.writeText(replyText); 
-                                                setCopied(true); 
-                                                setTimeout(() => setCopied(false), 2000); 
-                                              }} 
-                                              className="h-14 bg-blue-600 hover:bg-blue-500 text-white font-black italic rounded-xl px-10 shadow-lg flex items-center gap-3"
-                                            >
-                                               <ClipboardPaste size={20}/> {copied ? 'COPIED!' : 'ドラフトをコピー'}
-                                            </Button>
-                                            <Button onClick={() => window.open('https://mail.google.com/', '_blank')} variant="outline" className="h-14 border-slate-800 text-slate-500 font-black italic rounded-xl px-8 hover:bg-slate-800">
-                                               <Send size={18} className="mr-2"/> Gmailを開いて送信
-                                            </Button>
-                                          </div>
-                                       </div>
-                                    )}
+                                    {isGenerating ? <div className="py-10 text-slate-600 italic animate-pulse">Thinking...</div> : 
+                                      <div className="space-y-6">
+                                         <pre className="text-base text-slate-200 whitespace-pre-wrap font-sans italic leading-relaxed">{replyText}</pre>
+                                         <button onClick={() => { navigator.clipboard.writeText(replyText); setCopied(true); setTimeout(()=>setCopied(false), 2000); }} className="h-14 bg-blue-600 hover:bg-blue-500 text-white font-black italic rounded-xl px-10 shadow-lg">{copied ? 'COPIED!' : 'Copy Draft'}</button>
+                                      </div>
+                                    }
                                  </div>
                               )}
                            </div>
                         </div>
                       ))
                    ) : (
-                      <div className="h-96 flex flex-col items-center justify-center space-y-6 opacity-30 italic">
-                         <Inbox size={80} />
-                         <p className="text-xl font-black uppercase tracking-widest">Inbox Zero Achieved</p>
-                      </div>
+                      <div className="h-96 flex flex-col items-center justify-center opacity-20 italic font-black uppercase tracking-widest text-xl">Inbox Zero Achieved</div>
                    )}
                 </div>
              </div>
           </div>
         </div>
       )}
-      <DebugPanel data={{ emails, googleToken, loading }} toolId="inbox-organizer" />
-      <div className="text-center opacity-20 mt-20 font-black uppercase tracking-[0.5em] italic text-[10px]">Email Acceleration Engine • NextraLabs 2026</div>
     </div>
-  )
+  );
+};
+
+const NoSSRWrapper = dynamic(() => Promise.resolve(MasterEngine), { ssr: false });
+
+import { DebugPanel } from '@/components/tools/DebugPanel'
+
+export default function InboxOrganizer() {
+  return (
+    <div className="min-h-screen bg-[#050507] text-gray-100 font-sans p-4 md:p-10 pb-32 overflow-x-hidden">
+      <NoSSRWrapper />
+      <DebugPanel data={{ status: "v4.2-fixed" }} toolId="inbox-zero-master" />
+    </div>
+  );
 }
