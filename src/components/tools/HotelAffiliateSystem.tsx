@@ -22,7 +22,12 @@ const MasterEngine = () => {
   useEffect(() => {
     setIsMounted(true);
     const savedId = localStorage.getItem('rakuten_affiliate_id');
-    if (savedId) setAffiliateId(savedId);
+    if (savedId) {
+      setAffiliateId(savedId);
+    } else {
+      // 🚀 【本物化】デフォルトの楽天アフィリエイトIDを設定
+      setAffiliateId('534e3725.64346793.534e3726.d5412af4');
+    }
   }, []);
 
   const handleSaveId = () => {
