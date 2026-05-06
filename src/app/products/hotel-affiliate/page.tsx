@@ -48,49 +48,49 @@ const AffiliateLpContent = () => {
       </section>
 
       {/* ✨ Features Section */}
-      <section className="max-w-6xl mx-auto px-4 py-32 space-y-20 text-left">
-        <div className="text-center space-y-4 text-center">
+      <section className="max-w-6xl mx-auto px-4 py-32 space-y-20">
+        <div className="text-center space-y-4">
           <h3 className="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter text-center">Viral Marketing OS</h3>
-          <p className="text-slate-500 font-bold uppercase italic text-center">宿のファンを増やす4つのマスタ機能</p>
+          <p className="text-slate-500 font-bold uppercase italic text-center">宿のファンを増やす4つの機能</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-10">
-          <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-4 hover:border-pink-500/30 transition-all group text-left">
-            <div className="w-12 h-12 bg-pink-500/10 rounded-xl flex items-center justify-center text-pink-500 group-hover:scale-110 transition-transform text-center mx-auto md:mx-0"><Zap size={24} /></div>
+        <div className="grid md:grid-cols-2 gap-10 text-left">
+          <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-4 hover:border-pink-500/30 transition-all group">
+            <div className="w-12 h-12 bg-pink-500/10 rounded-xl flex items-center justify-center text-pink-500 group-hover:scale-110 transition-transform"><Zap size={24} /></div>
             <h4 className="text-xl font-black text-white uppercase italic">バズる紹介文の錬成</h4>
-            <p className="text-slate-400 text-sm font-bold leading-relaxed text-left">「エモい」「有益」など、投稿したい雰囲気に合わせ、AIが思わず予約したくなる紹介文を自動生成します。</p>
+            <p className="text-slate-400 text-sm font-bold leading-relaxed">「エモい」「有益」など、投稿したい雰囲気に合わせ、AIが思わず予約したくなる紹介文を自動生成します。</p>
           </div>
-          <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-4 hover:border-pink-500/30 transition-all group text-left text-left">
-            <div className="w-12 h-12 bg-pink-500/10 rounded-xl flex items-center justify-center text-pink-500 group-hover:scale-110 transition-transform text-center mx-auto md:mx-0"><Coins size={24} /></div>
+          <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-4 hover:border-pink-500/30 transition-all group">
+            <div className="w-12 h-12 bg-pink-500/10 rounded-xl flex items-center justify-center text-pink-500 group-hover:scale-110 transition-transform"><Coins size={24} /></div>
             <h4 className="text-xl font-black text-white uppercase italic">楽天アフィリエイト連動</h4>
-            <p className="text-slate-400 text-sm font-bold leading-relaxed text-left">あなたのアフィリエイトIDを組み込んだ楽天トラベルのリンクを瞬時に作成。手間なく収益化をスタートできます。</p>
+            <p className="text-slate-400 text-sm font-bold leading-relaxed">あなたのアフィリエイトIDを組み込んだ楽天トラベルのリンクを瞬時に作成。手間なく収益化をスタートできます。</p>
           </div>
-          <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-4 hover:border-pink-500/30 transition-all group text-left text-left">
-            <div className="w-12 h-12 bg-pink-500/10 rounded-xl flex items-center justify-center text-pink-500 group-hover:scale-110 transition-transform text-center mx-auto md:mx-0"><Share2 size={24} /></div>
-            <h4 className="text-xl font-black text-white uppercase italic text-left">SNS投稿一元化</h4>
-            <p className="text-slate-400 text-sm font-bold leading-relaxed text-left text-left pl-0">X、Instagram、Threadsへ1クリックで移行。制作から投稿までのタイムラグをゼロにします。</p>
+          <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-4 hover:border-pink-500/30 transition-all group">
+            <div className="w-12 h-12 bg-pink-500/10 rounded-xl flex items-center justify-center text-pink-500 group-hover:scale-110 transition-transform"><Share2 size={24} /></div>
+            <h4 className="text-xl font-black text-white uppercase italic">SNS投稿一元化</h4>
+            <p className="text-slate-400 text-sm font-bold leading-relaxed pl-0">X、Instagram、Threadsへ1クリックで移行。制作から投稿までのタイムラグをゼロにします。</p>
           </div>
-          <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-4 hover:border-pink-500/30 transition-all group text-left text-left">
-            <div className="w-12 h-12 bg-pink-500/10 rounded-xl flex items-center justify-center text-pink-500 group-hover:scale-110 transition-transform text-center mx-auto md:mx-0"><Hotel size={24} /></div>
-            <h4 className="text-xl font-black text-white uppercase italic text-left text-left pl-0">宿の認知拡大サポート</h4>
-            <p className="text-slate-400 text-sm font-bold leading-relaxed text-left text-left pl-0">宿泊者の投稿の質を底上げすることで、宿にとっては広告費をかけずに「本物」の口コミを増やすことが可能に。</p>
+          <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-4 hover:border-pink-500/30 transition-all group">
+            <div className="w-12 h-12 bg-pink-500/10 rounded-xl flex items-center justify-center text-pink-500 group-hover:scale-110 transition-transform"><Hotel size={24} /></div>
+            <h4 className="text-xl font-black text-white uppercase italic">宿の認知拡大サポート</h4>
+            <p className="text-slate-400 text-sm font-bold leading-relaxed pl-0">宿泊者の投稿の質を底上げすることで、宿にとっては広告費をかけずに「本物」の口コミを増やすことが可能に。</p>
           </div>
         </div>
       </section>
 
       {/* 🚀 CTA Section */}
-      <section className="max-w-5xl mx-auto px-4 pt-20 text-center text-center">
-        <Card className="bg-gradient-to-br from-pink-600 to-rose-900 border-0 rounded-[4rem] p-12 md:p-20 shadow-2xl relative overflow-hidden text-center space-y-10 text-center">
+      <section className="max-w-5xl mx-auto px-4 pt-20 text-center">
+        <Card className="bg-gradient-to-br from-pink-600 to-rose-900 border-0 rounded-[4rem] p-12 md:p-20 shadow-2xl relative overflow-hidden text-center space-y-10">
           <div className="absolute top-0 right-0 p-10 opacity-10 rotate-12"><Share2 size={300} className="text-white" /></div>
-          <div className="relative z-10 space-y-6 text-center text-center">
-            <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter text-center leading-none">Turn Stays into Assets.</h3>
-            <p className="text-pink-100 text-lg font-bold leading-relaxed max-w-2xl mx-auto px-4 text-center text-center">
+          <div className="relative z-10 space-y-6">
+            <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter leading-none">宿泊体験を、資産に。</h3>
+            <p className="text-pink-100 text-lg font-bold leading-relaxed max-w-2xl mx-auto px-4">
               あなたの感動が、誰かの新しい旅になり、あなたの収益に。NextraLabsで、新しい宿紹介の形を始めましょう。
             </p>
-            <div className="flex flex-wrap justify-center gap-6 pt-6 text-center text-center">
+            <div className="flex flex-wrap justify-center gap-6 pt-6">
               <Link href="/signup">
                 <button className="h-20 px-16 bg-white text-pink-700 font-black text-2xl rounded-2xl shadow-xl hover:bg-pink-50 transition-all active:scale-95 uppercase italic leading-none">
-                  Get Started Free
+                  無料で使ってみる
                 </button>
               </Link>
             </div>
