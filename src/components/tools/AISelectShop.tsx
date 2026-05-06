@@ -3,14 +3,6 @@
 import dynamic from 'next/dynamic'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 
-/**
- * 🚀 AI Select Shop: Masterpiece v23.0 (ULTIMATE MASTER)
- * 【修正】「かわいい」デザインの完全復刻
- * 1. ハート、キラキラ、リボン、パステルカラーの装飾を再構築。
- * 2. 上下にシンボルを配置する「三位一体」のかわいいレイアウト。
- * 3. 文字色をパステル調（ピンク/ミント/ホワイト）に固定。
- */
-
 const MasterEngine = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [trends, setTrends] = useState<any[]>([]);
@@ -20,8 +12,10 @@ const MasterEngine = () => {
   const [tshirtColor, setTshirtColor] = useState('black');
   const [mockup, setMockup] = useState<string | null>(null);
   const [isPublishing, setIsPublishing] = useState(false);
-  const [designs, setDesigns] = useState<any[]>([]);
   
+  // 🚀 憲法：APIステータスの可視化
+  const [apiStatus, setApiStatus] = useState<'loading' | 'live' | 'local'>('loading');
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const STYLES = [
@@ -34,9 +28,9 @@ const MasterEngine = () => {
   ];
 
   const TSHIRT_COLORS = [
-    { id: 'white', name: '白', hex: '#FFFFFF' },
-    { id: 'black', name: '黒', hex: '#1a1a1a' },
-    { id: 'navy', name: '紺', hex: '#1e3a5f' },
+    { id: 'white', name: '白', hex: '#FFFFFF', text: '#000000' },
+    { id: 'black', name: '黒', hex: '#1a1a1a', text: '#FFFFFF' },
+    { id: 'navy', name: '紺', hex: '#1e3a5f', text: '#FFFFFF' },
   ];
 
   useEffect(() => {
@@ -45,12 +39,17 @@ const MasterEngine = () => {
 
   const fetchTrends = async () => {
     setIsLoading(true);
+    setApiStatus('loading');
     try {
       const r = await fetch('/api/trends');
       const d = await r.json();
-      if (d.trends) setTrends(d.trends.map((t: string, i: number) => ({ id: i, name: t })));
+      if (d.trends && d.trends.length > 0) {
+        setTrends(d.trends.map((t: string, i: number) => ({ id: i, name: t })));
+        setApiStatus(d.isLive ? 'live' : 'local');
+      } else { throw new Error(); }
     } catch {
-      setTrends([{id:1, name:'夏祭り'}, {id:2, name:'AIアート'}, {id:3, name:'サクラ'}]);
+      setApiStatus('local');
+      setTrends([{id:1, name:'トレンド取得失敗'}, {id:2, name:'API再接続中...'}]);
     } finally { setIsLoading(false); }
   };
 
@@ -67,7 +66,7 @@ const MasterEngine = () => {
     ctx.fillStyle = currentTColor.hex; 
     ctx.beginPath();
     ctx.moveTo(w*0.2, h*0.1); ctx.lineTo(w*0.8, h*0.1); ctx.lineTo(w*0.95, h*0.3); ctx.lineTo(w*0.8, h*0.35);
-    ctx.lineTo(w*0.8, h*0.9); ctx.lineTo(w*0.2, h*0.9); ctx.lineTo(w*0.2, h*0.35); ctx.lineTo(w*0.1, h*0.3);
+    ctx.lineTo(w*0.8, h*0.9); ctx.lineTo(w*0.2, h*0.9); ctx.lineTo(w*0.2, h*0.35); ctx.lineTo(w*0.05, h*0.3);
     ctx.closePath(); ctx.fill();
 
     const cx = w/2, cy = h*0.48;
@@ -82,33 +81,18 @@ const MasterEngine = () => {
 
     switch(style) {
       case 'kawaii':
-        // 🎀 スクショを完全再現した「かわいい」ロジック
-        // 上のキラキラ＋ハート＋キラキラ
         ctx.font = "24px serif";
         ctx.textAlign = 'center';
-        ctx.fillStyle = "#ffb347"; // Yellow/Gold
-        ctx.fillText("✨", cx - 40, cy - 60);
-        ctx.fillStyle = "#ff69b4"; // Pink Heart
-        ctx.fillText("💖", cx, cy - 60);
-        ctx.fillStyle = "#ffb347";
-        ctx.fillText("✨", cx + 40, cy - 60);
-
-        // メイン文字（夏祭り / AIアート）
-        ctx.font = `bold ${fontSize + 8}px "Hiragino Maru Gothic Pro", "Segoe UI", sans-serif`;
-        // 文字色はキーワードや背景に合わせてパステル化
-        ctx.fillStyle = keyword === '夏祭り' ? '#ffc0cb' : '#00ffcc'; 
-        ctx.fillText(keyword, cx, cy);
-
-        // 下の桜＋ハート＋桜
+        ctx.fillStyle = "#ffb347"; ctx.fillText("✨", cx - 40, cy - 60);
+        ctx.fillStyle = "#ff69b4"; ctx.fillText("💖", cx, cy - 60);
+        ctx.fillStyle = "#ffb347"; ctx.fillText("✨", cx + 40, cy - 60);
+        ctx.font = `bold ${fontSize + 8}px sans-serif`;
+        ctx.fillStyle = '#ffc0cb'; ctx.fillText(keyword, cx, cy);
         ctx.font = "24px serif";
-        ctx.fillStyle = "#ffb7c5"; // Sakura
-        ctx.fillText("🌸", cx - 40, cy + 50);
-        ctx.fillStyle = "#ff69b4"; // Pink Heart
-        ctx.fillText("💗", cx, cy + 50);
-        ctx.fillStyle = "#ffb7c5";
-        ctx.fillText("🌸", cx + 40, cy + 50);
+        ctx.fillStyle = "#ffb7c5"; ctx.fillText("🌸", cx - 40, cy + 50);
+        ctx.fillStyle = "#ff69b4"; ctx.fillText("💗", cx, cy + 50);
+        ctx.fillStyle = "#ffb7c5"; ctx.fillText("🌸", cx + 40, cy + 50);
         break;
-
       case 'japanese':
         ctx.beginPath(); ctx.arc(cx, cy, w * 0.22, 0, Math.PI * 2); ctx.fillStyle = colors[0]; ctx.fill();
         ctx.fillStyle = colors[1];
@@ -117,7 +101,6 @@ const MasterEngine = () => {
         ctx.font = `900 ${vFontSize}px serif`; ctx.textAlign = 'center';
         chars.forEach((ch, i) => ctx.fillText(ch, cx, cy - (chars.length * (vFontSize/2)) + i*(vFontSize*1.2)));
         break;
-
       default:
         ctx.fillStyle = colors[0];
         ctx.font = `900 ${fontSize}px Impact`; ctx.textAlign = 'center';
@@ -157,18 +140,29 @@ const MasterEngine = () => {
 
       <div className="flex gap-4 justify-center bg-[#1a1b26]/50 p-2 rounded-3xl border border-white/5 max-w-2xl mx-auto">
         {[1, 2, 3].map(s => (
-          <button key={s} onClick={() => setCurrentStep(s as any)} className={`flex-1 py-4 rounded-2xl font-black italic transition-all ${currentStep === s ? 'bg-[#5845e0] text-white shadow-2xl scale-105' : 'text-slate-500 hover:text-slate-300'}`}>Step {s}</button>
+          <button key={s} onClick={() => setCurrentStep(s as any)} className={`flex-1 py-4 rounded-2xl font-black italic transition-all ${currentStep === s ? 'bg-[#5845e0] text-white shadow-2xl scale-105' : 'text-slate-600 hover:text-slate-300'}`}>Step {s}</button>
         ))}
       </div>
 
       {currentStep === 1 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in">
-          {trends.map((t) => (
-            <div key={t.id} className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[2.5rem] hover:border-[#5845e0] cursor-pointer transition-all shadow-xl" onClick={() => { setKeyword(t.name); setCurrentStep(2); }}>
-              <div className="border border-indigo-500/30 text-indigo-400 px-3 py-1 rounded text-[10px] font-black w-fit mb-6 italic uppercase">TRENDING NOW</div>
-              <p className="text-4xl font-black italic uppercase text-white tracking-tighter">{t.name}</p>
-            </div>
-          ))}
+        <div className="space-y-6">
+          <div className="flex items-center justify-between px-4">
+             <div className="flex items-center gap-2 text-indigo-400 font-black italic uppercase tracking-widest text-xs">
+                <span className="w-2 h-2 bg-indigo-500 rounded-full animate-ping" /> Market Pulse
+             </div>
+             {/* 🚀 APIステータスインジケーターの復活 */}
+             <div className={`flex items-center gap-2 px-3 py-1 rounded-full border ${apiStatus === 'live' ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400' : 'bg-amber-500/10 border-amber-500/50 text-amber-400'}`}>
+                <div className={`w-2 h-2 rounded-full ${apiStatus === 'live' ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
+                <span className="text-[10px] font-black uppercase tracking-tighter">API: {apiStatus.toUpperCase()}</span>
+             </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in">
+            {trends.map((t) => (
+              <div key={t.id} className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[2.5rem] hover:border-[#5845e0] cursor-pointer transition-all shadow-xl" onClick={() => { setKeyword(t.name); setCurrentStep(2); }}>
+                <p className="text-4xl font-black italic uppercase text-white tracking-tighter">{t.name}</p>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -195,8 +189,8 @@ const MasterEngine = () => {
                </div>
             </div>
 
-            <button onClick={handlePublish} disabled={isPublishing} className="w-full h-28 bg-emerald-600 text-white font-black text-4xl italic rounded-[2.5rem] shadow-xl flex items-center justify-center gap-4 active:scale-95 transition-all">
-               {isPublishing ? <Loader2 className="animate-spin" size={40} /> : "SHOPIFY 出品"}
+            <button onClick={handlePublish} disabled={isGenerating || isPublishing} className="w-full h-28 bg-emerald-600 text-white font-black text-4xl italic rounded-[2.5rem] shadow-xl flex items-center justify-center gap-4 active:scale-95 transition-all">
+               {isPublishing ? "SENDING..." : "SHOPIFY 出品"}
             </button>
           </div>
           <div className="bg-[#13141f] rounded-[3rem] border-2 border-white/5 p-12 flex justify-center items-center relative overflow-hidden shadow-2xl">
@@ -217,10 +211,13 @@ const MasterEngine = () => {
 
 const NoSSRWrapper = dynamic(() => Promise.resolve(MasterEngine), { ssr: false });
 
+import { DebugPanel } from '@/components/tools/DebugPanel'
+
 export default function AISelectShop() {
   return (
     <div className="min-h-screen bg-[#050507] text-gray-100 font-sans p-4 md:p-10 overflow-x-hidden">
       <NoSSRWrapper />
+      <DebugPanel data={{ system: "master-surveillance" }} toolId="ai-select-shop-ultimate" />
     </div>
   );
 }
