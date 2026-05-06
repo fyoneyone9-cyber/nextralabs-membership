@@ -33,7 +33,7 @@ const hotelTools: Product[] = [
 ]
 
 const defenseTools: Product[] = [
-  { id: 'scam-defender', title: 'AI詐欺ディフェンダー', subtitle: '詐欺・悪意を即座に判定', description: '不審なDM、メール、SMSをAIが徹底スキャン。最新の詐欺手口と照らし合わせ、その危険性をリアルタイムで警告。あなたのデジタル資産を守り抜きます。', priceNote: 'プレミアム', tags: ['防犯'], icon: ShieldCheck, bgColor: 'bg-red-500/10', iconColor: 'text-red-400', status: '最強' },
+  { id: 'scam-defender', title: 'AI詐欺ディフェンダー', subtitle: '詐欺・悪意を即座に判定', description: '不審なDM、メール、SMSをAIが徹底スキャン。最新の詐欺手口と照らし合わせ、その危険性をリアルタイムで警告。あなたのデジタル資産を守り抜きます。', priceNote: 'プレミアム', tags: ['防犯'], icon: ShieldCheck, bgColor: 'bg-red-500/10', iconColor: 'text-red-400', status: '最強', isModel: true },
   { id: 'money-guard', title: 'AI家計防衛シミュレーター', subtitle: '衝動買いの心理的抑止', description: '支出を単に記録するだけでなく、購入前の迷いをAIが客観的に分析。「今、本当に必要か？」を問いかけ、家計の致命傷を未然に防ぎます。', priceNote: 'スタンダード', tags: ['家計'], icon: Wallet, bgColor: 'bg-amber-500/10', iconColor: 'text-amber-400', status: 'NEW' },
   { id: 'disaster-guard', title: 'AI防災パーソナルガイド', subtitle: '避難ルート × 備蓄最適化', description: '現在地のハザードマップを読み込み、あなた専用の防災・備蓄プランをAIが提案。災害発生時の生存確率を最大化させるためのデジタルガイド。', priceNote: 'スタンダード', tags: ['防災'], icon: Shield, bgColor: 'bg-sky-500/10', iconColor: 'text-sky-400', status: 'NEW' },
   { id: 'shopping-stopper', title: 'AI買い物依存ストッパー', subtitle: '散財の鎖を断ち切る', description: '特定のキーワードやサイトへの接触を制限し、冷静な判断を促す。依存のメカニズムをAIが理解し、あなたの購買行動を健全な方向へと導きます。', priceNote: 'スタンダード', tags: ['節約'], icon: ShieldAlert, bgColor: 'bg-rose-500/10', iconColor: 'text-rose-400', status: 'NEW' },
