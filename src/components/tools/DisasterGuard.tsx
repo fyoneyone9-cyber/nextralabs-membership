@@ -9,10 +9,21 @@ const MasterEngine = () => {
   const [report, setReport] = useState('');
   const [isLocating, setIsLocating] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [weather, setWeather] = useState<any>(null);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  const getWeatherData = async (lat: number, lon: number) => {
+    try {
+      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+      const data = await res.json();
+      setWeather(data.current_weather);
+    } catch (e) {
+      console.error('Weather fetch error:', e);
+    }
+  };
 
   const getMyLocation = () => {
     setIsLocating(true);
@@ -23,7 +34,9 @@ const MasterEngine = () => {
     }
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        setLocation(coords);
+        getWeatherData(coords.lat, coords.lng);
         setIsLocating(false);
       },
       (err) => {
@@ -38,9 +51,10 @@ const MasterEngine = () => {
 以下の【居住環境データ】に基づき、生存確率を最大化する「生存戦略レポート」を作成してください。
 
 【現在位置（座標）】: ${location ? `${location.lat}, ${location.lng}` : "未特定（日本国内）"}
+【現在の気象】: ${weather ? `気温:${weather.temperature}℃, 風速:${weather.windspeed}km/h` : "不明"}
 【備蓄・周辺状況】: ${stockStatus || "未入力"}
 
-1. 【地域リスク診断】: 地震、洪水、土砂災害などのリスク分析
+1. 【地域リスク診断】: 地震、洪水、土砂災害などのリスク分析。現在の気象条件（気温など）が避難に与える影響も考慮。
 2. 【備蓄最適化】: 現状の不足物資と優先順位
 3. 【生存戦略】: 発災後72時間の具体的な行動計画
 4. 【避難所選定】: 近隣の安全な避難エリアの提案`;
@@ -84,11 +98,25 @@ const MasterEngine = () => {
                <button 
                  onClick={getMyLocation} 
                  disabled={isLocating}
-                 className="w-full h-16 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black rounded-2xl flex items-center justify-center gap-4 transition-all active:scale-95 group"
+                 className="w-full h-16 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black rounded-2xl flex items-center justify-center gap-4 transition-all active:scale-95 group relative overflow-hidden"
                >
+                 <div className="absolute inset-0 bg-sky-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                  <span className="text-xl group-hover:animate-ping">📍</span>
-                 <span>{isLocating ? "定位中..." : (location ? "現在地を再取得" : "GPSで現在地を特定")}</span>
+                 <span>{isLocating ? "定位中..." : (location ? "現在地を更新" : "GPSで現在地・天気を特定")}</span>
                </button>
+
+               {location && (
+                 <div className="grid grid-cols-2 gap-4 animate-in slide-in-from-top-2">
+                    <div className="bg-black/50 border border-white/5 p-4 rounded-2xl text-center">
+                       <p className="text-[8px] font-black text-slate-500 uppercase mb-1">Coordinates</p>
+                       <p className="text-xs font-mono text-sky-400">{location.lat.toFixed(4)}, {location.lng.toFixed(4)}</p>
+                    </div>
+                    <div className="bg-black/50 border border-white/5 p-4 rounded-2xl text-center">
+                       <p className="text-[8px] font-black text-slate-500 uppercase mb-1">Weather</p>
+                       <p className="text-xs font-bold text-white">{weather ? `${weather.temperature}℃ / ${weather.windspeed}km/h` : "Loading..."}</p>
+                    </div>
+                 </div>
+               )}
 
                <div className="space-y-2">
                   <p className="text-[10px] font-black text-slate-500 uppercase px-4 italic">Supply Status / Area Info</p>
