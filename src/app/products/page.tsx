@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 
 const TOOLS = [
-  { id: 'staysee-ai-finder', cat: 'hotel', title: 'AI×ホテルDXシステム【Nextra】', sub: '宿泊予約・鍵発行を完全同期', icon: Building2, plan: 'プレミアム' },
+  { id: 'staysee-ai-finder', cat: 'hotel', title: 'Nextra', sub: '宿泊予約・鍵発行を完全同期', icon: Building2, plan: 'プレミアム' },
   { id: 'comp-price-monitor', cat: 'hotel', title: '競合AI価格監視', sub: '楽天API連携 × 価格最適化OS', icon: LineChart, plan: 'プレミアム' },
   { id: 'hotel-affiliate', cat: 'hotel', title: 'アフィリエイトAI連携', sub: '宿紹介 × 楽天収益化OS', icon: Network, plan: 'スタンダード' },
   { id: 'moving-checker', cat: 'hotel', title: 'AI引越し安心チェッカー', sub: '治安・物件リスクを徹底分析', icon: Home, plan: '無料' },

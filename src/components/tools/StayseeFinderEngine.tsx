@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Card } from '@/components/ui/card'
@@ -11,10 +11,10 @@ import {
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const TABS = [
-  { id: 'scan', label: '拾得物スキャン', icon: Camera },
-  { id: 'lock', label: '鍵自動発行', icon: Lock },
-  { id: 'monetize', label: '返却マネタイズ', icon: Coins },
-  { id: 'insights', label: '運営レポート', icon: Building2 },
+  { id: 'scan', label: '諡ｾ蠕礼黄繧ｹ繧ｭ繝｣繝ｳ', icon: Camera },
+  { id: 'lock', label: '骰ｵ閾ｪ蜍慕匱陦・, icon: Lock },
+  { id: 'monetize', label: '霑泌唆繝槭ロ繧ｿ繧､繧ｺ', icon: Coins },
+  { id: 'insights', label: '驕句霧繝ｬ繝昴・繝・, icon: Building2 },
 ];
 
 const MasterEngine = () => {
@@ -26,14 +26,14 @@ const MasterEngine = () => {
   const [selectedDevice, setSelectedDevice] = useState('RemoteLock');
   const [selectedPMS, setSelectedPMS] = useState('Staysee');
   
-  // API設定用
+  // API險ｭ螳夂畑
   const [pmsApiKey, setPmsApiKey] = useState('');
   const [lockApiKey, setLockApiKey] = useState('');
   const [showPmsKey, setShowPmsKey] = useState(false);
   const [showLockKey, setShowLockKey] = useState(false);
 
   const DEVICE_OPTIONS = ['RemoteLock', 'TTLock', 'SwitchBot', 'KEYVOX', 'MIWA', 'GOAL', 'ASSAABLOY', 'Baycom'];
-  const PMS_OPTIONS = ['Staysee', 'Beds24', 'AirHost', 'suitebook', 'infor', 'JTBデータコネクト'];
+  const PMS_OPTIONS = ['Staysee', 'Beds24', 'AirHost', 'suitebook', 'infor', 'JTB繝・・繧ｿ繧ｳ繝阪け繝・];
 
   const fileInputRef = useRef(null);
   const [isMounted, setIsMounted] = useState(false);
@@ -49,12 +49,12 @@ const MasterEngine = () => {
   const saveKeys = () => {
     localStorage.setItem('nextra_pms_key', pmsApiKey);
     localStorage.setItem('nextra_lock_key', lockApiKey);
-    alert('API設定を保存しました');
+    alert('API險ｭ螳壹ｒ菫晏ｭ倥＠縺ｾ縺励◆');
   };
 
   const issueLockKey = async () => {
     if (!pmsApiKey || !lockApiKey) {
-      alert('先にAPI連携の設定を行ってください');
+      alert('蜈医↓API騾｣謳ｺ縺ｮ險ｭ螳壹ｒ陦後▲縺ｦ縺上□縺輔＞');
       return;
     }
     setIsIssuingKey(true);
@@ -69,11 +69,11 @@ const MasterEngine = () => {
     <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-8 min-h-screen text-slate-200 bg-[#050507] border-4 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] shadow-[0_0_100px_rgba(16,185,129,0.2)]">
       <div className="text-center space-y-4">
         <Badge className="bg-blue-600 px-6 py-1 font-black tracking-widest uppercase">Hotel DX Intelligence</Badge>
-        <h1 className="text-4xl md:text-7xl font-black text-white uppercase italic tracking-tighter leading-none">AI×ホテルDXシステム【Nextra】</h1>
+        <h1 className="text-4xl md:text-7xl font-black text-white uppercase italic tracking-tighter leading-none">AIﾃ励・繝・ΝDX繧ｷ繧ｹ繝・Β縲侵extra縲・/h1>
         <div className="inline-block bg-emerald-600 text-white font-black px-6 py-1 rounded-full uppercase italic text-xs md:text-sm tracking-widest shadow-lg">v3.7-MASTER</div>
       </div>
 
-      {/* タブ選択 */}
+      {/* 繧ｿ繝夜∈謚・*/}
       <div className="overflow-x-auto pb-4 scrollbar-hide">
         <div className="bg-slate-900/50 border border-white/5 p-2 flex min-w-[600px] md:min-w-full rounded-2xl gap-2">
           {TABS.map((tab) => (
@@ -87,11 +87,11 @@ const MasterEngine = () => {
       <div className="mt-4 text-left">
         {activeTab === 'lock' && (
           <div className="space-y-8 animate-in fade-in">
-            {/* 🔑 API連携設定エリア (新規追加) */}
+            {/* 泊 API騾｣謳ｺ險ｭ螳壹お繝ｪ繧｢ (譁ｰ隕剰ｿｽ蜉) */}
             <Card className="bg-[#0a0b14] border-2 border-emerald-500/20 rounded-[2.5rem] p-8 md:p-12 shadow-inner space-y-8">
               <div className="flex items-center gap-4 text-emerald-500">
                 <Settings size={28} className="animate-spin-slow" />
-                <h3 className="text-2xl font-black uppercase italic tracking-wider">API連携設定</h3>
+                <h3 className="text-2xl font-black uppercase italic tracking-wider">API騾｣謳ｺ險ｭ螳・/h3>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -105,7 +105,7 @@ const MasterEngine = () => {
                     type={showPmsKey ? "text" : "password"}
                     value={pmsApiKey} 
                     onChange={(e) => setPmsApiKey(e.target.value)} 
-                    placeholder={selectedPMS + " のAPIキーを入力..."}
+                    placeholder={selectedPMS + " 縺ｮAPI繧ｭ繝ｼ繧貞・蜉・.."}
                     className="w-full h-16 bg-black border-2 border-white/10 rounded-2xl px-6 text-lg font-bold text-white outline-none focus:border-emerald-500 transition-all shadow-inner" 
                   />
                 </div>
@@ -120,36 +120,35 @@ const MasterEngine = () => {
                     type={showLockKey ? "text" : "password"}
                     value={lockApiKey} 
                     onChange={(e) => setLockApiKey(e.target.value)} 
-                    placeholder={selectedDevice + " のAPIキーを入力..."}
+                    placeholder={selectedDevice + " 縺ｮAPI繧ｭ繝ｼ繧貞・蜉・.."}
                     className="w-full h-16 bg-black border-2 border-white/10 rounded-2xl px-6 text-lg font-bold text-white outline-none focus:border-emerald-500 transition-all shadow-inner" 
                   />
                 </div>
               </div>
-              <button onClick={saveKeys} className="h-12 px-8 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white/10 transition-all mx-auto block italic">Save Configuration ➔</button>
+              <button onClick={saveKeys} className="h-12 px-8 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white/10 transition-all mx-auto block italic">Save Configuration 筐・/button>
             </Card>
 
-            {/* 連携実行エリア */}
+            {/* 騾｣謳ｺ螳溯｡後お繝ｪ繧｢ */}
             <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl space-y-12">
               <div className="text-center space-y-4">
-                <h3 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none flex items-center justify-center gap-6"><Lock className="text-emerald-500" size={48} /> 連携実行：鍵発行</h3>
-                <p className="text-slate-400 text-lg font-bold italic">予約情報をフックし、デバイスへ暗証番号をデプロイします。</p>
+                <h3 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none flex items-center justify-center gap-6"><Lock className="text-emerald-500" size={48} /> 騾｣謳ｺ螳溯｡鯉ｼ夐嵯逋ｺ陦・/h3>
+                <p className="text-slate-400 text-lg font-bold italic">莠育ｴ・ュ蝣ｱ繧偵ヵ繝・け縺励√ョ繝舌う繧ｹ縺ｸ證苓ｨｼ逡ｪ蜿ｷ繧偵ョ繝励Ο繧､縺励∪縺吶・/p>
               </div>
               
               <div className="grid lg:grid-cols-2 gap-12 text-left">
                 <div className="bg-[#0a0b14] border-2 border-white/5 rounded-[2.5rem] p-10 shadow-inner space-y-10 relative overflow-hidden">
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="space-y-3">
-                        <label className="text-[12px] font-black text-emerald-500 uppercase italic px-4">PMS 選択</label>
+                        <label className="text-[12px] font-black text-emerald-500 uppercase italic px-4">PMS 驕ｸ謚・/label>
                         <select value={selectedPMS} onChange={(e) => setSelectedPMS(e.target.value)} className="w-full h-16 bg-black border-2 border-white/10 rounded-2xl px-6 text-lg font-black text-white outline-none focus:border-emerald-500 cursor-pointer">{PMS_OPTIONS.map(p => <option key={p} value={p}>{p}</option>)}</select>
                       </div>
                       <div className="space-y-3">
-                        <label className="text-[12px] font-black text-emerald-500 uppercase italic px-4">錠デバイス 選択</label>
+                        <label className="text-[12px] font-black text-emerald-500 uppercase italic px-4">骭繝・ヰ繧､繧ｹ 驕ｸ謚・/label>
                         <select value={selectedDevice} onChange={(e) => setSelectedDevice(e.target.value)} className="w-full h-16 bg-black border-2 border-white/10 rounded-2xl px-6 text-lg font-black text-white outline-none focus:border-emerald-500 cursor-pointer">{DEVICE_OPTIONS.map(d => <option key={d} value={d}>{d}</option>)}</select>
                       </div>
                    </div>
                    <button onClick={issueLockKey} disabled={isIssuingKey} className="w-full h-24 bg-emerald-600 text-white font-black rounded-[2rem] shadow-2xl flex items-center justify-center gap-6 text-3xl uppercase italic transition-all active:scale-95 border-b-8 border-emerald-900 active:border-b-0">
-                     {isIssuingKey ? <Loader2 className="animate-spin w-10 h-10" /> : <Zap className="w-10 h-10" />} 連携実行 ➔
-                   </button>
+                     {isIssuingKey ? <Loader2 className="animate-spin w-10 h-10" /> : <Zap className="w-10 h-10" />} 騾｣謳ｺ螳溯｡・筐・                   </button>
                 </div>
                 
                 <div className="bg-black rounded-[3rem] p-10 border border-white/5 shadow-inner min-h-[350px] flex flex-col items-center justify-center text-center relative overflow-hidden">

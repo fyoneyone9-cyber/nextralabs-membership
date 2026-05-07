@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 
 const TOOL_DIRECTORY = [
-  { id: 'staysee-ai-finder', name: 'AI×ホテルDXシステム【Nextra】', desc: '宿泊予約・鍵発行を完全同期。人の手を介さない次世代フロント体験。', icon: Building2, Youtube, color: 'text-emerald-500' },
+  { id: 'staysee-ai-finder', name: 'Nextra', desc: '宿泊予約・鍵発行を完全同期。人の手を介さない次世代フロント体験。', icon: Building2, Youtube, color: 'text-emerald-500' },
   { id: 'sns-auto-poster', name: 'AI SNSオートポスター', desc: 'トレンド×戦略でバズを量産する、最強のマルチSNS投稿エンジン。', icon: Share2, color: 'text-rose-500' },
   { id: 'trend-stock', name: 'SNSトレンドAI分析', desc: 'バズ予測×楽天在庫同期。流行を即座に収益（仕入れ）へ変換。', icon: TrendingUp, color: 'text-orange-500' },
   { id: 'comp-price-monitor', name: '競合AI価格監視', desc: '周辺宿の販売価格を24時間監視し、最適な価格戦略を自動提案。', icon: LineChart, color: 'text-indigo-500' },
