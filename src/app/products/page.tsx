@@ -33,7 +33,7 @@ const TOOLS = [
   { id: 'buy-smart-nav', cat: 'life', title: '中古・新品AI比較ナビ', sub: '損得勘定のAI市場判定OS', icon: Scale, plan: '無料' },
   { id: 'price-tracker', cat: 'life', title: '底値監視AI予測', sub: '価格変動 × AI将来予測OS', icon: LineChart, plan: 'ライト' },
   { id: 'inbox-organizer', cat: 'biz', title: 'Gmail AI Accelerator', sub: '未読ゼロを最速で実現', icon: Mail, plan: 'プレミアム' },
-  { id: 'contact-sync', cat: 'biz', title: 'Contact Sync', sub: '名刺の全自動・登録OS', icon: UserPlus, plan: 'ライト' },
+  { id: 'contact-sync', cat: 'biz', title: 'Contact AI Sync', sub: '名刺の全自動・登録OS', icon: UserPlus, plan: 'ライト' },
   { id: 'expense-sync', cat: 'biz', title: 'Expense AI Sync', sub: '経費精算の全自動・記帳OS', icon: Table, plan: 'ライト' },
   { id: 'evidence-manager', cat: 'biz', title: 'エビデンスAIマネージャー', sub: 'サブスク実績の証拠管理', icon: Archive, plan: '無料' },
   { id: 'ai-report-generator', cat: 'biz', title: 'AIレポートジェネレーター', sub: '箇条書きからプロ級文書生成', icon: FileText, plan: '無料' },
