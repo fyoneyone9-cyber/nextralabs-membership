@@ -72,7 +72,7 @@ export function AccessGate({ children, productId }: { children: React.ReactNode,
         }
       } catch (e) {
         console.error('[ACCESS_GATE_ERROR]', e);
-        setStatus('authorized');
+        setStatus('unauthorized');
       }
     }
     checkAccess()
