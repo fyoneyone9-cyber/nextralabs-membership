@@ -26,7 +26,7 @@ const MasterEngine = () => {
       </div>
       <div className="flex gap-2 justify-center bg-slate-900 p-2 rounded-2xl overflow-x-auto">
         {TABS.map(tab => (
-          <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={lex-1 py-4 px-6 rounded-xl font-black whitespace-nowrap \}>{tab.label}</button>
+          <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={"flex-1 py-4 px-6 rounded-xl font-black whitespace-nowrap " + (activeTab === tab.id ? "bg-emerald-600 text-white" : "text-slate-500")}>{tab.label}</button>
         ))}
       </div>
       <Card className="bg-[#13141f] p-10 rounded-[3rem] text-center">

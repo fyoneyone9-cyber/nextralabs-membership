@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Star, Rocket, Zap, Building2, TrendingUp, Share2, ShieldCheck, Network, Wallet, Youtube, User, Sofa, Briefcase, Shield, HeartHandshake, BookOpen } from 'lucide-react'
+import { Star, Rocket, Zap, Building2, TrendingUp, Share2, ShieldCheck, Network, Wallet, Youtube, User, Sofa, Briefcase, Shield, HeartHandshake } from 'lucide-react'
 
 const ALL_TOOLS = [
   { id: 'staysee-ai-finder', name: 'AI×ホテルDXシステム【Nextra】', icon: Building2, color: 'text-emerald-500', bg: 'bg-emerald-500/10', plan: 'premium' },
@@ -58,23 +58,20 @@ export default function DashboardClient({ user, profile, subscription }: any) {
         </div>
         {favoriteTools.length > 0 && (
           <div className="space-y-6">
-            <div className="flex items-center gap-3 px-4"><Star className="h-6 w-6 text-amber-500 fill-amber-500" /><h3 className="font-black italic uppercase tracking-tighter text-2xl">お気に入りシステム</h3></div>
+            <div className="flex items-center gap-3 px-4"><Star className="h-6 w-6 text-amber-500 fill-amber-400" /><h3 className="font-black italic uppercase tracking-tighter text-2xl">お気に入りシステム</h3></div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {favoriteTools.map(tool => {
-                const Icon = tool.icon
-                return (
-                  <div key={tool.id} className="group relative h-32 p-6 rounded-[2rem] border-2 transition-all overflow-hidden bg-black border-emerald-500/30 hover:border-emerald-500">
-                    <Link href={/products//app} className="flex items-start gap-4 h-full">
-                      <div className={inline-flex h-12 w-12 items-center justify-center rounded-2xl  flex-shrink-0}><Icon className={h-6 w-6 } /></div>
-                      <div className="flex-1 min-w-0 pt-1">
-                        <p className="text-lg font-black text-white italic leading-tight uppercase truncate">{tool.name}</p>
-                        <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">ツールを起動する ➔</p>
-                      </div>
-                    </Link>
-                    <button onClick={(e) => toggleFavorite(e, tool.id)} className="absolute top-4 right-4 p-2 text-amber-400 scale-110"><Star size={18} fill="currentColor" /></button>
-                  </div>
-                )
-              })}
+              {favoriteTools.map(tool => (
+                <div key={tool.id} className="group relative h-32 p-6 rounded-[2rem] border-2 transition-all overflow-hidden bg-black border-emerald-500/30 hover:border-emerald-500">
+                  <Link href={"/products/" + tool.id + "/app"} className="flex items-start gap-4 h-full">
+                    <div className={"inline-flex h-12 w-12 items-center justify-center rounded-2xl " + tool.bg}><tool.icon className={"h-6 w-6 " + tool.color} /></div>
+                    <div className="flex-1 min-w-0 pt-1">
+                      <p className="text-lg font-black text-white italic leading-tight uppercase truncate">{tool.name}</p>
+                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">ツールを起動する ➔</p>
+                    </div>
+                  </Link>
+                  <button onClick={(e) => toggleFavorite(e, tool.id)} className="absolute top-4 right-4 p-2 text-amber-400 scale-110"><Star size={18} fill="currentColor" /></button>
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -82,14 +79,14 @@ export default function DashboardClient({ user, profile, subscription }: any) {
           <div className="flex items-center justify-between px-4"><h3 className="font-black italic uppercase tracking-tighter text-2xl flex items-center gap-3"><Rocket className="h-6 w-6 text-emerald-500" />マスタツール・アクセス</h3></div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {regularTools.map(tool => {
-              const Icon = tool.icon; const locked = !hasAccess(tool.plan)
+              const locked = !hasAccess(tool.plan)
               return (
-                <div key={tool.id} className={group relative h-32 p-6 rounded-[2rem] border-2 transition-all overflow-hidden }>
-                  <Link href={locked ? '/pricing' : /products//app} className="flex items-start gap-4 h-full">
-                    <div className={inline-flex h-12 w-12 items-center justify-center rounded-2xl  flex-shrink-0}><Icon className={h-6 w-6 } /></div>
+                <div key={tool.id} className={"group relative h-32 p-6 rounded-[2rem] border-2 transition-all overflow-hidden " + (locked ? "opacity-40 grayscale bg-slate-900 border-white/5" : "bg-black border-emerald-500/30 hover:border-emerald-500")}>
+                  <Link href={locked ? "/pricing" : "/products/" + tool.id + "/app"} className="flex items-start gap-4 h-full">
+                    <div className={"inline-flex h-12 w-12 items-center justify-center rounded-2xl " + tool.bg}><tool.icon className={"h-6 w-6 " + tool.color} /></div>
                     <div className="flex-1 min-w-0 pt-1">
                       <p className="text-lg font-black text-white italic leading-tight uppercase truncate">{tool.name}</p>
-                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">{locked ? 'Upgrade required' : 'ツールを起動する ➔'}</p>
+                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">{locked ? "Upgrade required" : "ツールを起動する ➔"}</p>
                     </div>
                   </Link>
                   {!locked && <button onClick={(e) => toggleFavorite(e, tool.id)} className="absolute top-4 right-4 p-2 text-slate-700 hover:text-white opacity-0 group-hover:opacity-100"><Star size={18} fill="none" /></button>}
