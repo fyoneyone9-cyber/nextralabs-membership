@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { 
-  Star, Rocket, Zap, Building2, TrendingUp, Share2, ShieldCheck, Network, Wallet, Youtube, User, Sofa, Briefcase, Shield, HeartHandshake, BookOpen, LayoutDashboard
+  Star, Rocket, Zap, Building2, TrendingUp, Share2, ShieldCheck, Network, Wallet, Youtube, User, Sofa, Briefcase, Shield, HeartHandshake, BookOpen
 } from 'lucide-react'
 
 const ALL_TOOLS = [
@@ -13,13 +13,13 @@ const ALL_TOOLS = [
   { id: 'comp-price-monitor', name: '競合AI価格監視', icon: TrendingUp, color: 'text-blue-500', bg: 'bg-blue-500/10', plan: 'プレミアム', badge: 'NEW' },
   { id: 'sns-auto-poster', name: 'AI SNSオートポスター', icon: Share2, color: 'text-rose-500', bg: 'bg-rose-500/10', plan: 'ライト', badge: 'MASTER' },
   { id: 'evidence-manager', name: 'AI エビデンスAIマネージャー', icon: ShieldCheck, color: 'text-emerald-400', bg: 'bg-emerald-400/10', plan: '無料', badge: 'NEW' },
-  { id: 'hotel-affiliate', name: 'アフィリエイトAI連携', icon: Network, color: 'text-emerald-400', bg: 'bg-emerald-400/10', plan: 'プレミアム', badge: 'MASTER' },
+  { id: 'hotel-affiliate', name: 'アフィリエイトAI連携', icon: Network, color: 'text-emerald-400', bg: 'bg-emerald-400/10', plan: 'スタンダード', badge: 'MASTER' },
   { id: 'money-guard', name: 'AI家計防衛シミュレーター', icon: Wallet, color: 'text-amber-500', bg: 'bg-amber-500/10', plan: 'スタンダード', badge: 'MASTER' },
   { id: 'youtube-producer', name: 'AI YouTubeプロデューサー', icon: Youtube, color: 'text-red-500', bg: 'bg-red-500/10', plan: 'プレミアム', badge: 'TOP' },
   { id: 'contact-sync', name: 'AI Contact Sync', icon: User, color: 'text-indigo-400', bg: 'bg-indigo-400/10', plan: 'ライト', badge: 'NEW' },
   { id: 'interior-coordinator', name: 'AI Interior Sync', icon: Sofa, color: 'text-amber-500', bg: 'bg-amber-500/10', plan: 'プレミアム', badge: 'NEW' },
   { id: 'youtube-coordinator', name: 'YouTube AI Sync', icon: Youtube, color: 'text-red-500', bg: 'bg-red-500/10', plan: 'プレミアム', badge: 'NEW' },
-  { id: 'ai-sidejob', name: 'AI副業スタートダッシュ', icon: Briefcase, color: 'text-indigo-500', bg: 'bg-indigo-400/10', plan: 'プレミアム', badge: 'MASTER' },
+  { id: 'ai-sidejob', name: 'AI副業スタートダッシュ', icon: Briefcase, color: 'text-indigo-500', bg: 'bg-indigo-400/10', plan: 'ライト', badge: 'MASTER' },
   { id: 'ai-konkatsu', name: 'AI婚活コーチ', icon: HeartHandshake, color: 'text-rose-400', bg: 'bg-rose-400/10', plan: 'スタンダード', badge: 'TOP' },
 ]
 
@@ -42,9 +42,9 @@ export default function DashboardClient({ user, profile, subscription }) {
   const planDisplay = plan === 'premium' ? 'プレミアム会員' : plan === 'standard' ? 'スタンダード会員' : plan === 'light' ? 'ライト会員' : '無料会員'
   const hasAccess = (toolPlan) => {
     if (plan === 'premium') return true
-    if (plan === 'standard') return ['standard', 'light', 'free'].includes(toolPlan)
-    if (plan === 'light') return ['light', 'free'].includes(toolPlan)
-    return toolPlan === 'free'
+    if (plan === 'standard') return ['スタンダード', 'ライト', '無料'].includes(toolPlan)
+    if (plan === 'light') return ['ライト', '無料'].includes(toolPlan)
+    return toolPlan === '無料'
   }
   const favoriteTools = ALL_TOOLS.filter(t => favorites.includes(t.id))
   const regularTools = ALL_TOOLS.filter(t => !favorites.includes(t.id)).slice(0, 6)
@@ -60,14 +60,13 @@ export default function DashboardClient({ user, profile, subscription }) {
           <Badge className={"px-8 py-3 font-black italic uppercase rounded-2xl shadow-2xl border-0 text-lg " + (isPremium ? "bg-gradient-to-r from-amber-500 to-orange-600 text-slate-950" : "bg-slate-800 text-slate-400")}>{planDisplay}</Badge>
         </div>
 
-        {/* お気に入り */}
         {favoriteTools.length > 0 && (
           <div className="space-y-10">
-            <div className="flex items-center gap-6 px-4 border-l-[12px] border-amber-500 pl-8"><Star className="h-10 w-10 text-amber-500 fill-amber-500 animate-pulse" /><h2 className="font-black italic uppercase tracking-tighter text-4xl text-white">お気に入りシステム</h2></div>
+            <div className="flex items-center gap-6 px-4 border-l-[12px] border-amber-500 pl-8"><Star className="h-10 w-10 text-amber-500 fill-amber-500 animate-pulse" /><h2 className="font-black italic uppercase tracking-tighter text-4xl text-white text-left">お気に入りシステム</h2></div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {favoriteTools.map(tool => (
                 <div key={tool.id} className="group relative h-40 p-8 rounded-[2.5rem] border-2 transition-all overflow-hidden bg-[#13141f] border-emerald-500/30 hover:border-emerald-500 shadow-2xl hover:scale-[1.03]">
-                  <Link href={"/products/" + tool.id + "/app"} className="flex items-start gap-6 h-full relative z-10">
+                  <Link href={"/products/" + tool.id + "/app"} className="flex items-start gap-6 h-full relative z-10 text-left">
                     <div className={"w-16 h-16 rounded-2xl flex items-center justify-center bg-white/5 border border-white/10 shadow-inner " + tool.color}><tool.icon size={32} /></div>
                     <div className="flex-1 min-w-0 pt-2 text-left">
                       <p className="text-xl font-black text-white italic leading-none uppercase truncate mb-2">{tool.name}</p>
@@ -81,15 +80,14 @@ export default function DashboardClient({ user, profile, subscription }) {
           </div>
         )}
 
-        {/* マスタツール・アクセス */}
         <div className="space-y-10">
-          <div className="flex items-center justify-between px-4 border-l-[12px] border-emerald-500 pl-8"><h2 className="font-black italic uppercase tracking-tighter text-4xl flex items-center gap-6 text-white"><Rocket className="h-10 w-10 text-emerald-500" />マスタツール・アクセス</h2><Link href="/products" className="text-[12px] font-black text-slate-500 hover:text-emerald-400 uppercase tracking-widest italic border-b border-transparent hover:border-emerald-500 transition-all">全ツールを見る ➔</Link></div>
+          <div className="flex items-center justify-between px-4 border-l-[12px] border-emerald-500 pl-8"><h2 className="font-black italic uppercase tracking-tighter text-4xl flex items-center gap-6 text-white text-left"><Rocket className="h-10 w-10 text-emerald-500" />マスタツール・アクセス</h2><Link href="/products" className="text-[12px] font-black text-slate-500 hover:text-emerald-400 uppercase tracking-widest italic border-b border-transparent hover:border-emerald-500 transition-all">全ツールを見る ➔</Link></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {regularTools.map(tool => {
               const locked = !hasAccess(tool.plan); const isFav = favorites.includes(tool.id)
               return (
                 <div key={tool.id} className={"group relative h-40 p-8 rounded-[2.5rem] border-2 transition-all overflow-hidden " + (locked ? "opacity-40 grayscale bg-slate-900 border-white/5" : "bg-[#13141f] border-emerald-500/30 hover:border-emerald-500 shadow-2xl hover:scale-[1.03]")}>
-                  <Link href={locked ? "/pricing" : "/products/" + tool.id + "/app"} className="flex items-start gap-6 h-full relative z-10">
+                  <Link href={locked ? "/pricing" : "/products/" + tool.id + "/app"} className="flex items-start gap-6 h-full relative z-10 text-left">
                     <div className={"w-16 h-16 rounded-2xl flex items-center justify-center bg-white/5 border border-white/10 shadow-inner " + tool.color}><tool.icon size={32} /></div>
                     <div className="flex-1 min-w-0 pt-2 text-left">
                       <p className="text-xl font-black text-white italic leading-none uppercase truncate mb-2">{tool.name}</p>
