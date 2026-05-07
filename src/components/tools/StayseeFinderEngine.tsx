@@ -137,23 +137,67 @@ const MasterEngine = () => {
                 <div className="bg-black/40 p-10 rounded-[2.5rem] border border-white/5 space-y-6">
                    <p className="text-slate-500 font-black uppercase text-xs mb-4 tracking-widest">Step 2: Ledger Entry</p>
                    <div className="grid grid-cols-1 gap-4">
-                      {[
-                        { label: '氏名', value: ledgerName, setter: setLedgerName, placeholder: checkinStatus === 'SCANNING' ? 'AI読み取り中...' : '氏名を入力' },
-                        { label: '住所', value: ledgerAddress, setter: setLedgerAddress, placeholder: checkinStatus === 'SCANNING' ? 'AI読み取り中...' : '住所を入力' },
-                        { label: '職業', value: ledgerOccupation, setter: setLedgerOccupation, placeholder: checkinStatus === 'SCANNING' ? 'AI読み取り中...' : '職業を入力' },
-                        { label: '前泊地・行先地', value: ledgerTravel, setter: setLedgerTravel, placeholder: checkinStatus === 'SCANNING' ? 'AI読み取り中...' : '前泊地・行先地を入力' },
-                      ].map(f => (
-                        <div key={f.label} className="space-y-1">
-                          <label className="text-[10px] font-black text-slate-600 uppercase px-2">{f.label}</label>
-                          <input
-                            type="text"
-                            value={f.value}
-                            onChange={e => f.setter(e.target.value)}
-                            placeholder={f.placeholder}
-                            className="w-full h-12 bg-white/5 rounded-xl border border-white/10 px-4 text-sm font-bold text-white placeholder:text-slate-600 focus:border-emerald-500/50 focus:outline-none transition-all"
-                          />
-                        </div>
-                      ))}
+                      {/* 氏名 */}
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-black text-slate-600 uppercase px-2">氏名</label>
+                        <input
+                          type="text"
+                          value={ledgerName}
+                          onChange={e => setLedgerName(e.target.value)}
+                          placeholder={checkinStatus === 'SCANNING' ? 'AI読み取り中...' : '氏名を入力'}
+                          className="w-full h-12 bg-white/5 rounded-xl border border-white/10 px-4 text-sm font-bold text-white placeholder:text-slate-600 focus:border-emerald-500/50 focus:outline-none transition-all"
+                        />
+                      </div>
+                      {/* 住所 */}
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-black text-slate-600 uppercase px-2">住所</label>
+                        <input
+                          type="text"
+                          value={ledgerAddress}
+                          onChange={e => setLedgerAddress(e.target.value)}
+                          placeholder={checkinStatus === 'SCANNING' ? 'AI読み取り中...' : '住所を入力'}
+                          className="w-full h-12 bg-white/5 rounded-xl border border-white/10 px-4 text-sm font-bold text-white placeholder:text-slate-600 focus:border-emerald-500/50 focus:outline-none transition-all"
+                        />
+                      </div>
+                      {/* 職業（選択式） */}
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-black text-slate-600 uppercase px-2">職業</label>
+                        <select
+                          value={ledgerOccupation}
+                          onChange={e => setLedgerOccupation(e.target.value)}
+                          className="w-full h-12 bg-[#0d0e17] rounded-xl border border-white/10 px-4 text-sm font-bold text-white focus:border-emerald-500/50 focus:outline-none transition-all appearance-none"
+                        >
+                          <option value="" className="bg-[#0d0e17]">職業を選択...</option>
+                          <option value="会社員" className="bg-[#0d0e17]">会社員</option>
+                          <option value="自営業" className="bg-[#0d0e17]">自営業</option>
+                          <option value="公務員" className="bg-[#0d0e17]">公務員</option>
+                          <option value="学生" className="bg-[#0d0e17]">学生</option>
+                          <option value="無職" className="bg-[#0d0e17]">無職</option>
+                          <option value="その他" className="bg-[#0d0e17]">その他</option>
+                        </select>
+                      </div>
+                      {/* 前泊地・行先地（選択＋自由入力） */}
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-black text-slate-600 uppercase px-2">前泊地・行先地</label>
+                        <input
+                          type="text"
+                          value={ledgerTravel}
+                          onChange={e => setLedgerTravel(e.target.value)}
+                          placeholder={checkinStatus === 'SCANNING' ? 'AI読み取り中...' : '例：大阪 → 東京 → 横浜'}
+                          list="travel-suggestions"
+                          className="w-full h-12 bg-white/5 rounded-xl border border-white/10 px-4 text-sm font-bold text-white placeholder:text-slate-600 focus:border-emerald-500/50 focus:outline-none transition-all"
+                        />
+                        <datalist id="travel-suggestions">
+                          <option value="自宅" />
+                          <option value="東京" />
+                          <option value="大阪" />
+                          <option value="京都" />
+                          <option value="名古屋" />
+                          <option value="福岡" />
+                          <option value="札幌" />
+                          <option value="海外" />
+                        </datalist>
+                      </div>
                       <div className="pt-4 flex flex-col gap-4">
                          <div className="flex items-center gap-4 p-4 bg-indigo-500/10 rounded-2xl border border-indigo-500/20"><PenTool className="text-indigo-400" /><span className="text-sm font-black italic">署名を行ってください</span></div>
                          <Button className="h-16 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xl rounded-2xl shadow-xl italic uppercase" onClick={() => setActiveTab('lock')}>PMS登録 ＆ 鍵発行へ ➔</Button>
