@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Star, Rocket, Zap, Building2, TrendingUp, Share2, ShieldCheck, Network, Wallet, Youtube, User, Sofa, Briefcase, Shield, HeartHandshake, BookOpen } from 'lucide-react'
 
 const ALL_TOOLS = [
-  { id: 'staysee-ai-finder', name: 'NextraAI', icon: Building2, color: 'text-emerald-500', bg: 'bg-emerald-500/10', plan: 'プレミアム', badge: 'MASTER' },
+  { id: 'staysee-ai-finder', name: 'Nextra AI', icon: Building2, color: 'text-emerald-500', bg: 'bg-emerald-500/10', plan: 'プレミアム', badge: 'MASTER' },
   { id: 'comp-price-monitor', name: '競合AI価格監視', icon: TrendingUp, color: 'text-blue-500', bg: 'bg-blue-500/10', plan: 'プレミアム', badge: 'NEW' },
   { id: 'sns-auto-poster', name: 'AI SNSオートポスター', icon: Share2, color: 'text-rose-500', bg: 'bg-rose-500/10', plan: 'ライト', badge: 'MASTER' },
   { id: 'evidence-manager', name: 'AI エビデンスAIマネージャー', icon: ShieldCheck, color: 'text-emerald-400', bg: 'bg-emerald-400/10', plan: '無料', badge: 'NEW' },
@@ -26,13 +26,13 @@ export default function DashboardClient({ user, profile, subscription }: any) {
   const [mounted, setMounted] = useState(false)
   useEffect(() => {
     setMounted(true)
-    const saved = localStorage.getItem('NextraAI_favorites')
+    const saved = localStorage.getItem('Nextra AI_favorites')
     if (saved) { try { setFavorites(JSON.parse(saved)) } catch (e) {} }
   }, [])
   const toggleFavorite = (e: React.MouseEvent, id: string) => {
     e.preventDefault(); e.stopPropagation()
     const newFavs = favorites.includes(id) ? favorites.filter(f => f !== id) : [...favorites, id]
-    setFavorites(newFavs); localStorage.setItem('NextraAI_favorites', JSON.stringify(newFavs))
+    setFavorites(newFavs); localStorage.setItem('Nextra AI_favorites', JSON.stringify(newFavs))
   }
   if (!mounted) return null
   const plan = subscription?.plan || 'free'

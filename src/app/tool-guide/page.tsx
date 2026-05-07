@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 
 const TOOL_DIRECTORY = [
-  { id: 'staysee-ai-finder', name: 'NextraAI', desc: '宿泊予約・鍵発行を完全同期。人の手を介さない次世代フロント体験。', icon: Building2, Youtube, color: 'text-emerald-500' },
+  { id: 'staysee-ai-finder', name: 'Nextra AI', desc: '宿泊予約・鍵発行を完全同期。人の手を介さない次世代フロント体験。', icon: Building2, Youtube, color: 'text-emerald-500' },
   { id: 'sns-auto-poster', name: 'AI SNSオートポスター', desc: 'トレンド×戦略でバズを量産する、最強のマルチSNS投稿エンジン。', icon: Share2, color: 'text-rose-500' },
   { id: 'trend-stock', name: 'SNSトレンドAI分析', desc: 'バズ予測×楽天在庫同期。流行を即座に収益（仕入れ）へ変換。', icon: TrendingUp, color: 'text-orange-500' },
   { id: 'comp-price-monitor', name: '競合AI価格監視', desc: '周辺宿の販売価格を24時間監視し、最適な価格戦略を自動提案。', icon: LineChart, color: 'text-indigo-500' },
@@ -50,7 +50,7 @@ const ToolGuideContent = () => {
           <Badge variant="outline" className="px-4 py-1 text-[10px] font-black text-emerald-500 border-emerald-500/20 uppercase tracking-widest">Master Directory</Badge>
           <h1 className="text-4xl md:text-7xl font-black text-white italic tracking-tighter uppercase leading-none">ツール説明</h1>
           <p className="text-slate-500 max-w-2xl mx-auto text-sm md:text-lg font-bold italic leading-relaxed">
-            NextraAILabsが提供する全24の特化型AIエンジン。その機能と戦略的価値を網羅した公式ディレクトリ。
+            Nextra AILabsが提供する全24の特化型AIエンジン。その機能と戦略的価値を網羅した公式ディレクトリ。
           </p>
         </div>
 
@@ -75,7 +75,7 @@ const ToolGuideContent = () => {
           ))}
         </div>
       </div>
-      <div className="text-center opacity-10 mt-12 font-black uppercase tracking-[0.3em] italic text-[8px]">NextraAILabs MASTERMODEL ? 2026</div>
+      <div className="text-center opacity-10 mt-12 font-black uppercase tracking-[0.3em] italic text-[8px]">Nextra AILabs MASTERMODEL ? 2026</div>
     </div>
   )
 }
