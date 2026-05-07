@@ -40,7 +40,7 @@ const TOOLS = [
   { id: 'ai-sidejob', cat: 'biz', title: 'AI副業スタートダッシュ', sub: '適性診断 × 収益ロードマップ', icon: Briefcase, plan: 'ライト' },
   { id: 'ai-konkatsu', cat: 'mind', title: 'AI婚活コーチ', sub: '戦略的成婚支援システム', icon: Heart, plan: 'スタンダード' },
   { id: 'office-politics-graph', cat: 'mind', title: '社内政治 AI相関図', sub: '人間関係の暗部を可視化', icon: Network, plan: '無料' },
-  { id: 'interior-coordinator', cat: 'mind', title: 'Interior Sync', sub: '空間分析 × 楽天一括購入OS', icon: Sofa, plan: 'プレミアム' }
+  { id: 'interior-coordinator', cat: 'mind', title: 'Interior AI Sync', sub: '空間分析 × 楽天一括購入OS', icon: Sofa, plan: 'プレミアム' }
 ]
 
 const CATEGORIES = [
