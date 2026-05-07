@@ -35,6 +35,9 @@ const LOAN_OFFERS = [
   { name: 'アルコシステム', desc: '振込キャッシングのパイオニア。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+8DV0YY+25IK+609HU' },
   { name: 'フタバ', desc: '借りやすくて返しやすい。レディースキャッシング対応。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9NPEJU+38S6+614CX' },
   { name: 'マイレディス', desc: '女性専用キャッシング。親身で安心なサポート。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9MIJCA+363I+BWVTE' },
+  { name: 'デイリーキャッシング', desc: '全国対応。おまとめ・不動産担保ローンも充実。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+A5KEP6+4WSG+5YJRM' },
+  { name: 'ＭＲＦ', desc: '個人事業主・法人向け。ビジネスローンのスペシャリスト。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9XTRU2+33NG+5YJRM' },
+  { name: '不動産活用ローン', desc: '不動産を担保に低金利で借換え。高額融資に対応。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+AZXIJU+OU6+601S2' },
 ]
 
 // ========================
