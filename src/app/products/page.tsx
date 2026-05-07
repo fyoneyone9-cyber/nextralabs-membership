@@ -1,30 +1,53 @@
 ﻿'use client'
-
+import React from 'react'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { 
   BookOpen, Zap, Star, Crown, Shield, TrendingUp, Share2, ShieldCheck, 
   Mail, Briefcase, Wallet, Building2, Youtube, User, HeartHandshake, 
   Sofa, Network, LayoutGrid, Heart, Search, ShoppingCart, MessageSquare, 
-  Smartphone, FileText, Lock, Image as ImageIcon
+  Smartphone, FileText, Lock, Image as ImageIcon, Activity, FolderSearch,
+  CloudRain, Wind, AlertTriangle, Printer
 } from 'lucide-react'
 
-// ツールデータの定義
+// ツール全データの定義
 const ALL_TOOLS = [
+  // 本日のおすすめ (recommend)
   { id: 'staysee-ai-finder', name: 'AI×ホテルDXシステム【Nextra】', desc: '宿泊予約・鍵発行を完全同期', icon: Building2, plan: 'premium', category: 'recommend', badge: 'マスタ' },
   { id: 'sns-auto-poster', name: 'AI SNSオートポスター', desc: 'バズる投稿をAIが自動生成', icon: Share2, plan: 'light', category: 'recommend', badge: 'マスタ' },
-  { id: 'office-politics-graph', name: '社内政治 AI相関図', desc: '組織の人間関係を可視化', icon: Share2, plan: 'free', category: 'free', badge: '人気' },
-  { id: 'evidence-manager', name: 'AI エビデンス・マネージャー', desc: '証拠資料の自動整理・管理', icon: ShieldCheck, plan: 'free', category: 'free', badge: 'NEW' },
-  { id: 'comp-price-monitor', name: '競合価格AI監視', desc: '市場価格をリアルタイム追跡', icon: TrendingUp, plan: 'light', category: 'light', badge: 'NEW' },
-  { id: 'contact-sync', name: 'AI Contact Sync', desc: '連絡先情報の自動同期', icon: User, plan: 'light', category: 'light', badge: 'NEW' },
-  { id: 'price-tracker', name: '底値監視予測Bot', desc: '楽天の買い時をAIが特定', icon: TrendingUp, plan: 'light', category: 'light', badge: 'NEW' },
-  { id: 'trend-stock', name: 'SNSトレンド自動仕入', desc: 'バズり商品を即座に特定', icon: TrendingUp, plan: 'standard', category: 'standard', badge: 'NEW' },
-  { id: 'ai-konkatsu', name: 'AI婚活コーチ', desc: '心理学に基づいた成婚戦略', icon: HeartHandshake, plan: 'standard', category: 'standard', badge: '注目' },
-  { id: 'money-guard', name: 'AI家計防衛シミュレーター', desc: '家計をAIが鉄壁防御', icon: Wallet, plan: 'standard', category: 'standard', badge: 'マスタ' },
-  { id: 'youtube-producer', name: 'AI YouTubeプロデューサー', desc: '台本からBGMまで一括生成', icon: Youtube, plan: 'premium', category: 'premium', badge: '注目' },
-  { id: 'hotel-affiliate', name: 'アフィリエイトAI連携', desc: '収益化を自動最適化', icon: Network, plan: 'premium', category: 'premium', badge: 'マスタ' },
+  { id: 'hotel-affiliate', name: 'アフィリエイト連携', desc: '宿紹介 × 楽天収益化OS', icon: Network, plan: 'standard', category: 'recommend', badge: 'マスタ' },
+
+  // 無料ツール (free)
+  { id: 'office-politics-graph', name: '社内政治 AI相関図', desc: '人間関係の暗部を可視化', icon: Share2, plan: 'free', category: 'free', badge: '人気' },
+  { id: 'moving-checker', name: 'AI引越し安心チェッカー', desc: '治安・物件リスクを徹底分析', icon: CloudRain, plan: 'free', category: 'free', badge: 'マスタ' },
+  { id: 'buy-smart-nav', name: '中古・新品比較ナビ', desc: '損得勘定のAI市場判定OS', icon: Search, plan: 'free', category: 'free', badge: 'NEW' },
+  { id: 'evidence-manager', name: 'AI エビデンス・マネージャー', desc: 'サブスク実績の証拠管理', icon: ShieldCheck, plan: 'free', category: 'free', badge: 'NEW' },
+  { id: 'kdp-guide', name: 'Kindle出版完全ナビ', desc: '執筆から出版までの一気通貫', icon: FileText, plan: 'free', category: 'free', badge: '標準' },
+  { id: 'ai-report-generator', name: 'AIレポートジェネレーター', desc: '箇条書きからプロ級文書生成', icon: FileText, plan: 'free', category: 'free', badge: 'マスタ' },
+  { id: 'shopping-stopper', name: 'AI買い物依存ストッパー', desc: '散財の鎖を断ち切る', icon: AlertTriangle, plan: 'free', category: 'free', badge: '最強' },
+
+  // ライトプラン (light)
+  { id: 'contact-sync', name: 'Contact Sync', desc: '名刺の全自動・連絡先登録OS', icon: User, plan: 'light', category: 'light', badge: 'NEW' },
+  { id: 'price-tracker', name: '底値監視予測Bot', desc: '価格変動 × AI将来予測OS', icon: TrendingUp, plan: 'light', category: 'light', badge: 'NEW' },
+  { id: 'expense-sync', name: 'Expense Sync', desc: '経費精算の全自動・記帳OS', icon: Wallet, plan: 'light', category: 'light', badge: 'NEW' },
+  { id: 'prompt-master', name: 'AI画像プロンプトマスター', desc: '究極の画像生成パーツ工房', icon: ImageIcon, plan: 'light', category: 'light', badge: '必須' },
+  { id: 'ai-sidejob', name: 'AI副業スタートダッシュ', desc: '適性診断 × 収益ロードマップ', icon: Briefcase, plan: 'light', category: 'light', badge: 'マスタ' },
+
+  // スタンダードプラン (standard)
+  { id: 'trend-stock', name: 'SNSトレンド自動仕入', desc: 'バズ予測 × 楽天商品検索OS', icon: TrendingUp, plan: 'standard', category: 'standard', badge: 'NEW' },
+  { id: 'ai-konkatsu', name: 'AI婚活コーチ', desc: '戦略的成婚支援システム', icon: HeartHandshake, plan: 'standard', category: 'standard', badge: '注目' },
+  { id: 'money-guard', name: 'AI家計防衛シミュレーター', desc: '衝動買いの心理的抑止', icon: Wallet, plan: 'standard', category: 'standard', badge: 'マスタ' },
+  { id: 'disaster-guard', name: 'AI防災パーソナルガイド', desc: '避難ルート × 備蓄最適化', icon: Shield, plan: 'standard', category: 'standard', badge: 'マスタ' },
+
+  // プレミアムプラン (premium)
+  { id: 'youtube-producer', name: 'AI YouTubeプロデューサー', desc: '最新ニュースからの全自動台本', icon: Youtube, plan: 'premium', category: 'premium', badge: '注目' },
+  { id: 'inbox-organizer', name: 'Gmail AI Accelerator', desc: '未読ゼロを最速で実現', icon: Mail, plan: 'premium', category: 'premium', badge: 'マスタ' },
+  { id: 'comp-price-monitor', name: '競合価格監視', desc: '楽天API連携 × 価格最適化OS', icon: TrendingUp, plan: 'premium', category: 'premium', badge: 'NEW' },
+  { id: 'interior-coordinator', name: 'Interior Sync', desc: '空間分析 × 楽天一括購入OS', icon: Sofa, plan: 'premium', category: 'premium', badge: 'NEW' },
+  { id: 'youtube-coordinator', name: 'YouTube Sync', desc: '動画解析 × 楽天連動コーデ', icon: Youtube, plan: 'premium', category: 'premium', badge: 'NEW' },
+  { id: 'ai-select-shop', name: '「在庫ゼロ」AIセレクトショップ', desc: 'トレンド分析 × Shopify連携', icon: ShoppingCart, plan: 'premium', category: 'premium', badge: '人気' },
+  { id: 'scam-defender', name: 'AI詐欺ディフェンダー', desc: '詐欺・悪意を即座に判定', icon: ShieldCheck, plan: 'premium', category: 'premium', badge: '最強' },
 ]
 
 export default function ProductsPage() {
@@ -60,7 +83,7 @@ export default function ProductsPage() {
                         <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10">
                           <tool.icon className="text-emerald-500" size={24} />
                         </div>
-                        <Badge className="bg-emerald-600/10 text-emerald-500 border-emerald-500/20">{tool.badge}</Badge>
+                        <Badge className="bg-emerald-600/10 text-emerald-500 border-emerald-500/20 px-3 py-0.5 text-[10px] font-black">{tool.badge}</Badge>
                       </div>
                       <div>
                         <h3 className="text-xl font-black text-white italic uppercase leading-tight group-hover:text-emerald-400">{tool.name}</h3>
