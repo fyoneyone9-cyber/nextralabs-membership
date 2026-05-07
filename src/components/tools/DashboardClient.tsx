@@ -7,7 +7,7 @@ import { Star, Rocket, Zap, Building2, TrendingUp, Share2, ShieldCheck, Network,
 
 const ALL_TOOLS = [
   { id: 'staysee-ai-finder', name: 'AI×ホテルDXシステム【Nextra】', icon: Building2, color: 'text-emerald-500', bg: 'bg-emerald-500/10', plan: 'premium' },
-  { id: 'comp-price-monitor', name: '競合価格AI監視', icon: TrendingUp, color: 'text-blue-500', bg: 'bg-blue-500/10', plan: 'light' },
+  { id: 'comp-price-monitor', name: '競合AI価格監視', icon: TrendingUp, color: 'text-blue-500', bg: 'bg-blue-500/10', plan: 'light' },
   { id: 'sns-auto-poster', name: 'AI SNSオートポスター', icon: Share2, color: 'text-rose-500', bg: 'bg-rose-500/10', plan: 'light' },
   { id: 'evidence-manager', name: 'AI エビデンス・マネージャー', icon: ShieldCheck, color: 'text-emerald-400', bg: 'bg-emerald-400/10', plan: 'free' },
   { id: 'hotel-affiliate', name: 'アフィリエイトAI連携', icon: Network, color: 'text-emerald-400', bg: 'bg-emerald-400/10', plan: 'premium' },
@@ -66,7 +66,7 @@ export default function DashboardClient({ user, profile, subscription }: any) {
                     <div className={"inline-flex h-12 w-12 items-center justify-center rounded-2xl " + tool.bg}><tool.icon className={"h-6 w-6 " + tool.color} /></div>
                     <div className="flex-1 min-w-0 pt-1">
                       <p className="text-lg font-black text-white italic leading-tight uppercase truncate">{tool.name}</p>
-                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">ツールを起動する ➔</p>
+                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">ツールを起動する ?</p>
                     </div>
                   </Link>
                   <button onClick={(e) => toggleFavorite(e, tool.id)} className="absolute top-4 right-4 p-2 text-amber-400 scale-110"><Star size={18} fill="currentColor" /></button>
@@ -86,7 +86,7 @@ export default function DashboardClient({ user, profile, subscription }: any) {
                     <div className={"inline-flex h-12 w-12 items-center justify-center rounded-2xl " + tool.bg}><tool.icon className={"h-6 w-6 " + tool.color} /></div>
                     <div className="flex-1 min-w-0 pt-1">
                       <p className="text-lg font-black text-white italic leading-tight uppercase truncate">{tool.name}</p>
-                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">{locked ? "Upgrade required" : "ツールを起動する ➔"}</p>
+                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">{locked ? "Upgrade required" : "ツールを起動する ?"}</p>
                     </div>
                   </Link>
                   {!locked && <button onClick={(e) => toggleFavorite(e, tool.id)} className="absolute top-4 right-4 p-2 text-slate-700 hover:text-white opacity-0 group-hover:opacity-100"><Star size={18} fill="none" /></button>}
