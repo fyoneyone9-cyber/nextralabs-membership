@@ -66,7 +66,7 @@ function ProductCard({ product }: { product: any }) {
           <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 shadow-inner">
             <product.icon className="h-5 w-5 md:h-6 md:w-6 text-emerald-400" />
           </div>
-          <Badge className="bg-slate-950/50 text-slate-500 border border-white/10 px-2 py-0.5 font-bold text-[8px] md:text-[9px] uppercase tracking-widest">{product.badge}</Badge>
+          <Badge className="bg-slate-950/50 text-slate-500 border border-white/10 px-2 py-0.5 font-bold text-[8px] md:text-[9px] uppercase tracking-widest">{displayBadge}</Badge>
         </div>
         <div className="flex-1">
           <h3 className="text-base md:text-lg font-black text-white mb-1 tracking-tight leading-snug">{product.title}</h3>
