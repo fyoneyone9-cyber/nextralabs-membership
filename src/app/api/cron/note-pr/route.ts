@@ -29,8 +29,8 @@ export async function GET(req: Request) {
     // 💡 あなた(AI)との対話から「本当におすすめしたい」トピックを選出
     const RECOMMENDATIONS = [
       {
-        topic: "AI ホテルゲート：宿泊予約と鍵発行の完全同期",
-        insight: "Staysee等のPMSと錠デバイスをAPIで直結。予約確定の瞬間にゲスト専用パスコードが発行される、人の手を介さない次世代フロント体験の極致。",
+        topic: "AI×ホテルDXシステム【Nextra】：宿泊予約と鍵発行の完全同期",
+        insight: "Staysee等のPMSとRemoteLock等の錠デバイスをAPIで直結。予約確定の瞬間にゲスト専用パスコードが発行される、人の手を介さない次世代フロント体験の極致。",
         image: "A minimalist digital gate glowing in emerald green, integrated with a smartphone key, hotel lobby background, high-tech, cinematic."
       },
       {
