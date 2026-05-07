@@ -1,12 +1,8 @@
 {
-  "version": 2,
-  "framework": "nextjs",
-  "buildCommand": "npm run build",
-  "installCommand": "npm install",
-  "regions": ["iad1"],
-  "functions": {
-    "src/app/api/**/*": {
-      "maxDuration": 60
+  "crons": [
+    {
+      "path": "/api/cron/note-pr",
+      "schedule": "0 0,3,8 * * *"
     }
-  }
+  ]
 }
