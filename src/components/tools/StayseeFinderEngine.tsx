@@ -85,7 +85,8 @@ const MasterEngine = () => {
         {activeTab === 'checkin' && (
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 animate-in fade-in text-center">
             <h3 className="text-3xl md:text-5xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-6">自動チェックイン</h3>
-            <button className="w-full h-24 bg-emerald-600 text-white font-black rounded-[2rem] shadow-xl text-3xl uppercase italic">スキャン開始 ➔</button>
+            <p className="text-slate-400 mb-8 font-bold italic">パスポートまたは身分証をスキャンしてください。</p>
+            <button className="w-full h-24 bg-emerald-600 text-white font-black rounded-[2rem] shadow-xl text-3xl uppercase italic">身分証スキャン開始 ➔</button>
           </Card>
         )}
 
