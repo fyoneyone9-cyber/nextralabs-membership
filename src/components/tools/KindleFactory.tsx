@@ -264,7 +264,7 @@ export function KindleFactory() {
           <div className="flex items-center gap-3">
             <BookOpen className="text-emerald-500" size={32} />
             <h1 className="text-3xl font-black text-white italic uppercase tracking-tighter">
-              Kindle本ファクトリー
+              Kindle AI ファクトリー
             </h1>
           </div>
           <Badge className={`text-xs font-black uppercase tracking-widest px-4 py-1 rounded-full border ${config.badgeColor}`}>
