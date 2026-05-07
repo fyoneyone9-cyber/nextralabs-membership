@@ -3,40 +3,46 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 
 export async function POST(req: NextRequest) {
   try {
-    const { debts, currentTotal, currentAvgRate } = await req.json()
-    const apiKey = process.env.GEMINI_API_KEY
-    if (!apiKey) throw new Error('API key not configured')
+    const body = await req.json()
+    const { debts, currentTotal, currentAvgRate } = body
+
+    const apiKey = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY
+    if (!apiKey) {
+      return NextResponse.json({ success: false, error: 'API key not configured' }, { status: 500 })
+    }
 
     const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
+    // 2.0-flash が 404/500 になる可能性を考慮して 1.5-flash も試せるように
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
 
     const prompt = `
-あなたはプロのお金のアドバイザーです。多重債務で悩むユーザーに対して、現在の状況を分析し、おまとめローンを活用した完済へのロードマップを提案してください。
+あなたはプロのマネーアドバイザーです。多重債務で悩むユーザーに対して、おまとめローンを活用した完済へのロードマップを提案してください。
 
 【現在の状況】
-- 借入総額: ${currentTotal.toLocaleString()}円
-- 平均金利: ${currentAvgRate.toFixed(1)}%
-- 借入社数: ${debts.length}社
-${debts.map((d: any) => `- ${d.name}: ${d.amount}万円 (金利${d.rate}%)`).join('\n')}
-
-【おまとめローンのメリット予測（シミュレーション）】
-- おまとめ後の推定金利: 12.0%（仮定）
+- 借入総額: ${Number(currentTotal).toLocaleString()}円
+- 平均金利: ${Number(currentAvgRate).toFixed(1)}%
+- 借入社数: ${Array.isArray(debts) ? debts.length : 0}社
 
 【指示】
-1. まず、現在の状況（多重債務の状態）を冷静かつ客観的に評価してください。
-2. おまとめローンに一本化した場合の精神的・経済的メリットを具体的に伝えてください。
-3. 完済に向けて今日からできる具体的なアクションを3つ提示してください。
-4. ユーザーを励まし、希望を持たせるトーンで回答してください。
-5. 日本語で、200〜300文字程度で簡潔にまとめてください。
-6. Markdown形式で出力してください。
+1. 現在の状況を客観的に評価し、完済への希望を伝えてください。
+2. おまとめローン（一本化）のメリットを簡潔に伝えてください。
+3. 具体的な改善アクションを3つ提示してください。
+4. 250文字程度の日本語で、Markdown形式で出力してください。
     `
 
     const result = await model.generateContent(prompt)
-    const advice = result.response.text()
+    const response = await result.response
+    const advice = response.text()
+
+    if (!advice) throw new Error('Empty response from AI')
 
     return NextResponse.json({ success: true, advice })
   } catch (error: any) {
-    console.error('Loan Advisor Error:', error)
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
+    console.error('Loan Advisor API Error:', error)
+    return NextResponse.json({ 
+      success: false, 
+      error: error.message || 'AI診断中にエラーが発生しました',
+      detail: process.env.NODE_ENV === 'development' ? error.stack : undefined 
+    }, { status: 500 })
   }
 }

@@ -95,14 +95,16 @@ export function LoanAdvisor() {
       })
       const data = await response.json()
       
-      if (!data.success) throw new Error(data.error)
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || `Server Error (${response.status})`)
+      }
 
       setResult({
         currentTotal,
         currentAvgRate,
         consolidatedMonthly,
         totalInterestSaved: Math.max(0, interestDiffYear),
-        advice: data.advice
+        advice: data.advice || 'AIからのアドバイスを取得できませんでした。'
       })
     } catch (err: any) {
       setError(err.message || '診断中にエラーが発生しました')
