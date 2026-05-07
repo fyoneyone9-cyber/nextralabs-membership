@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Zap, Network, Home, Share2, Hotel, ArrowRight, Smartphone, Grid, Sparkles } from 'lucide-react'
+import { Zap, Network, Home, Share2, Hotel, ArrowRight, Smartphone, Grid } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 export default function HomePage() {
@@ -19,7 +19,7 @@ export default function HomePage() {
     if (deferredPrompt) {
       deferredPrompt.prompt();
     } else {
-      alert("ブラウザのメニューからホーム画面に追加を選択してください。");
+      alert("ブラウザのメニューから「ホーム画面に追加」を選択してください。");
     }
   };
 
@@ -103,7 +103,7 @@ export default function HomePage() {
       </section>
 
       {/* 最終CTA */}
-      <section className="py-12 bg-[#050507] mt-auto">
+      <section className="py-12 bg-[#050507] mt-auto border-b border-white/5">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-2xl md:text-5xl font-black text-white tracking-tighter italic uppercase mb-8">全ての知能を解放せよ</h2>
           <Link href="/products" className="inline-block w-full max-w-xs">
@@ -114,29 +114,22 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* スマホアプリ版 - フッター直前・ハイエンドに強化 */}
-      <section className="py-12 bg-[#13141f] border-y border-white/10">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-center gap-10">
-          <div className="flex items-center gap-6">
-            <div className="w-16 h-16 bg-emerald-500/10 rounded-3xl flex items-center justify-center border-2 border-emerald-500/20 shadow-inner">
-              <Smartphone className="h-8 w-8 text-emerald-500" />
-            </div>
-            <div className="text-left">
-              <h2 className="text-2xl md:text-3xl font-black text-white uppercase italic leading-none">スマホアプリ版</h2>
-              <p className="text-[10px] text-slate-500 mt-2 font-black uppercase tracking-[0.3em] opacity-50">Master Application Sync</p>
-            </div>
+      {/* スマホアプリ版 - コンパクトに修正してフッター直前に配置 */}
+      <section className="py-4 bg-[#13141f]">
+        <div className="container mx-auto px-6 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Smartphone className="h-5 w-5 text-emerald-500" />
+            <h2 className="text-xs font-black text-white uppercase italic">スマホアプリ版</h2>
           </div>
-          <Button 
-            onClick={handleInstallClick} 
-            size="lg" 
-            className="w-full md:w-auto h-20 px-16 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-3xl shadow-[0_15px_40px_rgba(16,185,129,0.3)] transition-all active:scale-95 uppercase text-xl italic"
-          >
-            インストール ➔
+          <Button onClick={handleInstallClick} size="sm" className="bg-emerald-500 text-slate-950 font-black px-4 h-8 rounded-lg shadow-lg uppercase text-[9px] hover:bg-emerald-400 transition-all">
+            インストール
           </Button>
         </div>
       </section>
 
-      <div className="bg-[#050507] text-center opacity-10 text-[8px] font-black uppercase tracking-[0.5em] py-12">NextraLabs マスタモデル • 2026</div>
+      <div className="bg-[#050507] text-center opacity-30 text-[9px] font-black uppercase tracking-[0.3em] py-6 text-slate-400">
+        NextraLabs マスタモデル • 2026
+      </div>
     </div>
   )
 }
