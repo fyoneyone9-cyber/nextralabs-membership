@@ -8,8 +8,8 @@ import {
 } from 'lucide-react'
 
 const TABS = [
-  { id: 'input', label: '竭 隗｣譫蝉ｾ晞ｼ', icon: FileSpreadsheet },
-  { id: 'graph', label: '竭｡ 逶ｸ髢｢蝗ｳ陦ｨ遉ｺ', icon: Network },
+  { id: 'input', label: '① 隗｣譫蝉ｾ晞ｼ', icon: FileSpreadsheet },
+  { id: 'graph', label: '② 逶ｸ髢｢蝗ｳ陦ｨ遉ｺ', icon: Network },
 ];
 
 export default function OfficePoliticsGraph() {
@@ -171,7 +171,7 @@ export default function OfficePoliticsGraph() {
         {activeTab === 'input' && (
           <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3.5rem] p-8 md:p-16 shadow-[0_40px_100px_rgba(0,0,0,0.6)] animate-in fade-in slide-in-from-bottom-4 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-600 via-purple-600 to-emerald-600" />
-            <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase tracking-tighter mb-8 flex items-center gap-3"><FileSpreadsheet className="text-indigo-500" /> 竭 隗｣譫蝉ｾ晞ｼ</h3>
+            <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase tracking-tighter mb-8 flex items-center gap-3"><FileSpreadsheet className="text-indigo-500" /> ① 隗｣譫蝉ｾ晞ｼ</h3>
             {renderGuide(['繝ｭ繧ｰCSV繧呈ｺ門ｙ・井ｸ九・繝懊ち繝ｳ縺ｧ繧ｵ繝ｳ繝励Ν菫晏ｭ伜庄閭ｽ・・, '繝輔ぃ繧､繝ｫ繧偵ラ繝ｭ繝・・縺励※隗｣譫先ｺ門ｙ螳御ｺ・, '譛蠑ｷ繝励Ο繝ｳ繝励ヨ繧但I荳牙床菴灘宛縺ｸ謚輔￡繧医≧'])}
             <div className="grid lg:grid-cols-2 gap-10">
               <div className="space-y-6">
@@ -207,7 +207,7 @@ export default function OfficePoliticsGraph() {
                  {isProcessing && <div className="absolute inset-0 bg-slate-950/80 flex items-center justify-center z-20"><Loader2 className="animate-spin text-indigo-500" /></div>}
               </div>
             </div>
-            {mermaidCode && <Button onClick={() => setActiveTab('graph')} className="w-full h-20 mt-8 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-3 uppercase italic group text-xl">竭｡ 逶ｸ髢｢蝗ｳ繧定｡ｨ遉ｺ縺吶ｋ <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" /></Button>}
+            {mermaidCode && <Button onClick={() => setActiveTab('graph')} className="w-full h-20 mt-8 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-3 uppercase italic group text-xl">② 逶ｸ髢｢蝗ｳ繧定｡ｨ遉ｺ縺吶ｋ <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" /></Button>}
           </Card>
         )}
 
