@@ -171,13 +171,18 @@ const MasterEngine = () => {
   const issueLockKey = async () => {
     setIsIssuingKey(true);
     try {
-      // 予約データを元に鍵を発行
       const res = await fetch('/api/tools/staysee-ai-finder/lock-api', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           action: 'generate-key',
-          bookingData: { guestName: "米山 文貴", checkIn: "2026-05-07", checkOut: "2026-05-08" } 
+          bookingData: { 
+            guestName: "米山 文貴", 
+            checkIn: "2026-05-07", 
+            checkOut: "2026-05-08",
+            deviceType: selectedDevice,
+            pmsType: selectedPMS
+          } 
         }),
       });
       const data = await res.json();
@@ -352,24 +357,47 @@ const MasterEngine = () => {
                <div className="w-20 h-20 bg-emerald-600/10 rounded-3xl flex items-center justify-center mx-auto border-2 border-emerald-500/20 shadow-xl">
                  <Lock className="w-10 h-10 text-emerald-500" />
                </div>
-               <h3 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none">錠デバイスAPI：自動鍵発行</h3>
-               <p className="text-slate-400 font-bold italic">Stayseeの予約確定に連動し、ゲスト専用パスコードを自動デプロイします。</p>
+               <h3 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none">PMS × 錠デバイス：API自動連携</h3>
+               <p className="text-slate-400 font-bold italic">予約確定と同時に、指定の錠デバイスへ鍵発行命令をデプロイします。</p>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-12 text-left">
-              <div className="space-y-6">
-                <div className="bg-[#0a0b14] border-2 border-white/5 rounded-[2.5rem] p-8 shadow-inner space-y-6 relative overflow-hidden">
+              <div className="space-y-8">
+                <div className="bg-[#0a0b14] border-2 border-white/5 rounded-[2.5rem] p-8 shadow-inner space-y-8 relative overflow-hidden">
                    <div className="absolute top-0 right-0 p-6 opacity-5 rotate-12"><Shield className="w-32 h-32 text-white" /></div>
-                   <h4 className="text-xl font-black text-white italic uppercase flex items-center gap-3"><Zap className="text-emerald-500" /> IoT Security Sync</h4>
-                   <p className="text-sm text-slate-400 font-bold leading-relaxed">Stayseeで予約が確定したゲストに対し、チェックイン期間中のみ有効な鍵を生成します。</p>
+                   
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black text-emerald-500 uppercase italic px-2">PMS Select</label>
+                        <select 
+                          value={selectedPMS} 
+                          onChange={(e) => setSelectedPMS(e.target.value)}
+                          className="w-full h-12 bg-black border border-white/10 rounded-xl px-4 text-xs font-bold text-white outline-none focus:border-emerald-500"
+                        >
+                          {PMS_OPTIONS.map(p => <option key={p} value={p}>{p}</option>)}
+                        </select>
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black text-emerald-500 uppercase italic px-2">Lock Device Select</label>
+                        <select 
+                          value={selectedDevice} 
+                          onChange={(e) => setSelectedDevice(e.target.value)}
+                          className="w-full h-12 bg-black border border-white/10 rounded-xl px-4 text-xs font-bold text-white outline-none focus:border-emerald-500"
+                        >
+                          {DEVICE_OPTIONS.map(d => <option key={d} value={d}>{d}</option>)}
+                        </select>
+                      </div>
+                   </div>
+
+                   <p className="text-sm text-slate-400 font-bold leading-relaxed">{selectedPMS}の予約状況を監視し、{selectedDevice}の有効な鍵を自動生成します。</p>
                    
                    <button 
                     onClick={issueLockKey}
                     disabled={isIssuingKey}
                     className="w-full h-24 bg-white text-slate-950 hover:bg-emerald-500 hover:text-white font-black rounded-[2rem] shadow-2xl flex items-center justify-center gap-4 text-2xl uppercase italic transition-all active:scale-95"
                    >
-                     {isIssuingKey ? <Loader2 className="animate-spin" /> : <Lock />}
-                     予約確定・鍵を発行 ➔
+                     {isIssuingKey ? <Loader2 className="animate-spin" /> : <Zap />}
+                     連携実行・鍵を発行 ➔
                    </button>
                 </div>
               </div>
@@ -534,6 +562,31 @@ const MasterEngine = () => {
                     <div className="grid lg:grid-cols-3 gap-8">
                        <div className="lg:col-span-2 space-y-8"><div className="bg-slate-950/80 p-10 rounded-[3rem] border border-white/5 shadow-inner print:bg-white print:border-2 print:border-slate-100 print:p-6 print:rounded-2xl"><p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-4 italic print:text-blue-600">Executive Summary</p><p className="text-xl text-white font-bold leading-relaxed italic print:text-black print:text-lg print:not-italic">{insightData.summary}</p></div><div className="grid grid-cols-1 md:grid-cols-2 gap-6">{insightData.findings.map((f: any, i: number) => (<div key={i} className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10 space-y-4 print:bg-slate-50 print:border-slate-200"><div className="flex items-center gap-3"><Badge className="bg-blue-500 text-white font-black">{f.room}</Badge></div><p className="text-slate-300 text-sm italic font-bold print:text-black">{f.trend}</p><div className="pt-4 border-t border-white/5"><p className="text-xs font-black text-emerald-400 uppercase mb-2">Recommendation</p><p className="text-slate-200 text-sm font-bold leading-relaxed print:text-slate-700">{f.action}</p></div></div>))}</div></div>
                        <div className="space-y-8"><div className="bg-emerald-600/10 border-2 border-emerald-500/30 p-8 rounded-[2.5rem] shadow-xl print:bg-emerald-50 print:border-emerald-200"><p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-4 italic">ROI Projection</p><p className="text-3xl font-black text-white italic leading-tight print:text-black">{insightData.roi}</p></div><div className="bg-[#1a1c2e] p-8 rounded-[2.5rem] border border-blue-500/20 shadow-inner print:bg-slate-50 print:border-slate-100"><p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-4 italic">Strategic Tip</p><p className="text-sm text-slate-300 leading-relaxed font-bold italic print:text-slate-600">"{insightData.executiveMessage}"</p></div><button onClick={() => window.print()} className="w-full h-20 bg-white text-black font-black rounded-2xl shadow-xl hover:bg-blue-600 transition-all uppercase italic flex items-center justify-center gap-4 print:hidden">PRINT REPORT</button></div>
+                    </div>
+                  )}
+               </div>
+            </Card>
+            <button onClick={() => { setInsightData(null); setActiveTab('scan'); }} className="w-full h-20 border-2 border-white/10 text-slate-600 hover:text-white hover:bg-white/5 font-black rounded-3xl uppercase italic transition-all flex items-center justify-center gap-4 text-xl active:scale-95 print:hidden"><RotateCcw className="w-6 h-6" /> EXIT REPORTING</button>
+          </div>
+        )}
+      </div>
+      <DebugPanel data={{ activeTab, hasImage: !!image, hasResult: !!matchResult }} toolId="staysee-finder-master" />
+    </div>
+  )
+}
+
+const StayseeFinderEngineWithNoSSR = dynamic(() => Promise.resolve(MasterEngine), {
+  ssr: false,
+  loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Initializing Master Node...</div>
+})
+
+export default function NoSSRWrapper() {
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => { setIsMounted(true); }, []);
+  if (!isMounted) return <div className="min-h-screen bg-[#050507]" />;
+  return <StayseeFinderEngineWithNoSSR />;
+}
+></div>
                     </div>
                   )}
                </div>

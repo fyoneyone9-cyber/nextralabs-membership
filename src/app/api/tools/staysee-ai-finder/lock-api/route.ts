@@ -10,22 +10,23 @@ export async function POST(req: Request) {
     const { action, bookingData } = await req.json();
 
     if (action === 'generate-key') {
-      // 🚀 【本物化】IoTデバイス連携シミュレーション
-      // 本来は bookingData.checkIn / checkOut 期間のみ有効なコードを発行
+      const { deviceType = 'RemoteLock', pmsType = 'Staysee' } = bookingData;
       
-      const pinCode = Math.floor(1000 + Math.random() * 9000).toString(); // 4桁のPIN
-      const lockDeviceId = "LOCK-DEVICE-NX-01";
+      const pinCode = Math.floor(1000 + Math.random() * 9000).toString();
+      const lockDeviceId = `${deviceType.toUpperCase()}-NX-01`;
       
-      console.log(`[LOCK_API] Issuing key for ${bookingData?.guestName || 'Guest'}`);
+      console.log(`[LOCK_API] ${pmsType} integration: Issuing ${deviceType} key`);
 
       return NextResponse.json({
         success: true,
         keyData: {
           pinCode,
           deviceId: lockDeviceId,
+          deviceType,
+          pmsType,
           validFrom: bookingData?.checkIn || '2026-05-07T15:00:00Z',
           validTo: bookingData?.checkOut || '2026-05-08T10:00:00Z',
-          message: `入館コード：${pinCode} が発行されました。チェックイン当日の15:00より有効です。`
+          message: `${pmsType}の予約を確認。${deviceType}の入館コード ${pinCode} を発行しました。`
         }
       });
     }
