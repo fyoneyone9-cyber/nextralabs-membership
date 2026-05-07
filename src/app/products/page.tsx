@@ -62,7 +62,7 @@ function ProductCard({ product }: { product: any }) {
   const badgeClass = "text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border " + (planBadgeColors[product.plan] || planBadgeColors['無料'])
 
   return (
-    <Card className={"h-full bg-[#13141f] transition-all duration-300 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group shadow-xl relative border-2 " + (isMaster ? "border-emerald-500/50" : "border-white/5")}>
+    <Card className={"h-full bg-[#13141f] transition-all duration-300 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group shadow-xl relative border-2 " + (isMaster ? "border-emerald-500 border-2" : "border-white/5")}>
       <CardContent className="p-5 md:p-6 flex flex-col h-full text-left relative z-10">
         <div className="flex items-start justify-between mb-4">
           <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 shadow-inner"><product.icon className="h-5 w-5 md:h-6 md:w-6 text-emerald-400" /></div>
