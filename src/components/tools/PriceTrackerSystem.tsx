@@ -226,11 +226,28 @@ const MasterEngine = () => {
 
               <div className="bg-[#13141f] border-4 border-emerald-500/30 p-10 rounded-[3rem] relative overflow-hidden shadow-inner text-left">
                  <div className="absolute top-0 right-0 p-8 opacity-5"><TrendingDown className="w-32 h-32 text-white" /></div>
-                 <div className="flex items-center gap-4 mb-4">
-                    <Zap className="text-emerald-400 animate-pulse" />
-                    <h4 className="text-xl font-black text-white uppercase italic tracking-widest text-left">Nextra AI strategic Advice</h4>
+                 
+                 <div className="space-y-6">
+                    <div className="flex items-center gap-4 mb-4">
+                        <Zap className="text-emerald-400 animate-pulse" />
+                        <h4 className="text-xl font-black text-white uppercase italic tracking-widest text-left">Nextra AI strategic Advice</h4>
+                    </div>
+                    
+                    {/* AIの思考ログを表示 */}
+                    <div className="bg-black/40 rounded-2xl p-6 font-mono text-[10px] text-emerald-500/70 border border-emerald-500/10 space-y-2 mb-6">
+                       {predictionData.analysisLog?.map((log: string, i: number) => (
+                         <div key={i} className="flex gap-2">
+                            <span className="opacity-50">[{new Date().toLocaleTimeString()}]</span>
+                            <span className="animate-pulse">●</span>
+                            {log}
+                         </div>
+                       ))}
+                    </div>
+
+                    <p className="text-2xl font-black text-white italic leading-relaxed text-left border-l-4 border-emerald-500 pl-6">
+                      「 {predictionData.advice} 」
+                    </p>
                  </div>
-                 <p className="text-2xl font-black text-white italic leading-relaxed text-left">「 {predictionData.advice} 」</p>
               </div>
 
               <div className="grid grid-cols-1 gap-4">
@@ -268,12 +285,6 @@ const MasterEngine = () => {
 const NoSSRWrapper = dynamic(() => Promise.resolve(MasterEngine), {
   ssr: false,
   loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Syncing Prediction Node...</div>
-})
-
-export default function PriceTrackerWrapper() {
-  return <NoSSRWrapper />;
-}
-reen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Syncing Prediction Node...</div>
 })
 
 export default function PriceTrackerWrapper() {
