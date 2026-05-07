@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Camera, UserCheck, Lock, Coins, Building2, Loader2, Zap } from 'lucide-react'
+import { Camera, UserCheck, Lock, Coins, Building2 } from 'lucide-react'
 
 const TABS = [
   { id: 'scan', label: '① スキャン', icon: Camera },
@@ -24,9 +24,9 @@ const MasterEngine = () => {
         <Badge className="bg-blue-600">HOTEL DX ENGINE</Badge>
         <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic">AI×ホテルDXシステム【Nextra】</h1>
       </div>
-      <div className="flex gap-2 justify-center bg-slate-900 p-2 rounded-2xl">
+      <div className="flex gap-2 justify-center bg-slate-900 p-2 rounded-2xl overflow-x-auto">
         {TABS.map(tab => (
-          <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={lex-1 py-4 rounded-xl font-black \}>{tab.label}</button>
+          <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={lex-1 py-4 px-6 rounded-xl font-black whitespace-nowrap \}>{tab.label}</button>
         ))}
       </div>
       <Card className="bg-[#13141f] p-10 rounded-[3rem] text-center">
