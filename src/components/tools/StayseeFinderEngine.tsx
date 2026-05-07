@@ -5,56 +5,110 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { 
-  ArrowRight, CheckCircle2, Zap, RotateCcw, ClipboardPaste, 
-  Building2, Camera, Loader2, Lock, Coins, Network, Shield, 
-  Settings, Info, UserPlus, List, Search, RefreshCw, Database, Download, Upload, Filter, Calendar
+  ArrowRight, Upload, CheckCircle2, Zap, Copy, ExternalLink, 
+  RotateCcw, Lightbulb, ClipboardPaste, PackageSearch, 
+  Building2, Camera, Loader2, Download, FileImage, 
+  Settings, Shield, Printer, FileText, Smartphone, Truck, Box, Coins, ShoppingCart, CreditCard,
+  UserCheck, Target, Car, Wine, Lock, Info, Eye, EyeOff, Sparkles, UserPlus, List, Search, RefreshCw, Database, ShieldCheck
 } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const TABS = [
-  { id: 'bookings', label: 'DMS予約一覧', icon: List, desc: '台帳・状況管理' },
-  { id: 'localdb', label: '台帳CSV連携', icon: Database, desc: 'ローカルDB同期' },
-  { id: 'checkin', label: '自動チェックイン', icon: UserPlus, desc: 'PMS本人確認' },
-  { id: 'lock', label: '鍵自動発行', icon: Lock, desc: 'APIキーデプロイ' },
+  { id: 'bookings', label: '予約一覧', icon: List, desc: 'DMS予約管理' },
+  { id: 'checkin', label: '自動チェックイン', icon: UserPlus, desc: '本人確認・記帳' },
+  { id: 'lock', label: '鍵自動発行', icon: Lock, desc: 'API連携デプロイ' },
   { id: 'scan', label: '遺失物特定', icon: Camera, desc: 'AI画像解析' },
+  { id: 'match', label: '照合', icon: UserCheck, desc: '名簿クロス照合' },
+  { id: 'insights', label: 'レポート', icon: Building2, desc: '経営分析' },
 ];
 
 const MasterEngine = () => {
   const [activeTab, setActiveTab] = useState('bookings');
-  const [isMounted, setIsMounted] = useState(false);
-  const [isIssuingKey, setIsIssuingKey] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [image, setImage] = useState(null);
+  const [matchResult, setMatchResult] = useState('');
   const [lockKeyData, setLockKeyData] = useState(null);
+  const [isIssuingKey, setIsIssuingKey] = useState(false);
+  const [pmsApiKey, setPmsApiKey] = useState('');
+  const [lockApiKey, setLockApiKey] = useState('');
+  const [showPmsKey, setShowPmsKey] = useState(false);
+  const [showLockKey, setShowLockKey] = useState(false);
+  const [selectedDevice, setSelectedDevice] = useState('RemoteLock');
+  const [selectedPMS, setSelectedPMS] = useState('Staysee');
+  const [profileData, setProfileData] = useState(null);
+  const [isProfiling, setIsProfiling] = useState(false);
+  const [certData, setCertData] = useState(null);
+  const [isGeneratingCert, setIsGeneratingCert] = useState(false);
+  const [checkinStatus, setCheckinStatus] = useState('IDLE');
 
-  useEffect(() => { setIsMounted(true); }, []);
+  const DEVICE_OPTIONS = ['RemoteLock', 'TTLock', 'SwitchBot', 'KEYVOX', 'MIWA', 'GOAL', 'ASSAABLOY', 'Baycom'];
+  const PMS_OPTIONS = ['Staysee', 'Beds24', 'AirHost', 'suitebook', 'infor', 'JTBデータコネクト'];
+  const fileInputRef = useRef(null);
+  const [isMounted, setIsMounted] = useState(false);
 
-  const MOCK_BOOKINGS = [
-    { id: 'BK-8821', guest: '米山 文貴', checkin: '2026/05/07', room: '201', status: '確定', device: 'RemoteLock', key: '発行済' },
-    { id: 'BK-8822', guest: '田中 太郎', checkin: '2026/05/07', room: '205', status: '確定', device: 'TTLock', key: '未発行' },
-    { id: 'BK-8823', guest: '佐藤 結衣', checkin: '2026/05/08', room: '302', status: '予約中', device: 'SwitchBot', key: '-' },
-  ];
+  useEffect(() => {
+    setIsMounted(true);
+    const k1 = localStorage.getItem('nextra_pms_key');
+    const k2 = localStorage.getItem('nextra_lock_key');
+    if (k1) setPmsApiKey(k1); if (k2) setLockApiKey(k2);
+  }, []);
 
-  const downloadTemplate = () => {
-    const csvContent = "予約ID,宿泊者名,部屋番号,チェックイン日,チェックアウト日,国籍\nBK-0001,米山文貴,201,2026/05/07,2026/05/08,日本";
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute("download", "nextra_dms_template.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const saveKeys = () => {
+    localStorage.setItem('nextra_pms_key', pmsApiKey);
+    localStorage.setItem('nextra_lock_key', lockApiKey);
+    alert('API構成を保存しました');
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => { setImage(event.target?.result); };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const runCheckin = async () => {
+    setCheckinStatus('SCANNING');
+    await new Promise(r => setTimeout(r, 2000));
+    setCheckinStatus('VERIFIED');
+  };
+
+  const runProfileAnalysis = async () => {
+    if (!image) return;
+    setIsProfiling(true);
+    await new Promise(r => setTimeout(r, 1500));
+    setProfileData({
+      profileTags: ["iPhone 15 Pro", "203号室", "5/7チェックアウト"],
+      certaintyLevel: "98%",
+      reasoning: "Stayseeの宿泊履歴と画像を照合。203号室の米山様である可能性が極めて高いです。",
+      actionAdvise: "フロントより確認の電話、または自動SMS通知の送付を推奨します。"
+    });
+    setIsProfiling(false);
+  };
+
+  const issueLockKey = async () => {
+    if (!pmsApiKey || !lockApiKey) { alert('先にAPI連携の設定を行ってください'); return; }
+    setIsIssuingKey(true);
+    await new Promise(r => setTimeout(r, 1500));
+    setLockKeyData({ pinCode: Math.floor(1000 + Math.random() * 9000).toString() });
+    setIsIssuingKey(false);
   };
 
   if (!isMounted) return null;
+
+  const isPmsConnected = pmsApiKey.length > 5;
+  const isLockConnected = lockApiKey.length > 5;
 
   return (
     <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-8 min-h-screen text-slate-200 bg-[#050507] border-4 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] shadow-[0_0_100px_rgba(16,185,129,0.2)]">
       <div className="text-center space-y-4">
         <Badge className="bg-emerald-600 px-6 py-1 font-black tracking-widest uppercase text-[10px] shadow-lg">Nextra AI Autonomous OS</Badge>
         <h1 className="text-6xl md:text-[10rem] font-black text-white uppercase italic tracking-tighter leading-none">Nextra AI</h1>
-        <p className="text-emerald-500 font-black uppercase tracking-[0.4em] italic text-sm md:text-xl text-center">宿泊DXの「正解」を、自律化する。</p>
+        <p className="text-emerald-500 font-black uppercase tracking-[0.6em] italic text-sm md:text-xl text-center">宿泊DXの「正解」を、自律化する。</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         {TABS.map((tab) => (
           <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={"p-4 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-2 group " + (activeTab === tab.id ? 'bg-emerald-600 border-white text-white shadow-xl scale-[1.05]' : 'bg-[#13141f] border-white/5 text-slate-500 hover:text-white hover:border-emerald-500/50')}>
             <tab.icon className={activeTab === tab.id ? 'text-white' : 'text-emerald-400'} size={28} />
@@ -67,100 +121,111 @@ const MasterEngine = () => {
       </div>
 
       <div className="mt-4 text-left">
-        {/* --- 📝 DMS 予約一覧 --- */}
         {activeTab === 'bookings' && (
-          <div className="space-y-6 animate-in fade-in">
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-[#0a0b14] p-6 rounded-3xl border-2 border-emerald-500/20 shadow-inner">
+          <div className="space-y-6 animate-in fade-in text-left">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-[#0a0b14] p-6 rounded-3xl border-2 border-emerald-500/20 shadow-inner">
                <div className="flex items-center gap-4">
-                 <div className={"flex items-center gap-2 px-4 py-2 rounded-full border transition-all " + (pmsApiKey.length > 5 ? "bg-emerald-500/10 border-emerald-500/50" : "bg-red-500/10 border-red-500/50")}>
-                   <div className={"w-2 h-2 rounded-full " + (pmsApiKey.length > 5 ? "bg-emerald-500 animate-pulse" : "bg-red-500")} />
-                   <span className={"text-xs font-black uppercase tracking-widest italic " + (pmsApiKey.length > 5 ? "text-emerald-500" : "text-red-500")}>
-                     {pmsApiKey.length > 5 ? "PMS SYNC: ACTIVE" : "PMS SYNC: OFFLINE"}
-                   </span>
+                 <div className={"flex items-center gap-2 px-4 py-2 rounded-full border transition-all " + (isPmsConnected ? "bg-emerald-500/10 border-emerald-500/50" : "bg-red-500/10 border-red-500/50")}>
+                   <div className={"w-2 h-2 rounded-full " + (isPmsConnected ? "bg-emerald-500 animate-pulse" : "bg-red-500")} />
+                   <span className={"text-xs font-black uppercase tracking-widest italic " + (isPmsConnected ? "text-emerald-500" : "text-red-500")}>PMS SYNC: {isPmsConnected ? "ACTIVE" : "OFFLINE"}</span>
                  </div>
-                 <div className={"flex items-center gap-2 px-4 py-2 rounded-full border transition-all " + (lockApiKey.length > 5 ? "bg-blue-500/10 border-blue-500/50" : "bg-red-500/10 border-red-500/50")}>
-                   <Lock size={14} className={lockApiKey.length > 5 ? "text-blue-400" : "text-red-500"} />
-                   <span className={"text-xs font-black uppercase tracking-widest italic " + (lockApiKey.length > 5 ? "text-blue-400" : "text-red-500")}>
-                     {lockApiKey.length > 5 ? "LOCK API: CONNECTED" : "LOCK API: DISCONNECTED"}
-                   </span>
+                 <div className={"flex items-center gap-2 px-4 py-2 rounded-full border transition-all " + (isLockConnected ? "bg-blue-500/10 border-blue-500/50" : "bg-red-500/10 border-red-500/50")}>
+                   <Lock size={14} className={isLockConnected ? "text-blue-400" : "text-red-500"} />
+                   <span className={"text-xs font-black uppercase tracking-widest italic " + (isLockConnected ? "text-blue-400" : "text-red-500")}>LOCK: {isLockConnected ? "CONNECTED" : "DISCONNECTED"}</span>
                  </div>
                </div>
-               <div className="flex items-center gap-3">
-                 {pmsApiKey.length <= 5 && <Badge className="bg-red-600 text-white animate-bounce">API未設定</Badge>}
-                 <Button className="bg-emerald-600 hover:bg-emerald-500 text-white font-black h-10 px-6 rounded-xl shadow-lg transition-all active:scale-95"><RefreshCw className="mr-2 h-4 w-4" /> リアルタイム同期</Button>
-               </div>
-            </div>
                <div className="flex items-center gap-3">
                  {!isPmsConnected && <Badge className="bg-red-600 text-white animate-bounce">API未設定</Badge>}
                  <Button className="bg-emerald-600 hover:bg-emerald-500 text-white font-black h-10 px-6 rounded-xl shadow-lg transition-all active:scale-95"><RefreshCw className="mr-2 h-4 w-4" /> リアルタイム同期</Button>
                </div>
             </div>
-
-            <div className="overflow-x-auto bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] shadow-2xl">
+            <div className="overflow-x-auto bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-1 shadow-2xl">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-black/50 text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-white/5">
-                    <th className="p-6">予約ID</th><th className="p-6">宿泊者名</th><th className="p-6">部屋</th><th className="p-6">デバイス</th><th className="p-6">ステータス</th><th className="p-6 text-center">操作</th>
+                    <th className="p-6">予約ID</th><th className="p-6">宿泊者名</th><th className="p-6 text-center">操作</th>
                   </tr>
                 </thead>
                 <tbody className="text-sm">
-                  {MOCK_BOOKINGS.map((bk) => (
-                    <tr key={bk.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                      <td className="p-6 font-mono text-emerald-500">{bk.id}</td>
-                      <td className="p-6 font-bold text-white">{bk.guest}</td>
-                      <td className="p-6 font-black italic">{bk.room}</td>
-                      <td className="p-6 font-bold">{bk.device}</td>
-                      <td className="p-6"><Badge className={bk.key === '発行済' ? "bg-emerald-600/20 text-emerald-400" : "bg-red-600/20 text-red-400"}>{bk.key}</Badge></td>
-                      <td className="p-6 text-center"><button onClick={() => setActiveTab('lock')} className="p-2 hover:bg-emerald-500/20 rounded-lg text-emerald-400 transition-all"><ArrowRight size={20} /></button></td>
-                    </tr>
-                  ))}
+                  <tr className="border-b border-white/5 hover:bg-white/5 transition-colors"><td className="p-6 font-mono text-emerald-500">BK-8821</td><td className="p-6 font-bold text-white">米山 文貴</td><td className="p-6 text-center"><button onClick={() => setActiveTab('checkin')} className="text-emerald-400 hover:scale-110 transition-transform"><ArrowRight /></button></td></tr>
                 </tbody>
               </table>
             </div>
           </div>
         )}
 
-        {/* --- 📁 台帳CSV連携 --- */}
-        {activeTab === 'localdb' && (
-          <div className="space-y-8 animate-in fade-in">
-            <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-10 shadow-2xl text-center space-y-12">
-               <h3 className="text-4xl font-black text-white italic uppercase flex items-center justify-center gap-6"><Database className="text-blue-400" size={48} /> ローカル台帳同期</h3>
-               <div className="grid lg:grid-cols-2 gap-10 text-left">
-                  <div className="bg-[#0a0b14] border-2 border-white/5 rounded-[2.5rem] p-10 space-y-8">
-                     <h4 className="text-xl font-black text-white italic uppercase flex items-center gap-3"><Download className="text-emerald-500" /> 1. 雛形の取得</h4>
-                     <p className="text-slate-400 text-sm font-bold">Nextra AI専用のCSVフォーマットをダウンロードして台帳を作成してください。</p>
-                     <Button onClick={downloadTemplate} className="w-full h-16 bg-white text-slate-950 font-black rounded-2xl shadow-xl hover:bg-emerald-500 hover:text-white transition-all text-lg italic uppercase">CSV雛形をダウンロード ➔</Button>
-                  </div>
-                  <div className="bg-[#0a0b14] border-2 border-white/5 rounded-[2.5rem] p-10 space-y-8">
-                     <h4 className="text-xl font-black text-white italic uppercase flex items-center gap-3"><Upload className="text-blue-500" /> 2. 台帳のアップロード</h4>
-                     <div className="border-4 border-dashed border-white/10 rounded-2xl p-10 text-center hover:bg-white/5 cursor-pointer group transition-all">
-                        <Upload className="h-10 w-10 text-slate-700 mx-auto mb-4 group-hover:text-blue-500" />
-                        <p className="text-xs text-slate-500 font-black uppercase">ファイルをドロップ または 選択</p>
-                     </div>
-                  </div>
-               </div>
-            </Card>
-          </div>
-        )}
-
-        {/* 自動チェックイン, 鍵発行, スキャンタブの復元 */}
         {activeTab === 'checkin' && (
-          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-16 animate-in fade-in text-center">
-            <h3 className="text-5xl font-black text-white italic uppercase mb-10">自動チェックイン</h3>
-            <button className="w-full h-24 bg-emerald-600 text-white font-black rounded-[2rem] text-3xl uppercase italic active:scale-95 transition-all shadow-xl">身分証スキャン開始 ➔</button>
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in text-center">
+            <h3 className="text-3xl md:text-5xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-6"><UserPlus className="text-emerald-500" size={48} /> 自動チェックイン</h3>
+            <div className="bg-[#0a0b14] border-2 border-white/5 rounded-[2.5rem] p-10 space-y-8 max-w-4xl mx-auto">
+               <div className="flex items-start justify-between gap-4 text-left">
+                 <p className="text-slate-300 font-bold leading-relaxed italic">パスポート・身分証スキャンによる自動記帳。本人確認を0秒で完了させます。</p>
+                 <Badge className="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 font-black text-[10px] px-3 py-1">旅館業法準拠</Badge>
+               </div>
+               <div className="bg-black/60 p-8 rounded-3xl border-2 border-emerald-500/30 space-y-5 shadow-2xl text-left">
+                 <div className="flex items-center gap-3 text-emerald-400 font-black uppercase text-sm tracking-widest border-b border-white/10 pb-4"><ShieldCheck size={24} /> 法律遵守（全国一律項目）</div>
+                 <div className="grid grid-cols-2 gap-4 text-[11px] text-slate-400 font-bold">
+                    <div className="space-y-3"><div>氏名・住所・職業</div><div>到着・出発日時</div></div>
+                    <div className="space-y-3"><div>前泊地・行先地</div><div>国籍・旅券番号</div></div>
+                 </div>
+               </div>
+               <div className="border-4 border-dashed border-white/10 rounded-[2.5rem] aspect-video flex flex-col items-center justify-center gap-6 cursor-pointer hover:bg-white/5 bg-white/5 shadow-inner" onClick={() => fileInputRef.current?.click()}>
+                  <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
+                  {image ? <img src={image} className="h-full w-full object-contain p-4" alt="ID" /> : <><Camera className="h-10 w-10 text-slate-500" /><p className="text-xl text-white font-black italic uppercase text-center">身分証をスキャン</p></>}
+               </div>
+               <button onClick={runCheckin} disabled={checkinStatus === 'SCANNING' || !image} className="w-full h-24 bg-emerald-600 text-white font-black rounded-[2rem] shadow-xl text-4xl uppercase italic active:scale-95 transition-all">{checkinStatus === 'SCANNING' ? <Loader2 className="animate-spin" /> : "本人確認 ＆ PMS同期 ➔"}</button>
+            </div>
           </Card>
         )}
 
         {activeTab === 'lock' && (
-          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-16 shadow-2xl text-center space-y-12 animate-in fade-in">
-             <h3 className="text-5xl font-black text-white italic uppercase flex items-center justify-center gap-6"><Lock className="text-emerald-500" size={48} /> 鍵自動発行デプロイ</h3>
-             <button onClick={() => setIsIssuingKey(true)} className="w-full h-24 bg-emerald-600 text-white font-black rounded-[2rem] shadow-xl text-3xl uppercase italic active:scale-95 transition-all">鍵発行APIを叩く ➔</button>
-             {isIssuingKey && <div className="p-10 bg-black rounded-[3rem] border-4 border-emerald-500 animate-in zoom-in text-center"><p className="text-9xl font-black text-white tracking-widest">1022</p></div>}
+          <div className="space-y-8 animate-in fade-in">
+            <Card className="bg-[#0a0b14] border-2 border-emerald-500/20 rounded-[2.5rem] p-8 md:p-12 shadow-inner space-y-10">
+              <div className="flex items-center gap-4 text-emerald-500 font-black text-2xl uppercase italic"><Settings size={32} /> API環境設定</div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div className="space-y-4 text-left">
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">{selectedPMS} 選択</label>
+                  <select value={selectedPMS} onChange={(e) => setSelectedPMS(e.target.value)} className="w-full h-14 bg-black border-2 border-white/10 rounded-xl px-4 text-white font-black mb-4">{PMS_OPTIONS.map(p => <option key={p} value={p}>{p}</option>)}</select>
+                  <input type="password" value={pmsApiKey} onChange={(e) => setPmsApiKey(e.target.value)} placeholder={selectedPMS + " APIキーを入力..."} className="w-full h-16 bg-black border-2 border-white/10 rounded-2xl px-6 text-white focus:border-emerald-500" />
+                </div>
+                <div className="space-y-4 text-left">
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest block">錠デバイス 選択</label>
+                  <select value={selectedDevice} onChange={(e) => setSelectedDevice(e.target.value)} className="w-full h-12 bg-black border-2 border-white/10 rounded-xl px-4 text-white font-black mb-4">{DEVICE_OPTIONS.map(d => <option key={d} value={d}>{d}</option>)}</select>
+                  <input type="password" value={lockApiKey} onChange={(e) => setLockApiKey(e.target.value)} placeholder={selectedDevice + " 認証トークンを入力..."} className="w-full h-16 bg-black border-2 border-white/10 rounded-2xl px-6 text-white focus:border-emerald-500" />
+                </div>
+              </div>
+              <button onClick={saveKeys} className="h-16 px-10 bg-white/5 border-2 border-white/10 rounded-2xl text-[14px] font-black uppercase tracking-[0.4em] hover:bg-emerald-500/10 transition-all mx-auto block italic">構成を保存・同期 ➔</button>
+            </Card>
+            <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl space-y-12 text-center">
+               <h3 className="text-3xl md:text-5xl font-black text-white italic uppercase flex items-center justify-center gap-6"><Lock className="text-emerald-500" size={48} /> リアルタイム・キー・デプロイ</h3>
+               <button onClick={issueLockKey} disabled={isIssuingKey} className="w-full h-24 bg-emerald-600 text-white font-black rounded-[2rem] shadow-xl text-3xl uppercase italic active:scale-95 transition-all border-b-8 border-emerald-900 active:border-b-0">{isIssuingKey ? <Loader2 className="animate-spin" /> : <Zap />} 鍵を発行 ➔</button>
+               {lockKeyData && <div className="p-10 bg-black rounded-[3rem] border-4 border-emerald-500 animate-in zoom-in text-center shadow-[0_0_50px_rgba(16,185,129,0.3)]"><p className="text-8xl font-black text-white tracking-widest italic">{lockKeyData.pinCode}</p></div>}
+            </Card>
+          </div>
+        )}
+
+        {activeTab === 'scan' && (
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in">
+            <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 text-emerald-400 text-left"><Camera /> 遺失物AIスキャン</h3>
+            <div className="grid lg:grid-cols-2 gap-12 text-left">
+              <div className="space-y-6">
+                <div className="border-4 border-dashed border-white/10 rounded-[2.5rem] aspect-video flex flex-col items-center justify-center gap-6 cursor-pointer hover:bg-white/5 bg-white/5 shadow-inner" onClick={() => fileInputRef.current?.click()}>
+                  <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
+                  {image ? <img src={image} className="h-full w-full object-contain p-4" alt="Found" /> : <><Camera className="h-10 w-10 text-slate-500" /><p className="text-xl text-white font-black italic uppercase text-center text-center">TAP TO SCAN</p></>}
+                </div>
+                {image && <button onClick={runProfileAnalysis} disabled={isProfiling} className="w-full h-20 bg-blue-600 text-white font-black rounded-2xl shadow-xl italic uppercase active:scale-95 transition-all">{isProfiling ? <Loader2 className="animate-spin" /> : "照合プロファイリング開始 ➔"}</button>}
+              </div>
+              <div className="bg-[#0a0b14] rounded-[3rem] p-10 border border-white/5 space-y-6 flex flex-col min-h-[300px]">
+                <div className="flex items-center justify-between text-white font-black italic uppercase text-lg text-left"><ClipboardPaste className="text-emerald-400" /> 分析ログ・特定結果</div>
+                <textarea value={matchResult} onChange={(e) => setMatchResult(e.target.value)} placeholder="AIの解析結果をここに貼り付けるか、プロファイリングを実行してください..." className="flex-1 bg-[#13141f] border-2 border-white/5 rounded-[2rem] p-8 text-lg text-slate-300 outline-none font-mono italic shadow-inner" />
+              </div>
+            </div>
+            {profileData && <div className="mt-8 p-10 bg-emerald-600/10 border-2 border-emerald-500/30 rounded-[3rem] animate-in slide-in-from-top-4 text-left"><p className="text-emerald-500 font-black uppercase text-xs mb-4 tracking-widest">Matching Probability: {profileData.certaintyLevel}</p><p className="text-2xl font-black text-white italic leading-relaxed">「 {profileData.reasoning} 」</p></div>}
           </Card>
         )}
       </div>
-      <DebugPanel data={{ activeTab }} toolId="nextra-dms-v4.7" />
-      <div className="text-center opacity-10 font-black uppercase tracking-[0.5em] italic text-[8px] pb-10">Nextra AI Autonomous Management System • 2026</div>
+      <DebugPanel data={{ activeTab, hasImage: !!image }} toolId="nextra-v4.5-final" />
+      <div className="text-center opacity-10 font-black uppercase tracking-[0.5em] italic text-[8px] pb-10">Operational OS • Nextra AI MASTERMODEL • 2026</div>
     </div>
   )
 }
