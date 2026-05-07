@@ -37,9 +37,9 @@ export default async function DashboardPage() {
   // 5大マスタツール + 特選ツール
   const quickTools = [
     { id: 'staysee-ai-finder', name: 'Staysee AI Finder', icon: Building2, color: 'text-emerald-500', bg: 'bg-emerald-500/10', isModel: true },
-    { id: 'inbox-organizer', name: 'Gmail AI Accelerator', icon: Mail, color: 'text-blue-500', bg: 'bg-blue-500/10', isModel: true },
+    { id: 'comp-price-monitor', name: '競合価格AI監視', icon: TrendingUp, color: 'text-blue-500', bg: 'bg-blue-500/10', isModel: true },
     { id: 'sns-auto-poster', name: 'AI SNSオートポスター', icon: Share2, color: 'text-rose-500', bg: 'bg-rose-500/10', isModel: true },
-    { id: 'evidence-manager', name: 'AI エビデンス・マネージャー', icon: ShieldCheck, color: 'text-emerald-400', bg: 'bg-emerald-400/10', isModel: true },
+    { id: 'hotel-affiliate', name: 'アフィリエイトAI連携', icon: Network, color: 'text-emerald-400', bg: 'bg-emerald-400/10', isModel: true },
     { id: 'money-guard', name: 'AI家計防衛シミュレーター', icon: Wallet, color: 'text-amber-500', bg: 'bg-amber-500/10', isModel: true },
     { id: 'youtube-producer', name: 'AI YouTubeプロデューサー', icon: Youtube, color: 'text-red-500', bg: 'bg-red-500/10', isModel: true },
   ]
