@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import dynamic from 'next/dynamic'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
@@ -19,23 +19,23 @@ const MasterEngine = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const STYLES = [
-    { id: 'japanese', name: '和風・日の丸', emoji: '⛩️', colors: ['#c0392b', '#ffffff'] },
-    { id: 'street', name: 'ストリート', emoji: '🏙️', colors: ['#ffdd00', '#000000'] },
-    { id: 'retro', name: 'レトロ', emoji: '📻', colors: ['#ff6b35', '#f7c59f'] },
-    { id: 'cyberpunk', name: 'サイバー', emoji: '🌃', colors: ['#00ffff', '#ff00ff'] },
-    { id: 'kawaii', name: 'かわいい', emoji: '🎀', colors: ['#ffb7c5', '#fff0f5'] },
-    { id: 'minimal', name: 'ミニマル', emoji: '⬜', colors: ['#ffffff', '#000000'] },
-    { id: 'gold', name: 'ラグジュアリー', emoji: '💎', colors: ['#d4af37', '#000000'] },
-    { id: 'neon', name: 'ネオンサイン', emoji: '💡', colors: ['#39ff14', '#000000'] },
-    { id: 'nature', name: 'ボタニカル', emoji: '🌿', colors: ['#2ecc71', '#f1f1f1'] },
+    { id: 'japanese', name: '蜥碁｢ｨ繝ｻ譌･縺ｮ荳ｸ', emoji: '笵ｩ・・, colors: ['#c0392b', '#ffffff'] },
+    { id: 'street', name: '繧ｹ繝医Μ繝ｼ繝・, emoji: '徐・・, colors: ['#ffdd00', '#000000'] },
+    { id: 'retro', name: '繝ｬ繝医Ο', emoji: '峠', colors: ['#ff6b35', '#f7c59f'] },
+    { id: 'cyberpunk', name: '繧ｵ繧､繝舌・', emoji: '激', colors: ['#00ffff', '#ff00ff'] },
+    { id: 'kawaii', name: '縺九ｏ縺・＞', emoji: '死', colors: ['#ffb7c5', '#fff0f5'] },
+    { id: 'minimal', name: '繝溘ル繝槭Ν', emoji: '筮・, colors: ['#ffffff', '#000000'] },
+    { id: 'gold', name: '繝ｩ繧ｰ繧ｸ繝･繧｢繝ｪ繝ｼ', emoji: '虫', colors: ['#d4af37', '#000000'] },
+    { id: 'neon', name: '繝阪が繝ｳ繧ｵ繧､繝ｳ', emoji: '庁', colors: ['#39ff14', '#000000'] },
+    { id: 'nature', name: '繝懊ち繝九き繝ｫ', emoji: '諺', colors: ['#2ecc71', '#f1f1f1'] },
   ];
 
   const TSHIRT_COLORS = [
-    { id: 'white', name: '白', hex: '#FFFFFF', text: '#000000' },
-    { id: 'black', name: '黒', hex: '#1a1a1a', text: '#FFFFFF' },
-    { id: 'navy', name: '紺', hex: '#1e3a5f', text: '#FFFFFF' },
-    { id: 'gray', name: 'グレー', hex: '#808080', text: '#FFFFFF' },
-    { id: 'red', name: 'レッド', hex: '#e74c3c', text: '#FFFFFF' },
+    { id: 'white', name: '逋ｽ', hex: '#FFFFFF', text: '#000000' },
+    { id: 'black', name: '鮟・, hex: '#1a1a1a', text: '#FFFFFF' },
+    { id: 'navy', name: '邏ｺ', hex: '#1e3a5f', text: '#FFFFFF' },
+    { id: 'gray', name: '繧ｰ繝ｬ繝ｼ', hex: '#808080', text: '#FFFFFF' },
+    { id: 'red', name: '繝ｬ繝・ラ', hex: '#e74c3c', text: '#FFFFFF' },
   ];
 
   useEffect(() => {
@@ -55,15 +55,19 @@ const MasterEngine = () => {
         throw new Error('Empty');
       }
     } catch {
-      // 憲法：虚無を許さない。ライブがダメなら準ライブを叩くか、強力な固定ワード
-      setTrends([
-        {id:1, name:'AI美女'}, {id:2, name:'猫動画'}, {id:3, name:'キャンプギア'}, 
-        {id:4, name:'昭和レトロ'}, {id:5, name:'サウナ'}, {id:6, name:'ストリート系'}
+      // 諞ｲ豕包ｼ夊劒辟｡繧定ｨｱ縺輔↑縺・ゅΛ繧､繝悶′繝繝｡縺ｪ繧画ｺ悶Λ繧､繝悶ｒ蜿ｩ縺上°縲∝ｼｷ蜉帙↑蝗ｺ螳壹Ρ繝ｼ繝・      setTrends([
+        {id:1, name:'AI鄒主･ｳ'}, {id:2, name:'迪ｫ蜍慕判'}, {id:3, name:'繧ｭ繝｣繝ｳ繝励ぐ繧｢'}, 
+        {id:4, name:'譏ｭ蜥後Ξ繝医Ο'}, {id:5, name:'繧ｵ繧ｦ繝・}, {id:6, name:'繧ｹ繝医Μ繝ｼ繝育ｳｻ'}
       ]);
     } finally { setIsLoading(false); }
   };
 
   const isLimitReached = () => {
+    // 👑 憲法第7条：管理者は制限なし
+    if (typeof window !== "undefined") {
+      const userEmail = localStorage.getItem("nextra_user_email");
+      if (userEmail === "f.yoneyone9@gmail.com") return false;
+    }
     if (!lastUsage) return false;
     const now = new Date();
     const last = new Date(lastUsage);
@@ -77,8 +81,7 @@ const MasterEngine = () => {
     if (!ctx) return;
     const w = canvas.width, h = canvas.height;
     
-    // 全体の背景色（Tシャツの背景）を白に設定
-    ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, w, h);
+    // 蜈ｨ菴薙・閭梧勹濶ｲ・・繧ｷ繝｣繝・・閭梧勹・峨ｒ逋ｽ縺ｫ險ｭ螳・    ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, w, h);
     
     const currentTColor = TSHIRT_COLORS.find(c => c.id === tshirtColor) || TSHIRT_COLORS[1];
     ctx.fillStyle = currentTColor.hex; 
@@ -109,16 +112,16 @@ const MasterEngine = () => {
       case 'kawaii':
         ctx.font = "24px serif";
         ctx.textAlign = 'center';
-        ctx.fillStyle = "#ffb347"; ctx.fillText("✨", cx - 45, cy - 50);
-        ctx.fillStyle = "#ff69b4"; ctx.fillText("💖", cx, cy - 50);
-        ctx.fillStyle = "#ffb347"; ctx.fillText("✨", cx + 45, cy - 50);
+        ctx.fillStyle = "#ffb347"; ctx.fillText("笨ｨ", cx - 45, cy - 50);
+        ctx.fillStyle = "#ff69b4"; ctx.fillText("猪", cx, cy - 50);
+        ctx.fillStyle = "#ffb347"; ctx.fillText("笨ｨ", cx + 45, cy - 50);
         ctx.font = `bold ${fontSize}px "Hiragino Maru Gothic Pro", "Segoe UI", sans-serif`;
         ctx.fillStyle = '#ffc0cb'; 
         ctx.fillText(keyword, cx, cy + 10);
         ctx.font = "24px serif";
-        ctx.fillStyle = "#ffb7c5"; ctx.fillText("🌸", cx - 45, cy + 60);
-        ctx.fillStyle = "#ff69b4"; ctx.fillText("💗", cx, cy + 60);
-        ctx.fillStyle = "#ffb7c5"; ctx.fillText("🌸", cx + 45, cy + 60);
+        ctx.fillStyle = "#ffb7c5"; ctx.fillText("減", cx - 45, cy + 60);
+        ctx.fillStyle = "#ff69b4"; ctx.fillText("苧", cx, cy + 60);
+        ctx.fillStyle = "#ffb7c5"; ctx.fillText("減", cx + 45, cy + 60);
         break;
 
       case 'japanese':
@@ -167,7 +170,7 @@ const MasterEngine = () => {
   const handlePublish = async () => {
     if (isPublishing) return;
     if (isLimitReached()) {
-      alert("⚠️ 1日の利用制限に達しました。新しいトレンド商品は明日また出品しましょう！");
+      alert("笞・・1譌･縺ｮ蛻ｩ逕ｨ蛻ｶ髯舌↓驕斐＠縺ｾ縺励◆縲よ眠縺励＞繝医Ξ繝ｳ繝牙膚蜩√・譏取律縺ｾ縺溷・蜩√＠縺ｾ縺励ｇ縺・ｼ・);
       return;
     }
     setIsGenerating(true);
@@ -179,19 +182,19 @@ const MasterEngine = () => {
       });
       const d = await res.json();
       if (d.success) { 
-        alert('Shopify出品完了！'); 
+        alert('Shopify蜃ｺ蜩∝ｮ御ｺ・ｼ・); 
         const now = Date.now();
         setLastUsage(now);
         localStorage.setItem('last_usage_select_shop', now.toString());
         setCurrentStep(3); 
       }
-    } catch { alert('通信エラー'); } finally { setIsGenerating(false); }
+    } catch { alert('騾壻ｿ｡繧ｨ繝ｩ繝ｼ'); } finally { setIsGenerating(false); }
   };
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 md:space-y-12 pb-32 text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 p-3 md:p-10 shadow-[0_0_100px_rgba(16,185,129,0.2)] bg-[#050507]">
       <div className="text-center space-y-1 md:space-y-3">
-        <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none">AIセレクトショップ</h1>
+        <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none">AI繧ｻ繝ｬ繧ｯ繝医す繝ｧ繝・・</h1>
         <div className="inline-block bg-[#5845e0] text-white font-black px-4 py-0.5 rounded-full uppercase italic text-[8px] md:text-[10px] tracking-widest shadow-lg">v24.1-MASTER</div>
       </div>
 
@@ -207,7 +210,7 @@ const MasterEngine = () => {
             Array(6).fill(0).map((_, i) => <div key={i} className="h-40 bg-white/5 rounded-[2rem] animate-pulse border border-white/5" />)
           ) : trends.map((t) => (
             <div key={t.id} className="bg-[#13141f] border-2 border-white/5 p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] hover:border-[#5845e0] cursor-pointer transition-all shadow-xl group" onClick={() => { setKeyword(t.name); setCurrentStep(2); }}>
-              <div className="border border-indigo-500/30 text-indigo-400 px-3 py-0.5 rounded text-[8px] font-black w-fit mb-4 italic uppercase">現在のトレンド</div>
+              <div className="border border-indigo-500/30 text-indigo-400 px-3 py-0.5 rounded text-[8px] font-black w-fit mb-4 italic uppercase">迴ｾ蝨ｨ縺ｮ繝医Ξ繝ｳ繝・/div>
               <p className="text-2xl md:text-4xl font-black italic uppercase text-white tracking-tighter group-hover:text-emerald-400 transition-colors">{t.name}</p>
             </div>
           ))}
@@ -218,19 +221,19 @@ const MasterEngine = () => {
         <div className="grid lg:grid-cols-2 gap-8 md:gap-12 animate-in zoom-in-95 duration-500">
           <div className="bg-[#13141f] p-6 md:p-10 rounded-[2.5rem] border-2 border-white/5 space-y-8 shadow-2xl">
             <div className="space-y-3">
-              <label className="text-[9px] font-black uppercase text-slate-500 tracking-widest px-2 italic">デザインキーワード</label>
+              <label className="text-[9px] font-black uppercase text-slate-500 tracking-widest px-2 italic">繝・じ繧､繝ｳ繧ｭ繝ｼ繝ｯ繝ｼ繝・/label>
               <input value={keyword} onChange={(e) => setKeyword(e.target.value)} className="w-full h-16 md:h-20 text-2xl md:text-4xl font-black italic bg-black border-2 border-white/10 rounded-xl md:rounded-2xl px-6 md:px-8 text-white outline-none focus:border-[#5845e0]" />
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:gap-8">
                <div className="space-y-3">
-                  <label className="text-[9px] font-black uppercase text-slate-500 tracking-widest px-2 italic">生地のカラー</label>
+                  <label className="text-[9px] font-black uppercase text-slate-500 tracking-widest px-2 italic">逕溷慍縺ｮ繧ｫ繝ｩ繝ｼ</label>
                   <div className="flex gap-3">
                      {TSHIRT_COLORS.map(c => <button key={c.id} onClick={() => setTshirtColor(c.id)} className={`w-12 h-12 rounded-xl border-4 transition-all ${tshirtColor === c.id ? 'border-[#5845e0] scale-110 shadow-xl' : 'border-white/5'}`} style={{ backgroundColor: c.hex }} />)}
                   </div>
                </div>
                <div className="space-y-3">
-                  <label className="text-[9px] font-black uppercase text-slate-500 tracking-widest px-2 italic">スタイルパレット</label>
+                  <label className="text-[9px] font-black uppercase text-slate-500 tracking-widest px-2 italic">繧ｹ繧ｿ繧､繝ｫ繝代Ξ繝・ヨ</label>
                   <div className="grid grid-cols-3 gap-2">
                      {STYLES.map(s => <button key={s.id} onClick={() => setStyle(s.id)} className={`py-3 rounded-xl text-[8px] font-black uppercase italic border-2 transition-all ${style === s.id ? 'bg-[#5845e0] text-white border-white shadow-lg' : 'bg-black text-slate-600 border-white/5 hover:border-white/10'}`}>{s.emoji}<br/>{s.name}</button>)}
                   </div>
@@ -238,7 +241,7 @@ const MasterEngine = () => {
             </div>
 
             <button onClick={handlePublish} disabled={isPublishing} className="w-full h-20 md:h-28 bg-emerald-600 text-white font-black text-2xl md:text-4xl italic rounded-[2rem] md:rounded-[2.5rem] shadow-xl flex items-center justify-center gap-4 active:scale-95 transition-all border-b-8 border-emerald-800 active:border-b-0">
-               {isPublishing ? <Loader2 className="animate-spin" size={40} /> : "SHOPIFY 出品 🚀"}
+               {isPublishing ? <Loader2 className="animate-spin" size={40} /> : "SHOPIFY 蜃ｺ蜩・噫"}
             </button>
           </div>
           <div className="bg-[#13141f] rounded-[2.5rem] md:rounded-[3rem] border-2 border-white/5 p-8 md:p-12 flex justify-center items-center relative overflow-hidden shadow-2xl">
@@ -249,9 +252,9 @@ const MasterEngine = () => {
 
       {currentStep === 3 && (
         <div className="text-center py-20 animate-in zoom-in">
-           <h2 className="text-5xl md:text-7xl font-black text-white italic mb-10 tracking-tighter uppercase">出品成功 🚀</h2>
-           <button onClick={() => window.open('https://z5ju1n-vs.myshopify.com/admin/products', '_blank')} className="h-20 md:h-24 px-12 md:px-16 bg-white text-black font-black rounded-2xl md:rounded-3xl text-xl md:text-2xl hover:bg-emerald-500 hover:text-white transition-all uppercase italic shadow-2xl active:scale-95">Shopify管理画面を開く ↗</button>
-           <button onClick={() => setCurrentStep(1)} className="w-full mt-10 text-slate-500 font-black italic uppercase text-xs hover:text-white transition-all underline tracking-widest">新しい商品を作る</button>
+           <h2 className="text-5xl md:text-7xl font-black text-white italic mb-10 tracking-tighter uppercase">蜃ｺ蜩∵・蜉・噫</h2>
+           <button onClick={() => window.open('https://z5ju1n-vs.myshopify.com/admin/products', '_blank')} className="h-20 md:h-24 px-12 md:px-16 bg-white text-black font-black rounded-2xl md:rounded-3xl text-xl md:text-2xl hover:bg-emerald-500 hover:text-white transition-all uppercase italic shadow-2xl active:scale-95">Shopify邂｡逅・判髱｢繧帝幕縺・竊・/button>
+           <button onClick={() => setCurrentStep(1)} className="w-full mt-10 text-slate-500 font-black italic uppercase text-xs hover:text-white transition-all underline tracking-widest">譁ｰ縺励＞蝠・刀繧剃ｽ懊ｋ</button>
         </div>
       )}
     </div>
