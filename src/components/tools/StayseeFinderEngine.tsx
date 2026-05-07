@@ -31,6 +31,11 @@ const MasterEngine = () => {
   const [checkinStatus, setCheckinStatus] = useState('IDLE');
   const [lockKeyData, setLockKeyData] = useState(null);
   const [isIssuingKey, setIsIssuingKey] = useState(false);
+  // 台帳フィールド（PMS自動入力 + 手動編集可能）
+  const [ledgerName, setLedgerName] = useState('');
+  const [ledgerAddress, setLedgerAddress] = useState('');
+  const [ledgerOccupation, setLedgerOccupation] = useState('');
+  const [ledgerTravel, setLedgerTravel] = useState('');
 
   const fileInputRef = useRef(null);
 
@@ -44,6 +49,11 @@ const MasterEngine = () => {
   const runCheckin = async () => {
     setCheckinStatus('SCANNING');
     await new Promise(r => setTimeout(r, 2000));
+    // PMS自動入力（実際はAPIから取得。ここではデモ値）
+    setLedgerName('山田 太郎');
+    setLedgerAddress('東京都渋谷区1-2-3');
+    setLedgerOccupation('会社員');
+    setLedgerTravel('大阪 → 東京 → 横浜');
     setCheckinStatus('VERIFIED');
   };
 
@@ -127,10 +137,21 @@ const MasterEngine = () => {
                 <div className="bg-black/40 p-10 rounded-[2.5rem] border border-white/5 space-y-6">
                    <p className="text-slate-500 font-black uppercase text-xs mb-4 tracking-widest">Step 2: Ledger Entry</p>
                    <div className="grid grid-cols-1 gap-4">
-                      {["氏名", "住所", "職業", "前泊地・行先地"].map(l => (
-                        <div key={l} className="space-y-1">
-                          <label className="text-[10px] font-black text-slate-600 uppercase px-2">{l}</label>
-                          <div className="h-12 bg-white/5 rounded-xl border border-white/5 flex items-center px-6 text-sm font-bold text-slate-400 italic">Auto-filling by AI...</div>
+                      {[
+                        { label: '氏名', value: ledgerName, setter: setLedgerName, placeholder: checkinStatus === 'SCANNING' ? 'AI読み取り中...' : '氏名を入力' },
+                        { label: '住所', value: ledgerAddress, setter: setLedgerAddress, placeholder: checkinStatus === 'SCANNING' ? 'AI読み取り中...' : '住所を入力' },
+                        { label: '職業', value: ledgerOccupation, setter: setLedgerOccupation, placeholder: checkinStatus === 'SCANNING' ? 'AI読み取り中...' : '職業を入力' },
+                        { label: '前泊地・行先地', value: ledgerTravel, setter: setLedgerTravel, placeholder: checkinStatus === 'SCANNING' ? 'AI読み取り中...' : '前泊地・行先地を入力' },
+                      ].map(f => (
+                        <div key={f.label} className="space-y-1">
+                          <label className="text-[10px] font-black text-slate-600 uppercase px-2">{f.label}</label>
+                          <input
+                            type="text"
+                            value={f.value}
+                            onChange={e => f.setter(e.target.value)}
+                            placeholder={f.placeholder}
+                            className="w-full h-12 bg-white/5 rounded-xl border border-white/10 px-4 text-sm font-bold text-white placeholder:text-slate-600 focus:border-emerald-500/50 focus:outline-none transition-all"
+                          />
                         </div>
                       ))}
                       <div className="pt-4 flex flex-col gap-4">
