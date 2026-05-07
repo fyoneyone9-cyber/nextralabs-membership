@@ -184,7 +184,7 @@ export default function DmsEngine() {
                 <tbody className="divide-y border-inherit">
                   <tr className="hover:bg-emerald-500/5 transition-colors">
                     <td className="p-4"><Badge className="bg-emerald-500 text-white border-0 font-bold text-[8px]">確定</Badge></td>
-                    <td className="p-4 font-black">米山 文貴 様</td>
+                    <td className="p-4 font-black"><Link href="/dms/bookings/BK-8821" className="text-indigo-600 hover:underline">米山 文貴 様</Link></td>
                     <td className="p-4 font-mono text-emerald-500">201</td>
                     <td className="p-4 text-right"><ArrowRight size={16} className="ml-auto opacity-20" /></td>
                   </tr>
