@@ -5,15 +5,15 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { 
-  ArrowRight, Upload, CheckCircle2, Zap, Copy, 
-  RotateCcw, ClipboardPaste, Building2, Camera, Loader2, 
-  Lock, Coins, Settings, Info, UserPlus, List, Search, RefreshCw, Database, Eye, EyeOff, Sparkles
+  ArrowRight, CheckCircle2, Zap, RotateCcw, ClipboardPaste, 
+  Building2, Camera, Loader2, Lock, Coins, Settings, Info, 
+  UserPlus, List, Search, RefreshCw, Database, Eye, EyeOff, Sparkles
 } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const TABS = [
-  { id: 'bookings', label: '予約一覧', icon: List, desc: 'DMS予約管理' },
-  { id: 'checkin', label: '自動チェックイン', icon: UserPlus, desc: '本人確認・記帳' },
+  { id: 'bookings', label: 'DMS予約一覧', icon: List, desc: '予約状況の統合管理' },
+  { id: 'checkin', label: '自動チェックイン', icon: UserPlus, desc: '本人確認・PMS記帳' },
   { id: 'lock', label: '鍵自動発行', icon: Lock, desc: 'API連携デプロイ' },
   { id: 'scan', label: '遺失物特定', icon: Camera, desc: 'AI画像解析' },
   { id: 'settings', label: 'API設定', icon: Settings, desc: '環境一元管理' },
@@ -27,14 +27,9 @@ const MasterEngine = () => {
   const [isIssuingKey, setIsIssuingKey] = useState(false);
   const [pmsApiKey, setPmsApiKey] = useState('');
   const [lockApiKey, setLockApiKey] = useState('');
-  const [showPmsKey, setShowPmsKey] = useState(false);
-  const [showLockKey, setShowLockKey] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState('RemoteLock');
   const [selectedPMS, setSelectedPMS] = useState('Staysee');
   const [isMounted, setIsMounted] = useState(false);
-
-  const DEVICE_OPTIONS = ['RemoteLock', 'TTLock', 'SwitchBot', 'KEYVOX', 'MIWA', 'GOAL', 'ASSAABLOY', 'Baycom'];
-  const PMS_OPTIONS = ['Staysee', 'Beds24', 'AirHost', 'suitebook', 'infor', 'JTBデータコネクト'];
 
   useEffect(() => {
     setIsMounted(true);
@@ -46,16 +41,15 @@ const MasterEngine = () => {
   const saveKeys = () => {
     localStorage.setItem('nextra_pms_key', pmsApiKey);
     localStorage.setItem('nextra_lock_key', lockApiKey);
-    alert('API設定を保存しました');
+    alert('API構成を保存しました');
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => { setImage(event.target?.result); };
-      reader.readAsDataURL(file);
-    }
+  const issueLockKey = async () => {
+    if (!pmsApiKey || !lockApiKey) { alert('設定タブからAPI連携を完了させてください'); return; }
+    setIsIssuingKey(true);
+    await new Promise(r => setTimeout(r, 1000));
+    setLockKeyData({ pinCode: Math.floor(1000 + Math.random() * 9000).toString() });
+    setIsIssuingKey(false);
   };
 
   if (!isMounted) return null;
@@ -64,16 +58,16 @@ const MasterEngine = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-8 min-h-screen text-slate-200 bg-[#050507] border-4 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] shadow-[0_0_100px_rgba(16,185,129,0.2)]">
-      <div className="text-center space-y-4 pt-4">
+      <div className="text-center space-y-4">
         <Badge className="bg-emerald-600 px-6 py-1 font-black tracking-widest uppercase text-[10px] shadow-lg">Nextra AI Autonomous OS</Badge>
-        <h1 className="text-6xl md:text-[10rem] font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">Nextra AI</h1>
-        <p className="text-emerald-500 font-black uppercase tracking-[0.6em] italic text-sm md:text-2xl text-center">宿泊DXの「正解」を、自律化する。</p>
+        <h1 className="text-6xl md:text-[10rem] font-black text-white uppercase italic tracking-tighter leading-none">Nextra AI</h1>
+        <p className="text-emerald-500 font-black uppercase tracking-[0.6em] italic text-sm md:text-xl text-center">宿泊DXの「正解」を、自律化する。</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 px-2">
         {TABS.map((tab) => (
           <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={"p-4 md:p-6 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-2 group " + (activeTab === tab.id ? 'bg-emerald-600 border-white text-white shadow-xl scale-[1.05]' : 'bg-[#13141f] border-white/5 text-slate-500 hover:text-white hover:border-emerald-500/50')}>
-            <tab.icon className={activeTab === tab.id ? 'text-white' : 'text-emerald-400'} size={32} />
+            <tab.icon className={activeTab === tab.id ? 'text-white' : 'text-emerald-500'} size={32} />
             <div className="text-center">
               <p className="text-[11px] md:text-sm font-black uppercase italic leading-none mb-1">{tab.label}</p>
               <p className="text-[8px] md:text-[10px] font-bold opacity-40 leading-none">{tab.desc}</p>
@@ -83,7 +77,6 @@ const MasterEngine = () => {
       </div>
 
       <div className="mt-4 text-left">
-        {/* --- 📝 DMS 予約一覧 --- */}
         {activeTab === 'bookings' && (
           <div className="space-y-6 animate-in fade-in">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-[#0a0b14] p-6 rounded-3xl border-2 border-emerald-500/20 shadow-inner">
@@ -107,7 +100,6 @@ const MasterEngine = () => {
           </div>
         )}
 
-        {/* --- ⚙️ API設定タブ --- */}
         {activeTab === 'settings' && (
           <div className="space-y-8 animate-in fade-in">
             <Card className="bg-[#13141f] border-2 border-emerald-500/30 rounded-[2.5rem] p-8 md:p-16 shadow-2xl space-y-12">
@@ -129,18 +121,17 @@ const MasterEngine = () => {
           </div>
         )}
 
-        {/* 自動チェックイン, 鍵発行, スキャン（省略せず完全に記述） */}
         {activeTab === 'checkin' && (
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-16 animate-in fade-in text-center"><h3 className="text-5xl font-black text-white italic uppercase mb-10">自動チェックイン</h3><button className="w-full h-24 bg-emerald-600 text-white font-black rounded-[2rem] text-3xl uppercase italic shadow-xl">身分証スキャン開始 ➔</button></Card>
         )}
         {activeTab === 'lock' && (
-          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-16 shadow-2xl text-center space-y-12 animate-in fade-in"><h3 className="text-5xl font-black text-white italic uppercase">鍵自動発行デプロイ</h3><button className="w-full h-24 bg-emerald-600 text-white font-black rounded-[2rem] text-3xl uppercase italic active:scale-95 shadow-xl">鍵発行APIを叩く ➔</button></Card>
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-16 shadow-2xl text-center space-y-12 animate-in fade-in"><h3 className="text-5xl font-black text-white italic uppercase">鍵自動発行デプロイ</h3><button onClick={issueLockKey} className="w-full h-24 bg-emerald-600 text-white font-black rounded-[2rem] shadow-xl text-3xl uppercase italic active:scale-95">鍵発行APIを叩く ➔</button>{lockKeyData && <div className="p-10 bg-black rounded-[3rem] border-4 border-emerald-500 animate-in zoom-in text-center"><p className="text-9xl font-black text-white tracking-widest">{lockKeyData.pinCode}</p></div>}</Card>
         )}
         {activeTab === 'scan' && (
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-16 animate-in fade-in text-center"><h3 className="text-5xl font-black text-white italic uppercase mb-10">遺失物特定スキャン</h3><button className="w-full h-24 bg-emerald-600 text-white font-black rounded-[2rem] text-3xl uppercase italic shadow-xl">画像スキャン開始 ➔</button></Card>
         )}
       </div>
-      <DebugPanel data={{ activeTab }} toolId="nextra-v4.9-fixed" />
+      <DebugPanel data={{ activeTab }} toolId="nextra-v4.9-final" />
       <div className="text-center opacity-10 font-black uppercase tracking-[0.5em] italic text-[8px] pb-10">Operational OS • Nextra AI MASTERMODEL • 2026</div>
     </div>
   )
