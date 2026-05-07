@@ -55,6 +55,9 @@ export function Header() {
           <span className="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
             NextraLabs
           </span>
+          <a href="https://x.com/0022_sougo" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-blue-400 transition-all ml-1">
+            <TwitterIcon className="h-4 w-4 fill-current" />
+          </a>
         </Link>
 
         {/* Desktop Nav */}
@@ -74,9 +77,6 @@ export function Header() {
           <Link href="/contact" className="text-sm font-medium hover:text-primary transition-colors">
             📩 お問い合わせ
           </Link>
-          <a href="https://x.com/0022_sougo" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-blue-400 transition-all">
-            <TwitterIcon className="h-5 w-5 fill-current" />
-          </a>
           {user ? (
             <>
               <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
