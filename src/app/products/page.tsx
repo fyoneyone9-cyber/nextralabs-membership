@@ -70,7 +70,7 @@ function ProductCard({ product }: { product: any }) {
         </div>
         <div className="pt-4 border-t border-white/5 flex flex-col gap-3 mt-auto">
           <Link href={"/products/" + product.id + "/app"} className="block w-full">
-            <Button className={"w-full h-12 " + (isSpecial ? "bg-emerald-500 hover:bg-emerald-400" : "bg-white hover:bg-slate-200") + " text-slate-950 font-black text-sm rounded-xl transition-all"}>
+            <Button className="w-full h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm rounded-xl transition-all">
               このツールを使う ➔
             </Button>
           </Link>
@@ -93,14 +93,14 @@ export default function ProductsPage() {
   }, [])
   if (!mounted) return null
   return (
-    <div className="min-h-screen bg-[#050507] text-slate-200 pb-20 font-sans">
+    <div className="min-h-screen bg-[#050507] text-slate-200 pb-10 font-sans">
       <div className="max-w-6xl mx-auto px-4 pt-16 text-center mb-16 space-y-4">
         <Badge variant="outline" className="px-4 py-1 text-[10px] font-black text-emerald-500 border-emerald-500/20 uppercase tracking-widest">Master Catalogue</Badge>
         <h1 className="text-4xl md:text-7xl font-black text-white tracking-tighter uppercase leading-none">AI ツールストア</h1>
         <p className="text-slate-500 max-w-xl mx-auto text-sm font-bold italic leading-relaxed">「指示したら、あとは全部やってくれる」<br/>ビジネスと生活をAI武装する、全24の戦略的エンジン。</p>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 space-y-20">
+      <div className="max-w-6xl mx-auto px-4 space-y-12">
         <section>
           <div className="flex items-center gap-4 mb-8 border-l-8 border-emerald-500 pl-6 py-1">
             <Gift className="w-8 h-8 text-emerald-500" />
