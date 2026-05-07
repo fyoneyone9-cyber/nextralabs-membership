@@ -49,7 +49,7 @@ export function Header() {
           <Link href="/" className="flex items-center space-x-2">
             <span className="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">NextraLabs</span>
           </Link>
-          <a href="https://x.com/0022_sougo" target="_blank" rel="noopener noreferrer" className="relative z-50 text-slate-500 hover:text-blue-400 transition-all ml-2 p-1" style={{ pointerEvents: "auto" }}>
+          <a href="https://x.com/0022_sougo" target="_blank" rel="noopener noreferrer" className="relative z-[100] inline-block p-2 text-slate-500 hover:text-blue-400 transition-all ml-4" style={{ pointerEvents: "auto" }}>
             <TwitterIcon className="h-5 w-5 fill-current" />
           </a>
         </div>
