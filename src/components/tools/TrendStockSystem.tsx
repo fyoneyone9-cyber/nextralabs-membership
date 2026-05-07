@@ -22,9 +22,9 @@ const MasterEngine = () => {
     setIsAnalyzing(true);
     setTimeout(() => {
       setPredictions([
-        { id: 1, keyword: 'ソロキャンプ 焚き火台', reason: 'SNSでの言及数が急増中。明日15時にバズのピーク予測。', item: '超軽量チタン焚き火台', price: '\4,980', confidence: '96%' },
-        { id: 2, keyword: 'レトロ フィルムカメラ', reason: '若年層で「エモい」需要が再燃。品薄傾向にあり。', item: '復刻版インスタントカメラ', price: '\12,000', confidence: '92%' },
-        { id: 3, keyword: '完全ワイヤレス睡眠耳栓', reason: 'ストレス社会での安眠需要。楽天内での検索数1.5倍。', item: 'ノイズキャンセリング耳栓', price: '\8,800', confidence: '89%' },
+        { id: 1, keyword: 'ソロキャンプ 焚き火台', reason: 'SNSでの言及数が急増中。明日15時にバズのピーク予測。', item: '超軽量チタン焚き火台', price: '¥4,980', confidence: '96%' },
+        { id: 2, keyword: 'レトロ フィルムカメラ', reason: '若年層で「エモい」需要が再燃。品薄傾向にあり。', item: '復刻版インスタントカメラ', price: '¥12,000', confidence: '92%' },
+        { id: 3, keyword: '完全ワイヤレス睡眠耳栓', reason: 'ストレス社会での安眠需要。楽天内での検索数1.5倍。', item: 'ノイズキャンセリング耳栓', price: '¥8,800', confidence: '89%' },
       ]);
       setIsAnalyzing(false);
     }, 4000);
