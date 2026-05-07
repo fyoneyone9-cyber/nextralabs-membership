@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Card, CardContent } from '@/components/ui/card'
@@ -13,10 +13,10 @@ import { DebugPanel } from '@/components/tools/DebugPanel'
 const PRESETS = [
   { id: 'iphone', name: 'iPhone 15 Pro', query: 'iPhone 15 Pro 128GB' },
   { id: 'macbook', name: 'MacBook Air', query: 'MacBook Air M3 8GB 256GB' },
-  { id: 'ipad', name: 'iPad Pro M4', query: 'iPad Pro 11インチ M4' },
-  { id: 'switch', name: 'Switch 有機EL', query: 'Nintendo Switch 有機ELモデル' },
+  { id: 'ipad', name: 'iPad Pro M4', query: 'iPad Pro 11繧､繝ｳ繝・M4' },
+  { id: 'switch', name: 'Switch 譛画ｩ檸L', query: 'Nintendo Switch 譛画ｩ檸L繝｢繝・Ν' },
   { id: 'ps5', name: 'PS5 Slim', query: 'PlayStation 5 CFI-2000' },
-  { id: 'airpods', name: 'AirPods Pro 2', query: 'AirPods Pro 第2世代 MagSafe' },
+  { id: 'airpods', name: 'AirPods Pro 2', query: 'AirPods Pro 隨ｬ2荳紋ｻ｣ MagSafe' },
   { id: 'dyson', name: 'Dyson V12', query: 'Dyson V12 Detect Slim' },
   { id: 'sony', name: 'Sony WH-1000XM5', query: 'SONY WH-1000XM5' },
   { id: 'canon', name: 'EOS R10', query: 'Canon EOS R10 RF-S18-150' },
@@ -38,8 +38,7 @@ const MasterEngine = () => {
     if (!query) return;
     
     setIsAnalyzing(true);
-    setCompareData(null); // 前の結果をクリアして「リアルタイム感」を出す
-    
+    setCompareData(null); // 蜑阪・邨先棡繧偵け繝ｪ繧｢縺励※縲後Μ繧｢繝ｫ繧ｿ繧､繝諢溘阪ｒ蜃ｺ縺・    
     try {
       const res = await fetch('/api/tools/buy-smart-nav', {
         method: 'POST',
@@ -63,7 +62,7 @@ const MasterEngine = () => {
     <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
       <div className="text-center space-y-1 md:space-y-3">
         <Badge className="bg-indigo-600 text-white font-black italic px-4 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full shadow-lg">Purchase Smart Engine</Badge>
-        <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">中古・新品比較ナビ</h1>
+        <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">荳ｭ蜿､繝ｻ譁ｰ蜩∵ｯ碑ｼ・リ繝・/h1>
         <div className="inline-block bg-emerald-600 text-white font-black px-4 py-0.5 rounded-full uppercase italic text-[8px] md:text-[10px] tracking-widest shadow-lg">v1.1-MASTER</div>
       </div>
 
@@ -79,17 +78,17 @@ const MasterEngine = () => {
           </div>
           <div className="w-14 h-14 rounded-2xl border border-indigo-500/30 flex items-center justify-center shrink-0 text-indigo-500 font-bold text-2xl bg-indigo-500/5">!</div>
           <div className="space-y-3">
-            <p className="text-[12px] font-black text-indigo-500 uppercase tracking-[0.3em] italic mb-2 text-left">運用プロトコル / SMART PURCHASE</p>
+            <p className="text-[12px] font-black text-indigo-500 uppercase tracking-[0.3em] italic mb-2 text-left">驕狗畑繝励Ο繝医さ繝ｫ / SMART PURCHASE</p>
             <div className="space-y-3 text-sm md:text-xl font-black text-slate-200">
-              <p className="flex items-center gap-4 leading-snug"><span className="text-indigo-500 italic text-2xl">#1</span> 下のプリセットを選択、または商品名を入力</p>
-              <p className="flex items-center gap-4 leading-snug"><span className="text-indigo-500 italic text-2xl">#2</span> 楽天・ラクマの最新市場価格をリアルタイム収集</p>
-              <p className="flex items-center gap-4 leading-snug"><span className="text-indigo-600 italic text-2xl">#3</span> AIが「今どちらを買うべきか」を即座に判定</p>
+              <p className="flex items-center gap-4 leading-snug"><span className="text-indigo-500 italic text-2xl">#1</span> 荳九・繝励Μ繧ｻ繝・ヨ繧帝∈謚槭√∪縺溘・蝠・刀蜷阪ｒ蜈･蜉・/p>
+              <p className="flex items-center gap-4 leading-snug"><span className="text-indigo-500 italic text-2xl">#2</span> 讌ｽ螟ｩ繝ｻ繝ｩ繧ｯ繝槭・譛譁ｰ蟶ょｴ萓｡譬ｼ繧偵Μ繧｢繝ｫ繧ｿ繧､繝蜿朱寔</p>
+              <p className="flex items-center gap-4 leading-snug"><span className="text-indigo-600 italic text-2xl">#3</span> AI縺後御ｻ翫←縺｡繧峨ｒ雋ｷ縺・∋縺阪°縲阪ｒ蜊ｳ蠎ｧ縺ｫ蛻､螳・/p>
             </div>
           </div>
         </div>
 
         <div className="space-y-6">
-          {/* 🚀 楽天APIプリセットボタン */}
+          {/* 噫 讌ｽ螟ｩAPI繝励Μ繧ｻ繝・ヨ繝懊ち繝ｳ */}
           <div className="grid grid-cols-3 gap-3">
              {PRESETS.map(item => (
                <button 
@@ -110,7 +109,7 @@ const MasterEngine = () => {
             <input 
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
-              placeholder="商品名や型番を入力..."
+              placeholder="蝠・刀蜷阪ｄ蝙狗分繧貞・蜉・.."
               className="w-full h-20 bg-black border-2 border-white/10 rounded-2xl pl-16 pr-8 text-lg text-white focus:border-indigo-500 outline-none transition-all shadow-inner"
             />
           </div>
@@ -120,7 +119,7 @@ const MasterEngine = () => {
             className={`w-full h-24 ${!productName || isAnalyzing ? 'bg-slate-800 opacity-50' : 'bg-indigo-600 hover:bg-indigo-500'} text-white font-black rounded-[2rem] shadow-2xl flex items-center justify-center gap-6 text-3xl uppercase italic transition-all active:scale-95 border-b-8 border-indigo-900 active:border-b-0`}
           >
             {isAnalyzing ? <Loader2 className="w-10 h-10 animate-spin" /> : <Scale className="w-10 h-10" />}
-            <span>市場価値を比較 ➔</span>
+            <span>蟶ょｴ萓｡蛟､繧呈ｯ碑ｼ・筐・/span>
           </button>
         </div>
 
@@ -130,14 +129,14 @@ const MasterEngine = () => {
                <div className="bg-black/40 border-2 border-white/5 p-8 rounded-[3rem] space-y-4">
                   <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic pl-2">Market New Price</p>
                   <div className="flex items-baseline gap-4 pl-2">
-                    <p className="text-4xl font-black text-white italic">¥{compareData.newPrice.toLocaleString()}</p>
+                    <p className="text-4xl font-black text-white italic">ﾂ･{compareData.newPrice.toLocaleString()}</p>
                     <Badge variant="outline" className="text-slate-500 border-white/10 uppercase italic">Retail</Badge>
                   </div>
                </div>
                <div className={`p-8 rounded-[3rem] space-y-4 border-4 ${compareData.judgment === 'USED_WIN' ? 'border-emerald-500 bg-emerald-500/10' : 'border-indigo-500 bg-indigo-500/10'}`}>
                   <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic pl-2">Smart Choice Price</p>
                   <div className="flex items-baseline gap-4 pl-2">
-                    <p className="text-4xl font-black text-white italic">¥{compareData.usedPrice.toLocaleString()}</p>
+                    <p className="text-4xl font-black text-white italic">ﾂ･{compareData.usedPrice.toLocaleString()}</p>
                     <div className="flex flex-col">
                        <span className="text-[8px] font-black text-emerald-500 uppercase">Match Score</span>
                        <span className="text-lg font-black text-white italic">{compareData.confidence}</span>
@@ -152,7 +151,7 @@ const MasterEngine = () => {
                <div className="flex items-center gap-4 mb-6">
                   <Badge className="bg-emerald-600 text-white font-black px-4 py-1 text-lg">AI JUDGMENT: {compareData.judgment}</Badge>
                </div>
-               <p className="text-2xl font-black text-white italic leading-relaxed mb-6">「{compareData.advice}」</p>
+               <p className="text-2xl font-black text-white italic leading-relaxed mb-6">縲鶏compareData.advice}縲・/p>
                <div className="space-y-2">
                   {compareData.points.map((p: string, i: number) => (
                     <div key={i} className="flex items-center gap-3 text-sm font-bold text-slate-400">
@@ -170,7 +169,7 @@ const MasterEngine = () => {
                  rel="noopener noreferrer"
                  className="h-16 bg-white/5 border-2 border-white/10 rounded-2xl font-black text-white uppercase italic hover:bg-white/10 transition-all flex items-center justify-center gap-2"
                >
-                  <ShoppingCart size={20} /> 楽天で新品を見る
+                  <ShoppingCart size={20} /> 讌ｽ螟ｩ縺ｧ譁ｰ蜩√ｒ隕九ｋ
                </a>
                <a 
                  href={`https://fril.jp/search/${encodeURIComponent(compareData.target)}`}
@@ -178,8 +177,7 @@ const MasterEngine = () => {
                  rel="noopener noreferrer"
                  className="h-16 bg-[#c62828]/10 border-2 border-[#c62828]/30 rounded-2xl font-black text-[#f44336] uppercase italic hover:bg-[#c62828] hover:text-white transition-all flex items-center justify-center gap-2"
                >
-                  <ShoppingBag size={20} /> ラクマで中古を探す
-               </a>
+                  <ShoppingBag size={20} /> 繝ｩ繧ｯ繝槭〒荳ｭ蜿､繧呈爾縺・               </a>
             </div>
           </div>
         )}
@@ -191,12 +189,11 @@ const MasterEngine = () => {
             <p className="text-xs font-black uppercase tracking-widest">Master Value Protocol</p>
          </div>
          <p className="text-slate-400 text-sm font-bold leading-relaxed text-left">
-            新品の安心感か、中古の圧倒的コストパフォーマンスか。AIが「ポイント還元率」「将来の売却価値」「出品者の信頼度」をすべて計算。あなたにとっての「真の最安値」を導き出します。
-         </p>
+            譁ｰ蜩√・螳牙ｿ・─縺九∽ｸｭ蜿､縺ｮ蝨ｧ蛟堤噪繧ｳ繧ｹ繝医ヱ繝輔か繝ｼ繝槭Φ繧ｹ縺九・I縺後後・繧､繝ｳ繝磯ｄ蜈・紫縲阪悟ｰ・擂縺ｮ螢ｲ蜊ｴ萓｡蛟､縲阪悟・蜩∬・・菫｡鬆ｼ蠎ｦ縲阪ｒ縺吶∋縺ｦ險育ｮ励ゅ≠縺ｪ縺溘↓縺ｨ縺｣縺ｦ縺ｮ縲檎悄縺ｮ譛螳牙､縲阪ｒ蟆弱″蜃ｺ縺励∪縺吶・         </p>
       </div>
 
       <DebugPanel data={{ productName, hasResult: !!compareData }} toolId="buy-smart-nav-master" />
-      <div className="text-center opacity-10 mt-10 font-black uppercase tracking-[0.5em] italic text-[10px]">Smart Commerce OS • NextraLabs 2026</div>
+      <div className="text-center opacity-10 mt-10 font-black uppercase tracking-[0.5em] italic text-[10px]">Smart Commerce OS 窶｢ NextraLabs 2026</div>
     </div>
   )
 }
