@@ -102,12 +102,15 @@ export function LoanAdvisor() {
         throw new Error(data.error || `Server Error (${response.status})`)
       }
 
+      // Markdown記号の除去
+      const cleanAdvice = (data.advice || '').replace(/```markdown|```/g, '').trim()
+
       setResult({
         currentTotal,
         currentAvgRate,
         consolidatedMonthly,
         totalInterestSaved: Math.max(0, interestDiffYear),
-        advice: data.advice || 'AIからのアドバイスを取得できませんでした。'
+        advice: cleanAdvice || 'AIからのアドバイスを取得できませんでした。'
       })
     } catch (err: any) {
       setError(err.message || '診断中にエラーが発生しました')
@@ -250,7 +253,12 @@ export function LoanAdvisor() {
                   <Sparkles className="text-emerald-500" size={16} /> AI完済ロードマップ
                 </h4>
                 <div className="text-slate-300 text-sm md:text-base font-bold leading-relaxed whitespace-pre-wrap">
-                  {result.advice}
+                  {result.advice.split('\n').map((line, i) => {
+                    if (line.startsWith('###')) {
+                      return <h4 key={i} className="text-emerald-400 font-black italic mt-4 mb-2 uppercase tracking-tight">{line.replace('###', '').trim()}</h4>
+                    }
+                    return <p key={i} className="mb-2">{line}</p>
+                  })}
                 </div>
 
                 {/* さりげないAmazonリンク */}
