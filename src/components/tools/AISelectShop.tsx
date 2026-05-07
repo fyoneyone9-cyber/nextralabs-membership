@@ -130,6 +130,24 @@ const MasterEngine = () => {
         chars.forEach((ch, i) => ctx.fillText(ch, cx, cy - (chars.length * (vFontSize/2)) + i*(vFontSize*1.2)));
         break;
 
+      case 'gold':
+        const grad = ctx.createLinearGradient(cx-50, cy, cx+50, cy);
+        grad.addColorStop(0, '#bf953f'); grad.addColorStop(0.5, '#fcf6ba'); grad.addColorStop(1, '#aa771c');
+        ctx.fillStyle = grad;
+        ctx.font = `900 ${fontSize}px serif`; ctx.textAlign = 'center';
+        ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 10;
+        ctx.fillText(keyword.toUpperCase(), cx, cy + 10);
+        break;
+
+      case 'neon':
+        ctx.shadowColor = colors[0]; ctx.shadowBlur = 15;
+        ctx.strokeStyle = colors[0]; ctx.lineWidth = 3;
+        ctx.font = `900 ${fontSize}px sans-serif`; ctx.textAlign = 'center';
+        ctx.strokeText(keyword.toUpperCase(), cx, cy + 10);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(keyword.toUpperCase(), cx, cy + 10);
+        break;
+
       default:
         ctx.fillStyle = colors[0];
         ctx.font = `900 ${fontSize}px Impact`; ctx.textAlign = 'center';
@@ -137,7 +155,7 @@ const MasterEngine = () => {
     }
     ctx.restore();
     setMockup(canvas.toDataURL('image/png'));
-  }, [keyword, style, tshirtColor]);
+  }, [keyword, style, tshirtColor, tshirtColor, STYLES, TSHIRT_COLORS]);
 
   useEffect(() => {
     if (keyword) {
@@ -189,7 +207,7 @@ const MasterEngine = () => {
             Array(6).fill(0).map((_, i) => <div key={i} className="h-40 bg-white/5 rounded-[2rem] animate-pulse border border-white/5" />)
           ) : trends.map((t) => (
             <div key={t.id} className="bg-[#13141f] border-2 border-white/5 p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] hover:border-[#5845e0] cursor-pointer transition-all shadow-xl group" onClick={() => { setKeyword(t.name); setCurrentStep(2); }}>
-              <div className="border border-indigo-500/30 text-indigo-400 px-3 py-0.5 rounded text-[8px] font-black w-fit mb-4 italic uppercase">TRENDING NOW</div>
+              <div className="border border-indigo-500/30 text-indigo-400 px-3 py-0.5 rounded text-[8px] font-black w-fit mb-4 italic uppercase">現在のトレンド</div>
               <p className="text-2xl md:text-4xl font-black italic uppercase text-white tracking-tighter group-hover:text-emerald-400 transition-colors">{t.name}</p>
             </div>
           ))}
@@ -200,19 +218,19 @@ const MasterEngine = () => {
         <div className="grid lg:grid-cols-2 gap-8 md:gap-12 animate-in zoom-in-95 duration-500">
           <div className="bg-[#13141f] p-6 md:p-10 rounded-[2.5rem] border-2 border-white/5 space-y-8 shadow-2xl">
             <div className="space-y-3">
-              <label className="text-[9px] font-black uppercase text-slate-500 tracking-widest px-2 italic">Design Keyword</label>
+              <label className="text-[9px] font-black uppercase text-slate-500 tracking-widest px-2 italic">デザインキーワード</label>
               <input value={keyword} onChange={(e) => setKeyword(e.target.value)} className="w-full h-16 md:h-20 text-2xl md:text-4xl font-black italic bg-black border-2 border-white/10 rounded-xl md:rounded-2xl px-6 md:px-8 text-white outline-none focus:border-[#5845e0]" />
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:gap-8">
                <div className="space-y-3">
-                  <label className="text-[9px] font-black uppercase text-slate-500 tracking-widest px-2 italic">Fabric Tone</label>
+                  <label className="text-[9px] font-black uppercase text-slate-500 tracking-widest px-2 italic">生地のカラー</label>
                   <div className="flex gap-3">
                      {TSHIRT_COLORS.map(c => <button key={c.id} onClick={() => setTshirtColor(c.id)} className={`w-12 h-12 rounded-xl border-4 transition-all ${tshirtColor === c.id ? 'border-[#5845e0] scale-110 shadow-xl' : 'border-white/5'}`} style={{ backgroundColor: c.hex }} />)}
                   </div>
                </div>
                <div className="space-y-3">
-                  <label className="text-[9px] font-black uppercase text-slate-500 tracking-widest px-2 italic">Style Palette</label>
+                  <label className="text-[9px] font-black uppercase text-slate-500 tracking-widest px-2 italic">スタイルパレット</label>
                   <div className="grid grid-cols-3 gap-2">
                      {STYLES.map(s => <button key={s.id} onClick={() => setStyle(s.id)} className={`py-3 rounded-xl text-[8px] font-black uppercase italic border-2 transition-all ${style === s.id ? 'bg-[#5845e0] text-white border-white shadow-lg' : 'bg-black text-slate-600 border-white/5 hover:border-white/10'}`}>{s.emoji}<br/>{s.name}</button>)}
                   </div>
@@ -231,9 +249,9 @@ const MasterEngine = () => {
 
       {currentStep === 3 && (
         <div className="text-center py-20 animate-in zoom-in">
-           <h2 className="text-5xl md:text-7xl font-black text-white italic mb-10 tracking-tighter uppercase">Success 🚀</h2>
-           <button onClick={() => window.open('https://z5ju1n-vs.myshopify.com/admin/products', '_blank')} className="h-20 md:h-24 px-12 md:px-16 bg-white text-black font-black rounded-2xl md:rounded-3xl text-xl md:text-2xl hover:bg-emerald-500 hover:text-white transition-all uppercase italic shadow-2xl active:scale-95">Open Shopify Admin ↗</button>
-           <button onClick={() => setCurrentStep(1)} className="w-full mt-10 text-slate-500 font-black italic uppercase text-xs hover:text-white transition-all underline tracking-widest">Create New Item</button>
+           <h2 className="text-5xl md:text-7xl font-black text-white italic mb-10 tracking-tighter uppercase">出品成功 🚀</h2>
+           <button onClick={() => window.open('https://z5ju1n-vs.myshopify.com/admin/products', '_blank')} className="h-20 md:h-24 px-12 md:px-16 bg-white text-black font-black rounded-2xl md:rounded-3xl text-xl md:text-2xl hover:bg-emerald-500 hover:text-white transition-all uppercase italic shadow-2xl active:scale-95">Shopify管理画面を開く ↗</button>
+           <button onClick={() => setCurrentStep(1)} className="w-full mt-10 text-slate-500 font-black italic uppercase text-xs hover:text-white transition-all underline tracking-widest">新しい商品を作る</button>
         </div>
       )}
     </div>
@@ -243,19 +261,6 @@ const MasterEngine = () => {
 const NoSSRWrapper = dynamic(() => Promise.resolve(MasterEngine), {
   ssr: false,
   loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Syncing Shop Master...</div>
-});
-
-import { DebugPanel } from '@/components/tools/DebugPanel'
-
-export default function AISelectShop() {
-  return (
-    <div className="min-h-screen bg-[#050507] text-gray-100 font-sans p-4 md:p-10 overflow-x-hidden">
-      <NoSSRWrapper />
-      <DebugPanel data={{ system: "v24.1-stable" }} toolId="ai-select-shop-ultimate" />
-    </div>
-  );
-}
-g-[0.5em]">Syncing Shop Master...</div>
 });
 
 import { DebugPanel } from '@/components/tools/DebugPanel'
