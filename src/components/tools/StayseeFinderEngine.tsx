@@ -130,8 +130,8 @@ const MasterEngine = () => {
           </Card>
         )}
       </div>
-      <DebugPanel data={{ activeTab }} toolId="nextra-dms-v4.1" />
-      <div className="text-center opacity-10 font-black uppercase tracking-[0.5em] italic text-[8px] pb-10">Nextra AI x And-IoT Integrated System • 2026</div>
+      <DebugPanel data={{ activeTab }} toolId="nextra-autonomous-v4.1" />
+      <div className="text-center opacity-10 font-black uppercase tracking-[0.5em] italic text-[8px] pb-10">Nextra AI Autonomous Management System • 2026</div>
     </div>
   )
 }
