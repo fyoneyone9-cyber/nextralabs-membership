@@ -8,7 +8,7 @@ import {
   Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, 
   ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, 
   Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, Ticket, BookOpen, 
-  Sprout, Zap, Droplets, Utensils, Building2, Hotel, Key, Lock, CreditCard, Coins, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown
+  Sprout, Zap, Droplets, Utensils, Building2, Hotel, Key, Lock, CreditCard, Coins, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift
 } from 'lucide-react'
 
 // データ定義
@@ -39,7 +39,7 @@ const bizTools = [
   { id: 'trend-stock', title: 'SNSトレンド自動仕入', subtitle: 'バズ予測 × 楽天商品検索OS', description: 'Google TrendsとSNSを解析。「明日バズる」商品を予測し、楽天の在庫データと即座に同期。', priceNote: 'スタンダード', tags: ['物販'], icon: TrendingUp, bgColor: 'bg-orange-500/10', iconColor: 'text-orange-400', status: 'NEW', isModel: true },
   { id: 'contact-sync', title: 'Contact Sync', subtitle: '名刺の全自動・登録OS', description: '名刺をAIスキャンし、名前や連絡先を読み取り。あなたの連絡先へ自動で追加します。', priceNote: 'ライト', tags: ['効率'], icon: UserPlus, bgColor: 'bg-blue-500/10', iconColor: 'text-blue-400', status: 'NEW', isModel: true },
   { id: 'interior-coordinator', title: 'Interior Sync', subtitle: '空間分析 × 楽天一括購入OS', description: 'カメラで部屋を映すとAIがインテリアを分析。調和する家具を楽天からセット提案。', priceNote: 'プレミアム', tags: ['生活'], icon: Sofa, bgColor: 'bg-teal-500/10', iconColor: 'text-teal-400', status: 'NEW', isModel: true },
-  { id: 'youtube-coordinator', title: 'YouTube Sync', subtitle: '動画解析 × 楽天コーデ', description: 'YouTube動画から服を特定。楽天市場から類似アイテムを即座に提案する特化型エンジン。', priceNote: 'プレミアム', tags: ['ファッション'], icon: Play, bgColor: 'bg-red-500/10', iconColor: 'text-red-400', status: 'NEW', isModel: true },
+  { id: 'youtube-coordinator', title: 'YouTube Sync', subtitle: '動画解析 × 楽天コーデ', description: 'YouTube動画から服を特定. 楽天市場から類似アイテムを即座に提案する特化型エンジン。', priceNote: 'プレミアム', tags: ['ファッション'], icon: Play, bgColor: 'bg-red-500/10', iconColor: 'text-red-400', status: 'NEW', isModel: true },
   { id: 'price-tracker', title: '底値監視予測Bot', subtitle: '価格変動 × AI将来予測OS', description: '楽天商品のURLからセール時期を秒速予測。買い時を逃さない次世代Bot。', priceNote: 'ライト', tags: ['節約'], icon: LineChart, bgColor: 'bg-emerald-500/10', iconColor: 'text-emerald-400', status: 'NEW', isModel: true },
   { id: 'expense-sync', title: 'Expense Sync', subtitle: '経費精算の全自動・記帳OS', description: 'レシート画像をAI解析し、スプレッドシートへ自動記帳。事務作業をゼロへ。', priceNote: 'ライト', tags: ['事務'], icon: Table, bgColor: 'bg-emerald-500/10', iconColor: 'text-emerald-400', status: 'NEW', isModel: true },
   { id: 'ai-select-shop', title: 'AIセレクトショップ', subtitle: 'トレンド分析 × Shopify連携', description: '流行をAI分析し、売れるデザインを自動生成。Shopify経由で在庫リスクゼロのショップ運営。', priceNote: 'プレミアム', tags: ['EC'], icon: Store, bgColor: 'bg-teal-500/10', iconColor: 'text-teal-400', status: '人気', isModel: true },
@@ -91,16 +91,6 @@ function SectionTitle({ icon: Icon, title, color }: { icon: any; title: string; 
       <h2 className="text-3xl font-bold text-white tracking-tighter italic uppercase">{title}</h2>
     </div>
   )
-}>
-      <span className="text-orange-500 font-black text-2xl">|</span>
-      <h2 className="text-3xl font-bold text-white tracking-tighter italic uppercase">{title}</h2>
-    </div>
-  )
-}>
-      <Icon className="w-8 h-8 text-white" />
-      <h2 className="text-3xl font-bold text-white tracking-tighter italic uppercase">{title}</h2>
-    </div>
-  )
 }
 
 export default function ProductsPage() {
@@ -119,7 +109,7 @@ export default function ProductsPage() {
         <section><SectionTitle icon={BookOpen} title="本日のおすすめ" color="border-orange-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{todayRecommended.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
         <section><SectionTitle icon={Gift} title="無料ツール" color="border-emerald-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{freeTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
         <section><SectionTitle icon={Hotel} title="ホテル・民泊オーナー様向け" color="border-blue-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{hotelTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
-        <section><SectionTitle icon={ShieldAlert} title="防犯・ライフ" color="border-red-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{defenseTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
+        <section><SectionTitle icon={ShieldCheck} title="防犯・ライフ" color="border-red-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{defenseTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
         <section><SectionTitle icon={Briefcase} title="ビジネス・制作" color="border-teal-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{bizTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
       </div>
     </div>
