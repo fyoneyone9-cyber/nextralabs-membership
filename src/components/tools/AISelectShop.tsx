@@ -25,12 +25,17 @@ const MasterEngine = () => {
     { id: 'cyberpunk', name: 'サイバー', emoji: '🌃', colors: ['#00ffff', '#ff00ff'] },
     { id: 'kawaii', name: 'かわいい', emoji: '🎀', colors: ['#ffb7c5', '#fff0f5'] },
     { id: 'minimal', name: 'ミニマル', emoji: '⬜', colors: ['#ffffff', '#000000'] },
+    { id: 'gold', name: 'ラグジュアリー', emoji: '💎', colors: ['#d4af37', '#000000'] },
+    { id: 'neon', name: 'ネオンサイン', emoji: '💡', colors: ['#39ff14', '#000000'] },
+    { id: 'nature', name: 'ボタニカル', emoji: '🌿', colors: ['#2ecc71', '#f1f1f1'] },
   ];
 
   const TSHIRT_COLORS = [
     { id: 'white', name: '白', hex: '#FFFFFF', text: '#000000' },
     { id: 'black', name: '黒', hex: '#1a1a1a', text: '#FFFFFF' },
     { id: 'navy', name: '紺', hex: '#1e3a5f', text: '#FFFFFF' },
+    { id: 'gray', name: 'グレー', hex: '#808080', text: '#FFFFFF' },
+    { id: 'red', name: 'レッド', hex: '#e74c3c', text: '#FFFFFF' },
   ];
 
   useEffect(() => {
@@ -238,6 +243,19 @@ const MasterEngine = () => {
 const NoSSRWrapper = dynamic(() => Promise.resolve(MasterEngine), {
   ssr: false,
   loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Syncing Shop Master...</div>
+});
+
+import { DebugPanel } from '@/components/tools/DebugPanel'
+
+export default function AISelectShop() {
+  return (
+    <div className="min-h-screen bg-[#050507] text-gray-100 font-sans p-4 md:p-10 overflow-x-hidden">
+      <NoSSRWrapper />
+      <DebugPanel data={{ system: "v24.1-stable" }} toolId="ai-select-shop-ultimate" />
+    </div>
+  );
+}
+g-[0.5em]">Syncing Shop Master...</div>
 });
 
 import { DebugPanel } from '@/components/tools/DebugPanel'
