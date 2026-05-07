@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
-import HotelPage from '@/components/tools/StayseeFinderEngine'
+
+const DmsEngine = dynamic(() => import('@/components/dms/DmsEngine'), { ssr: false });
 
 export default function DmsPage() {
   const [isAuth, setIsAuth] = useState(false)
@@ -19,9 +20,5 @@ export default function DmsPage() {
 
   if (!isAuth) return <div className="min-h-screen bg-[#050507]" />
 
-  return (
-    <div className="min-h-screen bg-[#050507]">
-      <HotelPage />
-    </div>
-  )
+  return <DmsEngine />
 }
