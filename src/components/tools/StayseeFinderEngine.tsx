@@ -93,8 +93,21 @@ const MasterEngine = () => {
         {activeTab === 'lock' && (
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl text-center space-y-10 animate-in fade-in">
              <h3 className="text-3xl md:text-5xl font-black text-white italic uppercase flex items-center justify-center gap-6">鍵自動発行</h3>
-             <button onClick={() => setIsIssuingKey(true)} className="w-full h-24 bg-emerald-600 text-white font-black rounded-[2rem] shadow-xl text-3xl uppercase italic active:scale-95 transition-all">連携実行</button>
-             {isIssuingKey && <div className="p-10 bg-black rounded-[3rem] border-4 border-emerald-500 animate-in zoom-in text-center"><p className="text-9xl font-black text-white italic">1022</p></div>}
+             <div className="bg-black/60 p-8 rounded-3xl border-2 border-emerald-500/30 space-y-4 text-left max-w-3xl mx-auto">
+               <div className="flex items-center gap-3 text-emerald-400">
+                 <Settings size={24} />
+                 <p className="text-sm font-black uppercase tracking-widest">DMS × 錠デバイス 連携マニュアル</p>
+               </div>
+               <p className="text-slate-300 text-sm leading-relaxed font-bold">
+                 1. 予約一覧から対象のゲストを選択してください。<br />
+                 2. PMS（宿泊管理システム）の予約ステータスが「確定」であることを確認します。<br />
+                 3. 下の実行ボタンを押すと、スマートロックへAPI経由で「100%同期された鍵」が自動デプロイされます。
+               </p>
+             </div>
+             <button onClick={() => setIsIssuingKey(true)} className="w-full h-24 bg-emerald-600 text-white font-black rounded-[2rem] shadow-xl flex items-center justify-center gap-6 text-3xl uppercase italic active:scale-95 transition-all">
+               <Lock className="w-10 h-10" /> 鍵発行APIを叩く ➔
+             </button>
+             {isIssuingKey && <div className="p-10 bg-black rounded-[3rem] border-4 border-emerald-500 animate-in zoom-in text-center shadow-[0_0_50px_rgba(16,185,129,0.3)]"><p className="text-emerald-500 font-black uppercase tracking-widest text-sm mb-4">Issued Passcode</p><p className="text-9xl font-black text-white italic tracking-widest drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]">1022</p></div>}
           </Card>
         )}
       </div>
