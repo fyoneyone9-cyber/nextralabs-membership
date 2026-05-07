@@ -38,6 +38,17 @@ const TSHIRT_COLORS = [
   { id: 'yellow', name: 'イエロー', hex: '#fbbf24' },
 ];
 
+const TEXT_COLORS = [
+  { id: 'white',   hex: '#FFFFFF', name: '白' },
+  { id: 'black',   hex: '#111111', name: '黒' },
+  { id: 'yellow',  hex: '#FFE600', name: '黄' },
+  { id: 'red',     hex: '#FF2D2D', name: '赤' },
+  { id: 'cyan',    hex: '#00FFFF', name: '水色' },
+  { id: 'pink',    hex: '#FF6EC7', name: 'ピンク' },
+  { id: 'gold',    hex: '#D4AF37', name: 'ゴールド' },
+  { id: 'lime',    hex: '#39FF14', name: 'ライム' },
+];
+
 const LS_KEY = 'nextra_selectshop_settings';
 
 const MasterEngine = () => {
@@ -47,6 +58,7 @@ const MasterEngine = () => {
   const [keyword, setKeyword] = useState('');
   const [style, setStyle] = useState('japanese');
   const [tshirtColor, setTshirtColor] = useState('black');
+  const [textColorId, setTextColorId] = useState('auto'); // 'auto' = スタイルデフォルト
   const [mockupDataUrl, setMockupDataUrl] = useState<string | null>(null);
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishResult, setPublishResult] = useState<{ url?: string; error?: string } | null>(null);
@@ -169,11 +181,10 @@ const MasterEngine = () => {
     ctx.fillStyle = TC.hex;
     ctx.fillRect(0, 0, w, h);
 
-    // ========== プリントエリア（Tシャツ中央） ==========
-    // 白ボックスなし。Tシャツに直接プリント。
+    // ========== プリントエリア（胸元） ==========
     const cx = w / 2;
-    const cy = h * 0.57; // 胸元中央
-    const pr = h * 0.22; // プリント半径
+    const cy = h * 0.44; // 胸元（上に移動）
+    const pr = h * 0.20; // プリント半径
 
     if (style === 'japanese') {
       // 朱色の大きな円をTシャツに直接
@@ -200,23 +211,20 @@ const MasterEngine = () => {
       }
 
     } else if (style === 'cyberpunk') {
-      // 暗い半透明オーバーレイ
-      ctx.fillStyle = 'rgba(0,0,30,0.65)';
-      ctx.fillRect(w*0.08, h*0.3, w*0.84, h*0.56);
-      // 格子線
-      ctx.strokeStyle = 'rgba(0,255,255,0.25)';
-      ctx.lineWidth = 1;
+      const top = cy - pr*1.1, bot = cy + pr*1.1;
+      ctx.fillStyle = 'rgba(0,0,30,0.7)';
+      ctx.fillRect(w*0.08, top, w*0.84, bot - top);
+      ctx.strokeStyle = 'rgba(0,255,255,0.22)'; ctx.lineWidth = 1;
       for (let x = w*0.08; x < w*0.92; x += 20) {
-        ctx.beginPath(); ctx.moveTo(x, h*0.3); ctx.lineTo(x, h*0.86); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bot); ctx.stroke();
       }
-      for (let y = h*0.3; y < h*0.86; y += 20) {
+      for (let y = top; y < bot; y += 20) {
         ctx.beginPath(); ctx.moveTo(w*0.08, y); ctx.lineTo(w*0.92, y); ctx.stroke();
       }
-      const cg = ctx.createLinearGradient(0, h*0.3, w, h*0.86);
-      cg.addColorStop(0, 'rgba(0,255,255,0.07)');
-      cg.addColorStop(1, 'rgba(255,0,255,0.07)');
-      ctx.fillStyle = cg;
-      ctx.fillRect(w*0.08, h*0.3, w*0.84, h*0.56);
+      const cg = ctx.createLinearGradient(0, top, w, bot);
+      cg.addColorStop(0, 'rgba(0,255,255,0.08)');
+      cg.addColorStop(1, 'rgba(255,0,255,0.08)');
+      ctx.fillStyle = cg; ctx.fillRect(w*0.08, top, w*0.84, bot - top);
 
     } else if (style === 'kawaii') {
       // パステルピンクの円
@@ -282,14 +290,14 @@ const MasterEngine = () => {
       });
 
     } else if (style === 'gradient') {
-      const gg = ctx.createLinearGradient(w*0.1, h*0.28, w*0.9, h*0.88);
-      gg.addColorStop(0, 'rgba(124,58,237,0.85)');
-      gg.addColorStop(0.45, 'rgba(219,39,119,0.85)');
-      gg.addColorStop(1, 'rgba(37,99,235,0.85)');
-      ctx.fillStyle = gg;
-      ctx.fillRect(w*0.1, h*0.28, w*0.8, h*0.6);
-      ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(w*0.1, h*0.38); ctx.lineTo(w*0.9, h*0.28); ctx.stroke();
+      // Tシャツ全体をグラデで染める
+      const gg = ctx.createLinearGradient(0, 0, w, h);
+      gg.addColorStop(0, '#7c3aed');
+      gg.addColorStop(0.45, '#db2777');
+      gg.addColorStop(1, '#2563eb');
+      ctx.fillStyle = gg; ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = 'rgba(255,255,255,0.18)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0, h*0.25); ctx.lineTo(w, h*0.1); ctx.stroke();
 
     } else if (style === 'vintage') {
       // クリーム色の楕円
@@ -306,17 +314,16 @@ const MasterEngine = () => {
       ctx.beginPath(); ctx.ellipse(cx, cy, pr*0.98, pr*0.68, 0, 0, Math.PI*2); ctx.stroke();
 
     } else if (style === 'popart') {
-      // 黄色ブロック + ベン・デイドット
-      ctx.fillStyle = 'rgba(255,230,0,0.88)';
-      ctx.fillRect(w*0.1, h*0.3, w*0.8, h*0.56);
-      ctx.fillStyle = 'rgba(255,0,0,0.12)';
-      for (let px = w*0.1; px < w*0.9; px += 14) {
-        for (let py = h*0.3; py < h*0.86; py += 14) {
-          ctx.beginPath(); ctx.arc(px+4, py+4, 4, 0, Math.PI*2); ctx.fill();
+      // 全体を黄色で
+      ctx.fillStyle = '#FFE600'; ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = 'rgba(255,0,60,0.13)';
+      for (let px = 0; px < w; px += 14) {
+        for (let py = 0; py < h; py += 14) {
+          ctx.beginPath(); ctx.arc(px+5, py+5, 4, 0, Math.PI*2); ctx.fill();
         }
       }
-      ctx.strokeStyle = '#000'; ctx.lineWidth = 5;
-      ctx.strokeRect(w*0.1, h*0.3, w*0.8, h*0.56);
+      ctx.strokeStyle = '#000'; ctx.lineWidth = 6;
+      ctx.strokeRect(3, h*0.12, w-6, h*0.82);
 
     } else if (style === 'anime') {
       // 深夜ブルーのオーラ円
@@ -338,52 +345,58 @@ const MasterEngine = () => {
       ctx.shadowBlur = 0;
 
     } else if (style === 'military') {
-      // カモフラ全体
-      const camo = ['rgba(58,74,40,0.6)','rgba(74,92,48,0.5)','rgba(30,42,16,0.65)','rgba(55,68,35,0.4)'];
-      for (let i = 0; i < 18; i++) {
+      // カモフラ全体（Tシャツ全面）
+      const camo = ['rgba(45,58,30,0.8)','rgba(58,74,40,0.7)','rgba(74,92,48,0.6)','rgba(30,42,16,0.85)'];
+      for (let i = 0; i < 24; i++) {
         ctx.fillStyle = camo[i % camo.length];
         ctx.beginPath();
         ctx.ellipse(
-          w*0.1 + (i*53)%(w*0.8), h*0.3 + (i*37)%(h*0.56),
-          22+(i%4)*10, 12+(i%3)*7, i*0.55, 0, Math.PI*2
+          (i*67)%w, (i*43)%h,
+          25+(i%5)*12, 14+(i%4)*8, i*0.48, 0, Math.PI*2
         );
         ctx.fill();
       }
 
     } else if (style === 'typo') {
-      // 巨大な薄い頭文字
-      ctx.fillStyle = 'rgba(0,0,0,0.07)';
-      ctx.font = `bold ${h*0.38}px Helvetica, sans-serif`;
+      // 白ベース
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h);
+      // 巨大薄い頭文字（背景）
+      ctx.fillStyle = 'rgba(0,0,0,0.06)';
+      ctx.font = `900 ${h*0.55}px Helvetica, sans-serif`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText((keyword[0]||'A').toUpperCase(), cx, cy + h*0.04);
-      // 赤帯（上下）
-      ctx.fillStyle = '#ff3300';
-      ctx.fillRect(w*0.1, h*0.36, w*0.8, 7);
-      ctx.fillRect(w*0.1, h*0.78, w*0.8, 7);
+      ctx.fillText((keyword[0]||'A').toUpperCase(), cx, cy + h*0.02);
+      // 赤帯
+      ctx.fillStyle = '#FF3300';
+      ctx.fillRect(0, cy - pr*0.95, w, 8);
+      ctx.fillRect(0, cy + pr*0.85, w, 8);
 
     } else if (style === 'monochrome') {
-      // ダークオーバーレイ
-      ctx.fillStyle = 'rgba(10,10,10,0.55)';
-      ctx.fillRect(w*0.1, h*0.3, w*0.8, h*0.56);
-      const mg = ctx.createRadialGradient(cx, cy, 0, cx, cy, pr);
-      mg.addColorStop(0, 'rgba(255,255,255,0.12)');
+      // 全体ダーク
+      ctx.fillStyle = '#111'; ctx.fillRect(0, 0, w, h);
+      const mg = ctx.createRadialGradient(cx, cy, 0, cx, cy, pr*1.4);
+      mg.addColorStop(0, 'rgba(255,255,255,0.1)');
       mg.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = mg; ctx.fillRect(w*0.1, h*0.3, w*0.8, h*0.56);
-      ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1;
-      ctx.strokeRect(w*0.14, h*0.33, w*0.72, h*0.5);
+      ctx.fillStyle = mg; ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 1;
+      ctx.strokeRect(w*0.1, h*0.15, w*0.8, h*0.72);
     }
 
-    // ========== テキスト描画（Tシャツ中央に直接） ==========
+    // ========== テキスト描画 ==========
+    // 文字色: ユーザー選択 > スタイルデフォルト
+    const resolvedTextColor = textColorId !== 'auto'
+      ? (TEXT_COLORS.find(c => c.id === textColorId)?.hex || S.textColor)
+      : S.textColor;
+
     ctx.font = S.font;
-    ctx.fillStyle = S.textColor;
+    ctx.fillStyle = resolvedTextColor;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
     if (['cyberpunk','neon','anime'].includes(style)) {
-      ctx.shadowBlur = 18; ctx.shadowColor = S.textColor;
+      ctx.shadowBlur = 20; ctx.shadowColor = resolvedTextColor;
     }
 
-    const maxW = w * 0.65;
+    const maxW = w * 0.68;
     const chars = keyword.split('');
     let line = '';
     const lines: string[] = [];
@@ -393,17 +406,20 @@ const MasterEngine = () => {
       else line = test;
     }
     lines.push(line);
-    const lineH = 40;
+    const lineH = 42;
     const startY = cy - ((lines.length - 1) * lineH) / 2;
 
     lines.forEach((l, i) => {
       const y = startY + i * lineH;
       if (style === 'popart') {
-        ctx.strokeStyle = '#000'; ctx.lineWidth = 5; ctx.strokeText(l, cx, y);
+        ctx.strokeStyle = '#000'; ctx.lineWidth = 6; ctx.strokeText(l, cx, y);
       } else if (style === 'military') {
-        ctx.strokeStyle = '#1a2010'; ctx.lineWidth = 3; ctx.strokeText(l, cx, y);
+        ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.lineWidth = 3; ctx.strokeText(l, cx, y);
       } else if (style === 'vintage') {
-        ctx.strokeStyle = 'rgba(139,94,60,0.4)'; ctx.lineWidth = 2; ctx.strokeText(l, cx, y);
+        ctx.strokeStyle = 'rgba(139,94,60,0.35)'; ctx.lineWidth = 2; ctx.strokeText(l, cx, y);
+      } else if (['gradient','monochrome','neon','cyberpunk','anime'].includes(style)) {
+        // 読みやすさのために薄い影
+        ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 2; ctx.strokeText(l, cx, y);
       }
       ctx.fillText(l, cx, y);
     });
@@ -412,14 +428,14 @@ const MasterEngine = () => {
     ctx.restore(); // クリップ解除
 
     setMockupDataUrl(canvas.toDataURL('image/png'));
-  }, [keyword, style, tshirtColor]);
+  }, [keyword, style, tshirtColor, textColorId]);
 
   useEffect(() => {
     if (keyword) {
       const t = setTimeout(() => drawDesign(), 50);
       return () => clearTimeout(t);
     }
-  }, [keyword, style, tshirtColor, drawDesign]);
+  }, [keyword, style, tshirtColor, textColorId, drawDesign]);
 
   const handlePublish = async () => {
     if (!mockupDataUrl || !keyword) {
@@ -580,6 +596,21 @@ const MasterEngine = () => {
                 {TSHIRT_COLORS.map(c => (
                   <button key={c.id} onClick={() => setTshirtColor(c.id)} title={c.name}
                     className={'w-10 h-10 rounded-xl border-4 transition-all ' + (tshirtColor === c.id ? 'border-emerald-500 scale-110' : 'border-white/5 hover:border-white/20')}
+                    style={{ backgroundColor: c.hex }} />
+                ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase text-slate-500 italic">文字カラー</label>
+              <div className="flex flex-wrap gap-2 items-center">
+                <button
+                  onClick={() => setTextColorId('auto')}
+                  className={'px-3 h-8 rounded-lg text-[10px] font-black border-2 transition-all ' + (textColorId === 'auto' ? 'border-emerald-500 text-white bg-emerald-500/20' : 'border-white/10 text-slate-500')}>
+                  AUTO
+                </button>
+                {TEXT_COLORS.map(c => (
+                  <button key={c.id} onClick={() => setTextColorId(c.id)} title={c.name}
+                    className={'w-8 h-8 rounded-lg border-3 transition-all ' + (textColorId === c.id ? 'border-emerald-500 scale-110 border-2' : 'border-white/10 border-2 hover:border-white/30')}
                     style={{ backgroundColor: c.hex }} />
                 ))}
               </div>
