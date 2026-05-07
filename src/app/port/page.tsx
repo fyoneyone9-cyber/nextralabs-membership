@@ -15,6 +15,8 @@ import {
   LineChart, Smartphone, Icons, Mic, Camera, Languages, Bot, Layout, Presentation
 } from 'lucide-react'
 
+import { DebugPanel } from '@/components/tools/DebugPanel'
+
 // --- データ定義：米山文貴の「真の実績と圧倒的なAI武装スキル」 ---
 
 const IDENTITY = {
@@ -338,6 +340,8 @@ const MasterEngine = () => {
           </div>
         </Card>
       </section>
+
+      <DebugPanel data={{}} toolId="port-surveillance" />
 
       <div className="text-center opacity-10 mt-24 font-black uppercase tracking-[0.5em] italic text-[10px]">
         {IDENTITY.name} • NEXTRALABS MASTERMODEL • 2026
