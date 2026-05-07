@@ -8,8 +8,8 @@ import {
   Unlock, Activity, Zap, Copy, CheckCircle2, Terminal, ShieldCheck, Globe
 } from 'lucide-react'
 
-// ブラウザのメモリ上にログを永続化するための外部変数
-let globalLogBuffer: any[] = [];
+// ログを外部メモリに逃がして永続化（ページ遷移対策）
+let persistentLogs: any[] = [];
 
 export function DebugPanel({ data }: { data?: any }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -17,71 +17,76 @@ export function DebugPanel({ data }: { data?: any }) {
   const [password, setPassword] = useState('')
   const [apiHealth, setApiHealth] = useState<any>(null)
   const [isMounted, setIsMounted] = useState(false)
-  const [localLogs, setLocalLogs] = useState<any[]>([])
+  const [displayLogs, setDisplayLogs] = useState<any[]>([])
   const [copied, setCopied] = useState(false)
   const [isTesting, setIsTesting] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
     setIsMounted(true)
-    setLocalLogs([...globalLogBuffer]); // マウント時にバッファから復元
+    setDisplayLogs([...persistentLogs]);
+
+    const captureLog = (type: string, args: any[]) => {
+      const msg = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' ');
+      const entry = { time: new Date().toLocaleTimeString(), msg, type };
+      persistentLogs = [entry, ...persistentLogs].slice(0, 100);
+      setDisplayLogs([...persistentLogs]);
+    };
 
     const originalLog = console.log;
     const originalWarn = console.warn;
     const originalError = console.error;
 
-    const createLogEntry = (args: any[], type: string) => {
-      const msg = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' ');
-      const entry = { time: new Date().toLocaleTimeString(), msg, type };
-      globalLogBuffer = [entry, ...globalLogBuffer].slice(0, 200); // 外部メモリに保存
-      setLocalLogs([...globalLogBuffer]);
-    };
+    console.log = (...args) => { captureLog('info', args); originalLog.apply(console, args); };
+    console.warn = (...args) => { captureLog('warn', args); originalWarn.apply(console, args); };
+    console.error = (...args) => { captureLog('error', args); originalError.apply(console, args); };
 
-    console.log = (...args) => { createLogEntry(args, 'info'); originalLog.apply(console, args); };
-    console.warn = (...args) => { createLogEntry(args, 'warn'); originalWarn.apply(console, args); };
-    console.error = (...args) => { createLogEntry(args, 'error'); originalError.apply(console, args); };
-
-    const handleClick = (e: MouseEvent) => {
+    // --- 操作ログ：クリックイベントの自動記録 ---
+    const handleGlobalClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (target && target.closest('[data-nextra-port-trigger]')) setIsOpen(true);
+      const clickable = target.closest('button, a, input, [role="button"]');
+      if (clickable) {
+        const text = clickable.textContent?.trim().substring(0, 30) || (clickable as HTMLInputElement).value || (clickable as HTMLInputElement).placeholder || '要素';
+        captureLog('action', [`[CLICK] ${text} (${clickable.tagName})`]);
+      }
     };
-    window.addEventListener('click', handleClick);
+    window.addEventListener('mousedown', handleGlobalClick);
+
+    // フッター等の[data-nextra-port-trigger]クリックを監視
+    const handleTrigger = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('[data-nextra-port-trigger]')) setIsOpen(true);
+    };
+    window.addEventListener('click', handleTrigger);
 
     return () => {
-      window.removeEventListener('click', handleClick);
+      window.removeEventListener('mousedown', handleGlobalClick);
+      window.removeEventListener('click', handleTrigger);
       console.log = originalLog; console.warn = originalWarn; console.error = originalError;
     };
   }, [])
 
-  const runApiTest = async () => {
+  const runApiScan = async () => {
     setIsTesting(true);
-    const endpoints = [
+    const nodes = [
       { id: 'trends', name: 'Googleトレンド', url: '/api/tools/trends', method: 'GET' },
       { id: 'gnews', name: 'GNews API', url: '/api/tools/gnews', method: 'GET' },
-      { id: 'gmail', name: 'Gmailエンジン', url: '/api/tools/gmail-fetch', method: 'POST' },
-      { id: 'staysee', name: 'Staysee PMS', url: '/api/tools/staysee-ai-finder', method: 'POST' },
-      { id: 'rakuten', name: '楽天市場API', url: '/api/tools/rakuten-search', method: 'GET' },
-      { id: 'supabase', name: 'データベース', url: '/api/auth/session', method: 'GET' }
+      { id: 'gmail', name: 'Gmail', url: '/api/tools/gmail-fetch', method: 'POST' },
+      { id: 'staysee', name: 'Staysee', url: '/api/tools/staysee-ai-finder', method: 'POST' },
+      { id: 'rakuten', name: '楽天API', url: '/api/tools/rakuten-search', method: 'GET' }
     ];
     const results: any = {};
-    for (const ep of endpoints) {
+    for (const node of nodes) {
       try {
-        const res = await fetch(ep.url, { method: ep.method });
-        results[ep.id] = { name: ep.name, status: res.status, ok: res.status < 500 };
+        const res = await fetch(node.url, { method: node.method, body: node.method === 'POST' ? JSON.stringify({ action: 'health' }) : undefined });
+        results[node.id] = { name: node.name, status: res.status, ok: res.status < 500 };
       } catch (e) {
-        results[ep.id] = { name: ep.name, status: '停止中', ok: false };
+        results[node.id] = { name: node.name, status: 'OFFLINE', ok: false };
       }
     }
     setApiHealth(results);
     setIsTesting(false);
   };
-
-  const handleLogin = () => {
-    if (password === '2026') {
-      setIsAuth(true);
-      runApiTest();
-    } else alert('パスワードが違います');
-  }
 
   if (!isMounted) return null;
 
@@ -92,28 +97,28 @@ export function DebugPanel({ data }: { data?: any }) {
       </button>
       
       {isOpen && (
-        <div className="fixed top-20 left-6 w-[95vw] max-w-2xl bg-[#050507]/98 backdrop-blur-3xl border-2 border-white/10 p-8 rounded-[3rem] shadow-[0_40px_120px_rgba(0,0,0,0.9)] space-y-8 animate-in slide-in-from-top-4 duration-500">
+        <div className="fixed top-20 left-6 w-[95vw] max-w-2xl bg-[#050507]/98 backdrop-blur-3xl border-2 border-white/10 p-8 rounded-[3rem] shadow-[0_40px_120px_rgba(0,0,0,0.9)] space-y-6 animate-in slide-in-from-top-4 duration-500 overflow-hidden">
           {!isAuth ? (
             <div className="space-y-8 py-10">
               <div className="text-center space-y-3">
                 <Terminal className="text-emerald-500 mx-auto" size={40} />
-                <h3 className="text-2xl font-black text-white italic uppercase tracking-[0.3em]">認証ノード</h3>
+                <h3 className="text-2xl font-black text-white italic uppercase tracking-[0.3em]">認証</h3>
                 <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest italic">管理パスワードを入力（2026）</p>
               </div>
               <div className="flex gap-3 w-full max-w-xs mx-auto">
-                <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••" className="bg-slate-900/50 border-slate-800 text-white text-center h-12 rounded-xl text-xl" onKeyDown={(e) => e.key === 'Enter' && handleLogin()} autoFocus />
-                <Button onClick={handleLogin} className="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-6 h-12 rounded-xl">解除</Button>
+                <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••" className="bg-slate-900/50 border-slate-800 text-white text-center h-12 rounded-xl text-xl" onKeyDown={(e) => e.key === 'Enter' && password === '2026' && setIsAuth(true)} autoFocus />
+                <Button onClick={() => password === '2026' ? setIsAuth(true) : alert('Invalid')} className="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-6 h-12 rounded-xl uppercase">Unlock</Button>
               </div>
             </div>
           ) : (
-            <div className="space-y-6 text-left">
+            <div className="space-y-6 text-left animate-in fade-in duration-500">
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <div className="flex items-center gap-3">
                   <ShieldCheck className="h-6 w-6 text-emerald-500" />
-                  <span className="text-xl font-black text-white italic">システム監視コンソール</span>
+                  <span className="text-xl font-black text-white italic">APIヘルスガード</span>
                 </div>
-                <Button onClick={runApiTest} disabled={isTesting} className="h-10 bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-black rounded-xl px-6 flex items-center gap-2 shadow-lg">
-                  <Zap size={14} /> {isTesting ? 'スキャン中...' : 'API全ノード検査'}
+                <Button onClick={runApiScan} disabled={isTesting} className="h-10 bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-black rounded-xl px-6 flex items-center gap-2 shadow-lg">
+                  <Zap size={14} /> {isTesting ? '検査中...' : '全ノードスキャン'}
                 </Button>
               </div>
 
@@ -131,31 +136,34 @@ export function DebugPanel({ data }: { data?: any }) {
 
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                   <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest italic pl-2 border-l-2 border-emerald-500">実行ログ・インターセプター (F12生ログ)</p>
+                   <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest italic pl-2 border-l-2 border-emerald-500">システム実行ログ (F12情報)</p>
                    <Button onClick={() => {
-                     const report = { timestamp: new Date().toISOString(), url: window.location.href, apiHealth, systemLogs: localLogs };
+                     const report = { timestamp: new Date().toISOString(), url: window.location.href, apiHealth, systemLogs: persistentLogs };
                      navigator.clipboard.writeText(JSON.stringify(report, null, 2));
                      setCopied(true); setTimeout(() => setCopied(false), 2000);
                    }} className="h-7 bg-white/5 hover:bg-white/10 text-slate-400 text-[8px] font-black rounded-lg px-3 flex items-center gap-1 border border-white/5">
-                      {copied ? <CheckCircle2 size={10} className="text-emerald-500" /> : <Copy size={10} />} {copied ? 'コピー完了' : 'デバッグ情報をコピー'}
+                      {copied ? <CheckCircle2 size={10} className="text-emerald-500" /> : <Copy size={10} />} {copied ? 'コピー成功' : 'レポートをコピー'}
                    </Button>
                 </div>
-                <div className="bg-black/80 border border-white/5 p-4 rounded-2xl h-48 overflow-y-auto font-mono text-[9px] space-y-1 shadow-inner">
-                  {localLogs.map((log, i) => (
+                <div className="bg-black/80 border border-white/5 p-4 rounded-2xl h-40 overflow-y-auto font-mono text-[9px] space-y-1 shadow-inner">
+                  {displayLogs.map((log, i) => (
                     <div key={i} className="flex gap-2 leading-tight break-all border-b border-white/5 pb-1">
                       <span className="text-slate-600 shrink-0">[{log.time}]</span>
-                      <span className={log.type === 'error' ? 'text-red-400' : log.type === 'warn' ? 'text-amber-400' : 'text-emerald-500/80'}>{log.msg}</span>
+                      <span className={
+                        log.type === 'error' ? 'text-red-400' : 
+                        log.type === 'warn' ? 'text-amber-400' : 
+                        log.type === 'action' ? 'text-blue-400 font-bold' : 'text-emerald-500/80'
+                      }>
+                        {log.type === 'action' ? '▶ ' : ''}{log.msg}
+                      </span>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div className="flex justify-between items-center pt-2">
-                 <button onClick={() => setIsOpen(false)} className="text-[10px] text-slate-700 hover:text-white font-black italic underline">コンソールを閉じる</button>
-                 <div className="flex items-center gap-4">
-                    <button onClick={() => router.push('/port')} className="text-[10px] text-emerald-500 hover:text-emerald-400 font-black flex items-center gap-1"><Globe size={10}/> ポートフォリオへ</button>
-                    <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 text-[8px] font-black">v14.0 FINAL</Badge>
-                 </div>
+                 <button onClick={() => setIsOpen(false)} className="text-[10px] text-slate-700 hover:text-white font-black italic underline">終了</button>
+                 <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 text-[8px] font-black">v14.1 FINAL</Badge>
               </div>
             </div>
           )}
