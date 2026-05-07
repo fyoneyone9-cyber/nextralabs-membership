@@ -1,0 +1,278 @@
+'use client'
+import React, { useState, useCallback } from 'react'
+import { Loader2, Calculator, TrendingDown, Calendar, ShieldCheck, ArrowRight, Wallet, CheckCircle2, AlertCircle } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+
+// ========================
+// 型定義
+// ========================
+interface Debt {
+  id: string
+  name: string
+  amount: number
+  rate: number
+}
+
+interface DiagnosisResult {
+  currentTotal: number
+  currentAvgRate: number
+  consolidatedMonthly: number
+  totalInterestSaved: number
+  advice: string
+}
+
+// ========================
+// メインコンポーネント
+// ========================
+export function LoanAdvisor() {
+  const [debts, setDebts] = useState<Debt[]>([
+    { id: '1', name: '借入先A', amount: 50, rate: 18.0 },
+    { id: '2', name: '借入先B', amount: 30, rate: 15.0 },
+  ])
+  const [loading, setLoading] = useState(false)
+  const [result, setResult] = useState<DiagnosisResult | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  // 借入先の追加
+  const addDebt = () => {
+    if (debts.length >= 5) return
+    setDebts([...debts, { id: Date.now().toString(), name: `借入先${String.fromCharCode(65 + debts.length)}`, amount: 0, rate: 15.0 }])
+  }
+
+  // 入力変更
+  const updateDebt = (id: string, field: keyof Debt, value: string | number) => {
+    setDebts(debts.map(d => d.id === id ? { ...d, [field]: value } : d))
+  }
+
+  // 削除
+  const removeDebt = (id: string) => {
+    if (debts.length <= 1) return
+    setDebts(debts.filter(d => d.id !== id))
+  }
+
+  // 診断実行
+  const handleDiagnose = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      // 合計と平均金利の計算
+      const currentTotal = debts.reduce((sum, d) => sum + d.amount * 10000, 0)
+      const currentAvgRate = debts.reduce((sum, d) => sum + (d.rate * d.amount), 0) / debts.reduce((sum, d) => sum + d.amount, 0)
+      
+      // おまとめ後（一律12%と仮定したシミュレーション）
+      const newRate = 12.0
+      const consolidatedMonthly = Math.floor((currentTotal * (newRate / 100)) / 12)
+      const interestDiffYear = Math.floor(currentTotal * ((currentAvgRate - newRate) / 100))
+
+      const response = await fetch('/api/tools/loan-advisor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ debts, currentTotal, currentAvgRate })
+      })
+      const data = await response.json()
+      
+      if (!data.success) throw new Error(data.error)
+
+      setResult({
+        currentTotal,
+        currentAvgRate,
+        consolidatedMonthly,
+        totalInterestSaved: interestDiffYear,
+        advice: data.advice
+      })
+    } catch (err: any) {
+      setError(err.message || '診断中にエラーが発生しました')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-6 pb-20 text-left border-4 border-emerald-500/50 rounded-[2rem] p-4 md:p-10 shadow-2xl bg-[#050507]">
+      
+      {/* ヘッダー */}
+      <div className="text-center space-y-3">
+        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-black tracking-widest uppercase italic">
+          <ShieldCheck size={14} /> AI Money Defense System
+        </div>
+        <h1 className="text-4xl md:text-5xl font-black text-white uppercase italic tracking-tighter">
+          借金完済・おまとめ診断
+        </h1>
+        <p className="text-slate-400 font-bold text-sm md:text-base">
+          AIが現在の借入を分析し、最適な完済ロードマップを提案します。<br className="hidden md:block" />
+          匿名・無料で、おまとめによる金利軽減効果を瞬時にシミュレーション。
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-10">
+        {/* 入力エリア */}
+        <div className="space-y-6 bg-white/5 border border-white/10 rounded-[2rem] p-6 md:p-8">
+          <h2 className="text-xl font-black text-white uppercase italic flex items-center gap-2">
+            <Calculator className="text-emerald-500" /> 現在の借入状況
+          </h2>
+          
+          <div className="space-y-4">
+            {debts.map((debt, index) => (
+              <div key={debt.id} className="p-4 bg-black/40 border border-white/5 rounded-2xl space-y-3 relative group">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic">Entry #{index + 1}</span>
+                  {debts.length > 1 && (
+                    <button onClick={() => removeDebt(debt.id)} className="text-slate-500 hover:text-red-400 transition-colors">
+                      <Badge variant="outline" className="border-white/10 text-[9px]">削除</Badge>
+                    </button>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black text-slate-500 uppercase italic">借入残高 (万円)</label>
+                    <input 
+                      type="number"
+                      value={debt.amount || ''}
+                      onChange={e => updateDebt(debt.id, 'amount', Number(e.target.value))}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white font-black focus:border-emerald-500 outline-none"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black text-slate-500 uppercase italic">金利 (%)</label>
+                    <input 
+                      type="number"
+                      step="0.1"
+                      value={debt.rate || ''}
+                      onChange={e => updateDebt(debt.id, 'rate', Number(e.target.value))}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white font-black focus:border-emerald-500 outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <button 
+            onClick={addDebt}
+            disabled={debts.length >= 5}
+            className="w-full py-3 border-2 border-dashed border-white/10 rounded-xl text-slate-500 font-black text-xs hover:border-emerald-500/50 hover:text-emerald-500 transition-all uppercase italic"
+          >
+            + 借入先を追加する (最大5社)
+          </button>
+
+          <button
+            onClick={handleDiagnose}
+            disabled={loading}
+            className="w-full h-16 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black text-xl italic uppercase transition-all shadow-[0_0_30px_rgba(16,185,129,0.3)] active:scale-95 flex items-center justify-center gap-3"
+          >
+            {loading ? <Loader2 className="animate-spin" /> : <><Sparkles size={24} /> AI完済診断を実行</>}
+          </button>
+        </div>
+
+        {/* 結果エリア */}
+        <div className="space-y-6">
+          {!result && !loading && (
+            <div className="h-full flex flex-col items-center justify-center text-center p-10 border-2 border-dashed border-white/5 rounded-[2rem] opacity-40">
+              <TrendingDown size={48} className="text-slate-500 mb-4" />
+              <p className="text-slate-400 font-bold">借入状況を入力して<br />AI診断ボタンを押してください</p>
+            </div>
+          )}
+
+          {loading && (
+            <div className="h-full flex flex-col items-center justify-center text-center p-10 bg-white/5 rounded-[2rem]">
+              <Loader2 size={48} className="text-emerald-500 animate-spin mb-4" />
+              <p className="text-emerald-400 font-black animate-pulse italic uppercase tracking-widest">AI Analyzing Your Debt...</p>
+            </div>
+          )}
+
+          {result && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              {/* サマリーカード */}
+              <div className="bg-emerald-500/10 border-2 border-emerald-500/30 rounded-[2rem] p-6 space-y-4">
+                <h3 className="text-emerald-400 font-black italic uppercase tracking-tighter text-lg flex items-center gap-2">
+                  <CheckCircle2 size={20} /> 診断結果：おまとめ効果あり
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-black/40 p-4 rounded-2xl">
+                    <p className="text-[10px] font-black text-slate-500 uppercase italic mb-1">現在の合計残高</p>
+                    <p className="text-2xl font-black text-white tracking-tighter">{(result.currentTotal / 10000).toLocaleString()}万円</p>
+                  </div>
+                  <div className="bg-black/40 p-4 rounded-2xl">
+                    <p className="text-[10px] font-black text-slate-500 uppercase italic mb-1">平均金利</p>
+                    <p className="text-2xl font-black text-emerald-400 tracking-tighter">{result.currentAvgRate.toFixed(1)}%</p>
+                  </div>
+                </div>
+                <div className="bg-emerald-600 p-4 rounded-2xl flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-black text-emerald-100 uppercase italic mb-1">年間で軽減できる利息（概算）</p>
+                    <p className="text-3xl font-black text-white tracking-tighter">約 {result.totalInterestSaved.toLocaleString()} 円</p>
+                  </div>
+                  <TrendingDown className="text-white/40" size={40} />
+                </div>
+              </div>
+
+              {/* AIアドバイス */}
+              <div className="bg-[#13141f] border border-white/10 rounded-[2rem] p-6 md:p-8 space-y-4 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-10">
+                  <Sparkles size={80} className="text-emerald-500" />
+                </div>
+                <h4 className="text-white font-black italic uppercase tracking-wider flex items-center gap-2">
+                  <Sparkles className="text-emerald-500" size={16} /> AI完済ロードマップ
+                </h4>
+                <div className="text-slate-300 text-sm md:text-base font-bold leading-relaxed whitespace-pre-wrap">
+                  {result.advice}
+                </div>
+              </div>
+
+              {/* アフィリエイト出口（PR） */}
+              <div className="bg-gradient-to-br from-orange-600 to-amber-600 rounded-[2rem] p-6 md:p-8 shadow-xl space-y-4 relative group cursor-pointer hover:scale-[1.02] transition-all">
+                <div className="flex justify-between items-start">
+                  <Badge className="bg-white/20 text-white font-black border-none">AI推奨の解決策</Badge>
+                  <span className="text-white/40 font-black italic text-[10px] uppercase">Official PR</span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-black text-white italic tracking-tighter leading-none">
+                  金利の見直しで<br />返済を楽にする第一歩
+                </h3>
+                <p className="text-orange-100 text-sm font-bold">
+                  AIが診断した条件に近い、低金利なおまとめローンをピックアップしました。審査・相談は無料です。
+                </p>
+                <div className="pt-2">
+                  <button className="w-full bg-white text-orange-600 h-14 rounded-xl font-black uppercase italic tracking-wider flex items-center justify-center gap-2 group-hover:bg-orange-50 transition-colors">
+                    推奨ローンをチェックする <ArrowRight size={18} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 注意事項 */}
+      <div className="mt-10 p-6 border border-white/5 rounded-2xl bg-black/20">
+        <div className="flex items-center gap-2 text-slate-500 mb-2">
+          <AlertCircle size={14} />
+          <span className="text-[10px] font-black uppercase italic tracking-widest">Disclaimer</span>
+        </div>
+        <p className="text-[10px] text-slate-600 font-bold leading-relaxed">
+          ※本シミュレーションは入力された数値に基づく概算であり、実際の返済額や金利を保証するものではありません。
+          おまとめローンの利用には各金融機関による審査が必要です。ご契約の際は必ず金融機関が提示する条件をご確認ください。
+          本サービスは匿名で利用可能であり、入力された借入情報は診断終了後に破棄されます。
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function Sparkles({ size, className }: { size?: number, className?: string }) {
+  return (
+    <svg 
+      width={size || 24} 
+      height={size || 24} 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round" 
+      className={className}
+    >
+      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+      <path d="M5 3v4"/><path d="M3 5h4"/><path d="M21 17v4"/><path d="M19 19h4"/>
+    </svg>
+  )
+}
