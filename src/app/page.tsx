@@ -21,7 +21,7 @@ export default function HomePage() {
 
       <section className="relative overflow-hidden pt-16 pb-12 md:pt-32 md:pb-24 bg-slate-950 text-center">
         <div className="container mx-auto px-6 relative">
-          <Badge variant="outline" className="px-3 py-0.5 text-[10px] font-black text-emerald-500 border-emerald-500/20 uppercase mb-6">NextraLabs AIプラットフォーム</Badge>
+          <Badge variant="outline" className="px-3 py-0.5 text-[10px] font-black text-emerald-500 border-emerald-500/20 uppercase mb-6">NextraAILabs AIプラットフォーム</Badge>
           <h1 className="text-4xl md:text-8xl font-black text-white italic tracking-tighter mb-6 leading-none uppercase">AIツールで<br /><span className="bg-gradient-to-r from-emerald-400 to-teal-500 bg-clip-text text-transparent">業務を自動化</span></h1>
           <p className="text-sm md:text-xl text-slate-400 max-w-xl mx-auto mb-8 font-bold italic">「指示したら、あとは全部やってくれる」全24の戦略的エンジン。</p>
           <Link href="/products" className="inline-block"><Button size="lg" className="px-12 h-16 bg-emerald-500 text-slate-950 font-black rounded-2xl">🔥 ツール一覧を見る</Button></Link>
@@ -53,7 +53,7 @@ export default function HomePage() {
             <Card className="border-2 border-emerald-500/30 bg-[#13141f] text-white rounded-[2rem] shadow-2xl">
               <CardContent className="p-8 space-y-6">
                 <div className="flex justify-between items-center"><Badge className="bg-emerald-500 text-slate-950 font-black">マスタ</Badge><span className="text-[10px] font-black text-amber-500 animate-pulse">NEW</span></div>
-                <h3 className="text-2xl md:text-4xl font-black italic leading-none uppercase">Nextra</h3>
+                <h3 className="text-2xl md:text-4xl font-black italic leading-none uppercase">NextraAI</h3>
                 <p className="text-slate-400 text-xs md:text-sm font-bold leading-relaxed italic">宿泊予約・鍵発行を完全同期。フロント業務をゼロにする最強の宿泊AI。</p>
                 <div className="flex items-center text-emerald-400 font-black text-sm uppercase">連携を開始する ➔</div>
               </CardContent>
@@ -69,7 +69,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="text-center opacity-30 text-[9px] font-black uppercase tracking-[0.3em] py-6 text-slate-400">NextraLabs マスタモデル • 2026</div>
+      <div className="text-center opacity-30 text-[9px] font-black uppercase tracking-[0.3em] py-6 text-slate-400">NextraAILabs マスタモデル • 2026</div>
 
       <section className="py-4 bg-[#13141f] border-t border-white/5">
         <div className="container mx-auto px-6 flex items-center justify-between gap-4">

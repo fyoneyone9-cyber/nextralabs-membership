@@ -14,7 +14,7 @@ export async function GET(req: Request) {
 
     const RECOMMENDATIONS = [
       {
-        topic: "Nextra：宿泊予約と鍵発行の完全同期",
+        topic: "NextraAI：宿泊予約と鍵発行の完全同期",
         insight: "Staysee等のPMSと錠デバイスをAPIで直結。予約確定の瞬間にゲスト専用パスコードが自律的に発行される次世代フロント体験。",
         image: "A minimalist digital gate glowing in emerald green, integrated with a smartphone key."
       },

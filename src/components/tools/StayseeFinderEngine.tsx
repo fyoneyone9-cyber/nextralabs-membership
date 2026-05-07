@@ -21,7 +21,7 @@ const MasterEngine = () => {
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 bg-[#050507] border-4 border-emerald-500/50 rounded-[4rem]">
       <div className="text-center space-y-4">
         <Badge className="bg-blue-600">Hotel DX Engine</Badge>
-        <h1 className="text-6xl md:text-9xl font-black text-white italic uppercase tracking-tighter">Nextra</h1>
+        <h1 className="text-6xl md:text-9xl font-black text-white italic uppercase tracking-tighter">NextraAI</h1>
         <p className="text-emerald-500 font-black uppercase tracking-[0.4em] italic text-sm">AI Hotel DX Intelligence</p>
       </div>
       <div className="flex gap-2 justify-center bg-slate-900 p-2 rounded-2xl overflow-x-auto">
