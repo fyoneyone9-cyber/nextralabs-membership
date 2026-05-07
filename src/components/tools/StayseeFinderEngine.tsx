@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import React, { useState, useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Card, CardContent } from '@/components/ui/card'
@@ -8,7 +8,7 @@ import {
   RotateCcw, Lightbulb, ClipboardPaste, PackageSearch, 
   Building2, UserSearch, Camera, Loader2, Download, FileImage, 
   Settings, Shield, Printer, FileText, Smartphone, Truck, Box, Coins, ShoppingCart, CreditCard,
-  UserCheck, Target, Car, Wine
+  UserCheck, Target, Car, Wine, Lock
 } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
@@ -42,14 +42,15 @@ const MasterEngine = () => {
   const [monetizationData, setMonetizationData] = useState<any>(null);
   const [isGeneratingMonetize, setIsGeneratingMonetize] = useState(false);
   
-  // キオスク用
-  const [kioskStatus, setKioskStatus] = useState('WAITING');
-  const [labelData, setLabelData] = useState<any>(null);
-
-  // ?? 鍵自動発行用
+  // 鍵自動発行用
   const [lockKeyData, setLockKeyData] = useState<any>(null);
   const [isIssuingKey, setIsIssuingKey] = useState(false);
+  const [selectedDevice, setSelectedDevice] = useState('RemoteLock');
+  const [selectedPMS, setSelectedPMS] = useState('Staysee');
   
+  const DEVICE_OPTIONS = ['RemoteLock', 'TTLock', 'SwitchBot', 'KEYVOX', 'MIWA', 'GOAL', 'ASSAABLOY', 'Baycom'];
+  const PMS_OPTIONS = ['Staysee', 'Beds24', 'AirHost', 'suitebook', 'infor', 'JTBデータコネクト'];
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isMounted, setIsMounted] = useState(false);
@@ -61,13 +62,17 @@ const MasterEngine = () => {
     }
   }, []);
 
-  if (!isMounted) return null;
+  const saveApiKey = () => {
+    localStorage.setItem('staysee_user_api_key', userApiKey);
+    alert('APIキーを保存しました');
+    setShowSettings(false);
+  };
 
   const runProfileAnalysis = async () => {
     if (!image || !matchResult) return;
     setIsProfiling(true);
     try {
-      const res = await fetch('/api/products/staysee-ai-finder/profile', {
+      const res = await fetch('/api/tools/staysee-ai-finder/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image, stayseeData: matchResult }),
@@ -87,7 +92,7 @@ const MasterEngine = () => {
     if (!image) return;
     setIsGeneratingCert(true);
     try {
-      const res = await fetch('/api/products/staysee-ai-finder/generate-cert', {
+      const res = await fetch('/api/tools/staysee-ai-finder/generate-cert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image, matchResult }),
@@ -106,7 +111,7 @@ const MasterEngine = () => {
   const generateMonetize = async () => {
     setIsGeneratingMonetize(true);
     try {
-      const res = await fetch('/api/products/staysee-ai-finder/monetize', {
+      const res = await fetch('/api/tools/staysee-ai-finder/monetize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -122,49 +127,6 @@ const MasterEngine = () => {
       alert('収益化提案エラー');
     } finally {
       setIsGeneratingMonetize(false);
-    }
-  };
-
-  const startKioskSync = async () => {
-    setKioskStatus('PRINTING');
-    try {
-      const mockShipping = { name: "米山 文貴", address: "神奈川県海老名市...", tel: "080-3207-8422" };
-      const res = await fetch('/api/products/staysee-ai-finder/kiosk', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          action: 'generate-label',
-          matchData: certData || { itemName: "鑑定済み物品" },
-          shippingInfo: mockShipping
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setLabelData(data);
-        setKioskStatus('COMPLETED');
-      }
-    } catch (e) {
-      setKioskStatus('ERROR');
-    }
-  };
-
-  const searchStaysee = async (query: string) => {
-    setIsApiLoading(true);
-    try {
-      const res = await fetch('/api/products/staysee-ai-finder', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'search-booking', query, userApiKey }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setMatchResult(JSON.stringify(data.results, null, 2));
-        alert('Staysee同期完了');
-      }
-    } catch (e) {
-      alert('Staysee API連携エラー');
-    } finally {
-      setIsApiLoading(false);
     }
   };
 
@@ -196,6 +158,45 @@ const MasterEngine = () => {
     }
   };
 
+  const generateInsight = async () => {
+    setIsGeneratingInsight(true);
+    try {
+      const res = await fetch('/api/tools/staysee-ai-finder/insights', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stayseeData: matchResult }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setInsightData(data.insightData);
+      }
+    } catch (e) {
+      alert('分析エラー');
+    } finally {
+      setIsGeneratingInsight(false);
+    }
+  };
+
+  const searchStaysee = async (query: string) => {
+    setIsApiLoading(true);
+    try {
+      const res = await fetch('/api/tools/staysee-ai-finder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'search-booking', query, userApiKey }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setMatchResult(JSON.stringify(data.results, null, 2));
+        alert('Staysee同期完了');
+      }
+    } catch (e) {
+      alert('Staysee API連携エラー');
+    } finally {
+      setIsApiLoading(false);
+    }
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -206,7 +207,7 @@ const MasterEngine = () => {
         setIsProcessing(false);
       };
       reader.readAsDataURL(file);
-      alert("?? 重要：この画像を必ずAIに添付してください！自動保存されました。");
+      alert("重要：この画像を必ずAIに添付してください！自動保存されました。");
       const link = document.createElement('a');
       link.href = URL.createObjectURL(file);
       link.download = `staysee-lost-item.png`;
@@ -215,14 +216,16 @@ const MasterEngine = () => {
   };
 
   const FINAL_PROMPT = `【最優先：添付された画像を解析してください】
-あなたはホテル管理システム（PMS）の専門家です。今添付した【忘れ物の写真】を元に,Stayseeの宿泊履歴から持ち主を特定するための詳細分析を行ってください。`;
+あなたはホテル管理システム（PMS）の専門家です。今添付した【忘れ物の写真】を元に、PMSの宿泊履歴から持ち主を特定するための詳細分析を行ってください。`;
+
+  if (!isMounted) return null;
 
   return (
     <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-[#050507] border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)] print:border-0 print:shadow-none print:my-0 print:p-0">
       <div className="text-center space-y-2 print:hidden">
         <Badge className="bg-blue-600 text-white font-black italic px-4 py-1 text-[10px] uppercase rounded-full shadow-lg">HOTEL DX ENGINE</Badge>
         <h1 className="text-3xl md:text-6xl font-black text-white uppercase italic tracking-tighter drop-shadow-xl leading-none">AI ホテル・キー連携</h1>
-        <div className="inline-block bg-emerald-600 text-white font-black px-6 py-1 rounded-full uppercase italic text-[10px] tracking-widest shadow-lg">v3.4-MASTER</div>
+        <div className="inline-block bg-emerald-600 text-white font-black px-6 py-1 rounded-full uppercase italic text-[8px] md:text-[10px] tracking-widest shadow-lg">v3.5-MASTER</div>
       </div>
 
       <div className="overflow-x-auto pb-4 scrollbar-hide print:hidden">
@@ -241,7 +244,7 @@ const MasterEngine = () => {
       <div className="mt-4 text-left">
         {showSettings ? (
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-10 md:p-20 shadow-2xl animate-in zoom-in-95 text-center space-y-8 print:hidden">
-            <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">Staysee API Configuration</h3>
+            <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">API Configuration</h3>
             <div className="max-w-xl mx-auto space-y-4">
               <input type="password" value={userApiKey} onChange={(e) => setUserApiKey(e.target.value)} placeholder="sk_xxxxxxxx" className="w-full h-16 bg-black border-2 border-white/10 rounded-2xl px-6 text-white focus:border-amber-500 outline-none" />
               <button onClick={saveApiKey} className="w-full h-16 bg-amber-500 text-black font-black rounded-2xl uppercase italic shadow-xl transition-all active:scale-95">Save Key</button>
@@ -263,7 +266,7 @@ const MasterEngine = () => {
                   <div className="space-y-6 text-center">
                     <div className="relative aspect-video max-w-[450px] mx-auto rounded-3xl overflow-hidden border-4 border-emerald-600/30 shadow-2xl bg-black">
                        <img src={image} alt="Found" className="object-contain w-full h-full p-4" />
-                       <button onClick={() => setImage(null)} className="absolute top-4 right-4 bg-black/50 hover:bg-red-600 p-2 rounded-full h-10 w-10 text-white">?</button>
+                       <button onClick={() => setImage(null)} className="absolute top-4 right-4 bg-black/50 hover:bg-red-600 p-2 rounded-full h-10 w-10 text-white">✕</button>
                     </div>
                     <button onClick={() => { navigator.clipboard.writeText(FINAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className={`w-full h-20 text-xl font-black rounded-2xl transition-all shadow-2xl ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-blue-600 text-white'}`}>照合指示をコピー</button>
                     <div className="grid grid-cols-3 gap-3 mt-4">
@@ -276,7 +279,7 @@ const MasterEngine = () => {
               </div>
               <div className="bg-[#0a0b14] rounded-[3rem] p-10 border border-white/5 space-y-6 shadow-inner flex flex-col relative overflow-hidden">
                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4 text-white font-black italic uppercase"><ClipboardPaste className="text-emerald-400" /> Staysee 同期</div>
+                    <div className="flex items-center gap-4 text-white font-black italic uppercase"><ClipboardPaste className="text-emerald-400" /> 同期設定</div>
                     <button onClick={() => searchStaysee('latest')} disabled={isApiLoading} className="h-10 bg-emerald-600 text-white px-6 rounded-xl font-black italic text-[10px] uppercase shadow-lg">LIVE SYNC</button>
                  </div>
                  <textarea value={matchResult} onChange={(e) => setMatchResult(e.target.value)} placeholder="同期ボタンでデータを取得..." className="w-full h-80 bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 text-sm text-slate-300 focus:border-emerald-500 outline-none font-mono italic shadow-inner leading-relaxed" />
@@ -284,7 +287,7 @@ const MasterEngine = () => {
             </div>
             {matchResult && (
                <button onClick={() => setActiveTab('match')} className="w-full h-24 mt-12 bg-emerald-600 text-white font-black rounded-[2rem] shadow-xl flex items-center justify-center gap-4 uppercase italic text-2xl active:scale-95 border-b-8 border-emerald-800 active:border-b-0">
-                  ② 照合プロファイルを開始 ?
+                  ② 照合プロファイルを開始 ➔
                </button>
             )}
           </Card>
@@ -296,12 +299,12 @@ const MasterEngine = () => {
                   <div className="flex flex-col items-center gap-4 text-center">
                     <UserCheck className="text-emerald-500 w-20 h-20 animate-pulse print:text-emerald-600" />
                     <h3 className="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none print:text-black">AI Matching Profile</h3>
-                    <div className="bg-emerald-600 text-white px-8 py-2 rounded-full font-black italic text-xs shadow-lg leading-none print:bg-emerald-50 print:text-emerald-800">Nextra Profile Logic v3.4-MASTER</div>
+                    <div className="bg-emerald-600 text-white px-8 py-2 rounded-full font-black italic text-xs shadow-lg leading-none print:bg-emerald-50 print:text-emerald-800">Nextra Profile Logic v3.5-MASTER</div>
                   </div>
 
                   {!profileData ? (
                     <div className="flex flex-col items-center justify-center py-20 gap-8">
-                       <p className="text-slate-400 text-lg italic text-center max-w-md">物品の属性とStayseeの宿泊履歴（お車ナンバー、宿泊プラン等）をクロス分析し、持ち主を特定します。</p>
+                       <p className="text-slate-400 text-lg italic text-center max-w-md">物品の属性と宿泊履歴をクロス分析し、持ち主を特定します。</p>
                        <button onClick={runProfileAnalysis} disabled={isProfiling} className="h-24 px-16 bg-white text-slate-950 font-black text-2xl rounded-3xl shadow-2xl transition-all active:scale-95 flex items-center gap-4 italic uppercase">
                           {isProfiling ? <Loader2 className="animate-spin" /> : <Zap className="text-emerald-500" />}
                           プロファイリング開始
@@ -336,7 +339,7 @@ const MasterEngine = () => {
                          </div>
                          <button onClick={generateCert} disabled={isGeneratingCert} className="w-full h-16 bg-white text-black font-black rounded-2xl shadow-xl hover:bg-emerald-500 hover:text-white transition-all active:scale-95 uppercase italic flex items-center justify-center gap-3">
                             {isGeneratingCert ? <Loader2 className="animate-spin" /> : <Shield />} 
-                            公式保管証明書を作成 ?
+                            公式保管証明書を作成 ➔
                          </button>
                       </div>
                     </div>
@@ -397,7 +400,7 @@ const MasterEngine = () => {
                     className="w-full h-24 bg-white text-slate-950 hover:bg-emerald-500 hover:text-white font-black rounded-[2rem] shadow-2xl flex items-center justify-center gap-4 text-2xl uppercase italic transition-all active:scale-95"
                    >
                      {isIssuingKey ? <Loader2 className="animate-spin" /> : <Zap />}
-                     連携実行・鍵を発行 ?
+                     連携実行・鍵を発行 ➔
                    </button>
                 </div>
               </div>
@@ -432,7 +435,7 @@ const MasterEngine = () => {
                    </div>
                  ) : (
                    <div className="h-full flex items-center justify-center opacity-10 text-center">
-                      <p className="font-black uppercase italic tracking-[0.3em] leading-loose">Awaiting Staysee Confirmation...</p>
+                      <p className="font-black uppercase italic tracking-[0.3em] leading-loose">Awaiting Confirmation...</p>
                    </div>
                  )}
               </div>
@@ -475,13 +478,13 @@ const MasterEngine = () => {
                       <div className="grid grid-cols-2 gap-4">
                          <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
                             <p className="text-[10px] font-black text-slate-500 uppercase mb-2">Total Fee (預取額)</p>
-                            <p className="text-3xl font-black text-white italic">\{monetizationData.total.toLocaleString()}</p>
-                            <p className="text-[9px] text-slate-600 mt-2 font-bold italic">手数料 \{monetizationData.baseFee} 込</p>
+                            <p className="text-3xl font-black text-white italic">¥{monetizationData.total.toLocaleString()}</p>
+                            <p className="text-[9px] text-slate-600 mt-2 font-bold italic">手数料 ¥{monetizationData.baseFee} 込</p>
                          </div>
                          <div className="bg-emerald-600/10 p-6 rounded-2xl border-2 border-emerald-500/30">
                             <p className="text-[10px] font-black text-emerald-500 uppercase mb-2">Upsell Suggestion</p>
                             <p className="text-xl font-black text-white italic leading-tight">{monetizationData.upsellItem}</p>
-                            <p className="text-xs text-emerald-400 mt-2 font-bold italic">単価: \{monetizationData.upsellPrice.toLocaleString()}</p>
+                            <p className="text-xs text-emerald-400 mt-2 font-bold italic">単価: ¥{monetizationData.upsellPrice.toLocaleString()}</p>
                          </div>
                       </div>
                       <div className="bg-[#1a1b26] p-6 rounded-2xl border border-white/5 shadow-inner">
@@ -503,47 +506,6 @@ const MasterEngine = () => {
               </div>
             </div>
           </Card>
-        ) : activeTab === 'kiosk' ? (
-          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in text-center space-y-12">
-            <div className="flex flex-col items-center gap-4">
-               <div className="w-20 h-20 bg-emerald-600/10 rounded-3xl flex items-center justify-center border-2 border-emerald-500/20 shadow-xl">
-                 <Smartphone className="w-10 h-10 text-emerald-500" />
-               </div>
-               <h3 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none">無人フロント・キオスク</h3>
-            </div>
-            <div className="grid lg:grid-cols-2 gap-10 text-left">
-              <div className="space-y-6">
-                <div className="bg-[#0a0b14] border-2 border-white/5 rounded-[2rem] p-8 space-y-6 shadow-inner relative overflow-hidden">
-                   <div className="absolute top-0 right-0 p-6 opacity-5"><Truck className="w-24 h-24 text-white" /></div>
-                   <h4 className="text-xl font-black text-white italic uppercase flex items-center gap-3"><Box className="text-emerald-500" /> 発送プロトコル</h4>
-                   <p className="text-sm text-slate-400 font-bold leading-relaxed">宿泊者が特定されている場合、ここから自動で発送ラベルを作成し、無人受取の準備を開始できます。</p>
-                   <button 
-                    onClick={startKioskSync}
-                    disabled={kioskStatus === 'PRINTING' || !matchResult}
-                    className={`w-full h-24 ${kioskStatus === 'PRINTING' ? 'bg-slate-800' : 'bg-white text-slate-950 hover:bg-emerald-500 hover:text-white'} font-black rounded-2xl shadow-2xl flex items-center justify-center gap-4 text-xl uppercase italic transition-all active:scale-95 disabled:opacity-30`}
-                   >
-                     {kioskStatus === 'PRINTING' ? <Loader2 className="animate-spin" /> : <Printer />}
-                     発送ラベルを生成
-                   </button>
-                </div>
-              </div>
-              <div className="bg-black rounded-[2rem] p-8 border border-white/5 shadow-inner min-h-[300px] flex flex-col">
-                 <div className="flex items-center gap-3 text-emerald-500 font-black italic uppercase text-xs mb-6"><Zap size={16} /> Printer Output</div>
-                 <div className="flex-1 font-mono text-sm space-y-4">
-                    {labelData ? (
-                      <div className="animate-in slide-in-from-right-4">
-                        <pre className="text-emerald-400 leading-relaxed bg-[#0a0b14] p-6 rounded-xl border border-emerald-500/20 shadow-lg">{labelData.labelContent}</pre>
-                        <button onClick={() => window.print()} className="w-full mt-6 h-14 bg-emerald-600 text-white font-black rounded-xl shadow-lg flex items-center gap-2 justify-center uppercase italic text-xs">Print</button>
-                      </div>
-                    ) : (
-                      <div className="h-full flex items-center justify-center opacity-10 text-center">
-                        <p className="font-black uppercase italic tracking-widest">Waiting for Label Trigger...</p>
-                      </div>
-                    )}
-                 </div>
-              </div>
-            </div>
-          </Card>
         ) : (
           <div className="animate-in fade-in zoom-in space-y-8 text-left pb-20">
             <Card className="bg-[#0f111a] border-4 border-blue-500/50 rounded-[4rem] p-10 md:p-16 shadow-2xl relative overflow-hidden print:border-0 print:shadow-none print:p-0 print:bg-white print:text-black print:rounded-none">
@@ -555,8 +517,8 @@ const MasterEngine = () => {
                   </div>
                   {!insightData ? (
                     <div className="flex flex-col items-center justify-center py-20 gap-8 print:hidden">
-                       <p className="text-slate-400 text-lg italic text-center max-w-md">Stayseeの稼働データと忘れ物の傾向をAIが分析し、経営改善のアドバイスを提出します。</p>
-                       <button onClick={generateInsight} disabled={isGeneratingInsight} className="h-24 px-16 bg-blue-600 hover:bg-blue-500 text-white font-black text-2xl rounded-3xl shadow-2xl transition-all active:scale-95 flex items-center gap-4 italic uppercase">{isGeneratingInsight ? 'Analyzing...' : 'レポートを生成 ??'}</button>
+                       <p className="text-slate-400 text-lg italic text-center max-w-md">稼働データと忘れ物の傾向をAIが分析し、経営改善のアドバイスを提出します。</p>
+                       <button onClick={generateInsight} disabled={isGeneratingInsight} className="h-24 px-16 bg-blue-600 hover:bg-blue-500 text-white font-black text-2xl rounded-3xl shadow-2xl transition-all active:scale-95 flex items-center gap-4 italic uppercase">{isGeneratingInsight ? 'Analyzing...' : 'レポートを生成 📊'}</button>
                     </div>
                   ) : (
                     <div className="grid lg:grid-cols-3 gap-8">
@@ -565,37 +527,12 @@ const MasterEngine = () => {
                     </div>
                   )}
                </div>
-            </Card>
-            <button onClick={() => { setInsightData(null); setActiveTab('scan'); }} className="w-full h-20 border-2 border-white/10 text-slate-600 hover:text-white hover:bg-white/5 font-black rounded-3xl uppercase italic transition-all flex items-center justify-center gap-4 text-xl active:scale-95 print:hidden"><RotateCcw className="w-6 h-6" /> EXIT REPORTING</button>
-          </div>
-        )}
+            </div>
+          <button onClick={() => { setInsightData(null); setActiveTab('scan'); }} className="w-full h-20 border-2 border-white/10 text-slate-600 hover:text-white hover:bg-white/5 font-black rounded-3xl uppercase italic transition-all flex items-center justify-center gap-4 text-xl active:scale-95 print:hidden"><RotateCcw className="w-6 h-6" /> EXIT REPORTING</button>
+        </div>
+      )}
       </div>
-      <DebugPanel data={{ activeTab, hasImage: !!image, hasResult: !!matchResult }} toolId="staysee-finder-master" />
-    </div>
-  )
-}
-
-const StayseeFinderEngineWithNoSSR = dynamic(() => Promise.resolve(MasterEngine), {
-  ssr: false,
-  loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Initializing Master Node...</div>
-})
-
-export default function NoSSRWrapper() {
-  const [isMounted, setIsMounted] = React.useState(false);
-  React.useEffect(() => { setIsMounted(true); }, []);
-  if (!isMounted) return <div className="min-h-screen bg-[#050507]" />;
-  return <StayseeFinderEngineWithNoSSR />;
-}
-></div>
-                    </div>
-                  )}
-               </div>
-            </Card>
-            <button onClick={() => { setInsightData(null); setActiveTab('scan'); }} className="w-full h-20 border-2 border-white/10 text-slate-600 hover:text-white hover:bg-white/5 font-black rounded-3xl uppercase italic transition-all flex items-center justify-center gap-4 text-xl active:scale-95 print:hidden"><RotateCcw className="w-6 h-6" /> EXIT REPORTING</button>
-          </div>
-        )}
-      </div>
-      <DebugPanel data={{ activeTab, hasImage: !!image, hasResult: !!matchResult }} toolId="staysee-finder-master" />
+      <DebugPanel data={{ activeTab, hasImage: !!image, hasResult: !!matchResult }} toolId="hotel-key-sync-master" />
     </div>
   )
 }
