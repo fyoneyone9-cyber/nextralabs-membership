@@ -8,29 +8,46 @@ import {
   Unlock, Activity, Zap, Copy, CheckCircle2, Terminal, ShieldCheck, Globe
 } from 'lucide-react'
 
-// ログを外部メモリに逃がして永続化（ページ遷移対策）
-let persistentLogs: any[] = [];
-
 export function DebugPanel({ data }: { data?: any }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isAuth, setIsAuth] = useState(false)
   const [password, setPassword] = useState('')
   const [apiHealth, setApiHealth] = useState<any>(null)
   const [isMounted, setIsMounted] = useState(false)
-  const [displayLogs, setDisplayLogs] = useState<any[]>([])
+  const [logs, setLogs] = useState<any[]>([])
   const [copied, setCopied] = useState(false)
   const [isTesting, setIsTesting] = useState(false)
   const router = useRouter()
 
+  // ログをsessionStorageに保存・復元する関数
+  const syncLogs = (newLogs: any[]) => {
+    setLogs(newLogs);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('nextra_debug_logs', JSON.stringify(newLogs.slice(0, 100)));
+    }
+  }
+
   useEffect(() => {
     setIsMounted(true)
-    setDisplayLogs([...persistentLogs]);
+    
+    // 起動時に保存されたログを復元
+    if (typeof window !== 'undefined') {
+      const saved = sessionStorage.getItem('nextra_debug_logs');
+      if (saved) setLogs(JSON.parse(saved));
+    }
 
     const captureLog = (type: string, args: any[]) => {
       const msg = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' ');
       const entry = { time: new Date().toLocaleTimeString(), msg, type };
-      persistentLogs = [entry, ...persistentLogs].slice(0, 100);
-      setDisplayLogs([...persistentLogs]);
+      
+      setLogs(prev => {
+        const updated = [entry, ...prev].slice(0, 100);
+        // sessionStorageにも即座に保存
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('nextra_debug_logs', JSON.stringify(updated));
+        }
+        return updated;
+      });
     };
 
     const originalLog = console.log;
@@ -41,18 +58,16 @@ export function DebugPanel({ data }: { data?: any }) {
     console.warn = (...args) => { captureLog('warn', args); originalWarn.apply(console, args); };
     console.error = (...args) => { captureLog('error', args); originalError.apply(console, args); };
 
-    // --- 操作ログ：クリックイベントの自動記録 ---
     const handleGlobalClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const clickable = target.closest('button, a, input, [role="button"]');
       if (clickable) {
-        const text = clickable.textContent?.trim().substring(0, 30) || (clickable as HTMLInputElement).value || (clickable as HTMLInputElement).placeholder || '要素';
+        const text = clickable.textContent?.trim().substring(0, 30) || (clickable as HTMLInputElement).value || '要素';
         captureLog('action', [`[CLICK] ${text} (${clickable.tagName})`]);
       }
     };
     window.addEventListener('mousedown', handleGlobalClick);
 
-    // フッター等の[data-nextra-port-trigger]クリックを監視
     const handleTrigger = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (target.closest('[data-nextra-port-trigger]')) setIsOpen(true);
@@ -71,8 +86,8 @@ export function DebugPanel({ data }: { data?: any }) {
     const nodes = [
       { id: 'trends', name: 'Googleトレンド', url: '/api/tools/trends', method: 'GET' },
       { id: 'gnews', name: 'GNews API', url: '/api/tools/gnews', method: 'GET' },
-      { id: 'gmail', name: 'Gmail', url: '/api/tools/gmail-fetch', method: 'POST' },
-      { id: 'staysee', name: 'Staysee', url: '/api/tools/staysee-ai-finder', method: 'POST' },
+      { id: 'gmail', name: 'Gmailエンジン', url: '/api/tools/gmail-fetch', method: 'POST' },
+      { id: 'staysee', name: 'Staysee PMS', url: '/api/tools/staysee-ai-finder', method: 'POST' },
       { id: 'rakuten', name: '楽天API', url: '/api/tools/rakuten-search', method: 'GET' }
     ];
     const results: any = {};
@@ -97,12 +112,12 @@ export function DebugPanel({ data }: { data?: any }) {
       </button>
       
       {isOpen && (
-        <div className="fixed top-20 left-6 w-[95vw] max-w-2xl bg-[#050507]/98 backdrop-blur-3xl border-2 border-white/10 p-8 rounded-[3rem] shadow-[0_40px_120px_rgba(0,0,0,0.9)] space-y-6 animate-in slide-in-from-top-4 duration-500 overflow-hidden">
+        <div className="fixed top-20 left-6 w-[95vw] max-w-2xl bg-[#050507]/98 backdrop-blur-3xl border-2 border-white/10 p-8 rounded-[3rem] shadow-[0_40px_120px_rgba(0,0,0,0.9)] space-y-8 animate-in slide-in-from-top-4 duration-500 overflow-hidden">
           {!isAuth ? (
             <div className="space-y-8 py-10">
               <div className="text-center space-y-3">
                 <Terminal className="text-emerald-500 mx-auto" size={40} />
-                <h3 className="text-2xl font-black text-white italic uppercase tracking-[0.3em]">認証</h3>
+                <h3 className="text-2xl font-black text-white italic uppercase tracking-[0.3em]">Master Debug</h3>
                 <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest italic">管理パスワードを入力（2026）</p>
               </div>
               <div className="flex gap-3 w-full max-w-xs mx-auto">
@@ -136,34 +151,34 @@ export function DebugPanel({ data }: { data?: any }) {
 
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                   <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest italic pl-2 border-l-2 border-emerald-500">システム実行ログ (F12情報)</p>
+                   <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest italic pl-2 border-l-2 border-emerald-500">システム実行ログ (F12情報 / 操作履歴)</p>
                    <Button onClick={() => {
-                     const report = { timestamp: new Date().toISOString(), url: window.location.href, apiHealth, systemLogs: persistentLogs };
+                     const report = { timestamp: new Date().toISOString(), url: window.location.href, apiHealth, systemLogs: logs };
                      navigator.clipboard.writeText(JSON.stringify(report, null, 2));
                      setCopied(true); setTimeout(() => setCopied(false), 2000);
                    }} className="h-7 bg-white/5 hover:bg-white/10 text-slate-400 text-[8px] font-black rounded-lg px-3 flex items-center gap-1 border border-white/5">
                       {copied ? <CheckCircle2 size={10} className="text-emerald-500" /> : <Copy size={10} />} {copied ? 'コピー成功' : 'レポートをコピー'}
                    </Button>
                 </div>
-                <div className="bg-black/80 border border-white/5 p-4 rounded-2xl h-40 overflow-y-auto font-mono text-[9px] space-y-1 shadow-inner">
-                  {displayLogs.map((log, i) => (
+                <div className="bg-black/80 border border-white/5 p-4 rounded-2xl h-48 overflow-y-auto font-mono text-[9px] space-y-1 shadow-inner">
+                  {logs.map((log, i) => (
                     <div key={i} className="flex gap-2 leading-tight break-all border-b border-white/5 pb-1">
                       <span className="text-slate-600 shrink-0">[{log.time}]</span>
-                      <span className={
-                        log.type === 'error' ? 'text-red-400' : 
-                        log.type === 'warn' ? 'text-amber-400' : 
-                        log.type === 'action' ? 'text-blue-400 font-bold' : 'text-emerald-500/80'
-                      }>
+                      <span className={log.type === 'error' ? 'text-red-400' : log.type === 'warn' ? 'text-amber-400' : log.type === 'action' ? 'text-blue-400 font-bold' : 'text-emerald-500/80'}>
                         {log.type === 'action' ? '▶ ' : ''}{log.msg}
                       </span>
                     </div>
                   ))}
+                  {logs.length === 0 && <p className="text-slate-800 italic text-center pt-20 uppercase tracking-[0.3em]">No Logs Detected</p>}
                 </div>
               </div>
 
               <div className="flex justify-between items-center pt-2">
-                 <button onClick={() => setIsOpen(false)} className="text-[10px] text-slate-700 hover:text-white font-black italic underline">終了</button>
-                 <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 text-[8px] font-black">v14.1 FINAL</Badge>
+                 <button onClick={() => setIsOpen(false)} className="text-[10px] text-slate-700 hover:text-white font-black italic underline">コンソールを閉じる</button>
+                 <div className="flex items-center gap-4">
+                    <button onClick={() => router.push('/port')} className="text-[10px] text-emerald-500 hover:text-emerald-400 font-black flex items-center gap-1"><Globe size={10}/> ポートフォリオへ</button>
+                    <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 text-[8px] font-black">v15.0 ETERNAL</Badge>
+                 </div>
               </div>
             </div>
           )}
