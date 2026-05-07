@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useCallback, useEffect } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
-import { Loader2, BookOpen, Download, FileText, Sparkles, Crown, Zap, Lock, PenLine, Copy, CheckCheck } from 'lucide-react'
+import { Loader2, BookOpen, Download, FileText, Sparkles, Crown, Zap, Lock, PenLine, Copy, CheckCheck, AlertTriangle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 // ========================
@@ -14,7 +14,6 @@ const PLAN_CONFIG: Record<UserPlan, {
   badge: string
   badgeColor: string
   dailyLimit: number
-  maxChars: number
   genres: string[]
   hasDocx: boolean
   hasKdpSheet: boolean
@@ -26,7 +25,6 @@ const PLAN_CONFIG: Record<UserPlan, {
     badge: 'FREE',
     badgeColor: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
     dailyLimit: 1,
-    maxChars: 3000,
     genres: ['副業・収入アップ', 'AI活用', '自己啓発'],
     hasDocx: false,
     hasKdpSheet: false,
@@ -38,7 +36,6 @@ const PLAN_CONFIG: Record<UserPlan, {
     badge: 'LIGHT',
     badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
     dailyLimit: 3,
-    maxChars: 5000,
     genres: ['副業・収入アップ', 'AI活用', '家計管理・節約', '自己啓発', 'ビジネス', '健康・美容', '育児・教育', '投資・資産運用'],
     hasDocx: true,
     hasKdpSheet: false,
@@ -50,7 +47,6 @@ const PLAN_CONFIG: Record<UserPlan, {
     badge: 'STANDARD',
     badgeColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
     dailyLimit: 5,
-    maxChars: 8000,
     genres: ['副業・収入アップ', 'AI活用', '家計管理・節約', '自己啓発', 'ビジネス', '健康・美容', '育児・教育', '投資・資産運用', '料理・レシピ', '旅行・体験記', '転職・キャリア', '英語学習'],
     hasDocx: true,
     hasKdpSheet: true,
@@ -62,7 +58,6 @@ const PLAN_CONFIG: Record<UserPlan, {
     badge: 'PREMIUM',
     badgeColor: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
     dailyLimit: 999,
-    maxChars: 10000,
     genres: ['副業・収入アップ', 'AI活用', '家計管理・節約', '自己啓発', 'ビジネス', '健康・美容', '育児・教育', '投資・資産運用', '料理・レシピ', '旅行・体験記', '転職・キャリア', '英語学習', 'マインドフルネス', '起業・スタートアップ'],
     hasDocx: true,
     hasKdpSheet: true,
@@ -267,17 +262,17 @@ export function KindleFactory() {
       <div className="max-w-3xl mx-auto px-4 pt-10 pb-4">
         <div className="flex items-center justify-between flex-wrap gap-3 mb-2">
           <div className="flex items-center gap-3">
-            <BookOpen className="text-emerald-500" size={28} />
-            <h1 className="text-2xl font-black text-white italic uppercase tracking-tighter">
+            <BookOpen className="text-emerald-500" size={32} />
+            <h1 className="text-3xl font-black text-white italic uppercase tracking-tighter">
               Kindle本ファクトリー
             </h1>
           </div>
-          <Badge className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${config.badgeColor}`}>
+          <Badge className={`text-xs font-black uppercase tracking-widest px-4 py-1 rounded-full border ${config.badgeColor}`}>
             {config.badge} プラン
           </Badge>
         </div>
-        <p className="text-slate-400 text-sm font-bold">
-          AIがKindle本の原稿を自動生成。テーマを入力するだけでKDP入稿可能なDOCXを作成します。
+        <p className="text-slate-300 text-base font-bold leading-relaxed">
+          最新の Gemini 2.5 Flash 搭載。テーマを入力するだけで、KDP入稿可能な5,000〜8,000字の原稿を最短5分で自動生成します。
         </p>
       </div>
 
@@ -289,10 +284,10 @@ export function KindleFactory() {
             const isActive = p === userPlan
             return (
               <div key={p} className={`rounded-xl p-3 border transition-all ${isActive ? 'border-emerald-500/60 bg-emerald-500/10' : 'border-white/5 opacity-50'}`}>
-                <Badge className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border mb-2 ${c.badgeColor}`}>{c.badge}</Badge>
-                <ul className="text-[10px] text-slate-400 space-y-0.5 font-bold">
+                <Badge className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border mb-2 ${c.badgeColor}`}>{c.badge}</Badge>
+                <ul className="text-xs text-slate-400 space-y-1 font-bold">
                   <li>📄 {c.dailyLimit === 999 ? '無制限' : `1日${c.dailyLimit}回`}</li>
-                  <li>📝 最大{(c.maxChars / 1000).toFixed(0)}000字</li>
+                  <li>⚡️ 最大8000字</li>
                   <li className={c.hasDocx ? 'text-emerald-400' : ''}>📁 DOCX {c.hasDocx ? '✓' : '✗'}</li>
                   <li className={c.hasKdpSheet ? 'text-emerald-400' : ''}>📋 KDP表 {c.hasKdpSheet ? '✓' : '✗'}</li>
                   <li className={c.hasCoverPrompt ? 'text-emerald-400' : ''}>🎨 表紙 {c.hasCoverPrompt ? '✓' : '✗'}</li>
@@ -319,11 +314,11 @@ export function KindleFactory() {
       {/* 入力フォーム */}
       <div className="max-w-3xl mx-auto px-4">
         <div className="bg-[#13141f] border-2 border-emerald-500/20 rounded-[2rem] p-6 md:p-8 space-y-5 shadow-[0_0_40px_rgba(16,185,129,0.08)]">
-          <h2 className="text-lg font-black text-white uppercase italic tracking-tight">📝 本の設定</h2>
+          <h2 className="text-xl font-black text-white uppercase italic tracking-tight">📝 本の設定</h2>
 
           {/* テーマ */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-black text-emerald-400 uppercase tracking-wider">
+          <div className="space-y-2">
+            <label className="text-sm font-black text-emerald-400 uppercase tracking-wider">
               テーマ <span className="text-red-400">*</span>
             </label>
             <input
@@ -331,15 +326,15 @@ export function KindleFactory() {
               value={theme}
               onChange={e => setTheme(e.target.value)}
               placeholder="例: 副業で月10万円を稼ぐ方法、ChatGPTで業務効率化"
-              className="w-full bg-black/50 border-2 border-white/10 rounded-xl px-4 py-3 text-white font-bold placeholder:text-slate-600 focus:border-emerald-500/50 focus:outline-none transition-all"
+              className="w-full bg-black/50 border-2 border-white/10 rounded-xl px-4 py-4 text-white text-base font-bold placeholder:text-slate-600 focus:border-emerald-500/50 focus:outline-none transition-all"
               disabled={loading}
               maxLength={200}
             />
           </div>
 
           {/* ジャンル */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-black text-emerald-400 uppercase tracking-wider">
+          <div className="space-y-2">
+            <label className="text-sm font-black text-emerald-400 uppercase tracking-wider">
               ジャンル <span className="text-red-400">*</span>
             </label>
             <div className="flex flex-wrap gap-2 mb-2">
@@ -348,7 +343,7 @@ export function KindleFactory() {
                   key={g}
                   type="button"
                   onClick={() => setGenre(g)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors border ${
+                  className={`px-4 py-2 rounded-full text-sm font-bold transition-colors border ${
                     genre === g
                       ? 'bg-emerald-600 text-white border-emerald-500'
                       : 'bg-white/5 text-slate-400 border-white/10 hover:border-emerald-500/40 hover:text-emerald-400'
@@ -364,16 +359,20 @@ export function KindleFactory() {
               value={genre}
               onChange={e => setGenre(e.target.value)}
               placeholder="または直接入力"
-              className="w-full bg-black/50 border-2 border-white/10 rounded-xl px-4 py-3 text-white font-bold placeholder:text-slate-600 focus:border-emerald-500/50 focus:outline-none transition-all"
+              className="w-full bg-black/50 border-2 border-white/10 rounded-xl px-4 py-4 text-white text-base font-bold placeholder:text-slate-600 focus:border-emerald-500/50 focus:outline-none transition-all"
               disabled={loading}
               maxLength={100}
             />
           </div>
 
           {error && (
-            <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl flex items-start gap-2">
-              <span className="text-red-400 text-sm">⚠️</span>
-              <p className="text-red-400 text-sm font-bold">{error}</p>
+            <div className="p-4 bg-red-500/10 border-2 border-red-500/40 rounded-xl flex items-start gap-3 animate-in fade-in zoom-in duration-300">
+              <AlertTriangle className="text-red-400 shrink-0" size={20} />
+              <div className="space-y-1">
+                <p className="text-red-400 text-base font-black uppercase italic tracking-wider">生成エラーが発生しました</p>
+                <p className="text-red-300 text-sm font-bold leading-relaxed">{error}</p>
+                <p className="text-red-400/60 text-[10px] font-bold mt-1">※Gemini APIの制限やネットワークエラーの可能性があります。しばらく時間を置いてお試しください。</p>
+              </div>
             </div>
           )}
 
