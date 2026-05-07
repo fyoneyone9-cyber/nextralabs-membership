@@ -99,7 +99,14 @@ export default function ProductsPage() {
         <p className="text-slate-500 max-w-xl mx-auto text-[10px] md:text-sm font-bold italic leading-relaxed px-4">「指示したら、あとは全部やってくれる」<br/>ビジネスと生活をAI武装する、全24の戦略的エンジン。</p>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 space-y-12 md:space-y-20">
+            <div className="max-w-6xl mx-auto px-4 space-y-12 md:space-y-20">
+        <section>
+          <div className="flex items-center gap-3 mb-6 border-l-[6px] md:border-l-8 border-orange-500 pl-4 md:pl-6 py-0.5">
+            <Sparkles className="w-5 h-5 md:w-8 md:h-8 text-orange-500 animate-pulse" />
+            <h2 className="text-lg md:text-2xl font-black text-white italic uppercase">ピックアップ</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{pickupTools.map(p => <ProductCard key={p.id} product={p} />)}</div>
+        </section>
         <section>
           <div className="flex items-center gap-3 mb-6 border-l-[6px] md:border-l-8 border-emerald-500 pl-4 md:pl-6 py-0.5">
             <Gift className="w-5 h-5 md:w-8 md:h-8 text-emerald-500" />
