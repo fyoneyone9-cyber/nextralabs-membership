@@ -127,68 +127,335 @@ const MasterEngine = () => {
     if (!ctx) return;
 
     const w = canvas.width, h = canvas.height;
-    const currentStyle = STYLES.find(s => s.id === style) || STYLES[0];
-    const currentTColor = TSHIRT_COLORS.find(c => c.id === tshirtColor) || TSHIRT_COLORS[1];
+    const S = STYLES.find(s => s.id === style) || STYLES[0];
+    const TC = TSHIRT_COLORS.find(c => c.id === tshirtColor) || TSHIRT_COLORS[1];
 
-    // 背景
-    ctx.fillStyle = '#FFFFFF';
+    // ========== キャンバスクリア ==========
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = '#f8f8f8';
     ctx.fillRect(0, 0, w, h);
 
-    // Tシャツシルエット
-    ctx.fillStyle = currentTColor.hex;
+    // ========== Tシャツシルエット ==========
+    ctx.fillStyle = TC.hex;
+    // 影
+    ctx.shadowColor = 'rgba(0,0,0,0.18)';
+    ctx.shadowBlur = 16;
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 4;
     ctx.beginPath();
-    ctx.moveTo(w * 0.2, h * 0.1);
-    ctx.lineTo(w * 0.8, h * 0.1);
-    ctx.lineTo(w * 0.95, h * 0.3);
-    ctx.lineTo(w * 0.8, h * 0.35);
-    ctx.lineTo(w * 0.8, h * 0.9);
-    ctx.lineTo(w * 0.2, h * 0.9);
-    ctx.lineTo(w * 0.2, h * 0.35);
-    ctx.lineTo(w * 0.05, h * 0.3);
+    ctx.moveTo(w*0.2, h*0.1);
+    ctx.lineTo(w*0.8, h*0.1);
+    ctx.lineTo(w*0.95, h*0.3);
+    ctx.lineTo(w*0.8, h*0.35);
+    ctx.lineTo(w*0.8, h*0.9);
+    ctx.lineTo(w*0.2, h*0.9);
+    ctx.lineTo(w*0.2, h*0.35);
+    ctx.lineTo(w*0.05, h*0.3);
     ctx.closePath();
     ctx.fill();
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
 
-    // デザインエリア（スタイル別背景）
+    // ========== デザインエリア ==========
+    const cx = w / 2;
     const dx = w * 0.25, dy = h * 0.3, dw = w * 0.5, dh = h * 0.4;
-    ctx.beginPath();
-    (ctx as any).roundRect?.(dx, dy, dw, dh, 12) ?? ctx.rect(dx, dy, dw, dh);
+    const cy = dy + dh / 2;
 
-    // グラデーションスタイル専用
-    if (style === 'gradient') {
-      const grad = ctx.createLinearGradient(dx, dy, dx + dw, dy + dh);
-      grad.addColorStop(0, '#7c3aed');
-      grad.addColorStop(0.5, '#db2777');
-      grad.addColorStop(1, '#2563eb');
-      ctx.fillStyle = grad;
+    // ---------- スタイル別背景描画 ----------
+
+    if (style === 'japanese') {
+      // 白背景
+      ctx.fillStyle = '#fefefe';
+      ctx.fillRect(dx, dy, dw, dh);
+      // 朱色の大きな円
+      ctx.fillStyle = '#c0392b';
+      ctx.beginPath();
+      ctx.arc(cx, cy, dh * 0.38, 0, Math.PI * 2);
+      ctx.fill();
+      // 縦の飾り線
+      ctx.strokeStyle = '#c0392b';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(dx + 8, dy + 8); ctx.lineTo(dx + 8, dy + dh - 8); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(dx + dw - 8, dy + 8); ctx.lineTo(dx + dw - 8, dy + dh - 8); ctx.stroke();
+
+    } else if (style === 'street') {
+      ctx.fillStyle = '#111';
+      ctx.fillRect(dx, dy, dw, dh);
+      // ジグザグライン
+      ctx.strokeStyle = '#ffdd00';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      for (let x = dx; x < dx + dw; x += 16) {
+        ctx.lineTo(x, dy + (((x - dx) / 16) % 2 === 0 ? 8 : 18));
+      }
+      ctx.stroke();
+      ctx.beginPath();
+      for (let x = dx; x < dx + dw; x += 16) {
+        ctx.lineTo(x, dy + dh - (((x - dx) / 16) % 2 === 0 ? 8 : 18));
+      }
+      ctx.stroke();
+
+    } else if (style === 'retro') {
+      ctx.fillStyle = '#f5e6c8';
+      ctx.fillRect(dx, dy, dw, dh);
+      // 同心円
+      for (let r = dh * 0.45; r > 10; r -= 14) {
+        ctx.strokeStyle = r % 28 === 0 ? '#ff6b35' : '#d4a96a';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      // 外枠
+      ctx.strokeStyle = '#ff6b35';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(dx + 5, dy + 5, dw - 10, dh - 10);
+
+    } else if (style === 'cyberpunk') {
+      ctx.fillStyle = '#000020';
+      ctx.fillRect(dx, dy, dw, dh);
+      // 格子線
+      ctx.strokeStyle = 'rgba(0,255,255,0.2)';
+      ctx.lineWidth = 1;
+      for (let x = dx; x < dx + dw; x += 20) {
+        ctx.beginPath(); ctx.moveTo(x, dy); ctx.lineTo(x, dy + dh); ctx.stroke();
+      }
+      for (let y = dy; y < dy + dh; y += 20) {
+        ctx.beginPath(); ctx.moveTo(dx, y); ctx.lineTo(dx + dw, y); ctx.stroke();
+      }
+      // 斜めの光
+      const cg = ctx.createLinearGradient(dx, dy, dx + dw, dy + dh);
+      cg.addColorStop(0, 'rgba(0,255,255,0.0)');
+      cg.addColorStop(0.5, 'rgba(0,255,255,0.08)');
+      cg.addColorStop(1, 'rgba(255,0,255,0.0)');
+      ctx.fillStyle = cg;
+      ctx.fillRect(dx, dy, dw, dh);
+
+    } else if (style === 'kawaii') {
+      ctx.fillStyle = '#fff0f5';
+      ctx.fillRect(dx, dy, dw, dh);
+      // ハートを散りばめる
+      const hearts = [[cx-30,cy-20],[cx+25,cy-30],[cx-20,cy+25],[cx+30,cy+20],[cx,cy-35]];
+      hearts.forEach(([hx, hy]) => {
+        ctx.fillStyle = 'rgba(255,182,193,0.5)';
+        ctx.font = '18px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('♥', hx, hy);
+      });
+      // 波線枠
+      ctx.strokeStyle = '#ff69b4';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 4]);
+      ctx.strokeRect(dx + 6, dy + 6, dw - 12, dh - 12);
+      ctx.setLineDash([]);
+
+    } else if (style === 'minimal') {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(dx, dy, dw, dh);
+      // 細いシングルライン
+      ctx.strokeStyle = '#cccccc';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(dx + 10, dy + 10, dw - 20, dh - 20);
+      // 下部アンダーライン
+      ctx.strokeStyle = '#111';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cx - 30, cy + dh * 0.3);
+      ctx.lineTo(cx + 30, cy + dh * 0.3);
+      ctx.stroke();
+
+    } else if (style === 'gold') {
+      ctx.fillStyle = '#0a0800';
+      ctx.fillRect(dx, dy, dw, dh);
+      // ゴールドの二重枠
+      ctx.strokeStyle = '#d4af37';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(dx + 4, dy + 4, dw - 8, dh - 8);
+      ctx.strokeStyle = '#ffe566';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(dx + 10, dy + 10, dw - 20, dh - 20);
+      // 四隅の装飾
+      const corners = [[dx+4,dy+4],[dx+dw-4,dy+4],[dx+4,dy+dh-4],[dx+dw-4,dy+dh-4]];
+      corners.forEach(([cx2,cy2]) => {
+        ctx.fillStyle = '#d4af37';
+        ctx.beginPath();
+        ctx.arc(cx2, cy2, 4, 0, Math.PI*2);
+        ctx.fill();
+      });
+
+    } else if (style === 'neon') {
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(dx, dy, dw, dh);
+      // ネオン枠（二重グロー）
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = '#39ff14';
+      ctx.strokeStyle = '#39ff14';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(dx + 6, dy + 6, dw - 12, dh - 12);
+      ctx.shadowColor = '#ff00ff';
+      ctx.strokeStyle = '#ff00ff';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(dx + 12, dy + 12, dw - 24, dh - 24);
+      ctx.shadowBlur = 0;
+
+    } else if (style === 'nature') {
+      ctx.fillStyle = '#f1f8f1';
+      ctx.fillRect(dx, dy, dw, dh);
+      // 葉っぱの装飾
+      ctx.fillStyle = 'rgba(46,204,113,0.2)';
+      [[cx-35,cy+10],[cx+35,cy-10],[cx-10,cy+30],[cx+10,cy-30]].forEach(([lx,ly]) => {
+        ctx.beginPath();
+        ctx.ellipse(lx, ly, 12, 6, Math.PI/4, 0, Math.PI*2);
+        ctx.fill();
+      });
+      ctx.strokeStyle = '#2ecc71';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(dx + 6, dy + 6, dw - 12, dh - 12);
+
+    } else if (style === 'gradient') {
+      const gg = ctx.createLinearGradient(dx, dy, dx + dw, dy + dh);
+      gg.addColorStop(0, '#7c3aed');
+      gg.addColorStop(0.4, '#db2777');
+      gg.addColorStop(1, '#2563eb');
+      ctx.fillStyle = gg;
+      ctx.fillRect(dx, dy, dw, dh);
+      // 光沢ライン
+      ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(dx, dy + dh * 0.2);
+      ctx.lineTo(dx + dw, dy);
+      ctx.stroke();
+
+    } else if (style === 'vintage') {
+      ctx.fillStyle = '#f5e6c8';
+      ctx.fillRect(dx, dy, dw, dh);
+      // ざらつき風の点描
+      ctx.fillStyle = 'rgba(92,61,30,0.04)';
+      for (let i = 0; i < 200; i++) {
+        ctx.fillRect(dx + Math.random()*dw, dy + Math.random()*dh, 2, 2);
+      }
+      // クラシック枠
+      ctx.strokeStyle = '#8b5e3c';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(dx + 5, dy + 5, dw - 10, dh - 10);
+      ctx.strokeStyle = '#c8a96a';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(dx + 11, dy + 11, dw - 22, dh - 22);
+
     } else if (style === 'popart') {
-      // ポップアート：ハーフトーン風に黄色ベース
-      ctx.fillStyle = currentStyle.bg;
-    } else {
-      ctx.fillStyle = currentStyle.bg;
+      ctx.fillStyle = '#ffff00';
+      ctx.fillRect(dx, dy, dw, dh);
+      // ベン・デイドット風
+      ctx.fillStyle = 'rgba(255,0,0,0.15)';
+      for (let px = dx; px < dx + dw; px += 12) {
+        for (let py = dy; py < dy + dh; py += 12) {
+          ctx.beginPath();
+          ctx.arc(px + 4, py + 4, 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      // 太い黒枠
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 5;
+      ctx.strokeRect(dx + 4, dy + 4, dw - 8, dh - 8);
+
+    } else if (style === 'anime') {
+      ctx.fillStyle = '#0d0d2b';
+      ctx.fillRect(dx, dy, dw, dh);
+      // 星を散りばめる
+      ctx.fillStyle = 'rgba(125,249,255,0.6)';
+      [[cx-30,dy+14],[cx+25,dy+20],[cx-15,dy+dh-16],[cx+30,dy+dh-20],[cx,dy+10]].forEach(([sx,sy]) => {
+        ctx.font = '12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('★', sx, sy);
+      });
+      // ピンクのグロー枠
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = '#ff6ec7';
+      ctx.strokeStyle = '#ff6ec7';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(dx + 6, dy + 6, dw - 12, dh - 12);
+      ctx.shadowBlur = 0;
+
+    } else if (style === 'military') {
+      ctx.fillStyle = '#2d3a1e';
+      ctx.fillRect(dx, dy, dw, dh);
+      // カモフラ風パターン（不規則な楕円）
+      const camo = ['#3a4a28','#4a5c30','#1e2a10','#2d3a1e'];
+      for (let i = 0; i < 12; i++) {
+        ctx.fillStyle = camo[i % camo.length];
+        ctx.beginPath();
+        ctx.ellipse(
+          dx + (i * 31) % dw,
+          dy + (i * 19) % dh,
+          18 + (i % 3) * 8, 10 + (i % 2) * 6,
+          (i * 0.5), 0, Math.PI * 2
+        );
+        ctx.fill();
+      }
+      // ステンシル風枠
+      ctx.strokeStyle = '#c8b560';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(dx + 5, dy + 5, dw - 10, dh - 10);
+
+    } else if (style === 'typo') {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(dx, dy, dw, dh);
+      // 背景に薄い文字
+      ctx.fillStyle = 'rgba(0,0,0,0.05)';
+      ctx.font = 'bold 60px Helvetica, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(keyword[0] || 'A', cx, cy);
+      // 赤いアクセントライン（上下）
+      ctx.fillStyle = '#ff3300';
+      ctx.fillRect(dx, dy, dw, 6);
+      ctx.fillRect(dx, dy + dh - 6, dw, 6);
+
+    } else if (style === 'monochrome') {
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect(dx, dy, dw, dh);
+      // ハーフトーン風グラデーション
+      const mg = ctx.createRadialGradient(cx, cy, 0, cx, cy, dh*0.5);
+      mg.addColorStop(0, 'rgba(255,255,255,0.1)');
+      mg.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = mg;
+      ctx.fillRect(dx, dy, dw, dh);
+      // 白い細枠
+      ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(dx + 8, dy + 8, dw - 16, dh - 16);
     }
-    ctx.fill();
 
-    // アクセントライン
-    ctx.strokeStyle = currentStyle.accent;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    (ctx as any).roundRect?.(dx + 4, dy + 4, dw - 8, dh - 8, 10) ?? ctx.rect(dx + 4, dy + 4, dw - 8, dh - 8);
-    ctx.stroke();
-
-    // テキスト描画
-    ctx.font = currentStyle.font;
-    ctx.fillStyle = currentStyle.textColor;
+    // ========== テキスト描画 ==========
+    ctx.font = S.font;
+    ctx.fillStyle = S.textColor;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // グロー効果（サイバー・ネオン）
-    if (style === 'cyberpunk' || style === 'neon') {
-      ctx.shadowBlur = 14;
-      ctx.shadowColor = currentStyle.textColor;
+    // グロー系スタイル
+    if (['cyberpunk','neon','anime'].includes(style)) {
+      ctx.shadowBlur = 16;
+      ctx.shadowColor = S.textColor;
+    }
+    // ポップアート：黒縁取り
+    if (style === 'popart') {
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 4;
+    }
+    // ミリタリー：縁取り
+    if (style === 'military') {
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 3;
     }
 
-    // 長文折り返し
-    const maxWidth = dw - 24;
+    // 折り返し処理
+    const maxWidth = dw - 28;
     const chars = keyword.split('');
     let line = '';
     const lines: string[] = [];
@@ -198,10 +465,17 @@ const MasterEngine = () => {
       else line = test;
     }
     lines.push(line);
-    const lineH = 36;
-    const startY = dy + dh / 2 - ((lines.length - 1) * lineH) / 2;
-    lines.forEach((l, i) => ctx.fillText(l, w / 2, startY + i * lineH));
+    const lineH = 38;
+    const startY = cy - ((lines.length - 1) * lineH) / 2;
+
+    lines.forEach((l, i) => {
+      const y = startY + i * lineH;
+      if (style === 'popart' || style === 'military') ctx.strokeText(l, cx, y);
+      ctx.fillText(l, cx, y);
+    });
+
     ctx.shadowBlur = 0;
+    ctx.shadowColor = 'transparent';
 
     setMockupDataUrl(canvas.toDataURL('image/png'));
   }, [keyword, style, tshirtColor]);
