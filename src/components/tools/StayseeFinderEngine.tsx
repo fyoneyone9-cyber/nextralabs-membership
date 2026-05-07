@@ -136,9 +136,35 @@ const MasterEngine = () => {
                    </div>
                 )}
               </div>
-              <div className="bg-[#0a0b14] rounded-[3rem] p-10 border-2 border-emerald-500/20 shadow-inner flex flex-col min-h-[350px]">
-                <div className="flex items-center gap-4 text-emerald-400 font-black italic uppercase text-xl mb-6"><ClipboardPaste /> AI ANALYSIS LOG</div>
-                <textarea value={matchResult} onChange={(e) => setMatchResult(e.target.value)} placeholder="AIの解析結果をペースト..." className="flex-1 bg-[#13141f] border-2 border-white/5 rounded-[2rem] p-8 text-lg text-slate-300 outline-none font-mono italic shadow-inner" />
+                            <div className="bg-[#0a0b14] rounded-[3rem] p-10 border-2 border-emerald-500/20 shadow-inner flex flex-col min-h-[450px]">
+                <div className="flex items-center gap-4 text-emerald-400 font-black italic uppercase text-2xl mb-8"><ClipboardPaste size={32} /> AI解析連携</div>
+                
+                <div className="space-y-6 mb-8">
+                  <button 
+                    onClick={() => { navigator.clipboard.writeText("【最優先：添付画像を解析してください】PMSの宿泊履歴から持ち主を特定するための詳細分析を行ってください。"); setCopied(true); setTimeout(() => setCopied(false), 2000); }} 
+                    className={"w-full h-20 text-2xl font-black rounded-2xl transition-all shadow-xl " + (copied ? 'bg-emerald-500 text-slate-950' : 'bg-blue-600 text-white hover:bg-blue-500')}
+                  >
+                    {copied ? '✅ COPY COMPLETE' : '① 解析指示をコピー'}
+                  </button>
+                  
+                  <div className="grid grid-cols-3 gap-4">
+                    {['CHATGPT', 'GEMINI', 'CLAUDE'].map(ai => (
+                      <button key={ai} onClick={() => window.open(ai === 'CHATGPT' ? 'https://chatgpt.com' : ai === 'GEMINI' ? 'https://gemini.google.com' : 'https://claude.ai', '_blank')} className="h-20 bg-white/5 border-2 border-white/10 rounded-2xl text-xs font-black text-slate-400 hover:text-white hover:bg-white/10 transition-all uppercase italic">
+                        {ai} 🚀
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-3 flex-1 flex flex-col">
+                  <label className="text-xs font-black text-emerald-500 uppercase italic px-4">② AIの解析結果をペースト</label>
+                  <textarea 
+                    value={matchResult} 
+                    onChange={(e) => setMatchResult(e.target.value)} 
+                    placeholder="AIからの回答をここに貼り付けてください..." 
+                    className="flex-1 w-full bg-[#13141f] border-2 border-white/10 rounded-[2rem] p-8 text-lg text-white font-bold focus:border-emerald-500 outline-none italic shadow-inner" 
+                  />
+                </div>
               </div>
             </div>
           </Card>
