@@ -22,7 +22,7 @@ const TOOLS = [
   { id: 'youtube-producer', cat: 'sns', title: 'AI YouTubeプロデューサー', sub: '全自動台本・構成作成', icon: Clapperboard, plan: 'プレミアム', badge: 'TOP' },
   { id: 'trend-stock', cat: 'sns', title: 'SNSトレンド自動仕入', sub: 'バズ予測 × 楽天商品検索OS', icon: TrendingUp, plan: 'スタンダード', badge: 'NEW' },
   { id: 'youtube-coordinator', cat: 'sns', title: 'YouTube Sync', sub: '動画解析 × 楽天コーデ', icon: Play, plan: 'プレミアム', badge: 'NEW' },
-  { id: 'kdp-guide', cat: 'sns', title: 'Kindle出版完全ナビ', sub: '執筆から出版までの一気通貫', icon: BookOpen, plan: '無料', badge: 'BASIC' },
+  { id: 'kdp-guide', cat: 'sns', title: 'Kindle出版AI完全ナビ', sub: '執筆から出版までの一気通貫', icon: BookOpen, plan: '無料', badge: 'BASIC' },
   { id: 'prompt-master', cat: 'sns', title: 'AI画像プロンプトマスター', sub: '究極の画像パーツ工房', icon: Wand2, plan: 'ライト', badge: 'CORE' },
   { id: 'scam-defender', cat: 'life', title: 'AI詐欺ディフェンダー', sub: '詐欺・悪意を即座に判定', icon: ShieldCheck, plan: 'プレミアム', badge: 'ULTIMATE' },
   { id: 'money-guard', cat: 'life', title: 'AI家計防衛シミュレーター', sub: '衝動買いの心理的抑止', icon: Wallet, plan: 'スタンダード', badge: 'MASTER' },
