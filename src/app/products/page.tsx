@@ -84,9 +84,14 @@ function ProductCard({ product }: { product: any }) {
   )
 }
 
-function SectionTitle({ title, color }: { title: string; color: string }) {
+function SectionTitle({ icon: Icon, title, color }: { icon: any; title: string; color: string }) {
   return (
     <div className={"flex items-center gap-4 mb-10 border-l-8 " + color + " pl-6 py-2"}>
+      <Icon className="w-8 h-8 text-white" />
+      <h2 className="text-3xl font-bold text-white tracking-tighter italic uppercase">{title}</h2>
+    </div>
+  )
+}>
       <span className="text-orange-500 font-black text-2xl">|</span>
       <h2 className="text-3xl font-bold text-white tracking-tighter italic uppercase">{title}</h2>
     </div>
@@ -111,11 +116,11 @@ export default function ProductsPage() {
         <h1 className="text-5xl md:text-7xl font-black text-white tracking-tight">AIツール一覧</h1>
       </div>
       <div className="max-w-7xl mx-auto px-4 space-y-32">
-        <section><SectionTitle title="本日のおすすめ" color="border-orange-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{todayRecommended.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
-        <section><SectionTitle title="無料ツール" color="border-emerald-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{freeTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
-        <section><SectionTitle title="ホテル・民泊オーナー様向け" color="border-blue-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{hotelTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
-        <section><SectionTitle title="防犯・ライフ" color="border-red-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{defenseTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
-        <section><SectionTitle title="ビジネス・制作" color="border-teal-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{bizTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
+        <section><SectionTitle icon={BookOpen} title="本日のおすすめ" color="border-orange-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{todayRecommended.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
+        <section><SectionTitle icon={Gift} title="無料ツール" color="border-emerald-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{freeTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
+        <section><SectionTitle icon={Hotel} title="ホテル・民泊オーナー様向け" color="border-blue-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{hotelTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
+        <section><SectionTitle icon={ShieldAlert} title="防犯・ライフ" color="border-red-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{defenseTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
+        <section><SectionTitle icon={Briefcase} title="ビジネス・制作" color="border-teal-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{bizTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
       </div>
     </div>
   )
