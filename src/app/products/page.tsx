@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { BookOpen, Zap, Star, Crown, Shield, TrendingUp, Share2, ShieldCheck, Mail, Briefcase, Wallet, Building2, Youtube, User, HeartHandshake, Sofa, Network, LayoutGrid, Sparkles, Gift, Search, Scale, UserPlus, Table, Clapperboard, Wand2, ShieldAlert, Play, Hotel, Lock, Camera, UserCheck } from 'lucide-react'
+import { BookOpen, Zap, Star, Crown, Shield, TrendingUp, LineChart, Share2, ShieldCheck, Mail, Briefcase, Wallet, Building2, Youtube, User, HeartHandshake, Sofa, Network, LayoutGrid, Sparkles, Gift, Search, Scale, UserPlus, Table, Clapperboard, Wand2, ShieldAlert, Play, Hotel, Lock, Camera, UserCheck } from 'lucide-react'
 
 const TOOLS = [
   { id: 'staysee-ai-finder', cat: 'hotel', title: 'AI×ホテルDXシステム【Nextra】', sub: '宿泊予約・鍵発行を完全同期', icon: Building2, plan: 'プレミアム' },
@@ -14,7 +14,7 @@ const TOOLS = [
   { id: 'sns-auto-poster', cat: 'sns', title: 'AI SNSオートポスター', sub: 'バズを量産するマルチSNS生成', icon: Share2, plan: 'ライト' },
   { id: 'ai-select-shop', cat: 'sns', title: 'AIセレクトショップ', sub: 'トレンド分析 × Shopify連携', icon: Store, plan: 'プレミアム' },
   { id: 'youtube-producer', cat: 'sns', title: 'AI YouTubeプロデューサー', sub: '全自動台本・構成作成', icon: Clapperboard, plan: 'プレミアム' },
-  { id: 'trend-stock', cat: 'sns', title: 'SNSトレンドAI分析', sub: 'バズ予測 × 楽天商品検索OS', icon: TrendingUp, plan: 'スタンダード' },
+  { id: 'trend-stock', cat: 'sns', title: 'SNSトレンドAI分析', sub: 'バズ予測 × 楽天商品検索OS', icon: TrendingUp, LineChart, plan: 'スタンダード' },
   { id: 'youtube-coordinator', cat: 'sns', title: 'YouTube AI Sync', sub: '動画解析 × 楽天コーデ', icon: Play, plan: 'プレミアム' },
   { id: 'kdp-guide', cat: 'sns', title: 'Kindle出版AI完全ナビ', sub: '執筆から出版までの一気通貫', icon: BookOpen, plan: '無料' },
   { id: 'prompt-master', cat: 'sns', title: 'AI画像プロンプトマスター', sub: '究極の画像パーツ工房', icon: Wand2, plan: 'ライト' },
