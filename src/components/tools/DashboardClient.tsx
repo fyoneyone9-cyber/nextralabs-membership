@@ -21,8 +21,6 @@ const ALL_TOOLS = [
   { id: 'youtube-coordinator', name: 'YouTube AI Sync', icon: Youtube, color: 'text-red-500', bg: 'bg-red-500/10', plan: 'プレミアム', badge: 'NEW' },
   { id: 'ai-sidejob', name: 'AI副業スタートダッシュ', icon: Briefcase, color: 'text-indigo-500', bg: 'bg-indigo-400/10', plan: 'プレミアム', badge: 'MASTER' },
   { id: 'ai-konkatsu', name: 'AI婚活コーチ', icon: HeartHandshake, color: 'text-rose-400', bg: 'bg-rose-400/10', plan: 'スタンダード', badge: 'TOP' },
-  { id: 'office-politics-graph', name: '社内政治 AI相関図', icon: Share2, color: 'text-slate-400', bg: 'bg-slate-400/10', plan: '無料', badge: 'HOT' },
-  { id: 'trend-stock', name: 'SNSトレンドAI分析', icon: TrendingUp, color: 'text-orange-500', bg: 'bg-orange-500/10', plan: 'スタンダード', badge: 'NEW' },
 ]
 
 export default function DashboardClient({ user, profile, subscription }) {
@@ -40,6 +38,7 @@ export default function DashboardClient({ user, profile, subscription }) {
   }
   if (!mounted) return null
   const plan = subscription?.plan || 'free'
+  const isPremium = plan === 'premium'
   const planDisplay = plan === 'premium' ? 'プレミアム会員' : plan === 'standard' ? 'スタンダード会員' : plan === 'light' ? 'ライト会員' : '無料会員'
   const hasAccess = (toolPlan) => {
     if (plan === 'premium') return true
@@ -50,58 +49,47 @@ export default function DashboardClient({ user, profile, subscription }) {
   const favoriteTools = ALL_TOOLS.filter(t => favorites.includes(t.id))
   const regularTools = ALL_TOOLS.filter(t => !favorites.includes(t.id)).slice(0, 6)
   
-  return (
-    <div className="min-h-screen bg-[#0a0b14] text-slate-200 font-sans pb-20">
-      <div className="container mx-auto px-4 py-12 max-w-6xl space-y-12">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-10">
-          <div className="space-y-2">
-            <Badge variant="outline" className="px-4 py-1 text-xs font-black text-emerald-500 border-emerald-500/20 uppercase tracking-widest">DASHBOARD</Badge>
-            <h1 className="text-4xl md:text-6xl font-black text-white italic tracking-tighter uppercase leading-none">Welcome</h1>
+  const ToolCard = ({ tool }) => {
+    const Icon = tool.icon; const locked = !hasAccess(tool.plan); const isFav = favorites.includes(tool.id)
+    return (
+      <div className={"group relative h-40 p-8 rounded-[2.5rem] border-2 transition-all overflow-hidden " + (locked ? "opacity-40 grayscale bg-slate-900 border-white/5" : "bg-[#13141f] border-emerald-500/30 hover:border-emerald-500 shadow-2xl hover:scale-[1.03]")}>
+        <Link href={locked ? "/pricing" : "/products/" + tool.id + "/app"} className="flex items-start gap-6 h-full relative z-10">
+          <div className={"w-16 h-16 rounded-2xl flex items-center justify-center bg-white/5 border border-white/10 shadow-inner " + tool.color}><Icon size={32} /></div>
+          <div className="flex-1 min-w-0 pt-2">
+            <p className="text-xl font-black text-white italic leading-none uppercase truncate mb-2">{tool.name}</p>
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest italic">{locked ? 'Upgrade sequence required' : 'ツールを起動する ➔'}</p>
           </div>
-          <Badge className="px-6 py-2 font-black italic uppercase rounded-xl shadow-lg border-0 bg-slate-800 text-slate-400">{planDisplay}</Badge>
+        </Link>
+        {!locked && <button onClick={(e) => toggleFavorite(e, tool.id)} className="absolute top-6 right-6 p-2 text-slate-700 hover:text-white transition-all z-20"><Star size={20} fill={isFav ? "currentColor" : "none"} className={isFav ? "text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]" : ""} /></button>}
+        <Icon className="absolute -bottom-10 -right-10 h-48 w-48 opacity-[0.03] rotate-12 transition-transform group-hover:rotate-0" />
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-[#050507] text-slate-200 font-sans pb-32">
+      <div className="container mx-auto px-6 py-20 max-w-7xl space-y-24">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 border-b border-white/5 pb-16">
+          <div className="space-y-4">
+            <Badge variant="outline" className="px-6 py-1 text-xs font-black text-emerald-500 border-emerald-500/20 uppercase tracking-[0.4em] animate-pulse">Operational Dashboard</Badge>
+            <h1 className="text-5xl md:text-9xl font-black text-white italic tracking-tighter uppercase leading-none">Welcome</h1>
+          </div>
+          <Badge className={"px-8 py-3 font-black italic uppercase rounded-2xl shadow-2xl border-0 text-lg " + (isPremium ? "bg-gradient-to-r from-amber-500 to-orange-600 text-slate-950" : "bg-slate-800 text-slate-400")}>{planDisplay}</Badge>
         </div>
 
         {favoriteTools.length > 0 && (
-          <div className="space-y-6">
-            <div className="flex items-center gap-3 px-4"><Star className="h-6 w-6 text-amber-500 fill-amber-400" /><h3 className="font-black italic uppercase tracking-tighter text-2xl">お気に入りシステム</h3></div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {favoriteTools.map(tool => (
-                <div key={tool.id} className="group relative h-32 p-6 rounded-[2rem] border-2 transition-all overflow-hidden bg-black border-emerald-500/30 hover:border-emerald-500">
-                  <Link href={"/products/" + tool.id + "/app"} className="flex items-start gap-4 h-full">
-                    <div className={"inline-flex h-12 w-12 items-center justify-center rounded-2xl " + tool.bg}><tool.icon className={"h-6 w-6 " + tool.color} /></div>
-                    <div className="flex-1 min-w-0 pt-1">
-                      <p className="text-lg font-black text-white italic leading-tight uppercase truncate">{tool.name}</p>
-                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">ツールを起動する ➔</p>
-                    </div>
-                  </Link>
-                  <button onClick={(e) => toggleFavorite(e, tool.id)} className="absolute top-4 right-4 p-2 text-amber-400 scale-110"><Star size={18} fill="currentColor" /></button>
-                </div>
-              ))}
-            </div>
+          <div className="space-y-10">
+            <div className="flex items-center gap-6 px-4 border-l-[12px] border-amber-500 pl-8"><Star className="h-10 w-10 text-amber-500 fill-amber-500 animate-pulse" /><h3 className="font-black italic uppercase tracking-tighter text-4xl">お気に入りシステム</h3></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{favoriteTools.map(tool => <ToolCard key={tool.id} tool={tool} />)}</div>
           </div>
         )}
 
-        <div className="space-y-6">
-          <div className="flex items-center justify-between px-4"><h3 className="font-black italic uppercase tracking-tighter text-2xl flex items-center gap-3"><Rocket className="h-6 w-6 text-emerald-500" />マスタツール・アクセス</h3><Link href="/products" className="text-[10px] font-black text-slate-500 hover:text-emerald-400 uppercase tracking-widest italic">全ツールを見る ➔</Link></div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {regularTools.map(tool => {
-              const locked = !hasAccess(tool.plan)
-              return (
-                <div key={tool.id} className={"group relative h-32 p-6 rounded-[2rem] border-2 transition-all overflow-hidden " + (locked ? "opacity-40 grayscale bg-slate-900 border-white/5" : "bg-black border-emerald-500/30 hover:border-emerald-500")}>
-                  <Link href={locked ? "/pricing" : "/products/" + tool.id + "/app"} className="flex items-start gap-4 h-full">
-                    <div className={"inline-flex h-12 w-12 items-center justify-center rounded-2xl " + tool.bg}><tool.icon className={"h-6 w-6 " + tool.color} /></div>
-                    <div className="flex-1 min-w-0 pt-1">
-                      <p className="text-lg font-black text-white italic leading-tight uppercase truncate">{tool.name}</p>
-                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">{locked ? 'Upgrade required' : 'ツールを起動する ➔'}</p>
-                    </div>
-                  </Link>
-                  {!locked && <button onClick={(e) => toggleFavorite(e, tool.id)} className="absolute top-4 right-4 p-2 text-slate-700 hover:text-white opacity-0 group-hover:opacity-100 transition-all"><Star size={18} fill="none" /></button>}
-                </div>
-              )
-            })}
-          </div>
+        <div className="space-y-10">
+          <div className="flex items-center justify-between px-4 border-l-[12px] border-emerald-500 pl-8"><h3 className="font-black italic uppercase tracking-tighter text-4xl flex items-center gap-6"><Rocket className="h-10 w-10 text-emerald-500" />マスタツール・アクセス</h3><Link href="/products" className="text-[12px] font-black text-slate-500 hover:text-emerald-400 uppercase tracking-widest italic border-b border-transparent hover:border-emerald-500 transition-all">全ツールを見る ➔</Link></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{regularTools.map(tool => <ToolCard key={tool.id} tool={tool} />)}</div>
         </div>
       </div>
+      <div className="text-center opacity-10 mt-40 font-black uppercase tracking-[0.5em] italic text-[10px]">Operational OS • NextraLabs MASTERMODEL • 2026</div>
     </div>
   )
 }
