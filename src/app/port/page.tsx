@@ -9,7 +9,7 @@ import {
   MessageSquare, HeartHandshake, Phone, Mic, FileText, Globe, 
   Database, Layout, Presentation, Headphones, Monitor, 
   Github, Instagram, Send, CheckCircle2, ArrowRight, Lightbulb, 
-  Settings, ShoppingCart, Users, Languages, Shield, Briefcase
+  RotateCcw, Shield, Briefcase
 } from 'lucide-react'
 
 const IDENTITY = {
@@ -37,7 +37,7 @@ const SKILLS = [
   { icon: Twitter, title: "SNS運用・トレンド監視", desc: "Twitter/X・Reddit・Instagram のトレンドをリアルタイム監視し、バズ予兆の検知・投稿案の生成・エンゲージメント分析を行います。", tags: ["Twitter/X", "Reddit", "Instagram", "トレンド分析"] },
   { icon: Mic, title: "音声文字起こし・議事録", desc: "会議・インタビューの音声をAIで文字起こしし、要点整理・アクションアイテム抽出まで完了した議事録として納品します。", tags: ["文字起こし", "議事録整形", "要点抽出", "多言語対応"] },
   { icon: Phone, title: "AI電話代行", desc: "レストラン予約・アポ取り・問い合わせ・クレーム交渉など、AIが代わりに電話をかけて結果を報告します。", tags: ["予約代行", "アポ取り", "問い合わせ", "通話レポート"] },
-  { icon: LineChart, title: "株価・市場情報の取得", desc: "指定銘柄のリアルタイム株価・財務データ・市場動向を自動収集・分析。定期配信レポートにも組み込めます。", tags: ["リアルタイム株価", "財務分析", "AI銘柄分析"] },
+  { icon: LineChart, title: "株価・市場情報の取得", desc: "指定銘銘柄のリアルタイム株価・財務データ・市場動向を自動収集・分析。定期配信レポートにも組み込めます。", tags: ["リアルタイム株価", "財務分析", "AI銘柄分析"] },
   { icon: Globe, title: "クラウドファイル管理", desc: "Google Drive・OneDrive のファイルを整理・変換・共有リンク発行まで一括対応。フォルダ構造の設計から運用まで担います。", tags: ["Google Drive", "OneDrive", "SharePoint", "Notion"] },
   { icon: HeartHandshake, title: "プロジェクト全体管理", desc: "要件定義から納品まで、複数タスクを並行管理しながら全体をドライブします。「何から始めれば？」という状態から一緒に整理します。", tags: ["要件定義", "タスク管理", "進捗管理", "納品管理"] }
 ];
@@ -68,11 +68,11 @@ const MasterEngine = () => {
   return (
     <div className="min-h-screen bg-[#050507] text-slate-200 font-sans pb-32 overflow-x-hidden text-left selection:bg-emerald-500/30">
       
-      {/* 🌌 Hero Section */}
+      {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-4 text-center">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#10b98115,transparent_50%)]" />
         <div className="max-w-5xl mx-auto space-y-8 relative z-10">
-          <Badge className="bg-emerald-600 text-white font-black px-6 py-1.5 rounded-full uppercase text-xs tracking-widest shadow-lg">Master Portfolio v5.0</Badge>
+          <Badge className="bg-emerald-600 text-white font-black px-6 py-1.5 rounded-full uppercase text-xs tracking-widest shadow-lg">Master Portfolio v5.1</Badge>
           <div className="space-y-4">
              <h1 className="text-6xl md:text-8xl font-black text-white leading-tight">{IDENTITY.name}</h1>
              <p className="text-2xl md:text-4xl font-bold text-emerald-400 italic">{IDENTITY.motto}</p>
@@ -87,7 +87,7 @@ const MasterEngine = () => {
         </div>
       </section>
 
-      {/* 📊 Stats Section */}
+      {/* Stats Section */}
       <section className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6 mb-32">
         {STATS.map(s => (
           <div key={s.label} className="bg-[#13141f] border border-white/5 p-10 rounded-[2.5rem] text-center shadow-2xl">
@@ -97,17 +97,17 @@ const MasterEngine = () => {
         ))}
       </section>
 
-      {/* ⚡ 特徴セクション */}
+      {/* 特徴セクション */}
       <section className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-6 mb-40">
         {[
           { icon: Zap, title: "圧倒的なスピード", desc: "AIを使いこなして、通常3日かかる作業を数時間で完成させます。" },
           { icon: Search, title: "要件定義から完成まで", desc: "「なんとなくこんなもの」から形にするのが得意。曖昧な依頼でも動きます。" },
-          { icon: Bot, title: "AI最前線の活用", desc: "画像・動画・音声・リサーチ・コードすべてAIで最大化。人力の10倍速で動きます。" },
+          { icon: Sparkles, title: "AI最前線の活用", desc: "画像・動画・音声・リサーチ・コードすべてAIで最大化。人力の10倍速で動きます。" },
           { icon: RotateCcw, title: "一度作れば自動で回る", desc: "定期レポート・通知・データ収集など、仕組みを作って工数ゼロに変えます。" }
         ].map((item, i) => (
           <div key={i} className="bg-[#13141f] p-8 rounded-[2.5rem] border border-white/5 flex gap-6 items-start">
             <div className="w-12 h-12 bg-emerald-600/10 rounded-xl flex items-center justify-center text-emerald-500 shrink-0"><item.icon size={24} /></div>
-            <div className="space-y-2">
+            <div className="space-y-2 text-left">
               <h3 className="text-xl font-black text-white">{item.title}</h3>
               <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
             </div>
@@ -115,7 +115,7 @@ const MasterEngine = () => {
         ))}
       </section>
 
-      {/* 🔍 About Me */}
+      {/* About Me */}
       <section className="max-w-4xl mx-auto px-4 mb-40 space-y-8 text-left">
         <h2 className="text-3xl font-black border-l-4 border-emerald-500 pl-6">自己紹介</h2>
         <div className="bg-[#13141f] p-10 rounded-[3rem] border border-white/5 space-y-6 text-slate-300 leading-relaxed text-lg">
@@ -123,24 +123,24 @@ const MasterEngine = () => {
           <p>「これって自動化できない？」「こんなの作れる？」という相談から始まるプロジェクトが得意です。要件が曖昧な段階から一緒に整理し、動くものを作って納品します。</p>
           <p className="text-emerald-400 font-bold">👉 まずは気軽に相談ください。初回の壁打ちは無料です。</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 text-sm">
-            <div><p className="text-slate-500 font-bold mb-1">拠点</p><p>日本・東京</p></div>
-            <div><p className="text-slate-500 font-bold mb-1">稼働形態</p><p>フリーランス</p></div>
-            <div><p className="text-slate-500 font-bold mb-1">対応時間</p><p>柔軟対応</p></div>
-            <div><p className="text-slate-500 font-bold mb-1">対応領域</p><p>AI・開発</p></div>
+            <div><p className="text-slate-500 font-bold mb-1 text-left">拠点</p><p className="text-left">日本・東京</p></div>
+            <div><p className="text-slate-500 font-bold mb-1 text-left">稼働形態</p><p className="text-left">フリーランス</p></div>
+            <div><p className="text-slate-500 font-bold mb-1 text-left">対応時間</p><p className="text-left">柔軟対応</p></div>
+            <div><p className="text-slate-500 font-bold mb-1 text-left">対応領域</p><p className="text-left">AI・開発</p></div>
           </div>
         </div>
       </section>
 
-      {/* 🛠️ Skills Section */}
-      <section id="skills" className="max-w-7xl mx-auto px-4 space-y-16 mb-48">
+      {/* Skills Section */}
+      <section id="skills" className="max-w-7xl mx-auto px-4 space-y-16 mb-48 text-left">
         <h2 className="text-4xl font-black text-white text-center">できること</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {SKILLS.map(s => (
             <Card key={s.title} className="bg-[#13141f] border border-white/5 p-8 rounded-[2.5rem] shadow-2xl hover:border-emerald-500/30 transition-all flex flex-col h-full group">
               <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center mb-6 text-emerald-500 group-hover:scale-110 transition-transform"><s.icon size={28} /></div>
-              <h3 className="text-xl font-black text-white mb-4 leading-tight">{s.title}</h3>
-              <p className="text-slate-500 text-sm leading-relaxed mb-6 flex-1">{s.desc}</p>
-              <div className="flex flex-wrap gap-1.5">
+              <h3 className="text-xl font-black text-white mb-4 leading-tight text-left">{s.title}</h3>
+              <p className="text-slate-500 text-sm leading-relaxed mb-6 flex-1 text-left">{s.desc}</p>
+              <div className="flex flex-wrap gap-1.5 justify-start">
                 {s.tags.map(t => <Badge key={t} variant="secondary" className="bg-black/50 text-[10px] text-slate-400 border-0">{t}</Badge>)}
               </div>
             </Card>
@@ -148,26 +148,26 @@ const MasterEngine = () => {
         </div>
       </section>
 
-      {/* 💼 Projects Section */}
-      <section className="max-w-7xl mx-auto px-4 space-y-16 mb-48">
+      {/* Projects Section */}
+      <section className="max-w-7xl mx-auto px-4 space-y-16 mb-48 text-left">
         <h2 className="text-4xl font-black text-white text-center">こんな仕事ができます</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
            {PROJECTS.map(p => (
-             <div key={p.title} className="bg-[#13141f] p-10 rounded-[3rem] border border-white/5 shadow-2xl hover:bg-white/5 transition-all group flex flex-col h-full">
+             <div key={p.title} className="bg-[#13141f] p-10 rounded-[3rem] border border-white/5 shadow-2xl hover:bg-white/5 transition-all group flex flex-col h-full text-left">
                 <Badge className="bg-emerald-600/10 text-emerald-500 border-0 mb-6 w-fit">{p.category}</Badge>
-                <h3 className="text-2xl font-black text-white mb-4 leading-tight">{p.title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed mb-8 flex-1">{p.desc}</p>
+                <h3 className="text-2xl font-black text-white mb-4 leading-tight text-left">{p.title}</h3>
+                <p className="text-slate-400 text-sm leading-relaxed mb-8 flex-1 text-left">{p.desc}</p>
                 {p.link.startsWith('http') ? (
-                  <a href={p.link} target="_blank" rel="noopener noreferrer" className="text-emerald-500 font-black text-sm hover:underline">{p.label}</a>
+                  <a href={p.link} target="_blank" rel="noopener noreferrer" className="text-emerald-500 font-black text-sm hover:underline text-left">{p.label}</a>
                 ) : (
-                  <Link href={p.link} className="text-emerald-500 font-black text-sm hover:underline">{p.label}</Link>
+                  <Link href={p.link} className="text-emerald-500 font-black text-sm hover:underline text-left">{p.label}</Link>
                 )}
              </div>
            ))}
         </div>
       </section>
 
-      {/* 📬 Contact Section */}
+      {/* Contact Section */}
       <section className="max-w-4xl mx-auto px-4">
         <div className="bg-gradient-to-br from-emerald-600 to-teal-800 rounded-[4rem] p-12 md:p-20 text-center space-y-8 shadow-2xl">
           <h3 className="text-4xl md:text-6xl font-black text-white italic">お気軽にご連絡ください</h3>
