@@ -35,10 +35,8 @@ const STRATEGY_PARTS = [
 const MasterEngine = () => {
   const [activeWeapon, setActiveWeapon] = useState<string | null>(null);
   const [inputData, setInputData] = useState('');
-  const [report, setReport] = useState('');
-  const [score, setScore] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
-  const [trends, setTrends] = useState<string[]>([]);
+  const [trends, setTrends] = useState<any[]>([]);
   const [isLoadingTrends, setIsLoadingTrends] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -50,11 +48,11 @@ const MasterEngine = () => {
   const fetchTrends = async () => {
     setIsLoadingTrends(true);
     try {
-      const response = await fetch('/api/trends', { cache: 'no-store' });
+      const response = await fetch('/api/tools/trends', { cache: 'no-store' });
       const data = await response.json();
       if (data.trends) setTrends(data.trends);
     } catch (error) {
-      setTrends(["AI革命", "最新ガジェット", "働き方改革", "メタバース", "Web3"]);
+      setTrends([{title: "AI革命"}, {title: "最新ガジェット"}, {title: "働き方改革"}]);
     } finally {
       setIsLoadingTrends(false);
     }
@@ -71,81 +69,134 @@ const MasterEngine = () => {
   const currentWeapon = WEAPONS.find(w => w.id === activeWeapon);
 
   return (
-    <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-10 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
-      <div className="text-center space-y-1 md:space-y-3">
-        <Badge className="bg-red-600 text-white font-black italic px-3 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full shadow-lg">Social Intelligence Hub</Badge>
-        <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl text-center">SNSオートポスター</h1>
-        <div className="inline-block bg-emerald-600 text-white font-black px-4 py-0.5 rounded-full uppercase italic text-[8px] md:text-[10px] tracking-widest shadow-lg">v2.0-MASTER</div>
+    <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
+      {/* 👑 ヘッダー */}
+      <div className="text-center space-y-3">
+        <Badge className="bg-red-600 text-white font-black italic px-4 py-1 text-[10px] md:text-xs uppercase rounded-full shadow-lg">Social Intelligence Hub</Badge>
+        <h1 className="text-4xl md:text-7xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">SNSオートポスター</h1>
+        <div className="inline-block bg-emerald-600 text-white font-black px-6 py-1 rounded-full uppercase italic text-[10px] md:text-sm tracking-widest shadow-lg">v2.1-MASTER</div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-8 md:gap-12 animate-in fade-in duration-700">
-        <div className="space-y-6">
-          <div className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-6 md:p-10 shadow-2xl space-y-8 relative overflow-hidden">
+      <div className="grid lg:grid-cols-2 gap-8 md:gap-12">
+        {/* 📋 左カラム：入力セクション */}
+        <div className="space-y-8">
+          <div className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-6 md:p-10 shadow-2xl space-y-10 relative overflow-hidden">
              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-30" />
              
-             <div className="space-y-4">
+             {/* ① トレンドセクション */}
+             <div className="space-y-6">
                 <div className="flex items-center justify-between px-2">
-                   <p className="text-[10px] font-black text-red-500 uppercase italic tracking-widest">① SUBJECT (TRENDS)</p>
-                   <Badge variant="outline" className="text-red-500 border-red-500/20 uppercase italic text-[8px]">Real-time Feed</Badge>
+                   <p className="text-sm md:text-base font-black text-red-500 uppercase italic tracking-[0.2em]">① SUBJECT (TRENDS)</p>
+                   <Badge variant="outline" className="text-red-500 border-red-500/20 uppercase italic text-[10px] md:text-xs">Real-time Feed</Badge>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                   {isLoadingTrends ? Array(4).fill(0).map((_, i) => <div key={i} className="h-14 bg-white/5 rounded-xl animate-pulse" />) : trends.map((t, i) => {
-                     const line = `【トレンド】：${t}`;
+                <div className="grid grid-cols-1 gap-3">
+                   {isLoadingTrends ? Array(3).fill(0).map((_, i) => <div key={i} className="h-16 bg-white/5 rounded-2xl animate-pulse" />) : trends.map((t, i) => {
+                     const title = t.title || t;
+                     const line = `【トレンド】：${title}`;
                      const isActive = inputData.includes(line);
-                     return <button key={i} onClick={() => setInputData(prev => prev.includes(line) ? prev.split('\n').filter(l => l !== line).join('\n') : (prev ? `${prev}\n${line}` : line))} className={`h-14 border-2 font-black text-[10px] uppercase italic rounded-xl transition-all ${isActive ? 'bg-red-600 border-white text-white scale-95 shadow-lg' : 'border-white/5 bg-black text-slate-500'}`}>{t}</button>;
+                     return (
+                       <button 
+                         key={i} 
+                         onClick={() => setInputData(prev => prev.includes(line) ? prev.split('\n').filter(l => l !== line).join('\n') : (prev ? `${prev}\n${line}` : line))} 
+                         className={`h-16 px-6 border-2 font-black text-xs md:text-sm text-left leading-tight rounded-2xl transition-all ${isActive ? 'bg-red-600 border-white text-white scale-[0.98] shadow-lg' : 'border-white/5 bg-black text-slate-400 hover:text-slate-200'}`}
+                       >
+                         {title}
+                       </button>
+                     );
                    })}
                 </div>
              </div>
 
-             <div className="space-y-4">
-                <div className="flex items-center gap-2 text-orange-500 px-2"><Zap size={20} /><p className="text-[10px] font-black uppercase italic tracking-widest">② STRATEGY PARTS</p></div>
+             {/* ② 戦略パーツセクション */}
+             <div className="space-y-6">
+                <div className="flex items-center gap-2 text-orange-500 px-2">
+                   <Zap size={24} />
+                   <p className="text-sm md:text-base font-black uppercase italic tracking-[0.2em]">② STRATEGY PARTS</p>
+                </div>
                 <div className="grid grid-cols-2 gap-3">
                    {STRATEGY_PARTS.map((p, i) => {
                      const isActive = inputData.includes(p.content);
-                     return <button key={i} onClick={() => setInputData(prev => prev.includes(p.content) ? prev.split('\n').filter(l => l !== p.content).join('\n') : (prev ? `${prev}\n${p.content}` : p.content))} className={`h-14 border-2 font-black text-[10px] uppercase italic rounded-xl transition-all ${isActive ? 'bg-orange-600 border-white text-white scale-95 shadow-lg' : 'border-white/5 bg-black text-slate-500'}`}>{p.label}</button>;
+                     return (
+                       <button 
+                         key={i} 
+                         onClick={() => setInputData(prev => prev.includes(p.content) ? prev.split('\n').filter(l => l !== p.content).join('\n') : (prev ? `${prev}\n${p.content}` : p.content))} 
+                         className={`h-16 border-2 font-black text-xs md:text-sm uppercase italic rounded-2xl transition-all ${isActive ? 'bg-orange-600 border-white text-white scale-[0.98] shadow-lg' : 'border-white/5 bg-black text-slate-500 hover:text-slate-300'}`}
+                       >
+                         {p.label}
+                       </button>
+                     );
                    })}
                 </div>
              </div>
           </div>
         </div>
 
-        <div className="space-y-6 flex flex-col justify-center text-left">
-           <div className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-8 md:p-12 relative shadow-2xl overflow-hidden min-h-[500px] flex flex-col">
+        {/* 💻 右カラム：出力セクション */}
+        <div className="space-y-8">
+           <div className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-8 md:p-12 relative shadow-2xl overflow-hidden min-h-[600px] flex flex-col justify-between">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-30" />
               
-              <div className="space-y-6 mb-8">
-                 <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.4em] italic">Generation Terminal</p>
-                 <textarea value={inputData} onChange={(e) => setInputData(e.target.value)} placeholder="トレンドと戦略を組み合わせてください..." className="w-full h-32 bg-black border-2 border-white/5 rounded-[2rem] p-6 text-lg text-white font-bold focus:border-red-600 outline-none leading-relaxed shadow-inner italic" />
+              <div className="space-y-6">
+                 <p className="text-sm font-black text-emerald-500 uppercase tracking-[0.4em] italic">Generation Terminal</p>
+                 <textarea 
+                   value={inputData} 
+                   onChange={(e) => setInputData(e.target.value)} 
+                   placeholder="トレンドと戦略を組み合わせてください..." 
+                   className="w-full h-48 bg-black border-2 border-white/5 rounded-[2rem] p-8 text-xl text-white font-bold focus:border-red-600 outline-none leading-relaxed shadow-inner" 
+                 />
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-8">
-                 {WEAPONS.map(w => <button key={w.id} onClick={() => setActiveWeapon(w.id)} className={`py-4 rounded-xl transition-all border-2 flex flex-col items-center justify-center gap-2 ${activeWeapon === w.id ? 'bg-red-600 border-white text-white scale-105 shadow-xl' : 'bg-black border-white/5 text-slate-600 hover:text-white'}`}><w.icon size={20} /><span className="text-[8px] font-black uppercase italic">{w.label}</span></button>)}
-              </div>
+              <div className="space-y-8">
+                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                    {WEAPONS.map(w => (
+                      <button 
+                        key={w.id} 
+                        onClick={() => setActiveWeapon(w.id)} 
+                        className={`py-6 rounded-2xl transition-all border-2 flex flex-col items-center justify-center gap-3 ${activeWeapon === w.id ? 'bg-red-600 border-white text-white scale-105 shadow-xl' : 'bg-black border-white/5 text-slate-600 hover:text-white'}`}
+                      >
+                        <w.icon size={28} />
+                        <span className="text-[10px] md:text-xs font-black uppercase italic text-center px-1">{w.label}</span>
+                      </button>
+                    ))}
+                 </div>
 
-              {activeWeapon && (
-                <div className="space-y-4 animate-in zoom-in-95">
-                  <button onClick={() => handleCopy(`${currentWeapon?.prompt}\n\n【データ】：\n${inputData}`)} className={`w-full h-24 text-2xl font-black rounded-3xl transition-all shadow-2xl border-b-8 ${copied ? 'bg-emerald-500 border-emerald-800 text-slate-950' : 'bg-red-600 border-red-800 text-white hover:bg-red-500'}`}>{copied ? '✅ COPY COMPLETE' : '③ 指示をコピーして実行'}</button>
-                  <div className="grid grid-cols-3 gap-3">
-                     {['CHATGPT', 'GEMINI', 'CLAUDE'].map(ai => <button key={ai} onClick={() => window.open(ai === 'CHATGPT' ? 'https://chatgpt.com' : ai === 'GEMINI' ? 'https://gemini.google.com' : 'https://claude.ai', '_blank')} className="h-14 bg-white/5 border-2 border-white/10 text-slate-400 font-black italic rounded-xl uppercase hover:text-white transition-all text-xs">{ai}</button>)}
-                  </div>
-                </div>
-              )}
+                 {activeWeapon && (
+                   <div className="space-y-6 animate-in zoom-in-95 duration-500">
+                     <button 
+                       onClick={() => handleCopy(`${currentWeapon?.prompt}\n\n【データ】：\n${inputData}`)} 
+                       className={`w-full h-28 text-3xl font-black rounded-[2rem] transition-all shadow-2xl border-b-8 active:border-b-0 active:translate-y-1 ${copied ? 'bg-emerald-500 border-emerald-800 text-slate-950' : 'bg-red-600 border-red-800 text-white hover:bg-red-500'}`}
+                     >
+                       {copied ? '✅ COPY COMPLETE' : '③ 指示をコピーして実行'}
+                     </button>
+                     <div className="grid grid-cols-3 gap-4">
+                        {['CHATGPT', 'GEMINI', 'CLAUDE'].map(ai => (
+                          <button 
+                            key={ai} 
+                            onClick={() => window.open(ai === 'CHATGPT' ? 'https://chatgpt.com' : ai === 'GEMINI' ? 'https://gemini.google.com' : 'https://claude.ai', '_blank')} 
+                            className="h-16 bg-white/5 border-2 border-white/10 text-slate-400 font-black italic rounded-2xl uppercase hover:text-white transition-all text-sm"
+                          >
+                            {ai}
+                          </button>
+                        ))}
+                     </div>
+                   </div>
+                 )}
+              </div>
            </div>
         </div>
       </div>
 
-      <div className="bg-emerald-600/5 border-2 border-emerald-500/20 rounded-[2.5rem] p-8 italic shadow-inner text-left">
-         <div className="flex items-center gap-3 text-emerald-500">
-            <Zap size={20} />
-            <p className="text-xs font-black uppercase tracking-widest">Master Protocol Sync</p>
+      <div className="bg-emerald-600/5 border-2 border-emerald-500/20 rounded-[2.5rem] p-10 italic shadow-inner">
+         <div className="flex items-center gap-3 text-emerald-500 mb-4">
+            <Zap size={28} />
+            <p className="text-base font-black uppercase tracking-widest">Master Protocol Sync</p>
          </div>
-         <p className="text-slate-400 text-sm font-bold leading-relaxed text-left">
+         <p className="text-slate-300 text-lg font-bold leading-relaxed">
             最新トレンド（本物）とSNS心理学（戦略）をAIが融合。バズを「偶然」から「科学」へ変える最強の投稿錬成OSです。
          </p>
       </div>
 
-      <DebugPanel data={{ activeWeapon, trendCount: trends.length }} toolId="sns-auto-poster-master" />
-      <div className="text-center opacity-10 mt-10 font-black uppercase tracking-[0.5em] italic text-[10px]">Social Automation OS • NextraLabs 2026</div>
+      <div className="text-center opacity-10 mt-10 font-black uppercase tracking-[0.5em] italic text-xs">Social Automation OS • NextraLabs 2026</div>
     </div>
   )
 }
