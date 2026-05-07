@@ -24,7 +24,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="animate-in fade-in duration-700 bg-[#050507] text-slate-200">
+    <div className="animate-in fade-in duration-700 bg-[#050507] text-slate-200 min-h-screen flex flex-col">
       {/* 🚀 クイックナビ */}
       <div className="fixed bottom-6 right-6 z-50">
         <Link href="/products">
@@ -102,27 +102,27 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* スマホアプリ版 */}
-      <section className="py-8 bg-[#13141f] border-y border-white/5">
+      {/* スマホアプリ版 - フッター直前へ */}
+      <section className="py-6 bg-[#13141f] border-t border-white/5 mt-auto">
         <div className="container mx-auto px-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <Smartphone className="h-8 w-8 text-emerald-500" />
+            <Smartphone className="h-6 w-6 text-emerald-500" />
             <h2 className="text-sm font-black text-white uppercase italic">スマホアプリ版</h2>
           </div>
-          <Button onClick={handleInstallClick} size="sm" className="bg-emerald-500 text-slate-950 font-black px-4 rounded-xl shadow-lg uppercase text-[10px] hover:bg-emerald-400 transition-all">インストール</Button>
+          <Button onClick={handleInstallClick} size="sm" className="bg-emerald-500 text-slate-950 font-black px-4 h-9 rounded-xl shadow-lg uppercase text-[10px] hover:bg-emerald-400 transition-all">インストール</Button>
         </div>
       </section>
 
-      {/* 最終CTA */}
-      <section className="py-16 bg-[#050507]">
-        <div className="container mx-auto px-6 text-center space-y-8">
-          <h2 className="text-2xl md:text-6xl font-black text-white tracking-tighter italic uppercase">全ての知能を解放せよ</h2>
+      {/* 最終CTA - フッターの直前に配置 */}
+      <section className="py-12 bg-[#050507]">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-2xl md:text-5xl font-black text-white tracking-tighter italic uppercase mb-8">全ての知能を解放せよ</h2>
           <Link href="/products" className="inline-block w-full max-w-xs">
             <Button size="lg" className="w-full text-lg h-16 bg-emerald-500 text-slate-950 font-black rounded-2xl shadow-xl active:scale-95 uppercase">
               全ツールを見る ➔
             </Button>
           </Link>
-          <div className="opacity-10 text-[8px] font-black uppercase tracking-[0.5em] pt-8">NextraLabs マスタモデル • 2026</div>
+          <div className="opacity-10 text-[8px] font-black uppercase tracking-[0.5em] pt-12">NextraLabs マスタモデル • 2026</div>
         </div>
       </section>
     </div>
