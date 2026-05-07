@@ -18,19 +18,40 @@ export async function GET(req: Request) {
     const { trends } = await trendsRes.json();
     const topTrend = trends?.[0] || 'AIによる業務効率化';
 
-    // 2. 記事構成の自動生成 (NextraLabs Strategic Engine)
+    // 2. 記事構成の自動生成 (NextraLabs AI Assistant - リアル対話反映)
     const now = new Date();
     const hour = now.getHours();
     
-    let timeSlot = "朝のインスピレーション";
-    if (hour >= 11 && hour <= 14) timeSlot = "ランチタイムの有益Tips";
+    let timeSlot = "朝の業務ハック";
+    if (hour >= 11 && hour <= 14) timeSlot = "お昼のAI活用術";
     if (hour >= 16) timeSlot = "夕方の戦略アップデート";
 
+    // 💡 あなた(AI)との対話から「本当におすすめしたい」トピックを選出
+    const RECOMMENDATIONS = [
+      {
+        topic: "PMSと錠デバイスのAPI自動連携",
+        insight: "宿泊予約から鍵の発行までを完全自動化。人の手を介さない究極のホスピタリティ。",
+        image: "A futuristic hotel door with digital lock, syncing with cloud data, emerald green neon."
+      },
+      {
+        topic: "SNSトレンドから「収益のタネ」を自動仕入れ",
+        insight: "Google Trendsを楽天在庫に同期。バズる前に仕入れる、データ駆動型の物販戦略。",
+        image: "A cyber ship carrying parcels in a digital data sea, orange and teal lighting."
+      },
+      {
+        topic: "上級心理カウンセラー×AIによる婚活戦略",
+        insight: "データ解析に深層心理を掛け合わせる。SNS発信を「本質を突く」武器に変える方法。",
+        image: "Two glowing human connection nodes, heart shape in digital grid, soft rose and white."
+      }
+    ];
+
+    const pick = RECOMMENDATIONS[hour % RECOMMENDATIONS.length];
+
     const articleData = {
-      title: `【${timeSlot}】AIが予測する今日の最重要トピック：${topTrend}`,
-      content: `NextraLabs AIが分析した本日のトレンド「${topTrend}」について、今すぐ実践できる活用法を解説します...（以下、自動生成された詳細記事）`,
-      tags: ["AI", "NextraLabs", "トレンド", "業務効率化"],
-      imagePrompt: `A futuristic, high-tech digital art of ${topTrend}, cyber punk style, emerald green and orange neon lights, 16:9 aspect ratio, high resolution.`
+      title: `【${timeSlot}】AIアシスタントが提案する「今」やるべき施策：${pick.topic}`,
+      content: `本日の対話から導き出した最適解は「${pick.topic}」です。${pick.insight}\n最新トレンド「${topTrend}」との親和性も高く、今すぐNextraLabsツールで実行可能です。`,
+      tags: ["AI対話", "NextraLabs", "自動化", "ビジネス戦略"],
+      imagePrompt: `High-quality cinematic 3D render, ${pick.image}, cyber punk aesthetic, high contrast, 16:9.`
     };
 
     // 3. 画像生成命令のシミュレーション
