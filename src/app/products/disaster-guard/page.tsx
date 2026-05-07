@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
@@ -19,7 +19,7 @@ const DisasterLpContent = () => {
           リアルタイムGPS ＋ 3・3・3の法則。
         </h2>
         <div className="flex flex-wrap justify-center gap-6 pt-6 text-center">
-          <Link href="/products/disaster-guard/app">
+          <Link href="/products/disaster-guard">
             <button className="h-20 px-12 bg-sky-600 hover:bg-sky-500 text-white font-black text-xl rounded-2xl shadow-[0_20px_50px_rgba(14,165,233,0.3)] transition-all active:scale-95 uppercase italic leading-none">
               生存戦略を立案する ➔
             </button>

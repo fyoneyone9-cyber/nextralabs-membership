@@ -147,7 +147,7 @@ export default function AiReportGeneratorPage() {
                 <Badge variant="outline" className="text-sm py-1">🔒 完全ローカル処理</Badge>
               </div>
               <div className="flex flex-wrap gap-4">
-                <Link href="/products/ai-report-generator/app">
+                <Link href="/products/ai-report-generator">
                   <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white text-lg px-8">🆓 無料で使う</Button>
                 </Link>
               </div>
@@ -262,7 +262,7 @@ export default function AiReportGeneratorPage() {
                 <Badge className="mb-4 bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20">無料ツール</Badge>
                 <div className="text-5xl font-bold mb-2">¥0</div>
                 <p className="text-muted-foreground mb-6">登録不要で今すぐ使えます</p>
-                <Link href="/products/ai-report-generator/app">
+                <Link href="/products/ai-report-generator">
                   <Button size="lg" className="w-full bg-green-600 hover:bg-green-700 text-white">🆓 無料で使う</Button>
                 </Link>
                 <p className="text-xs text-muted-foreground mt-4">他の有料ツールも使うなら → スタンダードプラン（¥980/月）</p>

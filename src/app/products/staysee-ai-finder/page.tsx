@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
@@ -19,7 +19,7 @@ const StayseeLpContent = () => {
           ステイシーAPI連携 ＋ AIプロ鑑定システム。
         </h2>
         <div className="flex flex-wrap justify-center gap-6 pt-6">
-          <Link href="/products/staysee-ai-finder/app">
+          <Link href="/products/staysee-ai-finder">
             <button className="h-20 px-12 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xl rounded-2xl shadow-[0_20px_50px_rgba(16,185,129,0.3)] transition-all active:scale-95 uppercase italic">
               今すぐ無料で試す ➔
             </button>

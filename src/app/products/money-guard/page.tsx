@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
@@ -18,7 +18,7 @@ const MoneyLpContent = () => {
           AIがあなたのドーパミンを抑止する。
         </h2>
         <div className="flex flex-wrap justify-center gap-6 pt-6">
-          <Link href="/products/money-guard/app">
+          <Link href="/products/money-guard">
             <button className="h-20 px-12 bg-red-600 hover:bg-red-500 text-white font-black text-xl rounded-2xl shadow-[0_20px_50px_rgba(220,38,38,0.3)] transition-all active:scale-95 uppercase italic">
               家計を防衛する ➔
             </button>

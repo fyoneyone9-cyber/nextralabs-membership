@@ -22,7 +22,7 @@ export default function AiRecipeLandingPage() {
         <h1 className="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter">AI RECIPE SCOPE</h1>
         <p className="text-xl text-slate-400 max-w-2xl mx-auto font-bold">「もう、献立に迷わない。」<br />写真1枚から、あなただけの天才シェフが最高の一皿をプロデュース。</p>
         <div className="pt-8">
-          <Link href="/products/ai-recipe/app"><Button size="lg" className="bg-red-600 hover:bg-red-700 h-16 px-10 text-xl font-black rounded-2xl shadow-lg shadow-red-600/20"><Rocket className="mr-2" /> ツールを使う</Button></Link>
+          <Link href="/products/ai-recipe"><Button size="lg" className="bg-red-600 hover:bg-red-700 h-16 px-10 text-xl font-black rounded-2xl shadow-lg shadow-red-600/20"><Rocket className="mr-2" /> ツールを使う</Button></Link>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">

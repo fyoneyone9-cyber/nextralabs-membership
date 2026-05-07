@@ -113,7 +113,7 @@ export default function PromptMasterPage() {
           { icon: <ClipboardList className="h-6 w-6" />, title: '📋 履歴＆お気に入り', desc: '生成したプロンプトの保存・コピー・再利用。お気に入り登録で頻繁に使うプロンプトにすぐアクセス。' },
           { icon: <GraduationCap className="h-6 w-6" />, title: '📖 学習ガイド', desc: 'プロンプトの基本構造、効果的な修飾語、NG表現、モデル別Tips。初心者でもプロ品質のプロンプトが書けるように。' },
         ].map((f, i) => (
-          <Link key={i} href="/products/prompt-master/app" className="border rounded-2xl p-5 hover:border-purple-300 hover:bg-purple-500/5 transition-all group block">
+          <Link key={i} href="/products/prompt-master" className="border rounded-2xl p-5 hover:border-purple-300 hover:bg-purple-500/5 transition-all group block">
             <div className="flex items-start justify-between">
               <div className="text-purple-500 mb-2">{f.icon}</div>
               <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />

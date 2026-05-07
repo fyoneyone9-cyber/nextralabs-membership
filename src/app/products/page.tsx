@@ -73,7 +73,7 @@ function ProductCard({ product }: { product: typeof TOOLS[0] }) {
           <p className="text-slate-400 text-[10px] md:text-[11px] leading-relaxed mb-4 line-clamp-2 italic">{product.sub}を実現するソリューション。</p>
         </div>
         <div className="pt-4 border-t border-white/5 flex flex-col gap-2.5 mt-auto">
-          <Link href={"/products/" + product.id + "/app"} className="block w-full">
+          <Link href={"/products/" + product.id} className="block w-full">
             <Button className="w-full h-10 md:h-12 bg-emerald-600 hover:bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.4)] text-slate-950 font-black text-sm md:text-base rounded-xl shadow-lg uppercase tracking-tighter">このツールを起動</Button>
           </Link>
           <div className="flex justify-between items-center px-2 py-1 bg-black/40 rounded-lg border border-white/5">

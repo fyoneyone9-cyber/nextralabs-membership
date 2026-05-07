@@ -28,7 +28,7 @@ export default function SmartGardeningLandingPage() {
           写真と天気予報から、AIがあなたの代わりに最適なケアを提案します。
         </p>
         <div className="pt-8">
-          <Link href="/products/smart-gardening/app">
+          <Link href="/products/smart-gardening">
             <Button size="lg" className="bg-green-600 hover:bg-green-700 h-16 px-10 text-xl font-bold rounded-2xl shadow-lg">
               <Rocket className="mr-2" /> ツールを使う
             </Button>

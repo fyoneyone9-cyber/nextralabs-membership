@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
@@ -19,7 +19,7 @@ const SnsPosterLpContent = () => {
           最新トレンド ＋ 10種のバズ戦略エンジン。
         </h2>
         <div className="flex flex-wrap justify-center gap-6 pt-6">
-          <Link href="/products/sns-auto-poster/app">
+          <Link href="/products/sns-auto-poster">
             <button className="h-20 px-12 bg-rose-600 hover:bg-rose-500 text-white font-black text-xl rounded-2xl shadow-[0_20px_50px_rgba(225,29,72,0.3)] transition-all active:scale-95 uppercase italic leading-none">
               最強の投稿を錬成する ➔
             </button>

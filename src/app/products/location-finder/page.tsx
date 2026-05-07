@@ -34,7 +34,7 @@ export default function LocationFinderPage() {
             Gemini Vision × Google Maps で撮影スポットをピンポイント特定
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Link href="/products/location-finder/app">
+            <Link href="/products/location-finder">
               <Button className="bg-blue-600 hover:bg-blue-700 text-white">今すぐ使う →</Button>
             </Link>
             <Link href="/pricing">

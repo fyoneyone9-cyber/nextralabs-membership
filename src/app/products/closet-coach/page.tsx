@@ -67,7 +67,7 @@ export default function ClosetCoachPage() {
           { icon: <Palette className="h-6 w-6" />, title: '👗 コーデ提案', desc: '登録アイテムから色×カテゴリで着回しパターンを自動生成。「持ってるもので着回す」提案。' },
           { icon: <TrendingUp className="h-6 w-6" />, title: '📈 ワードローブ統計', desc: 'カテゴリ別保有数・総投資額・月間追加/断捨離数のダッシュボード。衣服消費の見える化。' },
         ].map((f, i) => (
-          <Link key={i} href="/products/closet-coach/app" className="border rounded-2xl p-5 hover:border-violet-300 hover:bg-violet-500/5 transition-all group block">
+          <Link key={i} href="/products/closet-coach" className="border rounded-2xl p-5 hover:border-violet-300 hover:bg-violet-500/5 transition-all group block">
             <div className="flex items-start justify-between">
               <div className="text-violet-500 mb-2">{f.icon}</div>
               <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />

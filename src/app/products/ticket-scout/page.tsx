@@ -34,7 +34,7 @@ export default function TicketScoutPage() {
             e+ / ローチケ / チケットぴあ を横断検索。もうチケット発売を見逃さない。
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Link href="/products/ticket-scout/app">
+            <Link href="/products/ticket-scout">
               <Button className="bg-violet-600 hover:bg-violet-700 text-white">今すぐ使う →</Button>
             </Link>
             <Link href="/pricing">

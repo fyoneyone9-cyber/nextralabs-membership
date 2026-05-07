@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
@@ -19,7 +19,7 @@ const AffiliateLpContent = () => {
           バズる紹介文 ＋ 楽天アフィリエイト自動生成。
         </h2>
         <div className="flex flex-wrap justify-center gap-6 pt-6 text-center">
-          <Link href="/products/hotel-affiliate/app">
+          <Link href="/products/hotel-affiliate">
             <button className="h-20 px-12 bg-pink-600 hover:bg-pink-500 text-white font-black text-xl rounded-2xl shadow-[0_20px_50px_rgba(225,29,72,0.3)] transition-all active:scale-95 uppercase italic leading-none">
               紹介文を錬成する ➔
             </button>
