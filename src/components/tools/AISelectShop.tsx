@@ -72,7 +72,8 @@ const MasterEngine = () => {
     if (!ctx) return;
     const w = canvas.width, h = canvas.height;
     
-    ctx.fillStyle = '#050507'; ctx.fillRect(0, 0, w, h);
+    // 全体の背景色（Tシャツの背景）を白に設定
+    ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, w, h);
     
     const currentTColor = TSHIRT_COLORS.find(c => c.id === tshirtColor) || TSHIRT_COLORS[1];
     ctx.fillStyle = currentTColor.hex; 
