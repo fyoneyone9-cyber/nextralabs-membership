@@ -153,7 +153,14 @@ export function DebugPanel({ data, toolId }: { data?: any, toolId?: string }) {
                 <div className="flex justify-between items-center">
                    <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest italic pl-2 border-l-2 border-emerald-500">Log Stream</p>
                    <Button onClick={() => {
-                     navigator.clipboard.writeText(JSON.stringify({timestamp: new Date().toISOString(), apiHealth, logs}, null, 2));
+                     const report = {
+                       timestamp: new Date().toISOString(),
+                       url: window.location.href,
+                       apiHealth: apiHealth,
+                       systemLogs: logs, // ここを確実に最新のログ配列に修正
+                       componentData: data || {}
+                     };
+                     navigator.clipboard.writeText(JSON.stringify(report, null, 2));
                      setCopied(true); setTimeout(() => setCopied(false), 2000);
                    }} className="h-7 bg-white/5 hover:bg-white/10 text-slate-400 text-[8px] font-black rounded-lg px-3 flex items-center gap-1 border border-white/5">
                       {copied ? <CheckCircle2 size={10} className="text-emerald-500" /> : <Copy size={10} />} {copied ? 'COPIED' : 'COPY REPORT'}
