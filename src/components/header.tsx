@@ -77,9 +77,16 @@ export function Header() {
           {user ? (
             <>
               <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">ダッシュボード</Link>
-              <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-lg border border-white/10">
+                            <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-lg border border-white/10">
                 <User className="h-3 w-3 text-emerald-500" />
-                <span className="text-[11px] font-bold text-slate-300 truncate max-w-[100px]">{profile?.display_name || user.email?.split("@")[0]}</span>
+                <span className="text-[11px] font-black text-slate-200 truncate max-w-[100px]">{profile?.display_name || user.email?.split("@")[0]}</span>
+                {profile?.role === 'admin' ? (
+                  <Badge className="bg-blue-600 text-white text-[8px] h-4 px-1 ml-1 border-0">ADMIN</Badge>
+                ) : (
+                  <Badge className="bg-emerald-500/20 text-emerald-400 text-[8px] h-4 px-1 ml-1 border border-emerald-500/30 uppercase">
+                    {localStorage.getItem('user_plan') || 'FREE'}
+                  </Badge>
+                )}
               </div>
               <Button variant="ghost" size="sm" onClick={handleLogout}><LogOut className="h-4 w-4 mr-1" />ログアウト</Button>
             </>
