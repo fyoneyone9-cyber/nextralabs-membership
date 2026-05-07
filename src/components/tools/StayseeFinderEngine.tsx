@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import React, { useState, useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Card, CardContent } from '@/components/ui/card'
@@ -85,8 +85,9 @@ const MasterEngine = () => {
     <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-8 min-h-screen text-slate-200 bg-[#050507] border-4 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] shadow-[0_0_100px_rgba(16,185,129,0.2)]">
       <div className="text-center space-y-4">
         <Badge className="bg-blue-600 px-6 py-1 font-black tracking-widest uppercase">Hotel DX Intelligence</Badge>
-        <h1 className="text-6xl md:text-9xl font-black text-white uppercase italic tracking-tighter leading-none">Nextra AI</h1>
+        <h1 className="text-6xl md:text-[10rem] font-black text-white uppercase italic tracking-tighter leading-none">Nextra AI</h1>
         <p className="text-emerald-500 font-black uppercase tracking-[0.4em] italic text-sm md:text-xl">AI Hotel DX Intelligence</p>
+        <div className="inline-block bg-emerald-600 text-white font-black px-6 py-1 rounded-full uppercase italic text-xs md:text-sm tracking-widest shadow-lg">v3.9-MASTER</div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -102,7 +103,6 @@ const MasterEngine = () => {
       </div>
 
       <div className="mt-4 text-left">
-        {/* --- 🆕 自律チェックインタブ --- */}
         {activeTab === 'checkin' && (
           <div className="space-y-8 animate-in fade-in">
             <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl relative overflow-hidden">
@@ -112,10 +112,24 @@ const MasterEngine = () => {
                   
                   <div className="grid lg:grid-cols-2 gap-12 text-left">
                     <div className="bg-[#0a0b14] border-2 border-white/5 rounded-[2.5rem] p-10 space-y-8">
-                       <p className="text-slate-300 font-bold leading-relaxed italic text-center">パスポートまたは身分証をAIがスキャンし、Staysee等のPMSへ自動記帳。本人確認を0秒で完了させます。</p>
+                       <div className="flex items-start justify-between gap-4">
+                         <p className="text-slate-300 font-bold leading-relaxed italic">パスポートまたは身分証をAIがスキャンし、Staysee等のPMSへ自動記帳。本人確認を0秒で完了させます。</p>
+                         <Badge className="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 font-black text-[10px] shrink-0 px-3 py-1">旅館業法準拠</Badge>
+                       </div>
+                       
+                       <div className="bg-black/40 p-6 rounded-2xl border border-white/5 space-y-3">
+                         <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">法令遵守（全国一律項目）自動取得</p>
+                         <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-[10px] text-slate-400 font-bold">
+                           <div className="flex items-center gap-2"><CheckCircle2 size={12} className="text-emerald-500" /> 氏名・住所・職業</div>
+                           <div className="flex items-center gap-2"><CheckCircle2 size={12} className="text-emerald-500" /> 到着日時・出発日時</div>
+                           <div className="flex items-center gap-2"><CheckCircle2 size={12} className="text-emerald-500" /> 前泊地・行先地</div>
+                           <div className="flex items-center gap-2"><CheckCircle2 size={12} className="text-emerald-500" /> 国籍・旅券番号</div>
+                         </div>
+                       </div>
+
                        <div className="border-4 border-dashed border-white/10 rounded-[2.5rem] aspect-video flex flex-col items-center justify-center gap-6 cursor-pointer hover:bg-white/5 bg-white/5 shadow-inner" onClick={() => fileInputRef.current?.click()}>
                           <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
-                          {image ? <img src={image} className="h-full w-full object-contain p-4" alt="ID" /> : <><Camera className="h-10 w-10 text-slate-500" /><p className="text-xl text-white font-black italic uppercase">身分証をスキャン</p></>}
+                          {image ? <img src={image} className="h-full w-full object-contain p-4" alt="ID" /> : <><Camera className="h-10 w-10 text-slate-500" /><p className="text-xl text-white font-black italic uppercase text-center">身分証をスキャン</p></>}
                        </div>
                        <button onClick={runCheckin} disabled={checkinStatus === 'SCANNING' || !image} className="w-full h-20 bg-emerald-600 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-4 text-xl uppercase italic active:scale-95 transition-all">
                           {checkinStatus === 'SCANNING' ? <Loader2 className="animate-spin" /> : <Zap />} 本人確認 ＆ PMS同期 ➔
@@ -130,7 +144,7 @@ const MasterEngine = () => {
                             <p className="text-slate-400 font-bold">Stayseeへの自動記帳が完了しました。<br/>次のステップで鍵を発行してください。</p>
                             <button onClick={() => setActiveTab('lock')} className="h-14 px-8 bg-white/5 border border-white/10 text-emerald-400 font-black rounded-xl uppercase italic hover:bg-emerald-500 hover:text-slate-950 transition-all">鍵発行へ進む ➔</button>
                          </div>
-                       ) : <p className="font-black uppercase italic tracking-[0.5em] opacity-10 text-2xl">Awaiting Identity Scan...</p>}
+                       ) : <p className="font-black uppercase italic tracking-[0.5em] opacity-10 text-2xl text-center">Awaiting Identity Scan...</p>}
                     </div>
                   </div>
                </div>
@@ -138,7 +152,7 @@ const MasterEngine = () => {
           </div>
         )}
 
-        {/* --- 🔑 鍵発行タブ (API設定統合) --- */}
+        {/* --- 🔑 鍵発行タブ --- */}
         {activeTab === 'lock' && (
           <div className="space-y-8 animate-in fade-in">
             <Card className="bg-[#0a0b14] border-2 border-emerald-500/20 rounded-[2.5rem] p-8 md:p-12 shadow-inner space-y-10">
@@ -155,11 +169,11 @@ const MasterEngine = () => {
                   <input type="password" value={lockApiKey} onChange={(e) => setLockApiKey(e.target.value)} placeholder={selectedDevice + " 認証トークンを入力..."} className="w-full h-16 bg-black border-2 border-white/10 rounded-2xl px-6 text-white focus:border-emerald-500" />
                 </div>
               </div>
-              <button onClick={saveKeys} className="h-14 px-10 bg-white/5 border-2 border-white/10 rounded-2xl text-[12px] font-black uppercase tracking-[0.3em] hover:bg-white/10 transition-all mx-auto block italic">構成を保存・同期 ➔</button>
+              <button onClick={saveKeys} className="h-14 px-10 bg-white/5 border-2 border-white/10 rounded-2xl text-[12px] font-black uppercase tracking-[0.3em] hover:bg-white/10 transition-all mx-auto block italic text-center">構成を保存・同期 ➔</button>
             </Card>
             <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl space-y-12 text-center">
                <h3 className="text-3xl md:text-5xl font-black text-white italic uppercase flex items-center justify-center gap-6"><Lock className="text-emerald-500" size={48} /> リアルタイム・キー・デプロイ</h3>
-               <button onClick={issueLockKey} disabled={isIssuingKey} className="w-full h-24 bg-emerald-600 text-white font-black rounded-[2rem] shadow-xl flex items-center justify-center gap-6 text-3xl uppercase italic active:scale-95 transition-all">
+               <button onClick={issueLockKey} disabled={isIssuingKey} className="w-full h-24 bg-emerald-600 text-white font-black rounded-[2rem] shadow-xl flex items-center justify-center gap-6 text-3xl uppercase italic active:scale-95 transition-all border-b-8 border-emerald-900 active:border-b-0">
                  {isIssuingKey ? <Loader2 className="animate-spin" /> : <Zap />} 連携実行 ➔
                </button>
                {lockKeyData && <div className="p-10 bg-black rounded-[3rem] border-4 border-emerald-500 animate-in zoom-in text-center"><p className="text-emerald-500 font-black uppercase tracking-widest text-sm mb-4">Issued Passcode</p><p className="text-9xl font-black text-white tracking-widest italic">{lockKeyData.pinCode}</p></div>}
@@ -167,27 +181,30 @@ const MasterEngine = () => {
           </div>
         )}
 
-        {/* --- 📷 その他タブ (スキャン・マネタイズ・レポート) --- */}
+        {/* --- 📷 その他タブ --- */}
         {activeTab === 'scan' && (
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in">
             <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 text-emerald-400 text-left"><Camera /> 拾得物AIスキャン</h3>
-            <div className="grid lg:grid-cols-2 gap-12 text-left text-left">
-              <div className="border-4 border-dashed border-white/10 rounded-[2.5rem] aspect-video flex flex-col items-center justify-center gap-6 cursor-pointer hover:bg-white/5 bg-white/5 shadow-inner" onClick={() => fileInputRef.current?.click()}>
-                <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
-                {image ? <img src={image} className="h-full w-full object-contain p-4" alt="Found" /> : <><Camera className="h-10 w-10 text-slate-500" /><p className="text-xl text-white font-black italic uppercase text-center">TAP TO SCAN</p></>}
+            <div className="grid lg:grid-cols-2 gap-12 text-left">
+              <div className="space-y-6 text-center">
+                <div className="border-4 border-dashed border-white/10 rounded-[2.5rem] aspect-video flex flex-col items-center justify-center gap-6 cursor-pointer hover:bg-white/5 bg-white/5 shadow-inner" onClick={() => fileInputRef.current?.click()}>
+                  <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
+                  {image ? <img src={image} className="h-full w-full object-contain p-4" alt="Found" /> : <><Camera className="h-10 w-10 text-slate-500" /><p className="text-xl text-white font-black italic uppercase">TAP TO SCAN</p></>}
+                </div>
               </div>
-              <div className="bg-[#0a0b14] rounded-[3rem] p-10 border border-white/5 space-y-6 flex flex-col min-h-[300px]">
-                <div className="flex items-center justify-between text-white font-black italic uppercase text-lg text-left"><ClipboardPaste className="text-emerald-400" /> AI解析リンク</div>
+              <div className="bg-[#0a0b14] rounded-[3rem] p-10 border border-white/5 space-y-6 flex flex-col min-h-[300px] text-left">
+                <div className="flex items-center justify-between text-white font-black italic uppercase text-lg"><ClipboardPaste className="text-emerald-400" /> AI解析リンク</div>
                 <textarea value={matchResult} onChange={(e) => setMatchResult(e.target.value)} placeholder="画像をアップし、AIからの解析結果をここに貼り付けてください..." className="flex-1 bg-[#13141f] border-2 border-white/5 rounded-[2rem] p-8 text-sm text-slate-300 outline-none font-mono italic shadow-inner" />
               </div>
             </div>
           </Card>
         )}
       </div>
-      <DebugPanel data={{ activeTab }} toolId="nextra-ai-v4.0" />
+      <DebugPanel data={{ activeTab }} toolId="nextra-ai-v3.9-compliance" />
       <div className="text-center opacity-10 font-black uppercase tracking-[0.5em] italic text-[8px] pb-10">Operational OS • Nextra AI MASTERMODEL • 2026</div>
     </div>
   )
 }
+
 const NoSSR = dynamic(() => Promise.resolve(MasterEngine), { ssr: false, loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Initializing Nextra AI Node...</div> });
 export default function HotelPage() { return <NoSSR />; }
