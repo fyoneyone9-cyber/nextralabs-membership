@@ -16,14 +16,20 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
   const [copied, setCopied] = useState(false)
   const [apiHealth, setApiHealth] = useState<any>(null)
   const [isMounted, setIsMounted] = useState(false)
+  const [logs, setLogs] = useState<string[]>([])
 
   useEffect(() => {
     setIsMounted(true)
+    // グローバルなログ取得用に関数をウィンドウに登録
+    (window as any).nextraLog = (msg: string) => {
+      setLogs(prev => [new Date().toLocaleTimeString() + ': ' + msg, ...prev].slice(0, 30))
+    }
   }, [])
 
   const runApiTest = async () => {
     const endpoints = [
-      { id: 'trends', name: 'Trends', url: '/api/trends' },
+      { id: 'trends', name: 'Trends', url: '/api/tools/trends' },
+      { id: 'gnews', name: 'GNews', url: '/api/tools/gnews' },
       { id: 'gmail', name: 'Gmail', url: '/api/tools/gmail-fetch' },
       { id: 'staysee', name: 'Staysee', url: '/api/tools/staysee-ai-finder' }
     ];
@@ -31,8 +37,13 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
     const results: any = {};
     for (const ep of endpoints) {
       try {
-        const res = await fetch(ep.url, { method: 'POST', body: JSON.stringify({ action: 'test' }) }).catch(() => fetch(ep.url));
+        // GETで試行し、ダメならPOST（405回避）
+        const res = await fetch(ep.url, { method: 'GET' });
         results[ep.id] = { status: res.status, ok: res.ok };
+        if (res.status === 405) {
+          const resPost = await fetch(ep.url, { method: 'POST', body: JSON.stringify({ action: 'test' }) });
+          results[ep.id] = { status: resPost.status, ok: resPost.ok };
+        }
       } catch (e) {
         results[ep.id] = { status: 'OFFLINE', ok: false };
       }
@@ -78,16 +89,23 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-2">
-                 {['trends', 'gmail', 'staysee'].map(id => (
-                   <div key={id} className={`p-4 rounded-xl border text-center transition-all ${apiHealth?.[id]?.ok ? 'bg-emerald-500/10 border-emerald-500/50' : 'bg-red-500/10 border-red-500/50'}`}>
-                      <p className="text-[8px] font-black uppercase text-slate-500 mb-1">{id}</p>
-                      <p className="text-[10px] font-bold text-white">{apiHealth?.[id]?.status || '---'}</p>
+              <div className="grid grid-cols-4 gap-2">
+                 {['trends', 'gnews', 'gmail', 'staysee'].map(id => (
+                   <div key={id} className={`p-3 rounded-xl border text-center transition-all ${apiHealth?.[id]?.ok ? 'bg-emerald-500/10 border-emerald-500/50' : 'bg-red-500/10 border-red-500/50'}`}>
+                      <p className="text-[7px] font-black uppercase text-slate-500 mb-1">{id}</p>
+                      <p className="text-[10px] font-bold text-white leading-none">{apiHealth?.[id]?.status || '---'}</p>
                    </div>
                  ))}
               </div>
 
-              <div className="bg-emerald-600/5 border border-emerald-500/20 p-6 rounded-2xl">
+              {logs.length > 0 && (
+                <div className="bg-black/50 border border-white/5 p-4 rounded-xl max-h-40 overflow-y-auto font-mono text-[9px] text-emerald-500/80 space-y-1">
+                  <p className="text-[8px] text-slate-600 font-black uppercase mb-2 border-b border-white/5 pb-1 italic">Console Stream</p>
+                  {logs.map((log, i) => <p key={i}>{log}</p>)}
+                </div>
+              )}
+
+              <div className="bg-emerald-600/5 border border-emerald-500/20 p-6 rounded-2xl relative overflow-hidden group">
                  <p className="text-xs text-emerald-400 font-bold italic">NEXTRA MASTER CONSOLE ACTIVE. ALL NODES ONLINE.</p>
               </div>
             </div>
