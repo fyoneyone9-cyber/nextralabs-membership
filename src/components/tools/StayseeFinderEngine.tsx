@@ -151,7 +151,19 @@ const MasterEngine = () => {
                  <div className="space-y-3"><div>前泊地・行先地</div><div>国籍・旅券番号</div></div>
               </div>
             </div>
-            <button className="w-full h-24 bg-emerald-600 text-white font-black rounded-[2rem] text-3xl uppercase italic active:scale-95 transition-all shadow-xl">身分証スキャン開始 ➔</button>
+                        <button 
+              onClick={() => fileInputRef.current?.click()}
+              className="w-full h-24 bg-emerald-600 text-white font-black rounded-[2rem] text-3xl uppercase italic active:scale-95 transition-all shadow-xl"
+            >
+              身分証スキャン開始 ➔
+            </button>
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleFileChange} 
+              className="hidden" 
+              accept="image/*" 
+            />
           </Card>
         )}
 
