@@ -172,7 +172,7 @@ export default function OfficePoliticsGraphPage() {
               <p className="text-sm text-gray-400 mb-3">
                 NextraLabs のツール品質を体験していただくための無料サンプルです。会員登録なしで今すぐ使えます。
               </p>
-              <Link href="/products/office-politics-graph">
+              <Link href="/products/office-politics-graph/app">
                 <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white gap-2 w-full md:w-auto">
                   <Network className="w-5 h-5" />
                   無料で使ってみる
@@ -246,7 +246,7 @@ export default function OfficePoliticsGraphPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {features.map((f, i) => (
-              <Link key={i} href="/products/office-politics-graph" className="group">
+              <Link key={i} href="/products/office-politics-graph/app" className="group">
                 <Card className="bg-gray-900/50 border-gray-800 hover:border-indigo-500/50 transition-colors h-full">
                   <CardContent className="p-6 space-y-4">
                     <div className="flex items-start justify-between">
@@ -392,7 +392,7 @@ export default function OfficePoliticsGraphPage() {
                 </div>
               </div>
               <div className="pt-2">
-                <Link href="/products/office-politics-graph">
+                <Link href="/products/office-politics-graph/app">
                   <button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors">
                     <Network className="w-5 h-5" />
                     無料で使ってみる（アカウント不要）
@@ -512,7 +512,7 @@ export default function OfficePoliticsGraphPage() {
           <p className="text-gray-400">
             データドリブンな組織分析をブラウザだけで。完全無料。
           </p>
-          <Link href="/products/office-politics-graph">
+          <Link href="/products/office-politics-graph/app">
             <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white gap-2 text-base px-8 py-6">
               <Network className="w-5 h-5" />
               無料で使ってみる

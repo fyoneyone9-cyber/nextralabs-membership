@@ -19,7 +19,7 @@ const SidejobLpContent = () => {
           AI適性診断 ＋ 成功手順書作成システム。
         </h2>
         <div className="flex flex-wrap justify-center gap-6 pt-6">
-          <Link href="/products/ai-sidejob">
+          <Link href="/products/ai-sidejob/app">
             <button className="h-20 px-12 bg-[#5845e0] hover:bg-[#6c5ae6] text-white font-black text-xl rounded-2xl shadow-[0_20px_50px_rgba(88,69,224,0.3)] transition-all active:scale-95 uppercase italic">
               無料で副業を診断する ➔
             </button>

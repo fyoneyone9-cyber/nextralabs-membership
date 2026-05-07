@@ -19,7 +19,7 @@ const SelectShopLpContent = () => {
           トレンド分析 ＋ 自動出品システム。
         </h2>
         <div className="flex flex-wrap justify-center gap-6 pt-6">
-          <Link href="/products/ai-select-shop">
+          <Link href="/products/ai-select-shop/app">
             <button className="h-20 px-12 bg-teal-600 hover:bg-teal-500 text-white font-black text-xl rounded-2xl shadow-[0_20px_50px_rgba(20,184,166,0.3)] transition-all active:scale-95 uppercase italic">
               自分のショップを立ち上げる ➔
             </button>

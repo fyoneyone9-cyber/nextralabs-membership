@@ -19,7 +19,7 @@ const YoutubeSyncLpContent = () => {
           AI動画解析 ＋ 楽天連動コーディネート。
         </h2>
         <div className="flex flex-wrap justify-center gap-6 pt-6">
-          <Link href="/products/youtube-coordinator">
+          <Link href="/products/youtube-coordinator/app">
             <button className="h-20 px-12 bg-red-600 hover:bg-red-500 text-white font-black text-xl rounded-2xl shadow-[0_20px_50px_rgba(220,38,38,0.3)] transition-all active:scale-95 uppercase italic">
               動画内コーデを特定する ➔
             </button>

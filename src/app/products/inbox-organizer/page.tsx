@@ -19,7 +19,7 @@ const InboxLpContent = () => {
           AIが書く、あなたのための返信案。
         </h2>
         <div className="flex flex-wrap justify-center gap-6 pt-6">
-          <Link href="/products/inbox-organizer">
+          <Link href="/products/inbox-organizer/app">
             <button className="h-20 px-12 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-2xl shadow-[0_20px_50px_rgba(37,99,235,0.3)] transition-all active:scale-95 uppercase italic leading-none">
               Gmailを爆速化する ➔
             </button>

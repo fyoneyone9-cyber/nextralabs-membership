@@ -94,7 +94,7 @@ export default function CommCoachPage() {
             desc: '恋愛依存・DV相談・カウンセリング。専門機関への相談先をまとめて掲載。',
           },
         ].map((f, i) => (
-          <Link key={i} href="/products/comm-coach" className="border rounded-2xl p-5 hover:border-pink-300 hover:bg-pink-500/5 transition-all group block">
+          <Link key={i} href="/products/comm-coach/app" className="border rounded-2xl p-5 hover:border-pink-300 hover:bg-pink-500/5 transition-all group block">
             <div className="flex items-start justify-between">
               <div className="text-pink-500 mb-2">{f.icon}</div>
               <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />

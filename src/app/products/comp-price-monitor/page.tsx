@@ -19,7 +19,7 @@ const CompPriceLpContent = () => {
           最適な販売価格をステイシーへ自動提案。
         </h2>
         <div className="flex flex-wrap justify-center gap-6 pt-6 text-center">
-          <Link href="/products/comp-price-monitor">
+          <Link href="/products/comp-price-monitor/app">
             <button className="h-20 px-12 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-2xl shadow-[0_20px_50px_rgba(37,99,235,0.3)] transition-all active:scale-95 uppercase italic leading-none">
               価格最適化を開始する ➔
             </button>

@@ -19,7 +19,7 @@ const ExpenseSyncLpContent = () => {
           レシートスキャン ＋ スプレッドシート自動記帳システム。
         </h2>
         <div className="flex flex-wrap justify-center gap-6 pt-6">
-          <Link href="/products/expense-sync">
+          <Link href="/products/expense-sync/app">
             <button className="h-20 px-12 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xl rounded-2xl shadow-[0_20px_50px_rgba(16,185,129,0.3)] transition-all active:scale-95 uppercase italic">
               自動記帳を開始する ➔
             </button>

@@ -19,7 +19,7 @@ const EvidenceLpContent = () => {
           制作実績の自動整理 ＋ アーカイブOS。
         </h2>
         <div className="flex flex-wrap justify-center gap-6 pt-6">
-          <Link href="/products/evidence-manager">
+          <Link href="/products/evidence-manager/app">
             <button className="h-20 px-12 bg-amber-600 hover:bg-amber-500 text-white font-black text-xl rounded-2xl shadow-[0_20px_50px_rgba(245,158,11,0.3)] transition-all active:scale-95 uppercase italic">
               無料で実績を整理する ➔
             </button>

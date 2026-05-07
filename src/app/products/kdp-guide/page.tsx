@@ -159,7 +159,7 @@ export default function KdpGuidePage() {
                 <Badge variant="outline" className="text-sm py-1">🔒 登録不要</Badge>
               </div>
               <div className="flex flex-wrap gap-4">
-                <Link href="/products/kdp-guide">
+                <Link href="/products/kdp-guide/app">
                   <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-white text-lg px-8">
                     🆓 無料で使う
                   </Button>
@@ -310,7 +310,7 @@ export default function KdpGuidePage() {
                 </Badge>
                 <div className="text-5xl font-bold mb-2">¥0</div>
                 <p className="text-muted-foreground mb-6">登録不要で今すぐ使えます</p>
-                <Link href="/products/kdp-guide">
+                <Link href="/products/kdp-guide/app">
                   <Button size="lg" className="w-full bg-orange-600 hover:bg-orange-700 text-white">
                     🆓 無料で使う
                   </Button>
