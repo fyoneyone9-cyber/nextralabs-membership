@@ -75,7 +75,7 @@ function ProductCard({ product }: { product: any }) {
         </div>
         <div className="pt-4 border-t border-white/5 flex flex-col gap-2.5 mt-auto">
           <Link href={"/products/" + product.id + "/app"} className="block w-full">
-            <Button className="w-full h-10 md:h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs md:text-sm rounded-xl transition-all">このツールを使う ?</Button>
+            <Button className="w-full h-10 md:h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs md:text-sm rounded-xl transition-all">このツールを起動する ➔ ?</Button>
           </Link>
           <div className="flex justify-between items-center px-2 py-1 bg-black/40 rounded-lg border border-white/5">
             <span className={badgeClass}>{product.plan} プラン</span>
