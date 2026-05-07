@@ -70,12 +70,28 @@ const MasterEngine = () => {
         {/* --- 📝 DMS 予約一覧 --- */}
         {activeTab === 'bookings' && (
           <div className="space-y-6 animate-in fade-in">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-[#0a0b14] p-6 rounded-3xl border-2 border-emerald-500/20 shadow-inner">
+                        <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-[#0a0b14] p-6 rounded-3xl border-2 border-emerald-500/20 shadow-inner">
                <div className="flex items-center gap-4">
-                 <div className="flex items-center gap-2 bg-emerald-500/10 px-4 py-2 rounded-full border border-emerald-500/50"><div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /><span className="text-xs font-black text-emerald-500 uppercase tracking-widest italic">PMS SYNC: ACTIVE</span></div>
-                 <div className="flex items-center gap-2 bg-blue-500/10 px-4 py-2 rounded-full border border-blue-500/50"><Database size={14} className="text-blue-400" /><span className="text-xs font-black text-blue-400 uppercase tracking-widest italic">LOCAL DB: READY</span></div>
+                 <div className={"flex items-center gap-2 px-4 py-2 rounded-full border transition-all " + (pmsApiKey.length > 5 ? "bg-emerald-500/10 border-emerald-500/50" : "bg-red-500/10 border-red-500/50")}>
+                   <div className={"w-2 h-2 rounded-full " + (pmsApiKey.length > 5 ? "bg-emerald-500 animate-pulse" : "bg-red-500")} />
+                   <span className={"text-xs font-black uppercase tracking-widest italic " + (pmsApiKey.length > 5 ? "text-emerald-500" : "text-red-500")}>
+                     {pmsApiKey.length > 5 ? "PMS SYNC: ACTIVE" : "PMS SYNC: OFFLINE"}
+                   </span>
+                 </div>
+                 <div className={"flex items-center gap-2 px-4 py-2 rounded-full border transition-all " + (lockApiKey.length > 5 ? "bg-blue-500/10 border-blue-500/50" : "bg-red-500/10 border-red-500/50")}>
+                   <Lock size={14} className={lockApiKey.length > 5 ? "text-blue-400" : "text-red-500"} />
+                   <span className={"text-xs font-black uppercase tracking-widest italic " + (lockApiKey.length > 5 ? "text-blue-400" : "text-red-500")}>
+                     {lockApiKey.length > 5 ? "LOCK API: CONNECTED" : "LOCK API: DISCONNECTED"}
+                   </span>
+                 </div>
                </div>
                <div className="flex items-center gap-3">
+                 {pmsApiKey.length <= 5 && <Badge className="bg-red-600 text-white animate-bounce">API未設定</Badge>}
+                 <Button className="bg-emerald-600 hover:bg-emerald-500 text-white font-black h-10 px-6 rounded-xl shadow-lg transition-all active:scale-95"><RefreshCw className="mr-2 h-4 w-4" /> リアルタイム同期</Button>
+               </div>
+            </div>
+               <div className="flex items-center gap-3">
+                 {!isPmsConnected && <Badge className="bg-red-600 text-white animate-bounce">API未設定</Badge>}
                  <Button className="bg-emerald-600 hover:bg-emerald-500 text-white font-black h-10 px-6 rounded-xl shadow-lg transition-all active:scale-95"><RefreshCw className="mr-2 h-4 w-4" /> リアルタイム同期</Button>
                </div>
             </div>
