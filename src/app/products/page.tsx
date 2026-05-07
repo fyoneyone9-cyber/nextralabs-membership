@@ -50,22 +50,34 @@ const CATEGORIES = [
 ]
 
 function ProductCard({ product }: { product: any }) {
-  const isSpecial = product.badge === 'MASTER' || product.badge === 'コンテンツ戦略' || product.badge === 'ULTIMATE' || product.badge === 'TOP'
+  const Icon = product.icon
+  const isMaster = product.badge === 'MASTER' || product.badge === 'コンテンツ戦略' || product.badge === 'ULTIMATE' || product.badge === 'TOP'
+  
   return (
-    <Card className={"h-full bg-[#13141f] transition-all duration-300 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group shadow-xl relative border-2 " + (isSpecial ? "border-emerald-500/50" : "border-white/5 hover:border-emerald-500/30")}>
+    <Card className={"h-full bg-[#13141f] transition-all duration-300 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group shadow-xl relative border-2 " + (isMaster ? "border-emerald-500/50 shadow-emerald-500/10" : "border-white/5 hover:border-emerald-500/30")}>
       <CardContent className="p-5 md:p-6 flex flex-col h-full text-left relative z-10">
         <div className="flex items-start justify-between mb-4">
-          <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 shadow-inner"><product.icon className="h-5 w-5 md:h-6 md:w-6 text-emerald-400" /></div>
-          <Badge className="bg-slate-900 text-slate-500 border border-white/5 px-2 py-0.5 font-bold text-[8px] md:text-[9px] uppercase tracking-widest">{product.badge}</Badge>
+          <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 shadow-inner">
+            <Icon className="h-5 w-5 md:h-6 md:w-6 text-emerald-400" />
+          </div>
+          <Badge className="bg-slate-950/50 text-slate-500 border border-white/10 px-2 py-0.5 font-bold text-[8px] md:text-[9px] uppercase tracking-widest">
+            {product.badge}
+          </Badge>
         </div>
+        
         <div className="flex-1">
           <h3 className="text-base md:text-lg font-black text-white mb-1 tracking-tight leading-snug">{product.title}</h3>
           <p className="text-emerald-500 text-[10px] md:text-xs font-bold mb-2 md:mb-3 italic">{product.sub}</p>
-          <p className="text-slate-400 text-[10px] md:text-[11px] leading-relaxed mb-4 line-clamp-2 md:line-clamp-3 italic">{product.description || product.sub + 'を実現する、NextraLabs独自のAI戦略エンジン。'}</p>
+          <p className="text-slate-400 text-[10px] md:text-[11px] leading-relaxed mb-4 line-clamp-2 md:line-clamp-3 italic">
+            {product.description || product.sub + 'を実現する、NextraLabs独自のAI戦略エンジン。'}
+          </p>
         </div>
+        
         <div className="pt-4 border-t border-white/5 flex flex-col gap-2.5 mt-auto">
           <Link href={"/products/" + product.id + "/app"} className="block w-full">
-            <Button className="w-full h-10 md:h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs md:text-sm rounded-xl transition-all shadow-[0_5px_15px_rgba(16,185,129,0.2)]">このツールを使う ➔</Button>
+            <Button className="w-full h-10 md:h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs md:text-sm rounded-xl transition-all">
+              このツールを使う ➔
+            </Button>
           </Link>
           <div className="flex justify-between items-center px-2 py-1 bg-black/40 rounded-lg border border-white/5">
             <span className="text-[8px] md:text-[9px] font-black uppercase text-slate-500 tracking-widest">{product.plan}</span>
@@ -81,12 +93,15 @@ export default function ProductsPage() {
   const [mounted, setMounted] = useState(false)
   const [randomFree, setRandomFree] = useState<any[]>([])
   const [pickupTools, setPickupTools] = useState<any[]>([])
+
   useEffect(() => {
     setMounted(true)
     setRandomFree(TOOLS.filter(t => t.plan === '無料').sort(() => 0.5 - Math.random()).slice(0, 3))
     setPickupTools([...TOOLS].sort(() => 0.5 - Math.random()).slice(0, 3))
   }, [])
+
   if (!mounted) return null
+
   return (
     <div className="min-h-screen bg-[#050507] text-slate-200 pb-10 font-sans">
       <div className="max-w-6xl mx-auto px-4 pt-10 md:pt-16 text-center mb-10 md:mb-16 space-y-3 md:space-y-4">
@@ -94,6 +109,7 @@ export default function ProductsPage() {
         <h1 className="text-3xl md:text-7xl font-black text-white tracking-tighter uppercase leading-none italic">AI ツールストア</h1>
         <p className="text-slate-500 max-w-xl mx-auto text-[10px] md:text-sm font-bold italic leading-relaxed px-4">ビジネスと生活をAI武装する、全24の戦略的エンジン。</p>
       </div>
+
       <div className="max-w-6xl mx-auto px-4 space-y-12 md:space-y-20">
         <section>
           <div className="flex items-center gap-3 mb-6 border-l-[6px] md:border-l-8 border-orange-500 pl-4 md:pl-6 py-0.5">
@@ -102,6 +118,7 @@ export default function ProductsPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{pickupTools.map(p => <ProductCard key={p.id} product={p} />)}</div>
         </section>
+
         <section>
           <div className="flex items-center gap-3 mb-6 border-l-[6px] md:border-l-8 border-emerald-500 pl-4 md:pl-6 py-0.5">
             <Gift className="w-5 h-5 md:w-8 md:h-8 text-emerald-500" />
@@ -109,6 +126,7 @@ export default function ProductsPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{randomFree.map(p => <ProductCard key={p.id} product={p} />)}</div>
         </section>
+
         {CATEGORIES.map((cat) => (
           <section key={cat.id}>
             <div className={"flex items-center gap-3 mb-6 border-l-[6px] md:border-l-8 " + cat.color + " pl-4 md:pl-6 py-0.5"}>
