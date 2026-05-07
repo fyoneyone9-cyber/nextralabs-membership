@@ -1,13 +1,12 @@
 'use client'
-import React, { useState, useRef } from 'react'
-import dynamic from 'next/dynamic'
+import React, { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { CheckCircle2, Shield, Zap, Building2, Search, ArrowRight, Smartphone, Printer, Globe, AlertTriangle, Camera, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 
 const StayseeLpContent = () => {
-  const toolRef = useRef<HTMLDivElement>(null)
+
   const [room, setRoom] = useState('')
   const [description, setDescription] = useState('')
   const [result, setResult] = useState('')
@@ -15,7 +14,8 @@ const StayseeLpContent = () => {
   const [error, setError] = useState('')
 
   const scrollToTool = () => {
-    toolRef.current?.scrollIntoView({ behavior: 'smooth' })
+    const el = document.getElementById('tool')
+    if (el) el.scrollIntoView({ behavior: 'smooth' })
   }
 
   const handleAnalyze = async () => {
@@ -143,7 +143,7 @@ const StayseeLpContent = () => {
       </section>
 
       {/* ★ AIツール本体 */}
-      <section ref={toolRef} id="tool" className="max-w-3xl mx-auto px-4 py-20">
+      <section id="tool" className="max-w-3xl mx-auto px-4 py-20">
         <div className="text-center mb-12 space-y-4">
           <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-6 py-1 rounded-full font-black uppercase text-xs">AI鑑定ツール</Badge>
           <h3 className="text-4xl font-black text-white italic uppercase tracking-tighter">忘れ物を今すぐ鑑定</h3>
@@ -212,11 +212,4 @@ const StayseeLpContent = () => {
   )
 }
 
-const NoSSRWrapper = dynamic(() => Promise.resolve(StayseeLpContent), {
-  ssr: false,
-  loading: () => <div className="min-h-screen bg-[#050507]" />
-})
-
-export default function StayseeLp() {
-  return <NoSSRWrapper />
-}
+export default StayseeLpContent
