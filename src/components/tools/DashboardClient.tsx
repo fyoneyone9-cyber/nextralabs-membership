@@ -13,7 +13,7 @@ import {
 
 // 全ツールマスタ定義（プラン情報付き）
 const ALL_TOOLS = [
-  { id: 'staysee-ai-finder', name: 'Staysee AI Finder', icon: Building2, color: 'text-emerald-500', bg: 'bg-emerald-500/10', plan: 'premium' },
+  { id: 'staysee-ai-finder', name: 'AI ホテル・キー連携', icon: Building2, color: 'text-emerald-500', bg: 'bg-emerald-500/10', plan: 'premium' },
   { id: 'comp-price-monitor', name: '競合価格AI監視', icon: TrendingUp, color: 'text-blue-500', bg: 'bg-blue-500/10', plan: 'light' },
   { id: 'sns-auto-poster', name: 'AI SNSオートポスター', icon: Share2, color: 'text-rose-500', bg: 'bg-rose-500/10', plan: 'light' },
   { id: 'evidence-manager', name: 'AI エビデンス・マネージャー', icon: ShieldCheck, color: 'text-emerald-400', bg: 'bg-emerald-400/10', plan: 'free' },
