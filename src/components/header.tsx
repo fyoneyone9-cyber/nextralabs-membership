@@ -88,11 +88,9 @@ export function Header() {
           <Link href="/tool-guide" className="text-sm font-medium hover:text-primary transition-colors">ツール説明</Link>
           <Link href="/pricing" className="text-sm font-medium hover:text-primary transition-colors">料金プラン</Link>
           <button 
-            onClick={(e) => {
-              e.preventDefault();
-              window.dispatchEvent(new CustomEvent('open-port-debug'));
-            }}
-            className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest"
+            type="button"
+            data-nextra-port-trigger
+            className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest cursor-pointer"
           >
             PORT
           </button>

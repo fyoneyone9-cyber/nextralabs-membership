@@ -31,8 +31,9 @@ export function Footer() {
               <li><Link href="/contact" className="hover:text-primary transition-colors">お問い合わせ</Link></li>
               <li>
                 <button 
-                  onClick={() => window.dispatchEvent(new CustomEvent('open-port-debug'))}
-                  className="hover:text-primary transition-colors text-[10px] opacity-50 uppercase"
+                  type="button"
+                  data-nextra-port-trigger
+                  className="hover:text-primary transition-colors text-[10px] opacity-50 uppercase cursor-pointer"
                 >
                   PORT
                 </button>

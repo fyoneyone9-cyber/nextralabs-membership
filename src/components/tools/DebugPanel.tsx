@@ -20,30 +20,35 @@ export function DebugPanel({ data, toolId }: { data?: any, toolId?: string }) {
   useEffect(() => {
     setIsMounted(true)
     
-    // PORTクリック時にここを開くためのイベントリスナー
-    const handleOpenPort = () => {
-      setIsOpen(true)
-    }
-    
+    // イベントリスナーでログを受信
     const handleLog = (e: any) => {
       if (e && e.detail && e.detail.msg) {
         const time = new Date().toLocaleTimeString();
         setLogs(prev => [`${time}: ${e.detail.msg}`, ...prev].slice(0, 30));
       }
     }
+
+    // セレクタベースでPORTボタンを監視 (ビルドエラー回避用)
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target && target.closest('[data-nextra-port-trigger]')) {
+        setIsOpen(true);
+      }
+    }
     
-    window.addEventListener('open-port-debug', handleOpenPort)
-    window.addEventListener('nextra-log', handleLog)
-    return () => {
-      window.removeEventListener('open-port-debug', handleOpenPort)
-      window.removeEventListener('nextra-log', handleLog)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('nextra-log', handleLog)
+      window.addEventListener('click', handleClick)
+      return () => {
+        window.removeEventListener('nextra-log', handleLog)
+        window.removeEventListener('click', handleClick)
+      }
     }
   }, [])
 
   const handleLogin = () => {
     if (password === '2026') {
       setIsAuth(true)
-      // 認証成功したらポートフォリオへ遷移
       router.push('/port')
     } else {
       alert('Invalid Node Password')
@@ -74,8 +79,9 @@ export function DebugPanel({ data, toolId }: { data?: any, toolId?: string }) {
 
   return (
     <div className="fixed bottom-6 right-6 z-[10001] flex flex-col items-end">
-      {/* 全ページ常駐のアイコンボタン */}
+      {/* 常駐アイコン */}
       <button 
+        type="button"
         onClick={() => setIsOpen(!isOpen)} 
         className={`flex items-center justify-center w-10 h-10 rounded-full border transition-all duration-500 bg-black/20 backdrop-blur-sm ${isOpen ? 'border-white/20 text-white' : 'border-white/5 text-slate-800 hover:border-white/10'}`}
       >
