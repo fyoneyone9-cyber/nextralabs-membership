@@ -65,10 +65,10 @@ export default function HomePage() {
               { id: 'sns-auto-poster', title: 'SNSオートポスター', icon: Share2, color: 'text-blue-400' }
             ].map((tool) => (
               <Link key={tool.id} href={"/products/" + tool.id + "/app"} className="block group">
-                <Card className="bg-[#13141f] border-white/5 rounded-2xl overflow-hidden hover:border-emerald-500/50 transition-all shadow-lg h-full">
-                  <CardContent className="p-6 flex items-center gap-4">
-                    <div className={"p-3 rounded-xl bg-white/5 " + tool.color}><tool.icon className="h-6 w-6" /></div>
-                    <div className="text-left"><h3 className="text-sm font-black text-white uppercase">{tool.title}</h3><p className="text-[10px] text-emerald-400 font-bold">無料で使う ➔</p></div>
+                <Card className="bg-[#13141f] border-2 border-emerald-500 rounded-3xl overflow-hidden hover:border-emerald-400 transition-all shadow-[0_0_25px_rgba(16,185,129,0.1)] h-full">
+                  <CardContent className="p-8 flex items-center gap-6">
+                    <div className={"p-4 rounded-xl bg-white/5 " + tool.color}><tool.icon className="h-8 w-8" /></div>
+                    <div className="text-left"><h3 className="text-lg font-black text-white uppercase">{tool.title}</h3><p className="text-xs text-emerald-400 font-bold">無料で使う ➔</p></div>
                   </CardContent>
                 </Card>
               </Link>
