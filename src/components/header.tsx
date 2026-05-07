@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -55,7 +55,7 @@ export function Header() {
           <span className="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
             NextraLabs
           </span>
-          <a href="https://x.com/0022_sougo" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-blue-400 transition-all ml-1">
+          <a href="https://x.com/0022_sougo" target="_blank" rel="noopener noreferrer" className="relative z-50 text-slate-500 hover:text-blue-400 transition-all ml-2 p-1" style={{ pointerEvents: "auto" }}>
             <TwitterIcon className="h-4 w-4 fill-current" />
           </a>
         </Link>
@@ -63,47 +63,47 @@ export function Header() {
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center space-x-6">
           <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors">
-            ツール一覧
+            繝・・繝ｫ荳隕ｧ
           </Link>
           <Link href="/tool-guide" className="text-sm font-medium hover:text-primary transition-colors">
-            ツール説明
+            繝・・繝ｫ隱ｬ譏・
           </Link>
           <Link href="/pricing" className="text-sm font-medium hover:text-primary transition-colors">
-            料金プラン
+            譁咎≡繝励Λ繝ｳ
           </Link>
           <Link href="/guide" className="text-sm font-medium hover:text-primary transition-colors">
-            📖 ガイド
+            当 繧ｬ繧､繝・
           </Link>
           <Link href="/contact" className="text-sm font-medium hover:text-primary transition-colors">
-            📩 お問い合わせ
+            陶 縺雁撫縺・粋繧上○
           </Link>
           {user ? (
             <>
               <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
-                ダッシュボード
+                繝繝・す繝･繝懊・繝・
               </Link>
               {profile?.role === 'admin' && (
                 <Link href="/admin" className="text-sm font-medium hover:text-primary transition-colors flex items-center gap-1">
                   <Shield className="h-3 w-3" />
-                  管理画面
+                  邂｡逅・判髱｢
                 </Link>
               )}
               <Link href="/profile" className="text-sm font-medium hover:text-primary transition-colors flex items-center gap-1">
                 <User className="h-3 w-3" />
-                {profile?.display_name || 'プロフィール'}
+                {profile?.display_name || '繝励Ο繝輔ぅ繝ｼ繝ｫ'}
               </Link>
               <Button variant="ghost" size="sm" onClick={handleLogout}>
                 <LogOut className="h-4 w-4 mr-1" />
-                ログアウト
+                繝ｭ繧ｰ繧｢繧ｦ繝・
               </Button>
             </>
           ) : (
             <>
               <Link href="/login">
-                <Button variant="ghost" size="sm">ログイン</Button>
+                <Button variant="ghost" size="sm">繝ｭ繧ｰ繧､繝ｳ</Button>
               </Link>
               <Link href="/signup">
-                <Button size="sm">無料で始める</Button>
+                <Button size="sm">辟｡譁吶〒蟋九ａ繧・/Button>
               </Link>
             </>
           )}
@@ -139,44 +139,44 @@ export function Header() {
       {menuOpen && (
         <div className="md:hidden border-t bg-background px-4 py-4 space-y-3">
           <Link href="/products" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>
-            ツール一覧
+            繝・・繝ｫ荳隕ｧ
           </Link>
           <Link href="/tool-guide" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>
-            ツール説明
+            繝・・繝ｫ隱ｬ譏・
           </Link>
           <Link href="/pricing" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>
-            料金プラン
+            譁咎≡繝励Λ繝ｳ
           </Link>
           <Link href="/guide" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>
-            📖 ガイド
+            当 繧ｬ繧､繝・
           </Link>
           <Link href="/contact" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>
-            📩 お問い合わせ
+            陶 縺雁撫縺・粋繧上○
           </Link>
           {user ? (
             <>
               <Link href="/dashboard" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>
-                ダッシュボード
+                繝繝・す繝･繝懊・繝・
               </Link>
               <Link href="/profile" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>
-                プロフィール
+                繝励Ο繝輔ぅ繝ｼ繝ｫ
               </Link>
               {profile?.role === 'admin' && (
                 <Link href="/admin" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>
-                  管理画面
+                  邂｡逅・判髱｢
                 </Link>
               )}
               <Button variant="ghost" size="sm" onClick={handleLogout} className="w-full justify-start">
-                ログアウト
+                繝ｭ繧ｰ繧｢繧ｦ繝・
               </Button>
             </>
           ) : (
             <div className="flex flex-col gap-2 pt-2">
               <Link href="/login" onClick={() => setMenuOpen(false)}>
-                <Button variant="outline" className="w-full">ログイン</Button>
+                <Button variant="outline" className="w-full">繝ｭ繧ｰ繧､繝ｳ</Button>
               </Link>
               <Link href="/signup" onClick={() => setMenuOpen(false)}>
-                <Button className="w-full">無料で始める</Button>
+                <Button className="w-full">辟｡譁吶〒蟋九ａ繧・/Button>
               </Link>
             </div>
           )}
