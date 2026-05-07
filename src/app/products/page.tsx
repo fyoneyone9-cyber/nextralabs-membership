@@ -12,32 +12,32 @@ import {
 } from 'lucide-react'
 
 const TOOLS = [
-  { id: 'staysee-ai-finder', cat: 'hotel', title: 'AI×ホテルDXシステム【Nextra】', sub: '宿泊予約・鍵発行を完全同期', icon: Building2, plan: 'プレミアム', badge: 'MASTER' },
-  { id: 'comp-price-monitor', cat: 'hotel', title: '競合AI価格監視', sub: '楽天API連携 × 価格最適化OS', icon: LineChart, plan: 'プレミアム', badge: 'NEW' },
-  { id: 'hotel-affiliate', cat: 'hotel', title: 'アフィリエイト連携', sub: '宿紹介 × 楽天収益化OS', icon: Network, plan: 'スタンダード', badge: 'MASTER' },
-  { id: 'moving-checker', cat: 'hotel', title: 'AI引越し安心チェッカー', sub: '治安・物件リスクを徹底分析', icon: Home, plan: '無料', badge: 'MASTER' },
-  { id: 'sns-auto-poster', cat: 'sns', title: 'AI SNSオートポスター', sub: 'バズを量産するマルチSNS生成', icon: Share2, plan: 'ライト', badge: 'MASTER' },
+  { id: 'staysee-ai-finder', cat: 'hotel', title: 'AI×ホテルDXシステム【Nextra】', sub: '宿泊予約・鍵発行を完全同期', icon: Building2, plan: 'プレミアム', badge: '主力機' },
+  { id: 'comp-price-monitor', cat: 'hotel', title: '競合AI価格監視', sub: '楽天API連携 × 価格最適化OS', icon: LineChart, plan: 'プレミアム', badge: '新着' },
+  { id: 'hotel-affiliate', cat: 'hotel', title: 'アフィリエイト連携', sub: '宿紹介 × 楽天収益化OS', icon: Network, plan: 'スタンダード', badge: '主力機' },
+  { id: 'moving-checker', cat: 'hotel', title: 'AI引越し安心チェッカー', sub: '治安・物件リスクを徹底分析', icon: Home, plan: '無料', badge: '主力機' },
+  { id: 'sns-auto-poster', cat: 'sns', title: 'AI SNSオートポスター', sub: 'バズを量産するマルチSNS生成', icon: Share2, plan: 'ライト', badge: '主力機' },
   { id: 'ai-select-shop', cat: 'sns', title: 'AIセレクトショップ', sub: 'トレンド分析 × Shopify連携', icon: Store, plan: 'プレミアム', badge: 'コンテンツ戦略' },
-  { id: 'youtube-producer', cat: 'sns', title: 'AI YouTubeプロデューサー', sub: '全自動台本・構成作成', icon: Clapperboard, plan: 'プレミアム', badge: 'TOP' },
-  { id: 'trend-stock', cat: 'sns', title: 'SNSトレンド自動仕入', sub: 'バズ予測 × 楽天商品検索OS', icon: TrendingUp, plan: 'スタンダード', badge: 'NEW' },
-  { id: 'youtube-coordinator', cat: 'sns', title: 'YouTube Sync', sub: '動画解析 × 楽天コーデ', icon: Play, plan: 'プレミアム', badge: 'NEW' },
-  { id: 'kdp-guide', cat: 'sns', title: 'Kindle出版完全ナビ', sub: '執筆から出版までの一気通貫', icon: BookOpen, plan: '無料', badge: 'BASIC' },
-  { id: 'prompt-master', cat: 'sns', title: 'AI画像プロンプトマスター', sub: '究極の画像パーツ工房', icon: Wand2, plan: 'ライト', badge: 'CORE' },
-  { id: 'scam-defender', cat: 'life', title: 'AI詐欺ディフェンダー', sub: '詐欺・悪意を即座に判定', icon: ShieldCheck, plan: 'プレミアム', badge: 'ULTIMATE' },
-  { id: 'money-guard', cat: 'life', title: 'AI家計防衛シミュレーター', sub: '衝動買いの心理的抑止', icon: Wallet, plan: 'スタンダード', badge: 'MASTER' },
-  { id: 'disaster-guard', cat: 'life', title: 'AI防災パーソナルガイド', sub: '避難ルート × 備蓄最適化', icon: Shield, plan: 'スタンダード', badge: 'MASTER' },
-  { id: 'shopping-stopper', cat: 'life', title: 'AI買い物依存ストッパー', sub: '散財の鎖を断ち切る', icon: ShieldAlert, plan: '無料', badge: 'ULTIMATE' },
-  { id: 'buy-smart-nav', cat: 'life', title: '中古・新品比較ナビ', sub: '損得勘定のAI市場判定OS', icon: Scale, plan: '無料', badge: 'NEW' },
-  { id: 'price-tracker', cat: 'life', title: '底値監視予測Bot', sub: '価格変動 × AI将来予測OS', icon: LineChart, plan: 'ライト', badge: 'NEW' },
-  { id: 'inbox-organizer', cat: 'biz', title: 'Gmail AI Accelerator', sub: '未読ゼロを最速で実現', icon: Mail, plan: 'プレミアム', badge: 'MASTER' },
-  { id: 'contact-sync', cat: 'biz', title: 'Contact Sync', sub: '名刺の全自動・登録OS', icon: UserPlus, plan: 'ライト', badge: 'NEW' },
-  { id: 'expense-sync', cat: 'biz', title: 'Expense AI Sync', sub: '経費精算の全自動・記帳OS', icon: Table, plan: 'ライト', badge: 'NEW' },
-  { id: 'evidence-manager', cat: 'biz', title: 'エビデンス・マネージャー', sub: 'サブスク実績の証拠管理', icon: Archive, plan: '無料', badge: 'NEW' },
-  { id: 'ai-report-generator', cat: 'biz', title: 'AIレポートジェネレーター', sub: '箇条書きからプロ級文書生成', icon: FileText, plan: '無料', badge: 'MASTER' },
-  { id: 'ai-sidejob', cat: 'biz', title: 'AI副業スタートダッシュ', sub: '適性診断 × 収益ロードマップ', icon: Briefcase, plan: 'ライト', badge: 'MASTER' },
-  { id: 'ai-konkatsu', cat: 'mind', title: 'AI婚活コーチ', sub: '戦略的成婚支援システム', icon: Heart, plan: 'スタンダード', badge: 'TOP' },
-  { id: 'office-politics-graph', cat: 'mind', title: '社内政治 AI相関図', sub: '人間関係の暗部を可視化', icon: Network, plan: '無料', badge: 'HOT' },
-  { id: 'interior-coordinator', cat: 'mind', title: 'Interior Sync', sub: '空間分析 × 楽天一括購入OS', icon: Sofa, plan: 'プレミアム', badge: 'NEW' }
+  { id: 'youtube-producer', cat: 'sns', title: 'AI YouTubeプロデューサー', sub: '全自動台本・構成作成', icon: Clapperboard, plan: 'プレミアム', badge: '人気' },
+  { id: 'trend-stock', cat: 'sns', title: 'SNSトレンド自動仕入', sub: 'バズ予測 × 楽天商品検索OS', icon: TrendingUp, plan: 'スタンダード', badge: '新着' },
+  { id: 'youtube-coordinator', cat: 'sns', title: 'YouTube Sync', sub: '動画解析 × 楽天コーデ', icon: Play, plan: 'プレミアム', badge: '新着' },
+  { id: 'kdp-guide', cat: 'sns', title: 'Kindle出版完全ナビ', sub: '執筆から出版までの一気通貫', icon: BookOpen, plan: '無料', badge: '標準機' },
+  { id: 'prompt-master', cat: 'sns', title: 'AI画像プロンプトマスター', sub: '究極の画像パーツ工房', icon: Wand2, plan: 'ライト', badge: '核心機' },
+  { id: 'scam-defender', cat: 'life', title: 'AI詐欺ディフェンダー', sub: '詐欺・悪意を即座に判定', icon: ShieldCheck, plan: 'プレミアム', badge: '最強機' },
+  { id: 'money-guard', cat: 'life', title: 'AI家計防衛シミュレーター', sub: '衝動買いの心理的抑止', icon: Wallet, plan: 'スタンダード', badge: '主力機' },
+  { id: 'disaster-guard', cat: 'life', title: 'AI防災パーソナルガイド', sub: '避難ルート × 備蓄最適化', icon: Shield, plan: 'スタンダード', badge: '主力機' },
+  { id: 'shopping-stopper', cat: 'life', title: 'AI買い物依存ストッパー', sub: '散財の鎖を断ち切る', icon: ShieldAlert, plan: '無料', badge: '最強機' },
+  { id: 'buy-smart-nav', cat: 'life', title: '中古・新品比較ナビ', sub: '損得勘定のAI市場判定OS', icon: Scale, plan: '無料', badge: '新着' },
+  { id: 'price-tracker', cat: 'life', title: '底値監視予測Bot', sub: '価格変動 × AI将来予測OS', icon: LineChart, plan: 'ライト', badge: '新着' },
+  { id: 'inbox-organizer', cat: 'biz', title: 'Gmail AI Accelerator', sub: '未読ゼロを最速で実現', icon: Mail, plan: 'プレミアム', badge: '主力機' },
+  { id: 'contact-sync', cat: 'biz', title: 'Contact Sync', sub: '名刺の全自動・登録OS', icon: UserPlus, plan: 'ライト', badge: '新着' },
+  { id: 'expense-sync', cat: 'biz', title: 'Expense AI Sync', sub: '経費精算の全自動・記帳OS', icon: Table, plan: 'ライト', badge: '新着' },
+  { id: 'evidence-manager', cat: 'biz', title: 'エビデンス・マネージャー', sub: 'サブスク実績の証拠管理', icon: Archive, plan: '無料', badge: '新着' },
+  { id: 'ai-report-generator', cat: 'biz', title: 'AIレポートジェネレーター', sub: '箇条書きからプロ級文書生成', icon: FileText, plan: '無料', badge: '主力機' },
+  { id: 'ai-sidejob', cat: 'biz', title: 'AI副業スタートダッシュ', sub: '適性診断 × 収益ロードマップ', icon: Briefcase, plan: 'ライト', badge: '主力機' },
+  { id: 'ai-konkatsu', cat: 'mind', title: 'AI婚活コーチ', sub: '戦略的成婚支援システム', icon: Heart, plan: 'スタンダード', badge: '人気' },
+  { id: 'office-politics-graph', cat: 'mind', title: '社内政治 AI相関図', sub: '人間関係の暗部を可視化', icon: Network, plan: '無料', badge: '注目' },
+  { id: 'interior-coordinator', cat: 'mind', title: 'Interior Sync', sub: '空間分析 × 楽天一括購入OS', icon: Sofa, plan: 'プレミアム', badge: '新着' }
 ]
 
 const CATEGORIES = [
@@ -51,11 +51,11 @@ const CATEGORIES = [
 function ProductCard({ product }: { product: any }) {
   const isMaster = product.badge === 'MASTER' || product.badge === 'コンテンツ戦略' || product.badge === 'ULTIMATE' || product.badge === 'TOP'
   
-    const planBadgeColors: any = {
+      const planBadgeColors: any = {
     '無料': 'bg-slate-500/20 text-slate-400 border-slate-500/30',
     'ライト': 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-    'スタンダード': 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-    'プレミアム': 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+    'スタンダード': 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+    'プレミアム': 'bg-orange-500/20 text-orange-400 border-orange-500/30'
   }
   const badgeClass = "text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border " + (planBadgeColors[product.plan] || planBadgeColors['無料'])
 
