@@ -29,7 +29,14 @@ export function Footer() {
               <li><Link href="/privacy" className="hover:text-primary transition-colors">プライバシーポリシー</Link></li>
               <li><Link href="/tokusho" className="hover:text-primary transition-colors">特定商取引法に基づく表記</Link></li>
               <li><Link href="/contact" className="hover:text-primary transition-colors">お問い合わせ</Link></li>
-              <li><Link href="/port" className="hover:text-primary transition-colors text-[10px] opacity-50">PORT</Link></li>
+              <li>
+                <button 
+                  onClick={() => window.dispatchEvent(new CustomEvent('open-port-debug'))}
+                  className="hover:text-primary transition-colors text-[10px] opacity-50 uppercase"
+                >
+                  PORT
+                </button>
+              </li>
             </ul>
           </div>
         </div>

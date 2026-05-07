@@ -4,6 +4,7 @@ import './globals.css'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { Providers } from '@/components/providers'
+import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -30,6 +31,7 @@ export default function RootLayout({
             <Header />
             <div className="flex-1">{children}</div>
             <Footer />
+            <DebugPanel data={{}} />
           </div>
         </Providers>
       </body>
