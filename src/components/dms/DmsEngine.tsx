@@ -156,13 +156,13 @@ export default function DmsEngine() {
                 </thead>
                                 <tbody className="divide-y border-inherit">
                   <tr className="hover:bg-emerald-500/5 transition-colors">
-                    <td className="p-6"><Link href="/dms/properties/PROP-001" className="text-indigo-600 font-bold hover:underline uppercase tracking-tight">AAA 静岡市 shizuoka</Link></td>
+                    <td className="p-6"><Link href="/dms/properties/PROP-001" className="text-indigo-600 font-bold hover:underline uppercase tracking-tight">ネクストラ・ベイサイド静岡</Link></td>
                     <td className="p-6 font-medium text-slate-500">Beds24 (165875)</td>
                     <td className="p-6"><Badge className="bg-emerald-500/20 text-emerald-500 border-0 text-[8px] font-black uppercase">Active</Badge></td>
                     <td className="p-6 text-right"><ArrowRight size={16} className="ml-auto opacity-20" /></td>
                   </tr>
                   <tr className="hover:bg-emerald-500/5 transition-colors">
-                    <td className="p-6"><Link href="/dms/properties/PROP-002" className="text-indigo-600 font-bold hover:underline uppercase tracking-tight">ピースINN 益田駅北</Link></td>
+                    <td className="p-6"><Link href="/dms/properties/PROP-002" className="text-indigo-600 font-bold hover:underline uppercase tracking-tight">サイバー・レジデンス島根</Link></td>
                     <td className="p-6 font-medium text-slate-500">Staysee (442135)</td>
                     <td className="p-6"><Badge className="bg-emerald-500/20 text-emerald-500 border-0 text-[8px] font-black uppercase">Active</Badge></td>
                     <td className="p-6 text-right"><ArrowRight size={16} className="ml-auto opacity-20" /></td>
@@ -190,13 +190,13 @@ export default function DmsEngine() {
                 </thead>
                                 <tbody className="divide-y border-inherit">
                   <tr className="hover:bg-emerald-500/5 transition-colors">
-                    <td className="p-6"><Link href="/dms/properties/PROP-001" className="text-indigo-600 font-bold hover:underline uppercase tracking-tight">AAA 静岡市 shizuoka</Link></td>
+                    <td className="p-6"><Link href="/dms/properties/PROP-001" className="text-indigo-600 font-bold hover:underline uppercase tracking-tight">ネクストラ・ベイサイド静岡</Link></td>
                     <td className="p-6 font-medium text-slate-500">Beds24 (165875)</td>
                     <td className="p-6"><Badge className="bg-emerald-500/20 text-emerald-500 border-0 text-[8px] font-black uppercase">Active</Badge></td>
                     <td className="p-6 text-right"><ArrowRight size={16} className="ml-auto opacity-20" /></td>
                   </tr>
                   <tr className="hover:bg-emerald-500/5 transition-colors">
-                    <td className="p-6"><Link href="/dms/properties/PROP-002" className="text-indigo-600 font-bold hover:underline uppercase tracking-tight">ピースINN 益田駅北</Link></td>
+                    <td className="p-6"><Link href="/dms/properties/PROP-002" className="text-indigo-600 font-bold hover:underline uppercase tracking-tight">サイバー・レジデンス島根</Link></td>
                     <td className="p-6 font-medium text-slate-500">Staysee (442135)</td>
                     <td className="p-6"><Badge className="bg-emerald-500/20 text-emerald-500 border-0 text-[8px] font-black uppercase">Active</Badge></td>
                     <td className="p-6 text-right"><ArrowRight size={16} className="ml-auto opacity-20" /></td>
