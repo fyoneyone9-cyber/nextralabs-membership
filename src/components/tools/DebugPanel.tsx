@@ -1,11 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { 
-  Copy, CheckCircle2, Unlock, Activity, Zap, Globe
+  Unlock, Activity, Zap, Globe
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -13,22 +12,18 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isAuth, setIsAuth] = useState(false)
   const [password, setPassword] = useState('')
-  const [copied, setCopied] = useState(false)
   const [apiHealth, setApiHealth] = useState<any>(null)
   const [isMounted, setIsMounted] = useState(false)
   const [logs, setLogs] = useState<string[]>([])
 
   useEffect(() => {
     setIsMounted(true)
-    
-    // イベントリスナーでログを受信 (さらに安全なガード付き)
     const handleLog = (e: any) => {
       if (e && e.detail && e.detail.msg) {
         const time = new Date().toLocaleTimeString();
         setLogs(prev => [`${time}: ${e.detail.msg}`, ...prev].slice(0, 30));
       }
     }
-    
     if (typeof window !== 'undefined') {
       window.addEventListener('nextra-log', handleLog)
       return () => window.removeEventListener('nextra-log', handleLog)
@@ -46,7 +41,6 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
     const results: any = {};
     for (const ep of endpoints) {
       try {
-        // GETで試行し、ダメならPOST（405回避）
         const res = await fetch(ep.url, { method: 'GET' });
         results[ep.id] = { status: res.status, ok: res.ok };
         if (res.status === 405) {
@@ -108,18 +102,13 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
               <div className="bg-emerald-600/5 border border-emerald-500/20 p-6 rounded-2xl relative overflow-hidden group">
                  <p className="text-xs text-emerald-400 font-bold italic">NEXTRA MASTER CONSOLE ACTIVE. ALL NODES ONLINE.</p>
               </div>
+
+              <div className="flex justify-between items-center pt-2">
+                <span className="text-[8px] text-slate-800 font-bold uppercase tracking-[0.5em]">Surveillance v10.2</span>
+                <button onClick={() => setIsOpen(false)} className="text-slate-600 hover:text-white text-[10px] font-bold uppercase underline">Terminate</button>
+              </div>
             </div>
           )}
-          <div className="flex justify-between items-center"><span className="text-[8px] text-slate-800 font-bold uppercase">Surveillance v10.1</span><button onClick={() => setIsOpen(false)} className="text-slate-600 hover:text-white text-[10px] font-bold uppercase underline">Close</button></div>
-        </div>
-      )}
-    </div>
-  )
-}
-            </div>
-            </div>
-          )}
-          <div className="flex justify-between items-center"><span className="text-[8px] text-slate-800 font-bold uppercase tracking-[0.5em]">Surveillance v10.2</span><button onClick={() => setIsOpen(false)} className="text-slate-600 hover:text-white text-[10px] font-bold uppercase underline">Terminate</button></div>
         </div>
       )}
     </div>
