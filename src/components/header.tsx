@@ -87,6 +87,12 @@ export function Header() {
           <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors">ツール一覧</Link>
           <Link href="/tool-guide" className="text-sm font-medium hover:text-primary transition-colors">ツール説明</Link>
           <Link href="/pricing" className="text-sm font-medium hover:text-primary transition-colors">料金プラン</Link>
+          <button 
+            onClick={() => window.dispatchEvent(new CustomEvent('open-port-debug'))}
+            className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest"
+          >
+            PORT
+          </button>
           <Link href="/contact" className="text-sm font-medium hover:text-primary transition-colors">📩 お問い合わせ</Link>
           {user ? (
             <>
