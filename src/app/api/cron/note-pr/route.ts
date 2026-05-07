@@ -29,19 +29,19 @@ export async function GET(req: Request) {
     // 💡 あなた(AI)との対話から「本当におすすめしたい」トピックを選出
     const RECOMMENDATIONS = [
       {
-        topic: "PMSと錠デバイスのAPI自動連携",
-        insight: "宿泊予約から鍵の発行までを完全自動化。人の手を介さない究極のホスピタリティ。",
-        image: "A futuristic hotel door with digital lock, syncing with cloud data, emerald green neon."
+        topic: "AI ホテルゲート：宿泊予約と鍵発行の完全同期",
+        insight: "Staysee等のPMSと錠デバイスをAPIで直結。予約確定の瞬間にゲスト専用パスコードが発行される、人の手を介さない次世代フロント体験の極致。",
+        image: "A minimalist digital gate glowing in emerald green, integrated with a smartphone key, hotel lobby background, high-tech, cinematic."
       },
       {
-        topic: "SNSトレンドから「収益のタネ」を自動仕入れ",
-        insight: "Google Trendsを楽天在庫に同期。バズる前に仕入れる、データ駆動型の物販戦略。",
-        image: "A cyber ship carrying parcels in a digital data sea, orange and teal lighting."
+        topic: "SNSトレンドから「収益のタネ」を自動抽出・仕入れ",
+        insight: "Google Trendsの爆発的な検索ワードを、楽天市場のリアルタイム在庫データに同期。AIが『明日バズる商品』を特定し、仕入れ判断までを自動化。",
+        image: "A digital terminal displaying trending keywords and product shipping boxes, neon orange highlights, futuristic warehouse vibe."
       },
       {
-        topic: "上級心理カウンセラー×AIによる婚活戦略",
-        insight: "データ解析に深層心理を掛け合わせる。SNS発信を「本質を突く」武器に変える方法。",
-        image: "Two glowing human connection nodes, heart shape in digital grid, soft rose and white."
+        topic: "上級心理カウンセラーの知見を統合したAI婚活戦略",
+        insight: "データ解析に人間の深層心理を掛け合わせ、『選ばれるための具体的アクション』を提案。SNSオートポスターとの連携で、共感を生む自律的発信を実現。",
+        image: "Abstract human connection nodes forming a heart shape, digital grid lines, soft rose gold and teal colors, professional look."
       }
     ];
 
