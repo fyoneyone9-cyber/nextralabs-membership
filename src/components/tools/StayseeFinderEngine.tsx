@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { 
   ArrowRight, CheckCircle2, Zap, RotateCcw, ClipboardPaste, 
-  Building2, Camera, Loader2, Lock, Coins, Settings, Info, 
+  Building2, Camera, Loader2, Lock, Coins, Settings, Info, Key,
   UserPlus, List, Search, RefreshCw, Database, ShieldCheck, Eye, EyeOff, Sparkles,
   PhoneCall, CreditCard, ClipboardList, LogOut, QrCode, Monitor, Languages, PenTool
 } from 'lucide-react'

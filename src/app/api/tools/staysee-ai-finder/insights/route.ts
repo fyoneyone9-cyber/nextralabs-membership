@@ -1,9 +1,13 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { checkRateLimit } from '@/lib/rateLimit';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  const rateCheck = await checkRateLimit(req, 'staysee-ai-finder');
+  if (!rateCheck.allowed) return rateCheck.response!;
   try {
     const { historyData } = await req.json();
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
