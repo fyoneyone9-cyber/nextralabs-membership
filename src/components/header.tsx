@@ -43,14 +43,23 @@ export function Header() {
   if (!mounted) return <header className="h-16 border-b bg-background/95" />
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-[9999] w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <div className="flex items-center gap-2">
-          <Link href="/" className="flex items-center space-x-2">
+        {/* 左側：ブランド名とXアイコンを完全に独立した要素として配置 */}
+        <div className="flex items-center">
+          <Link href="/" className="mr-6">
             <span className="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">NextraLabs</span>
           </Link>
-          <a href="https://x.com/0022_sougo" target="_blank" rel="noopener noreferrer" className="relative z-[100] inline-block p-2 text-slate-500 hover:text-blue-400 transition-all ml-4" style={{ pointerEvents: "auto" }}>
-            <TwitterIcon className="h-5 w-5 fill-current" />
+          
+          <a 
+            href="https://x.com/0022_sougo" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="p-3 bg-white/5 hover:bg-blue-500/20 rounded-xl transition-all border border-white/5 hover:border-blue-500/50"
+            style={{ position: 'relative', zIndex: 10000, pointerEvents: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            title="X (Twitter) Profile"
+          >
+            <TwitterIcon className="h-5 w-5 text-slate-400 hover:text-blue-400" />
           </a>
         </div>
 
