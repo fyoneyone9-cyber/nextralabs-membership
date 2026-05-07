@@ -1,9 +1,9 @@
-﻿'use client'
+'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Zap, Network, Home, Share2, Building2, Search, Hotel, ArrowRight, Smartphone, Grid, Sparkles } from 'lucide-react'
+import { Zap, Network, Home, Share2, Hotel, ArrowRight, Smartphone, Grid, Sparkles } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 export default function HomePage() {
@@ -25,7 +25,7 @@ export default function HomePage() {
 
   return (
     <div className="animate-in fade-in duration-700 bg-[#050507] text-slate-200">
-      {/* 🚀 QUICK NAV */}
+      {/* 🚀 クイックナビ */}
       <div className="fixed bottom-6 right-6 z-50">
         <Link href="/products">
           <Button size="lg" className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-full h-14 w-14 shadow-2xl p-0 flex items-center justify-center border-4 border-emerald-950/50 animate-bounce">
@@ -34,16 +34,16 @@ export default function HomePage() {
         </Link>
       </div>
 
-      {/* Hero Section - 空間を圧縮 */}
+      {/* ヒーローセクション */}
       <section className="relative overflow-hidden pt-16 pb-12 md:pt-32 md:pb-24 bg-slate-950">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-blue-500/10 opacity-50" />
         <div className="container mx-auto px-6 text-center relative">
-          <Badge variant="outline" className="px-3 py-0.5 text-[10px] font-black text-emerald-500 border-emerald-500/20 uppercase tracking-widest mb-6">NextraLabs AI Platform</Badge>
+          <Badge variant="outline" className="px-3 py-0.5 text-[10px] font-black text-emerald-500 border-emerald-500/20 uppercase tracking-widest mb-6">NextraLabs AIプラットフォーム</Badge>
           <h1 className="text-4xl md:text-8xl font-black text-white tracking-tighter mb-6 leading-none italic uppercase">
             AIツールで<br />
             <span className="bg-gradient-to-r from-emerald-400 to-teal-500 bg-clip-text text-transparent">業務を自動化</span>
           </h1>
-          <p className="text-sm md:text-xl text-slate-400 max-w-xl mx-auto mb-8 font-bold italic leading-relaxed">「指示したら、あとは全部やってくれる」<br/>あなたのビジネスと生活をAI武装する。全24の戦略的エンジン。</p>
+          <p className="text-sm md:text-xl text-slate-400 max-w-xl mx-auto mb-8 font-bold italic leading-relaxed px-4">「指示したら、あとは全部やってくれる」<br/>ビジネスと生活をAI武装する。全24の戦略的エンジン。</p>
           <div className="flex flex-col gap-4 justify-center items-center">
             <Link href="/products" className="w-full max-w-xs">
               <Button size="lg" className="w-full text-lg h-16 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-2xl shadow-xl transition-all active:scale-95">🔥 ツール一覧を見る</Button>
@@ -52,11 +52,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 🆓 FREE TOOLS - 縦幅を詰め、スマホでのカードの見栄えを向上 */}
+      {/* 🆓 無料体験 */}
       <section className="py-12 border-y border-white/5">
         <div className="container mx-auto px-6">
           <div className="flex items-center gap-3 mb-8 border-l-8 border-emerald-500 pl-4 py-1">
-            <h2 className="text-xl md:text-4xl font-black text-white italic uppercase tracking-tighter">Free Experience</h2>
+            <h2 className="text-xl md:text-4xl font-black text-white italic uppercase tracking-tighter">無料体験ツール</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
@@ -77,18 +77,18 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ホテルDXセクション - 配色をブランドカラー（黒背景＋エメラルド）へ統合 */}
+      {/* ホテルDXセクション */}
       <section className="py-12 bg-[#050507]">
         <div className="container mx-auto px-6">
           <div className="flex items-center gap-3 mb-6 text-white border-l-8 border-emerald-500 pl-4 py-1">
             <Hotel className="h-6 w-6 text-emerald-500" />
-            <h2 className="text-xl md:text-4xl font-black italic uppercase">Hotel DX</h2>
+            <h2 className="text-xl md:text-4xl font-black italic uppercase">ホテルDXソリューション</h2>
           </div>
           <Link href="/products/staysee-ai-finder/app">
             <Card className="hover:scale-[1.02] transition-all duration-300 border-2 border-emerald-500/30 bg-[#13141f] text-white overflow-hidden rounded-[2rem] shadow-[0_0_50px_rgba(16,185,129,0.1)]">
               <CardContent className="p-8 space-y-6">
                 <div className="flex justify-between items-center">
-                  <Badge className="bg-emerald-500 text-slate-950 font-black px-3 py-0.5 text-[10px] uppercase">Master</Badge>
+                  <Badge className="bg-emerald-500 text-slate-950 font-black px-3 py-0.5 text-[10px] uppercase">マスタ</Badge>
                   <span className="text-[10px] font-black text-amber-500 flex items-center gap-1 animate-pulse"><Zap className="h-3 w-3 fill-current" /> NEW</span>
                 </div>
                 <h3 className="text-2xl md:text-4xl font-black italic leading-none uppercase text-white">AI×ホテルDXシステム<br/>【Nextra】</h3>
@@ -102,27 +102,27 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* PWA Section - 配色統合 */}
+      {/* スマホアプリ版 */}
       <section className="py-8 bg-[#13141f] border-y border-white/5">
         <div className="container mx-auto px-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Smartphone className="h-8 w-8 text-emerald-500" />
-            <h2 className="text-sm font-black text-white uppercase italic">Mobile App Mode</h2>
+            <h2 className="text-sm font-black text-white uppercase italic">スマホアプリ版</h2>
           </div>
-          <Button onClick={handleInstallClick} size="sm" className="bg-emerald-500 text-slate-950 font-black px-4 rounded-xl shadow-lg uppercase text-[10px] hover:bg-emerald-400 transition-all">Install</Button>
+          <Button onClick={handleInstallClick} size="sm" className="bg-emerald-500 text-slate-950 font-black px-4 rounded-xl shadow-lg uppercase text-[10px] hover:bg-emerald-400 transition-all">インストール</Button>
         </div>
       </section>
 
-      {/* Final CTA - 空間を圧縮 */}
+      {/* 最終CTA */}
       <section className="py-16 bg-[#050507]">
         <div className="container mx-auto px-6 text-center space-y-8">
-          <h2 className="text-2xl md:text-6xl font-black text-white tracking-tighter italic uppercase">Unlock Intelligence</h2>
+          <h2 className="text-2xl md:text-6xl font-black text-white tracking-tighter italic uppercase">全ての知能を解放せよ</h2>
           <Link href="/products" className="inline-block w-full max-w-xs">
             <Button size="lg" className="w-full text-lg h-16 bg-emerald-500 text-slate-950 font-black rounded-2xl shadow-xl active:scale-95 uppercase">
               全ツールを見る ➔
             </Button>
           </Link>
-          <div className="opacity-10 text-[8px] font-black uppercase tracking-[0.5em] pt-8">NextraLabs MASTERMODEL • 2026</div>
+          <div className="opacity-10 text-[8px] font-black uppercase tracking-[0.5em] pt-8">NextraLabs マスタモデル • 2026</div>
         </div>
       </section>
     </div>
