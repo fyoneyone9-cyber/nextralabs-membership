@@ -15,8 +15,8 @@ import { DebugPanel } from '@/components/tools/DebugPanel'
 const TABS = [
   { id: 'scan', label: '① スキャン', icon: Camera },
   { id: 'match', label: '② 照合プロファイル', icon: UserCheck },
-  { id: 'monetize', label: '③ 収益化', icon: Coins },
-  { id: 'kiosk', label: '④ キオスク', icon: Smartphone },
+  { id: 'lock', label: '③ 鍵自動発行', icon: Lock },
+  { id: 'monetize', label: '④ 収益化', icon: Coins },
   { id: 'insights', label: '⑤ レポート', icon: Building2 },
 ];
 
@@ -45,6 +45,10 @@ const MasterEngine = () => {
   // キオスク用
   const [kioskStatus, setKioskStatus] = useState('WAITING');
   const [labelData, setLabelData] = useState<any>(null);
+
+  // 🔒 鍵自動発行用
+  const [lockKeyData, setLockKeyData] = useState<any>(null);
+  const [isIssuingKey, setIsIssuingKey] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -161,6 +165,29 @@ const MasterEngine = () => {
       alert('Staysee API連携エラー');
     } finally {
       setIsApiLoading(false);
+    }
+  };
+
+  const issueLockKey = async () => {
+    setIsIssuingKey(true);
+    try {
+      // 予約データを元に鍵を発行
+      const res = await fetch('/api/tools/staysee-ai-finder/lock-api', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          action: 'generate-key',
+          bookingData: { guestName: "米山 文貴", checkIn: "2026-05-07", checkOut: "2026-05-08" } 
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setLockKeyData(data.keyData);
+      }
+    } catch (e) {
+      alert('鍵発行エラー');
+    } finally {
+      setIsIssuingKey(false);
     }
   };
 
@@ -319,6 +346,70 @@ const MasterEngine = () => {
             </Card>
             <button onClick={() => { setImage(null); setMatchResult(''); setCertData(null); setProfileData(null); setActiveTab('scan'); }} className="w-full h-20 border-2 border-white/10 text-slate-600 hover:text-white hover:bg-white/5 font-black rounded-3xl uppercase italic transition-all flex items-center justify-center gap-4 text-xl active:scale-95 print:hidden"><RotateCcw className="w-6 h-6" /> RESET PROTOCOL</button>
           </div>
+        ) : activeTab === 'lock' ? (
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in space-y-12">
+            <div className="text-center space-y-4">
+               <div className="w-20 h-20 bg-emerald-600/10 rounded-3xl flex items-center justify-center mx-auto border-2 border-emerald-500/20 shadow-xl">
+                 <Lock className="w-10 h-10 text-emerald-500" />
+               </div>
+               <h3 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none">錠デバイスAPI：自動鍵発行</h3>
+               <p className="text-slate-400 font-bold italic">Stayseeの予約確定に連動し、ゲスト専用パスコードを自動デプロイします。</p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-12 text-left">
+              <div className="space-y-6">
+                <div className="bg-[#0a0b14] border-2 border-white/5 rounded-[2.5rem] p-8 shadow-inner space-y-6 relative overflow-hidden">
+                   <div className="absolute top-0 right-0 p-6 opacity-5 rotate-12"><Shield className="w-32 h-32 text-white" /></div>
+                   <h4 className="text-xl font-black text-white italic uppercase flex items-center gap-3"><Zap className="text-emerald-500" /> IoT Security Sync</h4>
+                   <p className="text-sm text-slate-400 font-bold leading-relaxed">Stayseeで予約が確定したゲストに対し、チェックイン期間中のみ有効な鍵を生成します。</p>
+                   
+                   <button 
+                    onClick={issueLockKey}
+                    disabled={isIssuingKey}
+                    className="w-full h-24 bg-white text-slate-950 hover:bg-emerald-500 hover:text-white font-black rounded-[2rem] shadow-2xl flex items-center justify-center gap-4 text-2xl uppercase italic transition-all active:scale-95"
+                   >
+                     {isIssuingKey ? <Loader2 className="animate-spin" /> : <Lock />}
+                     予約確定・鍵を発行 ➔
+                   </button>
+                </div>
+              </div>
+
+              <div className="bg-black rounded-[3rem] p-10 border border-white/5 shadow-inner min-h-[300px] flex flex-col relative overflow-hidden">
+                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-600 to-transparent opacity-30" />
+                 <div className="flex items-center gap-4 text-emerald-500 font-black italic uppercase text-xs mb-8"><ClipboardPaste /> Lock Device Output</div>
+                 
+                 {lockKeyData ? (
+                   <div className="space-y-8 animate-in slide-in-from-right-4">
+                      <div className="bg-emerald-600/10 p-8 rounded-3xl border-2 border-emerald-500/30 text-center">
+                         <p className="text-[10px] font-black text-emerald-500 uppercase mb-2">Issued Passcode</p>
+                         <p className="text-6xl font-black text-white tracking-widest italic">{lockKeyData.pinCode}</p>
+                         <p className="text-xs text-emerald-400 mt-4 font-bold italic">{lockKeyData.message}</p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                         <div className="bg-white/5 p-4 rounded-xl border border-white/5">
+                            <p className="text-[8px] font-black text-slate-500 uppercase mb-1">Valid From</p>
+                            <p className="text-xs font-bold text-slate-300">{lockKeyData.validFrom} 15:00</p>
+                         </div>
+                         <div className="bg-white/5 p-4 rounded-xl border border-white/5">
+                            <p className="text-[8px] font-black text-slate-500 uppercase mb-1">Valid To</p>
+                            <p className="text-xs font-bold text-slate-300">{lockKeyData.validTo} 10:00</p>
+                         </div>
+                      </div>
+                      <button 
+                        onClick={() => { navigator.clipboard.writeText(lockKeyData.pinCode); alert('パスコードをコピーしました'); }}
+                        className="w-full h-16 bg-white/10 text-white font-black rounded-2xl border border-white/10 flex items-center justify-center gap-3 uppercase italic transition-all hover:bg-white/20 active:scale-95"
+                      >
+                        <Copy size={20} /> Copy Code
+                      </button>
+                   </div>
+                 ) : (
+                   <div className="h-full flex items-center justify-center opacity-10 text-center">
+                      <p className="font-black uppercase italic tracking-[0.3em] leading-loose">Awaiting Staysee Confirmation...</p>
+                   </div>
+                 )}
+              </div>
+            </div>
+          </Card>
         ) : activeTab === 'monetize' ? (
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in space-y-12">
             <div className="text-center space-y-4">
