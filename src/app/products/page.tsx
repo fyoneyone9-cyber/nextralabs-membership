@@ -50,15 +50,24 @@ const CATEGORIES = [
 ]
 
 function ProductCard({ product }: { product: any }) {
+  const categoryColors: any = {
+    hotel: { border: "border-emerald-500/50", button: "bg-emerald-500 hover:bg-emerald-400", text: "text-emerald-400" },
+    sns: { border: "border-orange-500/50", button: "bg-orange-500 hover:bg-orange-400", text: "text-orange-400" },
+    life: { border: "border-red-500/50", button: "bg-red-500 hover:bg-red-400", text: "text-red-400" },
+    biz: { border: "border-blue-500/50", button: "bg-blue-500 hover:bg-blue-400", text: "text-blue-400" },
+    mind: { border: "border-pink-500/50", button: "bg-pink-500 hover:bg-pink-400", text: "text-pink-400" },
+    pickup: { border: "border-amber-500/50", button: "bg-amber-500 hover:bg-amber-400", text: "text-amber-400" }
+  }
+  const theme = categoryColors[product.cat] || categoryColors.hotel
   const Icon = product.icon
   const isMaster = product.badge === 'MASTER' || product.badge === 'コンテンツ戦略' || product.badge === 'ULTIMATE' || product.badge === 'TOP'
   
   return (
-    <Card className={"h-full bg-[#13141f] transition-all duration-300 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group shadow-xl relative border-2 " + (isMaster ? "border-emerald-500/50 shadow-emerald-500/10" : "border-white/5 hover:border-emerald-500/30")}>
+    <Card className={"h-full bg-[#13141f] transition-all duration-300 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group shadow-xl relative border-2 " + (isMaster ? theme.border + " shadow-lg" : "border-white/5 hover:" + theme.border)}>
       <CardContent className="p-5 md:p-6 flex flex-col h-full text-left relative z-10">
         <div className="flex items-start justify-between mb-4">
           <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 shadow-inner">
-            <Icon className="h-5 w-5 md:h-6 md:w-6 text-emerald-400" />
+            <Icon className="h-5 w-5 md:h-6 md:w-6 \" + theme.text + \"\" />
           </div>
           <Badge className="bg-slate-950/50 text-slate-500 border border-white/10 px-2 py-0.5 font-bold text-[8px] md:text-[9px] uppercase tracking-widest">
             {product.badge}
@@ -67,7 +76,7 @@ function ProductCard({ product }: { product: any }) {
         
         <div className="flex-1">
           <h3 className="text-base md:text-lg font-black text-white mb-1 tracking-tight leading-snug">{product.title}</h3>
-          <p className="text-emerald-500 text-[10px] md:text-xs font-bold mb-2 md:mb-3 italic">{product.sub}</p>
+          <p className={"text-sm font-black mb-2 md:mb-3 italic " + theme.text} text-[10px] md:text-xs font-bold mb-2 md:mb-3 italic">{product.sub}</p>
           <p className="text-slate-400 text-[10px] md:text-[11px] leading-relaxed mb-4 line-clamp-2 md:line-clamp-3 italic">
             {product.description || product.sub + 'を実現する、NextraLabs独自のAI戦略エンジン。'}
           </p>
@@ -96,8 +105,8 @@ export default function ProductsPage() {
 
   useEffect(() => {
     setMounted(true)
-    setRandomFree(TOOLS.filter(t => t.plan === '無料').sort(() => 0.5 - Math.random()).slice(0, 3))
-    setPickupTools([...TOOLS].sort(() => 0.5 - Math.random()).slice(0, 3))
+    setRandomFree(TOOLS.filter(t => t.plan === "無料").sort(() => 0.5 - Math.random()).slice(0, 3).map(t => ({...t, cat: "pickup"})))
+    setPickupTools([...TOOLS].sort(() => 0.5 - Math.random()).slice(0, 3).map(t => ({...t, cat: "pickup"})))
   }, [])
 
   if (!mounted) return null
