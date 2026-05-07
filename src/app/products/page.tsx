@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useSearchParams } from 'next/navigation'
 import React, { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
@@ -23,6 +23,7 @@ const TOOLS = [
   { id: 'trend-stock', cat: 'sns', title: 'SNSトレンドAI分析', sub: 'バズ予測 × 楽天商品検索OS', icon: TrendingUp, plan: 'スタンダード' },
   { id: 'youtube-coordinator', cat: 'sns', title: 'YouTube AI Sync', sub: '動画解析 × 楽天コーデ', icon: Play, plan: 'プレミアム' },
   { id: 'kdp-guide', cat: 'sns', title: 'Kindle出版AI完全ナビ', sub: '執筆から出版までの一気通貫', icon: BookOpen, plan: '無料' },
+  { id: 'kindle-factory', cat: 'sns', title: 'Kindle本ファクトリー', sub: 'AIが5分でKDP入稿可能な原稿を自動生成', icon: Crown, plan: 'プレミアム' },
   { id: 'prompt-master', cat: 'sns', title: 'AI画像プロンプトマスター', sub: '究極の画像パーツ工房', icon: Wand2, plan: 'ライト' },
   { id: 'scam-defender', cat: 'life', title: 'AI詐欺ディフェンダー', sub: '詐欺・悪意を即座に判定', icon: ShieldCheck, plan: 'プレミアム' },
   { id: 'money-guard', cat: 'life', title: 'AI家計防衛シミュレーター', sub: '衝動買いの心理的抑止', icon: Wallet, plan: 'スタンダード' },
