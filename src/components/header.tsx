@@ -16,6 +16,14 @@ export function Header() {
   const [profile, setProfile] = useState(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const handleSearch = (e) => {
+    e.preventDefault()
+    if (!searchQuery.trim()) return
+    // カタログページへ検索クエリを持って移動
+    router.push("/products?q=" + encodeURIComponent(searchQuery.trim()))
+    setMenuOpen(false)
+  }
 
   useEffect(() => {
     setMounted(true)
@@ -63,14 +71,17 @@ export function Header() {
         </div>
 
         {/* 🔍 検索バー */}
-        <div className="hidden lg:flex flex-1 max-w-md mx-8 relative group">
+                <form onSubmit={handleSearch} className="hidden lg:flex flex-1 max-w-md mx-8 relative group">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-emerald-500 transition-colors" size={18} />
           <input 
             type="text" 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="AIツールを検索..." 
             className="w-full h-10 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 text-sm text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all shadow-inner"
           />
-        </div>
+          <button type="submit" className="hidden">検索</button>
+        </form>
 
         <nav className="hidden md:flex items-center space-x-6">
           <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors">ツール一覧</Link>
@@ -110,10 +121,16 @@ export function Header() {
 
       {menuOpen && (
         <div className="md:hidden border-t bg-background px-4 py-4 space-y-4 animate-in slide-in-from-top-2">
-          <div className="relative group">
+                  <form onSubmit={handleSearch} className="relative group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
-            <input type="text" placeholder="AIツールを検索..." className="w-full h-12 bg-black border border-white/10 rounded-xl pl-12 pr-4 text-sm text-white focus:border-emerald-500 outline-none transition-all" />
-          </div>
+            <input 
+              type="text" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="AIツールを検索..." 
+              className="w-full h-12 bg-black border border-white/10 rounded-xl pl-12 pr-4 text-sm text-white focus:border-emerald-500 outline-none transition-all"
+            />
+          </form>
           <Link href="/products" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>ツール一覧</Link>
           <Link href="/contact" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>📩 お問い合わせ</Link>
           {user ? (

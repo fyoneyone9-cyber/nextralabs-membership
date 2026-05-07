@@ -88,12 +88,18 @@ function ProductCard({ product }) {
 
 export default function ProductsPage() {
   const [mounted, setMounted] = useState(false)
+  const searchParams = useSearchParams()
+  const q = searchParams.get('q')?.toLowerCase() || ''
+
+  const filteredTools = q 
+    ? TOOLS.filter(t => t.title.toLowerCase().includes(q) || t.sub.toLowerCase().includes(q))
+    : TOOLS
   const [randomFree, setRandomFree] = useState([])
   const [pickupTools, setPickupTools] = useState([])
   useEffect(() => {
     setMounted(true)
     setRandomFree(TOOLS.filter(t => t.plan === '無料').sort(() => 0.5 - Math.random()).slice(0, 3))
-    setPickupTools([...TOOLS].sort(() => 0.5 - Math.random()).slice(0, 3))
+    setPickupTools([...filteredTools].sort(() => 0.5 - Math.random()).slice(0, 3))
   }, [])
   if (!mounted) return null
   return (
@@ -108,7 +114,7 @@ export default function ProductsPage() {
         {CATEGORIES.map((cat) => (
           <section key={cat.id}>
             <div className={"flex items-center gap-3 mb-4 border-l-[6px] md:border-l-8 " + cat.color + " pl-4 md:pl-6 py-0.5"}><cat.icon className="w-5 h-5 md:w-8 md:h-8 text-white" /><h2 className="text-lg md:text-2xl font-black text-white italic uppercase">{cat.title}</h2></div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{TOOLS.filter(t => t.cat === cat.id).map(p => <ProductCard key={p.id} product={p} />)}</div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{filteredTools.filter(t => t.cat === cat.id).map(p => <ProductCard key={p.id} product={p} />)}</div>
           </section>
         ))}
       </div>
