@@ -74,8 +74,15 @@ export function DebugPanel({ data, toolId }: { data?: any, toolId?: string }) {
     const results: any = {};
     for (const ep of endpoints) {
       try {
-        const res = await fetch(ep.url, { method: 'GET' });
-        results[ep.id] = { status: res.status, ok: res.ok };
+        // 基本はGET、特定のツールはPOSTでテスト
+        const method = (ep.id === 'gmail' || ep.id === 'staysee') ? 'POST' : 'GET';
+        const options: any = { method };
+        if (method === 'POST') {
+          options.body = JSON.stringify({ action: 'health_check' });
+        }
+        
+        const res = await fetch(ep.url, options);
+        results[ep.id] = { status: res.status, ok: res.ok || res.status === 405 };
       } catch (e) {
         results[ep.id] = { status: 'OFFLINE', ok: false };
       }

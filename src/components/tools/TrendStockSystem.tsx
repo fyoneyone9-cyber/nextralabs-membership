@@ -247,7 +247,8 @@ const MasterEngine = () => {
 
       <DebugPanel data={{ 
         predictionsCount: predictions.length,
-        api: debugData 
+        lastSync: debugData.lastSync,
+        apiSource: debugData.source
       }} toolId="trend-stock-master" />
       <div className="text-center opacity-10 mt-10 font-black uppercase tracking-[0.5em] italic text-[10px]">Supply Chain Automation ? NextraLabs 2026</div>
     </div>
