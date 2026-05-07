@@ -102,14 +102,27 @@ export default function DmsEngine() {
           </div>
         </nav>
 
-        <div className="p-6 border-t border-inherit mt-auto">
+                <div className="p-6 border-t border-inherit mt-auto space-y-4">
           <div className="flex items-center justify-between">
             <div className="min-w-0">
               <p className="text-[10px] font-bold text-slate-500 truncate uppercase">Operator</p>
               <p className="text-xs font-black truncate">{session?.id || 'admin'}</p>
             </div>
-            <button onClick={handleLogout} className="text-slate-500 hover:text-red-500 p-1 transition-colors"><LogOut size={16} /></button>
+            <button 
+              onClick={handleLogout} 
+              className="p-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-lg transition-all"
+              title="ログアウト"
+            >
+              <LogOut size={18} />
+            </button>
           </div>
+          <Button 
+            onClick={handleLogout} 
+            variant="outline" 
+            className="w-full h-10 border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white font-black uppercase italic text-[10px] transition-all"
+          >
+            <LogOut size={14} className="mr-2" /> Exit System
+          </Button>
         </div>
       </aside>
 
