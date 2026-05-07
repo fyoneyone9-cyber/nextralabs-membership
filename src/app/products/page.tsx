@@ -27,7 +27,7 @@ const TOOLS = [
   { id: 'inbox-organizer', cat: 'biz', title: 'Gmail AI Accelerator', sub: '未読ゼロを最速で実現', icon: Mail, plan: 'プレミアム' },
   { id: 'contact-sync', cat: 'biz', title: 'Contact Sync', sub: '名刺の全自動・登録OS', icon: UserPlus, plan: 'ライト' },
   { id: 'expense-sync', cat: 'biz', title: 'Expense AI Sync', sub: '経費精算の全自動・記帳OS', icon: Table, plan: 'ライト' },
-  { id: 'evidence-manager', cat: 'biz', title: 'エビデンス・マネージャー', sub: 'サブスク実績の証拠管理', icon: Archive, plan: '無料' },
+  { id: 'evidence-manager', cat: 'biz', title: 'エビデンスAIマネージャー', sub: 'サブスク実績の証拠管理', icon: Archive, plan: '無料' },
   { id: 'ai-report-generator', cat: 'biz', title: 'AIレポートジェネレーター', sub: '箇条書きからプロ級文書生成', icon: FileText, plan: '無料' },
   { id: 'ai-sidejob', cat: 'biz', title: 'AI副業スタートダッシュ', sub: '適性診断 × 収益ロードマップ', icon: Briefcase, plan: 'ライト' },
   { id: 'ai-konkatsu', cat: 'mind', title: 'AI婚活コーチ', sub: '戦略的成婚支援システム', icon: Heart, plan: 'スタンダード' },

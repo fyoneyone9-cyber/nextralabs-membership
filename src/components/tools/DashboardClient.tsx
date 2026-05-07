@@ -10,7 +10,7 @@ const ALL_TOOLS = [
   { id: 'staysee-ai-finder', name: 'AI×ホテルDXシステム【Nextra】', icon: Building2, color: 'text-emerald-500', bg: 'bg-emerald-500/10', plan: 'プレミアム', badge: 'MASTER' },
   { id: 'comp-price-monitor', name: '競合AI価格監視', icon: TrendingUp, color: 'text-blue-500', bg: 'bg-blue-500/10', plan: 'プレミアム', badge: 'NEW' },
   { id: 'sns-auto-poster', name: 'AI SNSオートポスター', icon: Share2, color: 'text-rose-500', bg: 'bg-rose-500/10', plan: 'ライト', badge: 'MASTER' },
-  { id: 'evidence-manager', name: 'AI エビデンス・マネージャー', icon: ShieldCheck, color: 'text-emerald-400', bg: 'bg-emerald-400/10', plan: '無料', badge: 'NEW' },
+  { id: 'evidence-manager', name: 'AI エビデンスAIマネージャー', icon: ShieldCheck, color: 'text-emerald-400', bg: 'bg-emerald-400/10', plan: '無料', badge: 'NEW' },
   { id: 'hotel-affiliate', name: 'アフィリエイトAI連携', icon: Network, color: 'text-emerald-400', bg: 'bg-emerald-400/10', plan: 'プレミアム', badge: 'MASTER' },
   { id: 'money-guard', name: 'AI家計防衛シミュレーター', icon: Wallet, color: 'text-amber-500', bg: 'bg-amber-500/10', plan: 'スタンダード', badge: 'MASTER' },
   { id: 'youtube-producer', name: 'AI YouTubeプロデューサー', icon: Youtube, color: 'text-red-500', bg: 'bg-red-500/10', plan: 'プレミアム', badge: 'TOP' },
