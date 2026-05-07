@@ -114,8 +114,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* スマホアプリ版 - コンパクトに修正してフッター直前に配置 */}
-      <section className="py-4 bg-[#13141f]">
+      <div className="bg-[#050507] text-center opacity-30 text-[9px] font-black uppercase tracking-[0.3em] py-6 text-slate-400">
+        NextraLabs マスタモデル • 2026
+      </div>
+
+      {/* スマホアプリ版 - コピーライトの下へ移動 */}
+      <section className="py-4 bg-[#13141f] border-t border-white/5">
         <div className="container mx-auto px-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Smartphone className="h-5 w-5 text-emerald-500" />
@@ -126,10 +130,6 @@ export default function HomePage() {
           </Button>
         </div>
       </section>
-
-      <div className="bg-[#050507] text-center opacity-30 text-[9px] font-black uppercase tracking-[0.3em] py-6 text-slate-400">
-        NextraLabs マスタモデル • 2026
-      </div>
     </div>
   )
 }
