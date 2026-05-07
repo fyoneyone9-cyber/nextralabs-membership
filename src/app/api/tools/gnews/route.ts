@@ -2,12 +2,12 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   const API_KEY = process.env.GNEWS_API_KEY || '0d64d6796845143fe7f3759f1366bf2f';
-  // 日本のトップニュースを取得
-  const url = `https://gnews.io/api/v4/top-headlines?category=general&lang=ja&country=jp&max=10&apikey=${API_KEY}`;
+  // 日本国内の最新ニュースを「時間順」で検索
+  const url = `https://gnews.io/api/v4/search?q=日本&lang=ja&country=jp&max=10&sortby=publishedAt&apikey=${API_KEY}`;
 
   try {
     const res = await fetch(url, { 
-      next: { revalidate: 3600 } // 1時間キャッシュ
+      next: { revalidate: 300 } // 5分キャッシュ
     });
     
     if (!res.ok) {
@@ -16,22 +16,21 @@ export async function GET() {
 
     const data = await res.json();
     
-    // TrendStockSystemで扱いやすい形式に整形
     const trends = data.articles.map((article: any) => ({
       title: article.title,
       description: article.description,
-      source: article.source.name,
+      source: 'GNews (Latest)',
       url: article.url,
       publishedAt: article.publishedAt
     }));
 
     return NextResponse.json({
-      source: 'gnews_jp',
+      source: 'gnews_jp_speed',
       updated: new Date().toISOString(),
       count: trends.length,
       trends: trends
     });
   } catch (e: any) {
-    return NextResponse.json({ error: e?.message || 'Unknown error' }, { status: 500 });
+    return NextResponse.json({ error: 'GNews Fetch Failed' }, { status: 500 });
   }
 }
