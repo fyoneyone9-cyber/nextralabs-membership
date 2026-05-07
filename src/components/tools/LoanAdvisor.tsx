@@ -103,7 +103,11 @@ export function LoanAdvisor() {
       }
 
       // Markdown記号の除去
-      const cleanAdvice = (data.advice || '').replace(/```markdown|```/g, '').trim()
+      const cleanAdvice = (data.advice || '')
+        .replace(/```markdown|```/g, '') // コードブロック除去
+        .replace(/#{1,6}\s?/g, '')      // 見出し記号除去
+        .replace(/\*\*/g, '')           // 太字記号除去
+        .trim()
 
       setResult({
         currentTotal,
@@ -253,12 +257,7 @@ export function LoanAdvisor() {
                   <Sparkles className="text-emerald-500" size={16} /> AI完済ロードマップ
                 </h4>
                 <div className="text-slate-300 text-sm md:text-base font-bold leading-relaxed whitespace-pre-wrap">
-                  {result.advice.split('\n').map((line, i) => {
-                    if (line.startsWith('###')) {
-                      return <h4 key={i} className="text-emerald-400 font-black italic mt-4 mb-2 uppercase tracking-tight">{line.replace('###', '').trim()}</h4>
-                    }
-                    return <p key={i} className="mb-2">{line}</p>
-                  })}
+                  {result.advice}
                 </div>
 
                 {/* さりげないAmazonリンク */}
