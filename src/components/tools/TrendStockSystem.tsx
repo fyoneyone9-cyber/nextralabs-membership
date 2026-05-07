@@ -26,11 +26,12 @@ const MasterEngine = () => {
     setLogs(prev => [{time, msg, type}, ...prev].slice(0, 20));
     console.log(`[${time}] ${msg}`);
     
-    // 安全なグローバルイベント発行 (クラッシュ防止)
+    // さらに安全なグローバルイベント発行
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('nextra-log', { 
-        detail: { msg: `[${type.toUpperCase()}] ${msg}` } 
-      }));
+      const event = new CustomEvent('nextra-log', { 
+        detail: { msg: `[${type.toUpperCase()}] ${msg}` }
+      });
+      window.dispatchEvent(event);
     }
   };
 

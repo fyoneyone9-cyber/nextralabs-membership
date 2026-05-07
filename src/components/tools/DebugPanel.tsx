@@ -21,13 +21,18 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
   useEffect(() => {
     setIsMounted(true)
     
-    // イベントリスナーでログを受信 (安全な方法)
+    // イベントリスナーでログを受信 (さらに安全なガード付き)
     const handleLog = (e: any) => {
-      setLogs(prev => [new Date().toLocaleTimeString() + ': ' + e.detail.msg, ...prev].slice(0, 30))
+      if (e && e.detail && e.detail.msg) {
+        const time = new Date().toLocaleTimeString();
+        setLogs(prev => [`${time}: ${e.detail.msg}`, ...prev].slice(0, 30));
+      }
     }
     
-    window.addEventListener('nextra-log', handleLog)
-    return () => window.removeEventListener('nextra-log', handleLog)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('nextra-log', handleLog)
+      return () => window.removeEventListener('nextra-log', handleLog)
+    }
   }, [])
 
   const runApiTest = async () => {

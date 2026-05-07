@@ -115,6 +115,29 @@ const CAREER = [
   { year: "2024 - 現在", company: "NextraLabs / マリッジロードジャパン", role: "代表（AIマスタツール開発・結婚相談所運営）" },
 ];
 
+const WORKS = [
+  { 
+    title: "AIマスタツール群の開発", 
+    desc: "13種以上の『MASTERMODEL』ツールを設計・構築。実データを扱い、業務を自動化する実用AIを量産。", 
+    tag: "DEVELOPMENT" 
+  },
+  { 
+    title: "AIポートフォリオサイト", 
+    desc: "本サイト。AIを駆使したクリエイティブと技術を統合し、圧倒的なアウトプットを可視化。", 
+    tag: "CREATIVE" 
+  },
+  { 
+    title: "IoTソリューション導入支援", 
+    desc: "Pythonを用いたデバイス連携、APIによるシステム自動化、ネットワーク構築の現場指揮。", 
+    tag: "ENGINEERING" 
+  },
+  { 
+    title: "結婚相談所システム運営", 
+    desc: "心理カウンセリングとデータを融合させた成婚戦略。IBJプラットフォームを活用した成婚率向上施策。", 
+    tag: "BUSINESS" 
+  }
+];
+
 // --- コンポーネント ---
 
 const MasterEngine = () => {
