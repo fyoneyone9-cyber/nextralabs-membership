@@ -55,9 +55,7 @@ function ProductCard({ product }: { product: any }) {
   return (
     <Card className={"h-full bg-[#13141f] transition-all duration-300 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group shadow-xl relative border-2 " + (isSpecial ? "border-emerald-500/50" : "border-white/5 hover:border-emerald-500/30")}>
       {isSpecial && (
-        <div className="absolute top-0 left-0 bg-emerald-500 text-slate-950 text-[8px] md:text-[10px] font-black px-3 py-1 rounded-br-xl z-20 uppercase tracking-widest shadow-lg">
-          {product.badge}
-        </div>
+        
       )}
       <CardContent className="p-5 md:p-6 flex flex-col h-full text-left relative z-10">
         <div className="flex items-start justify-between mb-4">
