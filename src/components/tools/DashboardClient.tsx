@@ -68,7 +68,7 @@ export default function DashboardClient({ user, profile, subscription }: any) {
                       <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">ツールを起動する ?</p>
                     </div>
                   </Link>
-                  <button onClick={(e) => toggleFavorite(e, tool.id)} className="absolute top-4 right-4 p-2 text-amber-400 scale-110"><Star size={18} fill="currentColor" /></button>
+                  <button onClick={(e) => toggleFavorite(e, tool.id)} className="absolute top-4 right-4 p-2 text-amber-500 scale-110 active:scale-100 transition-all drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]"><Star size={18} fill="currentColor" /></button>
                 </div>
               ))}
             </div>
