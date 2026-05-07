@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { 
   BookOpen, Crown, User, ArrowRight, Rocket, Search, Network, 
   ShieldAlert, Store, Mail, Briefcase, Wallet, Shield, Building2, 
-  Zap, Sparkles, Youtube, CheckCircle2
+  Zap, Sparkles, Youtube, CheckCircle2, TrendingUp, Share2, ShieldCheck
 } from 'lucide-react'
 
 export default async function DashboardPage() {
