@@ -1,7 +1,7 @@
 'use client'
 import dynamic from 'next/dynamic'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { Loader2, Settings, ExternalLink, AlertTriangle } from 'lucide-react'
+import { Loader2, Settings, ExternalLink, AlertTriangle, CheckCircle2 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 const STYLES = [
@@ -17,9 +17,9 @@ const STYLES = [
 ];
 
 const TSHIRT_COLORS = [
-  { id: 'white', name: '白',   hex: '#FFFFFF' },
-  { id: 'black', name: '黒',   hex: '#1a1a1a' },
-  { id: 'navy',  name: '紺',   hex: '#1e3a5f' },
+  { id: 'white', name: '白',    hex: '#FFFFFF' },
+  { id: 'black', name: '黒',    hex: '#1a1a1a' },
+  { id: 'navy',  name: '紺',    hex: '#1e3a5f' },
   { id: 'gray',  name: 'グレー', hex: '#808080' },
   { id: 'red',   name: 'レッド', hex: '#e74c3c' },
 ];
@@ -37,12 +37,13 @@ const MasterEngine = () => {
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishResult, setPublishResult] = useState<{ url?: string; error?: string } | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [isTesting, setIsTesting] = useState(false);
+  const [testResult, setTestResult] = useState<{ name?: string; status?: string } | null>(null);
 
-  // APIキー設定
+  // ユーザー毎のAPIキー設定（任意：未設定時はサーバーのデフォルトを使用）
   const [shopifyDomain, setShopifyDomain] = useState('');
-  const [shopifyToken, setShopifyToken] = useState('');
-  const [printifyShopId, setPrintifyShopId] = useState('');
-  const [printifyToken, setPrintifyToken] = useState('');
+  const [shopifyClientId, setShopifyClientId] = useState('');
+  const [shopifyClientSecret, setShopifyClientSecret] = useState('');
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -51,19 +52,42 @@ const MasterEngine = () => {
     try {
       const saved = localStorage.getItem(LS_KEY);
       if (saved) {
-        const { shopifyDomain: sd, shopifyToken: st, printifyShopId: pid, printifyToken: pt } = JSON.parse(saved);
+        const { shopifyDomain: sd, shopifyClientId: ci, shopifyClientSecret: cs } = JSON.parse(saved);
         if (sd) setShopifyDomain(sd);
-        if (st) setShopifyToken(st);
-        if (pid) setPrintifyShopId(pid);
-        if (pt) setPrintifyToken(pt);
+        if (ci) setShopifyClientId(ci);
+        if (cs) setShopifyClientSecret(cs);
       }
     } catch {}
     fetchTrends();
   }, []);
 
   const saveSettings = () => {
-    localStorage.setItem(LS_KEY, JSON.stringify({ shopifyDomain, shopifyToken, printifyShopId, printifyToken }));
+    localStorage.setItem(LS_KEY, JSON.stringify({ shopifyDomain, shopifyClientId, shopifyClientSecret }));
     setShowSettings(false);
+    setTestResult(null);
+  };
+
+  const testShopifyConnection = async () => {
+    setIsTesting(true);
+    setTestResult(null);
+    try {
+      const res = await fetch('/api/tools/printful', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'shopify-test',
+          shopifyDomain: shopifyDomain || undefined,
+          shopifyClientId: shopifyClientId || undefined,
+          shopifyClientSecret: shopifyClientSecret || undefined,
+        }),
+      });
+      const data = await res.json();
+      setTestResult(data.result || { status: 'ERROR', name: data.error });
+    } catch (e: any) {
+      setTestResult({ status: 'ERROR', name: e.message });
+    } finally {
+      setIsTesting(false);
+    }
   };
 
   const fetchTrends = async () => {
@@ -110,52 +134,47 @@ const MasterEngine = () => {
     ctx.closePath();
     ctx.fill();
 
-    // デザインエリア（スタイル背景）
+    // デザインエリア（スタイル別背景）
     const dx = w * 0.25, dy = h * 0.3, dw = w * 0.5, dh = h * 0.4;
     ctx.fillStyle = currentStyle.bg;
     ctx.beginPath();
-    ctx.roundRect(dx, dy, dw, dh, 12);
+    (ctx as any).roundRect?.(dx, dy, dw, dh, 12) ?? ctx.rect(dx, dy, dw, dh);
     ctx.fill();
 
     // アクセントライン
     ctx.strokeStyle = currentStyle.accent;
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.roundRect(dx + 4, dy + 4, dw - 8, dh - 8, 10);
+    (ctx as any).roundRect?.(dx + 4, dy + 4, dw - 8, dh - 8, 10) ?? ctx.rect(dx + 4, dy + 4, dw - 8, dh - 8);
     ctx.stroke();
 
-    // キーワードテキスト
+    // テキスト描画
     ctx.font = currentStyle.font;
     ctx.fillStyle = currentStyle.textColor;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // テキストが長い場合は折り返し
+    // グロー効果（サイバー・ネオン）
+    if (style === 'cyberpunk' || style === 'neon') {
+      ctx.shadowBlur = 14;
+      ctx.shadowColor = currentStyle.textColor;
+    }
+
+    // 長文折り返し
     const maxWidth = dw - 24;
-    const words = keyword.split('');
+    const chars = keyword.split('');
     let line = '';
     const lines: string[] = [];
-    for (const char of words) {
-      const testLine = line + char;
-      if (ctx.measureText(testLine).width > maxWidth && line) {
-        lines.push(line);
-        line = char;
-      } else {
-        line = testLine;
-      }
+    for (const ch of chars) {
+      const test = line + ch;
+      if (ctx.measureText(test).width > maxWidth && line) { lines.push(line); line = ch; }
+      else line = test;
     }
     lines.push(line);
-    const lineHeight = 36;
-    const startY = dy + dh / 2 - ((lines.length - 1) * lineHeight) / 2;
-    lines.forEach((l, i) => ctx.fillText(l, w / 2, startY + i * lineHeight));
-
-    // サイバーパンクはグロー効果
-    if (style === 'cyberpunk' || style === 'neon') {
-      ctx.shadowBlur = 12;
-      ctx.shadowColor = currentStyle.textColor;
-      lines.forEach((l, i) => ctx.fillText(l, w / 2, startY + i * lineHeight));
-      ctx.shadowBlur = 0;
-    }
+    const lineH = 36;
+    const startY = dy + dh / 2 - ((lines.length - 1) * lineH) / 2;
+    lines.forEach((l, i) => ctx.fillText(l, w / 2, startY + i * lineH));
+    ctx.shadowBlur = 0;
 
     setMockupDataUrl(canvas.toDataURL('image/png'));
   }, [keyword, style, tshirtColor]);
@@ -167,36 +186,33 @@ const MasterEngine = () => {
     }
   }, [keyword, style, tshirtColor, drawDesign]);
 
-  const hasApiKeys = shopifyDomain && shopifyToken && printifyShopId && printifyToken;
-
   const handlePublish = async () => {
-    if (!hasApiKeys) {
-      setShowSettings(true);
-      return;
-    }
-    if (!mockupDataUrl) {
-      alert('デザインを先に作成してください');
+    if (!mockupDataUrl || !keyword) {
+      alert('キーワードを入力してプレビューを確認してください');
       return;
     }
     setIsPublishing(true);
     setPublishResult(null);
     try {
-      const res = await fetch('/api/tools/shopify-publish', {
+      const res = await fetch('/api/tools/printful', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          shopifyDomain,
-          shopifyToken,
-          printifyShopId,
-          printifyToken,
+          action: 'create-product',
           keyword,
           style,
-          imageBase64: mockupDataUrl,
+          tshirtColor,
+          mockupUrl: mockupDataUrl,
+          sizes: ['S', 'M', 'L', 'XL'],
+          // ユーザー設定（空なら省略 → サーバーのデフォルト使用）
+          shopifyDomain: shopifyDomain || undefined,
+          shopifyClientId: shopifyClientId || undefined,
+          shopifyClientSecret: shopifyClientSecret || undefined,
         }),
       });
       const data = await res.json();
       if (data.success) {
-        setPublishResult({ url: data.productUrl });
+        setPublishResult({ url: data.shopify?.url });
         setCurrentStep(3);
       } else {
         setPublishResult({ error: data.error || '出品に失敗しました' });
@@ -210,6 +226,7 @@ const MasterEngine = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-32 text-left border-4 border-emerald-500/50 rounded-[2rem] p-3 md:p-10 shadow-2xl bg-[#050507]">
+
       {/* ヘッダー */}
       <div className="text-center space-y-3 relative">
         <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter">AIセレクトショップ</h1>
@@ -218,59 +235,60 @@ const MasterEngine = () => {
           onClick={() => setShowSettings(!showSettings)}
           className="absolute top-0 right-0 flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 text-xs font-bold px-3 py-2 rounded-xl transition-all"
         >
-          <Settings size={14} /> API設定
+          <Settings size={14} /> Shopify設定
         </button>
       </div>
 
-      {/* API設定パネル */}
+      {/* Shopify設定パネル */}
       {showSettings && (
         <div className="bg-[#0d0e1a] border-2 border-emerald-500/30 rounded-3xl p-8 space-y-5 animate-in fade-in">
-          <h3 className="text-white font-black text-lg uppercase italic">Shopify / Printify API設定</h3>
-          <p className="text-slate-500 text-xs">設定はブラウザに保存されます（サーバーには送信されません）</p>
+          <div>
+            <h3 className="text-white font-black text-lg uppercase italic">Shopify連携設定</h3>
+            <p className="text-slate-500 text-xs mt-1">未設定の場合はNextraLabsのデフォルトストアに出品されます。自分のShopifyストアに出品したい場合は以下を入力してください。</p>
+          </div>
           <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-1">
+            <div className="space-y-1 md:col-span-2">
               <label className="text-[10px] font-black uppercase text-slate-500">Shopifyドメイン</label>
               <input value={shopifyDomain} onChange={e => setShopifyDomain(e.target.value)}
                 placeholder="yourshop.myshopify.com"
                 className="w-full h-12 bg-black border border-white/10 rounded-xl px-4 text-white text-sm outline-none focus:border-emerald-500" />
             </div>
             <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase text-slate-500">Shopify Access Token</label>
-              <input value={shopifyToken} onChange={e => setShopifyToken(e.target.value)}
-                type="password" placeholder="shpat_xxxxxxxx"
+              <label className="text-[10px] font-black uppercase text-slate-500">Client ID</label>
+              <input value={shopifyClientId} onChange={e => setShopifyClientId(e.target.value)}
+                placeholder="67b4f4e95c3a..."
                 className="w-full h-12 bg-black border border-white/10 rounded-xl px-4 text-white text-sm outline-none focus:border-emerald-500" />
             </div>
             <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase text-slate-500">Printify Shop ID</label>
-              <input value={printifyShopId} onChange={e => setPrintifyShopId(e.target.value)}
-                placeholder="12345678"
-                className="w-full h-12 bg-black border border-white/10 rounded-xl px-4 text-white text-sm outline-none focus:border-emerald-500" />
-            </div>
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase text-slate-500">Printify API Token</label>
-              <input value={printifyToken} onChange={e => setPrintifyToken(e.target.value)}
-                type="password" placeholder="eyJ0eXAiOiJKV1Qi..."
+              <label className="text-[10px] font-black uppercase text-slate-500">Client Secret</label>
+              <input value={shopifyClientSecret} onChange={e => setShopifyClientSecret(e.target.value)}
+                type="password" placeholder="shpss_xxxxxxxx"
                 className="w-full h-12 bg-black border border-white/10 rounded-xl px-4 text-white text-sm outline-none focus:border-emerald-500" />
             </div>
           </div>
-          <div className="flex gap-3">
+
+          {/* 接続テスト結果 */}
+          {testResult && (
+            <div className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold ${testResult.status === 'CONNECTED' ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border border-red-500/30 text-red-400'}`}>
+              {testResult.status === 'CONNECTED' ? <CheckCircle2 size={16} /> : <AlertTriangle size={16} />}
+              {testResult.status === 'CONNECTED' ? `接続成功: ${testResult.name}` : `接続失敗: ${testResult.name}`}
+            </div>
+          )}
+
+          <div className="flex gap-3 flex-wrap">
             <button onClick={saveSettings}
               className="px-8 h-12 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm rounded-xl transition-all">
               保存する
             </button>
+            <button onClick={testShopifyConnection} disabled={isTesting}
+              className="px-6 h-12 bg-white/5 hover:bg-white/10 text-slate-300 font-black text-sm rounded-xl transition-all disabled:opacity-50">
+              {isTesting ? <span className="flex items-center gap-2"><Loader2 size={14} className="animate-spin" />テスト中...</span> : '接続テスト'}
+            </button>
             <button onClick={() => setShowSettings(false)}
-              className="px-6 h-12 bg-white/5 text-slate-400 font-black text-sm rounded-xl transition-all">
-              キャンセル
+              className="px-6 h-12 bg-white/5 text-slate-500 font-black text-sm rounded-xl transition-all">
+              閉じる
             </button>
           </div>
-        </div>
-      )}
-
-      {/* APIキー未設定の警告 */}
-      {!hasApiKeys && !showSettings && (
-        <div className="flex items-center gap-3 bg-yellow-500/10 border border-yellow-500/30 rounded-2xl px-5 py-3">
-          <AlertTriangle size={16} className="text-yellow-400 shrink-0" />
-          <p className="text-yellow-400 text-xs font-bold">Shopify / Printify APIキーが未設定です。「API設定」ボタンから設定してください。</p>
         </div>
       )}
 
@@ -293,7 +311,7 @@ const MasterEngine = () => {
               <span className="text-xs font-black text-emerald-500 uppercase tracking-widest italic">TREND ENGINE: LIVE SYNC</span>
             </div>
             <button onClick={fetchTrends} disabled={isLoading}
-              className="text-xs text-slate-400 hover:text-white font-bold border border-white/10 px-4 py-2 rounded-xl transition-all">
+              className="text-xs text-slate-400 hover:text-white font-bold border border-white/10 px-4 py-2 rounded-xl transition-all disabled:opacity-50">
               {isLoading ? '取得中...' : '更新'}
             </button>
           </div>
@@ -325,8 +343,7 @@ const MasterEngine = () => {
               <label className="text-[10px] font-black uppercase text-slate-500 italic">生地のカラー</label>
               <div className="flex gap-3">
                 {TSHIRT_COLORS.map(c => (
-                  <button key={c.id} onClick={() => setTshirtColor(c.id)}
-                    title={c.name}
+                  <button key={c.id} onClick={() => setTshirtColor(c.id)} title={c.name}
                     className={'w-12 h-12 rounded-xl border-4 transition-all ' + (tshirtColor === c.id ? 'border-emerald-500 scale-110' : 'border-white/5')}
                     style={{ backgroundColor: c.hex }} />
                 ))}
@@ -353,14 +370,14 @@ const MasterEngine = () => {
 
             <button onClick={handlePublish} disabled={isPublishing || !keyword}
               className="w-full h-24 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-black text-3xl italic rounded-[2rem] shadow-xl active:scale-95 transition-all">
-              {isPublishing ? <span className="flex items-center justify-center gap-3"><Loader2 className="animate-spin" /> 出品中...</span> : 'SHOPIFY 出品 🚀'}
+              {isPublishing
+                ? <span className="flex items-center justify-center gap-3"><Loader2 className="animate-spin" /> 出品中...</span>
+                : 'SHOPIFY 出品'}
             </button>
-
-            {!hasApiKeys && (
-              <p className="text-center text-yellow-400 text-xs font-bold">* 出品にはAPIキーの設定が必要です</p>
-            )}
           </div>
-          <div className="bg-[#13141f] rounded-[2.5rem] border-2 border-white/5 p-10 flex justify-center items-center relative">
+
+          {/* キャンバスプレビュー */}
+          <div className="bg-[#13141f] rounded-[2.5rem] border-2 border-white/5 p-10 flex justify-center items-center">
             <canvas ref={canvasRef} width={400} height={500} className="bg-white rounded-3xl max-w-full h-auto shadow-2xl" />
           </div>
         </div>
