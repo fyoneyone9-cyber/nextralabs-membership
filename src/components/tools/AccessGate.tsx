@@ -1,11 +1,10 @@
-'use client'
+﻿'use client'
 import React, { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
 import { Loader2, Lock, ShieldAlert } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-// 🛠️ 憲法：プラン毎のログイン規制を「本物」に修正 (v2.0-STABLE)
 export function AccessGate({ children, productId }: { children: React.ReactNode, productId: string }) {
   const [status, setStatus] = useState<'loading' | 'authorized' | 'unauthorized'>('loading')
   const router = useRouter()
@@ -22,24 +21,18 @@ export function AccessGate({ children, productId }: { children: React.ReactNode,
         const { data: { session } } = await supabase.auth.getSession()
         
         if (!session) {
-          // ログインしていない場合はログイン画面へ（戻り先を保持）
-          router.push(`/login?returnTo=${encodeURIComponent(pathname)}`)
+          router.push("/login?returnTo=" + encodeURIComponent(pathname))
           return
         }
 
         const user = session.user;
 
-        // 🔑 憲法：管理者（NextraLabs様）は常に全パスを通過
+        // 👑 憲法：管理者（NextraLabs様）は常に全パスを通過
         if (user.email === 'f.yoneyone9@gmail.com') {
           setStatus('authorized')
           return
         }
 
-        // 🚀 「本物」のプラン毎規制ロジック
-        // 1. まずツールの情報を取得（どのプラン用か）
-        // ※ 本来はDB(productsテーブル)から取得すべきだが、フロントの規約に基づき判定
-        
-        // 2. ユーザーのサブスク状況をチェック
         const { data: subscription } = await supabase
           .from('subscriptions')
           .select('plan, status')
@@ -47,26 +40,24 @@ export function AccessGate({ children, productId }: { children: React.ReactNode,
           .eq('status', 'active')
           .maybeSingle()
 
-        const userPlan = subscription?.plan || 'free'; // default to free
+        const userPlan = subscription?.plan || 'free';
 
-        // 3. 権限マトリクス
         // プレミアムツール一覧
         const premiumIds = [
           'ai-select-shop', 'youtube-producer', 'scam-defender', 
-          'vintage-hunter', 'inbox-organizer', 'staysee-ai-finder'
+          'vintage-hunter', 'inbox-organizer', 'staysee-ai-finder',
+          'comp-price-monitor', 'interior-coordinator', 'youtube-coordinator'
         ];
         // スタンダードツール一覧
         const standardIds = [
           'pr-command', 'ai-konkatsu', 'money-guard', 
-          'disaster-guard', 'shopping-stopper'
+          'disaster-guard', 'shopping-stopper', 'hotel-affiliate', 'trend-stock'
         ];
-
         // ライトプランツール一覧
         const lightIds = [
-          'sns-auto-poster', 'expense-sync', 'contact-sync', 'price-tracker'
+          'sns-auto-poster', 'expense-sync', 'contact-sync', 'price-tracker', 'ai-sidejob', 'prompt-master'
         ];
 
-        // 判定執行
         if (premiumIds.includes(productId)) {
           if (userPlan === 'premium') setStatus('authorized');
           else setStatus('unauthorized');
@@ -77,22 +68,20 @@ export function AccessGate({ children, productId }: { children: React.ReactNode,
           if (userPlan === 'premium' || userPlan === 'standard' || userPlan === 'light') setStatus('authorized');
           else setStatus('unauthorized');
         } else {
-          // 無料ツール（office-politics-graph, moving-checker, evidence-manager等）
           setStatus('authorized');
         }
       } catch (e) {
         console.error('[ACCESS_GATE_ERROR]', e);
-        setStatus('authorized'); // 憲法特例：エラー時は門戸を開く
+        setStatus('authorized');
       }
     }
-    
     checkAccess()
-  }, [supabase, router, pathname, productId])
+  }, [productId, pathname, router, supabase.auth])
 
   if (status === 'loading') {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4 bg-slate-950 rounded-[3rem]">
-        <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
+        <Loader2 className="w-12 h-12 text-emerald-500 animate-spin" />
         <p className="text-slate-500 font-bold animate-pulse uppercase tracking-widest text-[10px]">Verifying Intelligence Access...</p>
       </div>
     )
@@ -106,15 +95,11 @@ export function AccessGate({ children, productId }: { children: React.ReactNode,
         </div>
         <div className="space-y-2">
           <h2 className="text-4xl font-black text-white uppercase italic tracking-tighter">Access Forbidden</h2>
-          <p className="text-slate-500 font-bold italic">このマスタ機を起動するには、上位プランへのアップグレードが必要です。</p>
+          <p className="text-slate-500 font-bold italic">上位プランへのアップグレードが必要です。</p>
         </div>
         <div className="flex flex-col w-full max-w-xs gap-3">
-          <Button onClick={() => router.push('/pricing')} className="bg-red-600 hover:bg-red-500 text-white font-black h-16 rounded-2xl text-xl shadow-xl transition-all active:scale-95 uppercase italic">
-            Unlock Now ↗
-          </Button>
-          <Button onClick={() => router.push('/products')} variant="ghost" className="text-slate-600 hover:text-white font-black uppercase text-[10px] tracking-widest underline">
-            Return to Catalogue
-          </Button>
+          <Button onClick={() => router.push('/pricing')} className="bg-red-600 hover:bg-red-500 text-white font-black h-16 rounded-2xl text-xl shadow-xl transition-all active:scale-95 uppercase italic">Unlock Now</Button>
+          <Button onClick={() => router.push('/products')} variant="ghost" className="text-slate-600 hover:text-white font-black uppercase text-[10px] tracking-widest underline">Return to Catalogue</Button>
         </div>
       </div>
     )
