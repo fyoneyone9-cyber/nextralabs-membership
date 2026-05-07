@@ -27,6 +27,10 @@ const MasterEngine = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [pmsApiKey, setPmsApiKey] = useState('');
   const [lockApiKey, setLockApiKey] = useState('');
+  const [pmsType, setPmsType] = useState('');
+  const [lockType, setLockType] = useState('');
+  const [showPmsKey, setShowPmsKey] = useState(false);
+  const [showLockKey, setShowLockKey] = useState(false);
   const [image, setImage] = useState(null);
   const [checkinStatus, setCheckinStatus] = useState('IDLE');
   const [lockKeyData, setLockKeyData] = useState(null);
@@ -43,7 +47,12 @@ const MasterEngine = () => {
     setIsMounted(true);
     const k1 = localStorage.getItem('nextra_pms_key');
     const k2 = localStorage.getItem('nextra_lock_key');
-    if (k1) setPmsApiKey(k1); if (k2) setLockApiKey(k2);
+    const t1 = localStorage.getItem('nextra_pms_type');
+    const t2 = localStorage.getItem('nextra_lock_type');
+    if (k1) setPmsApiKey(k1);
+    if (k2) setLockApiKey(k2);
+    if (t1) setPmsType(t1);
+    if (t2) setLockType(t2);
   }, []);
 
   const runCheckin = async () => {
@@ -245,15 +254,82 @@ const MasterEngine = () => {
         {activeTab === 'settings' && (
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-12 animate-in fade-in space-y-10">
              <div className="flex items-center gap-4 text-emerald-500"><Settings size={32} /><h3 className="text-3xl font-black uppercase italic">API Environment</h3></div>
-             <div className="grid md:grid-cols-2 gap-8 text-left">
-                {['Staysee (PMS)', 'RemoteLock (Device)'].map(label => (
-                  <div key={label} className="space-y-4">
-                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-4 italic">{label} API KEY</label>
-                    <input type="password" value="********" readOnly className="w-full h-16 bg-black border-2 border-white/10 rounded-2xl px-6 text-emerald-500 font-mono" />
-                  </div>
-                ))}
+             <div className="grid md:grid-cols-2 gap-10 text-left">
+               {/* PMS選択 */}
+               <div className="space-y-4">
+                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-1 italic">PMSシステム</label>
+                 <select
+                   value={pmsType}
+                   onChange={e => setPmsType(e.target.value)}
+                   className="w-full h-12 bg-black border-2 border-white/10 rounded-2xl px-6 text-white font-bold focus:border-emerald-500/50 focus:outline-none transition-all"
+                 >
+                   <option value="">PMSを選択...</option>
+                   <option value="staysee">Staysee</option>
+                   <option value="easy-kaikei">イージー会計</option>
+                   <option value="opera">Oracle OPERA</option>
+                   <option value="mews">Mews</option>
+                   <option value="apaleo">apaleo</option>
+                   <option value="other">その他</option>
+                 </select>
+                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-1 italic">PMS API KEY</label>
+                 <div className="relative flex items-center">
+                   <input
+                     type={showPmsKey ? 'text' : 'password'}
+                     value={pmsApiKey}
+                     onChange={e => setPmsApiKey(e.target.value)}
+                     placeholder="PMS APIキーを入力"
+                     className="w-full h-16 bg-black border-2 border-white/10 rounded-2xl px-6 pr-14 text-emerald-500 font-mono focus:border-emerald-500/50 focus:outline-none transition-all"
+                   />
+                   <button type="button" onClick={() => setShowPmsKey(v => !v)} className="absolute right-4 text-slate-500 hover:text-white">
+                     {showPmsKey ? <EyeOff size={20} /> : <Eye size={20} />}
+                   </button>
+                 </div>
+               </div>
+               {/* 鍵デバイス選択 */}
+               <div className="space-y-4">
+                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-1 italic">鍵デバイス</label>
+                 <select
+                   value={lockType}
+                   onChange={e => setLockType(e.target.value)}
+                   className="w-full h-12 bg-black border-2 border-white/10 rounded-2xl px-6 text-white font-bold focus:border-emerald-500/50 focus:outline-none transition-all"
+                 >
+                   <option value="">鍵デバイスを選択...</option>
+                   <option value="remotelock">RemoteLock</option>
+                   <option value="switchbot">SwitchBot</option>
+                   <option value="assa">ASSA ABLOY (Visionline)</option>
+                   <option value="dormakaba">dormakaba</option>
+                   <option value="salto">SALTO Systems</option>
+                   <option value="bitlock">bitlock</option>
+                   <option value="sesame">SESAME</option>
+                   <option value="other">その他</option>
+                 </select>
+                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-1 italic">鍵デバイス API KEY</label>
+                 <div className="relative flex items-center">
+                   <input
+                     type={showLockKey ? 'text' : 'password'}
+                     value={lockApiKey}
+                     onChange={e => setLockApiKey(e.target.value)}
+                     placeholder="鍵デバイス APIキーを入力"
+                     className="w-full h-16 bg-black border-2 border-white/10 rounded-2xl px-6 pr-14 text-emerald-500 font-mono focus:border-emerald-500/50 focus:outline-none transition-all"
+                   />
+                   <button type="button" onClick={() => setShowLockKey(v => !v)} className="absolute right-4 text-slate-500 hover:text-white">
+                     {showLockKey ? <EyeOff size={20} /> : <Eye size={20} />}
+                   </button>
+                 </div>
+               </div>
              </div>
-             <Button className="h-16 px-12 bg-white text-slate-950 font-black rounded-2xl italic uppercase">Save Configuration ➔</Button>
+             <Button
+               onClick={() => {
+                 localStorage.setItem('nextra_pms_key', pmsApiKey);
+                 localStorage.setItem('nextra_lock_key', lockApiKey);
+                 localStorage.setItem('nextra_pms_type', pmsType);
+                 localStorage.setItem('nextra_lock_type', lockType);
+                 alert('設定を保存しました');
+               }}
+               className="h-16 px-12 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl italic uppercase shadow-xl"
+             >
+               Save Configuration ➔
+             </Button>
           </Card>
         )}
       </div>
