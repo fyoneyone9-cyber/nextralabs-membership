@@ -1,47 +1,71 @@
 import { NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
-    const { query } = await req.json();
-    
-    // 🚀 憲法：本物のデータ連携
-    // 1. Google 検索価格の模倣 (Serper API等が本来は必要)
-    // 2. 楽天・ラクマのダミーデータを生成するが、数値はランダム可変にして「リアルタイム感」を出す
-    
-    // 型番や商品名によって基準価格を変動させる
-    let basePrice = 50000;
-    if (query.includes('iPhone')) basePrice = 125000;
-    if (query.includes('MacBook')) basePrice = 145000;
-    if (query.includes('iPad')) basePrice = 168000;
-    if (query.includes('Switch')) basePrice = 37980;
-    if (query.includes('PlayStation')) basePrice = 66980;
-    if (query.includes('AirPods')) basePrice = 39800;
-    if (query.includes('Dyson')) basePrice = 72000;
-    if (query.includes('SONY')) basePrice = 48000;
-    if (query.includes('Canon')) basePrice = 158000;
-    
-    // 実行するたびに確実に数値が変わるようにランダム幅を拡大（1円単位まで可変）
-    const randomVar = Math.floor(Math.random() * 10000) - 5000;
-    const newPrice = basePrice + randomVar + Math.floor(Math.random() * 999);
-    const usedPrice = Math.floor(newPrice * 0.72) - Math.floor(Math.random() * 4500);
-    
-    const result = {
-      target: query,
-      newPrice: newPrice,
-      usedPrice: usedPrice,
-      condition: "中古・良品（楽天ラクマ）",
-      judgment: (newPrice - usedPrice) > 20000 ? "USED_WIN" : "NEW_WIN",
-      confidence: (88 + Math.floor(Math.random() * 10)) + "%",
-      advice: `AI判定：${query}の最新市場価格をリアルタイム分析しました。現在、新品相場は¥${newPrice.toLocaleString()}前後ですが、ラクマでは¥${usedPrice.toLocaleString()}での取引が活発です。ポイント還元率とリセール価値を考慮した結果、${(newPrice - usedPrice) > 20000 ? '中古' : '新品'}での購入が最も「得」であると判断します。`,
-      points: [
-        "楽天市場の最新ポイント還元率を反映済み",
-        "楽天ラクマの直近24時間の成約相場をスキャン済み",
-        "次期モデル発売による価格下落リスクを算出済み"
-      ]
-    };
+    const { keyword } = await req.json();
+    const RAKUTEN_APP_ID = '1020081822830310242';
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-    return NextResponse.json({ success: true, result });
+    if (!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY is not configured');
+
+    // 1. 楽天API (新品検索)
+    const newRes = await fetch(`https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${RAKUTEN_APP_ID}&hits=5&sort=%2BitemPrice&usedFlag=0`);
+    const newData = await newRes.json();
+    const newItems = newData.Items || [];
+    const newPrice = newItems.length > 0 ? newItems[0].Item.itemPrice : 0;
+
+    // 2. 楽天API (中古検索)
+    const usedRes = await fetch(`https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${RAKUTEN_APP_ID}&hits=10&sort=%2BitemPrice&usedFlag=1`);
+    const usedData = await usedRes.json();
+    const usedItems = usedData.Items || [];
+    const usedPrices = usedItems.map((i: any) => i.Item.itemPrice);
+    const avgUsedPrice = usedPrices.length > 0 ? Math.floor(usedPrices.reduce((a:number, b:number) => a + b, 0) / usedPrices.length) : 0;
+
+    // 3. Geminiによる解析
+    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+    const prompt = `
+あなたはプロの買い出しアドバイザーです。以下の楽天市場のリアルタイムデータを元に、「新品」と「中古」のどちらを買うべきか150文字以内でズバリ回答してください。
+
+商品キーワード: ${keyword}
+新品最安値: ¥${newPrice.toLocaleString()}
+中古平均相場: ¥${avgUsedPrice.toLocaleString()}
+
+【指示】
+1. 価格差、リセールバリュー、状態のリスクを考慮してください。
+2. 「新品購入を推奨」または「中古購入を推奨」のどちらかを決めてください。
+3. その理由を、具体的かつ説得力のある言葉で述べてください。
+4. Markdown記号は含めず、プレーンな日本語で出力してください。
+    `;
+
+    const result = await model.generateContent(prompt);
+    const reason = (await result.response).text().trim();
+
+    // 判定
+    const verdict = (newPrice > 0 && avgUsedPrice > 0 && avgUsedPrice < newPrice * 0.7) ? 'used' : 'new';
+    const status = verdict === 'used' ? '中古購入を推奨' : '新品購入を推奨';
+
+    return NextResponse.json({
+      success: true,
+      verdict,
+      status,
+      reason,
+      newPrice,
+      usedPrice: avgUsedPrice,
+      items: [...newItems, ...usedItems].slice(0, 5).map((i: any) => ({
+        name: i.Item.itemName,
+        price: i.Item.itemPrice,
+        url: i.Item.itemUrl,
+        img: i.Item.mediumImageUrls[0]?.imageUrl
+      }))
+    });
+
   } catch (error: any) {
+    console.error('BuySmartNav API Error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
