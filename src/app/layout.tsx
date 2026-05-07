@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from 'next'
+﻿import type { Metadata, Viewport } from 'next'
 import { Noto_Sans_JP } from 'next/font/google'
 import './globals.css'
 import { Providers } from '@/components/providers'
@@ -24,8 +24,8 @@ export const metadata: Metadata = {
   verification: {
     google: 'google9fc5715d83add922',
   },
-  title: { default: 'NextraLabs | AIツール使い放題メンバーシップ', template: '%s | NextraLabs' },
-  description: 'NextraLabsは月額¥980から使えるAIツールのメンバーシップです。',
+  title: { default: 'NextraLabs | AI繝・・繝ｫ菴ｿ縺・叛鬘後Γ繝ｳ繝舌・繧ｷ繝・・', template: '%s | NextraLabs' },
+  description: 'NextraLabs縺ｯ譛磯｡債･980縺九ｉ菴ｿ縺医ｋAI繝・・繝ｫ縺ｮ繝｡繝ｳ繝舌・繧ｷ繝・・縺ｧ縺吶・,
   manifest: '/manifest.json',
   metadataBase: new URL('https://membership-site-nextralabos.vercel.app'),
 }
@@ -36,14 +36,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="ja" suppressHydrationWarning>
+    <html lang="ja" style="background-color: #050507;" suppressHydrationWarning>
       <body className={notoPlain.className}>
         <Providers>
           <div className="flex min-h-screen flex-col font-sans">
             <Header />
             <main className="flex-1">{children}</main>
             <Footer />
-            {/* 🐞 復活：全ページ・全システム共通のステルス・デバッガー 🐾 */}
+            {/* 裾 蠕ｩ豢ｻ・壼・繝壹・繧ｸ繝ｻ蜈ｨ繧ｷ繧ｹ繝・Β蜈ｱ騾壹・繧ｹ繝・Ν繧ｹ繝ｻ繝・ヰ繝・ぎ繝ｼ 誓 */}
             <DebugPanel data={null} toolId="global_system" />
             <InstallPWA />
           </div>
