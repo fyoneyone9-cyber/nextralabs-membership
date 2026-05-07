@@ -117,24 +117,40 @@ const CAREER = [
 
 const WORKS = [
   { 
-    title: "AIマスタツール群の開発", 
-    desc: "13種以上の『MASTERMODEL』ツールを設計・構築。実データを扱い、業務を自動化する実用AIを量産。", 
-    tag: "DEVELOPMENT" 
+    title: "AI MASTERMODEL OS Ecosystem", 
+    desc: "Gemini 2.5 Flashをエンジンとした13種のマスタツール群をフルスクラッチ開発。Stripe決済、OAuth認証、RAG（埋め込み検索）を統合した会員制プラットフォームを一人で完結。", 
+    tag: "FULL-STACK AI",
+    icon: Bot
   },
   { 
-    title: "AIポートフォリオサイト", 
-    desc: "本サイト。AIを駆使したクリエイティブと技術を統合し、圧倒的なアウトプットを可視化。", 
-    tag: "CREATIVE" 
+    title: "Real-time Trend Intelligence", 
+    desc: "GNews API & Google Trendsをマルチスキャンし、市場のバイブスを秒単位で解析。楽天・Amazonの在庫データと同期させ、収益機会を自動特定するアルゴリズムを構築。", 
+    tag: "MARKET ANALYTICS",
+    icon: LineChart
   },
   { 
-    title: "IoTソリューション導入支援", 
-    desc: "Pythonを用いたデバイス連携、APIによるシステム自動化、ネットワーク構築の現場指揮。", 
-    tag: "ENGINEERING" 
+    title: "IoT / Edge Computing Solutions", 
+    desc: "大手IT企業での15年の知見を活かし、PythonによるIoTデバイス制御とクラウド連携を実現。宿泊施設のスマートキー連動（Staysee連携）など、物理世界をAPIで制御。", 
+    tag: "ENGINEERING",
+    icon: Cpu
   },
   { 
-    title: "結婚相談所システム運営", 
-    desc: "心理カウンセリングとデータを融合させた成婚戦略。IBJプラットフォームを活用した成婚率向上施策。", 
-    tag: "BUSINESS" 
+    title: "AI Media Production Pipeline", 
+    desc: "Kling V3による高品質動画、DALL-E 3によるブランドビジュアル、Sunoによる楽曲生成。AIプロンプトエンジニアリングにより、制作会社1社分のアウトプットを量産。", 
+    tag: "CREATIVE AI",
+    icon: Camera
+  },
+  { 
+    title: "Psychological Strategy x Business", 
+    desc: "上級心理カウンセラーの知見に基づいたUX設計。結婚相談所の成婚戦略にAIプロファイリングを導入し、人間関係の最適解を導き出す独自のビジネスモデルを展開。", 
+    tag: "STRATEGY",
+    icon: HeartHandshake
+  },
+  { 
+    title: "Automated Communication Infrastructure", 
+    desc: "Gmail API & Slack Webhookを高度に自動化。AIによる重要度判定、自動返信ドラフト、スケジュール同期により、レスポンス速度を「即時」へと昇華させるインフラを構築。", 
+    tag: "AUTOMATION",
+    icon: Mail
   }
 ];
 
@@ -275,15 +291,28 @@ const MasterEngine = () => {
       </section>
 
       {/* 💼 Real Works (Combined AI Output) */}
-      <section className="max-w-6xl mx-auto px-4 space-y-16 mb-48 text-left text-left">
-        <h2 className="text-4xl md:text-5xl font-black text-white italic uppercase border-l-8 border-amber-500 pl-8 tracking-tighter">Mission Archive</h2>
+      <section className="max-w-6xl mx-auto px-4 space-y-16 mb-48 text-left">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-l-[16px] border-amber-500 pl-10">
+           <div className="space-y-2">
+              <h2 className="text-5xl md:text-7xl font-black text-white italic uppercase tracking-tighter leading-none">Mission Archive</h2>
+              <p className="text-amber-500 font-black uppercase tracking-widest italic text-sm">理論ではなく「実装」された実績群</p>
+           </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
            {WORKS.map(w => (
-             <div key={w.title} className="bg-[#13141f] p-12 rounded-[3rem] border border-white/5 shadow-inner hover:bg-white/5 transition-all group relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-1 h-full bg-amber-500 opacity-30 group-hover:opacity-100 transition-opacity" />
-                <Badge className="bg-amber-600/10 text-amber-500 border-amber-500/20 mb-8 uppercase font-black italic px-4 py-1 text-xs"># {w.tag}</Badge>
-                <h3 className="text-3xl font-black text-white italic mb-4 leading-tight">{w.title}</h3>
-                <p className="text-slate-500 font-bold leading-relaxed text-lg italic pl-4 border-l border-white/10">{w.desc}</p>
+             <div key={w.title} className="bg-[#13141f] p-12 rounded-[4rem] border-2 border-white/5 shadow-2xl hover:border-amber-500/50 transition-all group relative overflow-hidden flex flex-col h-full">
+                <div className="absolute top-0 left-0 w-2 h-full bg-amber-500 opacity-20 group-hover:opacity-100 transition-opacity" />
+                <div className="flex justify-between items-start mb-10">
+                  <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-500 border border-amber-500/20 group-hover:scale-110 transition-transform">
+                    <w.icon size={32} />
+                  </div>
+                  <Badge className="bg-amber-600/10 text-amber-500 border-amber-500/20 uppercase font-black italic px-4 py-1 text-xs tracking-widest"># {w.tag}</Badge>
+                </div>
+                <h3 className="text-3xl font-black text-white italic mb-6 leading-tight group-hover:text-amber-400 transition-colors">{w.title}</h3>
+                <p className="text-slate-400 font-bold leading-relaxed text-lg italic flex-1">{w.desc}</p>
+                <div className="mt-8 pt-8 border-t border-white/5 flex items-center gap-2 text-[10px] font-black text-slate-600 uppercase tracking-widest italic">
+                  <Zap size={12} className="text-amber-500" /> System Active & Verified
+                </div>
              </div>
            ))}
         </div>

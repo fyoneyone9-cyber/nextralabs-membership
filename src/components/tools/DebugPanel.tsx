@@ -63,14 +63,13 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
   if (!isMounted) return null;
 
   return (
-    <div className="fixed bottom-6 left-6 z-[9999] flex flex-col items-start">
-      <button onClick={() => setIsOpen(!isOpen)} className={`flex items-center gap-3 px-4 py-2 rounded-xl border transition-all duration-500 ${isOpen ? 'bg-slate-800 border-white/20 text-white' : 'bg-transparent border-white/5 text-slate-700 hover:border-white/10'}`}>
+    <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end">
+      <button onClick={() => setIsOpen(!isOpen)} className={`flex items-center gap-3 px-3 py-2 rounded-full border transition-all duration-500 ${isOpen ? 'bg-slate-800 border-white/20 text-white shadow-2xl scale-110' : 'bg-transparent border-white/5 text-slate-800 hover:border-white/10 hover:text-slate-600'}`}>
         <Activity className="h-4 w-4" />
-        <span className="text-[10px] font-bold uppercase tracking-[0.2em]">System Debug</span>
       </button>
       
       {isOpen && (
-        <div className="fixed bottom-20 left-6 w-[95vw] max-w-2xl bg-[#050507] border border-white/10 p-8 rounded-[2.5rem] shadow-2xl space-y-6 animate-in slide-in-from-bottom-2 duration-300">
+        <div className="fixed bottom-20 right-6 w-[95vw] max-w-md bg-[#050507] border border-white/10 p-8 rounded-[2.5rem] shadow-2xl space-y-6 animate-in slide-in-from-bottom-2 duration-300">
           {!isAuth ? (
             <div className="flex gap-2 w-full max-w-sm mx-auto py-10">
               <Input 
@@ -81,21 +80,13 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
                 className="bg-slate-900 border-slate-800 text-white text-center" 
                 onKeyDown={(e) => e.key === 'Enter' && password === '2026' && setIsAuth(true)} 
               />
-              <Button onClick={() => password === '2026' ? setIsAuth(true) : alert('Invalid')} className="bg-white text-black font-black">OPEN</Button>
+              <Button onClick={() => password === '2026' ? setIsAuth(true) : alert('Invalid')} className="bg-white text-black font-black">LOGIN</Button>
             </div>
           ) : (
             <div className="space-y-6 text-left">
               <div className="flex items-center justify-between border-b border-white/5 pb-4">
-                <div className="flex items-center gap-3"><Unlock className="h-4 w-4 text-emerald-500" /><span className="text-sm font-black uppercase">Master Surveillance</span></div>
-                <div className="flex gap-2">
-                  <Link 
-                    href="/port"
-                    className="h-8 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-black rounded-lg px-4 flex items-center gap-2 transition-all shadow-lg active:scale-95"
-                  >
-                    <Globe size={12} /> PORT
-                  </Link>
-                  <Button onClick={runApiTest} className="h-8 bg-amber-600 text-[10px] font-black rounded-lg px-4 flex items-center gap-2"><Zap size={12} /> GLOBAL TEST</Button>
-                </div>
+                <div className="flex items-center gap-3"><Unlock className="h-4 w-4 text-emerald-500" /><span className="text-sm font-black uppercase tracking-tighter">Master Surveillance</span></div>
+                <Button onClick={runApiTest} className="h-8 bg-amber-600 hover:bg-amber-500 text-[10px] font-black rounded-lg px-4 flex items-center gap-2 transition-all active:scale-95"><Zap size={12} /> GLOBAL TEST</Button>
               </div>
 
               <div className="grid grid-cols-4 gap-2">
@@ -120,6 +111,15 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
             </div>
           )}
           <div className="flex justify-between items-center"><span className="text-[8px] text-slate-800 font-bold uppercase">Surveillance v10.1</span><button onClick={() => setIsOpen(false)} className="text-slate-600 hover:text-white text-[10px] font-bold uppercase underline">Close</button></div>
+        </div>
+      )}
+    </div>
+  )
+}
+            </div>
+            </div>
+          )}
+          <div className="flex justify-between items-center"><span className="text-[8px] text-slate-800 font-bold uppercase tracking-[0.5em]">Surveillance v10.2</span><button onClick={() => setIsOpen(false)} className="text-slate-600 hover:text-white text-[10px] font-bold uppercase underline">Terminate</button></div>
         </div>
       )}
     </div>
