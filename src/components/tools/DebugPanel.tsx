@@ -20,10 +20,14 @@ export function DebugPanel({ data, toolId }: { data: any, toolId?: string }) {
 
   useEffect(() => {
     setIsMounted(true)
-    // グローバルなログ取得用に関数をウィンドウに登録
-    (window as any).nextraLog = (msg: string) => {
-      setLogs(prev => [new Date().toLocaleTimeString() + ': ' + msg, ...prev].slice(0, 30))
+    
+    // イベントリスナーでログを受信 (安全な方法)
+    const handleLog = (e: any) => {
+      setLogs(prev => [new Date().toLocaleTimeString() + ': ' + e.detail.msg, ...prev].slice(0, 30))
     }
+    
+    window.addEventListener('nextra-log', handleLog)
+    return () => window.removeEventListener('nextra-log', handleLog)
   }, [])
 
   const runApiTest = async () => {

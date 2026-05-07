@@ -25,9 +25,12 @@ const MasterEngine = () => {
     const time = new Date().toLocaleTimeString();
     setLogs(prev => [{time, msg, type}, ...prev].slice(0, 20));
     console.log(`[${time}] ${msg}`);
-    // DebugPanelのグローバルログ関数を呼び出し
-    if ((window as any).nextraLog) {
-      (window as any).nextraLog(`[${type.toUpperCase()}] ${msg}`);
+    
+    // 安全なグローバルイベント発行 (クラッシュ防止)
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('nextra-log', { 
+        detail: { msg: `[${type.toUpperCase()}] ${msg}` } 
+      }));
     }
   };
 
