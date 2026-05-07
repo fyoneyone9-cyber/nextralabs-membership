@@ -27,6 +27,9 @@ const SETTINGS_MENU = [
 
 export default function DmsEngine() {
   const [activeTab, setActiveTab] = useState('checkin');
+  const [pmsApiKey, setPmsApiKey] = useState('');
+  const [showPmsKey, setShowPmsKey] = useState(false);
+  const [selectedPMS, setSelectedPMS] = useState('Staysee');
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(true);
