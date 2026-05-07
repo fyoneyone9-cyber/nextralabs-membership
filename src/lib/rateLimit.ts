@@ -5,7 +5,7 @@ const ADMIN_EMAIL = "f.yoneyone9@gmail.com";
 
 // ツール別1日制限（プレミアムのみアクセス可能なツールはプレミアムで10回）
 const TOOL_DAILY_LIMITS: Record<string, Record<string, number>> = {
-  "staysee-ai-finder": { free: 0, light: 0, standard: 0, premium: 20 },
+  "staysee-ai-finder": { free: 0, light: 0, standard: 3, premium: 10 },
   "comp-price-monitor": { free: 0, light: 0, standard: 3, premium: 20 },
   "hotel-affiliate":    { free: 0, light: 0, standard: 5, premium: 20 },
   "gmail-reply":        { free: 0, light: 0, standard: 0, premium: 10 },
