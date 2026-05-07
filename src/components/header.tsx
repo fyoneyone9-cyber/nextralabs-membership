@@ -55,7 +55,7 @@ export function Header() {
             href="https://x.com/0022_sougo" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="p-3 bg-white/5 hover:bg-blue-500/20 rounded-xl transition-all border border-white/5 hover:border-blue-500/50 relative z-[10000]"
+            className="hover:text-blue-400 transition-all relative z-[10000] ml-4"
             style={{ pointerEvents: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
             <TwitterIcon className="h-5 w-5 text-slate-400 hover:text-blue-400" />
