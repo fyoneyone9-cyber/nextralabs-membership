@@ -57,12 +57,12 @@ const PLAN_CONFIG: Record<UserPlan, {
     label: 'プレミアム',
     badge: 'PREMIUM',
     badgeColor: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-    dailyLimit: 999,
+    dailyLimit: 15,
     genres: ['副業・収入アップ', 'AI活用', '家計管理・節約', '自己啓発', 'ビジネス', '健康・美容', '育児・教育', '投資・資産運用', '料理・レシピ', '旅行・体験記', '転職・キャリア', '英語学習', 'マインドフルネス', '起業・スタートアップ'],
     hasDocx: true,
     hasKdpSheet: true,
     hasCoverPrompt: true,
-    hasUnlimited: true,
+    hasUnlimited: false,
   },
 }
 
@@ -307,7 +307,7 @@ export function KindleFactory() {
       <div className="max-w-3xl mx-auto px-4 mb-4 flex justify-end">
         <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-bold border ${remaining > 0 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'}`}>
           <Zap size={12} />
-          本日の残り: {config.hasUnlimited ? '無制限' : `${remaining} / ${config.dailyLimit}回`}
+          本日の残り: {remaining} / {config.dailyLimit}回
         </span>
       </div>
 
