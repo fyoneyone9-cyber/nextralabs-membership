@@ -45,7 +45,6 @@ export function Header() {
   return (
     <header className="sticky top-0 z-[9999] w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        {/* 左側：ブランド名とXアイコンを完全に独立した要素として配置 */}
         <div className="flex items-center">
           <Link href="/" className="mr-6">
             <span className="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">NextraLabs</span>
@@ -55,9 +54,8 @@ export function Header() {
             href="https://x.com/0022_sougo" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="p-3 bg-white/5 hover:bg-blue-500/20 rounded-xl transition-all border border-white/5 hover:border-blue-500/50"
-            style={{ position: 'relative', zIndex: 10000, pointerEvents: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            title="X (Twitter) Profile"
+            className="p-3 bg-white/5 hover:bg-blue-500/20 rounded-xl transition-all border border-white/5 hover:border-blue-500/50 relative z-[10000]"
+            style={{ pointerEvents: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
             <TwitterIcon className="h-5 w-5 text-slate-400 hover:text-blue-400" />
           </a>
@@ -76,8 +74,6 @@ export function Header() {
                 <User className="h-3 w-3 text-emerald-500" />
                 <span className="text-[11px] font-bold text-slate-300 truncate max-w-[100px]">{profile?.display_name || user.email?.split("@")[0]}</span>
               </div>
-            <>
-              <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">ダッシュボード</Link>
               <Button variant="ghost" size="sm" onClick={handleLogout}><LogOut className="h-4 w-4 mr-1" />ログアウト</Button>
             </>
           ) : (
@@ -100,12 +96,6 @@ export function Header() {
           <Link href="/products" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>ツール一覧</Link>
           <Link href="/contact" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>📩 お問い合わせ</Link>
           {user ? (
-            <>
-              <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">ダッシュボード</Link>
-              <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-lg border border-white/10">
-                <User className="h-3 w-3 text-emerald-500" />
-                <span className="text-[11px] font-bold text-slate-300 truncate max-w-[100px]">{profile?.display_name || user.email?.split("@")[0]}</span>
-              </div>
             <Link href="/dashboard" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>ダッシュボード</Link>
           ) : (
             <Link href="/login" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>ログイン</Link>
