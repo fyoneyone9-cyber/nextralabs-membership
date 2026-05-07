@@ -59,9 +59,16 @@ export function Header() {
           >
             <TwitterIcon className="h-5 w-5 text-slate-400 hover:text-blue-400" />
           </a>
+        
+        {/* 🔍 グローバル検索バー */}
+        <div className="hidden lg:flex flex-1 max-w-md mx-8 relative group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-emerald-500 transition-colors" size={18} />
+          <input 
+            type="text" 
+            placeholder="AIツールを検索..." 
+            className="w-full h-10 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 text-sm text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all shadow-inner"
+          />
         </div>
-
-        <nav className="hidden md:flex items-center space-x-6">
           <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors">ツール一覧</Link>
           <Link href="/tool-guide" className="text-sm font-medium hover:text-primary transition-colors">ツール説明</Link>
           <Link href="/pricing" className="text-sm font-medium hover:text-primary transition-colors">料金プラン</Link>
@@ -92,7 +99,15 @@ export function Header() {
       </div>
 
       {menuOpen && (
-        <div className="md:hidden border-t bg-background px-4 py-4 space-y-3 animate-in slide-in-from-top-2">
+                <div className="md:hidden border-t bg-background px-4 py-4 space-y-4 animate-in slide-in-from-top-2">
+          <div className="relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
+            <input 
+              type="text" 
+              placeholder="AIツールを検索..." 
+              className="w-full h-12 bg-black border border-white/10 rounded-xl pl-12 pr-4 text-sm text-white focus:border-emerald-500 outline-none transition-all"
+            />
+          </div>
           <Link href="/products" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>ツール一覧</Link>
           <Link href="/contact" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>📩 お問い合わせ</Link>
           {user ? (
