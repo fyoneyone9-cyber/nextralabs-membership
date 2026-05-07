@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { 
-  ArrowLeft, Trash2, Save, ChevronRight, Building, Wifi, Clock, Globe, Phone, Info, Settings, Monitor, Printer, CreditCard, Camera, Plus, Mail
+  ArrowLeft, Trash2, Save, ChevronRight, Building, Wifi, Clock, Globe, Phone, Info, Settings, Monitor, Printer, CreditCard, Camera, Plus, Mail, ShieldCheck, Zap
 } from 'lucide-react'
 import { useRouter, useParams } from 'next/navigation'
 
@@ -18,131 +18,135 @@ export default function PropertyDetailPage() {
   if (!mounted) return null
 
   const Toggle = ({ label, active = false }) => (
-    <div className="flex items-center justify-between py-2.5">
-      <span className="text-[11px] font-bold text-slate-600">{label}</span>
-      <div className={"w-10 h-5 rounded-full relative transition-colors cursor-pointer " + (active ? "bg-indigo-600" : "bg-slate-200")}>
-        <div className={"absolute top-1 w-3 h-3 bg-white rounded-full transition-all " + (active ? "right-1" : "left-1")} />
+    <div className="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
+      <span className="text-xs font-bold text-slate-300">{label}</span>
+      <div className={"w-12 h-6 rounded-full relative transition-all cursor-pointer " + (active ? "bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.4)]" : "bg-slate-800")}>
+        <div className={"absolute top-1 w-4 h-4 bg-white rounded-full transition-all " + (active ? "right-1" : "left-1")} />
       </div>
     </div>
   )
 
   const ImageUploadBox = ({ label, hint }) => (
-    <div className="space-y-2">
-      <label className="text-[10px] font-bold text-slate-500 uppercase">{label}</label>
-      <div className="border-2 border-dashed border-slate-200 rounded-xl p-8 text-center bg-slate-50 hover:bg-slate-100 transition-all cursor-pointer group">
-         <p className="text-slate-400 text-xs font-bold mb-1 group-hover:text-indigo-600">ファイルを参加</p>
-         <p className="text-[9px] text-slate-400 leading-relaxed">{hint}</p>
+    <div className="space-y-3">
+      <label className="text-[10px] font-black text-emerald-500 uppercase tracking-widest px-2 italic">{label}</label>
+      <div className="border-2 border-dashed border-white/10 rounded-2xl p-10 text-center bg-black/40 hover:bg-emerald-500/5 hover:border-emerald-500/30 transition-all group cursor-pointer shadow-inner">
+         <Plus className="mx-auto mb-2 text-slate-700 group-hover:text-emerald-500 transition-colors" />
+         <p className="text-slate-400 text-sm font-black italic uppercase mb-1">ファイルをアップロード</p>
+         <p className="text-[10px] text-slate-600 font-bold leading-relaxed">{hint}</p>
       </div>
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans pb-20 text-left">
-      <header className="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="p-2 hover:bg-slate-100 rounded-full"><ArrowLeft size={20} /></button>
-          <div className="flex items-center gap-2 text-sm font-bold text-slate-500 text-left">
-            <span>物件一覧</span><ChevronRight size={14} />
-            <span className="text-slate-900 text-lg uppercase tracking-tighter">AAA 静岡市 shizuoka</span>
+    <div className="min-h-screen bg-[#050507] text-slate-200 font-sans pb-32 selection:bg-emerald-500/30">
+      {/* 👑 ヘッダー - ダークモード仕様 */}
+      <header className="bg-[#0a0b14]/80 backdrop-blur-md border-b border-white/5 px-8 py-6 flex items-center justify-between sticky top-0 z-50 shadow-2xl">
+        <div className="flex items-center gap-6">
+          <button onClick={() => router.back()} className="p-3 bg-white/5 hover:bg-emerald-500/20 rounded-xl border border-white/5 transition-all text-emerald-500 shadow-inner">
+            <ArrowLeft size={20} />
+          </button>
+          <div className="flex flex-col text-left">
+            <div className="flex items-center gap-2 text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">
+              <span>物件一覧</span><ChevronRight size={12} className="text-emerald-500" /><span>Property Detail</span>
+            </div>
+            <h1 className="text-2xl md:text-3xl font-black text-white italic uppercase tracking-tighter leading-none">ネクストラ・ベイサイド静岡</h1>
           </div>
         </div>
-        <div className="flex gap-3">
-          <Button variant="outline" size="sm" className="bg-indigo-50 text-indigo-700 border-indigo-100 font-bold h-9">プラン情報</Button>
-          <Button variant="outline" size="sm" className="bg-indigo-50 text-indigo-700 border-indigo-100 font-bold h-9">アンケート情報</Button>
-          <Button variant="destructive" size="sm" className="bg-red-600 font-bold h-9 rounded-lg">削除</Button>
+        <div className="flex gap-4">
+          <Button variant="outline" className="bg-white/5 border-white/10 hover:border-emerald-500/50 text-slate-400 hover:text-emerald-400 font-black italic text-xs h-10 rounded-xl">プラン情報</Button>
+          <Button variant="destructive" className="bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-500/20 font-black italic text-xs h-10 rounded-xl transition-all">削除</Button>
         </div>
       </header>
 
-      <main className="max-w-[1600px] mx-auto p-6 space-y-8">
-        {/* 📋 セクション：デザイン・表示設定 (画像1, 2準拠) */}
-        <section className="space-y-6">
-          <h3 className="text-lg font-black text-slate-800 border-l-4 border-indigo-600 pl-4 uppercase italic">デザイン・表示設定</h3>
-          <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-               <div className="space-y-6">
-                  <Toggle label="ガイドUI表示" active={true} />
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">背景色設定(上部)</label>
-                    <div className="h-24 w-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl border-4 border-white shadow-md" />
-                    <Button variant="outline" size="xs" className="h-8 bg-emerald-600 text-white border-0 text-[10px] px-4 font-bold">デフォルトに戻す</Button>
-                  </div>
-               </div>
-               <div className="space-y-6">
-                  <div className="flex items-center gap-4"><label className="text-[10px] font-bold text-slate-500">スライド切り替え...秒</label><Input value="5" className="w-20 h-8 text-center" /></div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">背景色設定(下部)</label>
-                    <div className="h-24 w-full bg-gradient-to-r from-blue-700 to-indigo-900 rounded-xl border-4 border-white shadow-md" />
-                    <Button variant="outline" size="xs" className="h-8 bg-emerald-600 text-white border-0 text-[10px] px-4 font-bold">デフォルトに戻す</Button>
-                  </div>
-               </div>
+      <main className="max-w-[1400px] mx-auto p-6 space-y-12">
+        {/* 🏨 連携ステータス */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="bg-[#13141f] border-2 border-emerald-500/20 rounded-[2.5rem] p-8 shadow-inner relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-6 opacity-5"><Database size={80} /></div>
+            <label className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-4 block italic">連携先PMS</label>
+            <div className="flex items-center gap-4">
+               <span className="text-4xl font-black text-white italic uppercase tracking-tighter">Beds24</span>
+               <Badge className="bg-emerald-500 text-slate-950 font-black animate-pulse">Connected</Badge>
             </div>
+          </Card>
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 shadow-inner relative overflow-hidden text-left">
+            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4 block italic text-left">PMS上の物件ID</label>
+            <p className="text-4xl font-black text-white font-mono tracking-widest">165875</p>
+          </Card>
+        </div>
 
-            <div className="space-y-6 pt-6 border-t border-slate-100">
-               <ImageUploadBox label="広告A(上段)用画像" hint="・ファイルサイズの上限: 10MB  ・画像(.png / .jpeg)" />
-               <div className="p-4 bg-slate-50 rounded-lg text-[10px] font-bold text-slate-400 italic">広告B(上段ガイド棚代替)用画像: (ガイドUI表示を有効にしているため、広告B欄は無効です)</div>
-               <ImageUploadBox label="広告C(下段)用画像" hint="・ファイルサイズの上限: 10MB  ・画像(.png / .jpeg)" />
-            </div>
-          </div>
-        </section>
-
-        {/* 📋 セクション：フロントタブレット用設定 (画像3, 4準拠) */}
-        <section className="space-y-6">
-          <h3 className="text-lg font-black text-slate-800 border-l-4 border-indigo-600 pl-4 uppercase italic">フロントタブレット用設定</h3>
-          <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-12">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-               <div className="space-y-1 divide-y divide-slate-50">
-                  <p className="text-[10px] font-black text-indigo-600 mb-2 uppercase tracking-widest">ゲスト個人情報 (代表者)</p>
-                  <Toggle label="住所" active={true} /><Toggle label="電話番号" active={true} /><Toggle label="生年月日" /><Toggle label="性別" /><Toggle label="職業" /><Toggle label="本人サイン" />
-               </div>
-               <div className="space-y-8">
-                  <div className="space-y-4">
-                    <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">本人確認書類撮影</p>
-                    <Toggle label="無人モード時有効" active={true} />
-                    <Toggle label="外国人の場合はスキップ" />
-                  </div>
-                  <div className="space-y-4">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">プリンタ設定</p>
-                    <Toggle label="部屋番号レシートにプランを印字" active={true} />
-                    <Toggle label="領収書の記名省略を認める" />
-                  </div>
-               </div>
-            </div>
-            
-            <div className="pt-8 border-t border-slate-100 space-y-6">
-               <ImageUploadBox label="ロゴ画像(ルームナンバー・領収書用)" hint="※印刷サイズは縦35px, 横128.93pxです(アスペクト比約3.7)。" />
-               <ImageUploadBox label="朝食券画像" hint="※印刷サイズは縦170px, 横136pxです(アスペクト比0.8)。" />
-            </div>
-          </div>
-        </section>
-
-        {/* 📋 セクション：事前チェックイン用設定 (画像5準拠) */}
-        <section className="space-y-6">
-          <h3 className="text-lg font-black text-slate-800 border-l-4 border-indigo-600 pl-4 uppercase italic">事前チェックイン用設定</h3>
-          <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-8">
-             <div className="flex flex-wrap gap-8">
-                <Toggle label="予約直後に事前チェックイン案内メールを送信" />
-                <div className="flex items-center gap-3"><label className="text-[10px] font-bold text-slate-500">チェックイン直前に再送...日前</label><Input value="1" className="w-16 h-8 text-center" /></div>
-                <Toggle label="事前チェックイン後に部屋番号・暗証番号を表示" />
-             </div>
-             <div className="space-y-4">
-                <label className="text-[10px] font-black text-slate-400 uppercase">ホテルからのご連絡事項</label>
-                <div className="flex gap-2 mb-2"><Badge className="bg-indigo-600">ENGLISH</Badge><Badge variant="outline">日本語</Badge></div>
-                <textarea className="w-full h-32 bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm outline-none focus:ring-2 ring-indigo-500/20" placeholder="Enter instructions here..." />
-             </div>
-             <div className="bg-emerald-50 p-6 rounded-xl border border-emerald-100 flex gap-4">
-                <Info className="text-emerald-500" size={24} />
-                <div className="text-[10px] text-emerald-800 leading-relaxed font-bold">
-                   <p className="uppercase mb-1">事前チェックインメールの送信ルールについて</p>
-                   <p>・毎時5分に自動送信判定が行われます。</p>
-                   <p>・チェックイン予定日時が現在より後の予約のみが送信対象となります。</p>
+        {/* 📋 セクション：環境・表示設定 */}
+        <div className="space-y-8">
+          <h3 className="text-xl font-black text-white border-l-8 border-orange-500 pl-6 uppercase italic tracking-widest flex items-center gap-4">
+            <Monitor className="text-orange-500" /> 環境・表示設定
+          </h3>
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 space-y-12 shadow-2xl text-left">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-16 text-left">
+                <div className="space-y-8 text-left">
+                   <Toggle label="KIOSKガイドUI表示" active={true} />
+                   <div className="space-y-4 text-left">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4 italic block text-left">背景色設定 (上部グラデーション)</label>
+                      <div className="h-28 w-full bg-gradient-to-r from-emerald-600/40 to-blue-900/40 rounded-[2rem] border-2 border-white/10 shadow-inner flex items-center justify-center">
+                         <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.5em]">Nextra Theme Active</span>
+                      </div>
+                   </div>
+                </div>
+                <div className="space-y-8 text-left">
+                   <div className="space-y-2 text-left">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4 italic block text-left">スライド切り替え時間</label>
+                      <div className="flex items-center gap-4">
+                        <Input value="5" className="bg-black border-2 border-white/10 h-14 w-32 rounded-2xl text-center text-xl font-black text-emerald-500" />
+                        <span className="text-sm font-black text-slate-500 italic">SECONDS</span>
+                      </div>
+                   </div>
+                   <div className="space-y-4 text-left text-left">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4 italic block text-left">背景色設定 (下部グラデーション)</label>
+                      <div className="h-28 w-full bg-gradient-to-r from-blue-950 to-slate-950 rounded-[2rem] border-2 border-white/10 shadow-inner" />
+                   </div>
                 </div>
              </div>
-          </div>
-        </section>
+          </Card>
+        </div>
 
-        <footer className="pt-10 flex justify-center gap-4">
-           <Button variant="outline" className="h-12 px-12 font-bold rounded-xl text-slate-600" onClick={() => router.back()}>✕ 戻る</Button>
-           <Button className="h-12 px-20 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl shadow-lg uppercase italic">Update All ➔</Button>
+        {/* 📋 セクション：フロントタブレット用設定 */}
+        <div className="space-y-8">
+          <h3 className="text-xl font-black text-white border-l-8 border-emerald-500 pl-6 uppercase italic tracking-widest flex items-center gap-4 text-left">
+            <Zap className="text-emerald-500" /> フロントタブレット用設定
+          </h3>
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 space-y-12 shadow-2xl text-left">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-16 text-left">
+                <div className="space-y-2 bg-black/40 p-8 rounded-[2.5rem] border border-white/5 shadow-inner">
+                   <p className="text-[10px] font-black text-emerald-500 mb-6 uppercase tracking-widest text-center border-b border-white/5 pb-4">ゲスト個人情報の取得項目</p>
+                   <div className="space-y-1">
+                      <Toggle label="住所" active={true} /><Toggle label="電話番号" active={true} /><Toggle label="生年月日" /><Toggle label="性別" /><Toggle label="職業" /><Toggle label="本人サイン" active={true} /><Toggle label="前泊地・行先地" />
+                   </div>
+                </div>
+                <div className="space-y-10">
+                   <div className="space-y-4 text-left text-left">
+                      <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest px-4 italic text-left text-left text-left">本人確認書類撮影プロトコル</p>
+                      <div className="bg-black/40 p-6 rounded-2xl border border-white/5">
+                        <Toggle label="無人モード時に有効化" active={true} />
+                        <Toggle label="外国籍ゲストは必須" active={true} />
+                      </div>
+                   </div>
+                   <div className="space-y-4 text-left">
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4 italic text-left">プリンタ・レシート設定</p>
+                      <div className="bg-black/40 p-6 rounded-2xl border border-white/5">
+                        <Toggle label="チェックイン時にレシート印刷" />
+                        <Toggle label="暗証番号(PIN)を印字" active={true} />
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </Card>
+        </div>
+
+        {/* 🛠️ アクション */}
+        <footer className="pt-10 flex flex-col items-center gap-6">
+           <Button className="h-24 px-24 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-[2rem] text-3xl shadow-[0_15px_50px_rgba(16,185,129,0.3)] transition-all active:scale-95 uppercase italic border-b-8 border-emerald-900 active:border-b-0">
+             Save All Configuration ➔
+           </Button>
+           <p className="text-[10px] font-bold text-slate-600 uppercase tracking-[0.5em] italic">Nextra AI Autonomous Management System</p>
         </footer>
       </main>
     </div>
