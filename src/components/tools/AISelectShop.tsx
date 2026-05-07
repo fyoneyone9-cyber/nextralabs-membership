@@ -18,9 +18,14 @@ const STYLES = [
   { id: 'vintage',   name: 'ヴィンテージ',  emoji: '🗿', bg: '#f5e6c8', textColor: '#5c3d1e', accent: '#a0785a', font: 'bold 26px Georgia, serif' },
   { id: 'popart',    name: 'ポップアート',  emoji: '🎨', bg: '#ffff00', textColor: '#e91e63', accent: '#0000ff', font: 'bold 30px Impact, sans-serif' },
   { id: 'anime',     name: 'アニメ風',      emoji: '🌸', bg: '#0d0d2b', textColor: '#ff6ec7', accent: '#7df9ff', font: 'bold 26px sans-serif' },
-  { id: 'military',  name: 'ミリタリー',   emoji: '🪖', bg: '#2d3a1e', textColor: '#c8b560', accent: '#8a9a5b', font: 'bold 26px monospace' },
+  { id: 'military',  name: 'ミリタリー',    emoji: '🪖', bg: '#2d3a1e', textColor: '#c8b560', accent: '#8a9a5b', font: 'bold 26px monospace' },
   { id: 'typo',      name: 'タイポグラフィ', emoji: '🔤', bg: '#ffffff', textColor: '#000000', accent: '#ff3300', font: '900 32px Helvetica, sans-serif' },
-  { id: 'monochrome',name: 'モノクロ',      emoji: '🖤', bg: '#1a1a1a', textColor: '#ffffff', accent: '#888888', font: '300 28px Helvetica, sans-serif' },
+  { id: 'monochrome',name: 'モノクロ',       emoji: '🖤', bg: '#1a1a1a', textColor: '#ffffff', accent: '#888888', font: '300 28px Helvetica, sans-serif' },
+  { id: 'abstract',  name: 'アブストラクト', emoji: '🔵', bg: '#f0f0f0', textColor: '#ffffff', accent: '#000000', font: 'bold 28px sans-serif' },
+  { id: 'tiedye',    name: 'タイダイ',       emoji: '🌀', bg: '#ff6b9d', textColor: '#ffffff', accent: '#fff700', font: 'bold 28px sans-serif' },
+  { id: 'stripe',    name: '斜めストライプ', emoji: '〽️', bg: '#1a1a2e', textColor: '#ffffff', accent: '#e94560', font: 'bold 28px sans-serif' },
+  { id: 'leopard',   name: 'レオパード',     emoji: '🐆', bg: '#d4a017', textColor: '#1a1a1a', accent: '#000000', font: 'bold 28px sans-serif' },
+  { id: 'wave',      name: '波・和柄',       emoji: '🌊', bg: '#1a4a8a', textColor: '#ffffff', accent: '#7ec8e3', font: 'bold 26px serif' },
 ];
 
 const TSHIRT_COLORS = [
@@ -345,17 +350,24 @@ const MasterEngine = () => {
       ctx.shadowBlur = 0;
 
     } else if (style === 'military') {
-      // カモフラ全体（Tシャツ全面）
-      const camo = ['rgba(45,58,30,0.8)','rgba(58,74,40,0.7)','rgba(74,92,48,0.6)','rgba(30,42,16,0.85)'];
-      for (let i = 0; i < 24; i++) {
-        ctx.fillStyle = camo[i % camo.length];
+      // 大柄カモフラ（BAPEっぽく大きく）
+      const camoBase = '#4a5c30';
+      ctx.fillStyle = camoBase; ctx.fillRect(0, 0, w, h);
+      const camoColors = ['#2d3a1e','#3a4a28','#1e2a10','#5a6e3a','#263318'];
+      const camoSpots = [
+        [0.1,0.1,0.28,0.22,0.3],[0.5,0.05,0.32,0.18,0.8],
+        [0.85,0.15,0.22,0.28,-0.4],[0.0,0.38,0.25,0.30,0.5],
+        [0.35,0.28,0.30,0.24,1.0],[0.72,0.32,0.24,0.30,-0.6],
+        [0.15,0.58,0.30,0.22,0.2],[0.55,0.52,0.28,0.26,0.9],
+        [0.88,0.55,0.20,0.28,-0.3],[0.05,0.72,0.22,0.20,0.6],
+        [0.42,0.72,0.32,0.20,1.2],[0.78,0.75,0.26,0.22,-0.5],
+      ];
+      camoSpots.forEach(([sx,sy,rw,rh,ang], i) => {
+        ctx.fillStyle = camoColors[i % camoColors.length];
         ctx.beginPath();
-        ctx.ellipse(
-          (i*67)%w, (i*43)%h,
-          25+(i%5)*12, 14+(i%4)*8, i*0.48, 0, Math.PI*2
-        );
+        ctx.ellipse(sx*w, sy*h, rw*w*0.5, rh*h*0.5, ang, 0, Math.PI*2);
         ctx.fill();
-      }
+      });
 
     } else if (style === 'typo') {
       // 白ベース
@@ -371,7 +383,6 @@ const MasterEngine = () => {
       ctx.fillRect(0, cy + pr*0.85, w, 8);
 
     } else if (style === 'monochrome') {
-      // 全体ダーク
       ctx.fillStyle = '#111'; ctx.fillRect(0, 0, w, h);
       const mg = ctx.createRadialGradient(cx, cy, 0, cx, cy, pr*1.4);
       mg.addColorStop(0, 'rgba(255,255,255,0.1)');
@@ -379,6 +390,103 @@ const MasterEngine = () => {
       ctx.fillStyle = mg; ctx.fillRect(0, 0, w, h);
       ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 1;
       ctx.strokeRect(w*0.1, h*0.15, w*0.8, h*0.72);
+
+    } else if (style === 'abstract') {
+      // 大きな抽象的な円・図形を全面に
+      const shapes = [
+        { x: w*0.15, y: h*0.18, rx: w*0.28, ry: h*0.22, color: '#E63946' },
+        { x: w*0.75, y: h*0.25, rx: w*0.22, ry: h*0.28, color: '#457B9D' },
+        { x: w*0.45, y: h*0.58, rx: w*0.32, ry: h*0.20, color: '#2A9D8F' },
+        { x: w*0.85, y: h*0.65, rx: w*0.20, ry: h*0.25, color: '#E9C46A' },
+        { x: w*0.1,  y: h*0.72, rx: w*0.18, ry: h*0.18, color: '#F4A261' },
+        { x: w*0.6,  y: h*0.15, rx: w*0.15, ry: h*0.15, color: '#264653' },
+      ];
+      shapes.forEach(s => {
+        ctx.globalAlpha = 0.88;
+        ctx.fillStyle = s.color;
+        ctx.beginPath();
+        ctx.ellipse(s.x, s.y, s.rx, s.ry, s.x/100, 0, Math.PI*2);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+
+    } else if (style === 'tiedye') {
+      // タイダイ：放射状グラデーションを複数重ねる
+      const colors = ['#ff6b9d','#ff9a3c','#ffe66d','#4ecdc4','#a29bfe','#fd79a8'];
+      colors.forEach((col, i) => {
+        const ox = w*(0.2 + (i%3)*0.3), oy = h*(0.15 + Math.floor(i/3)*0.45);
+        const tg = ctx.createRadialGradient(ox, oy, 0, ox, oy, w*0.55);
+        tg.addColorStop(0, col + 'cc');
+        tg.addColorStop(0.5, col + '66');
+        tg.addColorStop(1, 'transparent');
+        ctx.fillStyle = tg;
+        ctx.fillRect(0, 0, w, h);
+      });
+      // 渦巻きライン
+      ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 1.5;
+      for (let r = 10; r < w; r += 22) {
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
+      }
+
+    } else if (style === 'stripe') {
+      // 斜め太ストライプ全面
+      const stripeColors = ['#1a1a2e','#e94560','#1a1a2e','#0f3460','#1a1a2e','#e94560'];
+      ctx.fillStyle = '#1a1a2e'; ctx.fillRect(0, 0, w, h);
+      ctx.save();
+      ctx.translate(cx, h/2);
+      ctx.rotate(Math.PI / 4);
+      const sw = 28;
+      for (let i = -w*2; i < w*2; i += sw*2) {
+        ctx.fillStyle = stripeColors[Math.floor(i/sw+10) % stripeColors.length];
+        ctx.fillRect(i, -h*2, sw, h*4);
+      }
+      ctx.restore();
+
+    } else if (style === 'leopard') {
+      // レオパード柄：金ベース + 黒斑点
+      ctx.fillStyle = '#D4A017'; ctx.fillRect(0, 0, w, h);
+      // ランダム斑点（固定シード風）
+      const spots = [
+        [0.15,0.12,18,14],[0.55,0.18,22,16],[0.8,0.1,14,12],
+        [0.25,0.32,20,15],[0.7,0.28,16,20],[0.1,0.48,22,16],
+        [0.45,0.42,18,22],[0.82,0.45,20,14],[0.3,0.62,16,18],
+        [0.65,0.58,24,16],[0.15,0.72,18,14],[0.5,0.75,20,16],
+        [0.85,0.68,16,20],[0.35,0.85,22,14],[0.7,0.82,18,16],
+        [0.08,0.28,14,18],[0.92,0.32,16,12],[0.52,0.55,14,20],
+      ];
+      spots.forEach(([sx,sy,rw,rh]) => {
+        // 斑点の外リング
+        ctx.fillStyle = 'rgba(80,40,0,0.7)';
+        ctx.beginPath(); ctx.ellipse(sx*w, sy*h, rw, rh, sx, 0, Math.PI*2); ctx.fill();
+        // 内側の明るい部分
+        ctx.fillStyle = 'rgba(220,170,30,0.6)';
+        ctx.beginPath(); ctx.ellipse(sx*w, sy*h, rw*0.45, rh*0.45, sx, 0, Math.PI*2); ctx.fill();
+      });
+
+    } else if (style === 'wave') {
+      // 青ベースに和風の波紋・波柄
+      ctx.fillStyle = '#1a4a8a'; ctx.fillRect(0, 0, w, h);
+      // 複数の波ライン
+      for (let row = 0; row < 8; row++) {
+        const baseY = h * (0.1 + row * 0.11);
+        ctx.strokeStyle = row % 2 === 0 ? 'rgba(126,200,227,0.7)' : 'rgba(255,255,255,0.3)';
+        ctx.lineWidth = row % 2 === 0 ? 2 : 1;
+        ctx.beginPath();
+        for (let x = 0; x <= w; x += 4) {
+          const waveY = baseY + Math.sin((x / w) * Math.PI * 4 + row) * 10;
+          if (x === 0) ctx.moveTo(x, waveY); else ctx.lineTo(x, waveY);
+        }
+        ctx.stroke();
+      }
+      // 和柄風の渦
+      const whorls: [number,number][] = [[w*0.2,h*0.25],[w*0.75,h*0.35],[w*0.4,h*0.65],[w*0.8,h*0.7]];
+      whorls.forEach(([wx,wy]) => {
+        for (let r = 5; r < 30; r += 7) {
+          ctx.strokeStyle = `rgba(126,200,227,${0.6 - r*0.015})`;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(wx, wy, r, 0, Math.PI*1.7); ctx.stroke();
+        }
+      });
     }
 
     // ========== テキスト描画 ==========
