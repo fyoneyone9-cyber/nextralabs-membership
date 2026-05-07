@@ -23,17 +23,15 @@ export async function GET() {
     if (!response.ok) throw new Error(`Google_HTTP_${response.status}`);
 
     const xml = await response.text();
-    const items = xml.split('<item>');
-    if (items.length <= 1) throw new Error('Empty_RSS');
+    // 🔍 【本物化】より堅牢なパース処理
+    const titles = xml.match(/<title>([^<]+)<\/title>/g);
+    if (!titles || titles.length <= 1) throw new Error('Empty_RSS');
     
-    items.shift();
-    const trends = items
-      .map(item => {
-        const match = item.match(/<title>([^<]+)<\/title>/);
-        return match ? match[1].replace('<![CDATA[', '').replace(']]>', '').replace(/&amp;/g, '&').trim() : null;
-      })
-      .filter(Boolean)
-      .slice(0, 15); // 多めに15件
+    // 1番目はチャンネルタイトルなので除外
+    const trends = titles
+      .slice(1, 16)
+      .map(t => t.replace(/<\/?title>/g, '').replace('<![CDATA[', '').replace(']]>', '').replace(/&amp;/g, '&').trim())
+      .filter(t => t && t !== 'Japan');
 
     if (trends.length > 0) {
       console.log(`[Trends API] Success: ${trends.length} items from Google.`);
