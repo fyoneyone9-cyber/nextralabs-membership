@@ -205,12 +205,21 @@ const MasterEngine = () => {
       </div>
 
       {currentStep === 1 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 animate-in fade-in">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-[#0a0b14] p-6 rounded-3xl border-2 border-emerald-500/20 shadow-inner mb-8">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 bg-emerald-500/10 px-4 py-2 rounded-full border border-emerald-500/50">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-xs font-black text-emerald-500 uppercase tracking-widest italic">TREND ENGINE: LIVE SYNC</span>
+            </div>
+            <div className="text-[10px] text-slate-500 font-bold italic">最終同期: {new Date().toLocaleTimeString()}</div>
+          </div>
+          <p className="text-[10px] text-slate-400 font-bold italic">Google Trends から日本国内の最新バズワードを1分ごとに自動抽出中。</p>
+        </div><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 animate-in fade-in">
           {isLoading ? (
             Array(6).fill(0).map((_, i) => <div key={i} className="h-40 bg-white/5 rounded-[2rem] animate-pulse border border-white/5" />)
           ) : trends.map((t) => (
             <div key={t.id} className="bg-[#13141f] border-2 border-white/5 p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] hover:border-[#5845e0] cursor-pointer transition-all shadow-xl group" onClick={() => { setKeyword(t.name); setCurrentStep(2); }}>
-              <div className="border border-indigo-500/30 text-indigo-400 px-3 py-0.5 rounded text-[8px] font-black w-fit mb-4 italic uppercase">迴ｾ蝨ｨ縺ｮ繝医Ξ繝ｳ繝・/div>
+              <div className="flex items-center gap-2 border border-emerald-500/30 text-emerald-400 px-3 py-1 rounded-full text-[8px] font-black w-fit mb-4 italic uppercase animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.2)]">迴ｾ蝨ｨ縺ｮ繝医Ξ繝ｳ繝・/div>
               <p className="text-2xl md:text-4xl font-black italic uppercase text-white tracking-tighter group-hover:text-emerald-400 transition-colors">{t.name}</p>
             </div>
           ))}
