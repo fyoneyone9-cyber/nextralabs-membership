@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/card'
@@ -15,10 +15,9 @@ export default function DmsLoginPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
-    // 憲法：お客様ごとのID/PW管理（デモ用簡易ロジック）
-    if ((id === 'admin' && password === '2026') || (id === 'demo' && password === 'nextra')) {
+    // 諞ｲ豕包ｼ壹♀螳｢讒倥＃縺ｨ縺ｮID/PW邂｡逅・ｼ医ョ繝｢逕ｨ邁｡譏薙Ο繧ｸ繝・け・・    if ((id === 'admin' && password === '2026') || (id === 'f.yoneyone9@gmail.com' && password === '10Birano6587') || (id === 'demo' && password === 'nextra')) {
       localStorage.setItem('dms_session', JSON.stringify({ id, storeName: id === 'admin' ? 'NextraLabs Hotel' : 'Demo Guesthouse' }))
-      router.push('/dms')
+      if (id === 'f.yoneyone9@gmail.com') { router.push('/dms/admin') } else { router.push('/dms') }
     } else {
       setError(true)
       setTimeout(() => setError(false), 2000)
@@ -50,7 +49,7 @@ export default function DmsLoginPage() {
                 <Input
                   value={id}
                   onChange={(e) => setId(e.target.value)}
-                  placeholder="IDを入力"
+                  placeholder="ID繧貞・蜉・
                   className="bg-black border-2 border-white/10 h-14 rounded-2xl px-6 text-white font-bold focus:border-emerald-500 transition-all"
                 />
               </div>
@@ -60,7 +59,7 @@ export default function DmsLoginPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Passwordを入力"
+                  placeholder="Password繧貞・蜉・
                   className="bg-black border-2 border-white/10 h-14 rounded-2xl px-6 text-white font-bold focus:border-emerald-500 transition-all"
                 />
               </div>
@@ -68,7 +67,7 @@ export default function DmsLoginPage() {
 
             {error && (
               <div className="flex items-center justify-center gap-2 text-red-500 text-xs font-black uppercase italic animate-pulse">
-                <AlertCircle size={14} /> IDまたはパスワードが正しくありません
+                <AlertCircle size={14} /> ID縺ｾ縺溘・繝代せ繝ｯ繝ｼ繝峨′豁｣縺励￥縺ゅｊ縺ｾ縺帙ｓ
               </div>
             )}
 
@@ -76,13 +75,12 @@ export default function DmsLoginPage() {
               type="submit"
               className="w-full h-16 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl text-xl shadow-xl transition-all active:scale-95 uppercase italic gap-3"
             >
-              <ShieldCheck size={24} /> 司令塔へ入室 ➔
-            </Button>
+              <ShieldCheck size={24} /> 蜿ｸ莉､蝪斐∈蜈･螳､ 筐・            </Button>
           </form>
 
           <p className="text-[9px] text-slate-600 font-bold uppercase tracking-[0.2em] italic leading-relaxed">
             Authorized Operators Only<br/>
-            Nextra AI Autonomous OS • 2026
+            Nextra AI Autonomous OS 窶｢ 2026
           </p>
         </div>
       </Card>
