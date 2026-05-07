@@ -22,6 +22,22 @@ interface DiagnosisResult {
 }
 
 // ========================
+// アフィリエイト案件定義
+// ========================
+const LOAN_OFFERS = [
+  { name: 'ハローハッピー', desc: '安心のパートナー。柔軟なフリーローン。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+8NZE96+2EBI+5ZU29' },
+  { name: 'セントラル', desc: '来店不要・振込キャッシング。老舗の安心感。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9N3YY2+363I+699KI' },
+  { name: 'フクホー', desc: '安心の金利7.30％〜！実績豊富な消費者金融。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+AP7PNU+39OE+5YJRM' },
+  { name: 'アロー', desc: '最短即日振込。独自の審査基準でスピーディ。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+A0SXUY+2SHI+5ZMCH' },
+  { name: 'プラン', desc: '全国どこからでも24時間簡単ご契約。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9X8C8A+3FWK+5YJRM' },
+  { name: 'いつも', desc: '全国ご融資対応。親切・丁寧なサポート。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9TNQLM+3EC6+601S1' },
+  { name: 'キャレント', desc: 'ネット完結。働く方のためのキャッシング。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9YF7FU+1LW6+HWXLD' },
+  { name: 'アルコシステム', desc: '振込キャッシングのパイオニア。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+8DV0YY+25IK+609HU' },
+  { name: 'フタバ', desc: '借りやすくて返しやすい。レディースキャッシング対応。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9NPEJU+38S6+614CX' },
+  { name: 'マイレディス', desc: '女性専用キャッシング。親身で安心なサポート。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9MIJCA+363I+BWVTE' },
+]
+
+// ========================
 // メインコンポーネント
 // ========================
 export function LoanAdvisor() {
@@ -32,6 +48,7 @@ export function LoanAdvisor() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<DiagnosisResult | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [randomOffers, setRandomOffers] = useState<typeof LOAN_OFFERS>([])
 
   // 借入先の追加
   const addDebt = () => {
@@ -55,9 +72,13 @@ export function LoanAdvisor() {
     setLoading(true)
     setError(null)
     try {
+      // 案件をランダムに3つピックアップ
+      const shuffled = [...LOAN_OFFERS].sort(() => 0.5 - Math.random()).slice(0, 3)
+      setRandomOffers(shuffled)
+      
       // 合計と平均金利の計算
       const currentTotal = debts.reduce((sum, d) => sum + d.amount * 10000, 0)
-      const currentAvgRate = debts.reduce((sum, d) => sum + (d.rate * d.amount), 0) / debts.reduce((sum, d) => sum + d.amount, 0)
+      const currentAvgRate = debts.reduce((sum, d) => sum + (d.rate * d.amount), 0) / (debts.reduce((sum, d) => sum + d.amount, 0) || 1)
       
       // おまとめ後（一律12%と仮定したシミュレーション）
       const newRate = 12.0
@@ -77,7 +98,7 @@ export function LoanAdvisor() {
         currentTotal,
         currentAvgRate,
         consolidatedMonthly,
-        totalInterestSaved: interestDiffYear,
+        totalInterestSaved: Math.max(0, interestDiffYear),
         advice: data.advice
       })
     } catch (err: any) {
@@ -220,22 +241,37 @@ export function LoanAdvisor() {
               </div>
 
               {/* アフィリエイト出口（PR） */}
-              <div className="bg-gradient-to-br from-orange-600 to-amber-600 rounded-[2rem] p-6 md:p-8 shadow-xl space-y-4 relative group cursor-pointer hover:scale-[1.02] transition-all">
-                <div className="flex justify-between items-start">
-                  <Badge className="bg-white/20 text-white font-black border-none">AI推奨の解決策</Badge>
-                  <span className="text-white/40 font-black italic text-[10px] uppercase">Official PR</span>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-3 py-1">AI推奨の解決策</Badge>
+                  <span className="text-slate-500 text-[10px] font-black uppercase italic tracking-widest">Recommended Loan Partners</span>
                 </div>
-                <h3 className="text-2xl md:text-3xl font-black text-white italic tracking-tighter leading-none">
-                  金利の見直しで<br />返済を楽にする第一歩
-                </h3>
-                <p className="text-orange-100 text-sm font-bold">
-                  AIが診断した条件に近い、低金利なおまとめローンをピックアップしました。審査・相談は無料です。
+                
+                <div className="grid grid-cols-1 gap-3">
+                  {randomOffers.map((offer, i) => (
+                    <a 
+                      key={i} 
+                      href={offer.url} 
+                      target="_blank" 
+                      rel="nofollow noopener noreferrer"
+                      className="group bg-gradient-to-r from-emerald-600/20 to-[#13141f] border border-emerald-500/30 rounded-2xl p-5 flex items-center justify-between hover:border-emerald-500 hover:scale-[1.01] transition-all shadow-lg"
+                    >
+                      <div className="space-y-1">
+                        <h3 className="text-xl font-black text-white italic tracking-tighter flex items-center gap-2">
+                          {offer.name} <ArrowRight size={14} className="text-emerald-500 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
+                        </h3>
+                        <p className="text-slate-400 text-xs font-bold leading-relaxed">{offer.desc}</p>
+                      </div>
+                      <div className="bg-emerald-600 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase italic tracking-wider whitespace-nowrap">
+                        診断結果を元に相談
+                      </div>
+                    </a>
+                  ))}
+                </div>
+                
+                <p className="text-center text-[10px] text-slate-600 font-bold italic">
+                  ※AIが現在の借入状況に合わせて審査の柔軟性が高いパートナーをピックアップしました。
                 </p>
-                <div className="pt-2">
-                  <button className="w-full bg-white text-orange-600 h-14 rounded-xl font-black uppercase italic tracking-wider flex items-center justify-center gap-2 group-hover:bg-orange-50 transition-colors">
-                    推奨ローンをチェックする <ArrowRight size={18} />
-                  </button>
-                </div>
               </div>
             </div>
           )}
