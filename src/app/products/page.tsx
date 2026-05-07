@@ -51,13 +51,13 @@ const CATEGORIES = [
 function ProductCard({ product }: { product: any }) {
   const isMaster = product.badge === 'MASTER' || product.badge === 'コンテンツ戦略' || product.badge === 'ULTIMATE' || product.badge === 'TOP'
   
-  const planButtonColors: any = {
-    '無料': 'bg-slate-500 hover:bg-slate-400',
-    'ライト': 'bg-blue-500 hover:bg-blue-400',
-    'スタンダード': 'bg-orange-500 hover:bg-orange-400',
-    'プレミアム': 'bg-emerald-500 hover:bg-emerald-400'
+    const planBadgeColors: any = {
+    '無料': 'bg-slate-500/20 text-slate-400 border-slate-500/30',
+    'ライト': 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+    'スタンダード': 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+    'プレミアム': 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
   }
-  const buttonColor = planButtonColors[product.plan] || planButtonColors['無料']
+  const badgeClass = "text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border " + (planBadgeColors[product.plan] || planBadgeColors['無料'])
 
   return (
     <Card className={"h-full bg-[#13141f] transition-all duration-300 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group shadow-xl relative border-2 " + (isMaster ? "border-emerald-500/50 shadow-emerald-500/10" : "border-white/5 hover:border-emerald-500/30")}>
@@ -75,10 +75,10 @@ function ProductCard({ product }: { product: any }) {
         </div>
         <div className="pt-4 border-t border-white/5 flex flex-col gap-2.5 mt-auto">
           <Link href={"/products/" + product.id + "/app"} className="block w-full">
-            <Button className={"w-full h-10 md:h-12 text-slate-950 font-black text-xs md:text-sm rounded-xl transition-all shadow-lg " + buttonColor}>このツールを使う ➔</Button>
+            <Button className="w-full h-10 md:h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs md:text-sm rounded-xl transition-all shadow-lg">このツールを使う ➔</Button>
           </Link>
           <div className="flex justify-between items-center px-2 py-1 bg-black/40 rounded-lg border border-white/5">
-            <span className="text-[8px] md:text-[9px] font-black uppercase text-slate-500 tracking-widest">{product.plan} プラン</span>
+            <span className={badgeClass}>{product.plan} プラン</span>
             {product.plan !== '無料' ? <Lock className="h-2.5 w-2.5 text-amber-500/30" /> : <Sparkles className="h-2.5 w-2.5 text-emerald-400/50" />}
           </div>
         </div>
