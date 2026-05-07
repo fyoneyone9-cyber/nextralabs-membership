@@ -22,9 +22,9 @@ const MasterEngine = () => {
     setIsAnalyzing(true);
     setTimeout(() => {
       setPredictions([
-        { id: 1, keyword: 'ソロキャンプ 焚き火台', reason: 'SNSでの言及数が急増中。明日15時にバズのピーク予測。', item: '超軽量チタン焚き火台', price: '¥4,980', confidence: '96%' },
-        { id: 2, keyword: 'レトロ フィルムカメラ', reason: '若年層で「エモい」需要が再燃。品薄傾向にあり。', item: '復刻版インスタントカメラ', price: '¥12,000', confidence: '92%' },
-        { id: 3, keyword: '完全ワイヤレス睡眠耳栓', reason: 'ストレス社会での安眠需要。楽天内での検索数1.5倍。', item: 'ノイズキャンセリング耳栓', price: '¥8,800', confidence: '89%' },
+        { id: 1, keyword: 'ソロキャンプ 焚き火台', reason: 'SNSでの言及数が急増中。明日15時にバズのピーク予測。', item: '超軽量チタン焚き火台', price: '\4,980', confidence: '96%' },
+        { id: 2, keyword: 'レトロ フィルムカメラ', reason: '若年層で「エモい」需要が再燃。品薄傾向にあり。', item: '復刻版インスタントカメラ', price: '\12,000', confidence: '92%' },
+        { id: 3, keyword: '完全ワイヤレス睡眠耳栓', reason: 'ストレス社会での安眠需要。楽天内での検索数1.5倍。', item: 'ノイズキャンセリング耳栓', price: '\8,800', confidence: '89%' },
       ]);
       setIsAnalyzing(false);
     }, 4000);
@@ -36,7 +36,7 @@ const MasterEngine = () => {
     <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
       <div className="text-center space-y-1 md:space-y-3">
         <Badge className="bg-orange-600 text-white font-black italic px-4 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full">Trend Prediction OS</Badge>
-        <h1 className="text-2xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">SNSトレンド自動仕入</h1>
+        <h1 className="text-2xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">SNSトレンドAI分析</h1>
         <div className="inline-block bg-emerald-600 text-white font-black px-6 py-1 rounded-full uppercase italic text-[8px] md:text-[10px] tracking-widest shadow-lg">v1.1-MASTER</div>
       </div>
 
@@ -67,7 +67,7 @@ const MasterEngine = () => {
           className={"w-full h-24 " + (isAnalyzing ? 'bg-slate-800 opacity-50' : 'bg-orange-600 hover:bg-orange-500') + " text-white font-black rounded-[2rem] shadow-2xl flex items-center justify-center gap-6 text-3xl uppercase italic transition-all active:scale-95 border-b-8 border-orange-900 active:border-b-0"}
         >
           {isAnalyzing ? <Loader2 className="w-10 h-10 animate-spin" /> : <TrendingUp className="w-10 h-10" />}
-          <span>トレンド解析 ➔</span>
+          <span>トレンド解析 ?</span>
         </button>
 
         <div className="grid grid-cols-1 gap-6">
@@ -108,7 +108,7 @@ const MasterEngine = () => {
                          rel="noopener noreferrer"
                          className="h-16 px-8 bg-white text-slate-950 font-black rounded-xl shadow-lg hover:bg-orange-500 hover:text-white transition-all flex items-center gap-2 uppercase italic text-sm"
                        >
-                          <ShoppingCart size={20} /> 楽天で仕入れる ➔
+                          <ShoppingCart size={20} /> 楽天で仕入れる ?
                        </a>
                     </div>
                  </div>
@@ -134,7 +134,7 @@ const MasterEngine = () => {
       </div>
 
       <DebugPanel data={{ predictionsCount: predictions.length }} toolId="trend-stock-master" />
-      <div className="text-center opacity-10 mt-10 font-black uppercase tracking-[0.5em] italic text-[10px]">Supply Chain Automation • NextraLabs 2026</div>
+      <div className="text-center opacity-10 mt-10 font-black uppercase tracking-[0.5em] italic text-[10px]">Supply Chain Automation ? NextraLabs 2026</div>
     </div>
   )
 }

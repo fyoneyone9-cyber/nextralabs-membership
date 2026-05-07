@@ -65,7 +65,7 @@ export default function DashboardClient({ user, profile, subscription }: any) {
                     <div className={"inline-flex h-12 w-12 items-center justify-center rounded-2xl " + tool.bg}><tool.icon className={"h-6 w-6 " + tool.color} /></div>
                     <div className="flex-1 min-w-0 pt-1">
                       <p className="text-lg font-black text-white italic leading-tight uppercase truncate">{tool.name}</p>
-                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">ツールを起動する ➔</p>
+                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">ツールを起動する ?</p>
                     </div>
                   </Link>
                   <button onClick={(e) => toggleFavorite(e, tool.id)} className="absolute top-4 right-4 p-2 text-amber-400 scale-110"><Star size={18} fill="currentColor" /></button>
@@ -85,7 +85,7 @@ export default function DashboardClient({ user, profile, subscription }: any) {
                     <div className={"inline-flex h-12 w-12 items-center justify-center rounded-2xl " + tool.bg}><tool.icon className={"h-6 w-6 " + tool.color} /></div>
                     <div className="flex-1 min-w-0 pt-1">
                       <p className="text-lg font-black text-white italic leading-tight uppercase truncate">{tool.name}</p>
-                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">{locked ? "Upgrade required" : "ツールを起動する ➔"}</p>
+                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">{locked ? "Upgrade required" : "ツールを起動する ?"}</p>
                     </div>
                   </Link>
                   {!locked && <button onClick={(e) => toggleFavorite(e, tool.id)} className="absolute top-4 right-4 p-2 text-slate-700 hover:text-white opacity-0 group-hover:opacity-100"><Star size={18} fill="none" /></button>}
