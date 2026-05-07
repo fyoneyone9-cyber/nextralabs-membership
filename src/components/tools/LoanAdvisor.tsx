@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useCallback } from 'react'
-import { Loader2, Calculator, TrendingDown, Calendar, ShieldCheck, ArrowRight, Wallet, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react'
+import { Loader2, Calculator, TrendingDown, Calendar, ShieldCheck, ArrowRight, Wallet, CheckCircle2, AlertCircle, Sparkles, BookOpen } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 // ========================
@@ -57,7 +57,7 @@ export function LoanAdvisor() {
   }
 
   // 入力変更
-  const updateDebt = (id: string, field: keyof Debt, value: string | number) => {
+    const updateDebt = (id: string, field: keyof Debt, value: any) => {
     setDebts(debts.map(d => d.id === id ? { ...d, [field]: value } : d))
   }
 
@@ -77,8 +77,11 @@ export function LoanAdvisor() {
       setRandomOffers(shuffled)
       
       // 合計と平均金利の計算
-      const currentTotal = debts.reduce((sum, d) => sum + d.amount * 10000, 0)
-      const currentAvgRate = debts.reduce((sum, d) => sum + (d.rate * d.amount), 0) / (debts.reduce((sum, d) => sum + d.amount, 0) || 1)
+      const totalAmount = debts.reduce((sum, d) => sum + (Number(d.amount) || 0), 0)
+      const currentTotal = totalAmount * 10000
+      
+      const weightedRateSum = debts.reduce((sum, d) => sum + ((Number(d.rate) || 0) * (Number(d.amount) || 0)), 0)
+      const currentAvgRate = totalAmount > 0 ? (weightedRateSum / totalAmount) : 0
       
       // おまとめ後（一律12%と仮定したシミュレーション）
       const newRate = 12.0
@@ -138,7 +141,11 @@ export function LoanAdvisor() {
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic">Entry #{index + 1}</span>
                   {debts.length > 1 && (
-                    <button onClick={() => removeDebt(debt.id)} className="text-slate-500 hover:text-red-400 transition-colors">
+                    <button 
+                      type="button"
+                      onClick={() => removeDebt(debt.id)} 
+                      className="text-slate-500 hover:text-red-400 transition-colors"
+                    >
                       <Badge variant="outline" className="border-white/10 text-[9px]">削除</Badge>
                     </button>
                   )}
@@ -149,7 +156,7 @@ export function LoanAdvisor() {
                     <input 
                       type="number"
                       value={debt.amount || ''}
-                      onChange={e => updateDebt(debt.id, 'amount', Number(e.target.value))}
+                      onChange={e => updateDebt(debt.id, 'amount', e.target.value)}
                       className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white font-black focus:border-emerald-500 outline-none"
                     />
                   </div>
@@ -159,7 +166,7 @@ export function LoanAdvisor() {
                       type="number"
                       step="0.1"
                       value={debt.rate || ''}
-                      onChange={e => updateDebt(debt.id, 'rate', Number(e.target.value))}
+                      onChange={e => updateDebt(debt.id, 'rate', e.target.value)}
                       className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white font-black focus:border-emerald-500 outline-none"
                     />
                   </div>
@@ -169,6 +176,7 @@ export function LoanAdvisor() {
           </div>
 
           <button 
+            type="button"
             onClick={addDebt}
             disabled={debts.length >= 5}
             className="w-full py-3 border-2 border-dashed border-white/10 rounded-xl text-slate-500 font-black text-xs hover:border-emerald-500/50 hover:text-emerald-500 transition-all uppercase italic"
@@ -177,6 +185,7 @@ export function LoanAdvisor() {
           </button>
 
           <button
+            type="button"
             onClick={handleDiagnose}
             disabled={loading}
             className="w-full h-16 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black text-xl italic uppercase transition-all shadow-[0_0_30px_rgba(16,185,129,0.3)] active:scale-95 flex items-center justify-center gap-3"
@@ -237,6 +246,25 @@ export function LoanAdvisor() {
                 </h4>
                 <div className="text-slate-300 text-sm md:text-base font-bold leading-relaxed whitespace-pre-wrap">
                   {result.advice}
+                </div>
+
+                {/* さりげないAmazonリンク */}
+                <div className="mt-6 pt-6 border-t border-white/10">
+                  <a 
+                    href="https://amzn.to/4nb7oYs" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-emerald-500/30 transition-all group"
+                  >
+                    <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center shrink-0">
+                      <BookOpen className="text-emerald-500" size={24} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black text-slate-500 uppercase italic">知識で自分を守る</p>
+                      <p className="text-sm font-bold text-slate-300 group-hover:text-emerald-400 transition-colors">AIが推奨：今のあなたに必要なマネーリテラシー</p>
+                    </div>
+                    <ArrowRight size={16} className="ml-auto text-slate-600 group-hover:text-emerald-500 transition-all" />
+                  </a>
                 </div>
               </div>
 
