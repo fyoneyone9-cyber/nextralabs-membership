@@ -5,23 +5,37 @@ import { Loader2, Settings, ExternalLink, AlertTriangle, CheckCircle2 } from 'lu
 import { Badge } from '@/components/ui/badge'
 
 const STYLES = [
-  { id: 'japanese', name: '和風・日の丸', emoji: '⛩️', bg: '#1a0000', textColor: '#c0392b', accent: '#ffffff', font: 'bold 28px serif' },
-  { id: 'street',   name: 'ストリート',   emoji: '🏙️', bg: '#111111', textColor: '#ffdd00', accent: '#ffffff', font: 'bold 30px Impact, sans-serif' },
-  { id: 'retro',    name: 'レトロ',       emoji: '📻', bg: '#2c1a0e', textColor: '#ff6b35', accent: '#f7c59f', font: 'bold 26px Georgia, serif' },
-  { id: 'cyberpunk',name: 'サイバー',     emoji: '🌃', bg: '#000020', textColor: '#00ffff', accent: '#ff00ff', font: 'bold 28px monospace' },
-  { id: 'kawaii',   name: 'かわいい',     emoji: '🎀', bg: '#fff0f5', textColor: '#ff69b4', accent: '#ffb7c5', font: 'bold 28px sans-serif' },
-  { id: 'minimal',  name: 'ミニマル',     emoji: '⬜', bg: '#ffffff', textColor: '#111111', accent: '#888888', font: '300 28px Helvetica, sans-serif' },
-  { id: 'gold',     name: 'ラグジュアリー',emoji: '💎', bg: '#0a0a00', textColor: '#d4af37', accent: '#ffe566', font: 'bold 26px Georgia, serif' },
-  { id: 'neon',     name: 'ネオンサイン', emoji: '💡', bg: '#000000', textColor: '#39ff14', accent: '#ff00ff', font: 'bold 28px monospace' },
-  { id: 'nature',   name: 'ボタニカル',   emoji: '🌿', bg: '#f1f8f1', textColor: '#2ecc71', accent: '#1a6b3a', font: 'bold 26px Georgia, serif' },
+  { id: 'japanese',  name: '和風・日の丸',  emoji: '⛩️', bg: '#1a0000', textColor: '#c0392b', accent: '#ffffff', font: 'bold 28px serif' },
+  { id: 'street',    name: 'ストリート',    emoji: '🏙️', bg: '#111111', textColor: '#ffdd00', accent: '#ffffff', font: 'bold 30px Impact, sans-serif' },
+  { id: 'retro',     name: 'レトロ',        emoji: '📻', bg: '#2c1a0e', textColor: '#ff6b35', accent: '#f7c59f', font: 'bold 26px Georgia, serif' },
+  { id: 'cyberpunk', name: 'サイバー',      emoji: '🌃', bg: '#000020', textColor: '#00ffff', accent: '#ff00ff', font: 'bold 28px monospace' },
+  { id: 'kawaii',    name: 'かわいい',      emoji: '🎀', bg: '#fff0f5', textColor: '#ff69b4', accent: '#ffb7c5', font: 'bold 28px sans-serif' },
+  { id: 'minimal',   name: 'ミニマル',      emoji: '⬜', bg: '#ffffff', textColor: '#111111', accent: '#888888', font: '300 28px Helvetica, sans-serif' },
+  { id: 'gold',      name: 'ラグジュアリー', emoji: '💎', bg: '#0a0a00', textColor: '#d4af37', accent: '#ffe566', font: 'bold 26px Georgia, serif' },
+  { id: 'neon',      name: 'ネオンサイン',  emoji: '💡', bg: '#000000', textColor: '#39ff14', accent: '#ff00ff', font: 'bold 28px monospace' },
+  { id: 'nature',    name: 'ボタニカル',    emoji: '🌿', bg: '#f1f8f1', textColor: '#2ecc71', accent: '#1a6b3a', font: 'bold 26px Georgia, serif' },
+  { id: 'gradient',  name: 'グラデーション', emoji: '🌈', bg: '#1a0033', textColor: '#ffffff', accent: '#a855f7', font: 'bold 28px sans-serif' },
+  { id: 'vintage',   name: 'ヴィンテージ',  emoji: '🗿', bg: '#f5e6c8', textColor: '#5c3d1e', accent: '#a0785a', font: 'bold 26px Georgia, serif' },
+  { id: 'popart',    name: 'ポップアート',  emoji: '🎨', bg: '#ffff00', textColor: '#e91e63', accent: '#0000ff', font: 'bold 30px Impact, sans-serif' },
+  { id: 'anime',     name: 'アニメ風',      emoji: '🌸', bg: '#0d0d2b', textColor: '#ff6ec7', accent: '#7df9ff', font: 'bold 26px sans-serif' },
+  { id: 'military',  name: 'ミリタリー',   emoji: '🪖', bg: '#2d3a1e', textColor: '#c8b560', accent: '#8a9a5b', font: 'bold 26px monospace' },
+  { id: 'typo',      name: 'タイポグラフィ', emoji: '🔤', bg: '#ffffff', textColor: '#000000', accent: '#ff3300', font: '900 32px Helvetica, sans-serif' },
+  { id: 'monochrome',name: 'モノクロ',      emoji: '🖤', bg: '#1a1a1a', textColor: '#ffffff', accent: '#888888', font: '300 28px Helvetica, sans-serif' },
 ];
 
 const TSHIRT_COLORS = [
-  { id: 'white', name: '白',    hex: '#FFFFFF' },
-  { id: 'black', name: '黒',    hex: '#1a1a1a' },
-  { id: 'navy',  name: '紺',    hex: '#1e3a5f' },
-  { id: 'gray',  name: 'グレー', hex: '#808080' },
-  { id: 'red',   name: 'レッド', hex: '#e74c3c' },
+  { id: 'white',  name: '白',      hex: '#FFFFFF' },
+  { id: 'black',  name: '黒',      hex: '#1a1a1a' },
+  { id: 'navy',   name: '紺',      hex: '#1e3a5f' },
+  { id: 'gray',   name: 'グレー',   hex: '#808080' },
+  { id: 'red',    name: 'レッド',   hex: '#e74c3c' },
+  { id: 'beige',  name: 'ベージュ', hex: '#f5e6c8' },
+  { id: 'green',  name: 'グリーン', hex: '#2d6a4f' },
+  { id: 'purple', name: 'パープル', hex: '#6b21a8' },
+  { id: 'pink',   name: 'ピンク',   hex: '#f472b6' },
+  { id: 'orange', name: 'オレンジ', hex: '#ea580c' },
+  { id: 'brown',  name: 'ブラウン', hex: '#78350f' },
+  { id: 'yellow', name: 'イエロー', hex: '#fbbf24' },
 ];
 
 const LS_KEY = 'nextra_selectshop_settings';
@@ -136,9 +150,22 @@ const MasterEngine = () => {
 
     // デザインエリア（スタイル別背景）
     const dx = w * 0.25, dy = h * 0.3, dw = w * 0.5, dh = h * 0.4;
-    ctx.fillStyle = currentStyle.bg;
     ctx.beginPath();
     (ctx as any).roundRect?.(dx, dy, dw, dh, 12) ?? ctx.rect(dx, dy, dw, dh);
+
+    // グラデーションスタイル専用
+    if (style === 'gradient') {
+      const grad = ctx.createLinearGradient(dx, dy, dx + dw, dy + dh);
+      grad.addColorStop(0, '#7c3aed');
+      grad.addColorStop(0.5, '#db2777');
+      grad.addColorStop(1, '#2563eb');
+      ctx.fillStyle = grad;
+    } else if (style === 'popart') {
+      // ポップアート：ハーフトーン風に黄色ベース
+      ctx.fillStyle = currentStyle.bg;
+    } else {
+      ctx.fillStyle = currentStyle.bg;
+    }
     ctx.fill();
 
     // アクセントライン
@@ -341,20 +368,20 @@ const MasterEngine = () => {
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase text-slate-500 italic">生地のカラー</label>
-              <div className="flex gap-3">
+              <div className="flex flex-wrap gap-2">
                 {TSHIRT_COLORS.map(c => (
                   <button key={c.id} onClick={() => setTshirtColor(c.id)} title={c.name}
-                    className={'w-12 h-12 rounded-xl border-4 transition-all ' + (tshirtColor === c.id ? 'border-emerald-500 scale-110' : 'border-white/5')}
+                    className={'w-10 h-10 rounded-xl border-4 transition-all ' + (tshirtColor === c.id ? 'border-emerald-500 scale-110' : 'border-white/5 hover:border-white/20')}
                     style={{ backgroundColor: c.hex }} />
                 ))}
               </div>
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase text-slate-500 italic">スタイルパレット</label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 {STYLES.map(s => (
                   <button key={s.id} onClick={() => setStyle(s.id)}
-                    className={'py-3 rounded-xl text-[10px] font-black uppercase italic border-2 transition-all ' +
+                    className={'py-2 rounded-xl text-[9px] font-black uppercase italic border-2 transition-all ' +
                       (style === s.id ? 'bg-emerald-500 text-slate-950 border-emerald-400' : 'bg-black text-slate-500 border-white/5 hover:border-white/20')}>
                     {s.emoji} {s.name}
                   </button>
