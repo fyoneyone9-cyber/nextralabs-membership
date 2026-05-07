@@ -154,11 +154,18 @@ export default function DmsEngine() {
                 <thead className={isDarkMode ? "bg-black/50 text-slate-400" : "bg-slate-50 text-slate-400"}>
                   <tr><th className="p-4">項目</th><th className="p-4">ステータス</th><th className="p-4 text-right">操作</th></tr>
                 </thead>
-                <tbody className="divide-y border-inherit">
-                  <tr>
-                    <td className="p-4 font-bold text-inherit">AdvaNceD IoT 連携ユニット</td>
-                    <td className="p-4"><Badge className="bg-emerald-500/20 text-emerald-500 border-emerald-500/30">Active</Badge></td>
-                    <td className="p-4 text-right"><button className="p-1 hover:bg-emerald-500/10 rounded transition-colors"><PenLine size={14} /></button></td>
+                                <tbody className="divide-y border-inherit">
+                  <tr className="hover:bg-emerald-500/5 transition-colors">
+                    <td className="p-6"><Link href="/dms/properties/PROP-001" className="text-indigo-600 font-bold hover:underline uppercase tracking-tight">AAA 静岡市 shizuoka</Link></td>
+                    <td className="p-6 font-medium text-slate-500">Beds24 (165875)</td>
+                    <td className="p-6"><Badge className="bg-emerald-500/20 text-emerald-500 border-0 text-[8px] font-black uppercase">Active</Badge></td>
+                    <td className="p-6 text-right"><ArrowRight size={16} className="ml-auto opacity-20" /></td>
+                  </tr>
+                  <tr className="hover:bg-emerald-500/5 transition-colors">
+                    <td className="p-6"><Link href="/dms/properties/PROP-002" className="text-indigo-600 font-bold hover:underline uppercase tracking-tight">ピースINN 益田駅北</Link></td>
+                    <td className="p-6 font-medium text-slate-500">Staysee (442135)</td>
+                    <td className="p-6"><Badge className="bg-emerald-500/20 text-emerald-500 border-0 text-[8px] font-black uppercase">Active</Badge></td>
+                    <td className="p-6 text-right"><ArrowRight size={16} className="ml-auto opacity-20" /></td>
                   </tr>
                 </tbody>
               </table>
@@ -181,12 +188,18 @@ export default function DmsEngine() {
                 <thead className={isDarkMode ? "bg-black/50 text-slate-500" : "bg-slate-50 text-slate-400"}>
                   <tr><th className="p-4">ステータス</th><th className="p-4">宿泊者</th><th className="p-4">部屋</th><th className="p-4 text-right">詳細</th></tr>
                 </thead>
-                <tbody className="divide-y border-inherit">
+                                <tbody className="divide-y border-inherit">
                   <tr className="hover:bg-emerald-500/5 transition-colors">
-                    <td className="p-4"><Badge className="bg-emerald-500 text-white border-0 font-bold text-[8px]">確定</Badge></td>
-                    <td className="p-4 font-black"><Link href="/dms/bookings/BK-8821" className="text-indigo-600 hover:underline">米山 文貴 様</Link></td>
-                    <td className="p-4 font-mono text-emerald-500">201</td>
-                    <td className="p-4 text-right"><ArrowRight size={16} className="ml-auto opacity-20" /></td>
+                    <td className="p-6"><Link href="/dms/properties/PROP-001" className="text-indigo-600 font-bold hover:underline uppercase tracking-tight">AAA 静岡市 shizuoka</Link></td>
+                    <td className="p-6 font-medium text-slate-500">Beds24 (165875)</td>
+                    <td className="p-6"><Badge className="bg-emerald-500/20 text-emerald-500 border-0 text-[8px] font-black uppercase">Active</Badge></td>
+                    <td className="p-6 text-right"><ArrowRight size={16} className="ml-auto opacity-20" /></td>
+                  </tr>
+                  <tr className="hover:bg-emerald-500/5 transition-colors">
+                    <td className="p-6"><Link href="/dms/properties/PROP-002" className="text-indigo-600 font-bold hover:underline uppercase tracking-tight">ピースINN 益田駅北</Link></td>
+                    <td className="p-6 font-medium text-slate-500">Staysee (442135)</td>
+                    <td className="p-6"><Badge className="bg-emerald-500/20 text-emerald-500 border-0 text-[8px] font-black uppercase">Active</Badge></td>
+                    <td className="p-6 text-right"><ArrowRight size={16} className="ml-auto opacity-20" /></td>
                   </tr>
                 </tbody>
               </table>
