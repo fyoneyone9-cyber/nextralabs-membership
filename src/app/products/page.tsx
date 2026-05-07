@@ -1,5 +1,6 @@
 ﻿'use client'
-import React, { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
+import React, { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -86,18 +87,36 @@ function ProductCard({ product }) {
   )
 }
 
-export default function ProductsPage() {
-  const [mounted, setMounted] = useState(false)
+import { useSearchParams } from 'next/navigation'
+import React, { useState, useEffect, Suspense } from 'react'
+
+// ... (TOOLS, CATEGORIES, ProductCard の定義はそのまま)
+
+function ProductsList() {
   const searchParams = useSearchParams()
   const q = searchParams.get('q')?.toLowerCase() || ''
-
   const filteredTools = q 
     ? TOOLS.filter(t => t.title.toLowerCase().includes(q) || t.sub.toLowerCase().includes(q))
     : TOOLS
-  const [randomFree, setRandomFree] = useState([])
-  const [pickupTools, setPickupTools] = useState([])
-  useEffect(() => {
-    setMounted(true)
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {filteredTools.map(product => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </div>
+  )
+}
+
+export default function ProductsPage() {
+  return (
+    <div className="container mx-auto py-10 px-4">
+      <Suspense fallback={<div className="text-emerald-500 font-bold">Loading Tools...</div>}>
+        <ProductsList />
+      </Suspense>
+    </div>
+  )
+}
     setRandomFree(TOOLS.filter(t => t.plan === '無料').sort(() => 0.5 - Math.random()).slice(0, 3))
     setPickupTools([...filteredTools].sort(() => 0.5 - Math.random()).slice(0, 3))
   }, [])
