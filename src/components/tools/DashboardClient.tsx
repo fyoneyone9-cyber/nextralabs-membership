@@ -1,4 +1,4 @@
-ï»¿'use client'
+'use client'
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -6,20 +6,20 @@ import { Badge } from '@/components/ui/badge'
 import { Star, Rocket, Zap, Building2, TrendingUp, Share2, ShieldCheck, Network, Wallet, Youtube, User, Sofa, Briefcase, Shield, HeartHandshake } from 'lucide-react'
 
 const ALL_TOOLS = [
-  { id: 'staysee-ai-finder', name: 'AIÃ—ãƒ›ãƒ†ãƒ«DXã‚·ã‚¹ãƒ†ãƒ ã€Nextraã€‘', icon: Building2, color: 'text-emerald-500', bg: 'bg-emerald-500/10', plan: 'premium' },
-  { id: 'comp-price-monitor', name: 'ç«¶åˆAIä¾¡æ ¼ç›£è¦–', icon: TrendingUp, color: 'text-blue-500', bg: 'bg-blue-500/10', plan: 'light' },
-  { id: 'sns-auto-poster', name: 'AI SNSã‚ªãƒ¼ãƒˆãƒã‚¹ã‚¿ãƒ¼', icon: Share2, color: 'text-rose-500', bg: 'bg-rose-500/10', plan: 'light' },
-  { id: 'evidence-manager', name: 'AI ã‚¨ãƒ“ãƒ‡ãƒ³ã‚¹ãƒ»ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼', icon: ShieldCheck, color: 'text-emerald-400', bg: 'bg-emerald-400/10', plan: 'free' },
-  { id: 'hotel-affiliate', name: 'ã‚¢ãƒ•ã‚£ãƒªã‚¨ã‚¤ãƒˆAIé€£æº', icon: Network, color: 'text-emerald-400', bg: 'bg-emerald-400/10', plan: 'premium' },
-  { id: 'money-guard', name: 'AIå®¶è¨ˆé˜²è¡›ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚¿ãƒ¼', icon: Wallet, color: 'text-amber-500', bg: 'bg-amber-500/10', plan: 'standard' },
-  { id: 'youtube-producer', name: 'AI YouTubeãƒ—ãƒ­ãƒ‡ãƒ¥ãƒ¼ã‚µãƒ¼', icon: Youtube, color: 'text-red-500', bg: 'bg-red-500/10', plan: 'premium' },
+  { id: 'staysee-ai-finder', name: 'AI~ƒzƒeƒ‹DXƒVƒXƒeƒ€yNextraz', icon: Building2, color: 'text-emerald-500', bg: 'bg-emerald-500/10', plan: 'premium' },
+  { id: 'comp-price-monitor', name: '‹£‡AI‰¿ŠiŠÄ‹', icon: TrendingUp, color: 'text-blue-500', bg: 'bg-blue-500/10', plan: 'light' },
+  { id: 'sns-auto-poster', name: 'AI SNSƒI[ƒgƒ|ƒXƒ^[', icon: Share2, color: 'text-rose-500', bg: 'bg-rose-500/10', plan: 'light' },
+  { id: 'evidence-manager', name: 'AI ƒGƒrƒfƒ“ƒXEƒ}ƒl[ƒWƒƒ[', icon: ShieldCheck, color: 'text-emerald-400', bg: 'bg-emerald-400/10', plan: 'free' },
+  { id: 'hotel-affiliate', name: 'ƒAƒtƒBƒŠƒGƒCƒgAI˜AŒg', icon: Network, color: 'text-emerald-400', bg: 'bg-emerald-400/10', plan: 'premium' },
+  { id: 'money-guard', name: 'AI‰ÆŒv–h‰qƒVƒ~ƒ…ƒŒ[ƒ^[', icon: Wallet, color: 'text-amber-500', bg: 'bg-amber-500/10', plan: 'standard' },
+  { id: 'youtube-producer', name: 'AI YouTubeƒvƒƒfƒ…[ƒT[', icon: Youtube, color: 'text-red-500', bg: 'bg-red-500/10', plan: 'premium' },
   { id: 'contact-sync', name: 'AI Contact Sync', icon: User, color: 'text-indigo-400', bg: 'bg-indigo-400/10', plan: 'light' },
   { id: 'interior-coordinator', name: 'AI Interior Sync', icon: Sofa, color: 'text-amber-500', bg: 'bg-amber-500/10', plan: 'premium' },
-  { id: 'ai-sidejob', name: 'AIå‰¯æ¥­ã‚¹ã‚¿ãƒ¼ãƒˆãƒ€ãƒƒã‚·ãƒ¥', icon: Briefcase, color: 'text-indigo-500', bg: 'bg-indigo-400/10', plan: 'premium' },
-  { id: 'disaster-guard', name: 'AIé˜²ç½ãƒ‘ãƒ¼ã‚½ãƒŠãƒ«ã‚¬ã‚¤ãƒ‰', icon: Shield, color: 'text-sky-500', bg: 'bg-sky-500/10', plan: 'standard' },
-  { id: 'ai-konkatsu', name: 'AIå©šæ´»ã‚³ãƒ¼ãƒ', icon: HeartHandshake, color: 'text-rose-400', bg: 'bg-rose-400/10', plan: 'standard' },
-  { id: 'office-politics-graph', name: 'ç¤¾å†…æ”¿æ²» AIç›¸é–¢å›³', icon: Share2, color: 'text-slate-400', bg: 'bg-slate-400/10', plan: 'free' },
-  { id: 'trend-stock', name: 'SNSãƒˆãƒ¬ãƒ³ãƒ‰è‡ªå‹•ä»•å…¥', icon: TrendingUp, color: 'text-orange-500', bg: 'bg-orange-500/10', plan: 'standard' },
+  { id: 'ai-sidejob', name: 'AI•›‹ÆƒXƒ^[ƒgƒ_ƒbƒVƒ…', icon: Briefcase, color: 'text-indigo-500', bg: 'bg-indigo-400/10', plan: 'premium' },
+  { id: 'disaster-guard', name: 'AI–hĞƒp[ƒ\ƒiƒ‹ƒKƒCƒh', icon: Shield, color: 'text-sky-500', bg: 'bg-sky-500/10', plan: 'standard' },
+  { id: 'ai-konkatsu', name: 'AI¥ŠˆƒR[ƒ`', icon: HeartHandshake, color: 'text-rose-400', bg: 'bg-rose-400/10', plan: 'standard' },
+  { id: 'office-politics-graph', name: 'Ğ“à­¡ AI‘ŠŠÖ}', icon: Share2, color: 'text-slate-400', bg: 'bg-slate-400/10', plan: 'free' },
+  { id: 'trend-stock', name: 'SNSƒgƒŒƒ“ƒh©“®d“ü', icon: TrendingUp, color: 'text-orange-500', bg: 'bg-orange-500/10', plan: 'standard' },
 ]
 
 export default function DashboardClient({ user, profile, subscription }: any) {
@@ -37,7 +37,7 @@ export default function DashboardClient({ user, profile, subscription }: any) {
   }
   if (!mounted) return null
   const plan = subscription?.plan || 'free'
-  const planDisplay = plan === 'premium' ? 'ãƒ—ãƒ¬ãƒŸã‚¢ãƒ ä¼šå“¡' : plan === 'standard' ? 'ã‚¹ã‚¿ãƒ³ãƒ€ãƒ¼ãƒ‰ä¼šå“¡' : plan === 'light' ? 'ãƒ©ã‚¤ãƒˆä¼šå“¡' : 'ç„¡æ–™ä¼šå“¡'
+  const planDisplay = plan === 'premium' ? 'ƒvƒŒƒ~ƒAƒ€‰ïˆõ' : plan === 'standard' ? 'ƒXƒ^ƒ“ƒ_[ƒh‰ïˆõ' : plan === 'light' ? 'ƒ‰ƒCƒg‰ïˆõ' : '–³—¿‰ïˆõ'
   const hasAccess = (toolPlan: string) => {
     if (plan === 'premium') return true
     if (plan === 'standard') return ['standard', 'light', 'free'].includes(toolPlan)
@@ -51,14 +51,14 @@ export default function DashboardClient({ user, profile, subscription }: any) {
       <div className="container mx-auto px-4 py-12 max-w-6xl space-y-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-10">
           <div className="space-y-2">
-            <Badge variant="outline" className="px-4 py-1 text-xs font-black text-emerald-500 border-emerald-500/20">ãƒ€ãƒƒã‚·ãƒ¥ãƒœãƒ¼ãƒ‰</Badge>
-            <h1 className="text-4xl md:text-6xl font-black text-white italic tracking-tighter uppercase leading-none">Welcome, {profile?.display_name || 'ã‚²ã‚¹ãƒˆæ§˜'}</h1>
+            <Badge variant="outline" className="px-4 py-1 text-xs font-black text-emerald-500 border-emerald-500/20">ƒ_ƒbƒVƒ…ƒ{[ƒh</Badge>
+            <h1 className="text-4xl md:text-6xl font-black text-white italic tracking-tighter uppercase leading-none">Welcome, {profile?.display_name || 'ƒQƒXƒg—l'}</h1>
           </div>
           <Badge className="px-6 py-2 font-black italic uppercase rounded-xl shadow-lg border-0 bg-slate-800 text-slate-400">{planDisplay}</Badge>
         </div>
         {favoriteTools.length > 0 && (
           <div className="space-y-6">
-            <div className="flex items-center gap-3 px-4"><Star className="h-6 w-6 text-amber-500 fill-amber-400" /><h3 className="font-black italic uppercase tracking-tighter text-2xl">ãŠæ°—ã«å…¥ã‚Šã‚·ã‚¹ãƒ†ãƒ </h3></div>
+            <div className="flex items-center gap-3 px-4"><Star className="h-6 w-6 text-amber-500 fill-amber-400" /><h3 className="font-black italic uppercase tracking-tighter text-2xl">‚¨‹C‚É“ü‚èƒVƒXƒeƒ€</h3></div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {favoriteTools.map(tool => (
                 <div key={tool.id} className="group relative h-32 p-6 rounded-[2rem] border-2 transition-all overflow-hidden bg-black border-emerald-500/30 hover:border-emerald-500">
@@ -66,7 +66,7 @@ export default function DashboardClient({ user, profile, subscription }: any) {
                     <div className={"inline-flex h-12 w-12 items-center justify-center rounded-2xl " + tool.bg}><tool.icon className={"h-6 w-6 " + tool.color} /></div>
                     <div className="flex-1 min-w-0 pt-1">
                       <p className="text-lg font-black text-white italic leading-tight uppercase truncate">{tool.name}</p>
-                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">ãƒ„ãƒ¼ãƒ«ã‚’èµ·å‹•ã™ã‚‹ ?</p>
+                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">ƒc[ƒ‹‚ğ‹N“®‚·‚é ?</p>
                     </div>
                   </Link>
                   <button onClick={(e) => toggleFavorite(e, tool.id)} className="absolute top-4 right-4 p-2 text-amber-400 scale-110"><Star size={18} fill="currentColor" /></button>
@@ -76,7 +76,7 @@ export default function DashboardClient({ user, profile, subscription }: any) {
           </div>
         )}
         <div className="space-y-6">
-          <div className="flex items-center justify-between px-4"><h3 className="font-black italic uppercase tracking-tighter text-2xl flex items-center gap-3"><Rocket className="h-6 w-6 text-emerald-500" />ãƒã‚¹ã‚¿ãƒ„ãƒ¼ãƒ«ãƒ»ã‚¢ã‚¯ã‚»ã‚¹</h3></div>
+          <div className="flex items-center justify-between px-4"><h3 className="font-black italic uppercase tracking-tighter text-2xl flex items-center gap-3"><Rocket className="h-6 w-6 text-emerald-500" />ƒ}ƒXƒ^ƒc[ƒ‹EƒAƒNƒZƒX</h3></div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {regularTools.map(tool => {
               const locked = !hasAccess(tool.plan)
@@ -86,7 +86,7 @@ export default function DashboardClient({ user, profile, subscription }: any) {
                     <div className={"inline-flex h-12 w-12 items-center justify-center rounded-2xl " + tool.bg}><tool.icon className={"h-6 w-6 " + tool.color} /></div>
                     <div className="flex-1 min-w-0 pt-1">
                       <p className="text-lg font-black text-white italic leading-tight uppercase truncate">{tool.name}</p>
-                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">{locked ? "Upgrade required" : "ãƒ„ãƒ¼ãƒ«ã‚’èµ·å‹•ã™ã‚‹ ?"}</p>
+                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">{locked ? "Upgrade required" : "ƒc[ƒ‹‚ğ‹N“®‚·‚é ?"}</p>
                     </div>
                   </Link>
                   {!locked && <button onClick={(e) => toggleFavorite(e, tool.id)} className="absolute top-4 right-4 p-2 text-slate-700 hover:text-white opacity-0 group-hover:opacity-100"><Star size={18} fill="none" /></button>}
