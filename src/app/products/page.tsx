@@ -15,7 +15,7 @@ import {
 const TOOLS = [
   { id: 'staysee-ai-finder', cat: 'hotel', title: 'AI×ホテルDXシステム【Nextra】', sub: '宿泊予約・鍵発行を完全同期', icon: Building2, plan: 'プレミアム', badge: 'MASTER' },
   { id: 'comp-price-monitor', cat: 'hotel', title: '競合AI価格監視', sub: '楽天API連携 × 価格最適化OS', icon: LineChart, plan: 'プレミアム', badge: 'NEW' },
-  { id: 'hotel-affiliate', cat: 'hotel', title: 'アフィリエイト連携', sub: '宿紹介 × 楽天収益化OS', icon: Network, plan: 'スタンダード', badge: 'MASTER' },
+  { id: 'hotel-affiliate', cat: 'hotel', title: 'アフィリエイトAI連携', sub: '宿紹介 × 楽天収益化OS', icon: Network, plan: 'スタンダード', badge: 'MASTER' },
   { id: 'moving-checker', cat: 'hotel', title: 'AI引越し安心チェッカー', sub: '治安・物件リスクを徹底分析', icon: Home, plan: '無料', badge: 'MASTER' },
   { id: 'sns-auto-poster', cat: 'sns', title: 'AI SNSオートポスター', sub: 'バズを量産するマルチSNS生成', icon: Share2, plan: 'ライト', badge: 'MASTER' },
   { id: 'ai-select-shop', cat: 'sns', title: 'AIセレクトショップ', sub: 'トレンド分析 × Shopify連携', icon: Store, plan: 'プレミアム', badge: 'コンテンツ戦略' },
@@ -75,7 +75,7 @@ function ProductCard({ product }: { product: any }) {
         </div>
         <div className="pt-4 border-t border-white/5 flex flex-col gap-2.5 mt-auto">
           <Link href={"/products/" + product.id + "/app"} className="block w-full">
-            <Button className="w-full h-10 md:h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs md:text-sm rounded-xl transition-all">このツールを使う ➔</Button>
+            <Button className="w-full h-10 md:h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs md:text-sm rounded-xl transition-all">このツールを使う ?</Button>
           </Link>
           <div className="flex justify-between items-center px-2 py-1 bg-black/40 rounded-lg border border-white/5">
             <span className={badgeClass}>{product.plan} プラン</span>
