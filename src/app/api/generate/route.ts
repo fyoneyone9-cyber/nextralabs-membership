@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// Vercel Hobby plan max duration
+export const maxDuration = 10
+export const dynamic = 'force-dynamic'
+
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyCMbtu9IJIGbml2KOv1Yjit9QP7TkmIgiA'
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`
 
@@ -34,39 +38,52 @@ function escapeXml(text: string): string {
 
 export async function POST(req: NextRequest) {
   try {
-    const { theme, genre, maxChars = 5000, includeCoverPrompt = false } = await req.json()
+    const { theme, genre, maxChars = 5000, includeCoverPrompt = false, isAdmin = false } = await req.json()
 
     if (!theme || !genre) {
       return NextResponse.json({ success: false, error: 'テーマとジャンルは必須です。' }, { status: 400 })
     }
 
-    const charLimit = Math.min(maxChars, 10000)
+    // 管理者は制限なし。それ以外はVercel Hobby plan 10秒タイムアウト対策
+    const charLimit = isAdmin ? Math.min(maxChars, 10000) : Math.min(maxChars, 3000)
+    const maxTokens = isAdmin ? 8192 : 2048
 
-    // 本文生成プロンプト
-    const prompt = `あなたはKindle電子書籍の専門ライターです。以下の条件でKindle本の原稿を日本語で執筆してください。
+    const prompt = isAdmin
+      ? `あなたはKindle電子書籍の専門ライターです。以下の条件でKindle本の原稿を日本語で執筆してください。
 
 【テーマ】${theme}
 【ジャンル】${genre}
 【文字数目標】約${charLimit}字
 
 以下の構成で書いてください：
-1. はじめに（導入・この本で得られること）
-2. 第1章（メインテーマの基礎知識）
-3. 第2章（具体的な方法・ステップ）
-4. 第3章（実践例・ケーススタディ）
-5. 第4章（よくある失敗と対策）
-6. おわりに（まとめ・次のアクション）
+## はじめに
+## 第1章：基礎知識
+## 第2章：具体的な方法・ステップ
+## 第3章：実践例・ケーススタディ
+## 第4章：よくある失敗と対策
+## おわりに
 
-※Kindleで実際に販売できる品質で、読者に価値ある内容を書いてください。
-※各章は ## で始めてください。
-※合計${charLimit}字程度になるよう各章を充実させてください。${includeCoverPrompt ? '\n※最後に「【表紙プロンプト】」として英語でMidjourney/DALL-E用の表紙画像生成プロンプトを1つ書いてください。' : ''}`
+各章を充実させ、Kindleで販売できる品質で書いてください。${includeCoverPrompt ? '\n最後に【表紙プロンプト】として英語でMidjourney/DALL-E用プロンプトを書いてください。' : ''}`
+      : `Kindle電子書籍の原稿を日本語で書いてください。
+
+テーマ：${theme}
+ジャンル：${genre}
+文字数：約${charLimit}字
+
+構成：
+## はじめに
+## 第1章：基礎知識
+## 第2章：具体的な方法
+## 第3章：実践・まとめ
+
+各章300〜500字で簡潔に。${includeCoverPrompt ? '\n最後に【表紙プロンプト】として英語で画像生成プロンプトを1行書いてください。' : ''}`
 
     const res = await fetch(GEMINI_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { maxOutputTokens: 8192, temperature: 0.7 }
+        generationConfig: { maxOutputTokens: maxTokens, temperature: 0.7 }
       })
     })
 

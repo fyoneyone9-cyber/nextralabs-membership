@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useCallback, useEffect } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
-import { Loader2, BookOpen, Download, FileText, Sparkles, Crown, Zap, Lock } from 'lucide-react'
+import { Loader2, BookOpen, Download, FileText, Sparkles, Crown, Zap, Lock, PenLine, Copy, CheckCheck } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 // ========================
@@ -140,6 +140,7 @@ function LockedFeature({ requiredPlan, label }: { requiredPlan: string; label: s
 // ========================
 export function KindleFactory() {
   const [userPlan, setUserPlan] = useState<UserPlan>('free')
+  const [isAdmin, setIsAdmin] = useState(false)
   const [planLoading, setPlanLoading] = useState(true)
   const [theme, setTheme] = useState('')
   const [genre, setGenre] = useState('')
@@ -160,9 +161,10 @@ export function KindleFactory() {
         const { data: { session } } = await supabase.auth.getSession()
         if (!session) { setPlanLoading(false); return }
 
-        // 管理者は常にプレミアム
+        // 管理者は常にプレミアム＋制限なし
         if (session.user.email === 'f.yoneyone9@gmail.com') {
           setUserPlan('premium')
+          setIsAdmin(true)
           setPlanLoading(false)
           return
         }
@@ -212,8 +214,9 @@ export function KindleFactory() {
         body: JSON.stringify({
           theme: theme.trim(),
           genre: genre.trim(),
-          maxChars: config.maxChars,
+          maxChars: isAdmin ? 10000 : config.maxChars,
           includeCoverPrompt: config.hasCoverPrompt,
+          isAdmin,
         }),
       })
       const data = await response.json()
