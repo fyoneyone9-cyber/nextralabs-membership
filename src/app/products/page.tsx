@@ -130,16 +130,16 @@ export default function ProductsPage() {
       <div className="max-w-7xl mx-auto px-4 space-y-32">
         {/* 本日のおすすめセクション */}
         <section>
-          <SectionTitle emoji="??" title="本日のおすすめ" color="border-orange-500" />
+          <SectionTitle emoji="" title="本日のおすすめ" color="border-orange-500" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {todayRecommended.map(p => <ProductCard key={p.id} product={p} />)}
           </div>
         </section>
 
-        <section><SectionTitle emoji="??" title="無料ツール" color="border-emerald-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{freeTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
-        <section><SectionTitle emoji="??" title="ホテル・民泊オーナー様向け" color="border-blue-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{hotelTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
-        <section><SectionTitle emoji="???" title="防犯・ライフ" color="border-red-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{defenseTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
-        <section><SectionTitle emoji="??" title="ビジネス・制作" color="border-teal-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{bizTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
+        <section><SectionTitle emoji="" title="無料ツール" color="border-emerald-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{freeTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
+        <section><SectionTitle emoji="" title="ホテル・民泊オーナー様向け" color="border-blue-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{hotelTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
+        <section><SectionTitle emoji="?" title="防犯・ライフ" color="border-red-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{defenseTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
+        <section><SectionTitle emoji="" title="ビジネス・制作" color="border-teal-500" /><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{bizTools.map(p => <ProductCard key={p.id} product={p} />)}</div></section>
       </div>
     </div>
   )
