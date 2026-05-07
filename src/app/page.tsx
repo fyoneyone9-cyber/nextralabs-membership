@@ -77,37 +77,39 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ホテルDXセクション - モバイルでの圧迫感を排除 */}
-      <section className="py-12 bg-blue-600">
+      {/* ホテルDXセクション - 配色をブランドカラー（黒背景＋エメラルド）へ統合 */}
+      <section className="py-12 bg-[#050507]">
         <div className="container mx-auto px-6">
-          <div className="flex items-center gap-3 mb-6 text-white border-l-8 border-white/20 pl-4 py-1">
-            <Hotel className="h-6 w-6" />
+          <div className="flex items-center gap-3 mb-6 text-white border-l-8 border-emerald-500 pl-4 py-1">
+            <Hotel className="h-6 w-6 text-emerald-500" />
             <h2 className="text-xl md:text-4xl font-black italic uppercase">Hotel DX</h2>
           </div>
           <Link href="/products/staysee-ai-finder/app">
-            <Card className="hover:scale-[1.02] transition-all duration-300 border-0 bg-slate-950 text-white overflow-hidden rounded-[2rem] shadow-2xl">
+            <Card className="hover:scale-[1.02] transition-all duration-300 border-2 border-emerald-500/30 bg-[#13141f] text-white overflow-hidden rounded-[2rem] shadow-[0_0_50px_rgba(16,185,129,0.1)]">
               <CardContent className="p-8 space-y-6">
                 <div className="flex justify-between items-center">
-                  <Badge className="bg-blue-500 text-white font-black px-3 py-0.5 text-[10px] uppercase">Master</Badge>
+                  <Badge className="bg-emerald-500 text-slate-950 font-black px-3 py-0.5 text-[10px] uppercase">Master</Badge>
                   <span className="text-[10px] font-black text-amber-500 flex items-center gap-1 animate-pulse"><Zap className="h-3 w-3 fill-current" /> NEW</span>
                 </div>
-                <h3 className="text-2xl font-black italic leading-none uppercase">AI×ホテルDXシステム<br/>【Nextra】</h3>
-                <p className="text-slate-400 text-xs font-bold leading-relaxed italic">宿泊予約・鍵発行を完全同期。フロント業務をゼロにする最強の宿泊AI。</p>
-                <div className="flex items-center text-blue-400 font-black text-sm uppercase">連携を開始する <ArrowRight className="ml-2 h-4 w-4" /></div>
+                <h3 className="text-2xl md:text-4xl font-black italic leading-none uppercase text-white">AI×ホテルDXシステム<br/>【Nextra】</h3>
+                <p className="text-slate-400 text-xs md:text-sm font-bold leading-relaxed italic">宿泊予約・鍵発行を完全同期。フロント業務をゼロにする最強の宿泊AI。</p>
+                <div className="flex items-center text-emerald-400 font-black text-sm uppercase group">
+                  連携を開始する <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </div>
               </CardContent>
             </Card>
           </Link>
         </div>
       </section>
 
-      {/* PWA Section - コンパクトに */}
-      <section className="py-8 bg-indigo-950/50">
+      {/* PWA Section - 配色統合 */}
+      <section className="py-8 bg-[#13141f] border-y border-white/5">
         <div className="container mx-auto px-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <Smartphone className="h-8 w-8 text-indigo-400" />
+            <Smartphone className="h-8 w-8 text-emerald-500" />
             <h2 className="text-sm font-black text-white uppercase italic">Mobile App Mode</h2>
           </div>
-          <Button onClick={handleInstallClick} size="sm" className="bg-white text-indigo-950 font-black px-4 rounded-xl shadow-lg uppercase text-[10px]">Install</Button>
+          <Button onClick={handleInstallClick} size="sm" className="bg-emerald-500 text-slate-950 font-black px-4 rounded-xl shadow-lg uppercase text-[10px] hover:bg-emerald-400 transition-all">Install</Button>
         </div>
       </section>
 
