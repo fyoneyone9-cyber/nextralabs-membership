@@ -24,9 +24,9 @@ const TOOLS = [
   { id: 'youtube-producer', cat: 'sns', title: 'AI YouTubeプロデューサー', sub: '全自動台本・構成作成', icon: Clapperboard, plan: 'プレミアム' },
   { id: 'trend-stock', cat: 'sns', title: 'SNSトレンドAI分析', sub: 'バズ予測 × 楽天商品検索OS', icon: TrendingUp, plan: 'スタンダード' },
   { id: 'youtube-coordinator', cat: 'sns', title: 'YouTube AI Sync', sub: '動画解析 × 楽天コーデ', icon: Play, plan: 'プレミアム' },
-  { id: 'kdp-guide', cat: 'sns', title: 'Kindle出版AI完全ナビ', sub: '執筆から出版までの一気通貫', icon: BookOpen, plan: '無料' },
-  { id: 'kindle-factory', cat: 'sns', title: 'Kindle AI ファクトリー', sub: 'AIが5分でKDP入稿可能な原稿を自動生成', icon: Crown, plan: 'プレミアム' },
-  { id: 'prompt-master', cat: 'sns', title: 'AI画像プロンプトマスター', sub: '究極の画像パーツ工房', icon: Wand2, plan: 'ライト' },
+  { id: 'kdp-guide', cat: 'edu', title: 'Kindle出版AI完全ナビ', sub: '執筆から出版までの一気通貫', icon: BookOpen, plan: '無料' },
+  { id: 'kindle-factory', cat: 'biz', title: 'Kindle AI ファクトリー', sub: 'AIが5分でKDP入稿可能な原稿を自動生成', icon: Crown, plan: 'プレミアム' },
+  { id: 'prompt-master', cat: 'biz', title: 'AI画像プロンプトマスター', sub: '究極 of 究極の画像パーツ工房', icon: Wand2, plan: 'ライト' },
   { id: 'scam-defender', cat: 'life', title: 'AI詐欺ディフェンダー', sub: '詐欺・悪意を即座に判定', icon: ShieldCheck, plan: 'プレミアム' },
   { id: 'money-guard', cat: 'life', title: 'AI家計防衛シミュレーター', sub: '衝動買いの心理的抑止', icon: Wallet, plan: 'スタンダード' },
   { id: 'loan-advisor', cat: 'life', title: 'AI借金完済・おまとめ診断', sub: '借金の一本化と完済への最短ルート', icon: CreditCard, plan: '無料' },
@@ -44,7 +44,7 @@ const TOOLS = [
   { id: 'office-politics-graph', cat: 'mind', title: '社内政治 AI相関図', sub: '人間関係の暗部を可視化', icon: Network, plan: '無料' },
   { id: 'interior-coordinator', cat: 'mind', title: 'Interior AI Sync', sub: '空間分析 × 楽天一括購入OS', icon: Sofa, plan: 'プレミアム' },
   { id: 'ai-recipe', cat: 'life', title: 'AIレシピ献立コーチ', sub: '冷蔵庫の残り物 × 栄養最適化', icon: Utensils, plan: 'スタンダード' },
-  { id: 'exam-scheduler', cat: 'biz', title: 'AI問題生成 & 苦手分析', sub: '最短合格への学習ロードマップ', icon: ClipboardCheck, plan: 'プレミアム' },
+  { id: 'exam-scheduler', cat: 'edu', title: 'AI問題生成 & 苦手分析', sub: '最短合格への学習ロードマップ', icon: ClipboardCheck, plan: 'プレミアム' },
   { id: 'location-finder', cat: 'hotel', title: 'AIロケーションファインダー', sub: '出店・移住の最適地をデータ分析', icon: MapPin, plan: 'スタンダード' },
   { id: 'smart-gardening', cat: 'life', title: 'AIスマートガーデニング', sub: '植物の声を聴く育成アドバイザー', icon: Sprout, plan: 'スタンダード' },
   { id: 'ticket-scout', cat: 'life', title: 'AIチケットスカウト', sub: '争奪戦に勝つための先行情報収集', icon: Ticket, plan: 'スタンダード' }
@@ -203,6 +203,11 @@ function ProductsList() {
 export default function ProductsPage() {
   return (
     <Suspense fallback={<div className="text-emerald-500 font-bold p-10">Loading...</div>}>
+      <ProductsList />
+    </Suspense>
+  )
+}
+rald-500 font-bold p-10">Loading...</div>}>
       <ProductsList />
     </Suspense>
   )
