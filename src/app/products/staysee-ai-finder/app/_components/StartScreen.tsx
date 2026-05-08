@@ -64,7 +64,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
     const handlePopState = () => {
       if (isLocked) {
         window.history.pushState(null, '', window.location.href);
-        alert('【LOCKED】戻る操作は制限されています。15秒長押しで解除してください。');
+        alert('【LOCKED】戻る操作は制限されています。');
       }
     };
 
