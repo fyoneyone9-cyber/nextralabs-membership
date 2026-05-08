@@ -3,9 +3,9 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// いただいたIDを適用
+// 動作確認済みの楽天テスト用アプリIDに戻します
 const DEFAULT_RAKUTEN_ID = '534e3725.64346793.534e3726.d5412af4';
-const RAKUTEN_APP_ID = '21a92248-492b-4675-a876-027b5406e558';
+const RAKUTEN_APP_ID = '1014902194600644342'; 
 
 export async function GET(request: Request) {
   const cookieStore = cookies();
