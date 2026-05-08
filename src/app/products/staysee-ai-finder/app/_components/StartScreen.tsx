@@ -16,15 +16,29 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
       setIsLocked(false);
       localStorage.clear();
       sessionStorage.clear();
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
       window.location.href = '/';
     } else if (pw !== null) {
       alert('ACCESS DENIED');
     }
   };
 
-  // 【鉄壁のガードエンジン】外部サイトへの遷移を「物理的」かつ「強制的」に遮断
+  // 【鉄壁のガードエンジン ＆ ツールバー強制非表示】
   useEffect(() => {
     if (!isLocked) return;
+
+    // 0. ツールバー強制非表示（Fullscreen API）
+    const requestFullScreen = () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    };
+    
+    // 最初の操作で全画面へ（ブラウザ制限回避のため）
+    window.addEventListener('click', requestFullScreen);
+    window.addEventListener('touchstart', requestFullScreen);
 
     // 1. 外部へのハイパーリンク、スクリプトによる遷移を全てフックして殺す
     const handleExternalClick = (e: MouseEvent) => {
@@ -36,7 +50,6 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
           if (url.origin !== window.location.origin) {
             e.preventDefault();
             e.stopPropagation();
-            // 音もなく、無慈悲に遮断
             return false;
           }
         } catch (err) {}
@@ -51,8 +64,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
       }
     };
 
-    // 3. 履歴スタックをこのページで埋め尽くし、「戻る」や「進む」での離脱を不能にする
-    // 0.1秒ごとに履歴を自分自身に書き戻す超強力ループ
+    // 3. 履歴スタックの完全支配 (0.1秒ループ)
     const lockHistory = setInterval(() => {
       if (isLocked) {
         window.history.pushState(null, '', window.location.href);
@@ -70,6 +82,8 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
     window.addEventListener('popstate', handlePopState);
 
     return () => {
+      window.removeEventListener('click', requestFullScreen);
+      window.removeEventListener('touchstart', requestFullScreen);
       window.removeEventListener('click', handleExternalClick, true);
       window.removeEventListener('beforeunload', preventDeparture);
       window.removeEventListener('popstate', handlePopState);
