@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import DmsBookingEditor from './DmsBookingEditor'
 import DmsPropertyEditor from './DmsPropertyEditor'
+import { CloudPmsStorage } from '@/lib/cloud-pms-storage'
 
 const MENU_ITEMS = [
   { id: 'checkin', label: 'チェックイン', icon: PenLine },
@@ -39,12 +40,12 @@ export default function DmsEngine() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [loadingBookings, setLoadingBookings] = useState(false);
   const [pmsList, setPmsList] = useState<any[]>([]);
+  const [isCloudSyncing, setIsCloudSyncing] = useState(false);
 
   // Staysee APIから予約一覧を取得
   const fetchStayseeBookings = async () => {
-    // localStorageから最新の有効設定を確認
-    const savedPms = localStorage.getItem('dms_pms_list');
-    const list = savedPms ? JSON.parse(savedPms) : [];
+    // クラウドまたは最新のpmsListから有効設定を確認
+    const list = pmsList.length > 0 ? pmsList : JSON.parse(localStorage.getItem('dms_pms_list') || '[]');
     const activeStaysee = list.find((p: any) => p.type === 'Staysee' && p.status === '有効');
     
     if (!activeStaysee) {
@@ -77,31 +78,45 @@ export default function DmsEngine() {
       }
     }
 
-    // PMS一覧をlocalStorageから復元
-    const savedPms = localStorage.getItem('dms_pms_list');
-    if (savedPms) {
-      try {
-        const parsed = JSON.parse(savedPms);
-        setPmsList(parsed);
-      } catch (e) {
-        console.error('PMS list parse error:', e);
+    const initData = async () => {
+      // 1. クラウド(Supabase)から取得を試みる
+      const cloudList = await CloudPmsStorage.fetchList();
+      
+      if (cloudList && cloudList.length > 0) {
+        setPmsList(cloudList);
+        localStorage.setItem('dms_pms_list', JSON.stringify(cloudList));
+      } else {
+        // 2. ローカルから復元
+        const savedPms = localStorage.getItem('dms_pms_list');
+        if (savedPms) {
+          setPmsList(JSON.parse(savedPms));
+        } else {
+          // 初期データ
+          const initial = [{ id: 'staysee-1', type: 'Staysee', status: '有効', memo: 'メインPMS連携（API開通済み）', apiKey: 'sk_b54ca47f884c30d98dc429d3cbbbc29c' }];
+          setPmsList(initial);
+          localStorage.setItem('dms_pms_list', JSON.stringify(initial));
+          CloudPmsStorage.saveList(initial); // 初回クラウド保存
+        }
       }
-    } else {
-      // 初期データ設定
-      const initial = [{ id: 'staysee-1', type: 'Staysee', status: '有効', memo: 'メインPMS連携（API開通済み）', apiKey: 'sk_b54ca47f884c30d98dc429d3cbbbc29c' }];
-      setPmsList(initial);
-      localStorage.setItem('dms_pms_list', JSON.stringify(initial));
-    }
+      fetchStayseeBookings();
+    };
 
-    fetchStayseeBookings();
+    initData();
   }, []);
 
-  // pmsListが変更されたらlocalStorageに保存
+  // pmsListが更新されるたびに保存（クラウド+ローカル）
   useEffect(() => {
     if (mounted && pmsList.length > 0) {
       localStorage.setItem('dms_pms_list', JSON.stringify(pmsList));
+      // クラウド保存は重いためデバウンス的に扱うか、明示的な保存を検討
+      const sync = async () => {
+        setIsCloudSyncing(true);
+        await CloudPmsStorage.saveList(pmsList);
+        setIsCloudSyncing(false);
+      };
+      sync();
     }
-  }, [pmsList, mounted]);
+  }, [pmsList]);
 
   const togglePmsStatus = (id: string) => {
     setPmsList(prev => prev.map(p => p.id === id ? { ...p, status: p.status === '有効' ? '無効' : '有効' } : p));
@@ -170,7 +185,10 @@ export default function DmsEngine() {
                {([...MENU_ITEMS, ...SETTINGS_MENU].find(i => i.id === activeTab))?.label}
              </h2>
           </div>
-          <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-8 rounded-lg text-xs px-4"><Plus size={14} className="mr-1" />新規登録</Button>
+          <div className="flex items-center gap-3">
+            {isCloudSyncing && <div className="flex items-center gap-1.5 px-3 py-1 bg-white/5 rounded-full border border-white/5 animate-pulse"><RefreshCw size={10} className="animate-spin text-emerald-500" /><span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Cloud Syncing</span></div>}
+            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-8 rounded-lg text-xs px-4"><Plus size={14} className="mr-1" />新規登録</Button>
+          </div>
         </header>
 
         <div className="p-6 overflow-y-auto space-y-6">
