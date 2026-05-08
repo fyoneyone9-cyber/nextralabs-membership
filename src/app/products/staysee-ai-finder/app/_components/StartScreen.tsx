@@ -28,26 +28,21 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
     }
   };
 
-  // ブラウザの「戻る」や他ページへの遷移を防止（キオスクモード化）
+  // 外部サイトへの遷移のみを警告（NextraLabsサイト内移動は許可）
   useEffect(() => {
-    const preventNav = (e: BeforeUnloadEvent) => {
+    const preventExternalNav = (e: BeforeUnloadEvent) => {
+      // ログアウト処理などで意図的に遷移させる場合は警告しない
+      if (pressTimer) return; 
+      
       e.preventDefault();
-      e.returnValue = '';
+      e.returnValue = 'NextraLabsのサイト外へ移動しようとしています。よろしいですか？';
     };
-    window.addEventListener('beforeunload', preventNav);
-    
-    // 戻るボタンを無効化するハック
-    window.history.pushState(null, '', window.location.href);
-    const handlePopState = () => {
-      window.history.pushState(null, '', window.location.href);
-    };
-    window.addEventListener('popstate', handlePopState);
+    window.addEventListener('beforeunload', preventExternalNav);
 
     return () => {
-      window.removeEventListener('beforeunload', preventNav);
-      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('beforeunload', preventExternalNav);
     };
-  }, []);
+  }, [pressTimer]);
       <div className="space-y-4">
         <p className="text-emerald-500/40 text-sm font-black tracking-[1.2em] uppercase animate-in slide-in-from-top-4 duration-1000">
           Experience the Future
