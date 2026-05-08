@@ -85,18 +85,9 @@ const StayseeAppPage = () => {
           <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-[24px] flex items-center justify-center shadow-2xl shadow-emerald-500/30">
             <span className="font-black text-4xl italic">N</span>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col text-left">
             <span className="font-black text-3xl tracking-tighter leading-none">NEXTRA AI</span>
-            <span className="text-xs font-bold text-emerald-500 tracking-[0.5em] mt-2">CHECK-IN SYSTEM</span>
-            {step !== 'start' && (
-              <button
-                onClick={() => setStep('start')}
-                className="mt-6 group flex items-center gap-3 px-8 py-3 bg-white/5 hover:bg-white/10 border-2 border-white/10 rounded-full text-lg font-black transition-all w-fit"
-              >
-                <div className="w-3 h-3 bg-red-500 rounded-full group-hover:animate-ping" />
-                {t.restart}
-              </button>
-            )}
+            <span className="text-xs font-bold text-emerald-500 tracking-[0.5em] mt-2 text-left">CHECK-IN SYSTEM</span>
           </div>
         </div>
       </header>
