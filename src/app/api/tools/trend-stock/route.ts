@@ -30,7 +30,7 @@ export async function GET(request: Request) {
   // モデル選択（失敗時のフォールバック付き）
   const getAIContent = async (prompt: string) => {
     try {
-      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
       const result = await model.generateContent(prompt);
       return result.response.text();
     } catch (e) {

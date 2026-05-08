@@ -131,13 +131,13 @@ export default function TrendStockPage() {
         <CardContent>
           {loading ? (
             <div className="space-y-2 animate-pulse">
-              <div className="h-4 bg-emerald-200 rounded w-full"></div>
-              <div className="h-4 bg-emerald-200 rounded w-3/4"></div>
-              <div className="h-4 bg-emerald-200 rounded w-1/2"></div>
+              <div className="h-4 bg-emerald-400/20 rounded w-full"></div>
+              <div className="h-4 bg-emerald-400/20 rounded w-3/4"></div>
+              <div className="h-4 bg-emerald-400/20 rounded w-1/2"></div>
             </div>
           ) : (
-            <div className="prose prose-emerald max-w-none">
-              <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-700">
+            <div className="prose prose-invert max-w-none">
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-emerald-50">
                 {data?.insight}
               </p>
             </div>
