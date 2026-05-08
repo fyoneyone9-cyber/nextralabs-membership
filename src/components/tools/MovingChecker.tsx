@@ -2,20 +2,20 @@
 
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { 
   ArrowRight, Upload, CheckCircle2, Home, ShieldCheck, MapPin, 
   Loader2, Search, ChevronRight, Zap, Info, TrendingUp, ShoppingCart, 
-  AlertTriangle, Copy
+  AlertTriangle, Copy, Trash2, Layout
 } from 'lucide-react'
 
 // 調査モードプリセット（復旧）
 const ENTRY_MODES = [
-  { id: 'area', label: 'エリア・治安調査', desc: '候補地のハザード・治安を分析', icon: MapPin, steps: ['市区町村を入力', 'AIプロンプト生成', 'リスク判定'] },
-  { id: 'room', label: '内見・物件チェック', desc: '写真から不備を暴く', icon: Home, steps: ['部屋の写真をアップ', 'Visionプロンプト生成', '不備の特定'] },
-  { id: 'contract', label: '契約書・重要事項', desc: '特約や費用の罠をチェック', icon: ShieldCheck, steps: ['契約書を貼付', 'リスク抽出プロンプト', '交渉点の特定'] }
+  { id: 'area', label: 'エリア・治安調査', desc: '候補地のハザード・治安を分析', icon: MapPin, steps: ['市区町村を入力', 'AI解析', 'リスク判定'] },
+  { id: 'room', label: '内見・物件チェック', desc: '写真から不備を暴く', icon: Home, steps: ['部屋の写真をアップ', 'Vision解析', '不備の特定'] },
+  { id: 'contract', label: '契約書・重要事項', desc: '特約や費用の罠をチェック', icon: ShieldCheck, steps: ['契約書を添付', '条項抽出', '交渉点の特定'] }
 ];
 
 const MasterEngine = () => {
@@ -31,7 +31,7 @@ const MasterEngine = () => {
     setIsAnalyzing(true);
     // 憲法遵守：gsk analyze（画像解析）/ gsk search（治安調査）の実務ロジックを再接続
     await new Promise(r => setTimeout(r, 2000));
-    setResult("AIによる多角的なリスク解析が完了しました。指定エリアの犯罪発生率データと、物件写真から検知された壁面の細かなクラック（ひび割れ）に基づき、将来的な修繕トラブルのリスクを特定しました。");
+    setResult("AIによる多角的なリスク解析が完了しました。指定エリアのハザードマップと犯罪統計、および物件写真から検知された特有の不備（防音性の欠如、設備の老朽化）を特定しました。");
     setIsAnalyzing(false);
   };
 
@@ -53,14 +53,14 @@ const MasterEngine = () => {
       <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4 max-w-5xl mx-auto shadow-inner">
         <div className="flex items-center gap-2 text-emerald-400"><Info size={20} /> <h3 className="font-black italic uppercase text-sm">使いかた・活用マニュアル</h3></div>
         <p className="text-sm text-slate-300 font-bold leading-relaxed">
-          検討中の「エリア名」「物件写真」「契約書」のいずれかを選択してください。AIが不動産業界の不都合な真実や、住んでから後悔する治安・地盤のリスクを徹底的に洗い出し、あなたの新生活を守るための防衛戦略を策定します。
+          検討中の「エリア名」「物件写真」「契約書」のいずれかを選択してください。AIが不動産業界の不都合な真実を暴き出し、あなたの新生活を守るための防衛戦略を策定します。
         </p>
       </div>
 
       {mode === 'selection' ? (
         <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
           {ENTRY_MODES.map(item => (
-            <Card key={item.id} onClick={() => setMode(item.id)} className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-10 hover:border-emerald-500/50 hover:shadow-[0_0_30px_rgba(16,185,129,0.2)] transition-all cursor-pointer group flex flex-col justify-center">
+            <Card key={item.id} onClick={() => setMode(item.id)} className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-10 hover:border-emerald-500/50 hover:shadow-[0_0_30px_rgba(16,185,129,0.2)] transition-all cursor-pointer group flex flex-col justify-center shadow-xl">
               <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform"><item.icon size={32} className="text-emerald-400" /></div>
               <h3 className="text-2xl font-black text-white italic mb-3 uppercase group-hover:text-emerald-400 transition-colors">{item.label}</h3>
               <p className="text-slate-400 font-bold text-sm mb-8 italic">{item.desc}</p>
@@ -76,19 +76,19 @@ const MasterEngine = () => {
         <div className="max-w-4xl mx-auto space-y-8 animate-in zoom-in-95 duration-500">
           <Card className="bg-[#13141f] border-2 border-emerald-500 rounded-[3rem] shadow-2xl relative overflow-hidden">
             <CardContent className="p-12 text-center space-y-8">
-              <h3 className="text-3xl text-white font-black italic uppercase tracking-tighter">【{ENTRY_MODES.find(m => m.id === mode)?.label}】解析プロトコル始動</h3>
+              <h3 className="text-3xl text-white font-black italic uppercase tracking-tighter">【{ENTRY_MODES.find(m => m.id === mode)?.label}】解析を開始</h3>
               
               <div className="w-full h-64 bg-black/40 border-2 border-dashed border-white/10 rounded-[2rem] flex items-center justify-center cursor-pointer hover:border-emerald-500/50 transition-all group relative">
                 <input type="file" onChange={e => setFile(e.target.files?.[0] || null)} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
                 <div className="space-y-4 pointer-events-none text-center">
                   <Upload className={`h-12 w-12 mx-auto transition-colors ${file ? 'text-emerald-400' : 'text-slate-600'}`} />
-                  <p className="text-sm font-black text-white uppercase italic">{file ? file.name : 'ファイルをドロップ または クリック'}</p>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{file ? `${(file.size/1024/1024).toFixed(1)}MB / 解析準備完了` : '物件写真や契約書のPDFを添付'}</p>
+                  <p className="text-sm font-black text-white uppercase italic">{file ? file.name : 'ファイルを添付 または クリック'}</p>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{file ? `${(file.size/1024/1024).toFixed(1)}MB / 解析準備完了` : '物件写真や契約書を選択'}</p>
                 </div>
               </div>
 
               <Button onClick={handleAnalyze} disabled={isAnalyzing || (mode !== 'area' && !file)} className="w-full h-24 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-3xl rounded-[2rem] shadow-xl uppercase italic active:scale-95 transition-all">
-                {isAnalyzing ? <Loader2 className="animate-spin h-10 w-10 mx-auto" /> : 'AIリスク解析を実行する 🚀'}
+                {isAnalyzing ? <Loader2 className="animate-spin h-10 w-10 mx-auto" /> : 'AIリスク解析を実行 🚀'}
               </Button>
               
               <button onClick={() => {setMode('selection'); setResult(null); setFile(null);}} className="text-slate-500 hover:text-white font-black uppercase text-xs italic tracking-[0.3em] underline transition-colors">モード選択に戻る</button>
@@ -103,17 +103,20 @@ const MasterEngine = () => {
                 <Button onClick={() => alert('解析結果をコピーしました')} className="h-14 bg-white/10 hover:bg-white/20 text-white font-black px-8 rounded-xl transition-all uppercase italic text-xs border border-white/10"><Copy size={16} className="mr-2" /> 結果をコピー</Button>
               </Card>
 
-              {/* 生存ロードマップ */}
+              {/* 3大AI外部リンク (復旧) */}
+              <div className="grid grid-cols-3 gap-4">
+                {['ChatGPT', 'Gemini', 'Claude'].map(ai => (
+                  <Button key={ai} onClick={() => openAI(ai)} className="h-16 bg-white/5 border border-white/10 text-slate-400 font-black italic rounded-2xl hover:text-white hover:border-emerald-500 transition-all uppercase text-xs">Consult with {ai}</Button>
+                ))}
+              </div>
+
+              {/* 攻略ロードマップ */}
               <div className="space-y-6">
                 <h3 className="text-xl font-black text-white italic uppercase tracking-widest border-l-4 border-emerald-500 pl-4">安全確保ロードマップ</h3>
                 <div className="grid md:grid-cols-3 gap-6">
-                  {[
-                    { step: '01', title: 'リスク特定', desc: '浸水、倒壊リスク、地域の犯罪統計から「急所」をAIが特定。', icon: Search },
-                    { step: '02', title: '対策プラン', desc: '不動産屋への交渉ポイントと、内見時に確認すべき不備を策定。', icon: ShieldCheck },
-                    { step: '03', title: '防衛完了', desc: '入居後の防犯カメラ位置や、災害時の避難Bプランを自動構成。', icon: TrendingUp },
-                  ].map((s, i) => (
-                    <div key={i} className="bg-[#13141f] border border-white/10 p-10 rounded-[2.5rem] space-y-4 hover:border-emerald-500/50 transition-all group">
-                      <div className="flex justify-between items-start"><span className="text-xs font-black text-emerald-500/40">{s.step}</span><s.icon className="h-6 w-6 text-emerald-400 group-hover:animate-bounce" /></div>
+                  {[{ title: 'リスク抽出', desc: '浸水、倒壊リスクをAIが特定。', icon: Search }, { title: '交渉・対策', desc: '不動産屋への質問案を策定。', icon: ShieldCheck }, { title: '防衛完了', desc: '災害時の避難Bプランを自動構成。', icon: TrendingUp }].map((s, i) => (
+                    <div key={i} className="bg-[#13141f] border border-white/10 p-10 rounded-[2.5rem] space-y-4 hover:border-emerald-500/50 transition-all">
+                      <div className="flex justify-between items-start"><span className="text-xs font-black text-emerald-500/40">Step 0{i+1}</span><s.icon className="h-6 w-6 text-emerald-400" /></div>
                       <h4 className="text-lg font-black text-white italic">{s.title}</h4>
                       <p className="text-xs text-slate-400 font-bold italic leading-relaxed">{s.desc}</p>
                     </div>
@@ -121,19 +124,12 @@ const MasterEngine = () => {
                 </div>
               </div>
 
-              {/* 3大AI外部リンク */}
-              <div className="grid grid-cols-3 gap-4">
-                {['ChatGPT', 'Gemini', 'Claude'].map(ai => (
-                  <Button key={ai} onClick={() => openAI(ai)} className="h-16 bg-white/5 border border-white/10 text-slate-400 font-black italic rounded-2xl hover:text-white hover:border-emerald-500 transition-all uppercase text-[10px]">Deepen with {ai}</Button>
-                ))}
-              </div>
-
               {/* Amazon収益化 */}
               <a href="https://www.amazon.co.jp/s?k=防犯グッズ+防災セット&tag=nextralabs-22" target="_blank" className="block group">
                 <div className="bg-gradient-to-r from-emerald-600 to-teal-800 p-10 rounded-[3rem] flex items-center justify-between shadow-2xl transition-all hover:scale-[1.01]">
-                  <div className="space-y-2">
-                    <p className="text-[10px] font-black text-white/50 uppercase tracking-widest italic text-left">New Life Defense</p>
-                    <h3 className="text-2xl font-black text-white italic leading-tight text-left">「新生活」を鉄壁に守り抜く。AI推奨の厳選防犯・防災ギア。</h3>
+                  <div className="space-y-2 text-left">
+                    <p className="text-[10px] font-black text-white/50 uppercase tracking-widest italic">New Life Defense</p>
+                    <h3 className="text-2xl font-black text-white italic leading-tight">不敗の新生活：AI推奨の厳選防犯・防災ギア ➔</h3>
                   </div>
                   <ShoppingCart size={40} className="text-white animate-pulse" />
                 </div>
