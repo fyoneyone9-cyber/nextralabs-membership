@@ -9,6 +9,7 @@ import {
   Settings, Users, Database, LogOut, LayoutDashboard, ChevronDown, Menu, X, ArrowRight, Search, RefreshCw, Download, Plus, Moon, Sun, Edit3
 } from 'lucide-react'
 import DmsBookingEditor from './DmsBookingEditor'
+import DmsPropertyEditor from './DmsPropertyEditor'
 
 const MENU_ITEMS = [
   { id: 'checkin', label: 'チェックイン', icon: PenLine },
@@ -36,6 +37,7 @@ export default function DmsEngine() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(true);
   const [editingBooking, setEditingBooking] = useState<any>(null);
+  const [editingProperty, setEditingProperty] = useState<any>(null);
   const [session, setSession] = useState(null);
   const [mounted, setMounted] = useState(false);
 
@@ -223,7 +225,10 @@ export default function DmsEngine() {
                           </Button>
                         </td>
                         <td className="p-6 text-center">
-                          <button className="p-3 bg-indigo-500 text-white rounded-full shadow-lg hover:scale-110 transition-transform">
+                          <button 
+                            onClick={() => setEditingProperty(prop)}
+                            className="p-3 bg-indigo-500 text-white rounded-full shadow-lg hover:scale-110 transition-transform"
+                          >
                             <PenLine size={16} />
                           </button>
                         </td>
@@ -367,6 +372,15 @@ export default function DmsEngine() {
                 </tbody>
               </table>
             </Card>
+          )}
+
+          {/* 物件編集モーダル */}
+          {editingProperty && (
+            <DmsPropertyEditor 
+              property={editingProperty} 
+              isDarkMode={isDarkMode} 
+              onClose={() => setEditingProperty(null)} 
+            />
           )}
 
           {/* 編集モーダル */}
