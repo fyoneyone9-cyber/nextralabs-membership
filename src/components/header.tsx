@@ -94,29 +94,31 @@ export function Header() {
           {user ? (
             <>
               <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">ダッシュボード</Link>
-                            <div className="flex items-center gap-2 p-1 pr-3 bg-black/40 backdrop-blur-md rounded-full border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.1)] group hover:border-emerald-500/60 transition-all cursor-default">
-                <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
-                  <User className="h-4 w-4 text-slate-950" />
-                </div>
-                <div className="flex flex-col leading-none mr-1">
-                  <span className="text-[10px] font-black text-white italic tracking-tighter uppercase mb-0.5">{profile?.display_name || user.email?.split("@")[0]}</span>
-                  <div className="flex items-center gap-1">
-                    <div className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse" />
-                    <span className="text-[8px] font-bold text-emerald-500/70 tracking-widest uppercase">Identity Verified</span>
+              <Link href="/dashboard/profile">
+                <div className="flex items-center gap-2 p-1 pr-3 bg-black/40 backdrop-blur-md rounded-full border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.1)] group hover:border-emerald-500/60 transition-all cursor-pointer">
+                  <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                    <User className="h-4 w-4 text-slate-950" />
                   </div>
+                  <div className="flex flex-col leading-none mr-1">
+                    <span className="text-[10px] font-black text-white italic tracking-tighter uppercase mb-0.5">{profile?.display_name || user.email?.split("@")[0]}</span>
+                    <div className="flex items-center gap-1">
+                      <div className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse" />
+                      <span className="text-[8px] font-bold text-emerald-500/70 tracking-widest uppercase">Identity Verified</span>
+                    </div>
+                  </div>
+                  {profile?.role === 'admin' ? (
+                    <Badge className="bg-blue-600 text-white text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-blue-800 shadow-lg">ADMIN</Badge>
+                  ) : userPlan === 'premium' ? (
+                    <Badge className="bg-amber-500 text-slate-950 text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-amber-700 shadow-lg uppercase">PREMIUM</Badge>
+                  ) : userPlan === 'standard' ? (
+                    <Badge className="bg-emerald-500 text-slate-950 text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-emerald-700 shadow-lg uppercase">STANDARD</Badge>
+                  ) : userPlan === 'light' ? (
+                    <Badge className="bg-sky-500 text-slate-950 text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-sky-700 shadow-lg uppercase">LIGHT</Badge>
+                  ) : (
+                    <Badge className="bg-slate-600 text-white text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-slate-800 shadow-lg uppercase">FREE</Badge>
+                  )}
                 </div>
-                {profile?.role === 'admin' ? (
-                  <Badge className="bg-blue-600 text-white text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-blue-800 shadow-lg">ADMIN</Badge>
-                ) : userPlan === 'premium' ? (
-                  <Badge className="bg-amber-500 text-slate-950 text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-amber-700 shadow-lg uppercase">PREMIUM</Badge>
-                ) : userPlan === 'standard' ? (
-                  <Badge className="bg-emerald-500 text-slate-950 text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-emerald-700 shadow-lg uppercase">STANDARD</Badge>
-                ) : userPlan === 'light' ? (
-                  <Badge className="bg-sky-500 text-slate-950 text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-sky-700 shadow-lg uppercase">LIGHT</Badge>
-                ) : (
-                  <Badge className="bg-slate-600 text-white text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-slate-800 shadow-lg uppercase">FREE</Badge>
-                )}
-              </div>
+              </Link>
               <Button variant="ghost" size="sm" onClick={handleLogout}><LogOut className="h-4 w-4 mr-1" />ログアウト</Button>
             </>
           ) : (
