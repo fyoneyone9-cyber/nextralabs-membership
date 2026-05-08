@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Check, Crown, Loader2, Wrench, ArrowRight } from 'lucide-react'
+import { Check, Crown, Loader2, Wrench, ArrowRight, Wallet } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 
