@@ -86,7 +86,7 @@ export default function DmsEngine() {
         <div className="p-6 border-b flex items-center justify-between border-inherit">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-black italic shadow-lg">N</div>
-            <span className="text-lg font-black tracking-tighter uppercase">Nextra DMS</span>
+            <span className="text-lg font-black tracking-tighter uppercase">Nextra AI DMS</span>
           </div>
           <button onClick={toggleTheme} className="p-2 rounded-lg hover:bg-white/10 transition-colors">
             {isDarkMode ? <Sun size={18} className="text-amber-400" /> : <Moon size={18} className="text-slate-600" />}

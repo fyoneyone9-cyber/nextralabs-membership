@@ -46,11 +46,11 @@ const StayseeAppPage = () => {
       <header className="p-10 flex justify-between items-center relative z-20 backdrop-blur-md bg-black/5 border-b border-white/5">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
-            <span className="font-black text-2xl italic">S</span>
+            <span className="font-black text-2xl italic">N</span>
           </div>
           <div className="flex flex-col">
-            <span className="font-black text-xl tracking-tighter leading-none">STAYSEE</span>
-            <span className="text-[10px] font-bold text-emerald-500 tracking-[0.4em] mt-1">AI FINDER</span>
+            <span className="font-black text-xl tracking-tighter leading-none">NEXTRA AI</span>
+            <span className="text-[10px] font-bold text-emerald-500 tracking-[0.4em] mt-1">CHECK-IN SYSTEM</span>
           </div>
         </div>
         {step !== 'start' && (
