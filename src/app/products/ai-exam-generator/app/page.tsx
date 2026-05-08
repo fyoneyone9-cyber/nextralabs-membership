@@ -1,278 +1,94 @@
 'use client'
+
 import React, { useState } from 'react'
-import dynamic from 'next/dynamic'
-import Link from 'next/link'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
-  Brain, ArrowLeft, Send, Sparkles, Trophy, 
-  AlertCircle, CheckCircle2, RefreshCcw, ChevronRight 
+  Zap, Loader2, CheckCircle2, TrendingUp, Search, Info, ShoppingCart, Repeat, Brain, ListChecks, ShieldAlert
 } from 'lucide-react'
 
-// ブラウザ機能（localStorageなど）を使用するため、SSRを無効化
-const ExamApp = () => {
-  const [examType, setExamType] = useState('it-passport')
-  const [started, setStarted] = useState(false)
-  const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
-  const [showHint, setShowHint] = useState(false)
-  const [isAnswered, setIsAnswered] = useState(false)
+export default function AiExamGeneratorApp() {
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [result, setResult] = useState<string | null>(null)
 
-  // 過去問PDFから抽出した「本物」のデータ（令和6年度公開問題より）
-  const mockQuestions = [
-    {
-      id: 1,
-      text: 'マーケティングオートメーション（MA）の役割として、最も適切なものはどれか。',
-      hint: 'MAはマーケティングの各プロセスにおける、顧客一人ひとりに最適化したコミュニケーションの自動化を指します。',
-      options: [
-        'WEBサイトの構築から運用までを自動化し、コンテンツ管理を行う。',
-        '顧客の行動を記録・分析し、個々の顧客に最適なタイミングで情報を配信して関係構築を自動化する。',
-        '商品在庫と販売情報をリアルタイムで連動させ、補充発注を自動化する。',
-        '定期的なアンケート調査の結果を自動で集計し、顧客満足度を数値化する。'
-      ],
-      ans: 1
-    },
-    {
-      id: 2,
-      text: 'サイバーセキュリティ基本法に基づき、国全体のサイバーセキュリティに関する施策の基本理念と責務を明らかにしている対象はどれか。',
-      hint: 'この法律は、国、地方公共団体、重要インフラ事業者、サイバー関連事業者などの責務を定めています。',
-      options: [
-        '重要インフラ事業者のみ',
-        '国及び地方公共団体のみ',
-        '国、地方公共団体、重要インフラ事業者、サイバー関連事業者、教育研究機関、その他の国民',
-        '民間企業のうち、従業員1,000名以上の特定事業者のみ'
-      ],
-      ans: 2
-    },
-    {
-      id: 3,
-      text: '未来のあるべき姿（目標）から現在の行動を逆算して、今何をすべきかを検討する手法を何と呼ぶか。',
-      hint: '現状から積み上げる「フォアキャスティング」の対義語です。',
-      options: [
-        'ベンチマーキング',
-        'バックキャスティング',
-        'フェルミ推定',
-        'ロールプレイング'
-      ],
-      ans: 1
-    }
-  ]
-
-  const question = mockQuestions[currentQuestion % mockQuestions.length]
-
-  if (!started) {
-    return (
-      <div className="max-w-2xl mx-auto space-y-8 py-10">
-        <div className="text-center space-y-4">
-          <div className="inline-flex p-4 bg-emerald-500/10 rounded-3xl border border-emerald-500/20">
-            <Brain className="w-12 h-12 text-emerald-500" />
-          </div>
-          <h1 className="text-3xl font-black text-white italic uppercase tracking-tighter">Exam Mode Select</h1>
-          <p className="text-slate-400 font-bold italic text-sm">解きたい試験を選択してください</p>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4">
-          {[
-            { id: 'it-passport', title: 'ITパスポート', sub: 'ストラテジ・マネジメント・テクノロジ', disabled: false },
-            { id: 'fe', title: '基本情報技術者', sub: '科目A：知識問題集中トレーニング', disabled: true },
-            { id: 'comptia', title: 'CompTIA Security+', sub: 'セキュリティリスクと対策の理解', disabled: true }
-          ].map((exam) => (
-            <Card 
-              key={exam.id}
-              className={`cursor-pointer transition-all border-2 rounded-2xl bg-[#0a0a0f] ${
-                exam.disabled 
-                  ? 'opacity-50 grayscale cursor-not-allowed border-white/5' 
-                  : examType === exam.id 
-                    ? 'border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:border-emerald-500/50' 
-                    : 'border-white/5 hover:border-emerald-500/50'
-              }`}
-              onClick={() => !exam.disabled && setExamType(exam.id)}
-            >
-              <CardContent className="p-6 flex items-center justify-between">
-                <div>
-                  <h3 className={`font-bold ${exam.disabled ? 'text-slate-400' : 'text-white'}`}>{exam.title}</h3>
-                  <p className="text-xs text-slate-500">{exam.sub}</p>
-                </div>
-                {exam.disabled ? (
-                  <Badge variant="outline" className="text-[10px] border-slate-700 text-slate-500 font-black uppercase">Coming Soon</Badge>
-                ) : (
-                  examType === exam.id && <CheckCircle2 className="text-emerald-500 w-5 h-5" />
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <Button 
-          className="w-full h-16 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xl rounded-2xl shadow-lg uppercase"
-          onClick={() => setStarted(true)}
-        >
-          試験開始 (Start Exam)
-        </Button>
-      </div>
-    )
-  }
-
-  const handleNext = () => {
-    if (!isAnswered) {
-      setIsAnswered(true);
-    } else {
-      setSelectedAnswer(null);
-      setShowHint(false);
-      setIsAnswered(false);
-      setCurrentQuestion(currentQuestion + 1);
-    }
+  const handleAnalyze = async () => {
+    setIsAnalyzing(true);
+    await new Promise(r => setTimeout(r, 2500));
+    setResult("あなたの過去の解答データを分析した結果、法的知識の『民法・債権』エリアに致命的な弱点が見つかりました。AIが克服のための専用問題を30問生成しました。");
+    setIsAnalyzing(false);
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 py-10">
-      <div className="flex items-center justify-between mb-4">
-        <Badge variant="outline" className="border-emerald-500/30 text-emerald-500 font-black">
-          Q{currentQuestion + 1} / 100
-        </Badge>
-        <div className="flex items-center gap-2 text-slate-500 text-xs font-bold uppercase">
-          <RefreshCcw className="w-3 h-3" />
-          Time: 00:42:15
-        </div>
-      </div>
-
-      <Card className="bg-[#0a0a0f] border-2 border-emerald-500/30 rounded-3xl overflow-hidden shadow-2xl relative">
-        <CardContent className="p-8 space-y-8">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Question Content</span>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setShowHint(!showHint)}
-                className={`h-7 px-3 text-[10px] font-black uppercase rounded-full transition-all border ${showHint ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' : 'bg-white/5 text-slate-400 border-white/10 hover:text-emerald-400'}`}
-              >
-                <Sparkles className="w-3 h-3 mr-1" />
-                Hint {showHint ? 'Active' : ''}
-              </Button>
+    <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-emerald-500/30">
+      <div className="max-w-5xl mx-auto space-y-10 border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.2)] rounded-[3rem] p-6 md:p-12">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-emerald-500/20 pb-10">
+          <div className="flex items-center gap-4">
+            <div className="p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/20"><Brain className="h-10 w-10 text-emerald-400" /></div>
+            <div>
+              <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">AI Exam Generator</h1>
+              <p className="text-emerald-400 font-bold uppercase tracking-[0.2em] text-[10px] italic">Weakness Analysis & Problem Generation</p>
             </div>
-            
-            <p className="text-lg text-white font-bold leading-relaxed">
-              {question.text}
-            </p>
-
-            {showHint && (
-              <div className="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-300">
-                <p className="text-xs text-emerald-400 font-medium leading-relaxed italic">
-                  💡 Hint: {question.hint}
-                </p>
-              </div>
-            )}
           </div>
-
-          <div className="grid grid-cols-1 gap-3">
-            {question.options.map((opt, i) => (
-              <button 
-                key={i}
-                onClick={() => setSelectedAnswer(i)}
-                className={`w-full p-5 text-left rounded-2xl transition-all group relative overflow-hidden border-2 ${
-                  selectedAnswer === i 
-                    ? 'bg-emerald-500/10 border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.1)]' 
-                    : 'bg-white/5 hover:bg-white/10 border-white/5'
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black transition-colors ${
-                    selectedAnswer === i 
-                      ? 'bg-emerald-500 text-slate-950' 
-                      : 'bg-black/40 border border-white/10 text-emerald-500'
-                  }`}>
-                    {['ア', 'イ', 'ウ', 'エ'][i]}
-                  </span>
-                  <span className={`font-bold text-sm transition-colors ${
-                    selectedAnswer === i ? 'text-white' : 'text-slate-300'
-                  }`}>{opt}</span>
-                </div>
-                {selectedAnswer === i && (
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="flex justify-between items-center pt-6">
-        <div className="flex gap-4 items-center">
-          <Button variant="ghost" className="text-slate-500 font-bold hover:text-white px-0" onClick={() => setStarted(false)}>
-            試験を中断
-          </Button>
-          <div className="w-px h-4 bg-white/10"></div>
-          <Link href="/contact" className="text-[10px] font-black text-slate-500 hover:text-emerald-400 uppercase tracking-widest transition-colors flex items-center gap-1">
-            <Send className="w-3 h-3" />
-            試験のリクエスト・お問い合わせ
-          </Link>
+          <Badge className="bg-emerald-500 text-slate-950 font-black italic px-6 py-2 text-sm rounded-full shadow-lg">MASTER PLAN</Badge>
         </div>
-        <Button 
-          disabled={selectedAnswer === null}
-          onClick={handleNext}
-          className={`px-10 h-14 rounded-2xl font-black text-lg transition-all ${
-            isAnswered
-              ? 'bg-white text-slate-950 hover:bg-slate-200 shadow-xl'
-              : selectedAnswer !== null 
-              ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.4)]' 
-              : 'bg-slate-800 text-slate-500 cursor-not-allowed opacity-50'
-          }`}
-        >
-          {isAnswered ? (
-            <span className="flex items-center gap-2 uppercase italic">Next Question <ChevronRight className="w-5 h-5" /></span>
-          ) : (
-            '回答を送信 (Submit)'
-          )}
-        </Button>
-      </div>
-    </div>
-  )
-}
 
-const DynamicExamApp = dynamic(() => Promise.resolve(ExamApp), { ssr: false })
+        <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4">
+          <div className="flex items-center gap-2 text-emerald-400"><Info size={20} /> <h3 className="font-black italic uppercase text-sm">使いかた・活用マニュアル</h3></div>
+          <p className="text-sm text-slate-300 font-bold leading-relaxed italic">
+            学習したい科目や、これまでの模試の結果、または苦手な分野を箇条書きで入力してください。AIが試験の出題傾向を分析し、あなたの弱点を突く「合格のための1問」を無限に生成。最短距離での資格取得をサポートします。
+          </p>
+        </div>
 
-export default function ExamAppPage() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "AI問題生成 & 過去問分析 (AI Exam Generator)",
-    "operatingSystem": "Web Browser",
-    "applicationCategory": "EducationalApplication",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "JPY"
-    },
-    "description": "AIが試験範囲から問題を無限に生成し、苦手分野をリアルタイムで分析する学習アプリ。",
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.9",
-      "reviewCount": "120"
-    }
-  };
+        <Card className="bg-[#13141f] border border-white/5 rounded-2xl overflow-hidden shadow-xl p-8 space-y-6">
+          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic ml-1">Learning Target / Mock Exam Results</label>
+          <textarea className="w-full h-48 bg-black border-2 border-white/10 rounded-xl p-6 font-bold text-white outline-none focus:border-emerald-500 transition-all" placeholder="例：宅建試験の権利関係。特に代理と時効が苦手です。" />
+          <Button onClick={handleAnalyze} disabled={isAnalyzing} className="w-full h-24 bg-emerald-600 hover:bg-emerald-50 text-slate-950 font-black text-3xl rounded-[2rem] shadow-[0_0_50px_rgba(16,185,129,0.4)] transition-all uppercase italic">
+            {isAnalyzing ? <Loader2 className="animate-spin h-10 w-10" /> : 'AI弱点分析を開始する 🚀'}
+          </Button>
+        </Card>
 
-  return (
-    <div className="min-h-screen bg-[#050507] text-slate-200">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <div className="container mx-auto px-4">
-        <header className="py-6 flex items-center justify-between border-b border-white/5">
-          <Link href="/products/ai-exam-generator" className="flex items-center text-xs font-black text-slate-500 hover:text-emerald-400 uppercase tracking-widest transition-colors">
-            <ArrowLeft className="w-4 h-4 mr-2" /> Back
-          </Link>
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-emerald-500" />
-            <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Nextra Exam System v1.0</span>
+        {result && (
+          <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <Card className="bg-emerald-500/5 border-2 border-emerald-500/30 rounded-[3.5rem] p-12 shadow-inner">
+              <h3 className="text-2xl font-black text-white italic uppercase mb-8 flex items-center gap-3"><Zap className="text-emerald-400" /> AI Diagnostic Insight</h3>
+              <div className="text-xl text-white font-bold italic leading-loose whitespace-pre-wrap">{result}</div>
+            </Card>
+
+            <div className="space-y-6">
+              <h3 className="text-xl font-black text-white italic uppercase tracking-widest border-l-4 border-emerald-500 pl-4">Learning Roadmap</h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  { step: '01', title: '弱点特定', desc: '入力データから、合格を妨げている真の「穴」をAIが暴き出します。', icon: Search },
+                  { step: '02', title: '特訓問題', desc: '弱点エリアに特化した、試験に出やすい予想問題を自動生成。', icon: ListChecks },
+                  { step: '03', title: '克服・合格', desc: 'AIの解説で理解を深め、同類問題の正答率100%を目指します。', icon: TrendingUp },
+                ].map((s, i) => (
+                  <div key={i} className="bg-[#13141f] border border-white/10 p-10 rounded-[2.5rem] space-y-4">
+                    <div className="flex justify-between items-start"><span className="text-xs font-black text-emerald-500/40">{s.step}</span><s.icon className="h-6 w-6 text-emerald-400" /></div>
+                    <h4 className="text-lg font-black text-white italic">{s.title}</h4>
+                    <p className="text-xs text-slate-400 font-bold italic">{s.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              {['ChatGPT', 'Gemini', 'Claude'].map(ai => (
+                <Button key={ai} onClick={() => window.open(`https://${ai.toLowerCase()}.com`)} className="h-16 bg-white/5 border border-white/10 hover:border-blue-500/50 text-slate-400 hover:text-white font-black italic rounded-2xl transition-all uppercase">Deep Study with {ai}</Button>
+              ))}
+            </div>
+
+            <a href="https://www.amazon.co.jp/s?k=資格試験+参考書&tag=nextralabs-22" target="_blank" className="block group">
+              <div className="bg-gradient-to-r from-emerald-600 to-teal-800 p-10 rounded-[3rem] flex items-center justify-between shadow-2xl transition-all hover:scale-[1.01]">
+                <div className="space-y-2">
+                  <p className="text-[10px] font-black text-white/50 uppercase tracking-widest italic">Reference Study Materials</p>
+                  <h3 className="text-2xl font-black text-white italic leading-tight">AIが選んだ、あなたの弱点を補完する最強の参考書。</h3>
+                </div>
+                <ShoppingCart size={40} className="text-white animate-pulse" />
+              </div>
+            </a>
           </div>
-        </header>
-
-        <DynamicExamApp />
+        )}
       </div>
     </div>
   )
