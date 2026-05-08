@@ -139,7 +139,7 @@ export default function PricingPage() {
               <span className="text-base text-muted-foreground font-normal shrink-0">/月</span>
             </div>
             <ul className="space-y-2.5 flex-1 mb-8">
-              {['塩対応代行AI', 'AI婚活コーチ', 'コミュニケーションコーチ', 'プロンプトマスター', 'AI副業診断', '退職代行アシスタント', 'AIクローゼットコーチ', '+ 無料ツール全て'].map((f) => (
+              {['Expense Sync', 'Contact Sync', 'Price Tracker', '+ 無料ツール全て'].map((f) => (
                 <li key={f} className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-cyan-500 shrink-0" />{f}
                 </li>
@@ -212,7 +212,7 @@ export default function PricingPage() {
               <span className="text-base text-muted-foreground font-normal shrink-0">/月</span>
             </div>
             <ul className="space-y-2.5 flex-1 mb-8">
-              {['全ツール使い放題プランの全機能', 'Gmail AI Accelerator', 'Gmail連携・AI返信生成', 'API連携ツール（今後追加予定）', '最優先サポート', '機能リクエスト優先対応'].map((f) => (
+              {['全ツール使い放題プランの全機能', 'Gmail AI Accelerator', 'Staysee AI Finder', 'Interior Sync', 'YouTube Sync', 'AI副業スタートダッシュ', 'AI YouTubeプロデューサー', '最優先サポート'].map((f) => (
                 <li key={f} className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-violet-500 shrink-0" />{f}
                 </li>
