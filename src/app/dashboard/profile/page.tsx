@@ -105,11 +105,19 @@ export default function ProfilePage() {
               <div className="relative group">
                 <div className="w-32 h-32 bg-white/5 rounded-full border-4 border-emerald-500/30 flex items-center justify-center overflow-hidden shadow-2xl relative">
                   {profile?.avatar_url ? (
-                    <img src={profile.avatar_url} className="w-full h-full object-cover" alt="Avatar" />
+                    <img 
+                      src={profile.avatar_url} 
+                      className="w-full h-full object-cover" 
+                      alt="Avatar" 
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '';
+                        setProfile({ ...profile, avatar_url: null });
+                      }}
+                    />
                   ) : (
                     <User className="h-16 w-16 text-slate-600" />
                   )}
-                  {updating && <div className="absolute inset-0 bg-black/70 flex items-center justify-center"><Loader2 className="animate-spin text-emerald-400" /></div>}
+                  {updating && <div className="absolute inset-0 bg-black/70 flex items-center justify-center"><Loader2 className="animate-spin text-emerald-500" /></div>}
                 </div>
                 <label className="absolute bottom-0 right-0 p-3 bg-emerald-500 rounded-full text-slate-950 shadow-xl hover:scale-110 transition-transform cursor-pointer border-2 border-[#13141f]">
                   <Camera size={18} />

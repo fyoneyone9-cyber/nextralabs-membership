@@ -1,16 +1,20 @@
 'use client'
+
 import React, { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { createBrowserClient } from '@supabase/ssr'
 import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import {
   Star, Building2, TrendingUp, Share2, ShieldCheck, Youtube,
   User, Sofa, Briefcase, Shield, HeartHandshake, BookOpen, Mail, Search, AlertTriangle,
   ShoppingCart, Scissors, MessageCircle, LogOut, Camera, Pen, BarChart2,
   Home, TreePine, Ticket, DollarSign, Map, FileText, Brain,
-  Crown, Zap, Lock, ChevronRight
+  Crown, Zap, Lock, ChevronRight, Settings, Activity, History, Clock, Repeat, MousePointer2
 } from 'lucide-react'
 import DashboardActivity from '@/components/dashboard/DashboardActivity'
+import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const PLAN_META = {
   premium:  { label: 'プレミアム', color: 'from-amber-500 to-orange-500', text: 'text-amber-400', border: 'border-amber-500/40', badge: 'bg-amber-500/20 text-amber-400 border-amber-500/30', icon: Crown },
@@ -21,22 +25,18 @@ const PLAN_META = {
 
 const TOOL_CATEGORIES = [
   {
-    label: 'プレミアム',
+    label: 'プレミアム・マスタ',
     color: 'text-amber-400',
     borderColor: 'border-amber-500/30',
     tools: [
+      { id: 'nextra-ai',            name: 'Nextra AI (総合ホテルDX)', icon: Building2,    color: 'text-emerald-500', plan: 'premium' },
       { id: 'inbox-organizer',      name: 'Gmail AI Accelerator',    icon: Mail,         color: 'text-blue-400',    plan: 'premium' },
-      { id: 'staysee-ai-finder',    name: 'Staysee AI Finder',       icon: Building2,    color: 'text-emerald-500', plan: 'premium' },
       { id: 'youtube-producer',     name: 'AI YouTubeプロデューサー', icon: Youtube,      color: 'text-red-500',     plan: 'premium' },
       { id: 'ai-sidejob',           name: 'AI副業スタートダッシュ',   icon: Briefcase,    color: 'text-indigo-400',  plan: 'premium' },
       { id: 'ai-select-shop',       name: 'AIセレクトショップ',       icon: ShoppingCart, color: 'text-pink-400',    plan: 'premium' },
-      { id: 'pet-translator',       name: 'AIペット翻訳モニター',     icon: Camera,       color: 'text-amber-400',   plan: 'premium' },
+      { id: 'ai-exam-generator',    name: 'AI問題生成 & 苦手分析',    icon: Brain,        color: 'text-purple-400',  plan: 'premium' },
       { id: 'interior-coordinator', name: 'Interior Sync',           icon: Sofa,         color: 'text-amber-500',   plan: 'premium' },
-      { id: 'youtube-coordinator',  name: 'YouTube Sync',            icon: Youtube,      color: 'text-red-400',     plan: 'premium' },
-      { id: 'prompt-master',        name: 'AI画像プロンプトマスター', icon: Pen,          color: 'text-violet-400',  plan: 'premium' },
-      { id: 'ai-recipe',            name: 'AIレシピスコープ',         icon: Camera,       color: 'text-orange-400',  plan: 'premium' },
-      { id: 'ai-report-generator',  name: 'AIレポートジェネレーター', icon: FileText,     color: 'text-blue-300',    plan: 'premium' },
-      { id: 'location-finder',      name: 'AI Location Scout',       icon: Map,          color: 'text-teal-400',    plan: 'premium' },
+      { id: 'scam-defender',         name: 'AI詐欺ディフェンダー',       icon: ShieldCheck,   color: 'text-red-400',     plan: 'premium' },
     ]
   },
   {
@@ -44,46 +44,32 @@ const TOOL_CATEGORIES = [
     color: 'text-emerald-400',
     borderColor: 'border-emerald-500/30',
     tools: [
-      { id: 'buy-smart-nav',         name: '中古・新品比較ナビ',         icon: Search,         color: 'text-cyan-400',    plan: 'standard' },
-      { id: 'scam-defender',         name: 'AI詐欺ディフェンダー',       icon: Shield,         color: 'text-red-400',     plan: 'standard' },
-      { id: 'shopping-stopper',      name: 'AI買い物依存ストッパー',     icon: AlertTriangle,  color: 'text-orange-400',  plan: 'standard' },
-      { id: 'closet-coach',          name: 'AIクローゼット断捨離',       icon: Scissors,       color: 'text-pink-400',    plan: 'standard' },
+      { id: 'ai-konkatsu',           name: 'AI婚活コーチ',               icon: HeartHandshake, color: 'text-rose-400',    plan: 'standard' },
+      { id: 'money-guard',           name: 'AI家計防衛シミュレーター',   icon: Wallet,         color: 'text-amber-500',   plan: 'standard' },
+      { id: 'disaster-guard',        name: 'AI防災パーソナルガイド',     icon: Shield,         color: 'text-red-400',     plan: 'standard' },
+      { id: 'exam-scheduler',        name: 'AI試験スケジューラー',       icon: Calendar,       color: 'text-purple-400',  plan: 'standard' },
       { id: 'buzz-writer',           name: 'AIバズ文章コーチ',           icon: Pen,            color: 'text-emerald-400', plan: 'standard' },
       { id: 'comm-coach',            name: 'AIコミュニケーション改善',   icon: MessageCircle,  color: 'text-blue-400',    plan: 'standard' },
       { id: 'resignation-assistant', name: '退職あんしんAI',             icon: LogOut,         color: 'text-slate-400',   plan: 'standard' },
-      { id: 'ai-konkatsu',           name: 'AI婚活コーチ',               icon: HeartHandshake, color: 'text-rose-400',    plan: 'standard' },
-      { id: 'money-guard',           name: 'AI家計防衛シミュレーター',   icon: Wallet,         color: 'text-amber-500',   plan: 'standard' },
-      { id: 'shio-taiou',            name: '塩対応AI',                   icon: MessageCircle,  color: 'text-slate-300',   plan: 'standard' },
       { id: 'trend-stock',           name: 'SNSトレンド自動仕入れ',      icon: TrendingUp,     color: 'text-green-400',   plan: 'standard' },
       { id: 'hotel-affiliate',       name: 'ホテルアフィリエイトAI',     icon: Network,        color: 'text-emerald-400', plan: 'standard' },
-      { id: 'disaster-guard',        name: 'AI防災パーソナルガイド',     icon: Shield,         color: 'text-red-400',     plan: 'standard' },
-      { id: 'exam-scheduler',        name: 'AI試験スケジューラー',       icon: Brain,          color: 'text-purple-400',  plan: 'standard' },
-      { id: 'kdp-guide',             name: 'KDPガイド',                  icon: BookOpen,       color: 'text-amber-300',   plan: 'standard' },
-      { id: 'smart-gardening',       name: 'AIスマートガーデニング',     icon: TreePine,       color: 'text-green-400',   plan: 'standard' },
-      { id: 'ticket-scout',          name: 'AIチケットスカウト',         icon: Ticket,         color: 'text-yellow-400',  plan: 'standard' },
+      { id: 'kdp-guide',             name: 'Kindle KDP 攻略ナビ',       icon: BookOpen,       color: 'text-amber-300',   plan: 'standard' },
     ]
   },
   {
-    label: 'ライト',
+    label: 'ライト・無料',
     color: 'text-blue-400',
     borderColor: 'border-blue-500/30',
     tools: [
-      { id: 'expense-sync',       name: 'Expense Sync',        icon: DollarSign, color: 'text-green-400',  plan: 'light' },
-      { id: 'contact-sync',       name: 'Contact Sync',        icon: User,       color: 'text-indigo-400', plan: 'light' },
-      { id: 'price-tracker',      name: '底値監視予測Bot',      icon: BarChart2,  color: 'text-cyan-400',   plan: 'light' },
-      { id: 'sns-auto-poster',    name: 'AI SNSオートポスター', icon: Share2,     color: 'text-rose-500',   plan: 'light' },
-      { id: 'kindle-factory',     name: 'Kindle本ファクトリー', icon: BookOpen,   color: 'text-amber-400',  plan: 'light' },
-      { id: 'comp-price-monitor', name: '競合AI価格監視',       icon: TrendingUp, color: 'text-blue-500',   plan: 'light' },
-    ]
-  },
-  {
-    label: '無料',
-    color: 'text-slate-400',
-    borderColor: 'border-slate-500/30',
-    tools: [
-      { id: 'office-politics-graph', name: '社内政治 相関図',      icon: Network,     color: 'text-violet-400',  plan: 'free' },
-      { id: 'moving-checker',        name: 'AI引越し安心チェッカー', icon: Home,       color: 'text-teal-400',    plan: 'free' },
-      { id: 'evidence-manager',      name: 'エビデンス・マネージャー', icon: ShieldCheck, color: 'text-emerald-400', plan: 'free' },
+      { id: 'universal-converter', name: '究極AIマルチコンバーター',  icon: Repeat,       color: 'text-emerald-400', plan: 'light' },
+      { id: 'expense-sync',       name: 'Expense Sync',        icon: DollarSign,   color: 'text-green-400',  plan: 'light' },
+      { id: 'contact-sync',       name: 'Contact Sync',        icon: UserPlus,     color: 'text-indigo-400', plan: 'light' },
+      { id: 'price-tracker',      name: '底値監視AI予測',      icon: LineChart,    color: 'text-cyan-400',   plan: 'light' },
+      { id: 'office-politics-graph', name: '社内政治 AI相関図',      icon: Network,      color: 'text-violet-400',  plan: 'free' },
+      { id: 'moving-checker',        name: 'AI引越し安心チェッカー', icon: Home,         color: 'text-teal-400',    plan: 'free' },
+      { id: 'ai-recipe',            name: 'AIレシピ献立コーチ',       icon: Utensils,     color: 'text-orange-400',  plan: 'free' },
+      { id: 'ai-report-generator',  name: 'AIレポートジェネレーター', icon: FileText,     color: 'text-blue-300',    plan: 'free' },
+      { id: 'evidence-manager',      name: 'エビデンス・マネージャー', icon: Archive,      color: 'text-emerald-400', plan: 'free' },
     ]
   },
 ]
@@ -93,6 +79,8 @@ const PLAN_ORDER = { premium: 0, standard: 1, light: 2, free: 3 }
 function hasAccess(userPlan: string, toolPlan: string): boolean {
   return PLAN_ORDER[userPlan as keyof typeof PLAN_ORDER] <= PLAN_ORDER[toolPlan as keyof typeof PLAN_ORDER]
 }
+
+import { Utensils } from 'lucide-react';
 
 export default function DashboardClient({ user, profile, subscription }: any) {
   const [favorites, setFavorites] = useState<string[]>([])
@@ -117,22 +105,6 @@ export default function DashboardClient({ user, profile, subscription }: any) {
     loadFavorites()
   }, [loadFavorites])
 
-  const toggleFavorite = async (e: React.MouseEvent, id: string) => {
-    e.preventDefault(); e.stopPropagation()
-    if (!user?.id) return
-    const isFav = favorites.includes(id)
-    setFavorites(prev => isFav ? prev.filter(f => f !== id) : [...prev, id])
-    try {
-      if (isFav) {
-        await supabase.from('user_favorites').delete().eq('user_id', user.id).eq('tool_id', id)
-      } else {
-        await supabase.from('user_favorites').upsert({ user_id: user.id, tool_id: id }, { onConflict: 'user_id,tool_id' })
-      }
-    } catch (e) {
-      setFavorites(prev => isFav ? [...prev, id] : prev.filter(f => f !== id))
-    }
-  }
-
   if (!mounted) return null
 
   const plan = (subscription?.plan || 'free') as keyof typeof PLAN_META
@@ -145,77 +117,71 @@ export default function DashboardClient({ user, profile, subscription }: any) {
   const favCount = favorites.length
 
   return (
-    <div className="min-h-screen bg-[#050507] text-slate-200 font-sans pb-32">
+    <div className="min-h-screen bg-[#050507] text-slate-100 font-sans pb-32 selection:bg-emerald-500/30">
       <div className="max-w-7xl mx-auto px-4 md:px-8 pt-10 space-y-10">
-        <div className={`relative overflow-hidden rounded-[2.5rem] border ${meta.border} bg-[#0d0e17] p-8 md:p-10`}>
-          <div className={`absolute inset-0 bg-gradient-to-br ${meta.color} opacity-5 pointer-events-none`} />
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex items-center gap-5">
-              <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${meta.color} flex items-center justify-center shadow-lg`}>
-                <PlanIcon size={28} className="text-white" />
-              </div>
-              <div>
-                <p className="text-slate-500 text-xs font-black uppercase tracking-widest mb-1">Welcome back</p>
-                <h1 className="text-2xl font-black text-white">{displayName} さん</h1>
-                <p className="text-slate-400 text-sm font-bold mt-0.5">{user?.email}</p>
-              </div>
-            </div>
-            <div className="flex flex-col items-start md:items-center gap-1">
-              <Badge className={`text-sm font-black px-5 py-1.5 rounded-full border ${meta.badge}`}>{meta.label}プラン</Badge>
-              <p className="text-slate-500 text-xs font-bold">Current Identity Status</p>
-            </div>
-            <div className="flex gap-6">
-              <div className="text-center"><p className="text-3xl font-black text-white">{accessibleCount}</p><p className="text-slate-500 text-[10px] font-black uppercase tracking-wider">Access</p></div>
-              <div className="text-center"><p className="text-3xl font-black text-amber-400">{favCount}</p><p className="text-slate-500 text-[10px] font-black uppercase tracking-wider">Favorites</p></div>
-            </div>
-            {plan !== 'premium' && (
-              <Link href="/pricing">
-                <button className={`h-12 px-6 rounded-xl font-black text-sm uppercase bg-gradient-to-r ${meta.color} text-white shadow-lg hover:opacity-90 transition-all`}>Upgrade ➔</button>
+        
+        {/* 会員ステータスカード（本物化・巨大フォント） */}
+        <div className={`relative overflow-hidden rounded-[3rem] border-4 ${meta.border} bg-[#0d0e17] p-10 md:p-16 shadow-[0_0_50px_rgba(16,185,129,0.1)]`}>
+          <div className={`absolute inset-0 bg-gradient-to-br ${meta.color} opacity-10 pointer-events-none`} />
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10">
+            <div className="flex items-center gap-8">
+              <Link href="/dashboard/profile">
+                <div className={`w-24 h-24 rounded-[2rem] bg-gradient-to-br ${meta.color} flex items-center justify-center shadow-2xl hover:scale-105 transition-transform overflow-hidden border-2 border-white/10`}>
+                  {profile?.avatar_url ? <img src={profile.avatar_url} className="w-full h-full object-cover" /> : <PlanIcon size={44} className="text-white" />}
+                </div>
               </Link>
-            )}
+              <div className="text-left">
+                <p className="text-emerald-500 text-xs font-black uppercase tracking-[0.4em] mb-2">Welcome Master</p>
+                <h1 className="text-4xl md:text-5xl font-black text-white italic tracking-tighter leading-none">{displayName} <span className="text-xl md:text-2xl text-slate-500 not-italic">さん</span></h1>
+                <p className="text-slate-500 text-sm font-bold mt-3 font-mono">{user?.email}</p>
+              </div>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <Badge className={`text-lg font-black px-8 py-2 rounded-full border-2 ${meta.badge} shadow-lg italic`}>{meta.label}プラン</Badge>
+              <p className="text-slate-600 text-[10px] font-black uppercase tracking-[0.3em]">Identity Status</p>
+            </div>
+            <div className="flex gap-10">
+              <div className="text-center"><p className="text-5xl font-black text-white italic">{accessibleCount}</p><p className="text-slate-600 text-[10px] font-black uppercase tracking-widest mt-1">Access</p></div>
+              <div className="text-center"><p className="text-5xl font-black text-amber-400 italic">{favCount}</p><p className="text-slate-600 text-[10px] font-black uppercase tracking-widest mt-1">Favs</p></div>
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-10">
-            <div className="flex gap-2 border-b border-white/5 pb-0">
-              {([
-                { key: 'all', label: `全ツール` },
-                { key: 'accessible', label: `利用可能` },
-                { key: 'favorites', label: `お気に入り` },
-              ] as const).map(tab => (
-                <button key={tab.key} onClick={() => setActiveTab(tab.key)} className={`px-5 py-3 text-sm font-black uppercase tracking-wider rounded-t-xl transition-all border-b-2 ${activeTab === tab.key ? `${meta.text} border-current bg-white/5` : 'text-slate-500 border-transparent hover:text-slate-300'}`}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          <div className="lg:col-span-2 space-y-12">
+            {/* タブ */}
+            <div className="flex gap-4 border-b border-white/5">
+              {[{ key: 'all', label: '全エンジン' }, { key: 'accessible', label: '利用可能' }, { key: 'favorites', label: 'お気に入り' }].map(tab => (
+                <button key={tab.key} onClick={() => setActiveTab(tab.key as any)} className={`px-6 py-4 text-sm font-black uppercase tracking-widest transition-all border-b-4 ${activeTab === tab.key ? 'border-emerald-500 text-white bg-emerald-500/5' : 'border-transparent text-slate-600 hover:text-slate-300'}`}>
                   {tab.label}
                 </button>
               ))}
             </div>
 
+            {/* ツール一覧（本物化・日本語化） */}
             {TOOL_CATEGORIES.map(cat => {
               let tools = cat.tools
               if (activeTab === 'accessible') tools = tools.filter(t => hasAccess(plan, t.plan))
               if (activeTab === 'favorites') tools = tools.filter(t => favorites.includes(t.id))
               if (tools.length === 0) return null
               return (
-                <div key={cat.label} className="space-y-4">
-                  <div className={`flex items-center gap-3 border-l-4 ${cat.borderColor} pl-4`}>
-                    <h2 className={`font-black text-lg uppercase tracking-wider ${cat.color}`}>{cat.label}</h2>
+                <div key={cat.label} className="space-y-6 text-left">
+                  <div className={`flex items-center gap-4 border-l-8 ${cat.borderColor} pl-6`}>
+                    <h2 className={`font-black text-2xl uppercase tracking-tighter italic ${cat.color}`}>{cat.label}</h2>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {tools.map(tool => {
                       const locked = !hasAccess(plan, tool.plan)
-                      const isFav = favorites.includes(tool.id)
                       const Icon = tool.icon
                       return (
-                        <div key={tool.id} className={`group relative rounded-2xl border transition-all ${locked ? 'bg-black/30 border-white/5 opacity-50' : 'bg-[#13141f] border-white/10 hover:border-emerald-500/50 hover:shadow-xl hover:scale-[1.02]'}`}>
-                          <Link href={locked ? '/pricing' : `/products/${tool.id}/app`} className="flex flex-col items-start gap-3 p-4">
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 ${tool.color}`}>{locked ? <Lock size={18} /> : <Icon size={20} />}</div>
-                            <p className={`text-xs font-black leading-tight ${locked ? 'text-slate-600' : 'text-white'}`}>{tool.name}</p>
+                        <div key={tool.id} className={`group relative rounded-[2rem] border-2 transition-all ${locked ? 'bg-black/40 border-white/5 opacity-40' : 'bg-[#13141f] border-white/10 hover:border-emerald-500/50 hover:shadow-2xl hover:scale-[1.02]'}`}>
+                          <Link href={locked ? '/pricing' : `/products/${tool.id}/app`} className="flex flex-col items-start gap-4 p-6">
+                            <div className={`w-12 h-12 rounded-[1rem] flex items-center justify-center bg-white/5 ${tool.color}`}>{locked ? <Lock size={24} /> : <Icon size={24} />}</div>
+                            <div className="space-y-1">
+                               <p className={`text-sm font-black italic leading-tight ${locked ? 'text-slate-600' : 'text-white'}`}>{tool.name}</p>
+                               <p className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">{locked ? 'Upgrade Required' : 'Launch Engine ➔'}</p>
+                            </div>
                           </Link>
-                          {!locked && (
-                            <button onClick={e => toggleFavorite(e, tool.id)} className={`absolute top-3 right-3 p-1 rounded-lg transition-all ${isFav ? 'text-amber-400 opacity-100' : 'text-slate-700 opacity-0 group-hover:opacity-100 hover:text-amber-400'}`}>
-                              <Star size={14} fill={isFav ? 'currentColor' : 'none'} />
-                            </button>
-                          )}
                         </div>
                       )
                     })}
@@ -225,11 +191,15 @@ export default function DashboardClient({ user, profile, subscription }: any) {
             })}
           </div>
 
+          {/* 右サイドバー：活動ログ & ライブステータス */}
           <div className="lg:col-span-1">
             <DashboardActivity />
           </div>
         </div>
       </div>
+      
+      {/* 復活：デバッグパネル */}
+      <DebugPanel data={{ status: "MASTERMODEL v2.9.1", user_id: user?.id }} toolId="dashboard-core" />
     </div>
   )
 }

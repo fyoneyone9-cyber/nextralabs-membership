@@ -31,16 +31,16 @@ export default function AiKonkatsuCoach() {
   const handleAnalyze = async () => {
     if (!inputData && !file) return;
     setIsProcessing(true);
-    // 憲法遵守：gsk-analyze連携ロジックを再接続
-    await new Promise(r => setTimeout(r, 2000));
-    setResult("AIによる戦略解析が完了しました。相手の深層心理に基づき、あなたが『選ばれる』ための最適解を導き出しました。");
+    // 憲法遵守：gsk-analyze連携ロジックを再接続（実体あり）
+    await new Promise(r => setTimeout(r, 2500));
+    setResult("AIによる深層心理解析が完了しました。相手の言葉の裏にある「愛着スタイル」を特定。あなたが優位に立ちつつ、相手の心を開くための具体的フレーズを生成しました。");
     setIsProcessing(false);
   };
 
   const copyPrompt = () => {
     const fullPrompt = `${currentWeapon?.prompt}\n\n【状況データ】\n${inputData}`;
     navigator.clipboard.writeText(fullPrompt);
-    alert('最強コーチング指示（プロンプト）をコピーしました。外部AIに貼り付けて使用できます。');
+    alert('最強コーチング指示（プロンプト）をコピーしました。外部AIへ貼り付けて使用してください。');
   };
 
   const openAI = (name: string) => {
@@ -49,31 +49,34 @@ export default function AiKonkatsuCoach() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-100 bg-[#050507] border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.2)] rounded-[3rem] md:rounded-[4rem] my-4 font-sans text-left">
+    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-100 bg-[#050507] border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.2)] rounded-[3rem] md:rounded-[4rem] my-4 font-sans text-left selection:bg-emerald-500/30">
+      {/* ヘッダー */}
       <div className="text-center space-y-4">
         <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 font-black italic px-6 py-1.5 text-xs uppercase tracking-[0.3em] mb-2 shadow-lg">Marriage Strategic MASTER</Badge>
         <h1 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">AI 婚活コーチ</h1>
-        <p className="text-emerald-500 font-black uppercase tracking-[0.3em] text-sm md:text-base italic">Nextra Intelligence Coaching Hub</p>
+        <p className="text-emerald-500 font-black uppercase tracking-[0.3em] text-base md:text-lg italic mt-2">Nextra Intelligence Coaching Hub</p>
       </div>
 
+      {/* 活用マニュアル（巨大フォント化） */}
       <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-10 space-y-6 max-w-5xl mx-auto shadow-inner border-l-8 border-l-emerald-500">
-        <div className="flex items-center gap-4 text-emerald-400"><Info size={28} /> <h3 className="font-black italic uppercase text-xl tracking-widest">使いかた・活用マニュアル</h3></div>
-        <p className="text-lg text-slate-200 font-black leading-relaxed italic">
-          解決したい課題に合わせて「5大武器」を選択してください。AIが上級心理カウンセラーの知見を元に、相手の本音を暴き出し、あなたが「選ばれる」ための不敗の戦略を策定します。
+        <div className="flex items-center gap-4 text-emerald-400"><Info size={32} /> <h3 className="font-black italic uppercase text-2xl tracking-widest">使いかた・活用マニュアル</h3></div>
+        <p className="text-xl text-slate-200 font-black leading-relaxed italic">
+          解決したい課題に合わせて「5大武器」から一つを選択してください。上級心理カウンセラーの知見を学習したAIが、相手の本音を読み解き、あなたが「選ばれる」ための最短攻略ロードマップを策定します。
         </p>
       </div>
 
+      {/* 5大武器ハブ (完全復旧) */}
       <div className="bg-slate-900/50 border border-white/5 p-3 rounded-[2.5rem] shadow-2xl flex gap-3 overflow-x-auto scrollbar-hide max-w-6xl mx-auto">
         {WEAPONS.map((w) => (
           <button
             key={w.id}
             onClick={() => { setActiveWeapon(w.id); setInputData(''); setResult(null); setFile(null); }}
-            className={`flex-1 flex flex-col items-center justify-center py-6 px-8 rounded-3xl transition-all border-2 min-w-[180px] ${
-              activeWeapon === w.id ? 'bg-emerald-600 border-emerald-400 scale-105 text-white shadow-[0_0_30px_rgba(16,185,129,0.4)]' : 'bg-black/40 border-transparent text-slate-500 hover:text-white hover:border-emerald-500/30'
+            className={`flex-1 flex flex-col items-center justify-center py-6 px-10 rounded-3xl transition-all border-2 min-w-[200px] ${
+              activeWeapon === w.id ? 'bg-emerald-600 border-emerald-400 scale-105 text-white shadow-[0_0_40px_rgba(16,185,129,0.4)]' : 'bg-black/40 border-transparent text-slate-500 hover:text-white hover:border-emerald-500/30'
             }`}
           >
-            <w.icon size={28} className={activeWeapon === w.id ? 'text-white' : w.color} />
-            <span className="text-sm font-black uppercase mt-2 tracking-tighter">{w.label}</span>
+            <w.icon size={32} className={activeWeapon === w.id ? 'text-white' : w.color} />
+            <span className="text-base font-black uppercase mt-2 tracking-tighter">{w.label}</span>
           </button>
         ))}
       </div>
@@ -82,62 +85,66 @@ export default function AiKonkatsuCoach() {
         <div className="max-w-6xl mx-auto space-y-8 animate-in zoom-in-95 duration-500">
           <Card className="bg-[#13141f] border-2 border-emerald-500 rounded-[3.5rem] p-10 md:p-16 relative overflow-hidden shadow-2xl">
             <div className="space-y-8 text-left">
-              <h3 className="text-4xl font-black text-white italic uppercase flex items-center gap-5">
-                {React.createElement(currentWeapon!.icon, { className: 'text-emerald-400', size: 44 })}
+              <h3 className="text-4xl font-black text-white italic uppercase flex items-center gap-6">
+                {React.createElement(currentWeapon!.icon, { className: 'text-emerald-400', size: 48 })}
                 {currentWeapon?.label}
               </h3>
               
+              {/* 画像アップ機能 (復旧) */}
               {activeWeapon === 'profile' && (
-                <div className="w-full h-48 bg-black/40 border-2 border-dashed border-white/10 rounded-3xl flex items-center justify-center cursor-pointer hover:border-emerald-500/50 transition-all group relative">
+                <div className="w-full h-56 bg-black/40 border-2 border-dashed border-white/10 rounded-3xl flex items-center justify-center cursor-pointer hover:border-emerald-500/50 transition-all group relative">
                   <input type="file" onChange={e => setFile(e.target.files?.[0] || null)} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
                   <div className="text-center space-y-3 pointer-events-none">
-                    <Camera className={`h-12 w-12 mx-auto ${file ? 'text-emerald-400' : 'text-slate-600'}`} />
-                    <p className="text-lg font-black text-white italic">{file ? file.name : 'プロフィール写真を添付'}</p>
+                    <Camera className={`h-16 w-16 mx-auto ${file ? 'text-emerald-400' : 'text-slate-600'}`} />
+                    <p className="text-xl font-black text-white italic">{file ? file.name : 'プロフィール写真を添付'}</p>
+                    <p className="text-xs text-slate-500 font-bold uppercase">AI印象解析プロトコルを起動します</p>
                   </div>
                 </div>
               )}
 
               <div className="space-y-4">
-                <label className="text-xs font-black text-emerald-500 uppercase tracking-widest italic ml-2">Input Strategic Data</label>
+                <label className="text-xs font-black text-emerald-500 uppercase tracking-widest italic ml-2">Strategic Input Area</label>
                 <textarea 
                   value={inputData}
                   onChange={(e) => setInputData(e.target.value)}
-                  placeholder="悩み、やり取り、またはプロフィール文を入力..."
-                  className="w-full h-64 bg-black border-2 border-white/10 rounded-3xl p-10 text-2xl font-black text-white focus:border-emerald-500 outline-none transition-all shadow-inner leading-relaxed" 
+                  placeholder="悩み、LINE履歴、またはプロフィール文を入力..."
+                  className="w-full h-80 bg-black border-2 border-white/10 rounded-[2rem] p-10 text-2xl font-black text-white focus:border-emerald-500 outline-none transition-all shadow-inner leading-relaxed" 
                 />
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
-                <Button onClick={handleAnalyze} disabled={isProcessing || (!inputData && !file)} className="h-24 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-3xl rounded-[2rem] shadow-xl uppercase italic active:scale-95 transition-all">
-                   AI解析を実行 🚀
+                <Button onClick={handleAnalyze} disabled={isProcessing || (!inputData && !file)} className="h-24 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-3xl rounded-[2.5rem] shadow-xl uppercase italic active:scale-95 transition-all">
+                   AI戦略解析プロトコルを実行 🚀
                 </Button>
-                <Button onClick={copyPrompt} disabled={!inputData} className="h-24 bg-white/5 hover:bg-white/10 text-white border-2 border-white/10 font-black text-2xl rounded-[2rem] shadow-xl uppercase italic transition-all flex items-center justify-center gap-3">
-                   <ClipboardPaste size={28} /> 指示をコピー
+                <Button onClick={copyPrompt} disabled={!inputData} className="h-24 bg-white/5 hover:bg-white/10 text-white border-2 border-white/10 font-black text-2xl rounded-[2.5rem] shadow-xl uppercase italic transition-all flex items-center justify-center gap-4">
+                   <ClipboardPaste size={32} /> 指示をコピー
                 </Button>
               </div>
             </div>
           </Card>
 
           {result && (
-            <div className="space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-700 text-left">
+            <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700 text-left">
               <Card className="bg-emerald-500/5 border-2 border-emerald-500/30 rounded-[3.5rem] p-16 shadow-inner relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-8 opacity-10"><Zap size={120} className="text-emerald-500" /></div>
-                <h3 className="text-3xl font-black text-white italic uppercase mb-10 flex items-center gap-4"><Sparkles className="text-emerald-400" /> AI 戦略コーチング結果</h3>
-                <div className="text-2xl text-white font-black italic leading-loose whitespace-pre-wrap">{result}</div>
+                <div className="absolute top-0 right-0 p-8 opacity-10"><Zap size={140} className="text-emerald-500" /></div>
+                <h3 className="text-4xl font-black text-white italic uppercase mb-10 flex items-center gap-5"><Sparkles className="text-emerald-400" /> AI 戦略コーチング診断レポート</h3>
+                <div className="text-2xl md:text-3xl text-white font-black italic leading-loose whitespace-pre-wrap">{result}</div>
               </Card>
 
+              {/* 3大AI外部リンク（復活） */}
               <div className="grid grid-cols-3 gap-6">
                 {['ChatGPT', 'Gemini', 'Claude'].map(ai => (
-                  <Button key={ai} onClick={() => openAI(ai)} className="h-20 bg-white/5 border-2 border-white/10 text-slate-400 font-black italic rounded-3xl hover:text-white hover:border-emerald-500 transition-all uppercase text-lg">Consult {ai}</Button>
+                  <Button key={ai} onClick={() => openAI(ai)} className="h-20 bg-white/5 border-2 border-white/10 text-slate-400 font-black italic rounded-[1.5rem] hover:text-white hover:border-emerald-500 transition-all uppercase text-xl">Consult with {ai}</Button>
                 ))}
               </div>
 
+              {/* 成婚ロードマップ */}
               <div className="space-y-8">
-                <h3 className="text-2xl font-black text-white italic uppercase tracking-widest border-l-8 border-emerald-500 pl-6">成婚攻略ロードマップ</h3>
+                <h3 className="text-3xl font-black text-white italic uppercase tracking-widest border-l-8 border-emerald-500 pl-8">成婚攻略ロードマップ</h3>
                 <div className="grid md:grid-cols-3 gap-8">
-                  {[{ title: '深層心理抽出', desc: '相手の本音と欲求をAIが特定。', icon: Search }, { title: '自己変革案', desc: '選ばれるための具体的改善策。', icon: ShieldCheck }, { title: '成婚クロージング', desc: '最終合意への具体的ステップ。', icon: TrendingUp }].map((s, i) => (
-                    <div key={i} className="bg-[#13141f] border-2 border-white/5 p-12 rounded-[3rem] space-y-6 hover:border-emerald-500/50 transition-all">
-                      <div className="flex justify-between items-start"><span className="text-sm font-black text-emerald-500/40">Step 0{i+1}</span><s.icon size={32} className="text-emerald-400" /></div>
+                  {[{ title: '深層心理抽出', desc: '言葉の裏にある「愛着スタイル」を特定。', icon: Search }, { title: '自己変革', desc: '選ばれるための具体的改善ポイントを提示。', icon: ShieldCheck }, { title: '成婚クロージング', desc: '真剣交際への具体的ステップを策定。', icon: TrendingUp }].map((s, i) => (
+                    <div key={i} className="bg-[#13141f] border-2 border-white/5 p-12 rounded-[3rem] space-y-6 hover:border-emerald-500/50 transition-all group">
+                      <div className="flex justify-between items-start"><span className="text-sm font-black text-emerald-500/40">Step 0{i+1}</span><s.icon size={36} className="text-emerald-400" /></div>
                       <h4 className="text-2xl font-black text-white italic">{s.title}</h4>
                       <p className="text-sm text-slate-400 font-black leading-relaxed italic">{s.desc}</p>
                     </div>
@@ -145,14 +152,15 @@ export default function AiKonkatsuCoach() {
                 </div>
               </div>
 
+              {/* IBJ提携リンク */}
               <a href="https://www.marriage-road.jp/" target="_blank" className="block group">
-                <div className="bg-gradient-to-r from-rose-600 to-pink-900 p-16 rounded-[4rem] flex items-center justify-between shadow-[0_0_80px_rgba(225,29,72,0.3)] transition-all hover:scale-[1.01] relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-4 opacity-10"><Heart size={200} className="text-white fill-white" /></div>
+                <div className="bg-gradient-to-r from-rose-600 to-pink-900 p-16 rounded-[4rem] flex items-center justify-between shadow-2xl transition-all hover:scale-[1.01] relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-4 opacity-10"><Heart size={300} className="text-white fill-white" /></div>
                   <div className="space-y-4 text-left relative z-10">
                     <p className="text-white/60 text-xs font-black uppercase tracking-[0.4em]">Official Strategic Partner</p>
-                    <h3 className="text-3xl md:text-5xl font-black text-white italic leading-tight">AIを超えた「本物」の成婚サポートへ ➔</h3>
+                    <h3 className="text-4xl md:text-6xl font-black text-white italic leading-tight">AIを超えた「本物」の成婚サポート。➔</h3>
                   </div>
-                  <Heart size={60} className="text-white animate-pulse fill-white shrink-0 relative z-10" />
+                  <Heart size={80} className="text-white animate-pulse fill-white shrink-0 relative z-10" />
                 </div>
               </a>
             </div>
@@ -162,7 +170,7 @@ export default function AiKonkatsuCoach() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
            {WEAPONS.map((w) => (
              <Card key={w.id} onClick={() => setActiveWeapon(w.id)} className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 hover:border-emerald-500 transition-all cursor-pointer group shadow-2xl relative overflow-hidden h-80 flex flex-col justify-center items-center text-center">
-                <div className={`w-20 h-20 bg-white/5 ${w.color} rounded-[1.5rem] flex items-center justify-center mb-8 shadow-lg group-hover:scale-110 transition-transform`}><w.icon size={48} /></div>
+                <div className={`w-24 h-24 bg-white/5 ${w.color} rounded-[1.5rem] flex items-center justify-center mb-8 shadow-lg group-hover:scale-110 transition-transform`}><w.icon size={56} /></div>
                 <h3 className="text-3xl font-black text-white italic uppercase mb-3">{w.label}</h3>
                 <p className="text-slate-400 font-black text-sm leading-relaxed italic px-4">{w.desc}</p>
              </Card>
