@@ -17,6 +17,7 @@ const ExamApp = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
   const [showHint, setShowHint] = useState(false)
+  const [isAnswered, setIsAnswered] = useState(false)
 
   // プレビュー用のダミー問題
   const mockQuestions = [
@@ -78,9 +79,14 @@ const ExamApp = () => {
   }
 
   const handleNext = () => {
-    alert('正解です！おめでとうございます！\nNextra Exam Systemはあなたの解答傾向を学習しました。');
-    setSelectedAnswer(null);
-    setShowHint(false);
+    if (!isAnswered) {
+      setIsAnswered(true);
+    } else {
+      setSelectedAnswer(null);
+      setShowHint(false);
+      setIsAnswered(false);
+      // setCurrentQuestion(currentQuestion + 1);
+    }
   }
 
   return (
@@ -173,12 +179,18 @@ const ExamApp = () => {
           disabled={selectedAnswer === null}
           onClick={handleNext}
           className={`px-10 h-14 rounded-2xl font-black text-lg transition-all ${
-            selectedAnswer !== null 
+            isAnswered
+              ? 'bg-white text-slate-950 hover:bg-slate-200 shadow-xl'
+              : selectedAnswer !== null 
               ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.4)]' 
               : 'bg-slate-800 text-slate-500 cursor-not-allowed opacity-50'
           }`}
         >
-          回答を送信 (Submit)
+          {isAnswered ? (
+            <span className="flex items-center gap-2 uppercase italic">Next Question <ChevronRight className="w-5 h-5" /></span>
+          ) : (
+            '回答を送信 (Submit)'
+          )}
         </Button>
       </div>
     </div>
