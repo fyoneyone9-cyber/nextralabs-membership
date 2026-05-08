@@ -65,14 +65,30 @@ const FinalConfirmation: React.FC<FinalConfirmationProps> = ({ reservation, gues
 
           {/* 請求情報 */}
           <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-10 rounded-[50px]">
-             <div className="flex items-center gap-3 mb-8">
-                <CreditCard size={24} className="text-emerald-500" />
-                <h3 className="text-xl font-black tracking-tighter">BILLING / 請求情報</h3>
+             <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                   <CreditCard size={24} className="text-emerald-500" />
+                   <h3 className="text-xl font-black tracking-tighter">BILLING / 請求情報</h3>
+                </div>
+                {reservation?.isPaid ? (
+                  <Badge className="bg-emerald-500 text-slate-950 font-black px-4 py-1 rounded-full text-xs animate-pulse">
+                    PAID / 支払い済み
+                  </Badge>
+                ) : (
+                  <Badge className="bg-red-500 text-white font-black px-4 py-1 rounded-full text-xs">
+                    UNPAID / 未精算
+                  </Badge>
+                )}
              </div>
              <div className="space-y-4">
                 <div className="flex justify-between items-end pb-4 border-b border-white/5">
                    <span className="text-gray-500 font-bold">宿泊代金（税込）</span>
-                   <span className="text-4xl font-black text-white">¥{(reservation?.amount || 0).toLocaleString()}</span>
+                   <div className="text-right">
+                     <span className="text-4xl font-black text-white">¥{(reservation?.amount || 0).toLocaleString()}</span>
+                     <p className="text-[10px] font-black text-emerald-500 mt-1 uppercase tracking-widest italic">
+                       {reservation?.isPaid ? '現地決済済み (Staysee連携)' : '未決済'}
+                     </p>
+                   </div>
                 </div>
                 {reservation?.extraCharges > 0 && (
                   <div className="flex justify-between items-end pb-4 border-b border-red-500/20 bg-red-500/5 p-4 rounded-xl">
