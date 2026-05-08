@@ -56,6 +56,13 @@ export default function KindleFactoryApp() {
               <div className="text-xl text-white font-bold italic leading-loose whitespace-pre-wrap">{result}</div>
             </Card>
 
+            {/* 3大AI外部リンク (憲法遵守) */}
+            <div className="grid grid-cols-3 gap-4">
+              {['ChatGPT', 'Gemini', 'Claude'].map(ai => (
+                <Button key={ai} onClick={() => window.open(`https://${ai.toLowerCase()}.com`)} className="h-16 bg-white/5 border border-white/10 hover:border-blue-500/50 text-slate-400 hover:text-white font-black italic rounded-2xl transition-all uppercase">Detail with {ai}</Button>
+              ))}
+            </div>
+
             <div className="space-y-6">
               <h3 className="text-xl font-black text-white italic uppercase tracking-widest border-l-4 border-emerald-500 pl-4">Publishing Roadmap</h3>
               <div className="grid md:grid-cols-3 gap-6">

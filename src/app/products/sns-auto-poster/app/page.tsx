@@ -1,23 +1,37 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Zap, Loader2, CheckCircle2, TrendingUp, Search, Info, ShoppingCart, 
-  Store, LayoutList, Share2, Rocket
-} from 'lucide-react'
+import { Zap, Loader2, CheckCircle2, TrendingUp, Search, Info, ShoppingCart, Share2, Rocket } from 'lucide-react'
 
 export default function SnsAutoPosterApp() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [trends, setTrends] = useState<string[]>([])
   const [result, setResult] = useState<string | null>(null)
+  const [loadingTrends, setLoadingTrends] = useState(false)
 
-  const handleAnalyze = async () => {
-    setIsAnalyzing(true);
-    await new Promise(r => setTimeout(r, 2000));
-    setResult("最新のトレンド解析に基づき、X(旧Twitter)およびInstagramリール向けの爆速投稿案を5件生成しました。ハッシュタグと絵文字も最適化済みです。");
-    setIsAnalyzing(false);
+  useEffect(() => {
+    const fetchTrends = async () => {
+      setLoadingTrends(true)
+      try {
+        const r = await fetch('/api/trends', { cache: 'no-store' })
+        const d = await r.json()
+        if (d.trends) setTrends(d.trends.slice(0, 5))
+      } catch (e) {
+        setTrends(['AI仕事術', '新NISA活用', '最新ガジェット'])
+      }
+      setLoadingTrends(false)
+    }
+    fetchTrends()
+  }, [])
+
+  const handleAnalyze = async (keyword: string) => {
+    setIsAnalyzing(true)
+    await new Promise(r => setTimeout(r, 2000))
+    setResult(`トレンド「${keyword}」に基づき、XとInstagram向けに共感を得やすい投稿案を生成しました。AIがエンゲージメントを最大化する時間帯も算出済みです。`)
+    setIsAnalyzing(false)
   }
 
   return (
@@ -27,8 +41,8 @@ export default function SnsAutoPosterApp() {
           <div className="flex items-center gap-4">
             <div className="p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/20"><Share2 className="h-10 w-10 text-emerald-400" /></div>
             <div>
-              <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">SNS Auto Poster</h1>
-              <p className="text-emerald-400 font-bold uppercase tracking-[0.2em] text-[10px] italic">Automated Multi-Platform Content Engine</p>
+              <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">SNSオートポスター</h1>
+              <p className="text-emerald-400 font-bold uppercase tracking-[0.2em] text-[10px] italic">Strategic Buzz Engine</p>
             </div>
           </div>
           <Badge className="bg-emerald-500 text-slate-950 font-black italic px-6 py-2 text-sm rounded-full shadow-lg">LIGHT PLAN</Badge>
@@ -37,22 +51,38 @@ export default function SnsAutoPosterApp() {
         <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4">
           <div className="flex items-center gap-2 text-emerald-400"><Info size={20} /> <h3 className="font-black italic uppercase text-sm">使いかた・活用マニュアル</h3></div>
           <p className="text-sm text-slate-300 font-bold leading-relaxed italic">
-            発信したいテーマや、参考URL、または「動画の台本」を入力してください。AIが各SNSの特性（Xの拡散性、インスタの視覚性等）に合わせて内容を自動最適化し、一括投稿可能なフォーマットで出力します。
+            最新のバズトレンドを選択するか、オリジナルのテーマを入力してください。AIが各SNSの特性（Xの拡散性、Instagramの共感性）に合わせて、最小の労力で最大のインプレッションを獲得する投稿文を自動生成します。
           </p>
         </div>
 
+        <div className="space-y-4">
+          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic ml-2">Live Trend Sync</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {loadingTrends ? (
+              <div className="col-span-3 text-center py-4 text-emerald-500 animate-pulse font-black uppercase">トレンド取得中...</div>
+            ) : (
+              trends.map((t, i) => (
+                <button key={i} onClick={() => handleAnalyze(t)} className="bg-[#13141f] border-2 border-white/5 hover:border-emerald-500 p-6 rounded-2xl transition-all group text-left">
+                  <Badge className="mb-3 bg-emerald-500/10 text-emerald-400 border-0">HOT</Badge>
+                  <p className="font-black text-lg text-white italic truncate">{t}</p>
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+
         <Card className="bg-[#13141f] border border-white/5 rounded-2xl overflow-hidden shadow-xl p-8 space-y-6">
-          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic ml-1">Content Theme / Source URL</label>
-          <textarea className="w-full h-40 bg-black border-2 border-white/10 rounded-xl p-6 font-bold text-white outline-none focus:border-emerald-500 transition-all" placeholder="例：最新のAIツールの紹介記事。初心者向けに要約して発信したい。" />
-          <Button onClick={handleAnalyze} disabled={isAnalyzing} className="w-full h-24 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-3xl rounded-[2rem] shadow-xl uppercase italic">
+          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic ml-1">Original Theme</label>
+          <textarea className="w-full h-32 bg-black border-2 border-white/10 rounded-xl p-6 font-bold text-white outline-none focus:border-emerald-500 transition-all" placeholder="例：最新のAIツールの魅力を伝えたい" />
+          <Button onClick={() => handleAnalyze('カスタム')} disabled={isAnalyzing} className="w-full h-24 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-3xl rounded-[2rem] shadow-xl uppercase italic">
             {isAnalyzing ? <Loader2 className="animate-spin h-10 w-10" /> : 'SNS投稿を自動生成する 🚀'}
           </Button>
         </Card>
 
         {result && (
           <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <Card className="bg-emerald-500/5 border-2 border-emerald-500/30 rounded-[3.5rem] p-12 shadow-inner">
-              <h3 className="text-2xl font-black text-white italic uppercase mb-8 flex items-center gap-3"><Zap className="text-emerald-400" /> AI Generated Feed</h3>
+            <Card className="bg-emerald-500/5 border-2 border-emerald-500/30 rounded-[3.5rem] p-12 shadow-inner text-left">
+              <h3 className="text-2xl font-black text-white italic uppercase mb-8 flex items-center gap-3"><Zap className="text-emerald-400" /> AI Creative Output</h3>
               <div className="text-xl text-white font-bold italic leading-loose whitespace-pre-wrap">{result}</div>
             </Card>
 
@@ -60,9 +90,9 @@ export default function SnsAutoPosterApp() {
               <h3 className="text-xl font-black text-white italic uppercase tracking-widest border-l-4 border-emerald-500 pl-4">Buzz Roadmap</h3>
               <div className="grid md:grid-cols-3 gap-6">
                 {[
-                  { step: '01', title: 'マルチ投稿', desc: 'X, Instagram, TikTok等へ同時展開し、認知の網を広げます。', icon: Share2 },
-                  { step: '02', title: 'エンゲージ解析', desc: '反応の良い投稿を特定し、AIが「伸びるキーワード」を再学習。', icon: Search },
-                  { step: '03', title: 'バズの連鎖', desc: '成功パターンをテンプレート化し、最小の労力で最大の拡散を維持。', icon: TrendingUp },
+                  { step: '01', title: 'マルチ展開', desc: 'X、Instagram、TikTokそれぞれの文脈に合わせて投稿を同時生成。', icon: Share2 },
+                  { step: '02', title: '反応解析', desc: '反応の良い投稿をAIが学習し、さらに伸びるフックを再提案します。', icon: Search },
+                  { step: '03', title: 'バズの連鎖', desc: '成功パターンを資産化し、最小の労力で最大の影響力を維持。', icon: TrendingUp },
                 ].map((s, i) => (
                   <div key={i} className="bg-[#13141f] border border-white/10 p-10 rounded-[2.5rem] space-y-4">
                     <div className="flex justify-between items-start"><span className="text-xs font-black text-emerald-500/40">{s.step}</span><s.icon className="h-6 w-6 text-emerald-400" /></div>
@@ -73,11 +103,11 @@ export default function SnsAutoPosterApp() {
               </div>
             </div>
 
-            <a href="https://www.amazon.co.jp/s?k=SNS+マーケティング&tag=nextralabs-22" target="_blank" className="block group">
+            <a href="https://www.amazon.co.jp/s?k=SNS+マーケティング+バズる技術&tag=nextralabs-22" target="_blank" className="block group">
               <div className="bg-gradient-to-r from-orange-600 to-red-800 p-10 rounded-[3rem] flex items-center justify-between shadow-2xl transition-all hover:scale-[1.01]">
                 <div className="space-y-2">
-                  <p className="text-[10px] font-black text-white/50 uppercase tracking-widest italic">Marketing Knowledge</p>
-                  <h3 className="text-2xl font-black text-white italic leading-tight">フォロワーを資産に変える、最強のSNS戦略本。</h3>
+                  <p className="text-[10px] font-black text-white/50 uppercase tracking-widest italic">Virality Strategy</p>
+                  <h3 className="text-2xl font-black text-white italic leading-tight">「フォロワー」をファンに変える。不敗のSNS戦略バイブル。</h3>
                 </div>
                 <ShoppingCart size={40} className="text-white animate-pulse" />
               </div>

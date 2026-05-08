@@ -196,9 +196,9 @@ const MasterEngine = () => {
       </div>
 
       {/* ナビ */}
-      <div className="flex gap-2 justify-center bg-white/5 p-1.5 rounded-2xl border border-white/5 max-w-md mx-auto">
+      <div className="flex gap-2 justify-center bg-white/5 p-2 rounded-2xl border border-white/5 max-w-lg mx-auto">
         {[1, 2, 3].map(s => (
-          <button key={s} onClick={() => setCurrentStep(s)} className={'flex-1 py-3 rounded-xl font-black italic text-[10px] uppercase tracking-widest ' + (currentStep === s ? 'bg-emerald-500 text-slate-950 shadow-lg' : 'text-slate-500')}>Step {s}</button>
+          <button key={s} onClick={() => setCurrentStep(s)} className={'flex-1 py-4 rounded-xl font-black italic text-sm md:text-base uppercase tracking-widest transition-all ' + (currentStep === s ? 'bg-emerald-500 text-slate-950 shadow-[0_0_20px_rgba(16,185,129,0.4)]' : 'text-slate-500 hover:text-slate-300')}>Step {s}</button>
         ))}
       </div>
 
