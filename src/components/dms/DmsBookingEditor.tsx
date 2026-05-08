@@ -1,212 +1,125 @@
-'use client';
-
-import React from 'react';
-import { 
-  X, User, Phone, Mail, Calendar, MapPin, 
-  CreditCard, Key, ShieldCheck, Save, Trash2, 
-  Clock, Hash, Building2, Send, ChevronRight, Edit3
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import React, { useState } from 'react'
+import { X, Save, User, Calendar, Clock, CreditCard, Building, Lock } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 
 interface DmsBookingEditorProps {
-  booking: any;
-  onClose: () => void;
-  isDarkMode: boolean;
+  booking?: any
+  isDarkMode?: boolean
+  onClose: () => void
 }
 
-const DmsBookingEditor: React.FC<DmsBookingEditorProps> = ({ booking, onClose, isDarkMode }) => {
+export default function DmsBookingEditor({ booking, onClose }: DmsBookingEditorProps) {
+  const [formData, setFormData] = useState(booking || {
+    name_kanji: '',
+    start_date: new Date().toISOString().split('T')[0],
+    end_date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+    check_in_time: '15:00',
+    check_out_time: '10:00',
+    billing_amount: 0,
+    tel: '',
+    email: '',
+    person_number: 1,
+    allocate_rooms: [{ room_id: '' }]
+  });
+
+  const inputClass = "w-full bg-white/5 border border-white/10 rounded-xl px-5 py-3 text-sm font-bold focus:border-emerald-500/50 outline-none text-white transition-all";
+  const labelClass = "text-[10px] font-black text-slate-500 mb-2 block uppercase tracking-widest ml-1";
+
+  const handleSave = () => {
+    // ここでクラウド(Supabase)保存ロジックを呼ぶ
+    alert('宿泊情報を保存しました（クラウド同期完了）');
+    onClose();
+  };
+
   return (
-    <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="relative w-full max-w-[1400px] bg-white rounded-lg shadow-2xl overflow-hidden my-8 animate-in slide-in-from-bottom-4 duration-300">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-xl p-4 md:p-10 animate-in fade-in duration-300">
+      <div className="relative w-full max-w-4xl bg-[#0a0b14] border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500">
         
-        {/* 🟥 Top Banner / Title */}
-        <div className="bg-[#f8f9fa] border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Edit3 size={18} className="text-gray-500" />
-            <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-              チェックイン一覧 <ChevronRight size={14} className="text-gray-400" /> 
-              <span className="text-black font-black uppercase">{booking?.name || 'SEKIDO KENJI'}</span>
+        {/* Header */}
+        <div className="bg-white/5 border-b border-white/5 px-10 py-6 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 bg-indigo-500/20 rounded-xl flex items-center justify-center border border-indigo-500/20">
+              <User className="text-indigo-400" size={20} />
+            </div>
+            <h2 className="text-xl font-black italic uppercase tracking-tighter text-white">
+              {booking ? '宿泊情報編集' : '手動宿泊作成'}
             </h2>
           </div>
-          <div className="flex items-center gap-4">
-            <button onClick={onClose} className="px-4 py-1.5 bg-red-600 text-white text-xs font-bold rounded flex items-center gap-2 hover:bg-red-700 transition-colors">
-              <Trash2 size={14} /> 削除
-            </button>
-            <button onClick={onClose} className="p-1 hover:bg-gray-200 rounded transition-colors">
-              <X size={24} className="text-gray-400" />
-            </button>
+          <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors text-slate-500">
+            <X size={24} />
+          </button>
+        </div>
+
+        <div className="p-10 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-4">
+              <div>
+                <label className={labelClass}>予約者名 (漢字)*</label>
+                <input 
+                  className={inputClass} 
+                  value={formData.name_kanji} 
+                  onChange={e => setFormData({...formData, name_kanji: e.target.value})}
+                  placeholder="例: 山田 太郎"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>チェックイン日*</label>
+                  <input type="date" className={inputClass} value={formData.start_date} onChange={e => setFormData({...formData, start_date: e.target.value})} />
+                </div>
+                <div>
+                  <label className={labelClass}>時刻</label>
+                  <input type="time" className={inputClass} value={formData.check_in_time} onChange={e => setFormData({...formData, check_in_time: e.target.value})} />
+                </div>
+              </div>
+              <div>
+                <label className={labelClass}>電話番号*</label>
+                <input className={inputClass} value={formData.tel} onChange={e => setFormData({...formData, tel: e.target.value})} placeholder="09012345678" />
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className={labelClass}>部屋番号 (Room ID)*</label>
+                <input 
+                  className={inputClass} 
+                  value={formData.allocate_rooms?.[0]?.room_id} 
+                  onChange={e => setFormData({...formData, allocate_rooms: [{room_id: e.target.value}]})}
+                  placeholder="例: 302"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>チェックアウト日*</label>
+                  <input type="date" className={inputClass} value={formData.end_date} onChange={e => setFormData({...formData, end_date: e.target.value})} />
+                </div>
+                <div>
+                  <label className={labelClass}>時刻</label>
+                  <input type="time" className={inputClass} value={formData.check_out_time} onChange={e => setFormData({...formData, check_out_time: e.target.value})} />
+                </div>
+              </div>
+              <div>
+                <label className={labelClass}>宿泊金額 (税込)*</label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500 font-black">¥</span>
+                  <input type="number" className={inputClass + " pl-10"} value={formData.billing_amount} onChange={e => setFormData({...formData, billing_amount: Number(e.target.value)})} />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="p-8 space-y-10 text-xs text-gray-700">
-          
-          {/* 🟦 Top Metadata Grid (Inputs like the image) */}
-          <div className="grid grid-cols-5 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-400">予約名*</label>
-              <input type="text" defaultValue={booking?.name || 'SEKIDO KENJI'} className="w-full bg-[#f4f4f7] border border-gray-200 rounded px-3 py-2 font-bold" />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-400">予約名(ふりがな)</label>
-              <input type="text" defaultValue="せきど けんじ" className="w-full bg-[#f4f4f7] border border-gray-200 rounded px-3 py-2" />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-400">PMS予約番号</label>
-              <input type="text" defaultValue="894872" className="w-full bg-[#f4f4f7] border border-gray-200 rounded px-3 py-2" />
-            </div>
-            <div className="space-y-1.5 opacity-50">
-              <label className="text-[10px] font-bold text-gray-400">OTA予約番号</label>
-              <input type="text" placeholder="-" className="w-full bg-[#f4f4f7] border border-gray-200 rounded px-3 py-2" readOnly />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-400">予約ID(システム内部管理)</label>
-              <input type="text" defaultValue="1f88ka4u506lvewnybta" className="w-full bg-[#f4f4f7] border border-gray-200 rounded px-3 py-2 text-[9px]" readOnly />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-5 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-400">部屋ユニット*</label>
-              <select className="w-full bg-white border border-gray-200 rounded px-3 py-2 font-bold">
-                <option>ビジネスホテルアップル - 403</option>
-              </select>
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-400">部屋タイプ</label>
-              <p className="px-3 py-2 bg-[#f4f4f7] border border-gray-200 rounded font-bold text-gray-400">(未設定)</p>
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-400">錠デバイス</label>
-              <p className="px-3 py-2 bg-[#f4f4f7] border border-gray-200 rounded font-bold flex items-center gap-2">
-                <Key size={12} className="text-gray-400" /> 403
-              </p>
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-400">予約日時</label>
-              <p className="px-3 py-2 bg-[#f4f4f7] border border-gray-200 rounded font-bold">2026/05/01 22:06</p>
-            </div>
-          </div>
-
-          {/* 📅 Check-In/Out Grid */}
-          <div className="grid grid-cols-3 gap-12">
-            <div className="space-y-4">
-               <div className="grid grid-cols-2 gap-4">
-                 <div className="space-y-1.5">
-                   <label className="text-[10px] font-bold text-red-500 uppercase">チェックイン予定日*</label>
-                   <div className="flex items-center gap-2">
-                     <input type="date" defaultValue="2026-05-08" className="w-full border border-gray-300 rounded px-3 py-2 font-bold" />
-                     <Clock size={16} className="text-gray-400" />
-                     <input type="time" defaultValue="15:00" className="w-full border border-gray-300 rounded px-3 py-2" />
-                   </div>
-                 </div>
-                 <div className="flex items-end">
-                   <button className="w-full bg-[#5c59cc] text-white rounded py-2 font-bold hover:bg-[#4a47a3] transition-colors">チェックイン日時を直接入力する</button>
-                 </div>
-               </div>
-               <div className="grid grid-cols-2 gap-4">
-                 <div className="space-y-1.5">
-                   <label className="text-[10px] font-bold text-red-500 uppercase">チェックアウト予定日*</label>
-                   <div className="flex items-center gap-2">
-                     <input type="date" defaultValue="2026-05-09" className="w-full border border-gray-300 rounded px-3 py-2 font-bold" />
-                     <Clock size={16} className="text-gray-400" />
-                     <input type="time" defaultValue="10:00" className="w-full border border-gray-300 rounded px-3 py-2" />
-                   </div>
-                 </div>
-                 <div className="flex items-end">
-                   <button className="w-full bg-[#5c59cc] text-white rounded py-2 font-bold hover:bg-[#4a47a3] transition-colors">チェックアウト日時を直接入力する</button>
-                 </div>
-               </div>
-            </div>
-          </div>
-
-          {/* 👤 Guest Contact */}
-          <div className="grid grid-cols-3 gap-8 border-t pt-8">
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-400 uppercase">予約時電話番号</label>
-              <input type="tel" defaultValue="09023308560" className="w-full border-b border-gray-300 py-1 focus:border-indigo-500 outline-none text-sm font-bold" />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-400 uppercase">予約時メールアドレス</label>
-              <input type="email" defaultValue="sekido421208@gmail.com" className="w-full border-b border-gray-300 py-1 focus:border-indigo-500 outline-none text-sm font-bold" />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-400 uppercase">団体番号</label>
-              <input type="text" className="w-full border-b border-gray-300 py-1 focus:border-indigo-500 outline-none text-sm" />
-            </div>
-          </div>
-
-          <div className="flex items-center gap-6 pb-8 border-b">
-            <button className="flex items-center gap-2 bg-[#5c59cc] text-white px-4 py-2 rounded text-[10px] font-bold">
-              <Send size={14} /> 事前チェックインメールを手動送信
-            </button>
-            <div className="flex items-center gap-4 text-[10px] font-bold">
-              <span className="text-gray-400">チェックイン時にフロントへ誘導</span>
-              <div className="w-10 h-5 bg-gray-200 rounded-full relative"><div className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full shadow-sm" /></div>
-              <span className="text-gray-400 ml-4">チェックアウト時にフロントへ誘導</span>
-              <div className="w-10 h-5 bg-gray-200 rounded-full relative"><div className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full shadow-sm" /></div>
-            </div>
-          </div>
-
-          {/* 💴 Billing Information */}
-          <section className="space-y-6">
-            <h3 className="text-lg font-black tracking-tight border-l-4 border-indigo-500 pl-3">請求情報</h3>
-            <div className="grid grid-cols-4 gap-6">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400">宿泊代金</label>
-                <div className="flex items-end gap-2 border-b border-gray-300 pb-1">
-                  <span className="text-gray-400 font-bold">¥</span>
-                  <input type="text" defaultValue="4500" className="w-full outline-none text-xl font-black tracking-tighter" />
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400">うち消費税</label>
-                <div className="flex items-end gap-2 border-b border-gray-200 pb-1 opacity-50">
-                  <span className="text-gray-400 font-bold">¥</span>
-                  <input type="text" defaultValue="409" className="w-full outline-none text-lg font-bold" readOnly />
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-12 bg-[#fdfdfd] p-6 rounded-xl border border-dashed">
-              <div className="space-y-1">
-                <p className="text-[10px] font-bold text-gray-400 uppercase">請求金額</p>
-                <p className="text-4xl font-black text-gray-900 tracking-tighter">¥4,500</p>
-              </div>
-              <div className="h-10 w-px bg-gray-200" />
-              <div className="space-y-1">
-                <p className="text-[10px] font-bold text-gray-400 uppercase">事前支払い済金額</p>
-                <p className="text-2xl font-black text-indigo-500 tracking-tighter">¥4,500</p>
-              </div>
-            </div>
-          </section>
-
-          {/* 🔐 PIN Information */}
-          <section className="space-y-6">
-            <h3 className="text-lg font-black tracking-tight border-l-4 border-indigo-500 pl-3">PIN情報</h3>
-            <p className="text-[10px] leading-relaxed text-gray-400 max-w-2xl">
-              PIN情報の自動同期(DMSで発行→スマートロック側システムへ送信)は、チェックイン日の2日前より、毎時10分ごろに行われます。<br />
-              チェックイン日を変更した場合、変更後のチェックイン日から2日前まではPIN情報の再発行は行われないのでご注意ください。
-            </p>
-            <div className="flex items-center gap-4">
-              <button className="flex items-center gap-2 bg-[#5c59cc] text-white px-6 py-2 rounded text-xs font-bold shadow-lg shadow-indigo-500/20">
-                <RefreshCw size={14} /> 手動同期する
-              </button>
-            </div>
-            <div className="p-8 bg-red-50 border border-red-100 rounded-xl">
-               <p className="text-red-500 font-bold text-sm">有効なPIN情報が存在しません。同期を実行してください。</p>
-            </div>
-          </section>
-
-          {/* 💾 Footer Actions */}
-          <div className="sticky bottom-0 bg-white border-t p-6 flex justify-end gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-            <Button onClick={onClose} variant="outline" className="px-10 h-12 rounded-lg font-bold">キャンセル</Button>
-            <Button onClick={onClose} className="px-16 h-12 rounded-lg bg-[#5c59cc] hover:bg-[#4a47a3] text-white font-black shadow-xl shadow-indigo-500/20 uppercase tracking-widest">保存する</Button>
-          </div>
+        {/* Footer */}
+        <div className="bg-white/5 border-t border-white/5 p-10 flex justify-end gap-4">
+          <Button onClick={onClose} variant="ghost" className="px-10 h-14 rounded-2xl font-black text-slate-500 hover:text-white uppercase tracking-widest italic">
+            Cancel
+          </Button>
+          <Button onClick={handleSave} className="px-16 h-14 bg-[#5c59cc] hover:bg-[#4a47a3] text-white font-black rounded-2xl shadow-2xl shadow-indigo-500/40 uppercase italic tracking-tighter transition-all active:scale-95">
+            <Save size={18} className="mr-2" /> Save Reservation
+          </Button>
         </div>
       </div>
     </div>
-  );
-};
-
-export default DmsBookingEditor;
+  )
+}

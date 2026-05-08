@@ -53,35 +53,36 @@ export default function DmsEngine() {
   const [newLock, setNewLock] = useState({ name: '', type: '', unit: '', roomType: '' });
   const [newPropName, setNewPropName] = useState('');
 
-  // 売上計算ロジック
+  // 売上計算
   const totalDailyRevenue = bookings.reduce((sum, b) => sum + (Number(b.billing_amount) || 0), 0);
   const paidRevenue = bookings.filter(b => b.paid).reduce((sum, b) => sum + (Number(b.billing_amount) || 0), 0);
 
-  // CSVダウンロード機能
+  // CSVダウンロード機能（本物）
   const handleDownloadCsv = () => {
-    if (bookings.length === 0) return;
-    const headers = ["物件名","部屋番号","人数","予約者名","PMS予約番号","チェックイン予定","チェックイン実績","チェックアウト予定","チェックアウト実績","電話番号","メールアドレス","宿泊金額","決済済金額"];
+    if (bookings.length === 0) {
+      alert('ダウンロードするデータがありません');
+      return;
+    }
+    const headers = ["物件名","部屋番号","人数","予約者名","PMS予約番号","チェックイン予定","チェックアウト予定","電話番号","メールアドレス","宿泊金額","決済"];
     const rows = bookings.map(b => [
       "ビジネスホテルアップル",
       b.allocate_rooms?.[0]?.room_id || "",
       b.person_number || "1",
       b.name_kanji,
       b.id,
-      b.start_date,
-      b.check_in_date_time || "",
-      b.end_date,
-      b.check_out_date_time || "",
+      `${b.start_date} ${b.check_in_time}`,
+      `${b.end_date} ${b.check_out_time}`,
       b.tel,
-      b.email,
+      b.email || "",
       b.billing_amount,
-      b.paid ? b.billing_amount : "0"
+      b.paid ? "済" : "未"
     ]);
-    const csvContent = "\uFEFF" + [headers, ...rows].map(e => e.join(",")).join("\n");
+    const csvContent = "\uFEFF" + [headers, ...rows].map(e => e.map(v => `"${v}"`).join(",")).join("\n");
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `bookings_${new Date().toISOString().split('T')[0]}.csv`);
+    link.href = url;
+    link.download = `bookings_export_${new Date().toISOString().split('T')[0]}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -103,7 +104,6 @@ export default function DmsEngine() {
     setMounted(true);
     const data = localStorage.getItem('dms_session');
     if (data) { try { setSession(JSON.parse(data)); } catch (e) {} }
-
     const initData = async () => {
       const cloudList = await CloudPmsStorage.fetchList();
       if (cloudList && cloudList.length > 0) setPmsList(cloudList);
@@ -121,31 +121,20 @@ export default function DmsEngine() {
     initData();
   }, []);
 
-  useEffect(() => {
-    if (mounted) {
-      fetchStayseeBookings();
-    }
-  }, [mounted, pmsList]);
-
+  useEffect(() => { if (mounted) fetchStayseeBookings(); }, [mounted, pmsList]);
   useEffect(() => {
     if (mounted && pmsList.length > 0) {
       localStorage.setItem('dms_pms_list', JSON.stringify(pmsList));
-      const sync = async () => {
-        setIsCloudSyncing(true);
-        await CloudPmsStorage.saveList(pmsList);
-        setIsCloudSyncing(false);
-      };
+      const sync = async () => { setIsCloudSyncing(true); await CloudPmsStorage.saveList(pmsList); setIsCloudSyncing(false); };
       sync();
     }
   }, [pmsList, mounted]);
 
   const togglePmsStatus = (id: string) => setPmsList(prev => prev.map(p => p.id === id ? { ...p, status: p.status === '有効' ? '無効' : '有効' } : p));
   const deletePms = (id: string) => { if (confirm('PMS連携を解除しますか？')) setPmsList(prev => prev.filter(p => p.id !== id)); };
-
   const handleSavePms = () => {
     if (!newPms.type || !newPms.apiKey) { alert('種別とAPIキーは必須です'); return; }
-    const item = { ...newPms, id: Date.now().toString() };
-    setPmsList(prev => [...prev, item]);
+    setPmsList(prev => [...prev, { ...newPms, id: Date.now().toString() }]);
     setPmsView('list');
     setNewPms({ type: '', status: '有効', apiKey: '', memo: '' });
   };
@@ -171,37 +160,20 @@ export default function DmsEngine() {
       <aside className="fixed inset-y-0 left-0 z-50 w-64 border-r border-white/5 bg-[#0a0b14] flex flex-col transform transition-transform md:relative md:translate-x-0">
         <div className="p-6 border-b border-white/5 flex flex-col gap-1">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3 text-emerald-500">
-               <Calendar size={14} className="animate-pulse" />
-               <span className="text-xl font-black italic tracking-tighter uppercase">{currentDate}</span>
-            </div>
-            {pmsList.some(p => p.type === 'Staysee' && p.status === '有効') ? (
-              <Badge className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[8px] font-black animate-pulse">PMS LIVE</Badge>
-            ) : (
-              <Badge className="bg-red-500/20 text-red-400 border border-red-500/30 text-[8px] font-black">PMS OFF</Badge>
-            )}
+            <div className="flex items-center gap-3 text-emerald-500"><Calendar size={14} className="animate-pulse" /><span className="text-xl font-black italic tracking-tighter uppercase">{currentDate}</span></div>
+            {pmsList.some(p => p.type === 'Staysee' && p.status === '有効') ? <Badge className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[8px] font-black animate-pulse">PMS LIVE</Badge> : <Badge className="bg-red-500/20 text-red-400 border border-red-500/30 text-[8px] font-black">PMS OFF</Badge>}
           </div>
-          <div className="flex items-center gap-2 mt-2">
-             <Badge className="bg-indigo-500/20 text-indigo-400 border-none text-[10px] font-black">14</Badge>
-             <Badge className="bg-purple-500/20 text-purple-400 border-none text-[10px] font-black">3</Badge>
-          </div>
+          <div className="flex items-center gap-2 mt-2"><Badge className="bg-indigo-500/20 text-indigo-400 border-none text-[10px] font-black">14</Badge><Badge className="bg-purple-500/20 text-purple-400 border-none text-[10px] font-black">3</Badge></div>
         </div>
-        <nav className="flex-1 py-4 overflow-y-auto">
-          {MENU_ITEMS.map(item => <NavItem key={item.id} item={item} />)}
-          <div className="mt-2">
-            <button onClick={() => setIsSettingsOpen(!isSettingsOpen)} className="w-full flex items-center justify-between px-6 py-4 text-slate-600 hover:text-white transition-colors font-black text-sm">
-              <div className="flex items-center gap-3"><Settings size={18} /><span>各種設定</span></div>
-              <ChevronDown size={14} className={isSettingsOpen ? "" : "-rotate-90"} />
-            </button>
+        <nav className="flex-1 py-4 overflow-y-auto">{MENU_ITEMS.map(item => <NavItem key={item.id} item={item} />)}
+          <div className="mt-2"><button onClick={() => setIsSettingsOpen(!isSettingsOpen)} className="w-full flex items-center justify-between px-6 py-4 text-slate-600 hover:text-white transition-colors font-black text-sm"><div className="flex items-center gap-3"><Settings size={18} /><span>各種設定</span></div><ChevronDown size={14} className={isSettingsOpen ? "" : "-rotate-90"} /></button>
             {isSettingsOpen && <div className="bg-black/20">{SETTINGS_MENU.map(sub => <NavItem key={sub.id} item={sub} isSub={true} />)}</div>}
           </div>
         </nav>
         <div className="p-6 mt-auto border-t border-white/5 space-y-4">
            <div className="flex items-center gap-3 text-[10px] font-black text-slate-600 uppercase tracking-widest"><div className="w-2 h-2 rounded-full bg-slate-800" /> 通話受付:OFF</div>
            <div className="flex items-center gap-3 text-[10px] font-black text-emerald-500 uppercase tracking-widest"><div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> カメラ:ON</div>
-           <div className="flex items-center gap-3 text-left">
-              <div className="text-[9px] font-black text-slate-500 leading-tight">有限会社黄金屋<br/>細井<br/><span className="opacity-40 text-[8px]">b.h.apple@beach.ocn...</span></div>
-           </div>
+           <div className="text-[9px] font-black text-slate-500 leading-tight">有限会社黄金屋<br/>細井<br/><span className="opacity-40 text-[8px]">b.h.apple@beach.ocn...</span></div>
            <button className="flex items-center gap-2 text-slate-600 hover:text-white text-[10px] font-black uppercase tracking-widest transition-colors"><LogOut size={12}/> ログアウト</button>
            <div className="text-[8px] font-bold text-slate-800 tracking-widest text-center pt-2">v3.50.2</div>
         </div>
@@ -212,21 +184,20 @@ export default function DmsEngine() {
           <div className="flex items-center gap-6">
              <button className="md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}><Menu size={20} /></button>
              <h2 className="text-xl font-black italic uppercase tracking-tighter flex items-center gap-3">
-               {activeTab === 'lock-list' && <Lock size={14} className="text-emerald-500 mr-1" />}
-               <span>{activeTab === 'lock-list' ? '錠デバイス一覧' : activeTab === 'property' ? '物件一覧' : 'チェックイン一覧'}</span>
-               {pmsList.some(p => p.type === 'Staysee' && p.status === '有効') && (
-                 <Badge variant="outline" className="ml-4 border-emerald-500/50 text-emerald-400 border-none text-[9px] font-black italic">SYNCING WITH STAYSEE</Badge>
-               )}
+               {activeTab === 'checkin' ? <><PenLine className="text-emerald-500" /> チェックイン一覧</> : activeTab === 'property' ? <><Building className="text-emerald-500" /> 物件一覧</> : activeTab === 'lock-list' ? <><Lock className="text-emerald-500" /> 錠デバイス一覧</> : 'DMS Engine'}
+               {pmsList.some(p => p.type === 'Staysee' && p.status === '有効') && activeTab === 'checkin' && <Badge variant="outline" className="ml-4 border-emerald-500/50 text-emerald-400 border-none text-[9px] font-black italic">SYNCING WITH STAYSEE</Badge>}
              </h2>
           </div>
           <div className="flex items-center gap-4">
              {activeTab === 'checkin' && (
                <>
-                 <Button className="bg-[#5c59cc] hover:bg-[#4a47a3] text-white font-black italic rounded-full h-10 px-6 text-xs shadow-lg tracking-tighter uppercase"><Plus size={14} className="mr-1" /> 手動宿泊作成</Button>
+                 <Button onClick={() => setEditingBooking({})} className="bg-[#5c59cc] hover:bg-[#4a47a3] text-white font-black italic rounded-full h-10 px-6 text-xs shadow-lg tracking-tighter uppercase"><Plus size={14} className="mr-1" /> 手動宿泊作成</Button>
                  <Button onClick={fetchStayseeBookings} variant="outline" className="border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/10 h-10 rounded-full text-xs font-black italic px-6"><RefreshCw size={14} className="mr-1" /> 手動予約同期</Button>
                  <Button onClick={handleDownloadCsv} variant="outline" className="border-white/5 text-slate-500 h-10 rounded-full text-xs font-black italic px-6 uppercase"><Download size={14} className="mr-1" /> CSVダウンロード</Button>
                </>
              )}
+             {activeTab === 'property' && propView === 'list' && <Button onClick={() => setPropView('create')} className="bg-[#5c59cc] text-white font-black italic rounded-full h-10 px-6 text-xs"><Plus size={14} className="mr-1" /> 新規作成</Button>}
+             {activeTab === 'lock-list' && lockView === 'list' && <Button onClick={() => setLockView('create')} className="bg-[#5c59cc] text-white font-black italic rounded-full h-10 px-6 text-xs"><Plus size={14} className="mr-1" /> 新規登録</Button>}
           </div>
         </header>
 
@@ -234,95 +205,35 @@ export default function DmsEngine() {
           {activeTab === 'checkin' && (
             <>
               <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-                <div className="flex items-center bg-black/40 p-1.5 rounded-full border border-white/5">
-                   {['今日', '明日', '日付指定', '全部屋', '部屋選択'].map((t, i) => (
-                     <button key={t} className={`px-5 py-2 rounded-full text-[10px] font-black uppercase italic transition-all ${i===0 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20' : 'text-slate-600 hover:text-white'}`}>{t}</button>
-                   ))}
-                </div>
-                <div className="flex items-center gap-3">
-                   <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-4 py-1.5 rounded-full text-[10px] font-black italic">➔ チェックイン {bookings.length}</Badge>
-                   <Badge className="bg-orange-500/10 text-orange-400 border border-orange-500/20 px-4 py-1.5 rounded-full text-[10px] font-black italic">¥ 売上総額 {totalDailyRevenue.toLocaleString()}</Badge>
-                   <Badge className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-4 py-1.5 rounded-full text-[10px] font-black italic">💳 決済済 {paidRevenue.toLocaleString()}</Badge>
-                </div>
+                <div className="flex items-center bg-black/40 p-1.5 rounded-full border border-white/5">{['今日', '明日', '日付指定', '全部屋', '部屋選択'].map((t, i) => (<button key={t} className={`px-5 py-2 rounded-full text-[10px] font-black uppercase italic transition-all ${i===0 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20' : 'text-slate-600 hover:text-white'}`}>{t}</button>))}</div>
+                <div className="flex items-center gap-3"><Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-4 py-1.5 rounded-full text-[10px] font-black italic">➔ チェックイン {bookings.length}</Badge><Badge className="bg-orange-500/10 text-orange-400 border border-orange-500/20 px-4 py-1.5 rounded-full text-[10px] font-black italic">¥ 売上総額 {totalDailyRevenue.toLocaleString()}</Badge><Badge className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-4 py-1.5 rounded-full text-[10px] font-black italic">💳 決済済 {paidRevenue.toLocaleString()}</Badge></div>
               </div>
               <Card className="bg-[#0a0b14] border-white/5 rounded-[2rem] shadow-2xl overflow-hidden min-h-[600px]">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-[11px] whitespace-nowrap">
-                    <thead className="bg-black/40 text-slate-600 font-black uppercase tracking-widest border-b border-white/5">
-                      <tr>
-                        <th className="p-6">ステータス</th>
-                        <th className="p-6">物件名</th>
-                        <th className="p-6">部屋</th>
-                        <th className="p-6">人数 / 予約者</th>
-                        <th className="p-6">予約元 / OTA予約番号</th>
-                        <th className="p-6">PMS予約番号</th>
-                        <th className="p-6">チェックイン</th>
-                        <th className="p-6">チェックアウト</th>
-                        <th className="p-6">事前チェックイン</th>
-                        <th className="p-6">電話番号 / メール</th>
-                        <th className="p-6 text-right">詳細</th>
-                      </tr>
-                    </thead>
+                <div className="overflow-x-auto"><table className="w-full text-left text-[11px] whitespace-nowrap"><thead className="bg-black/40 text-slate-600 font-black uppercase border-b border-white/5 tracking-widest"><tr><th className="p-6">ステータス</th><th className="p-6">物件名</th><th className="p-6">部屋</th><th className="p-6">人数 / 予約者</th><th className="p-6">予約元 / OTA予約番号</th><th className="p-6">PMS予約番号</th><th className="p-6">チェックイン</th><th className="p-6">チェックアウト</th><th className="p-6">事前チェックイン</th><th className="p-6">電話番号 / メール</th><th className="p-6 text-right">詳細</th></tr></thead>
                     <tbody className="divide-y divide-white/5 text-slate-300">
-                      {loadingBookings ? (
-                        <tr><td colSpan={11} className="p-40 text-center"><Loader2 className="animate-spin mx-auto text-emerald-500" /></td></tr>
-                      ) : bookings.length > 0 ? (
-                        bookings.map((b) => (
-                          <tr key={b.id} className="hover:bg-emerald-500/5 transition-colors group">
-                            <td className="p-6"><div className="px-3 py-1 bg-emerald-500 text-slate-950 font-black text-[10px] rounded-full text-center italic">confirmed</div></td>
-                            <td className="p-6 font-bold text-slate-500">ビジネスホテルアップル</td>
-                            <td className="p-6"><p className="text-slate-600 font-bold text-[9px] uppercase">(未設定)</p><p className="text-white font-black text-sm">{b.allocate_rooms?.[0]?.room_id || '---'}</p></td>
-                            <td className="p-6"><p className="text-slate-600 font-bold text-[9px] uppercase">{b.person_number || '1'}</p><Link href={`/dms/bookings/${b.id}`} className="text-indigo-400 font-black text-sm uppercase hover:underline">{b.name_kanji}</Link></td>
-                            <td className="p-6 font-black text-slate-500 uppercase italic">{b.booking_number ? `OTA / ${b.booking_number}` : 'STAYSEE DIRECT'}</td>
-                            <td className="p-6 font-mono text-slate-400">{b.id}</td>
-                            <td className="p-6 font-black italic">{b.start_date.substring(5)}<br/><span className="text-slate-600 text-[9px] uppercase font-bold">予定({b.check_in_time})</span></td>
-                            <td className="p-6 font-black italic">{b.end_date.substring(5)}<br/><span className="text-slate-600 text-[9px] uppercase font-bold">予定({b.check_out_time})</span></td>
-                            <td className="p-6"><Badge className="bg-emerald-500/10 text-emerald-400 border-none text-[9px] font-black uppercase italic">送信済</Badge></td>
-                            <td className="p-6"><p className="font-mono text-xs">{b.tel}</p><p className="text-slate-600 font-bold text-[9px] truncate max-w-[150px]">{b.email || '(未設定)'}</p></td>
-                            <td className="p-6 text-right"><Link href={`/dms/bookings/${b.id}`}><Button variant="ghost" size="sm" className="text-emerald-500 hover:bg-emerald-500/10 rounded-xl"><ArrowRight size={18}/></Button></Link></td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr><td colSpan={11} className="p-40 text-center text-slate-600 font-black uppercase tracking-[0.4em] italic opacity-20 text-3xl">No Reservation Found</td></tr>
-                      )}
+                      {loadingBookings ? (<tr><td colSpan={11} className="p-40 text-center"><Loader2 className="animate-spin mx-auto text-emerald-500" /></td></tr>) : bookings.length > 0 ? (bookings.map(b => (
+                        <tr key={b.id} className="hover:bg-emerald-500/5 transition-colors group"><td className="p-6"><div className="px-3 py-1 bg-emerald-500 text-slate-950 font-black text-[10px] rounded-full text-center italic">confirmed</div></td><td className="p-6 font-bold text-slate-500">ビジネスホテルアップル</td><td className="p-6"><p className="text-white font-black text-sm">{b.allocate_rooms?.[0]?.room_id || '---'}</p></td><td className="p-6"><p className="text-slate-600 font-bold text-[9px] uppercase">{b.person_number || '1'}</p><Link href={`/dms/bookings/${b.id}`} className="text-indigo-400 font-black text-sm uppercase hover:underline">{b.name_kanji}</Link></td><td className="p-6 font-black text-slate-500 uppercase italic">{b.booking_number ? `OTA / ${b.booking_number}` : 'STAYSEE DIRECT'}</td><td className="p-6 font-mono text-slate-400">{b.id}</td><td className="p-6 font-black italic">{b.start_date.substring(5)}<br/><span className="text-slate-600 text-[9px] font-bold">予定({b.check_in_time})</span></td><td className="p-6 font-black italic">{b.end_date.substring(5)}<br/><span className="text-slate-600 text-[9px] font-bold">予定({b.check_out_time})</span></td><td className="p-6"><Badge className="bg-emerald-500/10 text-emerald-400 border-none text-[9px] font-black uppercase italic">送信済</Badge></td><td className="p-6"><p className="font-mono text-xs">{b.tel}</p><p className="text-slate-600 font-bold text-[9px]">{b.email || '(未設定)'}</p></td><td className="p-6 text-right"><Link href={`/dms/bookings/${b.id}`}><Button variant="ghost" size="sm" className="text-emerald-500 hover:bg-emerald-500/10 rounded-xl"><ArrowRight size={18}/></Button></Link></td></tr>
+                      ))) : (<tr><td colSpan={11} className="p-40 text-center text-slate-600 font-black uppercase tracking-[0.4em] italic opacity-20 text-3xl">No Reservation Found</td></tr>)}
                     </tbody>
-                  </table>
-                </div>
-              </Card>
+                  </table></div></Card>
             </>
           )}
 
           {activeTab === 'lock-list' && lockView === 'create' && (
             <div className="max-w-[1600px] mx-auto space-y-6 animate-in slide-in-from-right-4 duration-500">
-               <Card className="bg-[#0a0b14] border-white/5 rounded-xl shadow-2xl p-10">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
-                     <div className="space-y-3">
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">分かりやすい錠デバイスの識別名<span className="text-red-500 ml-1">*</span></label>
-                        <input value={newLock.name} onChange={e => setNewLock({...newLock, name: e.target.value})} placeholder="名前を入力してください" className="w-full bg-transparent border-b border-white/10 py-3 text-lg font-bold text-white outline-none focus:border-[#5c59cc] transition-all" />
-                     </div>
-                     <div className="space-y-3 relative">
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">錠デバイスタイプ<span className="text-red-500 ml-1">*</span></label>
-                        <select value={newLock.type} onChange={e => setNewLock({...newLock, type: e.target.value})} className="w-full bg-black/40 border-b-2 border-white/10 py-3 text-lg font-bold text-white outline-none focus:border-[#5c59cc] transition-all appearance-none">
-                           <option value="">選択してください</option>
-                           {LOCK_TYPES.map(t => <option key={t} value={t} className="bg-[#0a0b14]">{t}</option>)}
-                        </select>
-                        <ChevronDown size={16} className="absolute right-0 bottom-4 text-slate-600 pointer-events-none" />
-                     </div>
-                     <div className="space-y-3 relative">
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">紐づく部屋ユニット<span className="text-red-500 ml-1">*</span></label>
-                        <select value={newLock.unit} onChange={e => setNewLock({...newLock, unit: e.target.value})} className="w-full bg-black/40 border-b-2 border-white/10 py-3 text-lg font-bold text-white outline-none focus:border-[#5c59cc] transition-all appearance-none">
-                           <option value="">選択してください</option>
-                           <option value="SEIFU">プライベートリゾート清風</option>
-                        </select>
-                        <ChevronDown size={16} className="absolute right-0 bottom-4 text-slate-600 pointer-events-none" />
-                     </div>
-                  </div>
-               </Card>
-               <div className="flex justify-center gap-4 pt-10">
-                  <Button onClick={() => setLockView('list')} variant="outline" className="px-12 h-12 rounded-lg font-black text-slate-500 bg-white/5 border-white/5 uppercase tracking-widest">✕ キャンセル</Button>
-                  <Button onClick={() => setLockView('list')} className="px-16 h-12 rounded-lg bg-[#5c59cc] hover:bg-[#4a47a3] text-white font-black uppercase italic tracking-tighter shadow-lg flex items-center gap-2">💾 登録</Button>
-               </div>
+               <Card className="bg-[#0a0b14] border-white/5 rounded-xl shadow-2xl p-10"><div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10"><div className="space-y-3"><label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">錠デバイスの識別名*</label><input value={newLock.name} onChange={e => setNewLock({...newLock, name: e.target.value})} placeholder="名前を入力してください" className="w-full bg-transparent border-b border-white/10 py-3 text-lg font-bold text-white outline-none focus:border-[#5c59cc]" /></div><div className="space-y-3 relative"><label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">錠デバイスタイプ*</label><select value={newLock.type} onChange={e => setNewLock({...newLock, type: e.target.value})} className="w-full bg-black/40 border-b-2 border-white/10 py-3 text-lg font-bold text-white outline-none focus:border-[#5c59cc] appearance-none"><option value="">選択してください</option>{LOCK_TYPES.map(t => <option key={t} value={t}>{t}</option>)}</select><ChevronDown size={16} className="absolute right-0 bottom-4 text-slate-600 pointer-events-none" /></div></div></Card>
+               <div className="flex justify-center gap-4 pt-10"><Button onClick={() => setLockView('list')} variant="outline" className="px-12 h-12 rounded-lg font-black text-slate-500 uppercase">✕ キャンセル</Button><Button onClick={() => setLockView('list')} className="px-16 h-12 rounded-lg bg-[#5c59cc] text-white font-black uppercase italic italic shadow-lg">💾 登録</Button></div>
             </div>
+          )}
+
+          {activeTab === 'property' && propView === 'list' && (
+             <Card className="bg-[#0a0b14] border-white/5 rounded-xl shadow-2xl overflow-hidden min-h-[500px]">
+                <table className="w-full text-left text-[11px] whitespace-nowrap"><thead className="bg-black/40 text-slate-600 font-black uppercase border-b border-white/5 tracking-widest"><tr><th className="p-5">物件名</th><th className="p-5">操作</th></tr></thead>
+                   <tbody className="text-slate-300">
+                      <tr className="hover:bg-white/5 transition-colors border-b border-white/5"><td className="p-6 font-bold">ビジネスホテルアップル</td><td className="p-6 text-right"><button onClick={() => setEditingProperty({ name: 'ビジネスホテルアップル' })} className="w-10 h-10 bg-[#5c59cc] rounded-full flex items-center justify-center text-white"><Edit3 size={18}/></button></td></tr>
+                   </tbody>
+                </table>
+             </Card>
           )}
 
           {activeTab === 'pms-settings' && (
@@ -349,17 +260,9 @@ export default function DmsEngine() {
               )}
             </div>
           )}
-
-          {activeTab === 'property' && propView === 'list' && (
-            <Card className="bg-[#0a0b14] border-white/5 rounded-xl shadow-2xl overflow-hidden">
-              <table className="w-full text-left text-[11px] whitespace-nowrap">
-                <thead className="bg-black/40 text-slate-600 font-black uppercase border-b border-white/5 tracking-widest"><tr><th className="p-5">物件名</th><th className="p-5 text-right">操作</th></tr></thead>
-                <tbody className="text-slate-300"><tr><td className="p-6 font-bold">ビジネスホテルアップル</td><td className="p-6 text-right"><button onClick={() => setEditingProperty({ name: 'ビジネスホテルアップル' })} className="w-10 h-10 bg-[#5c59cc] rounded-full flex items-center justify-center text-white"><Edit3 size={18}/></button></td></tr></tbody>
-              </table>
-            </Card>
-          )}
         </div>
 
+        {editingBooking && <DmsBookingEditor booking={editingBooking.name_kanji ? editingBooking : null} onClose={() => setEditingBooking(null)} />}
         {editingProperty && <DmsPropertyEditor property={editingProperty} isDarkMode={true} onClose={() => setEditingProperty(null)} />}
       </main>
     </div>
