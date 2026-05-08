@@ -105,11 +105,11 @@ export default function ExamGeneratorPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <ToolLaunchButton 
                 productId="ai-exam-generator" 
-                className="w-full sm:w-auto h-16 px-10 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xl rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all"
+                className="w-full sm:w-auto h-16 px-10 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xl rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all uppercase italic"
               />
               <Link href="/products/exam-scheduler" className="w-full sm:w-auto">
-                <Button variant="outline" className="w-full sm:w-auto h-16 px-10 border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-400 font-bold text-lg rounded-2xl">
-                  学習スケジュールを組む
+                <Button variant="outline" className="w-full sm:w-auto h-16 px-10 border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-400 font-bold text-lg rounded-2xl uppercase italic">
+                  Build Schedule
                 </Button>
               </Link>
             </div>

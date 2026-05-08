@@ -88,12 +88,15 @@ export default function PdfCompressorPage() {
               </p>
 
               <div className="flex flex-wrap gap-4 mb-10">
-                <Link href="/pricing">
-                  <Button size="lg" variant="outline" className="border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 font-bold px-8 rounded-xl">
-                    プランを確認
+                <Link href="/pricing" className="w-full sm:w-auto">
+                  <Button size="lg" variant="outline" className="w-full h-16 border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 font-black px-10 rounded-2xl uppercase italic text-xl">
+                    View Plans
                   </Button>
                 </Link>
-                <ToolLaunchButton productId="pdf-compressor" />
+                <ToolLaunchButton 
+                  productId="pdf-compressor" 
+                  className="w-full sm:w-auto h-16 px-10 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xl rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all uppercase italic"
+                />
               </div>
 
               <div className="flex items-center gap-6 text-xs font-bold text-slate-500 uppercase tracking-widest">
