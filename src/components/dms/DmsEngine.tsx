@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { 
   PenLine, MessageSquare, Building, Lock, Monitor, Video, Car, FileBarChart, 
-  Settings, Users, Database, LogOut, LayoutDashboard, ChevronDown, Menu, X, ArrowRight, Search, RefreshCw, Download, Plus, Moon, Sun, Edit3
+  Settings, Users, Database, LogOut, LayoutDashboard, ChevronDown, Menu, X, ArrowRight, Search, RefreshCw, Download, Plus, Moon, Sun, Edit3, Loader2
 } from 'lucide-react'
 import DmsBookingEditor from './DmsBookingEditor'
 import DmsPropertyEditor from './DmsPropertyEditor'
