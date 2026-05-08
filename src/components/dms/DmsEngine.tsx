@@ -49,6 +49,44 @@ export default function DmsEngine() {
   const [isCloudSyncing, setIsCloudSyncing] = useState(false);
   const [currentDate, setCurrentDate] = useState('5/8(金) 17:47');
 
+  // 売上計算ロジック
+  const totalDailyRevenue = bookings.reduce((sum, b) => sum + (Number(b.billing_amount) || 0), 0);
+  const paidRevenue = bookings.filter(b => b.paid).reduce((sum, b) => sum + (Number(b.billing_amount) || 0), 0);
+
+  // CSVダウンロード機能
+  const handleDownloadCsv = () => {
+    if (bookings.length === 0) return;
+    
+    // ヘッダー（CSV生データに基づく）
+    const headers = ["物件名","部屋番号","人数","予約者名","PMS予約番号","チェックイン予定","チェックイン実績","チェックアウト予定","チェックアウト実績","電話番号","メールアドレス","宿泊金額","決済済金額"];
+    
+    const rows = bookings.map(b => [
+      "ビジネスホテルアップル",
+      b.allocate_rooms?.[0]?.room_id || "",
+      b.person_number || "1",
+      b.name_kanji,
+      b.id,
+      b.start_date,
+      b.check_in_date_time || "",
+      b.end_date,
+      b.check_out_date_time || "",
+      b.tel,
+      b.email,
+      b.billing_amount,
+      b.paid ? b.billing_amount : "0"
+    ]);
+
+    const csvContent = "\uFEFF" + [headers, ...rows].map(e => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `bookings_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const [newPms, setNewPms] = useState({ type: '', status: '有効', apiKey: '', memo: '' });
   const [newLock, setNewLock] = useState({ name: '', type: '', unit: '', roomType: '' });
 
@@ -141,10 +179,6 @@ export default function DmsEngine() {
            <div className="flex items-center gap-3 text-[10px] font-black text-slate-600 uppercase tracking-widest"><div className="w-2 h-2 rounded-full bg-slate-800" /> 通話受付:OFF</div>
            <div className="flex items-center gap-3 text-[10px] font-black text-emerald-500 uppercase tracking-widest"><div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> カメラ:ON</div>
            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center text-white font-black text-sm shadow-xl overflow-hidden">
-                <img src="/avatar-hosoi.png" alt="N" className="w-full h-full object-cover" onerror="this.style.display='none'" />
-                <span className="absolute">N</span>
-              </div>
               <div className="text-[9px] font-black text-slate-500 leading-tight">有限会社黄金屋<br/>細井<br/><span className="opacity-40 text-[8px]">b.h.apple@beach.ocn...</span></div>
            </div>
            <button className="flex items-center gap-2 text-slate-600 hover:text-white text-[10px] font-black uppercase tracking-widest transition-colors"><LogOut size={12}/> ログアウト</button>
