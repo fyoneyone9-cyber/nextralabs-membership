@@ -15,7 +15,8 @@ import {
 
 const TOOLS = [
   { id: 'universal-converter', cat: 'compress', title: '究極AIマルチコンバーター', sub: '動画・画像・PDF × 万能変換圧縮', icon: Repeat, plan: 'ライト' },
-  { id: 'nextra-ai', cat: 'hotel', title: 'Nextra AI', sub: '宿泊予約・鍵発行を完全同期', icon: Building2, plan: 'プレミアム' },
+  { id: 'staysee-ai-finder', cat: 'hotel', title: 'Staysee AI Finder', sub: '宿泊予約・鍵発行を完全同期', icon: Building2, plan: 'プレミアム' },
+  { id: 'hotel-affiliate', cat: 'hotel', title: 'アフィリエイトAI連携', sub: '宿紹介 × 楽天収益化OS', icon: Network, plan: 'スタンダード' },
   { id: 'comp-price-monitor', cat: 'hotel', title: '競合AI価格監視', sub: '楽天API連携 × 価格最適化OS', icon: LineChart, plan: 'プレミアム' },
   { id: 'hotel-affiliate', cat: 'hotel', title: 'アフィリエイトAI連携', sub: '宿紹介 × 楽天収益化OS', icon: Network, plan: 'スタンダード' },
   { id: 'moving-checker', cat: 'hotel', title: 'AI引越し安心チェッカー', sub: '治安・物件リスクを徹底分析', icon: Home, plan: '無料' },
