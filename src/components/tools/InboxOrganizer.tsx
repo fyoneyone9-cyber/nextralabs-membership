@@ -1,18 +1,22 @@
 'use client'
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { 
+  Mail, Zap, Clock, ListChecks, Filter, Trash2, 
+  ChevronDown, ChevronUp, Copy, Check, Send, 
+  RotateCw, ExternalLink, Loader2, ShieldCheck, AlertCircle
+} from 'lucide-react'
 
-// ==================== Constants ====================
 const GOOGLE_CLIENT_ID = '239583936801-ev71grs66ehp0kn3kahr2bdrl0v9iidj.apps.googleusercontent.com'
 const GOOGLE_SCOPES = 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.compose'
 
-// ==================== Client Side Engine ====================
 const MasterEngine = () => {
   const [googleToken, setGoogleToken] = useState<string | null>(null);
   const [emails, setEmails] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [scanning, setScanning] = useState(false);
-  const [activeReplyId, setActiveReplyId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [replyTexts, setReplyTexts] = useState<Record<string, string>>({});
   const [isGenerating, setIsGenerating] = useState<Record<string, boolean>>({});
@@ -35,7 +39,6 @@ const MasterEngine = () => {
 
   const fetchEmails = async (token: string) => {
     setLoading(true);
-    setScanning(true);
     try {
       const res = await fetch('/api/tools/gmail-fetch', {
         method: 'POST',
@@ -43,26 +46,16 @@ const MasterEngine = () => {
         body: JSON.stringify({ accessToken: token }),
       });
       const data = await res.json();
-      
-      // 認証エラー検知時にトークンを破棄して再ログインを促す
-      if (res.status === 401 || data.error?.includes('invalid_grant') || data.error?.includes('expired')) {
+      if (res.status === 401 || data.error) {
         localStorage.removeItem('nextra_google_token');
         setGoogleToken(null);
-        alert('認証の有効期限が切れました。再度ログインしてください。');
         return;
       }
-
       if (data.messages) setEmails(data.messages);
-    } catch (e) { 
-      console.error('[FETCH_ERR]', e); 
-    } finally { 
-      setLoading(false);
-      setTimeout(() => setScanning(false), 500);
-    }
+    } catch (e) { console.error(e); } finally { setLoading(false); }
   };
 
   const generateAiReply = async (email: any) => {
-    setActiveReplyId(email.id);
     setIsGenerating(prev => ({ ...prev, [email.id]: true }));
     try {
       const res = await fetch('/api/tools/gmail-reply', {
@@ -72,11 +65,7 @@ const MasterEngine = () => {
       });
       const data = await res.json();
       setReplyTexts(prev => ({ ...prev, [email.id]: data.reply }));
-    } catch (e) { 
-      console.error(e); 
-    } finally { 
-      setIsGenerating(prev => ({ ...prev, [email.id]: false }));
-    }
+    } catch (e) { console.error(e); } finally { setIsGenerating(prev => ({ ...prev, [email.id]: false })); }
   };
 
   const saveDraft = async (email: any) => {
@@ -89,34 +78,8 @@ const MasterEngine = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ accessToken: googleToken, threadId: email.id, replyBody: text }),
       });
-      alert('Gmailの下書きに保存しました');
-    } catch (e) { 
-      console.error(e); 
-    } finally { 
-      setIsDrafting(prev => ({ ...prev, [email.id]: false }));
-    }
-  };
-
-  const trashEmail = async (id: string) => {
-    if (!confirm('このメールをゴミ箱に移動しますか？')) return;
-    setLoading(true);
-    try {
-      const res = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}/trash`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${googleToken}` },
-      });
-      if (res.ok) {
-        setEmails(prev => prev.filter(e => e.id !== id));
-      } else {
-        const err = await res.json();
-        alert('エラー: ' + (err.error?.message || '削除に失敗しました'));
-      }
-    } catch (e) {
-      console.error(e);
-      alert('通信エラーが発生しました');
-    } finally {
-      setLoading(false);
-    }
+      alert('下書きを保存しました');
+    } catch (e) { console.error(e); } finally { setIsDrafting(prev => ({ ...prev, [email.id]: false })); }
   };
 
   const login = () => {
@@ -131,205 +94,106 @@ const MasterEngine = () => {
   };
 
   const quadrants = [
-    { id: 'urgent_important', label: '🔥 今すぐ対応', color: 'border-red-600 text-red-500 bg-red-600/5', icon: 'Zap' },
-    { id: 'urgent_not_important', label: '⚡ 早めに対応', color: 'border-amber-500 text-amber-500 bg-amber-500/5', icon: 'Clock' },
-    { id: 'not_urgent_important', label: '📌 計画して対応', color: 'border-blue-500 text-blue-500 bg-blue-500/5', icon: 'ListChecks' },
-    { id: 'not_urgent_not_important', label: '📂 後回し/ゴミ箱', color: 'border-slate-800 text-slate-500 bg-slate-900/50', icon: 'Filter' },
+    { id: 'urgent_important', label: '今すぐ対応', color: 'text-red-400', icon: Zap },
+    { id: 'urgent_not_important', label: '早めに対応', color: 'text-amber-400', icon: Clock },
+    { id: 'not_urgent_important', label: '計画対応', color: 'text-blue-400', icon: ListChecks },
+    { id: 'not_urgent_not_important', label: '整理対象', color: 'text-slate-500', icon: Filter },
   ];
 
   return (
-    <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-slate-950 text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)] print:border-0 print:shadow-none print:my-0 print:p-0">
-      <div className="text-center space-y-1 md:space-y-3">
-        <div className="inline-block bg-blue-600 text-white font-black italic tracking-widest px-4 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full shadow-lg border border-white/20">Nextra Intelligence v5.0-MASTER</div>
-        <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">Gmail AI Accelerator</h1>
-      </div>
-
+    <div className="max-w-4xl mx-auto space-y-4">
       {!googleToken ? (
-        <div className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-12 md:p-24 text-center space-y-10 shadow-2xl relative overflow-hidden animate-in zoom-in-95">
-           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-600" />
-           <div className="w-32 h-32 bg-blue-600/10 rounded-[2.5rem] flex items-center justify-center mx-auto border-2 border-blue-500/30 shadow-[0_0_50px_rgba(37,99,235,0.2)]">
-              <div className="w-16 h-16 bg-blue-500 rounded-full animate-pulse" />
-           </div>
-           <button onClick={login} className="h-24 bg-white text-black hover:bg-blue-600 hover:text-white font-black px-16 rounded-[2rem] text-3xl uppercase italic shadow-2xl transition-all active:scale-95">
-              Connect Gmail ↗
-           </button>
-        </div>
+        <Card className="bg-[#13141f] border-2 border-emerald-500/20 rounded-[2rem] p-12 text-center shadow-2xl">
+          <div className="w-20 h-20 bg-blue-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8">
+            <Mail className="h-10 w-10 text-blue-500" />
+          </div>
+          <h2 className="text-3xl font-black text-white italic uppercase mb-4">Connect Gmail</h2>
+          <p className="text-slate-400 font-bold mb-10 italic text-sm">AIが未読メールを瞬時に整理・解析します</p>
+          <Button onClick={login} className="h-20 w-full bg-white text-black font-black text-2xl rounded-2xl shadow-xl hover:scale-105 transition-all uppercase italic">連携を開始する</Button>
+        </Card>
       ) : (
-        <div className="grid lg:grid-cols-3 gap-8 animate-in fade-in duration-700">
-          {/* 🛡️ LEFT: CONTROL TERMINAL */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-8 shadow-xl relative overflow-hidden h-fit">
-               <div className="flex items-center justify-between mb-8">
-                  <div className="text-blue-500 font-black italic tracking-widest text-xs uppercase flex items-center gap-2">
-                    <span className="w-2 h-2 bg-blue-500 rounded-full animate-ping" /> Scanning Engine
-                  </div>
-                  <div className="text-[10px] border border-green-500/30 text-green-500 px-2 py-0.5 rounded font-black italic uppercase animate-pulse">Live Link</div>
-               </div>
-               
-               <button onClick={() => fetchEmails(googleToken)} disabled={loading} className="w-full h-20 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-2xl shadow-lg flex items-center justify-center gap-4 transition-all active:scale-95 italic">
-                  最新メールを解析
-               </button>
-
-               <div className="mt-8 space-y-4">
-                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800 pb-2 italic">Analysis Stats</p>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-black p-4 rounded-2xl border border-white/5 text-center shadow-inner">
-                       <p className="text-[9px] font-bold text-slate-600 uppercase">Fetched</p>
-                       <p className="text-2xl font-black text-white italic">{emails.length}</p>
-                    </div>
-                    <div className="bg-black p-4 rounded-2xl border border-white/5 text-center shadow-inner">
-                       <p className="text-[9px] font-bold text-slate-600 uppercase">AI Sorted</p>
-                       <p className="text-2xl font-black text-blue-500 italic">{emails.length > 0 ? '100%' : '0%'}</p>
-                    </div>
-                  </div>
-               </div>
-
-               <button 
-                 onClick={() => { if(confirm('セッションを終了しログアウトしますか？')) { localStorage.removeItem('nextra_google_token'); setGoogleToken(null); } }} 
-                 className="w-full mt-10 h-14 bg-red-600/10 hover:bg-red-600 border-2 border-red-600/30 hover:border-red-500 text-red-500 hover:text-white text-xs font-black uppercase italic rounded-xl transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
-               >
-                 <span>⚠️</span> TERMINATE SESSION
-               </button>
+        <div className="space-y-4">
+          <div className="sticky top-4 z-30 space-y-2">
+            <Button onClick={() => fetchEmails(googleToken)} disabled={loading} className="w-full h-16 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-2xl shadow-[0_10px_30px_rgba(37,99,235,0.4)] transition-all active:scale-95 italic">
+              {loading ? <Loader2 className="animate-spin h-6 w-6 mr-2" /> : <RotateCw className="h-6 w-6 mr-2" />}
+              最新メールを解析
+            </Button>
+            <div className="grid grid-cols-4 gap-2">
+              {quadrants.map(q => (
+                <div key={q.id} className="bg-black/60 backdrop-blur-md border border-white/5 p-2 rounded-xl text-center">
+                  <q.icon className={`h-4 w-4 mx-auto mb-1 ${q.color}`} />
+                  <div className="text-[10px] font-black text-white italic">{emails.filter(e => e.quadrant === q.id).length}</div>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* 🔥 RIGHT: MESSAGE FEED (THE MATRIX) */}
-          <div className="lg:col-span-2 space-y-8">
-             <div className="grid grid-cols-2 gap-4">
-                {quadrants.map(q => (
-                  <div key={q.id} className={`p-4 rounded-2xl border-2 flex items-center justify-between shadow-lg transition-all hover:scale-[1.02] ${q.color}`}>
-                     <span className="text-[10px] font-black uppercase italic tracking-wider">{q.label}</span>
-                     <span className="text-xl font-black italic">{loading ? '...' : emails.filter(e => e.quadrant === q.id).length}</span>
-                  </div>
-                ))}
-             </div>
-
-             <div className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 min-h-[600px] shadow-2xl space-y-6">
-                <div className="flex items-center justify-between">
-                   <div className="text-slate-500 font-black italic uppercase text-xs tracking-[0.3em]">Live Mail Feed</div>
-                   <button onClick={() => fetchEmails(googleToken)} className="text-[10px] font-black text-blue-500 underline uppercase tracking-widest hover:text-white">Refresh Feed</button>
-                </div>
-
-                <div className="space-y-4">
-                   {loading || scanning ? (
-                      Array(2).fill(0).map((_, i) => <div key={i} className="h-40 bg-black border border-white/5 rounded-[2.5rem] animate-pulse" />)
-                   ) : emails.length > 0 ? (
-                      emails.map((email, i) => (
-                        <div key={i} className="bg-black border border-white/10 rounded-[2.5rem] p-10 hover:border-blue-500/50 transition-all group shadow-xl relative overflow-hidden text-left">
-                           <div className="flex flex-col space-y-2 mb-8">
-                              <div className="text-[10px] font-black text-blue-500 uppercase italic tracking-wider">
-                                 <span className="opacity-50">BY:</span> {email.from}
-                              </div>
-                              <h4 className="text-3xl font-black text-white italic leading-tight tracking-tighter">{email.subject}</h4>
-                              <div className="text-sm text-slate-400 font-bold leading-relaxed italic opacity-70">このメールはHTMLメールです</div>
-                              <div className="flex items-center gap-6 mt-6">
-                                <button 
-                                  onClick={() => setExpandedId(expandedId === email.id ? null : email.id)} 
-                                  className="h-12 bg-white/10 border border-white/20 px-8 rounded-xl text-white text-sm font-black uppercase hover:bg-white/20 transition-all flex items-center gap-2"
-                                >
-                                   📄 {expandedId === email.id ? 'CLOSE CONTENT' : 'READ FULL CONTENT'}
-                                </button>
-                                <button 
-                                  onClick={() => trashEmail(email.id)} 
-                                  className="h-12 bg-red-600/20 border border-red-500/30 px-8 rounded-xl text-red-500 text-sm font-black uppercase hover:bg-red-600 hover:text-white transition-all flex items-center gap-2"
-                                >
-                                   🗑️ TRASH
-                                </button>
-                              </div>
-                              {expandedId === email.id && (
-                                <div className="mt-6 p-10 bg-slate-900 border-2 border-white/10 rounded-[2.5rem] text-slate-200 text-lg italic border border-white/5 animate-in slide-in-from-top-4 shadow-inner leading-relaxed overflow-x-auto whitespace-pre-wrap">
-                                   <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4 border-b border-white/5 pb-2">Full Message Source</div>
-                                   {email.body}
-                                </div>
-                              )}
-                           </div>
-
-                           <div className="flex flex-col gap-8 items-start">
-                              <button 
-                                onClick={() => generateAiReply(email)} 
-                                className="h-20 w-full md:w-auto bg-white text-black hover:bg-blue-600 hover:text-white font-black italic text-xl rounded-2xl px-16 shadow-2xl transition-all uppercase active:scale-95 border-b-4 border-slate-300 active:border-b-0"
-                              >
-                                 AI返信ドラフトを自動生成 🚀
-                              </button>
-
-                              <div className="w-full bg-[#0a0b14] rounded-[3rem] p-12 border-2 border-blue-600/30 shadow-[0_0_50px_rgba(37,99,235,0.1)] relative">
-                                 <div className="text-blue-500 font-black italic uppercase text-xs tracking-[0.4em] mb-10 flex items-center gap-4">
-                                    <span className="w-3 h-3 bg-blue-500 rounded-full animate-pulse" /> AI INTELLIGENCE OUTPUT
-                                 </div>
-                                 
-                                 <div className="min-h-[200px] mb-10">
-                                   {isGenerating[email.id] ? (
-                                     <div className="text-blue-400 text-xl italic animate-pulse font-black uppercase">Analyzing context & deep drafting...</div>
-                                   ) : (
-                                     <div className="text-2xl text-white whitespace-pre-wrap font-sans italic leading-loose tracking-tight bg-white/5 p-10 rounded-[2rem] border border-white/5 shadow-inner">
-                                       {replyTexts[email.id] || "生成ボタンを押すと、ここにNextra Intelligenceによる最適な返信案が表示されます。"}
-                                     </div>
-                                   )}
-                                 </div>
-
-                                 <div className="flex flex-wrap gap-4">
-                                    {replyTexts[email.id] ? (
-                                      <>
-                                        <button 
-                                          onClick={() => { navigator.clipboard.writeText(replyTexts[email.id]); alert('クリップボードにコピーしました'); }}
-                                          className="h-14 bg-blue-600 hover:bg-blue-500 text-white font-black italic rounded-xl px-10 shadow-lg transition-all active:scale-95"
-                                        >
-                                           Copy Draft
-                                        </button>
-                                        
-                                        <button 
-                                          onClick={() => saveDraft(email)}
-                                          disabled={isDrafting[email.id]}
-                                          className="h-14 bg-emerald-600 hover:bg-emerald-500 text-white font-black italic rounded-xl px-10 shadow-lg transition-all flex items-center gap-2 active:scale-95"
-                                        >
-                                           {isDrafting[email.id] ? 'Saving...' : 'Gmail下書きに保存'}
-                                        </button>
-                                      </>
-                                    ) : (
-                                      <div className="flex flex-wrap gap-4 w-full">
-                                        <button 
-                                          onClick={() => {
-                                            const prompt = `以下のメールへの返信案を作成してください。\n\n件名: ${email.subject}\n差出人: ${email.from}\n内容: ${email.body}`;
-                                            navigator.clipboard.writeText(prompt);
-                                            alert('外部AI用のプロンプトをコピーしました。下のボタンからお好きなAIを開いて貼り付けてください。');
-                                          }}
-                                          className="h-14 bg-amber-600 hover:bg-amber-500 text-white font-black italic rounded-xl px-10 shadow-lg transition-all active:scale-95"
-                                        >
-                                           外部AI用プロンプトをコピー
-                                        </button>
-                                        <div className="grid grid-cols-3 gap-2 flex-1">
-                                          {['ChatGPT', 'Gemini', 'Claude'].map(ai => (
-                                            <button 
-                                              key={ai}
-                                              onClick={() => window.open(ai === 'ChatGPT' ? 'https://chatgpt.com' : ai === 'Gemini' ? 'https://gemini.google.com' : 'https://claude.ai', '_blank')}
-                                              className="h-14 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black text-slate-500 hover:text-white uppercase transition-all"
-                                            >
-                                              {ai}
-                                            </button>
-                                          ))}
-                                        </div>
-                                      </div>
-                                    )}
-
-                                    <a 
-                                      href={`https://mail.google.com/mail/u/0/#search/${encodeURIComponent(email.from)}`}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="h-14 bg-white/5 hover:bg-white/10 text-slate-400 font-black italic rounded-xl px-10 border border-white/10 transition-all flex items-center justify-center uppercase"
-                                    >
-                                       Open Gmail ↗
-                                    </a>
-                                 </div>
-                              </div>
-                           </div>
+          <div className="space-y-3">
+            {emails.length === 0 && !loading ? (
+              <div className="py-20 text-center opacity-20 italic font-black uppercase text-xl">Inbox Zero Achieved</div>
+            ) : (
+              emails.map((email) => (
+                <Card key={email.id} className="bg-[#13141f] border-2 border-white/5 rounded-2xl overflow-hidden shadow-xl transition-all hover:border-blue-500/30">
+                  <CardContent className="p-4 space-y-4">
+                    <div className="flex justify-between items-start gap-4">
+                      <div className="space-y-1 flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="text-[8px] font-black text-blue-400 border-blue-400/30 uppercase tracking-tighter">New</Badge>
+                          <span className="text-[9px] font-black text-slate-500 truncate italic">{email.from}</span>
                         </div>
-                      ))
-                   ) : (
-                      <div className="h-96 flex flex-col items-center justify-center opacity-20 italic font-black uppercase tracking-widest text-xl">Inbox Zero Achieved</div>
-                   )}
-                </div>
-             </div>
+                        <h4 className="text-base font-black text-white leading-tight truncate italic">{email.subject}</h4>
+                      </div>
+                      <Button variant="ghost" size="sm" onClick={() => setExpandedId(expandedId === email.id ? null : email.id)} className="h-8 w-8 p-0 text-slate-500">
+                        {expandedId === email.id ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                      </Button>
+                    </div>
+
+                    {expandedId === email.id && (
+                      <div className="animate-in slide-in-from-top-2 duration-300">
+                        <div className="bg-black/40 rounded-xl p-4 text-sm text-slate-300 leading-relaxed italic whitespace-pre-wrap border border-white/5 mb-4 max-h-60 overflow-y-auto">
+                          {email.body}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="space-y-3">
+                      {!replyTexts[email.id] ? (
+                        <Button 
+                          onClick={() => generateAiReply(email)} 
+                          disabled={isGenerating[email.id]}
+                          className="w-full h-12 bg-white/5 hover:bg-white/10 text-emerald-400 border border-emerald-500/30 font-black text-xs rounded-xl transition-all uppercase italic"
+                        >
+                          {isGenerating[email.id] ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : <Zap size={14} className="mr-2" />}
+                          AI返信案を生成
+                        </Button>
+                      ) : (
+                        <div className="space-y-3 animate-in fade-in duration-500">
+                          <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-4">
+                            <p className="text-xs text-emerald-400 font-black mb-2 uppercase italic flex items-center gap-2">
+                              <ShieldCheck size={12} /> AI Draft Output
+                            </p>
+                            <p className="text-sm text-white italic leading-relaxed">{replyTexts[email.id]}</p>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2">
+                            <Button onClick={() => { navigator.clipboard.writeText(replyTexts[email.id]); alert('コピーしました'); }} className="bg-slate-800 hover:bg-slate-700 text-white font-black text-[10px] rounded-lg h-10">
+                              <Copy size={12} className="mr-2" /> COPY
+                            </Button>
+                            <Button onClick={() => saveDraft(email)} disabled={isDrafting[email.id]} className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[10px] rounded-lg h-10">
+                              {isDrafting[email.id] ? <Loader2 className="animate-spin h-3 w-3" /> : <Send size={12} className="mr-2" />} DRAFT
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
+
+          <Button onClick={() => { localStorage.removeItem('nextra_google_token'); setGoogleToken(null); }} variant="ghost" className="w-full text-slate-600 hover:text-red-400 text-[10px] font-black uppercase italic py-8">
+            <Trash2 size={12} className="mr-2" /> Terminate Session
+          </Button>
         </div>
       )}
     </div>
@@ -338,13 +202,14 @@ const MasterEngine = () => {
 
 const NoSSRWrapper = dynamic(() => Promise.resolve(MasterEngine), { ssr: false });
 
-import { DebugPanel } from '@/components/tools/DebugPanel'
-
 export default function InboxOrganizer() {
   return (
-    <div className="min-h-screen bg-[#050507] text-gray-100 font-sans p-4 md:p-10 pb-32 overflow-x-hidden">
+    <div className="min-h-screen bg-[#050507] text-slate-100 font-sans p-4 pb-20 selection:bg-emerald-500/30">
+      <div className="text-center mb-6">
+        <Badge variant="outline" className="border-blue-500/30 text-blue-400 font-black italic px-4 py-0.5 text-[8px] uppercase tracking-widest mb-2 shadow-lg">Nextra Intelligence MASTER</Badge>
+        <h1 className="text-3xl font-black text-white italic uppercase tracking-tighter">Gmail AI Accelerator</h1>
+      </div>
       <NoSSRWrapper />
-      <DebugPanel data={{ status: "v4.3-stable" }} toolId="inbox-zero-master" />
     </div>
   );
 }
