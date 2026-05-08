@@ -34,16 +34,54 @@ const StayseeAppPage = () => {
   };
 
   return (
+  return (
     <div className="min-h-screen bg-[#02040a] text-white flex flex-col overflow-hidden font-sans selection:bg-emerald-500/30">
       {/* 動的なグラデーション背景 */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[70%] h-[70%] bg-emerald-600/10 blur-[120px] rounded-full animate-pulse" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] bg-blue-600/10 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-[20%] right-[10%] w-[40%] h-[40%] bg-purple-600/5 blur-[100px] rounded-full" />
       </div>
 
+      {/* ロードマップ (ステップインジケーター) */}
+      {step !== 'start' && step !== 'lang' && (
+        <div className="w-full max-w-4xl mx-auto pt-10 px-6 relative z-30">
+          <div className="flex justify-between items-center relative">
+            {/* 進捗ライン */}
+            <div className="absolute top-1/2 left-0 w-full h-0.5 bg-white/5 -translate-y-1/2" />
+            
+            {[
+              { id: 'search', label: '予約検索' },
+              { id: 'identity', label: '本人確認' },
+              { id: 'form', label: '名簿記入' },
+              { id: 'confirm', label: '最終確認' },
+              { id: 'payment', label: '完了' }
+            ].map((s, idx) => {
+              const steps_list = ['search', 'identity', 'form', 'confirm', 'payment', 'complete'];
+              const current_idx = steps_list.indexOf(step);
+              const isActive = step === s.id;
+              const isPast = steps_list.indexOf(step) > steps_list.indexOf(s.id);
+
+              return (
+                <div key={s.id} className="relative flex flex-col items-center gap-3">
+                  <div className={`
+                    w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500 z-10
+                    ${isActive ? 'bg-emerald-500 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.5)]' : 
+                      isPast ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-500' : 'bg-[#0a0b10] border-white/10 text-gray-700'}
+                  `}>
+                    {isPast ? <CheckCircle2 size={20} /> : <span className="text-xs font-black">{idx + 1}</span>}
+                  </div>
+                  <span className={`text-[10px] font-black uppercase tracking-widest ${isActive ? 'text-emerald-500' : 'text-gray-700'}`}>
+                    {s.label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* ヘッダー */}
-      <header className="p-10 flex justify-between items-center relative z-20 backdrop-blur-md bg-black/5 border-b border-white/5">
+      <header className="p-10 flex justify-between items-center relative z-20">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
             <span className="font-black text-2xl italic">N</span>

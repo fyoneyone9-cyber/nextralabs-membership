@@ -93,30 +93,55 @@ const ReservationSearch: React.FC<ReservationSearchProps> = ({ onNext }) => {
         <div className="relative bg-black/40 backdrop-blur-2xl border border-white/10 rounded-[40px] p-10">
           <div className="space-y-8">
             <div className="relative">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder={modes.find(m => m.id === searchMode)?.placeholder}
-                className="w-full bg-white/5 border-2 border-white/10 rounded-3xl py-10 px-12 text-5xl font-black tracking-tighter focus:outline-none focus:border-emerald-500/50 transition-all placeholder:text-gray-800"
-              />
-              <div className="absolute right-8 top-1/2 -translate-y-1/2 text-emerald-500/20">
-                <Search size={60} />
-              </div>
+              {searchMode !== 'qr' ? (
+                <>
+                  <input
+                    type="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder={modes.find(m => m.id === searchMode)?.placeholder}
+                    className="w-full bg-white/5 border-2 border-white/10 rounded-3xl py-10 px-12 text-5xl font-black tracking-tighter focus:outline-none focus:border-emerald-500/50 transition-all placeholder:text-gray-800"
+                  />
+                  <div className="absolute right-8 top-1/2 -translate-y-1/2 text-emerald-500/20">
+                    <Search size={60} />
+                  </div>
+                </>
+              ) : (
+                <div className="w-full bg-emerald-500/5 border-2 border-dashed border-emerald-500/20 rounded-[40px] py-20 flex flex-col items-center justify-center gap-6 animate-pulse">
+                  <QrCode size={120} className="text-emerald-500" strokeWidth={1} />
+                  <div className="text-center space-y-2">
+                    <p className="text-2xl font-black tracking-widest text-emerald-500">SCANNING...</p>
+                    <p className="text-sm text-gray-500 font-bold uppercase">QRコードをかざしてください</p>
+                  </div>
+                  {/* デモ用: スキャン成功を模した隠し入力/トリガー */}
+                  <input 
+                    type="text" 
+                    autoFocus
+                    placeholder="[スキャン待機中]"
+                    onChange={(e) => {
+                      setInputValue(e.target.value);
+                      if(e.target.value.length >= 4) handleSearch();
+                    }}
+                    className="absolute inset-0 opacity-0 cursor-none"
+                  />
+                </div>
+              )}
             </div>
 
-            <button
-              onClick={handleSearch}
-              disabled={!inputValue && searchMode !== 'qr' || isSearching}
-              className={`
-                w-full py-10 rounded-3xl text-3xl font-black tracking-[0.2em] transition-all
-                ${isSearching || (!inputValue && searchMode !== 'qr')
-                  ? 'bg-white/5 text-gray-700 cursor-not-allowed'
-                  : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-[0_20px_40px_rgba(16,185,129,0.3)] active:scale-[0.98]'}
-              `}
-            >
-              {isSearching ? 'SEARCHING...' : 'SEARCH'}
-            </button>
+            {searchMode !== 'qr' && (
+              <button
+                onClick={handleSearch}
+                disabled={!inputValue || isSearching}
+                className={`
+                  w-full py-10 rounded-3xl text-3xl font-black tracking-[0.2em] transition-all
+                  ${isSearching || !inputValue
+                    ? 'bg-white/5 text-gray-700 cursor-not-allowed'
+                    : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-[0_20px_40px_rgba(16,185,129,0.3)] active:scale-[0.98]'}
+                `}
+              >
+                {isSearching ? 'SEARCHING...' : 'SEARCH'}
+              </button>
+            )}
           </div>
         </div>
       </div>
