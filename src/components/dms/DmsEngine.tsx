@@ -125,22 +125,22 @@ export default function DmsEngine() {
                     { id: 'RSV002', name: 'NEXTRALABS', room: 'Room 501', status: '滞在中' }
                   ].map((booking) => (
                     <tr key={booking.id} className="hover:bg-emerald-500/5 transition-colors group">
-                      <td className="p-6">
-                        <Badge className={booking.status === '滞在中' ? 'bg-blue-500/20 text-blue-400' : 'bg-emerald-500/20 text-emerald-400'}>
+                      <td className="p-4 md:p-6">
+                        <Badge className={booking.status === '滞年中' ? 'bg-blue-500/20 text-blue-400' : 'bg-emerald-500/20 text-emerald-400'}>
                           {booking.status}
                         </Badge>
                       </td>
-                      <td className="p-6">
+                      <td className="p-4 md:p-6">
                         <button 
                           onClick={() => setEditingBooking(booking)}
-                          className="text-indigo-400 font-black hover:underline text-sm uppercase tracking-tight"
+                          className="text-indigo-400 font-black hover:underline text-sm uppercase tracking-tight text-left"
                         >
                           {booking.name}
                         </button>
                       </td>
-                      <td className="p-6 font-bold">{booking.room}</td>
-                      <td className="p-6 text-right">
-                        <Button variant="ghost" size="sm" onClick={() => setEditingBooking(booking)} className="opacity-0 group-hover:opacity-100">
+                      <td className="p-4 md:p-6 font-bold">{booking.room}</td>
+                      <td className="p-4 md:p-6 text-right">
+                        <Button variant="ghost" size="sm" onClick={() => setEditingBooking(booking)} className="md:opacity-0 group-hover:opacity-100">
                           <Edit3 size={16} />
                         </Button>
                       </td>

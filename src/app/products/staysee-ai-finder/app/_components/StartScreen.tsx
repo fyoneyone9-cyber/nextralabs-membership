@@ -15,9 +15,9 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
         <p className="text-emerald-500/40 text-sm font-black tracking-[1.2em] uppercase animate-in slide-in-from-top-4 duration-1000">
           Experience the Future
         </p>
-        <h1 className="text-8xl font-thin tracking-tighter leading-[1.3] text-white/90 py-4">
+        <h1 className="text-6xl md:text-8xl font-thin tracking-tighter leading-tight text-white/90 py-10">
           Welcome to<br/>
-          <span className="font-black italic text-transparent bg-clip-text bg-gradient-to-tr from-emerald-400 via-emerald-500 to-teal-200 drop-shadow-[0_0_20px_rgba(16,185,129,0.4)] pb-2">
+          <span className="font-black italic text-transparent bg-clip-text bg-gradient-to-tr from-emerald-400 via-emerald-500 to-teal-200 drop-shadow-[0_0_20px_rgba(16,185,129,0.4)] px-4">
             Premium Stay
           </span>
         </h1>
