@@ -112,7 +112,7 @@ export function DebugPanel({ data }: { data?: any }) {
   if (!isMounted) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-[10001] flex flex-col items-end font-sans">
+    <div className="fixed bottom-6 right-6 z-[10001] hidden md:flex flex-col items-end font-sans">
       <button 
         onClick={() => setIsOpen(!isOpen)} 
         className="flex items-center justify-center w-12 h-12 rounded-2xl border bg-black/40 backdrop-blur-md shadow-2xl border-white/5 text-slate-400 hover:text-emerald-500 transition-colors"
