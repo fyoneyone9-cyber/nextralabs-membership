@@ -113,8 +113,8 @@ const MasterEngine = () => {
         </Card>
       ) : (
         <div className="space-y-4">
-          <div className="sticky top-4 z-30 space-y-2">
-            <Button onClick={() => fetchEmails(googleToken)} disabled={loading} className="w-full h-16 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-2xl shadow-[0_10px_30px_rgba(37,99,235,0.4)] transition-all active:scale-95 italic">
+          <div className="sticky top-0 z-[50] pt-4 pb-2 bg-[#050507]/80 backdrop-blur-md space-y-2">
+            <Button onClick={() => fetchEmails(googleToken)} disabled={loading} className="w-full h-16 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-2xl shadow-[0_10px_30px_rgba(37,99,235,0.4)] transition-all active:scale-95 italic relative z-[51]">
               {loading ? <Loader2 className="animate-spin h-6 w-6 mr-2" /> : <RotateCw className="h-6 w-6 mr-2" />}
               最新メールを解析
             </Button>

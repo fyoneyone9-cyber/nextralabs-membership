@@ -128,7 +128,7 @@ export default function ProfilePage() {
             <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] overflow-hidden shadow-2xl">
               <CardHeader className="bg-white/5 p-8 border-b border-white/5">
                 <CardTitle className="text-lg font-black italic uppercase tracking-widest text-white flex items-center gap-3">
-                  <Shield size={16} text-emerald-500 /> Subscription Status
+                  <Shield className="h-5 w-5 text-emerald-500" /> Subscription Status
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-8 space-y-4">
