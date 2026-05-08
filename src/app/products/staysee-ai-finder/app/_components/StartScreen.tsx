@@ -10,20 +10,23 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
   const [isLocked, setIsLocked] = React.useState(true);
 
   const handleAdminLogout = () => {
-    const pw = window.prompt('管理者パスワードを入力してください');
-    if (pw === '2026') {
+    const pw = window.prompt('ENTER ADMIN ACCESS KEY');
+    // NextraLabs サイト個別の管理パスワード
+    if (pw === 'ninja38824') {
       setIsLocked(false);
       localStorage.clear();
       sessionStorage.clear();
       window.location.href = '/';
     } else if (pw !== null) {
-      alert('認証エラー');
+      alert('ACCESS DENIED');
     }
   };
 
-  // 強力な外部サイト封鎖
+  // 【鉄壁のガードエンジン】外部サイトへの遷移を「物理的」かつ「強制的」に遮断
   useEffect(() => {
     if (!isLocked) return;
+
+    // 1. 外部へのハイパーリンク、スクリプトによる遷移を全てフックして殺す
     const handleExternalClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const anchor = target.closest('a');
@@ -33,36 +36,57 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
           if (url.origin !== window.location.origin) {
             e.preventDefault();
             e.stopPropagation();
-            alert('【SECURITY LOCK】');
+            // 音もなく、無慈悲に遮断
             return false;
           }
         } catch (err) {}
       }
     };
+
+    // 2. ブラウザを閉じようとしたり、URLを手動で変えて離れようとするのを全力で阻止
     const preventDeparture = (e: BeforeUnloadEvent) => {
       if (isLocked) {
         e.preventDefault();
-        e.returnValue = '';
+        e.returnValue = 'LOCKED'; 
       }
     };
+
+    // 3. 履歴スタックをこのページで埋め尽くし、「戻る」や「進む」での離脱を不能にする
+    // 0.1秒ごとに履歴を自分自身に書き戻す超強力ループ
+    const lockHistory = setInterval(() => {
+      if (isLocked) {
+        window.history.pushState(null, '', window.location.href);
+      }
+    }, 100);
+
+    const handlePopState = () => {
+      if (isLocked) {
+        window.history.pushState(null, '', window.location.href);
+      }
+    };
+
     window.addEventListener('click', handleExternalClick, true);
     window.addEventListener('beforeunload', preventDeparture);
+    window.addEventListener('popstate', handlePopState);
+
     return () => {
       window.removeEventListener('click', handleExternalClick, true);
       window.removeEventListener('beforeunload', preventDeparture);
+      window.removeEventListener('popstate', handlePopState);
+      clearInterval(lockHistory);
     };
   }, [isLocked]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[85vh] text-center space-y-24 animate-in fade-in duration-1000 relative">
       
-      {/* 隠し管理者エリア (バージョン表示) */}
+      {/* 隠し管理者アクセスポイント (超低視認性) */}
       <div className="fixed bottom-4 left-4 z-[200]">
         <button 
           onClick={handleAdminLogout}
-          className="text-[8px] font-black text-white/5 hover:text-emerald-500/20 tracking-[0.5em] transition-colors uppercase cursor-default"
+          className="text-[6px] font-black text-white/[0.02] hover:text-emerald-500/10 tracking-[1em] transition-all uppercase cursor-default select-none"
         >
-          v3.50.2.build.final
+          SYS.V3.MASTER.SECURED
         </button>
       </div>
 
