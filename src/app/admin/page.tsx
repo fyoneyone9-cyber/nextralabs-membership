@@ -2,7 +2,9 @@ import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Users, ShieldCheck, TrendingUp, MessageSquare, Zap, Cpu, MousePointer2 } from 'lucide-react'
+import ApiStatusBoard from '@/components/admin/ApiStatusBoard'
 
 export default async function AdminPage() {
   const supabase = createServerSupabaseClient()
@@ -52,16 +54,10 @@ export default async function AdminPage() {
 
   const pvStats = [
     { path: '/products', name: 'ツールストア', count: 1420 },
-    { path: '/products/nextra-ai', name: 'Staysee AI Finder', count: 980 },
+    { path: '/products/staysee-ai-finder', name: 'Staysee AI Finder', count: 980 },
     { path: '/products/universal-converter', name: 'マルチコンバーター', count: 850 },
     { path: '/', name: 'トップページ', count: 2100 }
   ]
-
-  const toolDisplayNames: Record<string, string> = {
-    'universal-converter': '究極AIマルチコンバーター',
-    'nextra-ai': 'Staysee AI Finder',
-    'inbox-organizer': 'Gmail AI Accelerator'
-  }
 
   const activeSubUserIds = new Set((subscriptions || []).map((s: any) => s.user_id))
 
@@ -76,6 +72,7 @@ export default async function AdminPage() {
           <Badge className="bg-emerald-500 text-slate-950 font-black italic px-4 py-1.5 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)]">ADMIN ONLY</Badge>
         </div>
 
+        {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="bg-[#13141f] border-2 border-white/10 rounded-3xl shadow-xl">
             <CardContent className="p-8 text-center">
@@ -93,8 +90,8 @@ export default async function AdminPage() {
 
           <Card className="bg-emerald-500/10 border-2 border-emerald-500 rounded-3xl shadow-[0_0_30px_rgba(16,185,129,0.2)]">
             <CardContent className="p-8 text-center relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-2 opacity-20"><Cpu className="h-20 w-20 text-emerald-500" /></div>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-500 mb-1 italic">ローカルAI節約総額</p>
+              <div className="absolute top-0 right-0 p-2 opacity-20"><Cpu className="h-20 w-20 text-emerald-400" /></div>
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-500 mb-1 italic">ローカルAI省エネ節約総額</p>
               <div className="text-4xl font-black italic text-white tracking-tighter">¥{totalSavings.toLocaleString()}</div>
             </CardContent>
           </Card>
@@ -108,48 +105,55 @@ export default async function AdminPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden lg:col-span-1">
-            <CardHeader className="bg-white/5 p-8 border-b border-white/5">
-              <CardTitle className="text-xl font-black italic uppercase tracking-tight text-white flex items-center gap-3">
-                <MousePointer2 className="h-6 w-6 text-blue-400" /> アクセス解析
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-8 space-y-6">
-              {pvStats.map((pv, i) => (
-                <div key={i} className="flex justify-between items-center">
-                  <div className="text-sm font-black text-slate-300 italic">{pv.name}</div>
-                  <div className="text-lg font-black text-white italic">{pv.count.toLocaleString()} PV</div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+          <div className="lg:col-span-2 space-y-8">
+            <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl p-8">
+              <CardHeader className="p-0 border-b border-white/5 mb-6 pb-6">
+                <CardTitle className="text-xl font-black italic uppercase tracking-tight text-white flex items-center gap-3">
+                  <MousePointer2 className="h-6 w-6 text-blue-400" /> アクセス解析 (PV)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0 space-y-6">
+                {pvStats.map((pv, i) => (
+                  <div key={i} className="flex justify-between items-center border-b border-white/5 pb-4">
+                    <div className="text-sm font-black text-slate-300 italic">{pv.name}</div>
+                    <div className="text-lg font-black text-white italic">{pv.count.toLocaleString()} PV</div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
 
-          <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden lg:col-span-2">
-            <CardHeader className="bg-white/5 p-8 border-b border-white/5">
-              <CardTitle className="text-xl font-black italic uppercase tracking-tight text-white flex items-center gap-3">
-                <Users className="h-6 w-6 text-emerald-400" /> 会員一覧
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <tbody className="divide-y divide-white/5">
-                    {(profiles || []).map((p: any) => (
-                      <tr key={p.id} className="hover:bg-white/5 transition-colors">
-                        <td className="py-6 px-8 font-black text-white">{p.display_name || 'No Name'}</td>
-                        <td className="py-6 px-8">
-                          <Badge className={activeSubUserIds.has(p.user_id) ? "bg-emerald-500 text-slate-950" : "bg-slate-700 text-slate-300"}>
-                            {activeSubUserIds.has(p.user_id) ? "PREMIUM" : "FREE"}
-                          </Badge>
-                        </td>
-                        <td className="py-6 px-8 text-xs text-slate-500">{new Date(p.created_at).toLocaleDateString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
+            <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden lg:col-span-2">
+              <CardHeader className="bg-white/5 p-8 border-b border-white/5">
+                <CardTitle className="text-xl font-black italic uppercase tracking-tight text-white flex items-center gap-3">
+                  <Users className="h-6 w-6 text-emerald-400" /> 会員一覧
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <tbody className="divide-y divide-white/5">
+                      {(profiles || []).map((p: any) => (
+                        <tr key={p.id} className="hover:bg-white/5 transition-colors">
+                          <td className="py-6 px-8 font-black text-white">{p.display_name || 'No Name'}</td>
+                          <td className="py-6 px-8">
+                            <Badge className={activeSubUserIds.has(p.user_id) ? "bg-emerald-500 text-slate-950" : "bg-slate-700 text-slate-300"}>
+                              {activeSubUserIds.has(p.user_id) ? "PREMIUM" : "FREE"}
+                            </Badge>
+                          </td>
+                          <td className="py-6 px-8 text-xs text-slate-500">{new Date(p.created_at).toLocaleDateString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="space-y-8">
+            {/* 🚀 API実稼働ステータスボード (完全見える化) */}
+            <ApiStatusBoard />
+          </div>
         </div>
       </div>
     </div>

@@ -3,7 +3,8 @@ import React, { useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Zap, Loader2, CheckCircle2, TrendingUp, Search, Info, ShoppingCart, Utensils, Apple, AppleIcon } from 'lucide-react'
+import { Zap, Loader2, CheckCircle2, TrendingUp, Search, Info, ShoppingCart, Utensils, Apple } from 'lucide-react'
+import { ApiLinkIndicator } from '@/components/tools/ApiLinkIndicator'
 
 export default function AiRecipeApp() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -31,7 +32,10 @@ export default function AiRecipeApp() {
             <div className="p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/20"><Utensils className="h-10 w-10 text-emerald-400" /></div>
             <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">AIレシピ献立コーチ</h1>
           </div>
-          <Badge className="bg-emerald-500 text-slate-950 font-black italic px-6 py-2 text-sm rounded-full">FREE PLAN</Badge>
+          <div className="flex flex-col items-end gap-2">
+            <Badge className="bg-emerald-500 text-slate-950 font-black italic px-6 py-2 text-sm rounded-full">FREE PLAN</Badge>
+            <ApiLinkIndicator />
+          </div>
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4">
@@ -41,7 +45,7 @@ export default function AiRecipeApp() {
 
         <Card className="bg-[#13141f] border border-white/5 rounded-2xl p-8 space-y-6">
           <textarea value={ingredients} onChange={e => setIngredients(e.target.value)} className="w-full h-40 bg-black border-2 border-white/10 rounded-xl p-6 font-bold text-white outline-none focus:border-emerald-500 transition-all text-lg" placeholder="食材を入力..." />
-          <Button onClick={handleAnalyze} disabled={isAnalyzing || !ingredients} className="w-full h-20 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-2xl rounded-2xl shadow-xl uppercase italic">
+          <Button onClick={handleAnalyze} disabled={isAnalyzing || !ingredients} className="w-full h-20 bg-emerald-600 hover:bg-emerald-50 text-slate-950 font-black text-2xl rounded-2xl shadow-xl uppercase italic">
             {isAnalyzing ? <Loader2 className="animate-spin h-8 w-8" /> : '献立をプランニングする 🚀'}
           </Button>
         </Card>

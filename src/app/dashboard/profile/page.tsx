@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { User, Shield, Zap, Camera, Loader2, CheckCircle2, MessageSquare, ExternalLink } from 'lucide-react'
+import { User, Shield, Zap, Camera, Loader2, CheckCircle2, MessageSquare } from 'lucide-react'
 
 export default function ProfilePage() {
   const supabase = createClient()
@@ -20,55 +20,59 @@ export default function ProfilePage() {
     const loadProfile = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
-        // 1. プロフィールデータの取得
         const { data } = await supabase.from('profiles').select('*').eq('user_id', user.id).single()
         if (data) {
           setProfile(data)
           setDisplayName(data.display_name || '')
         }
-        // 2. 憲法遵守：実際の利用ログ(api_usage)から節約額を算出（1回5円換算）
         const { count } = await supabase.from('api_usage').select('*', { count: 'exact', head: true }).eq('user_id', user.id)
         setSavings((count || 0) * 5)
       }
       setLoading(false)
     }
     loadProfile()
-  }, [supabase])
+  }, [])
 
   const handleUpdate = async () => {
     setUpdating(true)
-    const { data: { user } } = await supabase.auth.getUser()
-    if (user) {
-      const { error } = await supabase.from('profiles').update({ display_name: displayName }).eq('user_id', user.id)
-      if (!error) {
-        setSaved(true)
-        setTimeout(() => setSaved(false), 3000)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { error } = await supabase.from('profiles').update({ display_name: displayName }).eq('user_id', user.id)
+        if (!error) {
+          setSaved(true)
+          setTimeout(() => setSaved(false), 3000)
+        }
       }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setUpdating(false)
     }
-    setUpdating(false)
   }
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
     setUpdating(true)
-    const { data: { user } } = await supabase.auth.getUser()
-    if (user) {
-      const fileExt = file.name.split('.').pop()
-      const filePath = `${user.id}/avatar.${fileExt}`
-      
-      // 3. 憲法遵守：Supabase Storageへの実アップロード（ハリボテ禁止）
-      const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file, { upsert: true })
-      
-      if (!uploadError) {
-        const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath)
-        await supabase.from('profiles').update({ avatar_url: publicUrl }).eq('user_id', user.id)
-        setProfile({ ...profile, avatar_url: publicUrl })
-      } else {
-        alert('画像のアップロードに失敗しました')
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const fileExt = file.name.split('.').pop()
+        const filePath = `${user.id}/avatar.${fileExt}`
+        const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file, { upsert: true })
+        
+        if (!uploadError) {
+          const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath)
+          await supabase.from('profiles').update({ avatar_url: publicUrl }).eq('user_id', user.id)
+          setProfile({ ...profile, avatar_url: publicUrl })
+        }
       }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setUpdating(false)
     }
-    setUpdating(false)
   }
 
   const openAI = (name: string) => {
@@ -99,7 +103,7 @@ export default function ProfilePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* 左：アバター・節約額（MASTERMODEL外枠） */}
+          {/* 左：アバター・節約額 */}
           <div className="space-y-6">
             <Card className="bg-[#13141f] border-4 border-emerald-500 rounded-[2.5rem] p-8 flex flex-col items-center text-center space-y-6 shadow-[0_0_50px_rgba(16,185,129,0.15)] relative overflow-hidden">
               <div className="relative group">
@@ -128,20 +132,18 @@ export default function ProfilePage() {
                 <Badge className="bg-emerald-500 text-slate-950 font-black italic uppercase text-[10px] px-4 py-1">
                   {profile?.role === 'admin' ? 'Administrator' : 'Verified Member'}
                 </Badge>
-                <p className="text-[10px] text-slate-500 font-mono tracking-tighter">{profile?.user_id}</p>
+                <p className="text-[10px] text-slate-500 font-mono tracking-tighter">{profile?.user_id?.slice(0, 16)}...</p>
               </div>
             </Card>
 
-            {/* 個人別節約額 */}
             <Card className="bg-emerald-500/10 border-2 border-emerald-500 rounded-[2rem] p-8 text-center shadow-[0_0_40px_rgba(16,185,129,0.25)] relative overflow-hidden">
               <div className="absolute top-0 right-0 p-2 opacity-10"><Zap size={80} className="text-emerald-500" /></div>
               <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic mb-2 relative z-10">AI 活用節約総額</p>
               <div className="text-4xl font-black text-white italic tracking-tighter relative z-10">¥{savings.toLocaleString()}</div>
-              <p className="text-[8px] text-emerald-500/40 font-bold uppercase mt-2 relative z-10 tracking-[0.2em]">Efficiency Value</p>
             </Card>
           </div>
 
-          {/* 右：基本情報・ステータス・3大AIリンク */}
+          {/* 右：基本情報 */}
           <div className="md:col-span-2 space-y-6">
             <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl">
               <CardHeader className="bg-white/5 p-8 border-b border-white/5">
@@ -162,7 +164,7 @@ export default function ProfilePage() {
                 <Button 
                   onClick={handleUpdate} 
                   disabled={updating} 
-                  className="w-full h-20 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-2xl rounded-2xl shadow-xl transition-all uppercase italic active:scale-95"
+                  className="w-full h-20 bg-emerald-600 hover:bg-emerald-50 text-slate-950 font-black text-2xl rounded-2xl shadow-xl transition-all uppercase italic active:scale-95"
                 >
                   {updating ? <Loader2 className="animate-spin mr-2" /> : saved ? <CheckCircle2 className="mr-2" /> : null}
                   {saved ? '更新完了' : 'プロフィールを更新する'}
@@ -170,7 +172,6 @@ export default function ProfilePage() {
               </CardContent>
             </Card>
 
-            {/* 3大AI外部リンク (復旧) */}
             <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl p-8">
               <div className="flex items-center gap-2 mb-6">
                 <MessageSquare className="h-5 w-5 text-blue-400" />

@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Zap, Loader2, CheckCircle2, TrendingUp, Search, Info, ShoppingCart, Repeat, Download, Video, ImageIcon, FileText, Lock, Copy, Scale, LineChart, Scissors, Sparkles, Trash2, Pen, MessageSquare } from 'lucide-react'
+import { ApiLinkIndicator } from '@/components/tools/ApiLinkIndicator'
 
 export default function CommCoachApp() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -24,7 +25,10 @@ export default function CommCoachApp() {
             <div className="p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/20"><MessageSquare className="h-10 w-10 text-emerald-400" /></div>
             <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">AIコミュニケーション改善</h1>
           </div>
-          <Badge className="bg-emerald-500 text-slate-950 font-black italic px-6 py-2 text-sm rounded-full shadow-lg">STANDARD PLAN</Badge>
+          <div className="flex flex-col items-end gap-2">
+            <Badge className="bg-emerald-500 text-slate-950 font-black italic px-6 py-2 text-sm rounded-full shadow-lg">STANDARD PLAN</Badge>
+            <ApiLinkIndicator />
+          </div>
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4">
