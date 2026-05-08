@@ -20,15 +20,12 @@ export default function TrendStockPage() {
   }, []);
 
   const fetchUserProfile = async () => {
+    /* 一時停止: 404エラー回避
     try {
       const res = await fetch('/api/user/profile');
-      const json = await res.json();
-      if (json.rakuten_affiliate_id) {
-        setUserAffiliateId(json.rakuten_affiliate_id);
-      }
-    } catch (e) {
-      console.log('Profile fetch failed');
-    }
+      ...
+    } catch (e) { ... }
+    */
   };
 
   const saveSettings = async () => {
