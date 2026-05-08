@@ -113,7 +113,10 @@ export function DebugPanel({ data }: { data?: any }) {
 
   return (
     <div className="fixed bottom-6 left-6 z-[10001] flex flex-col items-start font-sans">
-      <button onClick={() => setIsOpen(!isOpen)} className="flex items-center justify-center w-12 h-12 rounded-2xl border bg-black/40 backdrop-blur-md shadow-2xl border-white/5 text-slate-800">
+      <button 
+        onClick={() => setIsOpen(!isOpen)} 
+        className="flex items-center justify-center w-12 h-12 rounded-2xl border bg-black/40 backdrop-blur-md shadow-2xl border-white/5 text-slate-400 hover:text-emerald-500 transition-colors"
+      >
         <Activity size={20} />
       </button>
       

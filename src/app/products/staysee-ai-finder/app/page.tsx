@@ -70,13 +70,13 @@ const StayseeAppPage = () => {
         <div className="absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] bg-blue-600/10 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
       </div>
 
-      {/* ロードマップ (ステップインジケーター) */}
+      {/* ロードマップ (ステップインジケーター) - タブレット向けにさらに最適化 */}
       {step !== 'start' && step !== 'lang' && step !== 'type' && (
-        <div className="w-full max-w-5xl mx-auto pt-16 px-10 relative z-30">
+        <div className="w-full max-w-7xl mx-auto pt-24 px-10 relative z-30">
           <div className="flex justify-between items-center relative">
-            <div className="absolute top-7 left-0 w-full h-1.5 bg-white/5 rounded-full" />
+            <div className="absolute top-10 left-0 w-full h-2 bg-white/5 rounded-full" />
             <div
-              className="absolute top-7 left-0 h-1.5 bg-emerald-500 rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(16,185,129,0.5)]"
+              className="absolute top-10 left-0 h-2 bg-emerald-500 rounded-full transition-all duration-1000 shadow-[0_0_20px_rgba(16,185,129,0.5)]"
               style={{ width: `${(['search', 'identity', 'form', 'confirm', 'payment'].indexOf(step) / 4) * 100}%` }}
             />
             {[
@@ -90,22 +90,22 @@ const StayseeAppPage = () => {
               const isActive = step === s.id;
               const isPast = steps_list.indexOf(step) > steps_list.indexOf(s.id);
               return (
-                <div key={s.id} className="relative flex flex-col items-center gap-4 group">
-                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border-4 transition-all duration-700 z-10 ${
-                    isActive ? 'bg-emerald-500 border-emerald-400 text-white scale-110 shadow-[0_0_30px_rgba(16,185,129,0.6)]' :
+                <div key={s.id} className="relative flex flex-col items-center gap-6 group">
+                  <div className={`w-20 h-20 rounded-3xl flex items-center justify-center border-4 transition-all duration-700 z-10 ${
+                    isActive ? 'bg-emerald-500 border-emerald-300 text-white scale-110 shadow-[0_0_40px_rgba(16,185,129,0.7)]' :
                     isPast ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-500' : 'bg-[#050508] border-white/10 text-gray-800'
                   }`}>
-                    {isPast ? <CheckCircle2 size={28} strokeWidth={3} /> : <span className="text-xl font-black">{idx + 1}</span>}
+                    {isPast ? <CheckCircle2 size={40} strokeWidth={3} /> : <span className="text-3xl font-black">{idx + 1}</span>}
                   </div>
                   <div className="flex flex-col items-center">
-                    <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-colors duration-500 ${isActive ? 'text-emerald-400' : isPast ? 'text-emerald-500/60' : 'text-gray-800'}`}>
+                    <span className={`text-[12px] font-black uppercase tracking-[0.3em] transition-colors duration-500 ${isActive ? 'text-emerald-400' : isPast ? 'text-emerald-500/60' : 'text-gray-800'}`}>
                       STEP {idx + 1}
                     </span>
-                    <span className={`text-sm font-black mt-1 transition-all duration-500 ${isActive ? 'text-white text-base' : 'text-gray-700'}`}>
+                    <span className={`text-xl font-black mt-1 transition-all duration-500 ${isActive ? 'text-white text-2xl' : 'text-gray-700'}`}>
                       {s.label}
                     </span>
                   </div>
-                  {isActive && <div className="absolute -top-3 w-2 h-2 bg-emerald-400 rounded-full animate-ping" />}
+                  {isActive && <div className="absolute -top-4 w-3 h-3 bg-emerald-400 rounded-full animate-ping" />}
                 </div>
               );
             })}
@@ -113,30 +113,30 @@ const StayseeAppPage = () => {
         </div>
       )}
 
-      {/* ヘッダー */}
-      <header className="p-10 flex justify-between items-center relative z-20">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
-            <span className="font-black text-2xl italic">N</span>
+      {/* ヘッダー - サイズアップ */}
+      <header className="p-12 flex justify-between items-center relative z-20">
+        <div className="flex items-center gap-6">
+          <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-[24px] flex items-center justify-center shadow-2xl shadow-emerald-500/30">
+            <span className="font-black text-4xl italic">N</span>
           </div>
           <div className="flex flex-col">
-            <span className="font-black text-xl tracking-tighter leading-none">NEXTRA AI</span>
-            <span className="text-[10px] font-bold text-emerald-500 tracking-[0.4em] mt-1">CHECK-IN SYSTEM</span>
+            <span className="font-black text-3xl tracking-tighter leading-none">NEXTRA AI</span>
+            <span className="text-xs font-bold text-emerald-500 tracking-[0.5em] mt-2">CHECK-IN SYSTEM</span>
           </div>
         </div>
         {step !== 'start' && (
           <button
             onClick={() => setStep('start')}
-            className="group flex items-center gap-2 px-8 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-sm font-bold transition-all"
+            className="group flex items-center gap-3 px-12 py-5 bg-white/5 hover:bg-white/10 border-2 border-white/10 rounded-full text-xl font-black transition-all"
           >
-            <div className="w-2 h-2 bg-red-500 rounded-full group-hover:animate-ping" />
+            <div className="w-3 h-3 bg-red-500 rounded-full group-hover:animate-ping" />
             {t.restart}
           </button>
         )}
       </header>
 
       {/* メイン */}
-      <main className="flex-1 flex flex-col items-center justify-center px-6">
+      <main className="flex-1 flex flex-col items-center justify-center px-10 pb-20">
         <div className="w-full max-w-6xl">
           {step === 'start' && <StartScreen onNext={() => setStep('lang')} />}
           {step === 'lang' && <LanguageSelect onNext={(lang: string) => { setSelectedLang(lang); setStep('type'); }} />}
