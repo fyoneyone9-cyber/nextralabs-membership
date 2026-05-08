@@ -112,14 +112,32 @@ export default function BookingDetailPage() {
             <div className="flex items-end gap-4">
               <div className="flex-1"><label className="text-[10px] font-bold text-slate-400 mb-1 block text-left">チェックイン予定日*</label><div className="bg-slate-50 border border-slate-200 h-10 px-3 flex items-center rounded-md font-bold text-sm">{b.start_date}</div></div>
               <div className="w-24"><label className="text-[10px] font-bold text-slate-400 mb-1 block text-left">予定時刻</label><div className="bg-slate-50 border border-slate-200 h-10 px-3 flex items-center rounded-md font-bold text-sm">{b.check_in_time}</div></div>
-              <div className="flex-1 pb-1 text-left"><p className="text-[10px] text-slate-400 font-bold uppercase mb-1">ステータス</p><p className="text-sm font-bold text-indigo-600 uppercase">未チェックイン</p></div>
-              <Button className="bg-indigo-600 hover:bg-indigo-700 h-10 px-6 font-bold text-xs rounded-xl">チェックイン日時を直接入力する</Button>
+              <div className="flex-1 pb-1 text-left">
+                <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">ステータス (PMS連動)</p>
+                <p className="text-sm font-bold text-indigo-600 uppercase">
+                  {b.paid ? '滞在中 (CHECKED-IN)' : '未チェックイン'}
+                </p>
+              </div>
+              <Button className="bg-emerald-600 hover:bg-emerald-700 h-10 px-6 font-bold text-xs rounded-xl shadow-lg shadow-emerald-500/20 text-white">
+                DMSで実効チェックインを実行
+              </Button>
             </div>
             <div className="flex items-end gap-4">
-              <div className="flex-1"><label className="text-[10px] font-bold text-slate-400 mb-1 block text-left">チェックアウト予定日*</label><div className="bg-slate-50 border border-slate-200 h-10 px-3 flex items-center rounded-md font-bold text-sm">{b.end_date}</div></div>
-              <div className="w-24"><label className="text-[10px] font-bold text-slate-400 mb-1 block text-left">予定時刻</label><div className="bg-slate-50 border border-slate-200 h-10 px-3 flex items-center rounded-md font-bold text-sm">{b.check_out_time}</div></div>
-              <div className="flex-1 pb-1 text-left"><p className="text-[10px] text-slate-400 font-bold uppercase mb-1">ステータス</p><p className="text-sm font-bold text-indigo-600 uppercase">未チェックアウト</p></div>
-              <Button className="bg-indigo-600 hover:bg-indigo-700 h-10 px-6 font-bold text-xs rounded-xl">チェックアウト日時を直接入力する</Button>
+              <div className="flex-1">
+                <label className="text-[10px] font-bold text-slate-400 mb-1 block text-left">チェックアウト予定日*</label>
+                <div className="bg-slate-50 border border-slate-200 h-10 px-3 flex items-center rounded-md font-bold text-sm">{b.end_date}</div>
+              </div>
+              <div className="w-24">
+                <label className="text-[10px] font-bold text-slate-400 mb-1 block text-left">予定時刻</label>
+                <div className="bg-slate-50 border border-slate-200 h-10 px-3 flex items-center rounded-md font-bold text-sm">{b.check_out_time}</div>
+              </div>
+              <div className="flex-1 pb-1 text-left">
+                <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">ステータス</p>
+                <p className="text-sm font-bold text-indigo-600 uppercase">未チェックアウト</p>
+              </div>
+              <Button className="bg-emerald-600 hover:bg-emerald-700 h-10 px-6 font-bold text-xs rounded-xl shadow-lg shadow-emerald-500/20 text-white">
+                DMSで実効チェックアウトを実行
+              </Button>
             </div>
           </div>
           <div className="space-y-6 border-l border-slate-100 pl-8">
