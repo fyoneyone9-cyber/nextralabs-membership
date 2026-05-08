@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 
 const TOOLS = [
-  { id: 'pdf-compressor', cat: 'biz', title: 'PDF AIコンプレッサー', sub: '品質維持 × 極限圧縮 × 憲法遵守', icon: FileDown, plan: 'ライト' },
+  { id: 'universal-converter', cat: 'biz', title: '究極AIマルチコンバーター', sub: '動画・画像・PDF × 万能変換圧縮', icon: Repeat, plan: 'ライト' },
   { id: 'staysee-ai-finder', cat: 'hotel', title: 'Staysee AI Finder', sub: '宿泊予約・鍵発行を完全同期', icon: Building2, plan: 'プレミアム' },
   { id: 'comp-price-monitor', cat: 'hotel', title: '競合AI価格監視', sub: '楽天API連携 × 価格最適化OS', icon: LineChart, plan: 'プレミアム' },
   { id: 'hotel-affiliate', cat: 'hotel', title: 'アフィリエイトAI連携', sub: '宿紹介 × 楽天収益化OS', icon: Network, plan: 'スタンダード' },

@@ -1,60 +1,52 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent } from '@/card'
 import { Badge } from '@/components/ui/badge'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 import {
   ArrowLeft,
-  FileDown,
+  Video,
   Zap,
   ShieldCheck,
   Lock,
-  ArrowRight,
-  Info,
-  ChevronRight,
-  Code2,
-  HelpCircle,
   Clock,
   Layout,
-  FileText
+  FileVideo,
+  Download
 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'PDF AIコンプレッサー | 品質を落とさずファイルサイズを極限削減 - NextraLabs',
-  description: '【2026年最新】NextraLabsのPDF AIコンプレッサーは、Gemini 2.5 Flashと独自のアルゴリズムで、PDFの視覚的品質を維持したまま、ファイルサイズを最大90%削減。憲法遵守のセキュアな設計で、ビジネスを加速。',
-  keywords: ['PDF 圧縮 AI', 'ファイル軽量化', 'PDF サイズ 削減', 'オンライン PDF コンプレッサー', 'NextraLabs', 'Ninja3'],
-  openGraph: {
-    title: 'PDF AIコンプレッサー | 15MBを2MBに。品質そのまま、スマートに。',
-    description: '重いPDFにさよならを。NextraLabsのMASTERMODELが、あなたの業務を爆速化。',
-  }
+  title: 'マルチ動画AIコンバーター & コンプレッサー | 形式変換・軽量化・抽出をこれ一台で - NextraLabs',
+  description: 'NextraLabsのマルチ動画AIコンバーターは、MP4, MOV, WebM, GIF, MP3への変換と極限圧縮を同時に実現。Genspark AIの強力なエンコード技術により、視覚品質を維持したままあらゆるデバイスへ最適化。',
+  keywords: ['動画変換 AI', 'MP4 圧縮', 'MOV MP4 変換', '動画 GIF 変換', '音声抽出 AI', 'NextraLabs', 'Ninja3'],
 }
 
 const features = [
   {
     icon: Zap,
-    title: '高速AI圧縮',
-    description: '独自の圧縮アルゴリズムにより、テキストや画像の品質を極限まで維持したままファイルサイズを削減。',
+    title: 'マルチフォーマット対応',
+    description: 'MOV, AVI, WMVからMP4への変換はもちろん、WebMやアニメーションGIF、音声抽出(MP3)まで幅広く対応。',
     color: 'text-emerald-500',
     bg: 'bg-emerald-500/10',
   },
   {
     icon: ShieldCheck,
-    title: '憲法遵守の制限',
-    description: '「無制限禁止」の憲法に基づき、プランごとに最適な利用回数を設定。過剰なAPIコストからシステムを守ります。',
+    title: 'Genspark AI圧縮',
+    description: '最先端のAIアルゴリズムにより、ビットレートを自動最適化。品質とサイズの黄金比を実現します。',
     color: 'text-blue-500',
     bg: 'bg-blue-500/10',
   },
   {
     icon: Lock,
-    title: '完全プライバシー',
-    description: 'アップロードされたファイルは圧縮処理後に即座に消去。サーバーにデータが残ることはありません。',
+    title: 'セキュア・クリーン',
+    description: '「無制限禁止」の憲法に基づき、会員ランクに応じて最適なリソースを割り当て。処理後はデータも即座に消去。',
     color: 'text-amber-500',
     bg: 'bg-amber-500/10',
   }
 ]
 
-export default function PdfCompressorPage() {
+export default function VideoCompressorPage() {
   return (
     <div className="min-h-screen bg-[#050507] text-slate-200 pb-20 font-sans">
       {/* Hero */}
@@ -75,16 +67,14 @@ export default function PdfCompressorPage() {
                 💎 MASTERMODEL
               </Badge>
               <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter mb-4 italic uppercase">
-                PDF AI COMPRESSOR
+                MULTI VIDEO AI CONVERTER
               </h1>
               <p className="text-xl text-emerald-500 font-bold mb-6 italic">
-                品質維持 × 極限圧縮 × 憲法遵守
+                万能変換 × 極限軽量化 × 音声抽出
               </p>
               <p className="text-lg text-slate-400 mb-8 leading-relaxed max-w-xl">
-                重すぎるPDFは、送信エラーやストレージ圧迫の原因に。
-                NextraLabsのPDF AIコンプレッサーは、
-                <span className="text-white font-bold">視覚的な品質を落とさず</span>
-                、サイズだけをスマートに削減します。
+                「iPhoneの動画が開けない」「容量が大きすぎて送れない」「音声だけ取り出したい」。
+                そんな動画の悩みをAIが解決。あらゆる形式を<span className="text-white font-bold">Web・SNSに最適なMP4/GIF/MP3</span>へと変換・圧縮します。
               </p>
 
               <div className="flex flex-wrap gap-4 mb-10">
@@ -94,14 +84,14 @@ export default function PdfCompressorPage() {
                   </Button>
                 </Link>
                 <ToolLaunchButton 
-                  productId="pdf-compressor" 
+                  productId="video-compressor" 
                   className="w-full sm:w-auto h-16 px-10 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xl rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all uppercase italic"
                 />
               </div>
 
               <div className="flex items-center gap-6 text-xs font-bold text-slate-500 uppercase tracking-widest">
                 <span className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-emerald-500" /> セキュア処理</span>
-                <span className="flex items-center gap-1.5"><Clock className="h-4 w-4 text-emerald-500" /> 即時完了</span>
+                <span className="flex items-center gap-1.5"><Clock className="h-4 w-4 text-emerald-500" /> 最短1分</span>
                 <span className="flex items-center gap-1.5"><Layout className="h-4 w-4 text-emerald-500" /> 憲法遵守</span>
               </div>
             </div>
@@ -114,13 +104,13 @@ export default function PdfCompressorPage() {
                   <div className="space-y-6">
                     <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 bg-red-500/20 rounded-lg"><FileText className="h-6 w-6 text-red-400" /></div>
+                        <div className="p-2 bg-blue-500/20 rounded-lg"><FileVideo className="h-6 w-6 text-blue-400" /></div>
                         <div>
-                          <p className="text-sm font-bold text-white">Project_Report.pdf</p>
-                          <p className="text-[10px] text-slate-500 uppercase font-black">Original Size</p>
+                          <p className="text-sm font-bold text-white">Holiday_Vlog.mp4</p>
+                          <p className="text-[10px] text-slate-500 uppercase font-black">Original</p>
                         </div>
                       </div>
-                      <span className="text-xl font-black text-slate-400 italic">15.4 MB</span>
+                      <span className="text-xl font-black text-slate-400 italic">45.8 MB</span>
                     </div>
 
                     <div className="flex justify-center py-2">
@@ -131,15 +121,15 @@ export default function PdfCompressorPage() {
 
                     <div className="flex items-center justify-between p-4 bg-emerald-500/10 rounded-2xl border-2 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 bg-emerald-500/20 rounded-lg"><FileDown className="h-6 w-6 text-emerald-400" /></div>
+                        <div className="p-2 bg-emerald-500/20 rounded-lg"><Download className="h-6 w-6 text-emerald-400" /></div>
                         <div>
-                          <p className="text-sm font-bold text-white">Project_Report_min.pdf</p>
-                          <p className="text-[10px] text-emerald-500 uppercase font-black">Compressed Size</p>
+                          <p className="text-sm font-bold text-white">Holiday_Vlog_min.mp4</p>
+                          <p className="text-[10px] text-emerald-500 uppercase font-black">Compressed</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <span className="text-2xl font-black text-emerald-400 italic">2.1 MB</span>
-                        <p className="text-[10px] font-black text-emerald-500 uppercase">-86% REDUCED</p>
+                        <span className="text-2xl font-black text-emerald-400 italic">9.2 MB</span>
+                        <p className="text-[10px] font-black text-emerald-500 uppercase">-80% REDUCED</p>
                       </div>
                     </div>
                   </div>
@@ -155,25 +145,26 @@ export default function PdfCompressorPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center gap-3 mb-8 border-l-4 border-emerald-500 pl-4">
-              <Info className="h-6 w-6 text-emerald-500" />
+              <Layout className="h-6 w-6 text-emerald-500" />
               <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter">憲法に基づく利用制限</h2>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {[
-                { plan: 'ライト', count: '1回/日', size: '3MBまで', color: 'border-blue-500/30' },
-                { plan: 'スタンダード', count: '3回/日', size: '5MBまで', color: 'border-emerald-500/30' },
-                { plan: 'プレミアム', count: '10回/日', size: '10MBまで', color: 'border-orange-500/30' }
+                { plan: '無料', count: '登録必須', size: '-', color: 'border-slate-500/30' },
+                { plan: 'ライト', count: '1回/日', size: '20MBまで', color: 'border-blue-500/30' },
+                { plan: 'スタンダード', count: '2回/日', size: '50MBまで', color: 'border-emerald-500/30' },
+                { plan: 'プレミアム', count: '3回/日', size: '100MBまで', color: 'border-orange-500/30' }
               ].map((p, i) => (
                 <div key={i} className={`p-6 rounded-2xl bg-white/5 border ${p.color} text-center`}>
                   <p className="text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">{p.plan} PLAN</p>
-                  <p className="text-2xl font-black text-white mb-1 italic">{p.count}</p>
+                  <p className="text-xl font-black text-white mb-1 italic">{p.count}</p>
                   <p className="text-xs font-bold text-emerald-500 italic">{p.size}</p>
                 </div>
               ))}
             </div>
             <p className="text-center text-slate-500 text-[10px] mt-8 font-bold uppercase tracking-[0.2em]">
-              ⚠️ 憲法第4条により、全プランにおいて「無制限提供」は禁止されています。
+              ⚠️ 動画処理はサーバー負荷が高いため、厳格な回数制限を設けています。
             </p>
           </div>
         </div>
@@ -192,37 +183,6 @@ export default function PdfCompressorPage() {
                 <p className="text-slate-400 text-sm leading-relaxed italic">{f.description}</p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="relative group">
-          <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-[3rem] blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-          <div className="relative bg-gradient-to-br from-emerald-600 to-teal-800 border-2 border-emerald-400/50 rounded-[3rem] p-12 md:p-24 text-center shadow-2xl overflow-hidden">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl" />
-            
-            <div className="relative z-10 space-y-8">
-              <Badge className="bg-white/10 text-white border-white/20 px-4 py-1 font-black tracking-widest uppercase text-xs">
-                Streamline Your Workflow
-              </Badge>
-              <h2 className="text-4xl md:text-7xl font-black text-white mb-6 italic uppercase tracking-tighter leading-none">
-                今すぐPDFを <br className="md:hidden" />
-                <span className="text-emerald-300">スマートに</span>
-              </h2>
-              <p className="text-emerald-50/80 font-bold mb-10 max-w-2xl mx-auto leading-relaxed text-lg">
-                重いファイルを軽量化して、業務を加速。 <br className="hidden md:block" />
-                NextraLabsのMASTERMODEL品質を、あなたのブラウザで即座に体験。
-              </p>
-              <div className="flex justify-center gap-6">
-                <ToolLaunchButton productId="pdf-compressor" className="h-20 px-12 bg-white text-emerald-900 font-black text-2xl rounded-2xl hover:scale-105 transition-all shadow-[0_20px_40px_rgba(0,0,0,0.3)]" />
-              </div>
-              <p className="mt-8 text-[10px] font-black text-emerald-300/60 uppercase tracking-[0.4em] italic">
-                Verified Master System Integrated
-              </p>
-            </div>
           </div>
         </div>
       </section>
