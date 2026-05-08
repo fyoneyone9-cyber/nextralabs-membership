@@ -15,8 +15,8 @@ import { shrinkImageForAi } from '@/lib/ai-saver';
 type Step = 'start' | 'lang' | 'type' | 'search' | 'identity' | 'form' | 'confirm' | 'payment' | 'complete';
 
 const TRANSLATIONS: any = {
-  ja: { search: '予約検索', identity: '本人確認', form: '名簿記入', confirm: '最終確認', payment: '完了', restart: '最初からやり直す', finish: '完了しました', welcome: 'ありがとうございました', room: 'お部屋番号 / 鍵番号', back: 'TOPへ戻る', checkin_finish: 'チェックイン完了', checkout_finish: 'チェックアウト完了', welcome_in: 'ごゆっくりお過ごしください', welcome_out: 'お気をつけてお帰りください' },
-  en: { search: 'Search', identity: 'Verify', form: 'Register', confirm: 'Confirm', payment: 'Finish', restart: 'Restart', finish: 'Complete', welcome: 'Thank you', room: 'Room / Key Number', back: 'Back to Top', checkin_finish: 'Check-in Complete', checkout_finish: 'Check-out Complete', welcome_in: 'Have a pleasant stay', welcome_out: 'Have a safe trip!' },
+  ja: { search: '予約検索', identity: '本人確認', form: '名簿記入', confirm: '最終確認', payment: '完了', restart: '最初からやり直す', finish: '完了しました', welcome: 'ありがとうございました', room: 'お部屋番号 / 鍵番号', back: 'TOPへ戻る', checkin_finish: 'チェックイン完了', checkout_finish: 'チェックアウト完了', welcome_in: 'ごゆっくりお過ごしください', welcome_out: 'お気をつけてお帰りください', staff: 'スタッフをお呼びください' },
+  en: { search: 'Search', identity: 'Verify', form: 'Register', confirm: 'Confirm', payment: 'Finish', restart: 'Restart', finish: 'Complete', welcome: 'Thank you', room: 'Room / Key Number', back: 'Back to Top', checkin_finish: 'Check-in Complete', checkout_finish: 'Check-out Complete', welcome_in: 'Have a pleasant stay', welcome_out: 'Have a safe trip!', staff: 'Please call staff' },
 };
 
 const StayseeAppPage = () => {
@@ -52,12 +52,8 @@ const StayseeAppPage = () => {
   const handleReservationFound = (data: any) => {
     setReservation(data);
     if (type === 'checkout') {
-      if (data.extraCharges && data.extraCharges > 0) {
-        alert(`追加料金があります：¥${data.extraCharges.toLocaleString()}。フロントで精算をお願いします。`);
-        setStep('start');
-      } else {
-        setStep('complete');
-      }
+      // チェックアウト時は本人確認・名簿をスキップして最終確認へ
+      setStep('confirm');
     } else {
       setStep('identity');
     }
@@ -121,10 +117,21 @@ const StayseeAppPage = () => {
               reservation={reservation} 
               guestInfo={guestInfo} 
               onNext={() => {
-                if (reservation?.isPaid || reservation?.amount === 0) {
-                  setStep('complete');
+                if (type === 'checkout') {
+                  // チェックアウト時の判定
+                  if (reservation?.extraCharges && reservation?.extraCharges > 0) {
+                    alert(`追加料金があります：¥${reservation.extraCharges.toLocaleString()}。\nスタッフをお呼びください。`);
+                    setStep('start');
+                  } else {
+                    setStep('complete');
+                  }
                 } else {
-                  setStep('payment');
+                  // チェックイン時の判定
+                  if (reservation?.isPaid || reservation?.amount === 0) {
+                    setStep('complete');
+                  } else {
+                    setStep('payment');
+                  }
                 }
               }} 
             />
@@ -176,17 +183,19 @@ const StayseeAppPage = () => {
                 style={{ width: `${(['search', 'identity', 'form', 'confirm', 'payment'].indexOf(step) / 4) * 100}%` }}
               />
               {[
-                { id: 'search', label: t.search },
-                { id: 'identity', label: t.identity },
-                { id: 'form', label: t.form },
-                { id: 'confirm', label: t.confirm },
-                { id: 'payment', label: t.payment },
+                { id: 'search', label: t.search, skip: false },
+                { id: 'identity', label: t.identity, skip: type === 'checkout' },
+                { id: 'form', label: t.form, skip: type === 'checkout' },
+                { id: 'confirm', label: t.confirm, skip: false },
+                { id: 'payment', label: t.payment, skip: type === 'checkout' || reservation?.isPaid || reservation?.amount === 0 },
               ].map((s, idx) => {
                 const steps_list = ['search', 'identity', 'form', 'confirm', 'payment', 'complete'];
                 const isActive = step === s.id;
                 const isPast = steps_list.indexOf(step) > steps_list.indexOf(s.id);
-                const displayLabel = (s.id === 'payment' && (reservation?.isPaid || reservation?.amount === 0)) ? t.payment : s.label;
                 
+                // チェックアウト時にスキップされるステップは表示しない（または半透明にする）
+                if (s.skip) return null;
+
                 return (
                   <div key={s.id} className="relative flex flex-col items-center gap-6 group">
                     <div className={`w-20 h-20 rounded-3xl flex items-center justify-center border-4 transition-all duration-700 z-10 ${
@@ -200,7 +209,7 @@ const StayseeAppPage = () => {
                         STEP {idx + 1}
                       </span>
                       <span className={`text-xl font-black mt-1 transition-all duration-500 ${isActive ? 'text-white text-2xl' : 'text-gray-700'}`}>
-                        {displayLabel}
+                        {s.label}
                       </span>
                     </div>
                     {isActive && <div className="absolute -top-4 w-3 h-3 bg-emerald-400 rounded-full animate-ping" />}
