@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import { ApiLinkIndicator } from '@/components/tools/ApiLinkIndicator'
 
-export default function InboxOrganizerApp() {
+const InboxOrganizerApp = () => {
   const [googleToken, setGoogleToken] = useState<string | null>('active');
   const [emails, setEmails] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
