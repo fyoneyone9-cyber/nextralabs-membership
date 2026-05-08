@@ -49,10 +49,10 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
         <div className="absolute -inset-10 border-t-2 border-emerald-500/20 rounded-full animate-[spin_10s_linear_infinite] opacity-0 group-hover:opacity-100 transition-opacity" />
       </button>
 
-      {/* 控えめなフッター */}
-      <div className="flex flex-col items-center gap-4 opacity-20 group hover:opacity-100 transition-opacity duration-1000 cursor-default">
-         <span className="text-[9px] font-black tracking-[1em] uppercase text-emerald-500">Intelligent Check-in System</span>
-         <div className="w-px h-16 bg-gradient-to-b from-emerald-500 to-transparent" />
+      {/* フッター */}
+      <div className="flex flex-col items-center gap-4 opacity-60 group hover:opacity-100 transition-opacity duration-1000 cursor-default">
+         <span className="text-[10px] md:text-xs font-black tracking-[1em] uppercase text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]">Intelligent Check-in System</span>
+         <div className="w-px h-16 bg-gradient-to-b from-emerald-400 to-transparent shadow-[0_0_10px_rgba(16,185,129,0.3)]" />
       </div>
     </div>
   );
