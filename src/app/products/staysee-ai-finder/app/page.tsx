@@ -70,51 +70,8 @@ const StayseeAppPage = () => {
         <div className="absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] bg-blue-600/10 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
       </div>
 
-      {/* ロードマップ (ステップインジケーター) - タブレット向けにさらに最適化 */}
-      {step !== 'start' && step !== 'lang' && step !== 'type' && (
-        <div className="w-full max-w-7xl mx-auto pt-24 px-10 relative z-30">
-          <div className="flex justify-between items-center relative">
-            <div className="absolute top-10 left-0 w-full h-2 bg-white/5 rounded-full" />
-            <div
-              className="absolute top-10 left-0 h-2 bg-emerald-500 rounded-full transition-all duration-1000 shadow-[0_0_20px_rgba(16,185,129,0.5)]"
-              style={{ width: `${(['search', 'identity', 'form', 'confirm', 'payment'].indexOf(step) / 4) * 100}%` }}
-            />
-            {[
-              { id: 'search', label: t.search },
-              { id: 'identity', label: t.identity },
-              { id: 'form', label: t.form },
-              { id: 'confirm', label: t.confirm },
-              { id: 'payment', label: t.payment },
-            ].map((s, idx) => {
-              const steps_list = ['search', 'identity', 'form', 'confirm', 'payment', 'complete'];
-              const isActive = step === s.id;
-              const isPast = steps_list.indexOf(step) > steps_list.indexOf(s.id);
-              return (
-                <div key={s.id} className="relative flex flex-col items-center gap-6 group">
-                  <div className={`w-20 h-20 rounded-3xl flex items-center justify-center border-4 transition-all duration-700 z-10 ${
-                    isActive ? 'bg-emerald-500 border-emerald-300 text-white scale-110 shadow-[0_0_40px_rgba(16,185,129,0.7)]' :
-                    isPast ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-500' : 'bg-[#050508] border-white/10 text-gray-800'
-                  }`}>
-                    {isPast ? <CheckCircle2 size={40} strokeWidth={3} /> : <span className="text-3xl font-black">{idx + 1}</span>}
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <span className={`text-[12px] font-black uppercase tracking-[0.3em] transition-colors duration-500 ${isActive ? 'text-emerald-400' : isPast ? 'text-emerald-500/60' : 'text-gray-800'}`}>
-                      STEP {idx + 1}
-                    </span>
-                    <span className={`text-xl font-black mt-1 transition-all duration-500 ${isActive ? 'text-white text-2xl' : 'text-gray-700'}`}>
-                      {s.label}
-                    </span>
-                  </div>
-                  {isActive && <div className="absolute -top-4 w-3 h-3 bg-emerald-400 rounded-full animate-ping" />}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
       {/* ヘッダー - サイズアップ */}
-      <header className="p-12 flex justify-between items-center relative z-20">
+      <header className="p-12 flex justify-between items-start relative z-20">
         <div className="flex items-center gap-6">
           <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-[24px] flex items-center justify-center shadow-2xl shadow-emerald-500/30">
             <span className="font-black text-4xl italic">N</span>
@@ -122,21 +79,120 @@ const StayseeAppPage = () => {
           <div className="flex flex-col">
             <span className="font-black text-3xl tracking-tighter leading-none">NEXTRA AI</span>
             <span className="text-xs font-bold text-emerald-500 tracking-[0.5em] mt-2">CHECK-IN SYSTEM</span>
+            {step !== 'start' && (
+              <button
+                onClick={() => setStep('start')}
+                className="mt-6 group flex items-center gap-3 px-8 py-3 bg-white/5 hover:bg-white/10 border-2 border-white/10 rounded-full text-lg font-black transition-all w-fit"
+              >
+                <div className="w-3 h-3 bg-red-500 rounded-full group-hover:animate-ping" />
+                {t.restart}
+              </button>
+            )}
           </div>
         </div>
-        {step !== 'start' && (
-          <button
-            onClick={() => setStep('start')}
-            className="group flex items-center gap-3 px-12 py-5 bg-white/5 hover:bg-white/10 border-2 border-white/10 rounded-full text-xl font-black transition-all"
-          >
-            <div className="w-3 h-3 bg-red-500 rounded-full group-hover:animate-ping" />
-            {t.restart}
-          </button>
-        )}
       </header>
 
       {/* メイン */}
-      <main className="flex-1 flex flex-col items-center justify-center px-10 pb-20">
+      <main className="flex-1 flex flex-col items-center justify-center px-10 pb-40 relative">
+        <div className="w-full max-w-6xl">
+          {step === 'start' && <StartScreen onNext={() => setStep('start')} />}
+          {step === 'lang' && <LanguageSelect onNext={(lang: string) => { setSelectedLang(lang); setStep('type'); }} />}
+          {step === 'type' && <CheckInOutSelect onNext={(type: string) => type === 'checkin' ? setStep('search') : alert('Coming Soon')} />}
+          {step === 'search' && <ReservationSearch onNext={handleReservationFound} />}
+          {step === 'identity' && <IdentityVerification onNext={handleIdentityCaptured} />}
+          {step === 'form' && <RegistrationForm reservation={reservation} onNext={handleFormSubmitted} />}
+          {step === 'confirm' && (
+            <FinalConfirmation 
+              reservation={reservation} 
+              guestInfo={guestInfo} 
+              onNext={() => {
+                // 支払い代金が0円または支払い済み（仮定）の場合は完了へ、そうでなければ支払いへ
+                if (reservation?.isPaid || reservation?.amount === 0) {
+                  setStep('complete');
+                } else {
+                  setStep('payment');
+                }
+              }} 
+            />
+          )}
+          {step === 'payment' && (
+            <div className="text-center space-y-8 animate-in fade-in slide-in-from-right-8 duration-500">
+              <h2 className="text-4xl font-bold">Please Payment</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                {['Credit Card', 'QR', 'PayPay', 'Cash'].map((method) => (
+                  <button key={method} onClick={() => setStep('complete')} className="p-8 bg-white text-slate-800 rounded-[32px] hover:bg-emerald-50 transition-all flex flex-col items-center gap-4 shadow-xl">
+                    <CreditCard size={48} className="text-emerald-500" />
+                    <span className="text-xl font-bold">{method}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {step === 'complete' && (
+            <div className="text-center space-y-8 animate-in fade-in zoom-in-95 duration-500 py-12">
+              <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mx-auto shadow-2xl">
+                <CheckCircle2 size={64} className="text-emerald-500" />
+              </div>
+              <div>
+                <h2 className="text-5xl font-black mb-4 tracking-tight">{t.finish}</h2>
+                <p className="text-xl opacity-80 uppercase tracking-widest">Registration Complete</p>
+              </div>
+              <div className="bg-white rounded-[40px] p-10 max-w-md mx-auto shadow-2xl text-slate-800">
+                <p className="text-slate-400 font-bold mb-2 uppercase tracking-widest text-sm">{t.room}</p>
+                <p className="text-7xl font-black text-emerald-500 tracking-tighter">302 / 8824</p>
+              </div>
+              <p className="text-xl">{t.welcome}</p>
+              <button onClick={() => setStep('start')} className="px-16 py-6 bg-white text-slate-900 rounded-full text-2xl font-black shadow-xl hover:scale-105 transition-transform">{t.back}</button>
+            </div>
+          )}
+        </div>
+
+        {/* ロードマップ (ステップインジケーター) - 下側に配置 */}
+        {step !== 'start' && step !== 'lang' && step !== 'type' && step !== 'complete' && (
+          <div className="absolute bottom-10 left-0 right-0 w-full max-w-7xl mx-auto px-10 z-30">
+            <div className="flex justify-between items-center relative">
+              <div className="absolute top-10 left-0 w-full h-2 bg-white/5 rounded-full" />
+              <div
+                className="absolute top-10 left-0 h-2 bg-emerald-500 rounded-full transition-all duration-1000 shadow-[0_0_20px_rgba(16,185,129,0.5)]"
+                style={{ width: `${(['search', 'identity', 'form', 'confirm', 'payment'].indexOf(step) / 4) * 100}%` }}
+              />
+              {[
+                { id: 'search', label: t.search },
+                { id: 'identity', label: t.identity },
+                { id: 'form', label: t.form },
+                { id: 'confirm', label: t.confirm },
+                { id: 'payment', label: t.payment },
+              ].map((s, idx) => {
+                const steps_list = ['search', 'identity', 'form', 'confirm', 'payment', 'complete'];
+                const isActive = step === s.id;
+                const isPast = steps_list.indexOf(step) > steps_list.indexOf(s.id);
+                // 支払い済みの場合は「完了」を表示
+                const displayLabel = (s.id === 'payment' && (reservation?.isPaid || reservation?.amount === 0)) ? t.payment : s.label;
+                
+                return (
+                  <div key={s.id} className="relative flex flex-col items-center gap-6 group">
+                    <div className={`w-20 h-20 rounded-3xl flex items-center justify-center border-4 transition-all duration-700 z-10 ${
+                      isActive ? 'bg-emerald-500 border-emerald-300 text-white scale-110 shadow-[0_0_40px_rgba(16,185,129,0.7)]' :
+                      isPast ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-500' : 'bg-[#050508] border-white/10 text-gray-800'
+                    }`}>
+                      {isPast ? <CheckCircle2 size={40} strokeWidth={3} /> : <span className="text-3xl font-black">{idx + 1}</span>}
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <span className={`text-[12px] font-black uppercase tracking-[0.3em] transition-colors duration-500 ${isActive ? 'text-emerald-400' : isPast ? 'text-emerald-500/60' : 'text-gray-800'}`}>
+                        STEP {idx + 1}
+                      </span>
+                      <span className={`text-xl font-black mt-1 transition-all duration-500 ${isActive ? 'text-white text-2xl' : 'text-gray-700'}`}>
+                        {displayLabel}
+                      </span>
+                    </div>
+                    {isActive && <div className="absolute -top-4 w-3 h-3 bg-emerald-400 rounded-full animate-ping" />}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </main>
         <div className="w-full max-w-6xl">
           {step === 'start' && <StartScreen onNext={() => setStep('lang')} />}
           {step === 'lang' && <LanguageSelect onNext={(lang: string) => { setSelectedLang(lang); setStep('type'); }} />}
