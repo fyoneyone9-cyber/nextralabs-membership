@@ -116,6 +116,7 @@ const StayseeAppPage = () => {
             <FinalConfirmation 
               reservation={reservation} 
               guestInfo={guestInfo} 
+              type={type}
               onNext={() => {
                 if (type === 'checkout') {
                   // チェックアウト時の判定
