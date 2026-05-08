@@ -43,7 +43,7 @@ const TOOLS = [
   { id: 'ai-konkatsu', cat: 'mind', title: 'AI婚活コーチ', sub: '戦略的成婚支援システム', icon: Heart, plan: 'スタンダード' },
   { id: 'office-politics-graph', cat: 'mind', title: '社内政治 AI相関図', sub: '人間関係の暗部を可視化', icon: Network, plan: '無料' },
   { id: 'interior-coordinator', cat: 'mind', title: 'Interior AI Sync', sub: '空間分析 × 楽天一括購入OS', icon: Sofa, plan: 'プレミアム' },
-  { id: 'ai-recipe', cat: 'life', title: 'AIレシピ献立コーチ', sub: '冷蔵庫の残り物 × 栄養最適化', icon: Utensils, plan: 'スタンダード' },
+  { id: 'ai-recipe', cat: 'life', title: 'AIレシピ献立コーチ', sub: '冷蔵庫の残り物 × 栄養最適化', icon: Utensils, plan: '無料' },
   { id: 'exam-scheduler', cat: 'edu', title: '資格試験 AIスケジューラー', sub: '試験日から逆算して学習計画を自動生成', icon: ClipboardCheck, plan: 'スタンダード' },
   { id: 'ai-exam-generator', cat: 'edu', title: 'AI問題生成 & 苦手分析', sub: '予想問題を無限生成 × 弱点ポイント可視化', icon: Brain, plan: 'プレミアム' },
   { id: 'location-finder', cat: 'hotel', title: 'AIロケーションファインダー', sub: '出店・移住の最適地をデータ分析', icon: MapPin, plan: 'スタンダード' },
