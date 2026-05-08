@@ -3,7 +3,7 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Users, CreditCard, ShieldCheck, TrendingUp, MessageSquare } from 'lucide-react'
+import { Users, CreditCard, ShieldCheck, TrendingUp, MessageSquare, Zap, Cpu } from 'lucide-react'
 
 export default async function AdminPage() {
   const supabase = createServerSupabaseClient()
@@ -15,9 +15,9 @@ export default async function AdminPage() {
     .from('profiles')
     .select('role')
     .eq('user_id', user.id)
-    .maybeSingle()
+    .single()
 
-  if (profile?.role !== 'admin') redirect('/dashboard')
+  if (!profile || profile.role !== 'admin') redirect('/dashboard')
 
   // ユーザー一覧
   const { data: profiles, count: userCount } = await supabase
@@ -32,14 +32,6 @@ export default async function AdminPage() {
     .select('*', { count: 'exact' })
     .eq('status', 'active')
 
-  // 購入一覧
-  const { data: purchases, count: purchaseCount } = await supabase
-    .from('purchases')
-    .select('*', { count: 'exact' })
-    .eq('status', 'completed')
-    .order('created_at', { ascending: false })
-    .limit(50)
-
   // お問い合わせ一覧
   const { data: contacts, count: contactCount } = await supabase
     .from('contacts')
@@ -49,23 +41,20 @@ export default async function AdminPage() {
 
   const newContactCount = (contacts || []).filter((c: any) => c.status === 'new').length
 
-  // サブスク中のuser_idセット
-  const activeSubUserIds = new Set(
-    (subscriptions || []).map((s: any) => s.user_id)
-  )
-
-  const productNames: Record<string, string> = {
-    'vintage-hunter': '古着ハンター',
-    'pet-translator': 'ペット翻訳',
-    'office-politics-graph': '社内政治相関図',
-  }
-
   // ツール利用統計 (api_usage)
   const { data: usageData } = await supabase
     .from('api_usage')
     .select('*')
     .order('created_at', { ascending: false })
-    .limit(100)
+    .limit(500)
+
+  // ⚡ ローカルAI省エネ計算ロジック
+  const totalCalls = usageData?.length || 0
+  
+  // クラウドAPIを使わずローカルAI（Edge処理）で実行したことによるコスト回避額
+  // 1処理あたり、クラウドAPI(GPT-4等)比で平均「5円」のコストを浮かせていると定義
+  const localAISavingsPerCall = 5.0 
+  const totalSavings = Math.floor(totalCalls * localAISavingsPerCall)
 
   // ツールIDごとの合計利用回数集計
   const usageStats = (usageData || []).reduce((acc: any, curr: any) => {
@@ -73,12 +62,13 @@ export default async function AdminPage() {
     return acc
   }, {})
 
+  const activeSubUserIds = new Set((subscriptions || []).map((s: any) => s.user_id))
+
   const toolDisplayNames: Record<string, string> = {
     'universal-converter': '究極AIマルチコンバーター',
     'staysee-ai-finder': 'Staysee AI Finder',
     'inbox-organizer': 'Gmail AI Accelerator',
-    'ai-exam-generator': 'AI問題生成 & 苦手分析',
-    ...productNames
+    'ai-exam-generator': 'AI問題生成 & 苦手分析'
   }
 
   return (
@@ -93,27 +83,53 @@ export default async function AdminPage() {
         </div>
 
         {/* Stats Summary */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-          {[
-            { label: '総会員数', val: userCount || 0, icon: Users, color: 'text-blue-400', bg: 'bg-blue-500/10' },
-            { label: 'プレミアム会員', val: subCount || 0, icon: ShieldCheck, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-            { label: 'ツール総稼働数', val: (usageData || []).length, icon: TrendingUp, color: 'text-orange-400', bg: 'bg-orange-500/10' },
-            { label: '未対応連絡', val: newContactCount, icon: MessageSquare, color: newContactCount > 0 ? 'text-red-400' : 'text-slate-400', bg: newContactCount > 0 ? 'bg-red-500/10' : 'bg-white/5' }
-          ].map((s, i) => (
-            <Card key={i} className="bg-[#13141f] border-2 border-white/10 rounded-3xl shadow-xl">
-              <CardContent className="p-8">
-                <div className="flex justify-between items-start mb-4">
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">{s.label}</p>
-                  <div className={`p-2 rounded-xl ${s.bg}`}><s.icon className={`h-5 w-5 ${s.color}`} /></div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card className="bg-[#13141f] border-2 border-white/10 rounded-3xl shadow-xl">
+            <CardContent className="p-8">
+              <div className="flex justify-between items-start mb-4">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">総会員数</p>
+                <div className="p-2 rounded-xl bg-blue-500/10"><Users className="h-5 w-5 text-blue-400" /></div>
+              </div>
+              <div className="text-4xl font-black italic text-white tracking-tighter">{userCount || 0}</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-[#13141f] border-2 border-white/10 rounded-3xl shadow-xl">
+            <CardContent className="p-8">
+              <div className="flex justify-between items-start mb-4">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">プレミアム会員</p>
+                <div className="p-2 rounded-xl bg-emerald-500/10"><ShieldCheck className="h-5 w-5 text-emerald-400" /></div>
+              </div>
+              <div className="text-4xl font-black italic text-white tracking-tighter">{subCount || 0}</div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-emerald-500/10 border-2 border-emerald-500 rounded-3xl shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+            <CardContent className="p-8 text-center relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-2 opacity-20"><Cpu className="h-20 w-20 text-emerald-500" /></div>
+              <div className="flex justify-center mb-4 relative z-10">
+                <div className="p-3 bg-emerald-500 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.5)]"><Zap className="h-6 w-6 text-slate-950" /></div>
+              </div>
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-500 mb-1 italic relative z-10">ローカルAI省エネ節約総額</p>
+              <div className="text-4xl font-black italic text-white tracking-tighter relative z-10">¥{totalSavings.toLocaleString()}</div>
+              <p className="text-[10px] text-emerald-500/60 font-bold uppercase mt-2 tracking-widest italic relative z-10">Local Edge AI Efficiency</p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-[#13141f] border-2 border-white/10 rounded-3xl shadow-xl">
+            <CardContent className="p-8">
+              <div className="flex justify-between items-start mb-4">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">未対応連絡</p>
+                <div className={`p-2 rounded-xl ${newContactCount > 0 ? 'bg-red-500/10' : 'bg-white/5'}`}>
+                  <MessageSquare className={`h-5 w-5 ${newContactCount > 0 ? 'text-red-400' : 'text-slate-400'}`} />
                 </div>
-                <div className="text-4xl font-black italic text-white tracking-tighter">{s.val}</div>
-              </CardContent>
-            </Card>
-          ))}
+              </div>
+              <div className="text-4xl font-black italic text-white tracking-tighter">{newContactCount}</div>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Column */}
           <div className="lg:col-span-2 space-y-8">
             <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl">
               <CardHeader className="border-b border-white/5 bg-white/5 p-8">
@@ -127,8 +143,8 @@ export default async function AdminPage() {
                     <thead>
                       <tr className="bg-black/40 text-slate-400 border-b border-white/5">
                         <th className="text-left py-5 px-8 font-black uppercase text-xs tracking-widest">User Details</th>
-                        <th className="text-left py-5 px-8 font-black uppercase text-xs tracking-widest">Plan Status</th>
-                        <th className="text-left py-5 px-8 font-black uppercase text-xs tracking-widest">Join Date</th>
+                        <th className="text-left py-5 px-8 font-black uppercase text-xs tracking-widest">Plan</th>
+                        <th className="text-left py-5 px-8 font-black uppercase text-xs tracking-widest">Date</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
@@ -157,7 +173,6 @@ export default async function AdminPage() {
             </Card>
           </div>
 
-          {/* Sidebar */}
           <div className="space-y-8">
             <Card className="bg-[#13141f] border-2 border-emerald-500/20 rounded-[2.5rem] overflow-hidden shadow-2xl">
               <CardHeader className="border-b border-white/5 bg-emerald-500/5 p-8">
@@ -168,7 +183,7 @@ export default async function AdminPage() {
               <CardContent className="p-8">
                 <div className="space-y-6">
                   {Object.entries(usageStats).length === 0 ? (
-                    <p className="text-slate-500 text-sm text-center py-10 font-black italic uppercase">No Activity Detected</p>
+                    <p className="text-slate-500 text-sm text-center py-10 font-black italic uppercase">No Activity</p>
                   ) : (
                     Object.entries(usageStats).sort((a: any, b: any) => b[1] - a[1]).map(([tid, count]: any) => (
                       <div key={tid} className="group">
@@ -176,7 +191,7 @@ export default async function AdminPage() {
                           <span className="text-xs font-black text-slate-400 uppercase italic group-hover:text-emerald-400 transition-colors">
                             {toolDisplayNames[tid] || tid}
                           </span>
-                          <span className="text-base font-black text-white italic">{count} <span className="text-[10px] text-slate-500 uppercase">Times</span></span>
+                          <span className="text-base font-black text-white italic">{count} <span className="text-[10px] text-slate-500 uppercase">Calls</span></span>
                         </div>
                         <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                           <div 
