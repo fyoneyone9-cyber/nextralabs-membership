@@ -15,22 +15,8 @@ import { shrinkImageForAi } from '@/lib/ai-saver';
 type Step = 'start' | 'lang' | 'type' | 'search' | 'identity' | 'form' | 'confirm' | 'payment' | 'complete';
 
 const TRANSLATIONS: any = {
-  ja: { search: '予約検索', identity: '本人確認', form: '名簿記入', confirm: '最終確認', payment: '完了', restart: '最初からやり直す', finish: 'チェックイン完了', welcome: 'ごゆっくりお過ごしください', room: 'お部屋番号 / 鍵番号', back: 'TOPへ戻る' },
-  en: { search: 'Search', identity: 'Verify', form: 'Register', confirm: 'Confirm', payment: 'Finish', restart: 'Restart', finish: 'Check-in Complete', welcome: 'Have a pleasant stay', room: 'Room / Key Number', back: 'Back to Top' },
-  'zh-cn': { search: '搜索预约', identity: '身份验证', form: '填写登记', confirm: '最終確認', payment: '完成', restart: '重新开始', finish: '入住完成', welcome: '祝您入住愉快', room: '房号 / 钥匙号码', back: '返回首页' },
-  'zh-tw': { search: '搜尋預約', identity: '身份驗證', form: '填寫登記', confirm: '最終確認', payment: '完成', restart: '重新開始', finish: '入住完成', welcome: '祝您入住愉快', room: '房號 / 鑰匙號碼', back: '返回首頁' },
-  ko: { search: '예약 검색', identity: '본인 확인', form: '명부 작성', confirm: '최종 확인', payment: '완료', restart: '처음부터', finish: '체크인 완료', welcome: '편안한 시간 되세요', room: '객실 번号 / 키 번호', back: 'TOP으로' },
-  th: { search: 'ค้นหา', identity: 'ยืนยันตัวตน', form: 'ลงทะเบียน', confirm: 'ยืนยัน', payment: 'เสร็จสิ้น', restart: 'เริ่มใหม่', finish: 'เช็คอินเสร็จสมบูรณ์', welcome: 'ขอให้มีความสุขกับการพักผ่อน', room: 'หมายเลขห้อง / รหัสผ่าน', back: 'กลับสู่หน้าแรก' },
-  vi: { search: 'Tìm kiếm', identity: 'Xác minh', form: 'Đăng ký', confirm: 'Xác nhận', payment: 'Hoàn tất', restart: 'Bắt đầu lại', finish: 'Nhận phòng hoàn tất', welcome: 'Chúc quý khách một kỳ nghỉ vui vẻ', room: 'Số phòng / Mã khóa', back: 'Quay lại' },
-  id: { search: 'Cari Reservasi', identity: 'Verifikasi', form: 'Registrasi', confirm: 'Konfirmasi', payment: 'Selesai', restart: 'Mulai Ulang', finish: 'Check-in Selesai', welcome: 'Semoga istirahat Anda menyenangkan', room: 'Nomor Kamar / PIN', back: 'Kembali' },
-  fr: { search: 'Rechercher', identity: 'Vérifier', form: "S'enregistrer", confirm: 'Confirmer', payment: 'Terminer', restart: 'Redémarrer', finish: 'Enregistrement terminé', welcome: 'Passez un bon séjour', room: 'Numéro de chambre / Code', back: 'Retour' },
-  es: { search: 'Buscar', identity: 'Verificar', form: 'Registrarse', confirm: 'Confirmar', payment: 'Finalizar', restart: 'Reiniciar', finish: 'Check-in completado', welcome: 'Que tenga una buena estancia', room: 'Número de habitación / Clave', back: 'Volver' },
-  de: { search: 'Suchen', identity: 'Verifizieren', form: 'Registrieren', confirm: 'Bestätigen', payment: 'Fertig', restart: 'Neustart', finish: 'Check-in abgeschlossen', welcome: 'Genießen Sie Ihren Aufenthalt', room: 'Zimmernummer / Code', back: 'Zurück' },
-  it: { search: 'Cerca', identity: 'Verifica', form: 'Registrati', confirm: 'Conferma', payment: 'Fine', restart: 'Riavvia', finish: 'Check-in completato', welcome: 'Goditi il soggiorno', room: 'Numero camera / Chiave', back: 'Torna su' },
-  pt: { search: 'Buscar', identity: 'Verificar', form: 'Registrar', confirm: 'Confirmar', payment: 'Concluir', restart: 'Reiniciar', finish: 'Check-in concluído', welcome: 'Tenha uma boa estadia', room: 'Número do quarto / Chave', back: 'Voltar' },
-  ru: { search: 'Поиск', identity: 'Проверка', form: 'Регистрация', confirm: 'Подтвердить', payment: 'Готово', restart: 'Начать сначала', finish: 'Регистрация завершена', welcome: 'Приятного отдыха', room: 'Номер комнаты / Код', back: 'На главную' },
-  ar: { search: 'بحث', identity: 'تحقق', form: 'تسجيل', confirm: 'تأكيد', payment: 'إنهاء', restart: 'إعادة تشغيل', finish: 'اكتمل تسجيل الدخول', welcome: 'إقامة سعيدة', room: 'رقم الغرفة / رمز القفل', back: 'العودة' },
-  hi: { search: 'खोजें', identity: 'सत्यापन', form: 'पंजीकरण', confirm: 'पुष्टि करें', payment: 'समाप्त', restart: 'पुनः आरंभ करें', finish: 'चेक-イン पूरा हुआ', welcome: 'आपका प्रवास सुखद हो', room: 'कमरा नंबर / कोड', back: 'वापस जाएं' },
+  ja: { search: '予約検索', identity: '本人確認', form: '名簿記入', confirm: '最終確認', payment: '完了', restart: '最初からやり直す', finish: '完了しました', welcome: 'ありがとうございました', room: 'お部屋番号 / 鍵番号', back: 'TOPへ戻る', checkin_finish: 'チェックイン完了', checkout_finish: 'チェックアウト完了', welcome_in: 'ごゆっくりお過ごしください', welcome_out: 'お気をつけてお帰りください' },
+  en: { search: 'Search', identity: 'Verify', form: 'Register', confirm: 'Confirm', payment: 'Finish', restart: 'Restart', finish: 'Complete', welcome: 'Thank you', room: 'Room / Key Number', back: 'Back to Top', checkin_finish: 'Check-in Complete', checkout_finish: 'Check-out Complete', welcome_in: 'Have a pleasant stay', welcome_out: 'Have a safe trip!' },
 };
 
 const StayseeAppPage = () => {
@@ -65,7 +51,16 @@ const StayseeAppPage = () => {
 
   const handleReservationFound = (data: any) => {
     setReservation(data);
-    setStep('identity');
+    if (type === 'checkout') {
+      if (data.extraCharges && data.extraCharges > 0) {
+        alert(`追加料金があります：¥${data.extraCharges.toLocaleString()}。フロントで精算をお願いします。`);
+        setStep('start');
+      } else {
+        setStep('complete');
+      }
+    } else {
+      setStep('identity');
+    }
   };
 
   const handleIdentityCaptured = async (image: string) => {
@@ -114,7 +109,10 @@ const StayseeAppPage = () => {
         <div className="w-full max-w-7xl">
           {step === 'start' && <StartScreen onNext={() => setStep('lang')} />}
           {step === 'lang' && <LanguageSelect onNext={(lang: string) => { setSelectedLang(lang); setStep('type'); }} />}
-          {step === 'type' && <CheckInOutSelect onNext={(type: string) => type === 'checkin' ? setStep('search') : alert('Coming Soon')} />}
+          {step === 'type' && <CheckInOutSelect onNext={(selectedType: string) => { 
+            setType(selectedType as 'checkin' | 'checkout');
+            setStep('search'); 
+          }} />}
           {step === 'search' && <ReservationSearch onNext={handleReservationFound} />}
           {step === 'identity' && <IdentityVerification onNext={handleIdentityCaptured} />}
           {step === 'form' && <RegistrationForm reservation={reservation} onNext={handleFormSubmitted} />}
@@ -150,14 +148,20 @@ const StayseeAppPage = () => {
                 <CheckCircle2 size={64} className="text-emerald-500" />
               </div>
               <div>
-                <h2 className="text-5xl font-black mb-4 tracking-tight">{t.finish}</h2>
-                <p className="text-xl opacity-80 uppercase tracking-widest">Registration Complete</p>
+                <h2 className="text-5xl font-black mb-4 tracking-tight">
+                  {type === 'checkin' ? t.checkin_finish : t.checkout_finish}
+                </h2>
+                <p className="text-xl opacity-80 uppercase tracking-widest">
+                  {type === 'checkin' ? 'Check-in Complete' : 'Check-out Complete'}
+                </p>
               </div>
-              <div className="bg-white rounded-[40px] p-10 max-md mx-auto shadow-2xl text-slate-800">
-                <p className="text-slate-400 font-bold mb-2 uppercase tracking-widest text-sm">{t.room}</p>
-                <p className="text-7xl font-black text-emerald-500 tracking-tighter">302 / 8824</p>
-              </div>
-              <p className="text-xl">{t.welcome}</p>
+              {type === 'checkin' && (
+                <div className="bg-white rounded-[40px] p-10 max-md mx-auto shadow-2xl text-slate-800">
+                  <p className="text-slate-400 font-bold mb-2 uppercase tracking-widest text-sm">{t.room}</p>
+                  <p className="text-7xl font-black text-emerald-500 tracking-tighter">302 / 8824</p>
+                </div>
+              )}
+              <p className="text-xl">{type === 'checkin' ? t.welcome_in : t.welcome_out}</p>
               <button onClick={() => setStep('start')} className="px-16 py-6 bg-white text-slate-900 rounded-full text-2xl font-black shadow-xl hover:scale-105 transition-transform">{t.back}</button>
             </div>
           )}
@@ -200,23 +204,6 @@ const StayseeAppPage = () => {
                       </span>
                     </div>
                     {isActive && <div className="absolute -top-4 w-3 h-3 bg-emerald-400 rounded-full animate-ping" />}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </main>
-
-      <footer className="p-8 text-center opacity-30 text-xs">
-        <p>© 2026 NextraLabs x Staysee. v3.22.9</p>
-      </footer>
-    </div>
-  );
-};
-
-export default StayseeAppPage;
-3 bg-emerald-400 rounded-full animate-ping" />}
                   </div>
                 );
               })}
