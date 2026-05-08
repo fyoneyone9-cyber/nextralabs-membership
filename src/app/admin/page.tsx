@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Users, ShieldCheck, TrendingUp, MessageSquare, Zap, Cpu, MousePointer2 } from 'lucide-react'
 
 export default async function AdminPage() {
@@ -17,26 +16,22 @@ export default async function AdminPage() {
     .eq('user_id', user.id)
     .single()
 
-  // 米山様のメールアドレス、またはadminロール保持者のみ許可
   const isOwner = user.email === 'f.yoneyone9@gmail.com'
   const isAdmin = profile?.role === 'admin'
 
   if (!isOwner && !isAdmin) redirect('/dashboard')
 
-  // ユーザー一覧
   const { data: profiles, count: userCount } = await supabase
     .from('profiles')
     .select('*', { count: 'exact' })
     .order('created_at', { ascending: false })
     .limit(50)
 
-  // サブスク一覧
   const { data: subscriptions, count: subCount } = await supabase
     .from('subscriptions')
     .select('*', { count: 'exact' })
     .eq('status', 'active')
 
-  // お問い合わせ
   const { data: contacts } = await supabase
     .from('contacts')
     .select('*', { count: 'exact' })
@@ -45,38 +40,30 @@ export default async function AdminPage() {
 
   const newContactCount = (contacts || []).filter((c: any) => c.status === 'new').length
 
-  // ツール利用統計
   const { data: usageData } = await supabase
     .from('api_usage')
     .select('*')
     .order('created_at', { ascending: false })
     .limit(1000)
 
-  // ⚡ ローカルAI省エネ計算
   const totalCalls = usageData?.length || 0
   const localAISavingsPerCall = 5.0 
   const totalSavings = Math.floor(totalCalls * localAISavingsPerCall)
 
-  // ⚡ アクセス解析（PVシミュレーション：実際にはログテーブルから取得）
   const pvStats = [
     { path: '/products', name: 'ツールストア', count: 1420 },
-    { path: '/products/staysee-ai-finder', name: 'Staysee AI Finder', count: 980 },
+    { path: '/products/nextra-ai', name: 'Staysee AI Finder', count: 980 },
     { path: '/products/universal-converter', name: 'マルチコンバーター', count: 850 },
     { path: '/', name: 'トップページ', count: 2100 }
   ]
 
-  const usageStats = (usageData || []).reduce((acc: any, curr: any) => {
-    acc[curr.tool_id] = (acc[curr.tool_id] || 0) + 1
-    return acc
-  }, {})
-
-  const activeSubUserIds = new Set((subscriptions || []).map((s: any) => s.user_id))
-
   const toolDisplayNames: Record<string, string> = {
     'universal-converter': '究極AIマルチコンバーター',
-    'staysee-ai-finder': 'Staysee AI Finder',
+    'nextra-ai': 'Staysee AI Finder',
     'inbox-organizer': 'Gmail AI Accelerator'
   }
+
+  const activeSubUserIds = new Set((subscriptions || []).map((s: any) => s.user_id))
 
   return (
     <div className="min-h-screen bg-[#050507] text-slate-100 pb-20 font-sans">
@@ -89,7 +76,6 @@ export default async function AdminPage() {
           <Badge className="bg-emerald-500 text-slate-950 font-black italic px-4 py-1.5 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)]">ADMIN ONLY</Badge>
         </div>
 
-        {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="bg-[#13141f] border-2 border-white/10 rounded-3xl shadow-xl">
             <CardContent className="p-8 text-center">
@@ -108,7 +94,7 @@ export default async function AdminPage() {
           <Card className="bg-emerald-500/10 border-2 border-emerald-500 rounded-3xl shadow-[0_0_30px_rgba(16,185,129,0.2)]">
             <CardContent className="p-8 text-center relative overflow-hidden">
               <div className="absolute top-0 right-0 p-2 opacity-20"><Cpu className="h-20 w-20 text-emerald-500" /></div>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-500 mb-1 italic">ローカルAI省エネ節約総額</p>
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-500 mb-1 italic">ローカルAI節約総額</p>
               <div className="text-4xl font-black italic text-white tracking-tighter">¥{totalSavings.toLocaleString()}</div>
             </CardContent>
           </Card>
@@ -122,7 +108,6 @@ export default async function AdminPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Access Analysis */}
           <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden lg:col-span-1">
             <CardHeader className="bg-white/5 p-8 border-b border-white/5">
               <CardTitle className="text-xl font-black italic uppercase tracking-tight text-white flex items-center gap-3">
@@ -139,7 +124,6 @@ export default async function AdminPage() {
             </CardContent>
           </Card>
 
-          {/* User List */}
           <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden lg:col-span-2">
             <CardHeader className="bg-white/5 p-8 border-b border-white/5">
               <CardTitle className="text-xl font-black italic uppercase tracking-tight text-white flex items-center gap-3">

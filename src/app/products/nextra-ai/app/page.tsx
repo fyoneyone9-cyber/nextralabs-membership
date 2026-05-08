@@ -19,7 +19,7 @@ const TRANSLATIONS: any = {
   en: { search: 'Search', identity: 'Verify', form: 'Register', confirm: 'Confirm', payment: 'Finish', restart: 'Restart', finish: 'Complete', welcome: 'Thank you', room: 'Room / Key Number', back: 'Back to Top', checkin_finish: 'Check-in Complete', checkout_finish: 'Check-out Complete', welcome_in: 'Have a pleasant stay', welcome_out: 'Have a safe trip!', staff: 'Please call staff' },
 };
 
-const StayseeAppPage = () => {
+const NextraAiAppPage = () => {
   const router = useRouter();
   const [isKioskMode, setIsKioskMode] = useState(false);
   const [step, setStep] = useState<Step>('start');
@@ -85,8 +85,8 @@ const StayseeAppPage = () => {
             <span className="font-black text-4xl italic">N</span>
           </div>
           <div className="flex flex-col text-left">
-            <span className="font-black text-3xl tracking-tighter leading-none">STAYSEE AI FINDER</span>
-            <span className="text-xs font-bold text-emerald-500 tracking-[0.5em] mt-2 text-left">PMS & LOCK SYNC</span>
+            <span className="font-black text-3xl tracking-tighter leading-none">NEXTRA AI</span>
+            <span className="text-xs font-bold text-emerald-500 tracking-[0.5em] mt-2 text-left">CHECK-IN SYSTEM</span>
           </div>
         </div>
       </header>
@@ -152,4 +152,4 @@ const StayseeAppPage = () => {
   );
 };
 
-export default StayseeAppPage;
+export default NextraAiAppPage;

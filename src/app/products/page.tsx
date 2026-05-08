@@ -1,21 +1,21 @@
 'use client'
 import { useSearchParams } from 'next/navigation'
-import React, { useState, useEffect, useCallback, Suspense } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { createBrowserClient } from '@supabase/ssr'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { 
-  Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, 
-  ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, 
+  FileText, ArrowRight, Network, Store, 
+  ClipboardCheck, Heart, ShieldCheck, Wallet, Home, 
   Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, Ticket, BookOpen, 
-  Sprout, Zap, Droplets, Utensils, Building2, Hotel, Key, Lock, CreditCard, Coins, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, FileDown, Brain, Repeat
+  Sprout, Zap, Building2, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat
 } from 'lucide-react'
 
 const TOOLS = [
   { id: 'universal-converter', cat: 'compress', title: '究極AIマルチコンバーター', sub: '動画・画像・PDF × 万能変換圧縮', icon: Repeat, plan: 'ライト' },
-  { id: 'staysee-ai-finder', cat: 'hotel', title: 'Staysee AI Finder', sub: '宿泊予約・鍵発行を完全同期', icon: Building2, plan: 'プレミアム' },
+  { id: 'nextra-ai', cat: 'hotel', title: 'Nextra AI', sub: '宿泊予約・鍵発行を完全同期', icon: Building2, plan: 'プレミアム' },
   { id: 'comp-price-monitor', cat: 'hotel', title: '競合AI価格監視', sub: '楽天API連携 × 価格最適化OS', icon: LineChart, plan: 'プレミアム' },
   { id: 'hotel-affiliate', cat: 'hotel', title: 'アフィリエイトAI連携', sub: '宿紹介 × 楽天収益化OS', icon: Network, plan: 'スタンダード' },
   { id: 'moving-checker', cat: 'hotel', title: 'AI引越し安心チェッカー', sub: '治安・物件リスクを徹底分析', icon: Home, plan: '無料' },
@@ -48,11 +48,7 @@ const TOOLS = [
   { id: 'ai-exam-generator', cat: 'edu', title: 'AI問題生成 & 苦手分析', sub: '予想問題を無限生成 × 弱点ポイント可視化', icon: Brain, plan: 'プレミアム' },
   { id: 'location-finder', cat: 'hotel', title: 'AIロケーションファインダー', sub: '出店・移住の最適地をデータ分析', icon: MapPin, plan: 'スタンダード' },
   { id: 'smart-gardening', cat: 'life', title: 'AIスマートガーデニング', sub: '植物の声を聴く育成アドバイザー', icon: Sprout, plan: 'スタンダード' },
-  { id: 'ticket-scout', cat: 'life', title: 'AIチケットスカウト', sub: '争奪戦に勝つための先行情報収集', icon: Ticket, plan: 'スタンダード' },
-  { id: 'disaster-guard', cat: 'life', title: 'AI防災パーソナルガイド', sub: '避難ルート × 備蓄最適化', icon: Shield, plan: 'スタンダード' },
-  { id: 'comp-price-monitor', cat: 'hotel', title: '競合AI価格監視', sub: '楽天API連携 × 価格最適化OS', icon: LineChart, plan: 'プレミアム' },
-  { id: 'hotel-affiliate', cat: 'hotel', title: '宿紹介AIアフィリエイター', sub: '宿紹介 × 楽天収益化OS', icon: Network, plan: 'スタンダード' },
-  { id: 'ai-report-generator', cat: 'biz', title: 'AIプロフェッショナル報告書', sub: '箇条書きからプロ級文書生成', icon: FileText, plan: '無料' }
+  { id: 'ticket-scout', cat: 'life', title: 'AIチケットスカウト', sub: '争奪戦に勝つための先行情報収集', icon: Ticket, plan: 'スタンダード' }
 ]
 
 const CATEGORIES = [
@@ -103,7 +99,7 @@ function ProductCard({ product, isFav, onToggleFav }: {
         </div>
         <div className="pt-4 border-t border-white/5 flex flex-col gap-2.5 mt-auto">
           <Link href={"/products/" + product.id} className="block w-full">
-            <Button className="w-full h-10 md:h-12 bg-emerald-600 hover:bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.4)] text-slate-950 font-black text-sm md:text-base rounded-xl shadow-lg uppercase tracking-tighter">このツールを起動</Button>
+            <Button className="w-full h-10 md:h-12 bg-emerald-600 hover:bg-emerald-50 shadow-[0_0_20px_rgba(16,185,129,0.4)] text-slate-950 font-black text-sm md:text-base rounded-xl shadow-lg uppercase tracking-tighter">このツールを起動</Button>
           </Link>
           <div className="flex justify-between items-center px-2 py-1 bg-black/40 rounded-lg border border-white/5">
             <span className={badgeClass}>{product.plan} プラン</span>
@@ -116,8 +112,6 @@ function ProductCard({ product, isFav, onToggleFav }: {
 }
 
 function ProductsList() {
-  const searchParams = useSearchParams()
-  const q = searchParams.get('q')?.toLowerCase() || ''
   const [mounted, setMounted] = useState(false)
   const [randomFree, setRandomFree] = useState<typeof TOOLS>([])
   const [pickupTools, setPickupTools] = useState<typeof TOOLS>([])
@@ -129,10 +123,6 @@ function ProductsList() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
 
-  const filteredTools = q
-    ? TOOLS.filter(t => t.title.toLowerCase().includes(q) || t.sub.toLowerCase().includes(q))
-    : TOOLS
-
   useEffect(() => {
     setMounted(true)
     setRandomFree(TOOLS.filter(t => t.plan === '無料').sort(() => 0.5 - Math.random()).slice(0, 3))
@@ -142,30 +132,11 @@ function ProductsList() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
       setUserId(user.id)
-      const { data } = await supabase
-        .from('user_favorites')
-        .select('tool_id')
-        .eq('user_id', user.id)
+      const { data } = await supabase.from('user_favorites').select('tool_id').eq('user_id', user.id)
       if (data) setFavorites(data.map((r: any) => r.tool_id))
     }
     loadFavs()
   }, [])
-
-  const toggleFav = async (e: React.MouseEvent, id: string) => {
-    e.preventDefault(); e.stopPropagation()
-    if (!userId) return
-    const isFav = favorites.includes(id)
-    setFavorites(prev => isFav ? prev.filter(f => f !== id) : [...prev, id])
-    try {
-      if (isFav) {
-        await supabase.from('user_favorites').delete().eq('user_id', userId).eq('tool_id', id)
-      } else {
-        await supabase.from('user_favorites').upsert({ user_id: userId, tool_id: id }, { onConflict: 'user_id,tool_id' })
-      }
-    } catch {
-      setFavorites(prev => isFav ? [...prev, id] : prev.filter(f => f !== id))
-    }
-  }
 
   if (!mounted) return null
 
@@ -181,14 +152,14 @@ function ProductsList() {
             <Sparkles className="w-5 h-5 md:w-8 md:h-8 text-orange-500" />
             <h2 className="text-lg md:text-2xl font-black text-white italic uppercase">ピックアップ</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{pickupTools.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={toggleFav} />)}</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{pickupTools.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={() => {}} />)}</div>
         </section>
         <section>
           <div className="flex items-center gap-3 mb-4 border-l-[6px] border-emerald-500 pl-4 md:pl-6 py-0.5">
             <Gift className="w-5 h-5 md:w-8 md:h-8 text-emerald-500" />
             <h2 className="text-lg md:text-2xl font-black text-white italic uppercase">無料トライアル</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{randomFree.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={toggleFav} />)}</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{randomFree.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={() => {}} />)}</div>
         </section>
         {CATEGORIES.map((cat) => (
           <section key={cat.id}>
@@ -196,7 +167,7 @@ function ProductsList() {
               <cat.icon className="w-5 h-5 md:w-8 md:h-8 text-white" />
               <h2 className="text-lg md:text-2xl font-black text-white italic uppercase">{cat.title}</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{filteredTools.filter(t => t.cat === cat.id).map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={toggleFav} />)}</div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{TOOLS.filter(t => t.cat === cat.id).map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={() => {}} />)}</div>
           </section>
         ))}
       </div>
