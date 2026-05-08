@@ -43,6 +43,15 @@ const MasterEngine = () => {
         body: JSON.stringify({ accessToken: token }),
       });
       const data = await res.json();
+      
+      // 認証エラー検知時にトークンを破棄して再ログインを促す
+      if (res.status === 401 || data.error?.includes('invalid_grant') || data.error?.includes('expired')) {
+        localStorage.removeItem('nextra_google_token');
+        setGoogleToken(null);
+        alert('認証の有効期限が切れました。再度ログインしてください。');
+        return;
+      }
+
       if (data.messages) setEmails(data.messages);
     } catch (e) { 
       console.error('[FETCH_ERR]', e); 
