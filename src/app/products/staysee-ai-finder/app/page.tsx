@@ -32,48 +32,28 @@ const TRANSLATIONS: any = {
   hi: { search: 'खोजें', identity: 'सत्यापन', form: 'पंजीकरण', confirm: 'पुष्टि करें', payment: 'समाप्त', restart: 'पुनः आरंभ करें', finish: 'चेक-इन पूरा हुआ', welcome: 'आपका प्रवास सुखद हो', room: 'कमら番号 / コード', back: 'वापस जाएं' },
 };
 
+import { shrinkImageForAi } from '@/lib/ai-saver';
+
+// ... (省略)
+
 const StayseeAppPage = () => {
-  const router = useRouter();
-  const [isAuth, setIsAuth] = useState(false);
-  const [step, setStep] = useState<Step>('start');
-  const [selectedLang, setSelectedLang] = useState('ja');
-  const [reservation, setReservation] = useState<any>(null);
-  const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [guestInfo, setGuestInfo] = useState<any>(null);
+  // ... (省略)
 
-  const t = TRANSLATIONS[selectedLang] || TRANSLATIONS.en;
-
-  useEffect(() => {
-    // 【最優先】ログインチェック
-    const session = localStorage.getItem('dms_session');
-    if (!session) {
-      router.push('/dms/login');
-    } else {
-      setIsAuth(true);
-    }
-  }, [router]);
-
-  if (!isAuth) return <div className="min-h-screen bg-[#02040a]" />;
-
-  const handleReservationFound = (data: any) => {
-    setReservation(data);
-    setStep('identity');
-  };
-
-  const handleIdentityCaptured = (image: string) => {
-    setCapturedImage(image);
+  const handleIdentityCaptured = async (image: string) => {
+    // 【節約！】画像をAI送信前にダイエット（リサイズ & 圧縮）
+    const slimImage = await shrinkImageForAi(image, 600);
+    setCapturedImage(slimImage);
     setStep('form');
   };
 
   const handleFormSubmitted = async (data: any) => {
-    console.log("Saving to NextraLabs Central Server...", data);
-    try {
-      setGuestInfo(data);
-      setStep('confirm');
-    } catch (error) {
-      console.error("Failed to save data to server:", error);
+    // 【節約！】署名画像もダイエット
+    if (data.signature) {
+      data.signature = await shrinkImageForAi(data.signature, 400);
     }
-  };
+    
+    console.log("Saving slim data to NextraLabs Server...", data);
+    // ... (以下略)
 
   return (
     <div className="min-h-screen bg-[#02040a] text-white flex flex-col overflow-hidden font-sans selection:bg-emerald-500/30">
