@@ -20,16 +20,16 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({ onNext }) => {
         <h1 className="text-3xl font-bold">言語を選択してください。 Please select language.</h1>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-6 max-w-5xl">
+      <div className="flex flex-wrap justify-center gap-8 max-w-5xl">
         {languages.map((lang) => (
           <button
             key={lang.id}
             onClick={() => onNext(lang.id)}
             className={`
-              w-56 h-56 rounded-full bg-white text-slate-700 shadow-xl
-              flex items-center justify-center text-4xl font-black
-              hover:scale-110 hover:bg-emerald-50 transition-all duration-300
-              ${lang.label === '日本語' ? 'w-72 h-72 text-6xl' : ''}
+              w-60 h-60 rounded-full bg-white/5 border-2 border-white/10 text-white
+              flex items-center justify-center text-4xl font-black backdrop-blur-md
+              hover:scale-110 hover:border-emerald-500 hover:bg-emerald-500/10 hover:shadow-[0_0_40px_rgba(16,185,129,0.3)] transition-all duration-500
+              ${lang.label === '日本語' ? 'w-80 h-80 text-7xl border-emerald-500/50 bg-emerald-500/5 shadow-[0_0_30px_rgba(16,185,129,0.1)]' : ''}
             `}
           >
             {lang.label}

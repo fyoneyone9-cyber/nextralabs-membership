@@ -1,8 +1,11 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
-import { Edit3, Trash2, Check, User, Mail, Phone, MapPin, Briefcase } from 'lucide-react';
-import SignatureCanvas from 'react-signature-canvas';
+import React, { useRef, useState, useEffect } from 'react';
+import { Edit3, Trash2, User, Phone, MapPin, Briefcase } from 'lucide-react';
+import dynamic from 'next/dynamic';
+
+// SSRを無効化してSignatureCanvasをロード
+const SignatureCanvas = dynamic(() => import('react-signature-canvas'), { ssr: false });
 
 interface RegistrationFormProps {
   reservation: any;
@@ -10,7 +13,7 @@ interface RegistrationFormProps {
 }
 
 const RegistrationForm: React.FC<RegistrationFormProps> = ({ reservation, onNext }) => {
-  const sigCanvas = useRef<SignatureCanvas>(null);
+  const sigCanvas = useRef<any>(null);
   const [formData, setFormData] = useState({
     name: reservation?.name || '',
     phone: reservation?.phone || '',
@@ -21,12 +24,24 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ reservation, onNext
   });
 
   const clearSignature = () => {
-    sigCanvas.current?.clear();
-    setFormData({ ...formData, isSignatureEmpty: true });
+    if (sigCanvas.current) {
+      sigCanvas.current.clear();
+      setFormData({ ...formData, isSignatureEmpty: true });
+    }
   };
 
   const handleSubmit = () => {
-    const signatureData = sigCanvas.current?.getTrimmedCanvas().toDataURL('image/png');
+    let signatureData = null;
+    if (sigCanvas.current && !formData.isSignatureEmpty) {
+      try {
+        // getTrimmedCanvas の存在確認をしてから実行
+        if (typeof sigCanvas.current.getTrimmedCanvas === 'function') {
+          signatureData = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
+        }
+      } catch (e) {
+        console.error("Signature capture error:", e);
+      }
+    }
     onNext({ ...formData, signature: signatureData });
   };
 

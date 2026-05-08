@@ -16,14 +16,14 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
 
       <button
         onClick={onNext}
-        className="group relative flex flex-col items-center justify-center w-80 h-80 bg-white rounded-full shadow-[0_0_50px_rgba(255,255,255,0.2)] hover:scale-105 transition-transform duration-300"
+        className="group relative flex flex-col items-center justify-center w-80 h-80 bg-black border-4 border-white/10 rounded-full shadow-[0_0_50px_rgba(16,185,129,0.1)] hover:border-emerald-500 hover:shadow-[0_0_60px_rgba(16,185,129,0.3)] transition-all duration-500"
       >
-        <div className="text-slate-600 mb-4 group-hover:text-emerald-500 transition-colors">
+        <div className="text-white mb-4 group-hover:text-emerald-400 transition-colors group-hover:scale-110 duration-500">
           <Touch size={120} strokeWidth={1} />
         </div>
-        <div className="text-slate-800 text-center">
-          <p className="text-3xl font-black mb-1 leading-tight">Touch Start</p>
-          <p className="text-sm font-bold text-slate-400">ボタンを押してスタート</p>
+        <div className="text-white text-center">
+          <p className="text-3xl font-black mb-1 leading-tight tracking-tighter">TOUCH START</p>
+          <p className="text-xs font-bold text-gray-500 group-hover:text-emerald-500 transition-colors uppercase tracking-widest">Tap to begin</p>
         </div>
       </button>
 

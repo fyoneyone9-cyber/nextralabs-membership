@@ -34,9 +34,15 @@ const StayseeAppPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0086a5] to-[#004b61] text-white flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-[#0a0b10] text-white flex flex-col overflow-hidden font-sans">
+      {/* 背景の装飾的な光 */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-[20%] -left-[10%] w-[60%] h-[60%] bg-emerald-500/10 blur-[120px] rounded-full" />
+        <div className="absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] bg-blue-500/10 blur-[120px] rounded-full" />
+      </div>
+
       {/* ヘッダー */}
-      <header className="p-6 flex justify-between items-center">
+      <header className="p-8 flex justify-between items-center relative z-10">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
             <span className="font-bold">S</span>
