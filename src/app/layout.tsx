@@ -48,13 +48,25 @@ export default function RootLayout({
       <body className={inter.className + " min-h-screen bg-[#050507] text-slate-200 dark antialiased"}>
         <Providers>
           <div className="relative flex min-h-screen flex-col bg-[#050507]">
-            <Header />
+            <HeaderWrapper />
             <div className="flex-1">{children}</div>
-            <Footer />
+            <FooterWrapper />
             <DebugPanel data={{}} />
           </div>
         </Providers>
       </body>
     </html>
   )
+}
+
+import { usePathname } from 'next/navigation'
+function HeaderWrapper() {
+  const pathname = usePathname()
+  if (pathname?.startsWith('/dms')) return null
+  return <Header />
+}
+function FooterWrapper() {
+  const pathname = usePathname()
+  if (pathname?.startsWith('/dms')) return null
+  return <Footer />
 }

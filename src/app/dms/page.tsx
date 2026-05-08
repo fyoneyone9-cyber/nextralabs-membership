@@ -27,5 +27,9 @@ export default function DmsPage() {
     </div>
   )
 
-  return <DmsEngine />
+  return (
+    <div className="no-global-layout">
+      <DmsEngine />
+    </div>
+  )
 }
