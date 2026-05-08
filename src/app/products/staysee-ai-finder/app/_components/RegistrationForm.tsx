@@ -85,12 +85,12 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ reservation, onNext
             <label className="flex items-center gap-2 text-xs font-black text-emerald-500/40 uppercase tracking-[0.3em] ml-2">
               <MapPin size={14} strokeWidth={3} /> Address / ご住所
             </label>
-            <input
-              type="text"
+            <textarea
               placeholder="Address"
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              className="w-full bg-[#12141c] border-2 border-white/5 rounded-3xl py-8 px-10 text-3xl font-black tracking-tight focus:border-emerald-500/30 focus:outline-none transition-all text-white placeholder:text-gray-800 overflow-hidden text-ellipsis"
+              rows={4}
+              className="w-full bg-[#12141c] border-2 border-white/5 rounded-4xl py-8 px-10 text-4xl font-black tracking-tight focus:border-emerald-500/30 focus:outline-none transition-all text-white placeholder:text-gray-800 resize-none min-h-[250px]"
             />
           </div>
 

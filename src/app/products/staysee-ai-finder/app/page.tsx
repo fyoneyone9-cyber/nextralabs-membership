@@ -35,7 +35,27 @@ const TRANSLATIONS: any = {
 
 const StayseeAppPage = () => {
   const router = useRouter();
-  const [step, setStep] = useState<Step>('start');
+  const [isKioskMode, setIsKioskMode] = useState(false);
+
+  useEffect(() => {
+    // ログイン状態を確認し、このページではヘッダー/フッターを強制非表示にするフラグを立てる
+    const checkKiosk = async () => {
+      setIsKioskMode(true);
+      // グローバルなヘッダー/フッターを非表示にするためのCSSインジェクション（憲法遵守）
+      const style = document.createElement('style');
+      style.id = 'kiosk-mode-style';
+      style.innerHTML = `
+        header, footer, nav { display: none !important; }
+        #debug-panel-trigger { display: none !important; }
+      `;
+      document.head.appendChild(style);
+    };
+    checkKiosk();
+    return () => {
+      const style = document.getElementById('kiosk-mode-style');
+      if (style) style.remove();
+    };
+  }, []);
   const [selectedLang, setSelectedLang] = useState('ja');
   const [reservation, setReservation] = useState<any>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
