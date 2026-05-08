@@ -7,12 +7,14 @@ interface StartScreenProps {
 }
 
 const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
-  const [pressTimer, setPressTimer] = React.useState<NodeJS.Timeout | null>(null);
+  const [pressTimer, setPressTimer] = React.useState<any>(null);
 
-  const handlePressStart = () => {
+  const handlePressStart = (e: React.MouseEvent | React.TouchEvent) => {
+    // 15秒後に実行
     const timer = setTimeout(() => {
-      if (confirm('管理モードを終了してログアウトしますか？')) {
+      if (window.confirm('管理モードを終了してログアウトしますか？')) {
         localStorage.clear();
+        sessionStorage.clear();
         window.location.href = '/';
       }
     }, 15000);
@@ -26,10 +28,26 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
     }
   };
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-[85vh] text-center space-y-24 animate-in fade-in duration-1000">
-      
-      {/* 繊細で美しいタイポグラフィ */}
+  // ブラウザの「戻る」や他ページへの遷移を防止（キオスクモード化）
+  useEffect(() => {
+    const preventNav = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', preventNav);
+    
+    // 戻るボタンを無効化するハック
+    window.history.pushState(null, '', window.location.href);
+    const handlePopState = () => {
+      window.history.pushState(null, '', window.location.href);
+    };
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('beforeunload', preventNav);
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
       <div className="space-y-4">
         <p className="text-emerald-500/40 text-sm font-black tracking-[1.2em] uppercase animate-in slide-in-from-top-4 duration-1000">
           Experience the Future
