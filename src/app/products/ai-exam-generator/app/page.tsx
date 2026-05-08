@@ -159,9 +159,16 @@ const ExamApp = () => {
       </Card>
 
       <div className="flex justify-between items-center pt-6">
-        <Button variant="ghost" className="text-slate-500 font-bold hover:text-white" onClick={() => setStarted(false)}>
-          試験を中断
-        </Button>
+        <div className="flex gap-4 items-center">
+          <Button variant="ghost" className="text-slate-500 font-bold hover:text-white px-0" onClick={() => setStarted(false)}>
+            試験を中断
+          </Button>
+          <div className="w-px h-4 bg-white/10"></div>
+          <Link href="/contact" className="text-[10px] font-black text-slate-500 hover:text-emerald-400 uppercase tracking-widest transition-colors flex items-center gap-1">
+            <Send className="w-3 h-3" />
+            試験のリクエスト・お問い合わせ
+          </Link>
+        </div>
         <Button 
           disabled={selectedAnswer === null}
           onClick={handleNext}
