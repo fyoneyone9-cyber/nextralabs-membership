@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { useRouter } from 'next/navigation'
 import { 
-  Unlock, Activity, Zap, Copy, CheckCircle2, Terminal, ShieldCheck, Globe
+  Unlock, Activity, Zap, Copy, CheckCircle2, Terminal, ShieldCheck, Globe, X
 } from 'lucide-react'
 
 // --- ABSOLUTE LOGGING ENGINE (Reactの外で動作) ---
@@ -121,14 +121,41 @@ export function DebugPanel({ data }: { data?: any }) {
       </button>
       
       {isOpen && (
-        <div className="fixed top-20 right-6 w-[95vw] max-w-2xl bg-[#050507]/98 backdrop-blur-3xl border-2 border-white/10 p-8 rounded-[3rem] shadow-2xl space-y-6 animate-in slide-in-from-top-4 duration-500">
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-md bg-[#050507]/98 backdrop-blur-3xl border-2 border-emerald-500/30 p-8 rounded-[3rem] shadow-[0_0_100px_rgba(16,185,129,0.2)] space-y-6 animate-in zoom-in-95 duration-300">
+          {/* 終了ボタン (大きく、右上に配置) */}
+          <button 
+            onClick={() => setIsOpen(false)} 
+            className="absolute top-6 right-6 p-3 bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-500 rounded-full transition-all active:scale-90 border border-white/10 z-10"
+          >
+            <X size={28} strokeWidth={3} />
+          </button>
+
           {!isAuth ? (
-            <div className="py-10 space-y-6 text-center">
-              <Terminal className="text-emerald-500 mx-auto" size={40} />
-              <div className="flex gap-3 max-w-xs mx-auto">
-                <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="PW" className="bg-slate-900 border-slate-800 text-white text-center" onKeyDown={(e) => e.key === 'Enter' && password === '2026' && setIsAuth(true)} autoFocus />
-                <Button onClick={() => password === '2026' ? setIsAuth(true) : alert('ERR')} className="bg-emerald-600 text-white">Unlock</Button>
+            <div className="py-10 space-y-10 text-center">
+              <div className="space-y-4">
+                <Terminal className="text-emerald-500 mx-auto" size={60} />
+                <h3 className="text-xl font-black text-white italic uppercase tracking-tighter">System Authentication</h3>
               </div>
+              
+              <div className="space-y-4 px-4">
+                <Input 
+                  type="password" 
+                  value={password} 
+                  onChange={(e) => setPassword(e.target.value)} 
+                  placeholder="PW" 
+                  className="h-16 bg-slate-900/50 border-2 border-white/10 rounded-2xl text-white text-center text-3xl font-black outline-none focus:border-emerald-500 transition-all" 
+                  onKeyDown={(e) => e.key === 'Enter' && password === '2026' && setIsAuth(true)} 
+                  autoFocus 
+                />
+                <Button 
+                  onClick={() => password === '2026' ? setIsAuth(true) : alert('ERR')} 
+                  className="w-full h-20 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-2xl rounded-2xl shadow-xl transition-all active:scale-95 uppercase italic"
+                >
+                  Unlock <Unlock className="ml-2 h-6 w-6" />
+                </Button>
+              </div>
+              
+              <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest italic">Authorized Personnel Only</p>
             </div>
           ) : (
             <div className="space-y-6 animate-in fade-in">

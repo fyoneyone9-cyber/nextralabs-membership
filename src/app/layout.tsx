@@ -54,8 +54,9 @@ export default function RootLayout({
             <HeaderWrapper />
             <div className="flex-1">{children}</div>
             <FooterWrapper />
-            <ApiMonitorOverlay />
-            <DebugPanel data={{}} />
+            {/* ぴょんぴょんはねるデバッグツールを非表示 */}
+            {/* <ApiMonitorOverlay /> */}
+            {/* <DebugPanel data={{}} /> */}
           </div>
         </Providers>
       </body>
