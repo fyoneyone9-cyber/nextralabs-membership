@@ -189,6 +189,17 @@ export default function MoneyGuardApp() {
 
             {/* Prompt Preview Card */}
             <div className="relative group">
+              {/* Active Badge */}
+              <div className="absolute -top-3 -right-3 z-20">
+                <div className="flex items-center gap-2 bg-slate-950 border border-emerald-500/50 px-4 py-1.5 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                  <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest italic">System Active</span>
+                </div>
+              </div>
+              
               <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-[2.5rem] blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
               <div className="relative bg-black border border-white/10 rounded-[2rem] p-8 space-y-6 overflow-hidden">
                 <div className="flex items-center justify-between border-b border-white/5 pb-4">
