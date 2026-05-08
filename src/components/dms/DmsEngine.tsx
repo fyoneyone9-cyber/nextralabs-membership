@@ -38,9 +38,20 @@ export default function DmsEngine() {
   const [pmsView, setPmsView] = useState<'list' | 'create'>('list');
   const [bookings, setBookings] = useState<any[]>([]);
   const [loadingBookings, setLoadingBookings] = useState(false);
+  const [pmsList, setPmsList] = useState<any[]>([]);
 
   // Staysee APIから予約一覧を取得
   const fetchStayseeBookings = async () => {
+    // localStorageから最新の有効設定を確認
+    const savedPms = localStorage.getItem('dms_pms_list');
+    const list = savedPms ? JSON.parse(savedPms) : [];
+    const activeStaysee = list.find((p: any) => p.type === 'Staysee' && p.status === '有効');
+    
+    if (!activeStaysee) {
+      setBookings([]);
+      return;
+    }
+
     setLoadingBookings(true);
     try {
       const res = await fetch('/api/staysee/reservations?date=2026-05-08');
@@ -65,8 +76,42 @@ export default function DmsEngine() {
         console.error('Session parse error:', e);
       }
     }
+
+    // PMS一覧をlocalStorageから復元
+    const savedPms = localStorage.getItem('dms_pms_list');
+    if (savedPms) {
+      try {
+        const parsed = JSON.parse(savedPms);
+        setPmsList(parsed);
+      } catch (e) {
+        console.error('PMS list parse error:', e);
+      }
+    } else {
+      // 初期データ設定
+      const initial = [{ id: 'staysee-1', type: 'Staysee', status: '有効', memo: 'メインPMS連携（API開通済み）', apiKey: 'sk_b54ca47f884c30d98dc429d3cbbbc29c' }];
+      setPmsList(initial);
+      localStorage.setItem('dms_pms_list', JSON.stringify(initial));
+    }
+
     fetchStayseeBookings();
   }, []);
+
+  // pmsListが変更されたらlocalStorageに保存
+  useEffect(() => {
+    if (mounted && pmsList.length > 0) {
+      localStorage.setItem('dms_pms_list', JSON.stringify(pmsList));
+    }
+  }, [pmsList, mounted]);
+
+  const togglePmsStatus = (id: string) => {
+    setPmsList(prev => prev.map(p => p.id === id ? { ...p, status: p.status === '有効' ? '無効' : '有効' } : p));
+  };
+
+  const deletePms = (id: string) => {
+    if (confirm('PMS連携を解除しますか？')) {
+      setPmsList(prev => prev.filter(p => p.id !== id));
+    }
+  };
 
   if (!mounted) return null;
 
