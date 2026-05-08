@@ -15,12 +15,15 @@ const ExamApp = () => {
   const [examType, setExamType] = useState('it-passport')
   const [started, setStarted] = useState(false)
   const [currentQuestion, setCurrentQuestion] = useState(0)
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
+  const [showHint, setShowHint] = useState(false)
 
   // プレビュー用のダミー問題
   const mockQuestions = [
     {
       id: 1,
       text: 'BPM（Business Process Management）の説明として、最も適切なものはどれか？',
+      hint: '「Management（管理・改善）」という言葉がヒントです。一度作って終わりのシステムではなく、ぐるぐる回すサイクルのことです。',
       options: [
         '業務プロセスを継続的に改善・最適化するサイクル',
         '企業の基幹業務を一元管理するシステム',
@@ -50,7 +53,7 @@ const ExamApp = () => {
           ].map((exam) => (
             <Card 
               key={exam.id}
-              className={`cursor-pointer transition-all border-2 rounded-2xl bg-[#0a0a0f] hover:border-emerald-500/50 ${examType === exam.id ? 'border-emerald-500' : 'border-white/5'}`}
+              className={`cursor-pointer transition-all border-2 rounded-2xl bg-[#0a0a0f] hover:border-emerald-500/50 ${examType === exam.id ? 'border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.2)]' : 'border-white/5'}`}
               onClick={() => setExamType(exam.id)}
             >
               <CardContent className="p-6 flex items-center justify-between">
@@ -74,6 +77,12 @@ const ExamApp = () => {
     )
   }
 
+  const handleNext = () => {
+    alert('正解です！おめでとうございます！\nNextra Exam Systemはあなたの解答傾向を学習しました。');
+    setSelectedAnswer(null);
+    setShowHint(false);
+  }
+
   return (
     <div className="max-w-3xl mx-auto space-y-6 py-10">
       <div className="flex items-center justify-between mb-4">
@@ -86,27 +95,63 @@ const ExamApp = () => {
         </div>
       </div>
 
-      <Card className="bg-[#0a0a0f] border-2 border-emerald-500/30 rounded-3xl overflow-hidden shadow-2xl">
+      <Card className="bg-[#0a0a0f] border-2 border-emerald-500/30 rounded-3xl overflow-hidden shadow-2xl relative">
         <CardContent className="p-8 space-y-8">
-          <div className="space-y-2">
-            <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Question Content</span>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Question Content</span>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowHint(!showHint)}
+                className={`h-7 px-3 text-[10px] font-black uppercase rounded-full transition-all border ${showHint ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' : 'bg-white/5 text-slate-400 border-white/10 hover:text-emerald-400'}`}
+              >
+                <Sparkles className="w-3 h-3 mr-1" />
+                Hint {showHint ? 'Active' : ''}
+              </Button>
+            </div>
+            
             <p className="text-lg text-white font-bold leading-relaxed">
               {mockQuestions[0].text}
             </p>
+
+            {showHint && (
+              <div className="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-300">
+                <p className="text-xs text-emerald-400 font-medium leading-relaxed italic">
+                  💡 Hint: {mockQuestions[0].hint}
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-1 gap-3">
             {mockQuestions[0].options.map((opt, i) => (
               <button 
                 key={i}
-                className="w-full p-5 text-left bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl transition-all group relative overflow-hidden"
+                onClick={() => setSelectedAnswer(i)}
+                className={`w-full p-5 text-left rounded-2xl transition-all group relative overflow-hidden border-2 ${
+                  selectedAnswer === i 
+                    ? 'bg-emerald-500/10 border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.1)]' 
+                    : 'bg-white/5 hover:bg-white/10 border-white/5'
+                }`}
               >
                 <div className="flex items-center gap-4">
-                  <span className="w-8 h-8 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center text-xs font-black text-emerald-500">
+                  <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black transition-colors ${
+                    selectedAnswer === i 
+                      ? 'bg-emerald-500 text-slate-950' 
+                      : 'bg-black/40 border border-white/10 text-emerald-500'
+                  }`}>
                     {['ア', 'イ', 'ウ', 'エ'][i]}
                   </span>
-                  <span className="text-slate-300 font-bold text-sm">{opt}</span>
+                  <span className={`font-bold text-sm transition-colors ${
+                    selectedAnswer === i ? 'text-white' : 'text-slate-300'
+                  }`}>{opt}</span>
                 </div>
+                {selectedAnswer === i && (
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
+                  </div>
+                )}
               </button>
             ))}
           </div>
@@ -114,10 +159,18 @@ const ExamApp = () => {
       </Card>
 
       <div className="flex justify-between items-center pt-6">
-        <Button variant="ghost" className="text-slate-500 font-bold" onClick={() => setStarted(false)}>
+        <Button variant="ghost" className="text-slate-500 font-bold hover:text-white" onClick={() => setStarted(false)}>
           試験を中断
         </Button>
-        <Button className="bg-white text-slate-950 font-black px-8 h-12 rounded-xl">
+        <Button 
+          disabled={selectedAnswer === null}
+          onClick={handleNext}
+          className={`px-10 h-14 rounded-2xl font-black text-lg transition-all ${
+            selectedAnswer !== null 
+              ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.4)]' 
+              : 'bg-slate-800 text-slate-500 cursor-not-allowed opacity-50'
+          }`}
+        >
           回答を送信 (Submit)
         </Button>
       </div>
