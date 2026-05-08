@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import dynamic from 'next/dynamic'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -10,7 +11,7 @@ import {
 } from 'lucide-react'
 import { ApiLinkIndicator } from '@/components/tools/ApiLinkIndicator'
 
-const InboxOrganizerApp = () => {
+const MasterEngine = () => {
   const [googleToken, setGoogleToken] = useState<string | null>('active');
   const [emails, setEmails] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
