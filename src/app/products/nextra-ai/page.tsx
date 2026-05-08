@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic'
 
-const NextraAiLP = dynamic(() => import('@/components/tools/NextraAiLP'), { ssr: false })
+const NextraAiLP = dynamic(() => import('./NextraAiLP'), { ssr: false })
 
 export default function Page() {
   return (
