@@ -45,6 +45,19 @@ const config: Config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      zIndex: {
+        'roadmap': '30',
+        'header': '40',
+        'modal': '100',
+        'overlay': '90',
+      },
+      animation: {
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      boxShadow: {
+        'emerald-glow': '0 0 20px rgba(16,185,129,0.3)',
+        'premium-dark': '0 0 100px rgba(0,0,0,1)',
+      },
     },
   },
   plugins: [],
