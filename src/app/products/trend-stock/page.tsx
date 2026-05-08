@@ -182,6 +182,17 @@ export default function TrendStockPage() {
                       楽天
                     </a>
                   </Button>
+                  <Button 
+                    className="flex-1 sm:flex-none gap-1 bg-emerald-600 hover:bg-emerald-700 text-white"
+                    onClick={() => {
+                      const text = `【今これが売れてる！】\n${item.name}\n${item.catchcopy}\n\n詳細はこちら：\n${item.url}\n#楽天 #トレンド #NextraLabs`;
+                      navigator.clipboard.writeText(text);
+                      alert('SNS紹介文をコピーしました！');
+                    }}
+                  >
+                    <Share2 className="w-4 h-4" />
+                    紹介文
+                  </Button>
                 </div>
               </div>
             </Card>
