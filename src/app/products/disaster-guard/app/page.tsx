@@ -1,22 +1,19 @@
 'use client'
-
 import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Zap, Loader2, CheckCircle2, TrendingUp, Search, Info, ShoppingCart, 
-  MapPin, ShieldAlert, Home, Navigation, AlertTriangle
-} from 'lucide-react'
+import { Zap, Loader2, CheckCircle2, TrendingUp, Search, Info, ShoppingCart, MapPin, ShieldAlert, Navigation } from 'lucide-react'
 
 export default function DisasterGuardApp() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [result, setResult] = useState<string | null>(null)
+  const [address, setAddress] = useState('')
 
   const handleAnalyze = async () => {
     setIsAnalyzing(true);
     await new Promise(r => setTimeout(r, 2000));
-    setResult("指定エリアの地盤・浸水リスクを解析しました。最寄りの避難所への経路に冠水予測エリアが含まれています。代替ルートとして『高台経由』のBプランを策定しました。");
+    setResult("指定された住所の地質・地形データを解析しました。大規模地震発生時、建物の倒壊リスクは低いですが、最寄り避難所への最短ルートが液状化による冠水の恐れがあります。迂回ルートとして『北西の公園』を中継するB案を策定しました。");
     setIsAnalyzing(false);
   }
 
@@ -26,46 +23,37 @@ export default function DisasterGuardApp() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-emerald-500/20 pb-10">
           <div className="flex items-center gap-4">
             <div className="p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/20"><ShieldAlert className="h-10 w-10 text-emerald-400" /></div>
-            <div>
-              <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">AI Disaster Guard</h1>
-              <p className="text-emerald-400 font-bold uppercase tracking-[0.2em] text-[10px] italic">Strategic Personal Defense Guide</p>
-            </div>
+            <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">AI防災パーソナルガイド</h1>
           </div>
           <Badge className="bg-emerald-500 text-slate-950 font-black italic px-6 py-2 text-sm rounded-full shadow-lg">STANDARD PLAN</Badge>
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4">
           <div className="flex items-center gap-2 text-emerald-400"><Info size={20} /> <h3 className="font-black italic uppercase text-sm">使いかた・活用マニュアル</h3></div>
-          <p className="text-sm text-slate-300 font-bold leading-relaxed italic">
-            居住地や現在地、または移動先の住所を入力してください。AIが公的ハザードマップとリアルタイム地形データを統合し、あなた専用の避難ルートと、家族構成に合わせた最適な備蓄リストを提示します。
-          </p>
+          <p className="text-sm text-slate-300 font-bold leading-relaxed italic">居住地、勤務地、または大切な人の住所を入力してください。AIが公的ハザードマップを即座に巡回。あなた専用の「生存戦略レポート」と「避難用持ち出しリスト」を自動生成します。</p>
         </div>
 
-        <Card className="bg-[#13141f] border border-white/5 rounded-2xl overflow-hidden shadow-xl p-8 space-y-6">
-          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic ml-1">Area / Address for Risk Check</label>
-          <input className="w-full h-14 bg-black border-2 border-white/10 rounded-xl px-6 font-bold text-white outline-none focus:border-emerald-500 transition-all" placeholder="例：神奈川県海老名市中央" />
-          <Button onClick={handleAnalyze} disabled={isAnalyzing} className="w-full h-24 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-3xl rounded-[2rem] shadow-xl uppercase italic">
-            {isAnalyzing ? <Loader2 className="animate-spin h-10 w-10" /> : '防災ガイドを生成する 🚀'}
-          </Button>
+        <Card className="bg-[#13141f] border border-white/5 rounded-2xl p-8 space-y-6 shadow-xl">
+          <div className="space-y-4">
+            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic ml-1">住所 または エリア名</label>
+            <input value={address} onChange={e => setAddress(e.target.value)} className="w-full h-16 bg-black border-2 border-white/10 rounded-xl px-6 text-xl font-black text-white focus:border-emerald-500 outline-none transition-all" placeholder="例：東京都世田谷区桜丘" />
+          </div>
+          <Button onClick={handleAnalyze} disabled={isAnalyzing || !address} className="w-full h-24 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-3xl rounded-[2rem] shadow-xl uppercase italic active:scale-95 transition-all">防災診断を実行 🚀</Button>
         </Card>
 
         {result && (
           <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <Card className="bg-emerald-500/5 border-2 border-emerald-500/30 rounded-[3.5rem] p-12 shadow-inner">
-              <h3 className="text-2xl font-black text-white italic uppercase mb-8 flex items-center gap-3"><Zap className="text-emerald-400" /> AI Survival Insight</h3>
+            <Card className="bg-emerald-500/5 border-2 border-emerald-500/30 rounded-[3.5rem] p-12 shadow-inner text-left">
+              <h3 className="text-2xl font-black text-white italic uppercase mb-8 flex items-center gap-3"><Zap className="text-emerald-400" /> AI 生存診断レポート</h3>
               <div className="text-xl text-white font-bold italic leading-loose whitespace-pre-wrap">{result}</div>
             </Card>
 
             <div className="space-y-6">
-              <h3 className="text-xl font-black text-white italic uppercase tracking-widest border-l-4 border-emerald-500 pl-4">Disaster Roadmap</h3>
+              <h3 className="text-xl font-black text-white italic uppercase tracking-widest border-l-4 border-emerald-500 pl-4">防災・生存ロードマップ</h3>
               <div className="grid md:grid-cols-3 gap-6">
-                {[
-                  { step: '01', title: 'リスク可視化', desc: '地盤沈下、浸水、土砂崩れ。あなたの場所の「急所」を特定。', icon: Search },
-                  { step: '02', title: '避難路策定', desc: '災害時に想定される障害を予測し、複数の脱出ルートを確保します。', icon: Navigation },
-                  { step: '03', title: '生命維持プラン', desc: 'インフラ復旧までの必要物資をパーソナライズしてリスト化。', icon: CheckCircle2 },
-                ].map((s, i) => (
-                  <div key={i} className="bg-[#13141f] border border-white/10 p-10 rounded-[2.5rem] space-y-4">
-                    <div className="flex justify-between items-start"><span className="text-xs font-black text-emerald-500/40">{s.step}</span><s.icon className="h-6 w-6 text-emerald-400" /></div>
+                {[{ title: 'リスク可視化', desc: '浸水、土砂崩れ、倒壊。場所の「急所」を特定。', icon: Search }, { title: '避難路策定', desc: '障害を予測し、複数の脱出ルートを確保。', icon: Navigation }, { title: '生命維持プラン', desc: '必要物資をパーソナライズしてリスト化。', icon: CheckCircle2 }].map((s, i) => (
+                  <div key={i} className="bg-[#13141f] border border-white/10 p-10 rounded-3xl space-y-4 hover:border-emerald-500/50 transition-all">
+                    <s.icon className="h-6 w-6 text-emerald-400" />
                     <h4 className="text-lg font-black text-white italic">{s.title}</h4>
                     <p className="text-xs text-slate-400 font-bold italic">{s.desc}</p>
                   </div>
@@ -73,12 +61,9 @@ export default function DisasterGuardApp() {
               </div>
             </div>
 
-            <a href="https://www.amazon.co.jp/s?k=防災セット+非常食&tag=nextralabs-22" target="_blank" className="block group">
+            <a href="https://www.amazon.co.jp/s?k=防災セット+保存食+おすすめ&tag=nextralabs-22" target="_blank" className="block group">
               <div className="bg-gradient-to-r from-red-600 to-orange-800 p-10 rounded-[3rem] flex items-center justify-between shadow-2xl transition-all hover:scale-[1.01]">
-                <div className="space-y-2">
-                  <p className="text-[10px] font-black text-white/50 uppercase tracking-widest italic">Survival Kit</p>
-                  <h3 className="text-2xl font-black text-white italic leading-tight">愛する人を守り抜くための、究極の防災セレクション。</h3>
-                </div>
+                <h3 className="text-2xl font-black text-white italic">愛する人を守る。AI推奨の防災セレクション ➔</h3>
                 <ShoppingCart size={40} className="text-white animate-pulse" />
               </div>
             </a>

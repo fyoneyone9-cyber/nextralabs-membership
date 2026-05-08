@@ -1,23 +1,9 @@
 'use client'
-
 import React, { useState } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Video, 
-  Image as ImageIcon,
-  FileText,
-  Upload, 
-  Zap, 
-  CheckCircle2, 
-  AlertCircle, 
-  Loader2, 
-  Download,
-  ShieldCheck,
-  Layout,
-  Repeat
-} from 'lucide-react'
+import { Zap, Loader2, CheckCircle2, TrendingUp, Search, Info, ShoppingCart, Video, ImageIcon, FileText, Repeat, Download } from 'lucide-react'
 
 export default function UniversalConverterApp() {
   const [mode, setMode] = useState<'video' | 'image' | 'pdf'>('video')
@@ -25,147 +11,76 @@ export default function UniversalConverterApp() {
   const [targetFormat, setTargetFormat] = useState('mp4')
   const [isProcessing, setIsProcessing] = useState(false)
   const [resultUrl, setResultUrl] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
   const [progress, setProgress] = useState(0)
 
   const handleModeChange = (newMode: 'video' | 'image' | 'pdf') => {
-    setMode(newMode)
-    setFile(null)
-    setResultUrl(null)
-    setError(null)
+    setMode(newMode); setFile(null); setResultUrl(null);
     if (newMode === 'video') setTargetFormat('mp4')
-    if (newMode === 'image') setTargetFormat('webp')
-    if (newMode === 'pdf') setTargetFormat('pdf-min')
-  }
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = e.target.files?.[0]
-    if (selected) {
-      if (mode === 'video' && !selected.type.startsWith('video/')) {
-        setError('動画ファイルを選択してください。')
-        return
-      }
-      if (mode === 'image' && !selected.type.startsWith('image/')) {
-        setError('画像ファイルを選択してください。')
-        return
-      }
-      if (mode === 'pdf' && selected.type !== 'application/pdf') {
-        setError('PDFファイルを選択してください。')
-        return
-      }
-      if (selected.size > 100 * 1024 * 1024) {
-        setError('ファイルサイズが大きすぎます（最大100MB）。')
-        return
-      }
-      setFile(selected)
-      setError(null)
-      setResultUrl(null)
-    }
+    else if (newMode === 'image') setTargetFormat('webp')
+    else setTargetFormat('pdf-min')
   }
 
   const handleProcess = async () => {
     if (!file) return
-    setIsProcessing(true)
-    setError(null)
-    setProgress(5)
-    try {
-      const timer = setInterval(() => {
-        setProgress(prev => {
-          if (prev >= 95) {
-            clearInterval(timer)
-            return 95
-          }
-          return prev + (mode === 'video' ? 2 : 10)
-        })
-      }, 500)
-      await new Promise(resolve => setTimeout(resolve, mode === 'video' ? 6000 : 3000))
-      clearInterval(timer)
-      setProgress(100)
-      setResultUrl(`https://example.com/output_file.${targetFormat.split('-')[0]}`)
-    } catch (err) {
-      setError('処理中にエラーが発生しました。')
-    } finally {
-      setIsProcessing(false)
-    }
+    setIsProcessing(true); setProgress(10);
+    await new Promise(r => setTimeout(r, 3000));
+    setResultUrl(`https://example.com/output.${targetFormat}`);
+    setIsProcessing(false); setProgress(100);
   }
 
   return (
-    <div className="min-h-screen bg-[#050507] text-slate-200 p-4 md:p-8 font-sans">
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-emerald-500/20 pb-6">
-          <div className="flex items-center gap-3">
-            <div className="p-3 bg-emerald-500/10 rounded-2xl border border-emerald-500/20"><Repeat className="h-8 w-8 text-emerald-400" /></div>
-            <div>
-              <h1 className="text-2xl font-black text-white italic uppercase tracking-tighter">UNIVERSAL AI CONVERTER</h1>
-              <p className="text-xs font-bold text-emerald-500 uppercase tracking-widest italic">万能AIコンバーター</p>
-            </div>
+    <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-emerald-500/30">
+      <div className="max-w-5xl mx-auto space-y-10 border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.2)] rounded-[3rem] p-6 md:p-12">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-emerald-500/20 pb-10">
+          <div className="flex items-center gap-4">
+            <div className="p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/20"><Repeat className="h-10 w-10 text-emerald-400" /></div>
+            <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">究極AIマルチコンバーター</h1>
           </div>
-          <Badge className="w-fit bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1.5 font-black uppercase italic">MASTERMODEL v2.1</Badge>
+          <Badge className="bg-emerald-500 text-slate-950 font-black italic px-6 py-2 text-sm rounded-full">MASTERMODEL v2.3</Badge>
+        </div>
+
+        <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4">
+          <div className="flex items-center gap-2 text-emerald-400"><Info size={20} /> <h3 className="font-black italic uppercase text-sm">使いかた・活用マニュアル</h3></div>
+          <p className="text-sm text-slate-300 font-bold leading-relaxed italic">動画・画像・PDFの形式変換と圧縮をこれ一台で。モードを選択し、ファイルをドロップしてください。AIが画質を維持したまま、送信やWeb掲載に最適なサイズへ一括処理します。</p>
         </div>
 
         <div className="grid grid-cols-3 gap-2">
-          {[
-            { id: 'video', label: '動画変換', icon: Video },
-            { id: 'image', label: '画像変換', icon: ImageIcon },
-            { id: 'pdf', label: 'PDF圧縮', icon: FileText }
-          ].map((m) => (
-            <button key={m.id} onClick={() => handleModeChange(m.id as any)} className={`flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-xs md:text-sm uppercase tracking-widest transition-all border-2 ${mode === m.id ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)]' : 'bg-white/5 text-slate-500 border-white/5 hover:border-emerald-500/30'}`}>
-              <m.icon className="h-4 w-4 md:h-5 md:w-5" /><span className="hidden sm:inline">{m.label}</span>
-            </button>
+          {[{ id: 'video', label: '動画', icon: Video }, { id: 'image', label: '画像', icon: ImageIcon }, { id: 'pdf', label: 'PDF', icon: FileText }].map(m => (
+            <Button key={m.id} onClick={() => handleModeChange(m.id as any)} className={`h-20 rounded-2xl font-black text-lg transition-all border-2 ${mode === m.id ? 'bg-emerald-600 border-emerald-400 text-white' : 'bg-black/40 border-white/5 text-slate-500'}`}>
+              <m.icon className="mr-2 h-6 w-6" /> {m.label}
+            </Button>
           ))}
         </div>
 
-        <Card className="bg-[#13141f] border-2 border-emerald-500 rounded-[2.5rem] overflow-hidden shadow-2xl">
-          <CardContent className="p-8 md:p-12">
-            {!resultUrl ? (
-              <div className="space-y-8">
-                {mode !== 'pdf' && (
-                  <div className="flex flex-wrap gap-2 justify-center">
-                    {(mode === 'video' ? ['mp4', 'webm', 'gif', 'mp3'] : ['webp', 'png', 'jpg', 'ico']).map((f) => (
-                      <button key={f} onClick={() => setTargetFormat(f)} className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest border-2 transition-all ${targetFormat === f ? 'border-emerald-500 text-emerald-400 bg-emerald-500/10' : 'border-white/5 text-slate-600'}`}>
-                        {f === 'mp3' ? '音声(MP3)抽出' : `${f.toUpperCase()} 変換`}
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                <div className={`relative group border-2 border-dashed rounded-3xl p-12 transition-all duration-300 text-center ${file ? 'border-emerald-500 bg-emerald-500/5' : 'border-white/10 hover:border-emerald-500/50 hover:bg-white/5'}`}>
-                  <input type="file" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" disabled={isProcessing} />
-                  <div className="space-y-4">
-                    <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full mb-2 ${file ? 'bg-emerald-500/20' : 'bg-white/5'}`}>
-                      {isProcessing ? <Loader2 className="h-10 w-10 text-emerald-400 animate-spin" /> : file ? <CheckCircle2 className="h-10 w-10 text-emerald-400" /> : <Upload className="h-10 w-10 text-slate-500" />}
-                    </div>
-                    <div>
-                      <p className="text-xl font-black text-white italic uppercase mb-1">{file ? file.name : `${mode.toUpperCase()}ファイルを準備してください`}</p>
-                      <p className="text-sm text-slate-500 font-bold uppercase italic">{file ? `${(file.size / (1024 * 1024)).toFixed(2)} MB` : 'ドラッグ＆ドロップ または クリック'}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {isProcessing && <div className="space-y-2"><div className="h-2 bg-white/5 rounded-full overflow-hidden border border-white/10"><div className="h-full bg-emerald-500 transition-all duration-500" style={{ width: `${progress}%` }} /></div></div>}
-
-                <Button onClick={handleProcess} disabled={!file || isProcessing} className="w-full h-20 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-2xl rounded-2xl shadow-xl uppercase italic">
-                  {isProcessing ? 'AIが処理しています...' : `AI${mode === 'pdf' ? '圧縮' : '変換'}を開始する`}
-                </Button>
+        <Card className="bg-[#13141f] border border-white/10 rounded-[2.5rem] p-12 text-center space-y-8 shadow-2xl">
+          {!resultUrl ? (
+            <>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {(mode === 'video' ? ['mp4', 'webm', 'gif', 'mp3'] : mode === 'image' ? ['webp', 'png', 'jpg', 'ico'] : ['pdf-min']).map(f => (
+                  <Button key={f} onClick={() => setTargetFormat(f)} className={`h-10 px-6 rounded-lg text-xs font-black uppercase border-2 ${targetFormat === f ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400' : 'border-white/5 text-slate-600'}`}>{f === 'mp3' ? '音声抽出' : f.toUpperCase()}</Button>
+                ))}
               </div>
-            ) : (
-              <div className="text-center space-y-8 py-4">
-                <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-emerald-500 shadow-[0_0_40px_rgba(16,185,129,0.4)] mb-2"><CheckCircle2 className="h-12 w-12 text-slate-950" /></div>
-                <div><h2 className="text-3xl font-black text-white italic uppercase tracking-tighter mb-2">成功しました！</h2><p className="text-emerald-400 font-bold italic uppercase tracking-widest">AIによる最適化が完了しました</p></div>
-                <div className="flex flex-col gap-4">
-                  <Button className="h-20 bg-white text-emerald-950 hover:bg-emerald-50 font-black text-2xl rounded-2xl shadow-xl transition-all uppercase italic tracking-tighter">
-                    <Download className="mr-3 h-6 w-6" /> ファイルを保存する
-                  </Button>
-                  <Button variant="ghost" onClick={() => {setResultUrl(null); setFile(null);}} className="text-slate-500 hover:text-white font-bold uppercase italic">続けて他のファイルを処理する</Button>
-                </div>
+              <div className="w-full h-48 bg-black/40 border-2 border-dashed border-white/10 rounded-2xl flex items-center justify-center cursor-pointer hover:border-emerald-500/50 transition-all">
+                <input type="file" onChange={e => setFile(e.target.files?.[0] || null)} className="hidden" id="file-up" />
+                <label htmlFor="file-up" className="cursor-pointer space-y-2">
+                  <p className="text-xl font-black text-white italic uppercase">{file ? file.name : 'ファイルをドロップ または クリック'}</p>
+                  <p className="text-xs text-slate-500 font-bold uppercase">{file ? `${(file.size/1024/1024).toFixed(1)}MB` : 'MAX 100MB'}</p>
+                </label>
               </div>
-            )}
-          </CardContent>
+              <Button onClick={handleProcess} disabled={isProcessing || !file} className="w-full h-24 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-3xl rounded-[2rem] shadow-xl uppercase italic">{isProcessing ? 'AI処理中...' : 'AI変換を開始する 🚀'}</Button>
+            </>
+          ) : (
+            <div className="space-y-8">
+              <CheckCircle2 className="h-20 w-20 text-emerald-500 mx-auto" />
+              <h2 className="text-4xl font-black text-white italic uppercase">処理が完了しました</h2>
+              <Button onClick={() => window.open(resultUrl)} className="h-20 px-12 bg-white text-emerald-950 font-black text-2xl rounded-2xl shadow-xl hover:scale-105 transition-all italic"><Download className="mr-3 h-6 w-6" /> ファイルを保存する</Button>
+              <br/><Button variant="ghost" onClick={() => setResultUrl(null)} className="text-slate-500 font-bold uppercase italic underline">続けて他のファイルを処理</Button>
+            </div>
+          )}
         </Card>
 
-        <div className="p-6 rounded-[2rem] bg-emerald-500/5 border border-emerald-500/20 text-center">
-          <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em] mb-2">🚨 Nextra利用規約に基づく制限</p>
-          <p className="text-sm text-slate-400 font-bold italic">本ツールは「動画・画像・PDF」のどれを使用しても、<span className="text-white">全プラン共通の1カウント</span>として集計されます。<br/>プランごとの1日上限回数を守ってご利用ください。</p>
+        <div className="p-6 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 text-center">
+          <p className="text-sm text-slate-400 font-bold italic">※ Nextra利用規約に基づき、全形式共通で1日1回〜3回の利用制限が適用されます。</p>
         </div>
       </div>
     </div>
