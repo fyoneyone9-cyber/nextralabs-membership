@@ -89,30 +89,6 @@ export default function MoneyGuardApp() {
   return (
     <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-emerald-500/30 text-left relative overflow-x-hidden">
       
-      {/* SYSTEM SENTINEL - PC Only */}
-      <div className="hidden md:block fixed bottom-6 left-6 z-50 group/sentinel">
-        <div className="relative flex items-center justify-center">
-          {/* Status Text (Appears from left to right) */}
-          <div className="absolute left-full ml-4 whitespace-nowrap opacity-0 group-hover/sentinel:opacity-100 transition-all duration-500 transform -translate-x-4 group-hover/sentinel:translate-x-0">
-            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em] italic bg-slate-950/80 backdrop-blur-md px-4 py-2 rounded-full border border-emerald-500/20 shadow-2xl">
-              System Sentinel Active
-            </span>
-          </div>
-
-          {/* Pulse Icon Container */}
-          <div className="w-14 h-14 bg-slate-950 border-2 border-emerald-500/30 rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.2)] group-hover/sentinel:border-emerald-400 group-hover/sentinel:shadow-[0_0_40px_rgba(16,185,129,0.4)] transition-all duration-500 cursor-help overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-t from-emerald-500/10 to-transparent opacity-50"></div>
-            <BarChart2 className="h-6 w-6 text-emerald-400 group-hover/sentinel:scale-110 transition-transform duration-500" />
-            
-            {/* Radar Scan Effect */}
-            <div className="absolute inset-0 bg-emerald-500/5 -translate-y-full animate-[scan_3s_linear_infinite]"></div>
-          </div>
-
-          {/* Exterior Pulse Ring */}
-          <div className="absolute -inset-2 border border-emerald-500/10 rounded-[1.2rem] animate-pulse"></div>
-        </div>
-      </div>
-
       <div className="max-w-4xl mx-auto space-y-10 border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.2)] rounded-[3rem] p-6 md:p-12">
         
         {/* Header */}

@@ -13,12 +13,6 @@ export default function HomePage() {
 
   return (
     <div className="animate-in fade-in duration-700 bg-[#050507] text-slate-200 min-h-screen flex flex-col">
-      <div className="fixed bottom-6 right-6 z-50">
-        <Link href="/products">
-          <Button size="lg" className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-full h-14 w-14 animate-bounce p-0"><Grid className="h-6 w-6" /></Button>
-        </Link>
-      </div>
-
       <section className="relative overflow-hidden pt-16 pb-12 md:pt-32 md:pb-24 bg-slate-950 text-center">
         <div className="container mx-auto px-6 relative">
           <Badge variant="outline" className="px-3 py-0.5 text-[10px] font-black text-emerald-500 border-emerald-500/20 uppercase mb-6">Nextra Labs AIプラットフォーム</Badge>

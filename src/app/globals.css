@@ -54,3 +54,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Vercel Toolbar などの余計なオーバーレイを強制非表示 */
+#vercel-live-feedback,
+.__vercel_toolbar,
+.vercel-toolbar-root,
+[data-vercel-toolbar] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

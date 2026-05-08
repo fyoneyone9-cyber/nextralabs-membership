@@ -16,8 +16,8 @@ export function ApiMonitorOverlay() {
   ])
 
   return (
-    <div className="fixed bottom-6 left-6 z-[9999] pointer-events-none hidden md:block">
-      <Card className="bg-black/60 backdrop-blur-xl border-2 border-emerald-500/30 rounded-2xl w-64 shadow-[0_0_30px_rgba(16,185,129,0.2)] overflow-hidden animate-in slide-in-from-left duration-700">
+    <div className="fixed bottom-24 left-4 z-[9999] pointer-events-auto">
+      <Card className="bg-black/80 backdrop-blur-xl border-2 border-emerald-500/30 rounded-2xl w-48 md:w-64 shadow-[0_0_30px_rgba(16,185,129,0.2)] overflow-hidden animate-in slide-in-from-left duration-700">
         <div className="bg-emerald-500/10 px-4 py-2 border-b border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Activity size={12} className="text-emerald-400 animate-pulse" />

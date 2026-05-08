@@ -5,6 +5,8 @@ import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { Providers } from '@/components/providers'
 import { DebugPanel } from '@/components/tools/DebugPanel'
+import { HeaderWrapper, FooterWrapper } from '@/components/layout-wrappers'
+import { ApiMonitorOverlay } from '@/components/tools/ApiMonitorOverlay'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -38,9 +40,6 @@ export const metadata: Metadata = {
   },
 }
 
-import { HeaderWrapper, FooterWrapper } from '@/components/layout-wrappers'
-import { ApiMonitorOverlay } from '@/components/tools/ApiMonitorOverlay'
-
 export default function RootLayout({
   children,
 }: {
@@ -54,13 +53,12 @@ export default function RootLayout({
             <HeaderWrapper />
             <div className="flex-1">{children}</div>
             <FooterWrapper />
-            {/* ぴょんぴょんはねるデバッグツールを非表示 */}
-            {/* <ApiMonitorOverlay /> */}
-            {/* <DebugPanel data={{}} /> */}
+            {/* API監視ツールを確実に表示 */}
+            <ApiMonitorOverlay />
+            <DebugPanel data={{}} />
           </div>
         </Providers>
       </body>
     </html>
   )
 }
-
