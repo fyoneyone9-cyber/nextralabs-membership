@@ -39,6 +39,7 @@ export const metadata: Metadata = {
 }
 
 import { HeaderWrapper, FooterWrapper } from '@/components/layout-wrappers'
+import { ApiMonitorOverlay } from '@/components/tools/ApiMonitorOverlay'
 
 export default function RootLayout({
   children,
@@ -53,6 +54,7 @@ export default function RootLayout({
             <HeaderWrapper />
             <div className="flex-1">{children}</div>
             <FooterWrapper />
+            <ApiMonitorOverlay />
             <DebugPanel data={{}} />
           </div>
         </Providers>
