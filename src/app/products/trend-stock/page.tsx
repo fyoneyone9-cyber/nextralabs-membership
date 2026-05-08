@@ -166,7 +166,12 @@ export default function TrendStockPage() {
             <Card key={index} className="overflow-hidden hover:shadow-md transition-shadow">
               <div className="flex flex-col sm:flex-row p-4 gap-4 items-center">
                 <div className="relative">
-                  <img src={item.imageUrl} alt={item.name} className="w-24 h-24 object-cover rounded border" />
+                  <img 
+                    src={item.imageUrl} 
+                    alt={item.name} 
+                    className="w-24 h-24 object-cover rounded border bg-white"
+                    referrerPolicy="no-referrer"
+                  />
                   <Badge className="absolute -top-2 -left-2 bg-slate-800 text-white w-6 h-6 flex items-center justify-center p-0 rounded-full text-xs">
                     {index + 1}
                   </Badge>
