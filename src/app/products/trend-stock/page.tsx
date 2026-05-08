@@ -5,7 +5,6 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, Sparkles, ShoppingCart, Share2, AlertCircle } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
 
 export default function TrendStockPage() {
   const [loading, setLoading] = useState(true);
@@ -22,13 +21,13 @@ export default function TrendStockPage() {
 
   const fetchUserProfile = async () => {
     try {
-      const res = await fetch('/api/user/profile'); // プロフィール取得API（想定）
+      const res = await fetch('/api/user/profile');
       const json = await res.json();
       if (json.rakuten_affiliate_id) {
         setUserAffiliateId(json.rakuten_affiliate_id);
       }
     } catch (e) {
-      console.log('Profile fetch failed, using defaults');
+      console.log('Profile fetch failed');
     }
   };
 
@@ -40,7 +39,7 @@ export default function TrendStockPage() {
         body: JSON.stringify({ rakuten_affiliate_id: userAffiliateId }),
       });
       setShowSettings(false);
-      fetchTrendData(); // データを更新
+      fetchTrendData();
     } catch (e) {
       alert('保存に失敗しました');
     } finally {
@@ -97,14 +96,12 @@ export default function TrendStockPage() {
         )}
       </header>
 
-      {/* Quick Settings Section */}
       {showSettings && (
         <Card className="border-dashed border-2 border-blue-400 bg-blue-50/30">
           <CardContent className="pt-6 space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-bold flex items-center gap-2">
                 楽天アフィリエイトID
-                <span className="text-[10px] font-normal text-muted-foreground">（12345678.abc...形式）</span>
               </label>
               <input 
                 type="text" 
@@ -116,7 +113,7 @@ export default function TrendStockPage() {
             </div>
             <div className="flex justify-end gap-2">
               <Button variant="ghost" size="sm" onClick={() => setShowSettings(false)}>キャンセル</Button>
-              <Button size="sm" onClick={saveSettings} disabled={saving} className="bg-blue-600 text-white hover:bg-blue-700">
+              <Button size="sm" onClick={saveSettings} disabled={saving}>
                 {saving ? '保存中...' : '設定を保存して適用'}
               </Button>
             </div>
@@ -124,7 +121,6 @@ export default function TrendStockPage() {
         </Card>
       )}
 
-      {/* AI Insight Section */}
       <Card className="border-2 border-emerald-500 bg-emerald-50/30">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-emerald-700">
@@ -134,10 +130,10 @@ export default function TrendStockPage() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-3/4" />
-              <Skeleton className="h-4 w-1/2" />
+            <div className="space-y-2 animate-pulse">
+              <div className="h-4 bg-emerald-200 rounded w-full"></div>
+              <div className="h-4 bg-emerald-200 rounded w-3/4"></div>
+              <div className="h-4 bg-emerald-200 rounded w-1/2"></div>
             </div>
           ) : (
             <div className="prose prose-emerald max-w-none">
@@ -149,7 +145,6 @@ export default function TrendStockPage() {
         </CardContent>
       </Card>
 
-      {/* Trend Items Grid */}
       <div className="grid gap-4">
         <h2 className="text-xl font-bold flex items-center gap-2 pt-4">
           <ShoppingCart className="w-5 h-5 text-slate-600" />
@@ -158,11 +153,11 @@ export default function TrendStockPage() {
         
         {loading ? (
           [1, 2, 3].map((i) => (
-            <Card key={i} className="flex gap-4 p-4 items-center">
-              <Skeleton className="w-24 h-24 rounded" />
+            <Card key={i} className="flex gap-4 p-4 items-center animate-pulse">
+              <div className="w-24 h-24 bg-slate-200 rounded"></div>
               <div className="flex-1 space-y-2">
-                <Skeleton className="h-4 w-1/2" />
-                <Skeleton className="h-4 w-full" />
+                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
+                <div className="h-4 bg-slate-200 rounded w-full"></div>
               </div>
             </Card>
           ))
@@ -171,11 +166,7 @@ export default function TrendStockPage() {
             <Card key={index} className="overflow-hidden hover:shadow-md transition-shadow">
               <div className="flex flex-col sm:flex-row p-4 gap-4 items-center">
                 <div className="relative">
-                  <img 
-                    src={item.imageUrl} 
-                    alt={item.name} 
-                    className="w-24 h-24 object-cover rounded border"
-                  />
+                  <img src={item.imageUrl} alt={item.name} className="w-24 h-24 object-cover rounded border" />
                   <Badge className="absolute -top-2 -left-2 bg-slate-800 text-white w-6 h-6 flex items-center justify-center p-0 rounded-full text-xs">
                     {index + 1}
                   </Badge>
@@ -191,21 +182,12 @@ export default function TrendStockPage() {
                       楽天
                     </a>
                   </Button>
-                  <Button variant="emerald" className="flex-1 sm:flex-none gap-1 bg-emerald-600 hover:bg-emerald-700 text-white">
-                    <Share2 className="w-4 h-4" />
-                    SNS紹介文
-                  </Button>
                 </div>
               </div>
             </Card>
           ))
         )}
       </div>
-
-      <footer className="text-center py-8 text-xs text-muted-foreground">
-        <p>※アフィリエイトIDの設定はアカウント設定から行えます。</p>
-        <p>© 2026 NextraLabs Trend Stock</p>
-      </footer>
     </div>
   );
 }

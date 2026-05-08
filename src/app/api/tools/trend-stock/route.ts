@@ -1,17 +1,27 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// 運営（米山様）のデフォルトID
-const DEFAULT_RAKUTEN_ID = '3e86f8a8.55831969.3e86f8a9.423985ee'; // 仮。環境変数推奨
-const RAKUTEN_APP_ID = '1014902194600644342'; // 仮。環境変数推奨
+const DEFAULT_RAKUTEN_ID = '3e86f8a8.55831969.3e86f8a9.423985ee';
+const RAKUTEN_APP_ID = '1014902194600644342';
 
 export async function GET(request: Request) {
-  const supabase = createRouteHandlerClient({ cookies });
+  const cookieStore = cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
+
   const { data: { session } } = await supabase.auth.getSession();
 
-  // 1. ユーザー設定の取得
   let affiliateId = DEFAULT_RAKUTEN_ID;
   if (session) {
     const { data: profile } = await supabase
@@ -26,7 +36,6 @@ export async function GET(request: Request) {
   }
 
   try {
-    // 2. 楽天リアルタイムランキングの取得
     const rakutenRes = await fetch(
       `https://app.rakuten.co.jp/services/api/IchibaItem/Ranking/20170628?applicationId=${RAKUTEN_APP_ID}&affiliateId=${affiliateId}&period=realtime`
     );
@@ -36,7 +45,6 @@ export async function GET(request: Request) {
       throw new Error('Failed to fetch Rakuten data');
     }
 
-    // 上位5件を抽出してAI解析
     const topItems = rakutenData.Items.slice(0, 5).map((item: any) => ({
       name: item.Item.itemName,
       catchcopy: item.Item.catchcopy,
@@ -44,7 +52,6 @@ export async function GET(request: Request) {
       imageUrl: item.Item.mediumImageUrls[0]?.imageUrl,
     }));
 
-    // 3. Geminiによるトレンド分析
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
