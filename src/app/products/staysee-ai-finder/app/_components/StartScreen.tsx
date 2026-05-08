@@ -53,8 +53,17 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
     // 2. ブラウザを閉じたりURLを変えようとした時の最終防衛
     const preventDeparture = (e: BeforeUnloadEvent) => {
       if (isLocked) {
+        // 標準の警告ダイアログを表示
         e.preventDefault();
-        e.returnValue = 'ロックを解除（15秒長押し）しない限り、外部へは移動できません。';
+        e.returnValue = ''; // 最近のブラウザではカスタム文言は無視され、標準警告が出る
+        
+        // 【物理的ブロックハック】
+        // ユーザーが「離れる」を選ぼうとする隙を与えず、履歴を書き換え続けてページを保持
+        setTimeout(() => {
+          if (isLocked) {
+            window.history.pushState(null, '', window.location.href);
+          }
+        }, 100);
       }
     };
 
