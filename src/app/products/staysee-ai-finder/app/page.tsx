@@ -47,12 +47,20 @@ const StayseeAppPage = () => {
         <div className="absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] bg-blue-600/10 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
       </div>
 
-      {/* ロードマップ (ステップインジケーター) */}
+      {/* ロードマップ (ステップインジケーター) - 視認性大幅強化版 */}
       {step !== 'start' && step !== 'lang' && (
-        <div className="w-full max-w-4xl mx-auto pt-10 px-6 relative z-30">
+        <div className="w-full max-w-5xl mx-auto pt-16 px-10 relative z-30">
           <div className="flex justify-between items-center relative">
-            {/* 進捗ライン */}
-            <div className="absolute top-1/2 left-0 w-full h-0.5 bg-white/5 -translate-y-1/2" />
+            {/* 背景の太いライン */}
+            <div className="absolute top-7 left-0 w-full h-1.5 bg-white/5 rounded-full" />
+            
+            {/* 進捗に合わせて伸びるエメラルドライン */}
+            <div 
+              className="absolute top-7 left-0 h-1.5 bg-emerald-500 rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(16,185,129,0.5)]" 
+              style={{ 
+                width: `${(['search', 'identity', 'form', 'confirm', 'payment'].indexOf(step) / 4) * 100}%` 
+              }}
+            />
             
             {[
               { id: 'search', label: '予約検索' },
@@ -62,22 +70,31 @@ const StayseeAppPage = () => {
               { id: 'payment', label: '完了' }
             ].map((s, idx) => {
               const steps_list = ['search', 'identity', 'form', 'confirm', 'payment', 'complete'];
-              const current_idx = steps_list.indexOf(step);
               const isActive = step === s.id;
               const isPast = steps_list.indexOf(step) > steps_list.indexOf(s.id);
 
               return (
-                <div key={s.id} className="relative flex flex-col items-center gap-3">
+                <div key={s.id} className="relative flex flex-col items-center gap-4 group">
                   <div className={`
-                    w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500 z-10
-                    ${isActive ? 'bg-emerald-500 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.5)]' : 
-                      isPast ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-500' : 'bg-[#0a0b10] border-white/10 text-gray-700'}
+                    w-14 h-14 rounded-2xl flex items-center justify-center border-4 transition-all duration-700 z-10
+                    ${isActive ? 'bg-emerald-500 border-emerald-400 text-white scale-110 shadow-[0_0_30px_rgba(16,185,129,0.6)]' : 
+                      isPast ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-500' : 'bg-[#050508] border-white/10 text-gray-800'}
                   `}>
-                    {isPast ? <CheckCircle2 size={20} /> : <span className="text-xs font-black">{idx + 1}</span>}
+                    {isPast ? <CheckCircle2 size={28} strokeWidth={3} /> : <span className="text-xl font-black">{idx + 1}</span>}
                   </div>
-                  <span className={`text-[10px] font-black uppercase tracking-widest ${isActive ? 'text-emerald-500' : 'text-gray-700'}`}>
-                    {s.label}
-                  </span>
+                  <div className="flex flex-col items-center">
+                    <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-colors duration-500 ${isActive ? 'text-emerald-400' : isPast ? 'text-emerald-500/60' : 'text-gray-800'}`}>
+                      STEP {idx + 1}
+                    </span>
+                    <span className={`text-sm font-black mt-1 transition-all duration-500 ${isActive ? 'text-white text-base' : 'text-gray-700'}`}>
+                      {s.label}
+                    </span>
+                  </div>
+                  
+                  {/* 現在地を示すポインター */}
+                  {isActive && (
+                    <div className="absolute -top-3 w-2 h-2 bg-emerald-400 rounded-full animate-ping" />
+                  )}
                 </div>
               );
             })}
