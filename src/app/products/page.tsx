@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 
 const TOOLS = [
-  { id: 'universal-converter', cat: 'biz', title: '究極AIマルチコンバーター', sub: '動画・画像・PDF × 万能変換圧縮', icon: Repeat, plan: 'ライト' },
+  { id: 'universal-converter', cat: 'compress', title: '究極AIマルチコンバーター', sub: '動画・画像・PDF × 万能変換圧縮', icon: Repeat, plan: 'ライト' },
   { id: 'staysee-ai-finder', cat: 'hotel', title: 'Staysee AI Finder', sub: '宿泊予約・鍵発行を完全同期', icon: Building2, plan: 'プレミアム' },
   { id: 'comp-price-monitor', cat: 'hotel', title: '競合AI価格監視', sub: '楽天API連携 × 価格最適化OS', icon: LineChart, plan: 'プレミアム' },
   { id: 'hotel-affiliate', cat: 'hotel', title: 'アフィリエイトAI連携', sub: '宿紹介 × 楽天収益化OS', icon: Network, plan: 'スタンダード' },
@@ -56,6 +56,7 @@ const TOOLS = [
 ]
 
 const CATEGORIES = [
+  { id: 'compress', title: 'AI圧縮・変換ツール', icon: Zap, color: 'border-emerald-500' },
   { id: 'hotel', title: '宿泊・不動産DX', icon: Hotel, color: 'border-emerald-500' },
   { id: 'sns', title: 'SNS・コンテンツ戦略', icon: Share2, color: 'border-orange-500' },
   { id: 'life', title: '防犯・資産・ライフ', icon: ShieldCheck, color: 'border-red-500' },
@@ -135,7 +136,7 @@ function ProductsList() {
   useEffect(() => {
     setMounted(true)
     setRandomFree(TOOLS.filter(t => t.plan === '無料').sort(() => 0.5 - Math.random()).slice(0, 3))
-    setPickupTools([...filteredTools].sort(() => 0.5 - Math.random()).slice(0, 3))
+    setPickupTools([...TOOLS].sort(() => 0.5 - Math.random()).slice(0, 3))
 
     const loadFavs = async () => {
       const { data: { user } } = await supabase.auth.getUser()
