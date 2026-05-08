@@ -57,12 +57,12 @@ export default async function AdminPage() {
   const localAISavingsPerCall = 5.0 
   const totalSavings = Math.floor(totalCalls * localAISavingsPerCall)
 
-  // アクセス解析（シミュレーション・実際にはページ別ログテーブルが必要）
+  // ⚡ アクセス解析（PVシミュレーション：実際にはログテーブルから取得）
   const pvStats = [
-    { path: '/products', name: 'ストア', count: 1240 },
+    { path: '/products', name: 'ツールストア', count: 1420 },
+    { path: '/products/staysee-ai-finder', name: 'Staysee AI Finder', count: 980 },
     { path: '/products/universal-converter', name: 'マルチコンバーター', count: 850 },
-    { path: '/', name: 'トップ', count: 2100 },
-    { path: '/pricing', name: 'プラン', count: 420 }
+    { path: '/', name: 'トップページ', count: 2100 }
   ]
 
   const usageStats = (usageData || []).reduce((acc: any, curr: any) => {
@@ -106,8 +106,9 @@ export default async function AdminPage() {
           </Card>
 
           <Card className="bg-emerald-500/10 border-2 border-emerald-500 rounded-3xl shadow-[0_0_30px_rgba(16,185,129,0.2)]">
-            <CardContent className="p-8 text-center">
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-500 mb-1 italic">ローカルAI節約総額</p>
+            <CardContent className="p-8 text-center relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-2 opacity-20"><Cpu className="h-20 w-20 text-emerald-500" /></div>
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-500 mb-1 italic">ローカルAI省エネ節約総額</p>
               <div className="text-4xl font-black italic text-white tracking-tighter">¥{totalSavings.toLocaleString()}</div>
             </CardContent>
           </Card>
