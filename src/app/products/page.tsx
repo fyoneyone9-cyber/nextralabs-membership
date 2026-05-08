@@ -45,6 +45,7 @@ const TOOLS = [
   { id: 'interior-coordinator', cat: 'mind', title: 'Interior AI Sync', sub: '空間分析 × 楽天一括購入OS', icon: Sofa, plan: 'プレミアム' },
   { id: 'ai-recipe', cat: 'life', title: 'AIレシピ献立コーチ', sub: '冷蔵庫の残り物 × 栄養最適化', icon: Utensils, plan: 'スタンダード' },
   { id: 'exam-scheduler', cat: 'edu', title: '資格試験 AIスケジューラー', sub: '試験日から逆算して学習計画を自動生成', icon: ClipboardCheck, plan: 'スタンダード' },
+  { id: 'ai-exam-generator', cat: 'edu', title: 'AI問題生成 & 苦手分析', sub: '予想問題を無限生成 × 弱点ポイント可視化', icon: Brain, plan: 'プレミアム' },
   { id: 'location-finder', cat: 'hotel', title: 'AIロケーションファインダー', sub: '出店・移住の最適地をデータ分析', icon: MapPin, plan: 'スタンダード' },
   { id: 'smart-gardening', cat: 'life', title: 'AIスマートガーデニング', sub: '植物の声を聴く育成アドバイザー', icon: Sprout, plan: 'スタンダード' },
   { id: 'ticket-scout', cat: 'life', title: 'AIチケットスカウト', sub: '争奪戦に勝つための先行情報収集', icon: Ticket, plan: 'スタンダード' }

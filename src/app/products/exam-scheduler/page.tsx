@@ -4,13 +4,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
-
-export const metadata: Metadata = {
-  title: '資格試験 AIスケジューラー',
-  description: '試験日を入力するだけ。AIが学習計画を自動生成してGoogleカレンダーに一括登録。ITパスポート・基本情報・CompTIA・AWS対応。月額¥980〜。',
-  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/exam-scheduler' },
-  openGraph: { title: '資格試験 AIスケジューラー | NextraLabs', description: '試験日を入力するだけ。AIが学習計画を自動生成してGoogleカレンダーに一括登録。', url: 'https://membership-site-nextralabos.vercel.app/products/exam-scheduler', type: 'website' },
-}
 import {
   BookOpen,
   Calendar,
@@ -24,328 +17,184 @@ import {
   Clock,
   Target,
   TrendingUp,
+  Zap,
+  Sparkles,
 } from 'lucide-react'
+
+export const metadata: Metadata = {
+  title: '資格試験 AIスケジューラー',
+  description: 'ITパスポート・基本情報・CompTIA対応。試験日から学習計画を自動生成しGoogleカレンダーに一括登録。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/exam-scheduler' },
+}
 
 const features = [
   {
     icon: Rss,
-    title: 'RSSから試験日を自動取得',
-    description:
-      'IPA・CompTIAなど試験実施団体のRSSフィードから試験日程を自動取得。手動で調べる手間ゼロ。試験日が決まった瞬間から逆算スケジュールが組めます。',
-    color: 'text-orange-500',
-    bg: 'bg-orange-500/10',
+    title: 'RSS試験日自動取得',
+    description: 'IPAやCompTIAの最新試験日程を自動取得。手動で調べる手間をゼロに。',
+    color: 'text-orange-400',
+    bg: 'bg-orange-400/10',
   },
   {
     icon: BrainCircuit,
-    title: 'AIが最適な学習計画を生成',
-    description:
-      'Claude AIが試験の難易度・残り日数・週の学習回数を考慮して、基礎固め→応用演習→まとめ→直前対策の4フェーズに分けた学習スケジュールを自動生成。',
-    color: 'text-purple-500',
-    bg: 'bg-purple-500/10',
+    title: 'AI学習フェーズ生成',
+    description: 'Claude AIが難易度に応じた4フェーズ（基礎・応用・まとめ・直前）の計画を立案。',
+    color: 'text-purple-400',
+    bg: 'bg-purple-400/10',
   },
   {
     icon: Calendar,
-    title: 'Googleカレンダーに一括登録',
-    description:
-      'Googleアカウントと連携するだけで、すべての学習セッションと試験本番日をカレンダーに自動登録。スマホにも即時同期されます。',
-    color: 'text-blue-500',
-    bg: 'bg-blue-500/10',
+    title: 'Googleカレンダー同期',
+    description: '生成した全セッションをワンクリックでGoogleカレンダーに一括登録。',
+    color: 'text-blue-400',
+    bg: 'bg-blue-400/10',
   },
-]
-
-const supportedExams = [
-  { name: 'ITパスポート', org: 'IPA', weeks: 6 },
-  { name: '基本情報技術者', org: 'IPA', weeks: 12 },
-  { name: '応用情報技術者', org: 'IPA', weeks: 16 },
-  { name: 'CompTIA Security+', org: 'CompTIA', weeks: 12 },
-  { name: 'AWS Solutions Architect', org: 'AWS', weeks: 10 },
-  { name: 'その他RSSあり試験', org: 'カスタム', weeks: '自由設定' },
-]
-
-const steps = [
-  {
-    step: '1',
-    title: '試験を選択',
-    desc: 'プリセットから選ぶか、RSS URLを入力。複数試験を同時に追加できます。',
-    time: '1分',
-  },
-  {
-    step: '2',
-    title: 'Googleアカウントを連携',
-    desc: 'ボタン1つでGoogleカレンダーと接続。権限はカレンダーへの書き込みのみ。',
-    time: '30秒',
-  },
-  {
-    step: '3',
-    title: 'スケジュール生成 & 登録',
-    desc: 'AIが学習計画を生成し、Googleカレンダーに自動登録。あとは通知に従うだけ。',
-    time: '1〜2分',
-  },
-]
-
-const faqs = [
-  {
-    q: 'RSSで試験日が取れない場合はどうすればいいですか？',
-    a: '手動で試験日を入力するフォームがあります。日付を入力すればそこから逆算してスケジュールを生成します。',
-  },
-  {
-    q: '複数の試験を同時にスケジューリングできますか？',
-    a: 'はい。「試験を追加」ボタンで何試験でも追加できます。それぞれ独立したスケジュールがカレンダーに登録されます。',
-  },
-  {
-    q: 'Googleカレンダーのデータはサーバーに保存されますか？',
-    a: 'いいえ。GoogleのOAuthトークンはブラウザのセッション内のみで使用し、サーバーには一切保存しません。',
-  },
-  {
-    q: '学習スケジュールを変更したい場合は？',
-    a: 'Googleカレンダー上で自由に編集できます。ツール側での変更が必要な場合は再度生成してください（既存イベントは上書きされません）。',
-  },
-  {
-    q: 'AIが生成するスケジュールはどれくらいの精度ですか？',
-    a: 'Claude（Anthropic）が試験ごとの標準的な学習ボリュームを考慮してフェーズ分けします。あくまで叩き台として使い、実際の進捗に合わせて調整してください。',
-  },
-]
-
-const costs = [
-  { item: 'RSS取得', cost: '無料', note: '外部APIなし' },
-  { item: 'AI生成（Claude）', cost: '試験1件 ¥1〜3', note: '実行時のみ発生' },
-  { item: 'Googleカレンダー', cost: '無料', note: 'Google API無料枠内' },
 ]
 
 export default function ExamSchedulerPage() {
   return (
-    <div>
-      {/* Hero */}
-      <section className="relative overflow-hidden py-16 md:py-24">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5" />
-        <div className="container mx-auto px-4 relative">
+    <div className="min-h-screen bg-[#050507] text-slate-200 font-sans pb-20">
+      {/* Hero Section */}
+      <section className="relative pt-10 md:pt-20 pb-16 overflow-hidden">
+        <div className="container mx-auto px-4 relative z-10">
           <Link
             href="/products"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-8 transition-colors"
+            className="inline-flex items-center text-xs font-bold text-slate-500 hover:text-emerald-400 mb-8 transition-colors uppercase tracking-widest"
           >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            ツール一覧に戻る
+            <ArrowLeft className="h-3 w-3 mr-2" />
+            Back to Tools
           </Link>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <Badge className="mb-4 bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20">
-                📚 AI学習サポート
-              </Badge>
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-                資格試験 AIスケジューラー
-              </h1>
-              <p className="text-xl text-muted-foreground mb-2">
-                試験日から逆算。AI が最適な学習計画を自動生成
-              </p>
-              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                試験日をRSSから自動取得し、AIが
-                <span className="text-foreground font-medium">
-                  基礎固め・応用演習・直前対策
-                </span>
-                の4フェーズに分けた学習スケジュールを生成。
-                そのままGoogleカレンダーに一括登録できます。
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <ToolLaunchButton productId="exam-scheduler" />
-                <Link href="/pricing">
-                  <Button size="lg">プランを見る →</Button>
-                </Link>
-              </div>
-            </div>
+          <div className="max-w-4xl mx-auto text-center mb-16">
+            <Badge className="mb-4 bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1 text-xs font-black uppercase tracking-tighter">
+              Education DX / Study Sync
+            </Badge>
+            <h1 className="text-4xl md:text-7xl font-black text-white mb-6 tracking-tighter italic uppercase leading-none">
+              資格試験 AI <br className="hidden md:block" />
+              <span className="text-emerald-500">スケジューラー</span>
+            </h1>
+            <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed font-medium">
+              「いつか勉強しよう」を、確実に実行する計画へ。
+              <br className="hidden md:block" />
+              試験日からの逆算計画とカレンダー同期をAIが完全自動化。
+            </p>
 
-            {/* Preview Card */}
-            <div className="relative">
-              <div className="bg-[#0a0a0f] rounded-xl p-5 shadow-2xl border border-[#2a2a3a]">
-                <div className="flex items-center gap-2 mb-4">
-                  <BookOpen className="w-5 h-5 text-blue-400" />
-                  <span className="text-white font-semibold text-sm">資格試験 AIスケジューラー</span>
-                </div>
-                <div className="space-y-2 mb-4">
-                  {[
-                    { phase: '基礎固め', period: '〜6週前', color: 'bg-blue-500' },
-                    { phase: '応用演習', period: '6週〜2週前', color: 'bg-purple-500' },
-                    { phase: 'まとめ', period: '2週〜1週前', color: 'bg-orange-500' },
-                    { phase: '直前対策', period: '1週前〜', color: 'bg-red-500' },
-                  ].map((p) => (
-                    <div key={p.phase} className="flex items-center gap-3">
-                      <div className={`w-2 h-2 rounded-full ${p.color} shrink-0`} />
-                      <div className="flex-1 bg-[#1a1a25] rounded px-3 py-1.5 border border-[#2a2a3a]">
-                        <span className="text-white text-xs font-medium">{p.phase}</span>
-                      </div>
-                      <span className="text-gray-500 text-xs">{p.period}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="bg-green-500/10 border border-green-500/30 rounded-lg px-4 py-3 text-center">
-                  <CheckCircle2 className="w-4 h-4 text-green-400 mx-auto mb-1" />
-                  <div className="text-green-400 text-xs font-bold">48件のイベントをカレンダーに登録しました</div>
-                </div>
-              </div>
-              <div className="absolute -bottom-2 -right-2 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                📅 カレンダー自動登録
-              </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <ToolLaunchButton 
+                productId="exam-scheduler" 
+                className="w-full sm:w-auto h-16 px-10 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xl rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all"
+              />
+              <Link href="/products/ai-exam-generator" className="w-full sm:w-auto">
+                <Button variant="outline" className="w-full sm:w-auto h-16 px-10 border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-400 font-bold text-lg rounded-2xl">
+                  問題生成モードを起動
+                </Button>
+              </Link>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Supported Exams */}
-      <section className="py-12 bg-muted/30">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold mb-6">対応試験（プリセット）</h2>
-          <div className="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
-            {supportedExams.map((e) => (
-              <div
-                key={e.name}
-                className="flex items-center gap-2 bg-card border rounded-xl px-4 py-3 shadow-sm"
-              >
-                <Target className="w-4 h-4 text-primary shrink-0" />
-                <div className="text-left">
-                  <div className="text-sm font-semibold">{e.name}</div>
-                  <div className="text-xs text-muted-foreground">{e.org} · {e.weeks}週間前〜</div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="text-sm text-muted-foreground mt-4">
-            🔧 RSS URLを入力すればどんな試験にも対応できます
-          </p>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-4">3つのステップが全自動</h2>
-          <p className="text-muted-foreground text-center mb-12">
-            RSS取得 → AI生成 → カレンダー登録がワンクリック
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {features.map((f) => {
-              const Icon = f.icon
-              return (
-                <Card key={f.title} className="border-0 shadow-md hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6">
-                    <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ${f.bg} mb-4`}>
-                      <Icon className={`h-6 w-6 ${f.color}`} />
+          {/* MASTERMODEL Quality (Emerald Border) */}
+          <div className="max-w-5xl mx-auto">
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-[2.5rem] blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+              <div className="relative bg-[#0a0a0f] border-2 border-emerald-500 rounded-[2rem] p-6 md:p-12 shadow-2xl">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                  <div className="space-y-8">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                      <Zap className="w-4 h-4 text-emerald-400" />
+                      <span className="text-emerald-400 text-xs font-black uppercase tracking-widest">Master System Integrated</span>
                     </div>
-                    <h3 className="font-bold text-lg mb-2">{f.title}</h3>
-                    <p className="text-sm text-muted-foreground">{f.description}</p>
-                  </CardContent>
-                </Card>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Steps */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-4">使い方</h2>
-          <p className="text-muted-foreground text-center mb-12">最短3分でカレンダーに学習計画が入ります</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            {steps.map((s) => (
-              <div key={s.step} className="text-center">
-                <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary text-2xl font-bold mb-4">
-                  {s.step}
-                </div>
-                <h3 className="font-bold mb-2">{s.title}</h3>
-                <p className="text-sm text-muted-foreground mb-2">{s.desc}</p>
-                <Badge variant="secondary">
-                  <Clock className="w-3 h-3 mr-1" />
-                  {s.time}
-                </Badge>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Cost */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-4">コスト</h2>
-          <p className="text-muted-foreground text-center mb-12">ほぼ無料で使えます</p>
-          <div className="max-w-2xl mx-auto">
-            <Card>
-              <CardContent className="p-0">
-                {costs.map((c, i) => (
-                  <div
-                    key={c.item}
-                    className={`flex items-center justify-between px-6 py-4 ${i < costs.length - 1 ? 'border-b' : ''}`}
-                  >
-                    <span className="text-sm font-medium">{c.item}</span>
-                    <div className="text-right">
-                      <span className="font-bold text-green-500">{c.cost}</span>
-                      <span className="text-xs text-muted-foreground ml-2">{c.note}</span>
+                    <h2 className="text-3xl font-black text-white tracking-tight italic uppercase">
+                      計画倒れを防ぐ <br />
+                      逆算思考の自動化
+                    </h2>
+                    <div className="space-y-6">
+                      {features.map((f, i) => (
+                        <div key={i} className="flex gap-4">
+                          <div className={`shrink-0 w-12 h-12 rounded-2xl ${f.bg} flex items-center justify-center border border-white/5`}>
+                            <f.icon className={`w-6 h-6 ${f.color}`} />
+                          </div>
+                          <div>
+                            <h3 className="text-white font-bold mb-1">{f.title}</h3>
+                            <p className="text-slate-400 text-sm leading-relaxed">{f.description}</p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ))}
-              </CardContent>
-            </Card>
+
+                  {/* Preview UI */}
+                  <div className="bg-[#13141f] rounded-3xl p-6 border border-white/5 shadow-inner">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-5 h-5 text-emerald-400" />
+                        <span className="text-white font-black text-xs uppercase tracking-widest">Calendar Preview</span>
+                      </div>
+                      <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-[10px]">Google Sync ON</Badge>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {[
+                        { date: 'MAY 12', task: '基礎：テクノロジ系用語の確認', time: '20:00 - 21:00' },
+                        { date: 'MAY 14', task: '基礎：マネジメント系演習', time: '20:00 - 21:00' },
+                        { date: 'MAY 16', task: '応用：過去問100本ノック', time: '10:00 - 12:00' },
+                      ].map((item, i) => (
+                        <div key={i} className="p-3 bg-black/40 rounded-xl border border-white/5 flex items-center justify-between">
+                          <div>
+                            <div className="text-[9px] text-emerald-500 font-black">{item.date}</div>
+                            <div className="text-xs text-slate-200 font-bold">{item.task}</div>
+                          </div>
+                          <div className="text-[10px] text-slate-500 font-mono">{item.time}</div>
+                        </div>
+                      ))}
+                      <div className="pt-4 mt-2 border-t border-white/5 flex justify-center">
+                        <div className="bg-green-500/10 border border-green-500/30 rounded-full px-4 py-1 flex items-center gap-2">
+                          <CheckCircle2 className="w-3 h-3 text-green-400" />
+                          <span className="text-[10px] text-green-400 font-black uppercase">48 events registered</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="py-16">
+      {/* Target Section */}
+      <section className="py-20 border-t border-white/5 bg-white/[0.02]">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">よくある質問</h2>
-          <div className="max-w-3xl mx-auto space-y-4">
-            {faqs.map((faq) => (
-              <Card key={faq.q}>
-                <CardContent className="p-6">
-                  <h3 className="font-bold mb-2 flex items-start gap-2">
-                    <HelpCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                    {faq.q}
-                  </h3>
-                  <p className="text-sm text-muted-foreground ml-7">{faq.a}</p>
-                </CardContent>
+          <h2 className="text-center text-sm font-black text-emerald-500 uppercase tracking-[0.4em] mb-12">Recommended For</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {[
+              { icon: TrendingUp, title: '忙しい社会人', desc: '限られた時間の中でITパスポートやCompTIAを目指す方に。' },
+              { icon: Target, title: '逆算が苦手な方', desc: '試験日から何をいつすべきか、AIが迷いのない計画を提示します。' },
+              { icon: BookOpen, title: '習慣化したい方', desc: 'カレンダーのリマインダー機能で、学習を生活の一部に変えます。' }
+            ].map((t, i) => (
+              <Card key={i} className="bg-transparent border-white/5 text-center p-6 hover:bg-white/5 transition-colors">
+                <div className="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4 border border-emerald-500/20">
+                  <t.icon className="h-6 w-6 text-emerald-500" />
+                </div>
+                <h3 className="text-white font-bold mb-2">{t.title}</h3>
+                <p className="text-slate-400 text-xs leading-relaxed">{t.description}</p>
               </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
+      {/* CTA Bottom */}
       <section className="py-20">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            「いつか勉強しよう」を
-            <br />
-            <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-              今日から始める計画に変える
-            </span>
-          </h2>
-          <p className="text-muted-foreground mb-8">
-            3分でGoogleカレンダーに学習スケジュールが入ります。
+          <Sparkles className="w-12 h-12 text-emerald-500 mx-auto mb-6" />
+          <h2 className="text-3xl md:text-5xl font-black text-white mb-6 italic uppercase">計画を、AIで「絶対」に変える。</h2>
+          <p className="text-slate-400 mb-10 max-w-xl mx-auto font-medium leading-relaxed">
+            挫折の原因は「計画不足」でした。AIが引いたレールに乗るだけで、合格への最短距離を駆け抜けられます。
           </p>
-          <div className="flex flex-col items-center gap-4">
-            <ToolLaunchButton productId="exam-scheduler" className="text-xl px-12 py-6 shadow-lg" />
-            <Link href="/pricing">
-              <Button className="text-xl px-12 py-6 bg-blue-500 hover:bg-blue-600 text-white">
-                スタンダードプラン（¥980/月）→
-              </Button>
-            </Link>
-            <p className="text-xs text-muted-foreground">スタンダードプラン（¥980/月）限定ツール</p>
-          </div>
+          <ToolLaunchButton productId="exam-scheduler" className="h-16 px-12 bg-white text-slate-950 font-black text-xl rounded-2xl hover:bg-slate-200 transition-all" />
+          <p className="mt-6 text-xs font-black text-emerald-500 uppercase tracking-widest italic">Standard Plan Access</p>
         </div>
       </section>
-
-      {/* Amazon アソシエイト */}
-      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
-        <p className="text-sm text-muted-foreground mb-3">🛒 資格・勉強本をAmazonでチェック</p>
-        <a
-          href="https://www.amazon.co.jp/s?k=%E5%8B%89%E5%BC%B7%E6%B3%95%20%E8%B3%87%E6%A0%BC&tag=nextralabs-22"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
-        >
-          Amazonで見る →
-        </a>
-      </div>
     </div>
   )
 }
