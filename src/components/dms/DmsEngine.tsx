@@ -129,7 +129,13 @@ export default function DmsEngine() {
              {activeTab === 'checkin' && (
                <>
                  <Button onClick={() => setEditingBooking({})} className="bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full h-10 px-6 text-xs shadow-md">＋ 手動宿泊作成</Button>
-                 <Button onClick={fetchStayseeBookings} variant="outline" className="border-[#10b981] text-[#10b981] hover:bg-emerald-50 h-10 rounded-full text-xs font-bold px-6">手動予約同期</Button>
+             <Button onClick={() => {
+               console.log('Manual sync triggered');
+               fetchStayseeBookings();
+             }} variant="outline" className="bg-[#050507] border-[#10b981] text-[#10b981] hover:bg-emerald-950/20 h-10 rounded-full text-xs font-bold px-6 shadow-sm flex items-center gap-2">
+               <RefreshCw size={14} className={loadingBookings ? "animate-spin" : ""} /> 
+               手動予約同期
+             </Button>
                  <div className="relative group"><Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} /><input placeholder="予約検索" className="pl-10 pr-4 py-2 bg-gray-100 border-none rounded-full text-xs w-48 outline-none focus:ring-2 ring-blue-500 text-gray-900" /></div>
                  <Button className="bg-[#5c59cc] hover:bg-[#4a47a3] text-white font-bold rounded-full h-10 px-6 text-xs shadow-lg flex items-center gap-2 italic"><Download size={14}/> CSVダウンロード</Button>
                </>
