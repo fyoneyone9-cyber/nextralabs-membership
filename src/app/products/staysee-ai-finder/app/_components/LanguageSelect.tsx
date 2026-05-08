@@ -61,6 +61,5 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({ onNext }) => {
     </div>
   );
 };
-};
 
 export default LanguageSelect;
