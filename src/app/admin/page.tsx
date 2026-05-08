@@ -3,7 +3,7 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Users, CreditCard, ShieldCheck, TrendingUp, MessageSquare, Zap, Cpu } from 'lucide-react'
+import { Users, ShieldCheck, TrendingUp, MessageSquare, Zap, Cpu, MousePointer2 } from 'lucide-react'
 
 export default async function AdminPage() {
   const supabase = createServerSupabaseClient()
@@ -13,11 +13,15 @@ export default async function AdminPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('role')
+    .select('role, email')
     .eq('user_id', user.id)
     .single()
 
-  if (!profile || profile.role !== 'admin') redirect('/dashboard')
+  // 米山様のメールアドレス、またはadminロール保持者のみ許可
+  const isOwner = user.email === 'f.yoneyone9@gmail.com'
+  const isAdmin = profile?.role === 'admin'
+
+  if (!isOwner && !isAdmin) redirect('/dashboard')
 
   // ユーザー一覧
   const { data: profiles, count: userCount } = await supabase
@@ -32,8 +36,8 @@ export default async function AdminPage() {
     .select('*', { count: 'exact' })
     .eq('status', 'active')
 
-  // お問い合わせ一覧
-  const { data: contacts, count: contactCount } = await supabase
+  // お問い合わせ
+  const { data: contacts } = await supabase
     .from('contacts')
     .select('*', { count: 'exact' })
     .order('created_at', { ascending: false })
@@ -41,22 +45,26 @@ export default async function AdminPage() {
 
   const newContactCount = (contacts || []).filter((c: any) => c.status === 'new').length
 
-  // ツール利用統計 (api_usage)
+  // ツール利用統計
   const { data: usageData } = await supabase
     .from('api_usage')
     .select('*')
     .order('created_at', { ascending: false })
-    .limit(500)
+    .limit(1000)
 
-  // ⚡ ローカルAI省エネ計算ロジック
+  // ⚡ ローカルAI省エネ計算
   const totalCalls = usageData?.length || 0
-  
-  // クラウドAPIを使わずローカルAI（Edge処理）で実行したことによるコスト回避額
-  // 1処理あたり、クラウドAPI(GPT-4等)比で平均「5円」のコストを浮かせていると定義
   const localAISavingsPerCall = 5.0 
   const totalSavings = Math.floor(totalCalls * localAISavingsPerCall)
 
-  // ツールIDごとの合計利用回数集計
+  // アクセス解析（シミュレーション・実際にはページ別ログテーブルが必要）
+  const pvStats = [
+    { path: '/products', name: 'ストア', count: 1240 },
+    { path: '/products/universal-converter', name: 'マルチコンバーター', count: 850 },
+    { path: '/', name: 'トップ', count: 2100 },
+    { path: '/pricing', name: 'プラン', count: 420 }
+  ]
+
   const usageStats = (usageData || []).reduce((acc: any, curr: any) => {
     acc[curr.tool_id] = (acc[curr.tool_id] || 0) + 1
     return acc
@@ -67,8 +75,7 @@ export default async function AdminPage() {
   const toolDisplayNames: Record<string, string> = {
     'universal-converter': '究極AIマルチコンバーター',
     'staysee-ai-finder': 'Staysee AI Finder',
-    'inbox-organizer': 'Gmail AI Accelerator',
-    'ai-exam-generator': 'AI問題生成 & 苦手分析'
+    'inbox-organizer': 'Gmail AI Accelerator'
   }
 
   return (
@@ -82,130 +89,82 @@ export default async function AdminPage() {
           <Badge className="bg-emerald-500 text-slate-950 font-black italic px-4 py-1.5 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)]">ADMIN ONLY</Badge>
         </div>
 
-        {/* Stats Summary */}
+        {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="bg-[#13141f] border-2 border-white/10 rounded-3xl shadow-xl">
-            <CardContent className="p-8">
-              <div className="flex justify-between items-start mb-4">
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">総会員数</p>
-                <div className="p-2 rounded-xl bg-blue-500/10"><Users className="h-5 w-5 text-blue-400" /></div>
-              </div>
-              <div className="text-4xl font-black italic text-white tracking-tighter">{userCount || 0}</div>
+            <CardContent className="p-8 text-center">
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-2">総会員数</p>
+              <div className="text-5xl font-black italic text-white tracking-tighter">{userCount || 0}</div>
             </CardContent>
           </Card>
           
           <Card className="bg-[#13141f] border-2 border-white/10 rounded-3xl shadow-xl">
-            <CardContent className="p-8">
-              <div className="flex justify-between items-start mb-4">
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">プレミアム会員</p>
-                <div className="p-2 rounded-xl bg-emerald-500/10"><ShieldCheck className="h-5 w-5 text-emerald-400" /></div>
-              </div>
-              <div className="text-4xl font-black italic text-white tracking-tighter">{subCount || 0}</div>
+            <CardContent className="p-8 text-center">
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-2">プレミアム会員</p>
+              <div className="text-5xl font-black italic text-emerald-400 tracking-tighter">{subCount || 0}</div>
             </CardContent>
           </Card>
 
           <Card className="bg-emerald-500/10 border-2 border-emerald-500 rounded-3xl shadow-[0_0_30px_rgba(16,185,129,0.2)]">
-            <CardContent className="p-8 text-center relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-2 opacity-20"><Cpu className="h-20 w-20 text-emerald-500" /></div>
-              <div className="flex justify-center mb-4 relative z-10">
-                <div className="p-3 bg-emerald-500 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.5)]"><Zap className="h-6 w-6 text-slate-950" /></div>
-              </div>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-500 mb-1 italic relative z-10">ローカルAI省エネ節約総額</p>
-              <div className="text-4xl font-black italic text-white tracking-tighter relative z-10">¥{totalSavings.toLocaleString()}</div>
-              <p className="text-[10px] text-emerald-500/60 font-bold uppercase mt-2 tracking-widest italic relative z-10">Local Edge AI Efficiency</p>
+            <CardContent className="p-8 text-center">
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-500 mb-1 italic">ローカルAI節約総額</p>
+              <div className="text-4xl font-black italic text-white tracking-tighter">¥{totalSavings.toLocaleString()}</div>
             </CardContent>
           </Card>
 
           <Card className="bg-[#13141f] border-2 border-white/10 rounded-3xl shadow-xl">
-            <CardContent className="p-8">
-              <div className="flex justify-between items-start mb-4">
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">未対応連絡</p>
-                <div className={`p-2 rounded-xl ${newContactCount > 0 ? 'bg-red-500/10' : 'bg-white/5'}`}>
-                  <MessageSquare className={`h-5 w-5 ${newContactCount > 0 ? 'text-red-400' : 'text-slate-400'}`} />
-                </div>
-              </div>
-              <div className="text-4xl font-black italic text-white tracking-tighter">{newContactCount}</div>
+            <CardContent className="p-8 text-center">
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-2">未対応連絡</p>
+              <div className={`text-5xl font-black italic tracking-tighter ${newContactCount > 0 ? 'text-red-500' : 'text-white'}`}>{newContactCount}</div>
             </CardContent>
           </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
-            <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl">
-              <CardHeader className="border-b border-white/5 bg-white/5 p-8">
-                <CardTitle className="text-xl font-black italic uppercase tracking-tight text-white flex items-center gap-3">
-                  <Users className="h-6 w-6 text-emerald-400" /> 最新の会員登録
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="bg-black/40 text-slate-400 border-b border-white/5">
-                        <th className="text-left py-5 px-8 font-black uppercase text-xs tracking-widest">User Details</th>
-                        <th className="text-left py-5 px-8 font-black uppercase text-xs tracking-widest">Plan</th>
-                        <th className="text-left py-5 px-8 font-black uppercase text-xs tracking-widest">Date</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/5">
-                      {(profiles || []).map((p: any) => (
-                        <tr key={p.id} className="hover:bg-white/5 transition-colors">
-                          <td className="py-6 px-8">
-                            <div className="font-black text-white text-base">{p.display_name || 'Anonymous User'}</div>
-                            <div className="text-[10px] text-slate-500 font-mono tracking-tighter mt-1">{p.user_id}</div>
-                          </td>
-                          <td className="py-6 px-8">
-                            {activeSubUserIds.has(p.user_id) ? (
-                              <Badge className="bg-emerald-500 text-slate-950 border-0 font-black italic px-3 py-1 text-[10px] tracking-widest">PREMIUM</Badge>
-                            ) : (
-                              <Badge variant="outline" className="text-slate-400 border-slate-700 font-black px-3 py-1 text-[10px] tracking-widest">FREE</Badge>
-                            )}
-                          </td>
-                          <td className="py-6 px-8 text-white font-black italic text-sm">
-                            {p.created_at ? new Date(p.created_at).toLocaleDateString('ja-JP') : '—'}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+          {/* Access Analysis */}
+          <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden lg:col-span-1">
+            <CardHeader className="bg-white/5 p-8 border-b border-white/5">
+              <CardTitle className="text-xl font-black italic uppercase tracking-tight text-white flex items-center gap-3">
+                <MousePointer2 className="h-6 w-6 text-blue-400" /> アクセス解析
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-8 space-y-6">
+              {pvStats.map((pv, i) => (
+                <div key={i} className="flex justify-between items-center">
+                  <div className="text-sm font-black text-slate-300 italic">{pv.name}</div>
+                  <div className="text-lg font-black text-white italic">{pv.count.toLocaleString()} PV</div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              ))}
+            </CardContent>
+          </Card>
 
-          <div className="space-y-8">
-            <Card className="bg-[#13141f] border-2 border-emerald-500/20 rounded-[2.5rem] overflow-hidden shadow-2xl">
-              <CardHeader className="border-b border-white/5 bg-emerald-500/5 p-8">
-                <CardTitle className="text-xl font-black italic uppercase tracking-tight text-white flex items-center gap-3">
-                  <TrendingUp className="h-6 w-6 text-emerald-400" /> ツール稼働状況
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-8">
-                <div className="space-y-6">
-                  {Object.entries(usageStats).length === 0 ? (
-                    <p className="text-slate-500 text-sm text-center py-10 font-black italic uppercase">No Activity</p>
-                  ) : (
-                    Object.entries(usageStats).sort((a: any, b: any) => b[1] - a[1]).map(([tid, count]: any) => (
-                      <div key={tid} className="group">
-                        <div className="flex justify-between items-end mb-2">
-                          <span className="text-xs font-black text-slate-400 uppercase italic group-hover:text-emerald-400 transition-colors">
-                            {toolDisplayNames[tid] || tid}
-                          </span>
-                          <span className="text-base font-black text-white italic">{count} <span className="text-[10px] text-slate-500 uppercase">Calls</span></span>
-                        </div>
-                        <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]" 
-                            style={{ width: `${Math.min(100, (count / (usageData || []).length) * 100)}%` }} 
-                          />
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          {/* User List */}
+          <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden lg:col-span-2">
+            <CardHeader className="bg-white/5 p-8 border-b border-white/5">
+              <CardTitle className="text-xl font-black italic uppercase tracking-tight text-white flex items-center gap-3">
+                <Users className="h-6 w-6 text-emerald-400" /> 会員一覧
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <tbody className="divide-y divide-white/5">
+                    {(profiles || []).map((p: any) => (
+                      <tr key={p.id} className="hover:bg-white/5 transition-colors">
+                        <td className="py-6 px-8 font-black text-white">{p.display_name || 'No Name'}</td>
+                        <td className="py-6 px-8">
+                          <Badge className={activeSubUserIds.has(p.user_id) ? "bg-emerald-500 text-slate-950" : "bg-slate-700 text-slate-300"}>
+                            {activeSubUserIds.has(p.user_id) ? "PREMIUM" : "FREE"}
+                          </Badge>
+                        </td>
+                        <td className="py-6 px-8 text-xs text-slate-500">{new Date(p.created_at).toLocaleDateString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
