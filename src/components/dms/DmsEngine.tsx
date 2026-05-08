@@ -245,6 +245,60 @@ export default function DmsEngine() {
             </div>
           )}
 
+          {/* 忘れ物管理画面 */}
+          {activeTab === 'lost-property' && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/5">
+                <div className="flex gap-4">
+                  <Badge variant="outline" className="text-red-500 border-red-500/30">未対応: 3件</Badge>
+                  <Badge variant="outline" className="text-gray-500">保管中: 12件</Badge>
+                </div>
+                <Button className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg px-6">
+                  <Plus size={18} className="mr-2" /> 新規登録
+                </Button>
+              </div>
+
+              <Card className={"rounded-xl overflow-hidden border " + cardClass}>
+                <table className="w-full text-left text-xs">
+                  <thead className={isDarkMode ? "bg-black/50 text-slate-500" : "bg-slate-50 text-slate-400"}>
+                    <tr>
+                      <th className="p-4">管理番号</th>
+                      <th className="p-4">登録日</th>
+                      <th className="p-4">物件 / 部屋</th>
+                      <th className="p-4">内容</th>
+                      <th className="p-4">ステータス</th>
+                      <th className="p-4 text-right">詳細</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y border-inherit">
+                    {[
+                      { id: 'LP-001', date: '2026/05/08', location: 'アップル / 403', item: 'iPhone 15 (黒)', status: '未対応' },
+                      { id: 'LP-002', date: '2026/05/07', location: 'ベイサイド静岡 / 201', item: '黒の折りたたみ傘', status: '保管中' },
+                      { id: 'LP-003', date: '2026/05/05', location: 'レジデンス島根 / 105', item: '高級腕時計', status: '返却済' }
+                    ].map((lp, idx) => (
+                      <tr key={idx} className="hover:bg-emerald-500/5 transition-colors">
+                        <td className="p-6 font-bold">{lp.id}</td>
+                        <td className="p-6 text-slate-500">{lp.date}</td>
+                        <td className="p-6 font-bold text-indigo-400">{lp.location}</td>
+                        <td className="p-6 font-medium">{lp.item}</td>
+                        <td className="p-6">
+                          <Badge className={
+                            lp.status === '未対応' ? 'bg-red-500/20 text-red-500 border-0' :
+                            lp.status === '保管中' ? 'bg-amber-500/20 text-amber-500 border-0' :
+                            'bg-gray-500/20 text-gray-500 border-0'
+                          }>
+                            {lp.status}
+                          </Badge>
+                        </td>
+                        <td className="p-6 text-right"><ArrowRight size={16} className="ml-auto opacity-20" /></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Card>
+            </div>
+          )}
+
           {activeTab === 'checkin' && (
             <Card className={"rounded-xl overflow-hidden border " + cardClass}>
               <div className="p-4 bg-black/10 flex justify-between items-center border-b border-inherit">

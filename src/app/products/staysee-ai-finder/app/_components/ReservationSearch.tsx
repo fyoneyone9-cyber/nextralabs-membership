@@ -14,35 +14,38 @@ const ReservationSearch: React.FC<ReservationSearchProps> = ({ onNext }) => {
   const [error, setError] = useState<string | null>(null);
 
   // DMSのシミュレーションデータ（本来はAPI経由で取得）
+  // idはPMS予約番号またはDMS管理番号を想定
   const MOCK_DMS_DATABASE = [
     { id: 'RSV001', phone: '08012345678', name: 'SEKIDO KENJI', plan: 'スタンダードプラン', amount: 4500, address: '東京都新宿区...', occupation: '会社員' },
     { id: 'RSV002', phone: '09012345678', name: 'NextraLabs様', plan: 'プレミアムプラン', amount: 9800, address: '神奈川県海老名市...', occupation: 'ITエンジニア' },
-    { id: '8824', phone: '08032078422', name: '米山 文貴', plan: 'マスタプラン', amount: 15000, address: '神奈川県海老名市中央...', occupation: '経営者' }
+    { id: 'DMS8824', phone: '08032078422', name: '米山 文貴', plan: 'マスタプラン', amount: 15000, address: '神奈川県海老名市中央...', occupation: '経営者' },
+    { id: 'PMS999', phone: '07099999999', name: 'TEST GUEST', plan: 'ライトプラン', amount: 3000, address: '大阪府大阪市...', occupation: '公務員' }
   ];
 
   const handleSearch = async () => {
     setIsSearching(true);
     setError(null);
 
-    // 2秒待機（ネットワーク通信のシミュレーション）
+    // QRスキャナーやスキャナからの入力を想定
+    const searchQuery = inputValue.trim();
+
     setTimeout(() => {
       setIsSearching(false);
       
       // 入力値とDMSデータを照合
+      // QRコードモードの場合は ID (予約番号) を優先的に照合
       const found = MOCK_DMS_DATABASE.find(item => 
-        item.phone === inputValue.replace(/-/g, '') || 
-        item.id === inputValue || 
-        item.name.includes(inputValue)
+        item.id === searchQuery || 
+        item.phone === searchQuery.replace(/-/g, '') || 
+        item.name.includes(searchQuery)
       );
 
       if (found) {
-        // 見つかったらデータを引き継いで次へ
         onNext(found);
       } else {
-        // 見つからない場合はエラー
-        setError('予約情報が見つかりませんでした。入力内容を確認するか、フロントスタッフをお呼びください。');
+        setError('予約情報が見つかりませんでした。正しい予約番号を入力するか、QRコードをもう一度かざしてください。');
       }
-    }, 1500);
+    }, 1200);
   };
 
   const modes = [
