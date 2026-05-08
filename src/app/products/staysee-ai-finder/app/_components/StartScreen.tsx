@@ -11,8 +11,8 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
 
   const handleAdminLogout = () => {
     const pw = window.prompt('ENTER ADMIN ACCESS KEY');
-    // NextraLabs サイト個別の管理パスワード
-    if (pw === 'ninja38824') {
+    // マスタPW: 2026
+    if (pw === '2026') {
       setIsLocked(false);
       localStorage.clear();
       sessionStorage.clear();
