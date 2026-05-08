@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { 
   ArrowRight, Upload, CheckCircle2, Home, ShieldCheck, MapPin, 
-  Loader2, Search, ChevronRight, Zap, Info, TrendingUp, ShoppingCart, AlertTriangle
+  Loader2, Search, ChevronRight, Zap, Info, TrendingUp, ShoppingCart, 
+  AlertTriangle, Copy
 } from 'lucide-react'
 
 // 調査モードプリセット（復旧）
@@ -22,6 +23,7 @@ const MasterEngine = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => { setIsMounted(true); }, []);
 
@@ -33,17 +35,21 @@ const MasterEngine = () => {
     setIsAnalyzing(false);
   };
 
+  const openAI = (name: string) => {
+    const url = name === 'ChatGPT' ? 'https://chatgpt.com' : name === 'Gemini' ? 'https://gemini.google.com' : 'https://claude.ai'
+    window.open(url, '_blank')
+  }
+
   if (!isMounted) return null;
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-100 bg-[#050507] border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.2)] rounded-[3rem] md:rounded-[4rem] my-4 font-sans text-left">
       <div className="text-center space-y-3">
         <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 font-black italic px-4 py-0.5 text-[10px] uppercase tracking-widest mb-2">Living Intelligence MASTER</Badge>
-        <h1 className="text-4xl md:text-7xl font-black text-white uppercase italic tracking-tighter">AI引越し安心チェッカー</h1>
-        <p className="text-emerald-400 font-bold uppercase tracking-[0.2em] text-[10px] italic">Nextra Security & Risk Analysis</p>
+        <h1 className="text-4xl md:text-7xl font-black text-white uppercase italic tracking-tighter leading-none">AI引越し安心チェッカー</h1>
+        <p className="text-emerald-400 font-bold uppercase tracking-[0.2em] text-[10px] italic mt-2">Nextra Security & Risk Analysis</p>
       </div>
 
-      {/* 活用マニュアル（徹底日本語化） */}
       <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4 max-w-5xl mx-auto shadow-inner">
         <div className="flex items-center gap-2 text-emerald-400"><Info size={20} /> <h3 className="font-black italic uppercase text-sm">使いかた・活用マニュアル</h3></div>
         <p className="text-sm text-slate-300 font-bold leading-relaxed">
@@ -73,26 +79,28 @@ const MasterEngine = () => {
               <h3 className="text-3xl text-white font-black italic uppercase tracking-tighter">【{ENTRY_MODES.find(m => m.id === mode)?.label}】解析プロトコル始動</h3>
               
               <div className="w-full h-64 bg-black/40 border-2 border-dashed border-white/10 rounded-[2rem] flex items-center justify-center cursor-pointer hover:border-emerald-500/50 transition-all group relative">
-                <input type="file" className="absolute inset-0 opacity-0 cursor-pointer z-10" />
+                <input type="file" onChange={e => setFile(e.target.files?.[0] || null)} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
                 <div className="space-y-4 pointer-events-none text-center">
-                  <Upload className="h-12 w-12 text-slate-600 mx-auto group-hover:text-emerald-400 transition-colors" />
-                  <p className="text-sm font-black text-slate-500 uppercase italic tracking-widest">ファイルをドロップ または クリック</p>
+                  <Upload className={`h-12 w-12 mx-auto transition-colors ${file ? 'text-emerald-400' : 'text-slate-600'}`} />
+                  <p className="text-sm font-black text-white uppercase italic">{file ? file.name : 'ファイルをドロップ または クリック'}</p>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{file ? `${(file.size/1024/1024).toFixed(1)}MB / 解析準備完了` : '物件写真や契約書のPDFを添付'}</p>
                 </div>
               </div>
 
-              <Button onClick={handleAnalyze} disabled={isAnalyzing} className="w-full h-24 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-3xl rounded-[2rem] shadow-xl uppercase italic active:scale-95 transition-all">
+              <Button onClick={handleAnalyze} disabled={isAnalyzing || (mode !== 'area' && !file)} className="w-full h-24 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-3xl rounded-[2rem] shadow-xl uppercase italic active:scale-95 transition-all">
                 {isAnalyzing ? <Loader2 className="animate-spin h-10 w-10 mx-auto" /> : 'AIリスク解析を実行する 🚀'}
               </Button>
               
-              <button onClick={() => {setMode('selection'); setResult(null);}} className="text-slate-500 hover:text-white font-black uppercase text-xs italic tracking-[0.3em] underline transition-colors">モード選択に戻る</button>
+              <button onClick={() => {setMode('selection'); setResult(null); setFile(null);}} className="text-slate-500 hover:text-white font-black uppercase text-xs italic tracking-[0.3em] underline transition-colors">モード選択に戻る</button>
             </CardContent>
           </Card>
 
           {result && (
-            <div className="space-y-10 animate-in slide-in-from-bottom-6 duration-700">
+            <div className="space-y-10 animate-in slide-in-from-bottom-6 duration-700 text-left">
               <Card className="bg-emerald-500/5 border-2 border-emerald-500/30 rounded-[3.5rem] p-12 shadow-inner">
                 <h3 className="text-2xl font-black text-white italic uppercase mb-8 flex items-center gap-3"><Zap className="text-emerald-400" /> AI防災・防犯診断レポート</h3>
                 <div className="text-xl text-white font-bold italic leading-loose whitespace-pre-wrap mb-10">{result}</div>
+                <Button onClick={() => alert('解析結果をコピーしました')} className="h-14 bg-white/10 hover:bg-white/20 text-white font-black px-8 rounded-xl transition-all uppercase italic text-xs border border-white/10"><Copy size={16} className="mr-2" /> 結果をコピー</Button>
               </Card>
 
               {/* 生存ロードマップ */}
@@ -104,8 +112,8 @@ const MasterEngine = () => {
                     { step: '02', title: '対策プラン', desc: '不動産屋への交渉ポイントと、内見時に確認すべき不備を策定。', icon: ShieldCheck },
                     { step: '03', title: '防衛完了', desc: '入居後の防犯カメラ位置や、災害時の避難Bプランを自動構成。', icon: TrendingUp },
                   ].map((s, i) => (
-                    <div key={i} className="bg-[#13141f] border border-white/10 p-10 rounded-[2.5rem] space-y-4 hover:border-emerald-500/50 transition-all">
-                      <div className="flex justify-between items-start"><span className="text-xs font-black text-emerald-500/40">{s.step}</span><s.icon className="h-6 w-6 text-emerald-400" /></div>
+                    <div key={i} className="bg-[#13141f] border border-white/10 p-10 rounded-[2.5rem] space-y-4 hover:border-emerald-500/50 transition-all group">
+                      <div className="flex justify-between items-start"><span className="text-xs font-black text-emerald-500/40">{s.step}</span><s.icon className="h-6 w-6 text-emerald-400 group-hover:animate-bounce" /></div>
                       <h4 className="text-lg font-black text-white italic">{s.title}</h4>
                       <p className="text-xs text-slate-400 font-bold italic leading-relaxed">{s.desc}</p>
                     </div>
@@ -113,10 +121,10 @@ const MasterEngine = () => {
                 </div>
               </div>
 
-              {/* 外部リンク */}
+              {/* 3大AI外部リンク */}
               <div className="grid grid-cols-3 gap-4">
                 {['ChatGPT', 'Gemini', 'Claude'].map(ai => (
-                  <Button key={ai} onClick={() => window.open(`https://${ai.toLowerCase()}.com`)} className="h-16 bg-white/5 border border-white/10 text-slate-400 font-black italic rounded-2xl hover:text-white transition-all uppercase">Detail with {ai}</Button>
+                  <Button key={ai} onClick={() => openAI(ai)} className="h-16 bg-white/5 border border-white/10 text-slate-400 font-black italic rounded-2xl hover:text-white hover:border-emerald-500 transition-all uppercase text-[10px]">Deepen with {ai}</Button>
                 ))}
               </div>
 
@@ -124,8 +132,8 @@ const MasterEngine = () => {
               <a href="https://www.amazon.co.jp/s?k=防犯グッズ+防災セット&tag=nextralabs-22" target="_blank" className="block group">
                 <div className="bg-gradient-to-r from-emerald-600 to-teal-800 p-10 rounded-[3rem] flex items-center justify-between shadow-2xl transition-all hover:scale-[1.01]">
                   <div className="space-y-2">
-                    <p className="text-[10px] font-black text-white/50 uppercase tracking-widest italic">New Life Defense</p>
-                    <h3 className="text-2xl font-black text-white italic leading-tight">「新生活」を鉄壁に守り抜く。AI推奨の厳選防犯・防災ギア。</h3>
+                    <p className="text-[10px] font-black text-white/50 uppercase tracking-widest italic text-left">New Life Defense</p>
+                    <h3 className="text-2xl font-black text-white italic leading-tight text-left">「新生活」を鉄壁に守り抜く。AI推奨の厳選防犯・防災ギア。</h3>
                   </div>
                   <ShoppingCart size={40} className="text-white animate-pulse" />
                 </div>
