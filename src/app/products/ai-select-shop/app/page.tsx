@@ -1,16 +1,36 @@
 'use client'
 import dynamic from 'next/dynamic'
-import React, { useState, useEffect } from 'react'
-import { Loader2, ExternalLink, Info, Zap, ShoppingCart, TrendingUp, Search, Palette, CheckCircle2 } from 'lucide-react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { Loader2, Settings, ExternalLink, AlertTriangle, CheckCircle2, Info, Zap, ShoppingCart, TrendingUp, Search, Palette, Box } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+
+const STYLES = [
+  { id: 'japanese',  name: '和風・日の丸',  emoji: '⛩️' },
+  { id: 'street',    name: 'ストリート',    emoji: '🏙️' },
+  { id: 'cyberpunk', name: 'サイバー',      emoji: '🌃' },
+  { id: 'kawaii',    name: 'かわいい',      emoji: '🎀' },
+  { id: 'minimal',   name: 'ミニマル',      emoji: '⬜' },
+  { id: 'gold',      name: 'ラグジュアリー', emoji: '💎' },
+  { id: 'neon',      name: 'ネオンサイン',  emoji: '💡' },
+  { id: 'popart',    name: 'ポップアート',  emoji: '🎨' }
+];
+
+const TSHIRT_COLORS = [
+  { id: 'white',  name: '白',      hex: '#FFFFFF' },
+  { id: 'black',  name: '黒',      hex: '#1a1a1a' },
+  { id: 'navy',   name: '紺',      hex: '#1e3a5f' },
+  { id: 'red',    name: 'レッド',   hex: '#e74c3c' }
+];
 
 const MasterEngine = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [trends, setTrends] = useState<{ id: number; name: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
+  const [style, setStyle] = useState('japanese');
+  const [tshirtColor, setTshirtColor] = useState('black');
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishResult, setPublishResult] = useState<{ url?: string; error?: string } | null>(null);
 
@@ -28,29 +48,41 @@ const MasterEngine = () => {
   };
 
   const handlePublish = async () => {
+    if (!keyword) return;
     setIsPublishing(true);
-    // Printful / Shopify 連携ロジックを再接続
-    await new Promise(r => setTimeout(r, 3000));
-    setPublishResult({ url: '#' });
-    setCurrentStep(3);
-    setIsPublishing(false);
+    try {
+      const res = await fetch('/api/tools/printful', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'create-product', keyword, style, tshirtColor })
+      });
+      const data = await res.json();
+      setPublishResult({ url: data.shopifyUrl || '#' });
+      setCurrentStep(3);
+    } catch (e) {
+      setPublishResult({ error: 'Shopify連携に失敗しました' });
+    } finally {
+      setIsPublishing(false);
+    }
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-32 border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.2)] rounded-[3rem] p-4 md:p-12 bg-[#050507] text-left font-sans">
-      <div className="text-center space-y-3">
+    <div className="max-w-7xl mx-auto space-y-8 pb-32 border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.2)] rounded-[3rem] p-4 md:p-12 bg-[#050507] text-left font-sans selection:bg-emerald-500/30">
+      <div className="text-center space-y-3 relative">
         <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 font-black italic px-4 py-0.5 text-[10px] uppercase tracking-widest mb-2">Inventory Zero Master</Badge>
         <h1 className="text-4xl md:text-7xl font-black text-white uppercase italic tracking-tighter">AIセレクトショップ</h1>
       </div>
 
       <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4 max-w-5xl mx-auto">
         <div className="flex items-center gap-2 text-emerald-400"><Info size={20} /> <h3 className="font-black italic uppercase text-sm">使いかた・活用マニュアル</h3></div>
-        <p className="text-sm text-slate-300 font-bold leading-relaxed italic">トレンドを選びデザインを生成。Shopifyへ自動出品。受注から配送まではシステムが完結させます。</p>
+        <p className="text-sm text-slate-300 font-bold leading-relaxed italic">
+          トレンドを選び、スタイルをカスタマイズしてAIデザインを生成してください。ボタン一つでShopifyへ自動出品。受注・生産・配送はシステムが完結させます。
+        </p>
       </div>
 
       <div className="flex gap-2 justify-center bg-white/5 p-2 rounded-2xl border border-white/5 max-w-md mx-auto">
         {[1, 2, 3].map(s => (
-          <button key={s} onClick={() => setCurrentStep(s)} className={'flex-1 py-4 rounded-xl font-black italic text-base uppercase transition-all ' + (currentStep === s ? 'bg-emerald-500 text-slate-950' : 'text-slate-500')}>Step {s}</button>
+          <button key={s} onClick={() => setCurrentStep(s)} className={'flex-1 py-4 rounded-xl font-black italic text-base uppercase transition-all ' + (currentStep === s ? 'bg-emerald-500 text-slate-950 shadow-lg' : 'text-slate-500')}>Step {s}</button>
         ))}
       </div>
 
@@ -67,16 +99,44 @@ const MasterEngine = () => {
 
       {currentStep === 2 && (
         <div className="grid lg:grid-cols-2 gap-8 animate-in zoom-in-95">
-          <Card className="bg-[#13141f] p-8 border-2 border-white/10 rounded-[2.5rem] space-y-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Design Keyword</label>
-              <input value={keyword} onChange={e => setKeyword(e.target.value)} className="w-full h-16 bg-black border-2 border-white/10 rounded-xl px-6 text-xl font-black text-white focus:border-emerald-500 outline-none transition-all" />
-            </div>
-            <Button onClick={handlePublish} disabled={isPublishing || !keyword} className="w-full h-24 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-3xl rounded-[2rem] shadow-xl uppercase italic active:scale-95">SHOPIFY 自動出品 🚀</Button>
-          </Card>
+          <div className="space-y-6">
+            <Card className="bg-[#13141f] p-8 border-2 border-white/10 rounded-[2.5rem] space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic ml-1">デザインキーワード</label>
+                <input value={keyword} onChange={e => setKeyword(e.target.value)} className="w-full h-16 bg-black border-2 border-white/10 rounded-xl px-6 text-xl font-black text-white focus:border-emerald-500 outline-none transition-all" />
+              </div>
+
+              {/* プリセット選択 (復旧) */}
+              <div className="space-y-4">
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic ml-1">スタイルプリセット</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  {STYLES.map(s => (
+                    <button key={s.id} onClick={() => setStyle(s.id)} className={`py-3 rounded-xl text-[10px] font-black uppercase italic border-2 transition-all ${style === s.id ? 'bg-emerald-500 text-slate-950 border-emerald-400' : 'bg-black text-slate-500 border-white/5 hover:border-white/20'}`}>
+                      {s.emoji} {s.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic ml-1">生地のカラー</p>
+                <div className="flex flex-wrap gap-2">
+                  {TSHIRT_COLORS.map(c => (
+                    <button key={c.id} onClick={() => setTshirtColor(c.id)} className={`w-10 h-10 rounded-xl border-4 transition-all ${tshirtColor === c.id ? 'border-emerald-500 scale-110' : 'border-white/5 hover:border-white/20'}`} style={{ backgroundColor: c.hex }} />
+                  ))}
+                </div>
+              </div>
+
+              <Button onClick={handlePublish} disabled={isPublishing || !keyword} className="w-full h-24 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-3xl rounded-[2rem] shadow-xl active:scale-95 transition-all italic">
+                {isPublishing ? <Loader2 className="animate-spin h-10 w-10 mx-auto" /> : 'SHOPIFY 自動出品 🚀'}
+              </Button>
+            </Card>
+          </div>
           <div className="bg-[#13141f] rounded-[2.5rem] border-2 border-white/5 p-8 flex flex-col justify-center items-center gap-4 text-center">
-             <div className="w-full aspect-square bg-white/5 rounded-3xl border-2 border-dashed border-white/10 flex items-center justify-center"><Palette size={48} className="text-slate-600 animate-pulse" /></div>
-             <p className="text-[10px] font-black text-slate-500 uppercase italic">AIデザイン プレビュー</p>
+             <div className="w-full aspect-square bg-white/5 rounded-3xl border-2 border-dashed border-white/10 flex items-center justify-center">
+                <Palette size={48} className="text-slate-600 animate-pulse" />
+             </div>
+             <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">AIデザイン プレビュー</p>
           </div>
         </div>
       )}
@@ -84,17 +144,17 @@ const MasterEngine = () => {
       {currentStep === 3 && (
         <div className="text-center py-20 space-y-10 animate-in zoom-in">
           <CheckCircle2 className="h-24 w-24 text-emerald-500 mx-auto" />
-          <h2 className="text-6xl font-black text-white italic uppercase tracking-tighter leading-none">出品完了</h2>
-          <Button onClick={() => window.open(publishResult?.url)} className="h-20 px-12 bg-white text-emerald-950 font-black text-2xl rounded-2xl shadow-xl hover:scale-105 transition-all italic">Shopifyで商品を見る</Button>
+          <h2 className="text-6xl font-black text-white italic uppercase tracking-tighter leading-none">出品完了！</h2>
+          <Button onClick={() => window.open(publishResult?.url)} className="h-20 px-12 bg-white text-emerald-950 font-black text-2xl rounded-2xl shadow-xl hover:scale-105 transition-all uppercase italic">Shopifyで商品を見る</Button>
           
           <div className="space-y-6 pt-10 text-left max-w-5xl mx-auto">
             <h3 className="text-xl font-black text-white italic uppercase tracking-widest border-l-4 border-emerald-500 pl-4">販売ロードマップ</h3>
             <div className="grid md:grid-cols-3 gap-6">
-              {[{ title: '自動出品', desc: 'Shopifyと完全同期。リスク¥0。', icon: ShoppingCart }, { title: 'SNS拡散', desc: '各SNSへ自動投稿して集客。', icon: TrendingUp }, { title: '自動生産', desc: '売れたら自動で発送。', icon: Zap }].map((s, i) => (
+              {[{ title: '自動出品', desc: 'Shopifyと完全同期。在庫リスク¥0。', icon: ShoppingCart }, { title: 'SNS集客', desc: '生成画像を各SNSで拡散し需要を喚起。', icon: TrendingUp }, { title: '自動生産', desc: '受注後、AIが工場へ直接発注し配送。', icon: Zap }].map((s, i) => (
                 <div key={i} className="bg-[#13141f] border border-white/10 p-8 rounded-3xl space-y-4 hover:border-emerald-500/50 transition-all">
-                  <s.icon className="h-6 w-6 text-emerald-400" />
+                  <div className="flex justify-between items-start"><span className="text-xs font-black text-emerald-500/40">{s.step}</span><s.icon className="h-6 w-6 text-emerald-400" /></div>
                   <h4 className="text-lg font-black text-white italic">{s.title}</h4>
-                  <p className="text-xs text-slate-400 font-bold italic">{s.desc}</p>
+                  <p className="text-xs text-slate-400 font-bold italic leading-relaxed">{s.desc}</p>
                 </div>
               ))}
             </div>
