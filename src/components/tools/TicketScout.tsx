@@ -35,10 +35,14 @@ export default function TicketScout() {
     window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`
   }, []);
 
+  const [aiAdvice, setAiAdvice] = useState<string | null>(null);
+
   const handleSearch = async () => {
     if (!artistName) return;
     setLoading(true);
+    setAiAdvice(null);
     try {
+      // プレイガイド情報の検索
       const res = await fetch('/api/tools/ticket-scout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -46,8 +50,21 @@ export default function TicketScout() {
       });
       const data = await res.json();
       setResults(data.events || []);
+
+      // AIによる独自の情報収集とアドバイス生成
+      const adviceRes = await fetch('/api/tools/gsk-search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          query: `${artistName} チケット 発売日 先行 リセール 2026`,
+          instructions: "チケット購入の必勝法やリセール情報を、200文字程度の熱量の高いアドバイスとして出力してください。"
+        }),
+      });
+      const adviceData = await adviceRes.json();
+      setAiAdvice(adviceData.result);
+
     } catch (e) {
-      alert("検索に失敗しました。");
+      console.error(e);
     } finally {
       setLoading(false);
     }
@@ -99,6 +116,27 @@ export default function TicketScout() {
             </div>
          </div>
       </Card>
+
+      {/* AI ADVICE PANEL */}
+      {aiAdvice && (
+        <Card className="bg-emerald-500/5 border-2 border-emerald-500/30 rounded-[3rem] p-8 md:p-10 shadow-[0_0_50px_rgba(16,185,129,0.1)] relative overflow-hidden animate-in fade-in zoom-in duration-500">
+          <div className="absolute top-0 right-0 p-6 opacity-10">
+            <Sparkles className="w-40 h-40 text-emerald-500" />
+          </div>
+          <div className="relative z-10 space-y-4 text-left">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center">
+                <Brain className="w-5 h-5 text-slate-950" />
+              </div>
+              <span className="text-emerald-500 font-black text-xs uppercase tracking-widest">AI Scout Intelligence</span>
+            </div>
+            <h3 className="text-xl md:text-2xl font-black text-white italic uppercase tracking-tighter">必勝スカウト・アドバイス</h3>
+            <p className="text-slate-300 font-bold leading-relaxed text-sm md:text-base whitespace-pre-wrap">
+              {aiAdvice}
+            </p>
+          </div>
+        </Card>
+      )}
 
       {/* RESULTS */}
       {results.length > 0 && (
