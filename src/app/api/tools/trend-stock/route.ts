@@ -27,16 +27,15 @@ export async function GET(request: Request) {
 
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
   
-  // モデル選択（失敗時のフォールバック付き）
+  // モデル選択（最も互換性の高い名前に固定）
   const getAIContent = async (prompt: string) => {
     try {
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
       const result = await model.generateContent(prompt);
       return result.response.text();
     } catch (e) {
-      const fallbackModel = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-      const result = await fallbackModel.generateContent(prompt);
-      return result.response.text();
+      console.error('Gemini error:', e);
+      throw e; // 上位のcatchでSAFE_MODEへ
     }
   };
 

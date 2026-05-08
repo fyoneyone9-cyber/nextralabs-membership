@@ -123,8 +123,8 @@ export default function TrendStockPage() {
 
       <Card className="border-2 border-emerald-500 bg-emerald-50/30">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-emerald-700">
-            <Sparkles className="w-5 h-5" />
+          <CardTitle className="flex items-center gap-2 text-emerald-400">
+            <Sparkles className="w-5 h-5 text-emerald-400" />
             AI Trend Insight
           </CardTitle>
         </CardHeader>
