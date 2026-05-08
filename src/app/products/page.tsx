@@ -48,7 +48,11 @@ const TOOLS = [
   { id: 'ai-exam-generator', cat: 'edu', title: 'AI問題生成 & 苦手分析', sub: '予想問題を無限生成 × 弱点ポイント可視化', icon: Brain, plan: 'プレミアム' },
   { id: 'location-finder', cat: 'hotel', title: 'AIロケーションファインダー', sub: '出店・移住の最適地をデータ分析', icon: MapPin, plan: 'スタンダード' },
   { id: 'smart-gardening', cat: 'life', title: 'AIスマートガーデニング', sub: '植物の声を聴く育成アドバイザー', icon: Sprout, plan: 'スタンダード' },
-  { id: 'ticket-scout', cat: 'life', title: 'AIチケットスカウト', sub: '争奪戦に勝つための先行情報収集', icon: Ticket, plan: 'スタンダード' }
+  { id: 'ticket-scout', cat: 'life', title: 'AIチケットスカウト', sub: '争奪戦に勝つための先行情報収集', icon: Ticket, plan: 'スタンダード' },
+  { id: 'disaster-guard', cat: 'life', title: 'AI防災パーソナルガイド', sub: '避難ルート × 備蓄最適化', icon: Shield, plan: 'スタンダード' },
+  { id: 'comp-price-monitor', cat: 'hotel', title: '競合AI価格監視', sub: '楽天API連携 × 価格最適化OS', icon: LineChart, plan: 'プレミアム' },
+  { id: 'hotel-affiliate', cat: 'hotel', title: '宿紹介AIアフィリエイター', sub: '宿紹介 × 楽天収益化OS', icon: Network, plan: 'スタンダード' },
+  { id: 'ai-report-generator', cat: 'biz', title: 'AIプロフェッショナル報告書', sub: '箇条書きからプロ級文書生成', icon: FileText, plan: '無料' }
 ]
 
 const CATEGORIES = [
