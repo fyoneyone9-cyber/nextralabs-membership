@@ -24,7 +24,7 @@ export default function HomePage() {
           <Badge variant="outline" className="px-3 py-0.5 text-[10px] font-black text-emerald-500 border-emerald-500/20 uppercase mb-6">Nextra Labs AIプラットフォーム</Badge>
           <h1 className="text-4xl md:text-8xl font-black text-white italic tracking-tighter mb-6 leading-none uppercase">AIツールで<br /><span className="bg-gradient-to-r from-emerald-400 to-teal-500 bg-clip-text text-transparent">業務を自動化</span></h1>
           <p className="text-sm md:text-xl text-slate-400 max-w-xl mx-auto mb-8 font-bold italic">「指示したら、あとは全部やってくれる」全24の戦略的エンジン。</p>
-          <Link href="/products" className="inline-block"><Button size="lg" className="px-12 h-16 bg-emerald-500 text-slate-950 font-black rounded-2xl">🔥 ツール一覧を見る</Button></Link>
+          <Link href="/products" className="inline-block"><Button size="lg" className="px-12 h-24 bg-emerald-500 text-slate-950 font-black rounded-2xl text-4xl md:text-5xl uppercase italic tracking-tighter shadow-[0_0_50px_rgba(16,185,129,0.4)] transition-transform hover:scale-105 active:scale-95">🔥 ツール一覧を見る</Button></Link>
         </div>
       </section>
 
