@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { 
   PenLine, MessageSquare, Building, Lock, Monitor, Video, Car, FileBarChart, 
-  Settings, Users, Database, LogOut, LayoutDashboard, ChevronDown, Menu, X, ArrowRight, Search, RefreshCw, Download, Plus, Moon, Sun, Edit3, Loader2
+  Settings, Users, Database, LogOut, LayoutDashboard, ChevronDown, Menu, X, ArrowRight, Search, RefreshCw, Download, Plus, Moon, Sun, Edit3, Loader2, ChevronRight, Info
 } from 'lucide-react'
 import DmsBookingEditor from './DmsBookingEditor'
 import DmsPropertyEditor from './DmsPropertyEditor'
@@ -28,6 +28,8 @@ const SETTINGS_MENU = [
   { id: 'lock-settings', label: 'ロック設定', icon: Lock },
 ];
 
+const PMS_TYPES = ['Beds24', 'Staysee', 'イージー会計', 'shs', 'suitebook', 'AIRHOST'];
+
 export default function DmsEngine() {
   const [session, setSession] = useState<any>(null);
   const [mounted, setMounted] = useState(false);
@@ -42,10 +44,18 @@ export default function DmsEngine() {
   const [pmsList, setPmsList] = useState<any[]>([]);
   const [isCloudSyncing, setIsCloudSyncing] = useState(false);
 
+  // フォーム用State
+  const [newPms, setNewPms] = useState({
+    type: '',
+    status: '有効',
+    apiKey: '',
+    memo: ''
+  });
+
   // Staysee APIから予約一覧を取得
   const fetchStayseeBookings = async () => {
-    // クラウドまたは最新のpmsListから有効設定を確認
-    const list = pmsList.length > 0 ? pmsList : JSON.parse(localStorage.getItem('dms_pms_list') || '[]');
+    const savedPms = typeof window !== 'undefined' ? localStorage.getItem('dms_pms_list') : null;
+    const list = savedPms ? JSON.parse(savedPms) : [];
     const activeStaysee = list.find((p: any) => p.type === 'Staysee' && p.status === '有効');
     
     if (!activeStaysee) {
@@ -79,36 +89,29 @@ export default function DmsEngine() {
     }
 
     const initData = async () => {
-      // 1. クラウド(Supabase)から取得を試みる
       const cloudList = await CloudPmsStorage.fetchList();
-      
       if (cloudList && cloudList.length > 0) {
         setPmsList(cloudList);
         localStorage.setItem('dms_pms_list', JSON.stringify(cloudList));
       } else {
-        // 2. ローカルから復元
         const savedPms = localStorage.getItem('dms_pms_list');
         if (savedPms) {
           setPmsList(JSON.parse(savedPms));
         } else {
-          // 初期データ
           const initial = [{ id: 'staysee-1', type: 'Staysee', status: '有効', memo: 'メインPMS連携（API開通済み）', apiKey: 'sk_b54ca47f884c30d98dc429d3cbbbc29c' }];
           setPmsList(initial);
           localStorage.setItem('dms_pms_list', JSON.stringify(initial));
-          CloudPmsStorage.saveList(initial); // 初回クラウド保存
+          CloudPmsStorage.saveList(initial);
         }
       }
       fetchStayseeBookings();
     };
-
     initData();
   }, []);
 
-  // pmsListが更新されるたびに保存（クラウド+ローカル）
   useEffect(() => {
     if (mounted && pmsList.length > 0) {
       localStorage.setItem('dms_pms_list', JSON.stringify(pmsList));
-      // クラウド保存は重いためデバウンス的に扱うか、明示的な保存を検討
       const sync = async () => {
         setIsCloudSyncing(true);
         await CloudPmsStorage.saveList(pmsList);
@@ -128,6 +131,17 @@ export default function DmsEngine() {
     }
   };
 
+  const handleSavePms = () => {
+    if (!newPms.type || !newPms.apiKey) {
+      alert('種別とAPIキーは必須です');
+      return;
+    }
+    const item = { ...newPms, id: Date.now().toString() };
+    setPmsList(prev => [...prev, item]);
+    setPmsView('list');
+    setNewPms({ type: '', status: '有効', apiKey: '', memo: '' });
+  };
+
   if (!mounted) return null;
 
   const NavItem = ({ item, isSub = false }: { item: any, isSub?: boolean }) => (
@@ -144,12 +158,10 @@ export default function DmsEngine() {
     </button>
   );
 
-  const themeClass = "bg-[#050507] text-slate-200 dark";
-  const cardClass = "bg-[#13141f] border-white/5 shadow-2xl";
   const headerClass = "bg-[#0a0b14] border-white/5";
 
   return (
-    <div className={"min-h-screen font-sans flex flex-col md:flex-row overflow-hidden " + themeClass}>
+    <div className="min-h-screen font-sans flex flex-col md:flex-row overflow-hidden bg-[#050507] text-slate-200 dark">
       
       {/* サイドナビゲーション */}
       <aside className={"fixed inset-y-0 left-0 z-50 w-64 border-r flex flex-col transform transition-transform md:relative md:translate-x-0 " + headerClass + (isMobileMenuOpen ? " translate-x-0" : " -translate-x-full")}>
@@ -159,7 +171,6 @@ export default function DmsEngine() {
             <span className="text-lg font-black tracking-tighter uppercase">Nextra AI DMS</span>
           </div>
         </div>
-        
         <nav className="flex-1 py-4 overflow-y-auto">
           {MENU_ITEMS.map(item => <NavItem key={item.id} item={item} />)}
           <div className="mt-2">
@@ -181,22 +192,145 @@ export default function DmsEngine() {
         <header className={"h-14 border-b px-6 flex items-center justify-between sticky top-0 z-40 shadow-sm " + headerClass}>
           <div className="flex items-center gap-4">
              <button className="md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}><Menu size={20} /></button>
-             <h2 className="text-base font-bold uppercase tracking-wider">
-               {([...MENU_ITEMS, ...SETTINGS_MENU].find(i => i.id === activeTab))?.label}
-             </h2>
+             <div className="flex items-center gap-2 text-slate-500 text-xs font-bold uppercase tracking-widest">
+               <Settings size={14} />
+               <span>PMS設定</span>
+               {pmsView === 'create' && <><ChevronRight size={12} /> <span className="text-white">新規登録</span></>}
+             </div>
           </div>
           <div className="flex items-center gap-3">
             {isCloudSyncing && <div className="flex items-center gap-1.5 px-3 py-1 bg-white/5 rounded-full border border-white/5 animate-pulse"><RefreshCw size={10} className="animate-spin text-emerald-500" /><span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Cloud Syncing</span></div>}
-            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-8 rounded-lg text-xs px-4"><Plus size={14} className="mr-1" />新規登録</Button>
+            <Button onClick={() => setPmsView('create')} size="sm" className="bg-[#5c59cc] hover:bg-[#4a47a3] text-white font-bold h-8 rounded-lg text-xs px-4"><Plus size={14} className="mr-1" />新規登録</Button>
           </div>
         </header>
 
         <div className="p-6 overflow-y-auto space-y-6">
-          
-          {/* チェックイン一覧 */}
+          {activeTab === 'pms-settings' && (
+            <div className="space-y-6 animate-in fade-in duration-500">
+              {pmsView === 'list' ? (
+                <>
+                  <div className="flex justify-between items-center bg-[#0a0b14] border border-white/5 p-4 rounded-xl shadow-2xl">
+                    <div className="flex items-center gap-4">
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
+                        <input placeholder="検索" className="pl-10 pr-4 py-2 bg-black/40 border border-white/10 rounded-full text-xs w-64 outline-none focus:border-emerald-500 transition-all" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <Card className="bg-[#0a0b14] border-white/5 rounded-xl shadow-2xl overflow-hidden min-h-[500px]">
+                    <table className="w-full text-left text-[11px]">
+                      <thead className="bg-black/40 text-slate-500 font-bold border-b border-white/5">
+                        <tr>
+                          <th className="p-5">種別</th>
+                          <th className="p-5">有効/無効</th>
+                          <th className="p-5">管理用メモ</th>
+                          <th className="p-5 text-right">操作</th>
+                        </tr>
+                      </thead>
+                      <tbody className="text-slate-300">
+                        {pmsList.length > 0 ? pmsList.map((p) => (
+                          <tr key={p.id} className="border-b border-white/5 hover:bg-white/5 transition-colors group">
+                            <td className="p-5 font-black text-sm italic">{p.type}</td>
+                            <td className="p-5">
+                              <Badge className={p.status === '有効' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/20' : 'bg-slate-800 text-slate-500'}>
+                                {p.status}
+                              </Badge>
+                            </td>
+                            <td className="p-5 text-slate-500 font-medium">{p.memo}</td>
+                            <td className="p-5 text-right space-x-2">
+                              <Button variant="outline" size="sm" onClick={() => togglePmsStatus(p.id)} className="text-[10px] h-8 px-4 border-white/10 bg-white/5 hover:bg-white/10 text-slate-300">
+                                {p.status === '有効' ? '無効にする' : '有効にする'}
+                              </Button>
+                              <Button variant="ghost" size="sm" onClick={() => deletePms(p.id)} className="text-red-500 hover:bg-red-500/10 h-8 px-2">
+                                <X size={16} />
+                              </Button>
+                            </td>
+                          </tr>
+                        )) : (
+                          <tr><td colSpan={4} className="p-40 text-center text-slate-600 font-black uppercase tracking-[0.3em] italic opacity-20 text-2xl">No Data</td></tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </Card>
+                </>
+              ) : (
+                <div className="max-w-5xl mx-auto space-y-6 animate-in slide-in-from-right-4 duration-500">
+                  <Card className="bg-[#0a0b14] border-white/5 rounded-[2rem] p-12 shadow-2xl space-y-12">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1 ml-1">種別<span className="text-red-500">*</span></label>
+                        <select 
+                          value={newPms.type}
+                          onChange={e => setNewPms({...newPms, type: e.target.value})}
+                          className="w-full bg-black/40 border-b-2 border-white/10 py-3 text-lg font-bold text-white outline-none focus:border-[#5c59cc] transition-all appearance-none"
+                        >
+                          <option value="" className="bg-[#0a0b14]">選択してください</option>
+                          {PMS_TYPES.map(t => <option key={t} value={t} className="bg-[#0a0b14]">{t}</option>)}
+                        </select>
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1 ml-1">有効/無効<span className="text-red-500">*</span></label>
+                        <select 
+                          value={newPms.status}
+                          onChange={e => setNewPms({...newPms, status: e.target.value})}
+                          className="w-full bg-black/40 border-b-2 border-white/10 py-3 text-lg font-bold text-white outline-none focus:border-[#5c59cc] transition-all appearance-none"
+                        >
+                          <option value="有効" className="bg-[#0a0b14]">有効</option>
+                          <option value="無効" className="bg-[#0a0b14]">無効</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1 ml-1">サイトAPIキー<span className="text-red-500">*</span></label>
+                      <input 
+                        type="password"
+                        value={newPms.apiKey}
+                        onChange={e => setNewPms({...newPms, apiKey: e.target.value})}
+                        placeholder="••••••••••••••••"
+                        className="w-full bg-black/40 border-b-2 border-white/10 py-3 text-xl font-mono text-white outline-none focus:border-[#5c59cc] transition-all placeholder:text-slate-800"
+                      />
+                    </div>
+
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">管理用メモ(任意)</label>
+                      <textarea 
+                        rows={3} 
+                        value={newPms.memo}
+                        onChange={e => setNewPms({...newPms, memo: e.target.value})}
+                        className="w-full bg-black/40 border-2 border-white/5 rounded-2xl p-6 text-sm font-medium text-white outline-none focus:border-[#5c59cc] transition-all" 
+                      />
+                    </div>
+
+                    <div className="p-8 bg-emerald-500/5 border border-emerald-500/10 rounded-3xl space-y-6">
+                      {[
+                        '【設定ガイド】',
+                        '【PMS→スマートチェックイン(同期)の仕様】',
+                        '【スマートチェックイン→PMS(チェックイン情報等の連携)の仕様】'
+                      ].map(text => (
+                        <div key={text} className="group cursor-pointer">
+                          <p className="text-xs font-black text-emerald-500/60 group-hover:text-emerald-400 transition-colors uppercase tracking-widest flex items-center gap-2">
+                             <Info size={14} /> {text}
+                          </p>
+                          <div className="h-px w-8 bg-white/10 mt-2 group-hover:w-16 transition-all" />
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex justify-end gap-6 pt-10 border-t border-white/5">
+                      <Button onClick={() => setPmsView('list')} variant="ghost" className="px-12 h-14 rounded-2xl font-black text-slate-500 hover:text-white uppercase tracking-widest">Cancel</Button>
+                      <Button onClick={handleSavePms} className="px-16 h-14 rounded-2xl bg-[#5c59cc] hover:bg-[#4a47a3] text-white font-black uppercase italic tracking-tighter shadow-2xl shadow-indigo-500/20 transition-all active:scale-95">💾 Save Settings</Button>
+                    </div>
+                  </Card>
+                </div>
+              )}
+            </div>
+          )}
+
           {activeTab === 'checkin' && (
-            <Card className={"rounded-xl overflow-hidden border " + cardClass}>
-              <div className="p-4 bg-black/10 flex justify-between items-center border-b border-inherit">
+            <Card className="bg-[#0a0b14] border-white/5 rounded-xl shadow-2xl overflow-hidden min-h-[600px]">
+              <div className="p-4 bg-black/10 flex justify-between items-center border-b border-white/5">
                 <div className="flex gap-2">
                   <Badge variant="outline" className="text-emerald-500 border-emerald-500/30 font-black">本日</Badge>
                   <Badge variant="outline" className="opacity-50">明日</Badge>
@@ -216,7 +350,7 @@ export default function DmsEngine() {
                     <th className="p-4 text-right">詳細</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y border-inherit text-slate-300">
+                <tbody className="divide-y border-white/5 text-slate-300">
                   {loadingBookings ? (
                     <tr><td colSpan={9} className="p-20 text-center"><Loader2 className="animate-spin mx-auto text-emerald-500" /></td></tr>
                   ) : bookings.length > 0 ? (
@@ -230,195 +364,45 @@ export default function DmsEngine() {
                         <td className="p-4 font-bold text-white text-xs">ビジネスホテルアップル</td>
                         <td className="p-4 font-black text-emerald-500 text-xs">Room {booking.allocate_rooms?.[0]?.room_id || 'TBA'}</td>
                         <td className="p-4">
-                          <Link 
-                            href={`/dms/bookings/${booking.id}`}
-                            className="text-indigo-400 font-black hover:underline text-sm uppercase tracking-tight text-left block"
-                          >
-                            {booking.name_kanji}
-                          </Link>
+                          <Link href={`/dms/bookings/${booking.id}`} className="text-indigo-400 font-black hover:underline text-sm uppercase tracking-tight block">{booking.name_kanji}</Link>
                         </td>
                         <td className="p-4 text-[10px] font-bold text-slate-500">STAYSEE</td>
                         <td className="p-4 text-[10px] font-bold text-slate-400">{booking.start_date}</td>
                         <td className="p-4 text-[10px] font-bold text-slate-400">{booking.end_date}</td>
                         <td className="p-4 text-[10px] font-mono text-slate-500">{booking.tel}</td>
-                        <td className="p-4 text-right">
-                          <Link href={`/dms/bookings/${booking.id}`}>
-                            <Button variant="ghost" size="sm" className="text-emerald-500 hover:bg-emerald-500/10">
-                              <ArrowRight size={16} />
-                            </Button>
-                          </Link>
-                        </td>
+                        <td className="p-4 text-right"><Link href={`/dms/bookings/${booking.id}`}><Button variant="ghost" size="sm" className="text-emerald-500 hover:bg-emerald-500/10"><ArrowRight size={16} /></Button></Link></td>
                       </tr>
                     ))
                   ) : (
-                    <tr><td colSpan={9} className="p-20 text-center text-slate-500 font-bold uppercase tracking-widest italic">No Data from Staysee</td></tr>
+                    <tr><td colSpan={9} className="p-20 text-center text-slate-600 font-black uppercase tracking-[0.3em] italic opacity-20 text-2xl">No Data</td></tr>
                   )}
                 </tbody>
               </table>
             </Card>
           )}
 
-          {/* 物件一覧 */}
           {activeTab === 'property' && (
-            <Card className={"rounded-xl overflow-hidden border " + cardClass}>
+            <Card className="bg-[#0a0b14] border-white/5 rounded-xl shadow-2xl overflow-hidden min-h-[400px]">
                 <table className="w-full text-left text-xs">
                   <thead className="bg-black/50 text-slate-500">
                     <tr><th className="p-4">物件名</th><th className="p-4">PMS</th><th className="p-4 text-center">操作</th></tr>
                   </thead>
-                  <tbody className="divide-y border-inherit">
+                  <tbody className="divide-y border-white/5">
                     <tr className="hover:bg-emerald-500/5 transition-colors">
                       <td className="p-6 font-black text-indigo-400">ビジネスホテルアップル</td>
                       <td className="p-6">Staysee</td>
                       <td className="p-6 text-center">
-                        <Button size="sm" className="bg-indigo-600" onClick={() => setEditingProperty({ name: 'ビジネスホテルアップル' })}>
-                          <PenLine size={14} />
-                        </Button>
+                        <Button size="sm" className="bg-indigo-600" onClick={() => setEditingProperty({ name: 'ビジネスホテルアップル' })}><PenLine size={14} /></Button>
                       </td>
                     </tr>
                   </tbody>
                 </table>
             </Card>
           )}
-
-          {/* PMS設定画面 */}
-          {activeTab === 'pms-settings' && (
-            <div className="space-y-6">
-              {pmsView === 'list' ? (
-                <>
-                  <div className="flex justify-between items-center bg-white border border-gray-200 p-3 rounded shadow-sm">
-                    <div className="flex items-center gap-2">
-                      <Settings size={14} className="text-gray-500" />
-                      <span className="text-sm font-bold text-gray-700 uppercase">PMS設定</span>
-                      <div className="relative ml-4">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
-                        <input placeholder="検索" className="pl-10 pr-4 py-1.5 border border-gray-300 rounded-full text-xs w-64 outline-none focus:ring-1 ring-indigo-500 bg-white text-black" />
-                      </div>
-                    </div>
-                    <Button 
-                      onClick={() => setPmsView('create')}
-                      className="bg-[#5c59cc] hover:bg-[#4a47a3] text-white font-bold h-8 rounded text-xs px-4"
-                    >
-                      <Plus size={14} className="mr-1" /> 新規登録
-                    </Button>
-                  </div>
-
-                  <Card className="bg-white border-gray-200 rounded shadow-sm overflow-hidden min-h-[400px]">
-                    <table className="w-full text-left text-[11px]">
-                      <thead className="bg-[#f8f9fa] text-gray-500 font-bold border-b">
-                        <tr>
-                          <th className="p-4">種別</th>
-                          <th className="p-4">有効/無効</th>
-                          <th className="p-4">管理用メモ</th>
-                          <th className="p-4 text-right">操作</th>
-                        </tr>
-                      </thead>
-                      <tbody className="text-slate-900">
-                        {pmsList.length > 0 ? pmsList.map((p) => (
-                          <tr key={p.id} className="border-b hover:bg-slate-50">
-                            <td className="p-4 font-bold">{p.type}</td>
-                            <td className="p-4">
-                              <Badge className={p.status === '有効' ? 'bg-emerald-500 text-white' : 'bg-slate-300 text-slate-600'}>
-                                {p.status}
-                              </Badge>
-                            </td>
-                            <td className="p-4 text-slate-500">{p.memo}</td>
-                            <td className="p-4 text-right space-x-2">
-                              <Button variant="outline" size="sm" onClick={() => togglePmsStatus(p.id)} className="text-[10px] h-7 px-3 border-slate-200 text-slate-600">
-                                {p.status === '有効' ? '無効にする' : '有効にする'}
-                              </Button>
-                              <Button variant="ghost" size="sm" onClick={() => deletePms(p.id)} className="text-red-500 hover:bg-red-50 hover:text-red-600 h-7 px-2">
-                                <X size={14} />
-                              </Button>
-                            </td>
-                          </tr>
-                        )) : (
-                          <tr>
-                            <td colSpan={4} className="p-20 text-center text-gray-400 font-bold uppercase tracking-widest">
-                              データはありません。
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </Card>
-                </>
-              ) : (
-                <div className="space-y-6 animate-in fade-in duration-300">
-                  <div className="flex items-center gap-2 text-sm font-bold text-gray-600 bg-white p-3 border rounded shadow-sm">
-                    <Settings size={14} />
-                    <span>PMS設定</span>
-                    <ChevronRight size={14} className="text-gray-400" />
-                    <span className="text-gray-900">新規登録</span>
-                  </div>
-
-                  <Card className="bg-white border-gray-200 rounded shadow-sm p-10 space-y-10">
-                    <div className="grid grid-cols-2 gap-12 text-black">
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-gray-500 flex items-center gap-1">種別<span className="text-red-500">*</span></label>
-                        <select className="w-full bg-white border-b border-gray-300 py-2 text-sm outline-none focus:border-indigo-500">
-                          <option value="">選択してください</option>
-                          <option value="Staysee">Staysee</option>
-                          <option value="Beds24">Beds24</option>
-                        </select>
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-gray-500">有効/無効(無効にすると同期等が行われなくなります)<span className="text-red-500">*</span></label>
-                        <select className="w-full bg-white border-b border-gray-300 py-2 text-sm outline-none focus:border-indigo-500">
-                          <option value="有効">有効</option>
-                          <option value="無効">無効</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2 text-black">
-                      <label className="text-[10px] font-bold text-gray-500">サイトAPIキー<span className="text-red-500">*</span></label>
-                      <input type="text" className="w-full bg-white border-b border-gray-300 py-2 text-sm outline-none focus:border-indigo-500" />
-                    </div>
-
-                    <div className="space-y-2 text-black">
-                      <label className="text-[10px] font-bold text-gray-500">管理用メモ(任意)</label>
-                      <textarea rows={4} className="w-full border border-gray-200 rounded p-4 text-sm outline-none focus:border-indigo-500 bg-white" />
-                    </div>
-
-                    <div className="border border-teal-600/30 rounded p-6 bg-teal-50/10 space-y-4">
-                      {[
-                        '【設定ガイド】',
-                        '【PMS→スマートチェックイン(同期)の仕様】',
-                        '【スマートチェックイン→PMS(チェックイン情報等の連携)の仕様】'
-                      ].map(text => (
-                        <div key={text} className="space-y-1">
-                          <p className="text-xs font-bold text-teal-700 hover:underline cursor-pointer">{text}</p>
-                          <div className="h-px w-8 bg-gray-300 ml-2" />
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="flex justify-end gap-3 pt-6 border-t">
-                      <Button onClick={() => setPmsView('list')} variant="outline" className="px-10 h-10 rounded font-bold text-xs">キャンセル</Button>
-                      <Button onClick={() => setPmsView('list')} className="px-12 h-10 rounded bg-[#5c59cc] text-white font-black text-xs">保存する</Button>
-                    </div>
-                  </Card>
-                </div>
-              )}
-            </div>
-          )}
         </div>
 
-        {/* モーダル表示エリア */}
-        {editingBooking && (
-          <DmsBookingEditor 
-            booking={editingBooking} 
-            isDarkMode={true} 
-            onClose={() => setEditingBooking(null)} 
-          />
-        )}
-        {editingProperty && (
-          <DmsPropertyEditor 
-            property={editingProperty} 
-            isDarkMode={true} 
-            onClose={() => setEditingProperty(null)} 
-          />
-        )}
+        {editingBooking && <DmsBookingEditor booking={editingBooking} isDarkMode={true} onClose={() => setEditingBooking(null)} />}
+        {editingProperty && <DmsPropertyEditor property={editingProperty} isDarkMode={true} onClose={() => setEditingProperty(null)} />}
       </main>
     </div>
   )
