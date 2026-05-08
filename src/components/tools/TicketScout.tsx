@@ -43,12 +43,13 @@ export default function TicketScout() {
     setAiAdvice(null);
     try {
       // プレイガイド情報の検索
-      const res = await fetch('/api/tools/ticket-scout', {
+      const res = await fetch('/api/ticket-scout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ artist: artistName, googleAccessToken: googleToken }),
+        body: JSON.stringify({ artist: artistName, accessToken: googleToken }),
       });
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'API Error');
       setResults(data.events || []);
 
       // AIによる独自の情報収集とアドバイス生成
