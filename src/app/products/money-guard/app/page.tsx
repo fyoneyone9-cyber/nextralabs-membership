@@ -196,9 +196,9 @@ export default function MoneyGuardApp() {
                     <Zap size={16} />
                     <span className="text-[10px] font-black uppercase tracking-widest">Optimized Prompt</span>
                   </div>
-                  <button onClick={copyToClipboard} className="flex items-center gap-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 px-4 py-2 rounded-xl border border-emerald-500/20 transition-all">
-                    {copySuccess ? <CheckCircle2 size={16} /> : <Copy size={16} />}
-                    <span className="text-[10px] font-black uppercase">{copySuccess ? 'Copied!' : 'Copy'}</span>
+                  <button onClick={copyToClipboard} className="flex items-center gap-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-8 py-4 rounded-2xl border-2 border-emerald-400/50 shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all active:scale-95 group/btn">
+                    {copySuccess ? <CheckCircle2 size={24} className="animate-bounce" /> : <Copy size={24} />}
+                    <span className="text-sm font-black uppercase tracking-tighter">{copySuccess ? 'Copied!' : 'Copy Prompt'}</span>
                   </button>
                 </div>
                 <div className="max-h-[300px] overflow-y-auto pr-4 text-sm text-slate-300 font-medium leading-relaxed whitespace-pre-wrap font-mono custom-scrollbar">
