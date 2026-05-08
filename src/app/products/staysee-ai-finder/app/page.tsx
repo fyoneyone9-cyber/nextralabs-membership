@@ -17,9 +17,9 @@ type Step = 'start' | 'lang' | 'type' | 'search' | 'identity' | 'form' | 'confir
 const TRANSLATIONS: any = {
   ja: { search: '予約検索', identity: '本人確認', form: '名簿記入', confirm: '最終確認', payment: '完了', restart: '最初からやり直す', finish: 'チェックイン完了', welcome: 'ごゆっくりお過ごしください', room: 'お部屋番号 / 鍵番号', back: 'TOPへ戻る' },
   en: { search: 'Search', identity: 'Verify', form: 'Register', confirm: 'Confirm', payment: 'Finish', restart: 'Restart', finish: 'Check-in Complete', welcome: 'Have a pleasant stay', room: 'Room / Key Number', back: 'Back to Top' },
-  'zh-cn': { search: '搜索预约', identity: '身份验证', form: '填写登记', confirm: '最终确认', payment: '完成', restart: '重新开始', finish: '入住完成', welcome: '祝您入住愉快', room: '房号 / 钥匙号码', back: '返回首页' },
+  'zh-cn': { search: '搜索预约', identity: '身份验证', form: '填写登记', confirm: '最終確認', payment: '完成', restart: '重新开始', finish: '入住完成', welcome: '祝您入住愉快', room: '房号 / 钥匙号码', back: '返回首页' },
   'zh-tw': { search: '搜尋預約', identity: '身份驗證', form: '填寫登記', confirm: '最終確認', payment: '完成', restart: '重新開始', finish: '入住完成', welcome: '祝您入住愉快', room: '房號 / 鑰匙號碼', back: '返回首頁' },
-  ko: { search: '예약 검색', identity: '본인 확인', form: '명부 작성', confirm: '최종 확인', payment: '완료', restart: '처음부터', finish: '체크イン 완료', welcome: '편안한 시간 되세요', room: '객실 번호 / 키 번호', back: 'TOP으로' },
+  ko: { search: '예약 검색', identity: '본인 확인', form: '명부 작성', confirm: '최종 확인', payment: '완료', restart: '처음부터', finish: '체크인 완료', welcome: '편안한 시간 되세요', room: '객실 번号 / 키 번호', back: 'TOP으로' },
   th: { search: 'ค้นหา', identity: 'ยืนยันตัวตน', form: 'ลงทะเบียน', confirm: 'ยืนยัน', payment: 'เสร็จสิ้น', restart: 'เริ่มใหม่', finish: 'เช็คอินเสร็จสมบูรณ์', welcome: 'ขอให้มีความสุขกับการพักผ่อน', room: 'หมายเลขห้อง / รหัสผ่าน', back: 'กลับสู่หน้าแรก' },
   vi: { search: 'Tìm kiếm', identity: 'Xác minh', form: 'Đăng ký', confirm: 'Xác nhận', payment: 'Hoàn tất', restart: 'Bắt đầu lại', finish: 'Nhận phòng hoàn tất', welcome: 'Chúc quý khách một kỳ nghỉ vui vẻ', room: 'Số phòng / Mã khóa', back: 'Quay lại' },
   id: { search: 'Cari Reservasi', identity: 'Verifikasi', form: 'Registrasi', confirm: 'Konfirmasi', payment: 'Selesai', restart: 'Mulai Ulang', finish: 'Check-in Selesai', welcome: 'Semoga istirahat Anda menyenangkan', room: 'Nomor Kamar / PIN', back: 'Kembali' },
@@ -30,7 +30,7 @@ const TRANSLATIONS: any = {
   pt: { search: 'Buscar', identity: 'Verificar', form: 'Registrar', confirm: 'Confirmar', payment: 'Concluir', restart: 'Reiniciar', finish: 'Check-in concluído', welcome: 'Tenha uma boa estadia', room: 'Número do quarto / Chave', back: 'Voltar' },
   ru: { search: 'Поиск', identity: 'Проверка', form: 'Регистрация', confirm: 'Подтвердить', payment: 'Готово', restart: 'Начать сначала', finish: 'Регистрация завершена', welcome: 'Приятного отдыха', room: 'Номер комнаты / Код', back: 'На главную' },
   ar: { search: 'بحث', identity: 'تحقق', form: 'تسجيل', confirm: 'تأكيد', payment: 'إنهاء', restart: 'إعادة تشغيل', finish: 'اكتمل تسجيل الدخول', welcome: 'إقامة سعيدة', room: 'رقم الغرفة / رمز القفل', back: 'العودة' },
-  hi: { search: 'खोजें', identity: 'सत्यापन', form: 'पंजीकरण', confirm: 'पुष्टि करें', payment: 'समाप्त', restart: 'पुनः आरंभ करें', finish: 'चेクイン पूरा हुआ', welcome: 'आपका प्रवास सुखद हो', room: 'कमरा नंबर / कोड', back: 'वापस जाएं' },
+  hi: { search: 'खोजें', identity: 'सत्यापन', form: 'पंजीकरण', confirm: 'पुष्टि करें', payment: 'समाप्त', restart: 'पुनः आरंभ करें', finish: 'चेक-イン पूरा हुआ', welcome: 'आपका प्रवास सुखद हो', room: 'कमरा नंबर / कोड', back: 'वापस जाएं' },
 };
 
 const StayseeAppPage = () => {
@@ -110,7 +110,7 @@ const StayseeAppPage = () => {
       </header>
 
       <main className="flex-1 flex flex-col items-center justify-center px-10 pb-40 relative">
-        <div className="w-full max-w-6xl">
+        <div className="w-full max-w-7xl">
           {step === 'start' && <StartScreen onNext={() => setStep('lang')} />}
           {step === 'lang' && <LanguageSelect onNext={(lang: string) => { setSelectedLang(lang); setStep('type'); }} />}
           {step === 'type' && <CheckInOutSelect onNext={(type: string) => type === 'checkin' ? setStep('search') : alert('Coming Soon')} />}
@@ -152,7 +152,7 @@ const StayseeAppPage = () => {
                 <h2 className="text-5xl font-black mb-4 tracking-tight">{t.finish}</h2>
                 <p className="text-xl opacity-80 uppercase tracking-widest">Registration Complete</p>
               </div>
-              <div className="bg-white rounded-[40px] p-10 max-w-md mx-auto shadow-2xl text-slate-800">
+              <div className="bg-white rounded-[40px] p-10 max-md mx-auto shadow-2xl text-slate-800">
                 <p className="text-slate-400 font-bold mb-2 uppercase tracking-widest text-sm">{t.room}</p>
                 <p className="text-7xl font-black text-emerald-500 tracking-tighter">302 / 8824</p>
               </div>
