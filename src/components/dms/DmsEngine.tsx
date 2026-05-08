@@ -111,9 +111,16 @@ export default function DmsEngine() {
     <div className="min-h-screen font-sans flex flex-col md:flex-row overflow-hidden bg-[#050507] text-slate-200 dark">
       <aside className="fixed inset-y-0 left-0 z-50 w-64 border-r border-white/5 bg-[#0a0b14] flex flex-col transform transition-transform md:relative md:translate-x-0">
         <div className="p-6 border-b border-white/5 flex flex-col gap-1">
-          <div className="flex items-center gap-3 text-emerald-500">
-             <Calendar size={14} className="animate-pulse" />
-             <span className="text-xl font-black italic tracking-tighter uppercase">{currentDate}</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 text-emerald-500">
+               <Calendar size={14} className="animate-pulse" />
+               <span className="text-xl font-black italic tracking-tighter uppercase">{currentDate}</span>
+            </div>
+            {pmsList.some(p => p.type === 'Staysee' && p.status === '有効') ? (
+              <Badge className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[8px] font-black animate-pulse">PMS LIVE</Badge>
+            ) : (
+              <Badge className="bg-red-500/20 text-red-400 border border-red-500/30 text-[8px] font-black">PMS OFF</Badge>
+            )}
           </div>
           <div className="flex items-center gap-2 mt-2">
              <Badge className="bg-indigo-500/20 text-indigo-400 border-none text-[10px] font-black">14</Badge>
@@ -146,11 +153,14 @@ export default function DmsEngine() {
         <header className="h-16 border-b border-white/5 bg-[#0a0b14] px-6 flex items-center justify-between sticky top-0 z-40 shadow-sm">
           <div className="flex items-center gap-4">
              <button className="md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}><Menu size={20} /></button>
-             <div className="flex items-center gap-2 text-slate-500 text-xs font-black uppercase tracking-widest">
+             <h2 className="text-xl font-black italic uppercase tracking-tighter flex items-center gap-3">
                {activeTab === 'lock-list' && <Lock size={14} className="text-emerald-500 mr-1" />}
-               <span>{activeTab === 'lock-list' ? '錠デバイス一覧' : 'DMS Engine'}</span>
+               <span>{activeTab === 'lock-list' ? '錠デバイス一覧' : activeTab === 'property' ? '物件一覧' : 'チェックイン一覧'}</span>
+               {pmsList.some(p => p.type === 'Staysee' && p.status === '有効') && (
+                 <Badge variant="outline" className="ml-4 border-emerald-500/50 text-emerald-500 font-black text-[9px] px-2 py-0">SYNCING WITH STAYSEE</Badge>
+               )}
                {activeTab === 'lock-list' && lockView === 'create' && <><ChevronRight size={12} /> <span className="text-white">(未入力)</span></>}
-             </div>
+             </h2>
           </div>
           <div className="flex items-center gap-3">
              {activeTab === 'lock-list' && lockView === 'list' && (
