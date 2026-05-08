@@ -19,9 +19,35 @@ import {
 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'AI問題生成 & 過去問分析',
-  description: 'ITパスポート・基本情報など試験範囲の過去問・予想問題をAIが無限生成。解いた結果からあなたの苦手分野を特定。',
-  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/ai-exam-generator' },
+  title: 'AI問題生成 & 過去問分析 | ITパスポート・基本情報対策の決定版 - NextraLabs',
+  description: '【2026年最新】ITパスポート・基本情報技術者試験の合格をAIが徹底サポート。過去問ベースの無限問題生成と、AIによる苦手分野の1%単位での分析で、最短ルートの合格力を。NextraLabsのMASTERMODEL品質。',
+  keywords: ['ITパスポート AI', '基本情報技術者試験 対策', 'AI問題生成', '過去問分析 アプリ', 'IT試験 効率学習', 'NextraLabs', 'Ninja3'],
+  openGraph: {
+    title: 'AI問題生成 & 過去問分析 | 最短合格を目指すAI併走型学習ツール',
+    description: 'もう過去問を解くだけの勉強は終わり。AIがあなたの弱点を特定し、最適な問題を無限に生成します。',
+    url: 'https://membership-site-nextralabos.vercel.app/products/ai-exam-generator',
+    siteName: 'NextraLabs',
+    images: [
+      {
+        url: 'https://membership-site-nextralabos.vercel.app/og-exam.png',
+        width: 1200,
+        height: 630,
+        alt: 'AI問題生成 & 過去問分析',
+      },
+    ],
+    locale: 'ja_JP',
+    type: 'article',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI問題生成 & 過去問分析 | 最短合格を目指すAI併走型学習ツール',
+    description: 'AIがあなたの苦手分野を特定。ITパスポート・基本情報の合格力を最大化。',
+    images: ['https://membership-site-nextralabos.vercel.app/og-exam.png'],
+    creator: '@NextraLabs',
+  },
+  alternates: { 
+    canonical: 'https://membership-site-nextralabos.vercel.app/products/ai-exam-generator' 
+  },
 }
 
 const examFeatures = [

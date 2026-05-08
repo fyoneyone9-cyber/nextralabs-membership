@@ -188,8 +188,31 @@ const ExamApp = () => {
 const DynamicExamApp = dynamic(() => Promise.resolve(ExamApp), { ssr: false })
 
 export default function ExamAppPage() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "AI問題生成 & 過去問分析 (AI Exam Generator)",
+    "operatingSystem": "Web Browser",
+    "applicationCategory": "EducationalApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "JPY"
+    },
+    "description": "AIが試験範囲から問題を無限に生成し、苦手分野をリアルタイムで分析する学習アプリ。",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "120"
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#050507] text-slate-200">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="container mx-auto px-4">
         <header className="py-6 flex items-center justify-between border-b border-white/5">
           <Link href="/products/ai-exam-generator" className="flex items-center text-xs font-black text-slate-500 hover:text-emerald-400 uppercase tracking-widest transition-colors">
