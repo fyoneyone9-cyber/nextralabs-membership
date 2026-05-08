@@ -22,7 +22,7 @@ const TOOLS = [
   { id: 'sns-auto-poster', cat: 'sns', title: 'AI SNSオートポスター', sub: 'バズを量産するマルチSNS生成', icon: Share2, plan: 'ライト' },
   { id: 'ai-select-shop', cat: 'sns', title: 'AIセレクトショップ', sub: 'トレンド解析とShopify連携', icon: Store, plan: 'プレミアム' },
   { id: 'youtube-producer', cat: 'sns', title: 'AI YouTubeプロデューサー', sub: '全自動台本・構成作成', icon: Clapperboard, plan: 'プレミアム' },
-  { id: 'trend-stock', cat: 'sns', title: 'Trend Stock', sub: 'バズ予測 × 楽天商品検索OS', icon: TrendingUp, plan: 'スタンダード' },
+  { id: 'trend-stock', cat: 'sns', title: 'Trend Stock', sub: 'バズ予測 × 楽天商品検索OS', icon: TrendingUp, plan: 'スタンダード', isHot: true },
   { id: 'youtube-coordinator', cat: 'sns', title: 'YouTube AI Sync', sub: '動画解析と楽天コーチ', icon: Play, plan: 'プレミアム' },
   { id: 'kdp-guide', cat: 'edu', title: 'Kindle出版完全ナビ', sub: '執筆から出版までの一気通貫', icon: BookOpen, plan: '無料' },
   { id: 'kindle-factory', cat: 'biz', title: 'Kindle AI ファクトリー', sub: 'AI解析でKDP入稿可能な原稿を自動生成', icon: Crown, plan: 'プレミアム' },
@@ -100,6 +100,11 @@ function ProductCard({ product, isFav, onToggleFav }: {
             </div>
             {product.title}
           </h3>
+          {product.isHot && (
+            <Badge className="bg-red-500/20 text-red-400 border-red-500/40 text-[8px] mb-2 animate-bounce">
+              🔥 急上昇トレンド
+            </Badge>
+          )}
           <p className="text-emerald-300 text-[10px] md:text-xs font-bold mb-2 italic">{product.sub}</p>
           <p className="text-white text-[10px] md:text-[11px] leading-relaxed mb-4 line-clamp-2 italic">{product.sub}を実現するソリューション。</p>
         </div>

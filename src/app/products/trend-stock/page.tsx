@@ -78,6 +78,9 @@ export default function TrendStockPage() {
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <TrendingUp className="text-emerald-500" />
             Trend Stock
+            <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 text-[10px] animate-pulse">
+              ● LIVE TREND
+            </Badge>
           </h1>
           <p className="text-muted-foreground">SNSトレンド×楽天急上昇から「今売れる」を自動仕入れ</p>
         </div>
