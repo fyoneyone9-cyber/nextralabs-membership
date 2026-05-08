@@ -35,13 +35,30 @@ export default function DmsEngine() {
   const [editingBooking, setEditingBooking] = useState<any>(null);
   const [editingProperty, setEditingProperty] = useState<any>(null);
   const [pmsView, setPmsView] = useState<'list' | 'create'>('list');
-  const [session, setSession] = useState(null);
-  const [mounted, setMounted] = useState(false);
+  const [bookings, setBookings] = useState<any[]>([]);
+  const [loadingBookings, setLoadingBookings] = useState(false);
+
+  // Staysee APIから予約一覧を取得
+  const fetchStayseeBookings = async () => {
+    setLoadingBookings(true);
+    try {
+      const res = await fetch('/api/staysee/reservations?date=2026-05-08');
+      const data = await res.json();
+      if (data.reservations) {
+        setBookings(data.reservations);
+      }
+    } catch (e) {
+      console.error('Staysee fetch error:', e);
+    } finally {
+      setLoadingBookings(false);
+    }
+  };
 
   useEffect(() => {
     setMounted(true);
     const data = localStorage.getItem('dms_session');
     if (data) setSession(JSON.parse(data));
+    fetchStayseeBookings();
   }, []);
 
   if (!mounted) return null;
@@ -130,42 +147,42 @@ export default function DmsEngine() {
                   </tr>
                 </thead>
                 <tbody className="divide-y border-inherit text-slate-300">
-                  {[
-                    { id: '678056', name: 'ゆかわ まさる', room: '302', status: 'confirmed', property: 'ビジネスホテルアップル', checkin: '5/8', checkout: '5/9', phone: '09060108776', source: 'DMS' },
-                    { id: '382380', name: '西中 慎吾', room: '303', status: 'confirmed', property: 'ビジネスホテルアップル', checkin: '5/8', checkout: '5/9', phone: '08016281642', source: 'DMS' },
-                    { id: '582045', name: '武田 泰賢', room: '401', status: 'confirmed', property: 'ビジネスホテルアップル', checkin: '5/8', checkout: '5/9', phone: '09072502627', source: 'DMS' },
-                    { id: '894872', name: 'SEKIDO KENJI', room: '403', status: 'confirmed', property: 'ビジネスホテルアップル', checkin: '5/8', checkout: '5/9', phone: '09023308560', source: 'DMS' },
-                    { id: '737663', name: '羽田 州秀', room: '405', status: 'confirmed', property: 'ビジネスホテルアップル', checkin: '5/8', checkout: '5/9', phone: '09060726485', source: 'DMS' },
-                  ].map((booking) => (
-                    <tr key={booking.id} className="hover:bg-emerald-500/5 transition-colors group border-b border-white/5">
-                      <td className="p-4">
-                        <Badge className="bg-emerald-500 text-slate-950 font-black text-[10px] px-2 py-0.5 rounded">
-                          {booking.status.toUpperCase()}
-                        </Badge>
-                      </td>
-                      <td className="p-4 font-bold text-white text-xs">{booking.property}</td>
-                      <td className="p-4 font-black text-emerald-500 text-xs">Room {booking.room}</td>
-                      <td className="p-4">
-                        <Link 
-                          href={`/dms/bookings/${booking.id}`}
-                          className="text-indigo-400 font-black hover:underline text-sm uppercase tracking-tight text-left block"
-                        >
-                          {booking.name}
-                        </Link>
-                      </td>
-                      <td className="p-4 text-[10px] font-bold text-slate-500">{booking.source}</td>
-                      <td className="p-4 text-[10px] font-bold text-slate-400">{booking.checkin}</td>
-                      <td className="p-4 text-[10px] font-bold text-slate-400">{booking.checkout}</td>
-                      <td className="p-4 text-[10px] font-mono text-slate-500">{booking.phone}</td>
-                      <td className="p-4 text-right">
-                        <Link href={`/dms/bookings/${booking.id}`}>
-                          <Button variant="ghost" size="sm" className="text-emerald-500 hover:bg-emerald-500/10">
-                            <ArrowRight size={16} />
-                          </Button>
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
+                  {loadingBookings ? (
+                    <tr><td colSpan={9} className="p-20 text-center"><Loader2 className="animate-spin mx-auto text-emerald-500" /></td></tr>
+                  ) : bookings.length > 0 ? (
+                    bookings.map((booking) => (
+                      <tr key={booking.id} className="hover:bg-emerald-500/5 transition-colors group border-b border-white/5">
+                        <td className="p-4">
+                          <Badge className={`${booking.paid ? 'bg-emerald-500' : 'bg-red-500'} text-slate-950 font-black text-[10px] px-2 py-0.5 rounded`}>
+                            {booking.paid ? 'PAID' : 'UNPAID'}
+                          </Badge>
+                        </td>
+                        <td className="p-4 font-bold text-white text-xs">ビジネスホテルアップル</td>
+                        <td className="p-4 font-black text-emerald-500 text-xs">Room {booking.allocate_rooms?.[0]?.room_id || 'TBA'}</td>
+                        <td className="p-4">
+                          <Link 
+                            href={`/dms/bookings/${booking.id}`}
+                            className="text-indigo-400 font-black hover:underline text-sm uppercase tracking-tight text-left block"
+                          >
+                            {booking.name_kanji}
+                          </Link>
+                        </td>
+                        <td className="p-4 text-[10px] font-bold text-slate-500">STAYSEE</td>
+                        <td className="p-4 text-[10px] font-bold text-slate-400">{booking.start_date}</td>
+                        <td className="p-4 text-[10px] font-bold text-slate-400">{booking.end_date}</td>
+                        <td className="p-4 text-[10px] font-mono text-slate-500">{booking.tel}</td>
+                        <td className="p-4 text-right">
+                          <Link href={`/dms/bookings/${booking.id}`}>
+                            <Button variant="ghost" size="sm" className="text-emerald-500 hover:bg-emerald-500/10">
+                              <ArrowRight size={16} />
+                            </Button>
+                          </Link>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr><td colSpan={9} className="p-20 text-center text-slate-500 font-bold uppercase tracking-widest italic">No Data from Staysee</td></tr>
+                  )}
                 </tbody>
               </table>
             </Card>
