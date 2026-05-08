@@ -94,7 +94,13 @@ function ProductCard({ product, isFav, onToggleFav }: {
           <Badge className="bg-slate-950/50 text-slate-500 border border-white/10 px-2 py-0.5 font-bold text-[8px] md:text-[9px] uppercase tracking-widest mr-7">{displayBadge}</Badge>
         </div>
         <div className="flex-1">
-          <h3 className="text-base md:text-lg font-black text-white mb-1 tracking-tight">{product.title}</h3>
+          <h3 className="text-base md:text-lg font-black text-white mb-1 tracking-tight flex items-center gap-2">
+            <div className="relative flex h-1.5 w-1.5 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+            </div>
+            {product.title}
+          </h3>
           <p className="text-emerald-300 text-[10px] md:text-xs font-bold mb-2 italic">{product.sub}</p>
           <p className="text-white text-[10px] md:text-[11px] leading-relaxed mb-4 line-clamp-2 italic">{product.sub}を実現するソリューション。</p>
         </div>
