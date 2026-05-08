@@ -1,7 +1,8 @@
 ﻿'use client'
 import { useSearchParams } from 'next/navigation'
-import React, { useState, useEffect, Suspense } from 'react'
+import React, { useState, useEffect, useCallback, Suspense } from 'react'
 import Link from 'next/link'
+import { createBrowserClient } from '@supabase/ssr'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -9,7 +10,7 @@ import {
   Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, 
   ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, 
   Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, Ticket, BookOpen, 
-  Sprout, Zap, Droplets, Utensils, Building2, Hotel, Key, Lock, CreditCard, Coins, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake
+  Sprout, Zap, Droplets, Utensils, Building2, Hotel, Key, Lock, CreditCard, Coins, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star
 } from 'lucide-react'
 
 const TOOLS = [
@@ -51,7 +52,11 @@ const CATEGORIES = [
   { id: 'mind', title: '人間心理・対人戦略', icon: HeartHandshake, color: 'border-pink-500' }
 ]
 
-function ProductCard({ product }: { product: typeof TOOLS[0] }) {
+function ProductCard({ product, isFav, onToggleFav }: {
+  product: typeof TOOLS[0]
+  isFav: boolean
+  onToggleFav: (e: React.MouseEvent, id: string) => void
+}) {
   const planLabelMap: Record<string, string> = { '無料': 'FREE', 'ライト': 'LIGHT', 'スタンダード': 'STANDARD', 'プレミアム': 'MASTER' }
   const displayBadge = planLabelMap[product.plan] || 'BASIC'
   const planBadgeColors: Record<string, string> = {
@@ -64,10 +69,20 @@ function ProductCard({ product }: { product: typeof TOOLS[0] }) {
 
   return (
     <Card className="h-full bg-[#13141f] transition-all duration-300 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group shadow-xl relative border-2 border-emerald-500 shadow-emerald-500/10 hover:border-emerald-400">
+      {/* ★ お気に入りボタン */}
+      <button
+        onClick={e => onToggleFav(e, product.id)}
+        className={`absolute top-4 right-4 z-20 p-1.5 rounded-xl transition-all ${
+          isFav ? 'text-amber-400' : 'text-slate-700 opacity-0 group-hover:opacity-100 hover:text-amber-400'
+        }`}
+      >
+        <Star size={16} fill={isFav ? 'currentColor' : 'none'} />
+      </button>
+
       <CardContent className="p-5 md:p-6 flex flex-col h-full text-left relative z-10">
         <div className="flex items-start justify-between mb-4">
           <div className="p-2.5 rounded-xl bg-white/5 border border-white/10"><product.icon className="h-5 w-5 md:h-6 md:w-6 text-emerald-400" /></div>
-          <Badge className="bg-slate-950/50 text-slate-500 border border-white/10 px-2 py-0.5 font-bold text-[8px] md:text-[9px] uppercase tracking-widest">{displayBadge}</Badge>
+          <Badge className="bg-slate-950/50 text-slate-500 border border-white/10 px-2 py-0.5 font-bold text-[8px] md:text-[9px] uppercase tracking-widest mr-7">{displayBadge}</Badge>
         </div>
         <div className="flex-1">
           <h3 className="text-base md:text-lg font-black text-white mb-1 tracking-tight">{product.title}</h3>
@@ -94,6 +109,13 @@ function ProductsList() {
   const [mounted, setMounted] = useState(false)
   const [randomFree, setRandomFree] = useState<typeof TOOLS>([])
   const [pickupTools, setPickupTools] = useState<typeof TOOLS>([])
+  const [favorites, setFavorites] = useState<string[]>([])
+  const [userId, setUserId] = useState<string | null>(null)
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
 
   const filteredTools = q
     ? TOOLS.filter(t => t.title.toLowerCase().includes(q) || t.sub.toLowerCase().includes(q))
@@ -103,7 +125,36 @@ function ProductsList() {
     setMounted(true)
     setRandomFree(TOOLS.filter(t => t.plan === '無料').sort(() => 0.5 - Math.random()).slice(0, 3))
     setPickupTools([...filteredTools].sort(() => 0.5 - Math.random()).slice(0, 3))
+
+    // ユーザー取得 & お気に入り読み込み
+    const loadFavs = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      setUserId(user.id)
+      const { data } = await supabase
+        .from('user_favorites')
+        .select('tool_id')
+        .eq('user_id', user.id)
+      if (data) setFavorites(data.map((r: any) => r.tool_id))
+    }
+    loadFavs()
   }, [])
+
+  const toggleFav = async (e: React.MouseEvent, id: string) => {
+    e.preventDefault(); e.stopPropagation()
+    if (!userId) return
+    const isFav = favorites.includes(id)
+    setFavorites(prev => isFav ? prev.filter(f => f !== id) : [...prev, id])
+    try {
+      if (isFav) {
+        await supabase.from('user_favorites').delete().eq('user_id', userId).eq('tool_id', id)
+      } else {
+        await supabase.from('user_favorites').upsert({ user_id: userId, tool_id: id }, { onConflict: 'user_id,tool_id' })
+      }
+    } catch {
+      setFavorites(prev => isFav ? [...prev, id] : prev.filter(f => f !== id))
+    }
+  }
 
   if (!mounted) return null
 
@@ -119,14 +170,14 @@ function ProductsList() {
             <Sparkles className="w-5 h-5 md:w-8 md:h-8 text-orange-500" />
             <h2 className="text-lg md:text-2xl font-black text-white italic uppercase">ピックアップ</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{pickupTools.map(p => <ProductCard key={p.id} product={p} />)}</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{pickupTools.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={toggleFav} />)}</div>
         </section>
         <section>
           <div className="flex items-center gap-3 mb-4 border-l-[6px] border-emerald-500 pl-4 md:pl-6 py-0.5">
             <Gift className="w-5 h-5 md:w-8 md:h-8 text-emerald-500" />
             <h2 className="text-lg md:text-2xl font-black text-white italic uppercase">無料トライアル</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{randomFree.map(p => <ProductCard key={p.id} product={p} />)}</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{randomFree.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={toggleFav} />)}</div>
         </section>
         {CATEGORIES.map((cat) => (
           <section key={cat.id}>
@@ -134,7 +185,7 @@ function ProductsList() {
               <cat.icon className="w-5 h-5 md:w-8 md:h-8 text-white" />
               <h2 className="text-lg md:text-2xl font-black text-white italic uppercase">{cat.title}</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{filteredTools.filter(t => t.cat === cat.id).map(p => <ProductCard key={p.id} product={p} />)}</div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{filteredTools.filter(t => t.cat === cat.id).map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={toggleFav} />)}</div>
           </section>
         ))}
       </div>
