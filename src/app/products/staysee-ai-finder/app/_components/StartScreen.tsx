@@ -9,10 +9,12 @@ interface StartScreenProps {
 const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
   const [pressTimer, setPressTimer] = React.useState<any>(null);
 
+  const [isLocked, setIsLocked] = React.useState(true);
+
   const handlePressStart = (e: React.MouseEvent | React.TouchEvent) => {
-    // 15秒後に実行
     const timer = setTimeout(() => {
-      if (window.confirm('管理モードを終了してログアウトしますか？')) {
+      if (window.confirm('管理モードを終了してログアウト（ロック解除）しますか？')) {
+        setIsLocked(false);
         localStorage.clear();
         sessionStorage.clear();
         window.location.href = '/';
@@ -28,21 +30,42 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
     }
   };
 
-  // 外部サイトへの遷移のみを警告（NextraLabsサイト内移動は許可）
+  // 強力なキオスク・ロック・エンジン
   useEffect(() => {
-    const preventExternalNav = (e: BeforeUnloadEvent) => {
-      // ログアウト処理などで意図的に遷移させる場合は警告しない
-      if (pressTimer) return; 
-      
-      e.preventDefault();
-      e.returnValue = 'NextraLabsのサイト外へ移動しようとしています。よろしいですか？';
+    if (!isLocked) return;
+
+    // 1. 外部へのリンククリックを物理的に遮断
+    const handleExternalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const anchor = target.closest('a');
+      if (anchor && anchor.href) {
+        const url = new URL(anchor.href);
+        // NextraLabs以外のドメインへの移動を強制キャンセル
+        if (url.origin !== window.location.origin) {
+          e.preventDefault();
+          e.stopPropagation();
+          alert('【SECURITY LOCK】外部サイトへの移動は制限されています。');
+          return false;
+        }
+      }
     };
-    window.addEventListener('beforeunload', preventExternalNav);
+
+    // 2. ブラウザを閉じたりURLを変えようとした時の最終防衛
+    const preventDeparture = (e: BeforeUnloadEvent) => {
+      if (isLocked) {
+        e.preventDefault();
+        e.returnValue = 'ロックを解除（15秒長押し）しない限り、外部へは移動できません。';
+      }
+    };
+
+    window.addEventListener('click', handleExternalClick, true);
+    window.addEventListener('beforeunload', preventDeparture);
 
     return () => {
-      window.removeEventListener('beforeunload', preventExternalNav);
+      window.removeEventListener('click', handleExternalClick, true);
+      window.removeEventListener('beforeunload', preventDeparture);
     };
-  }, [pressTimer]);
+  }, [isLocked]);
       <div className="space-y-4">
         <p className="text-emerald-500/40 text-sm font-black tracking-[1.2em] uppercase animate-in slide-in-from-top-4 duration-1000">
           Experience the Future
