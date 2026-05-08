@@ -7,33 +7,23 @@ interface StartScreenProps {
 }
 
 const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
-  const [pressTimer, setPressTimer] = React.useState<any>(null);
   const [isLocked, setIsLocked] = React.useState(true);
 
-  const handlePressStart = (e: React.MouseEvent | React.TouchEvent) => {
-    const timer = setTimeout(() => {
-      if (window.confirm('管理モードを終了してログアウト（ロック解除）しますか？')) {
-        setIsLocked(false);
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.href = '/';
-      }
-    }, 15000);
-    setPressTimer(timer);
-  };
-
-  const handleReleaseStart = () => {
-    if (pressTimer) {
-      clearTimeout(pressTimer);
-      setPressTimer(null);
+  const handleAdminLogout = () => {
+    const pw = window.prompt('管理者パスワードを入力してください');
+    if (pw === '2026') {
+      setIsLocked(false);
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = '/';
+    } else if (pw !== null) {
+      alert('認証エラー');
     }
   };
 
-  // 強力なキオスク・ロック・エンジン
+  // 強力な外部サイト封鎖
   useEffect(() => {
     if (!isLocked) return;
-
-    // 1. 外部へのリンククリックを物理的に遮断
     const handleExternalClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const anchor = target.closest('a');
@@ -43,55 +33,39 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
           if (url.origin !== window.location.origin) {
             e.preventDefault();
             e.stopPropagation();
-            alert('【SECURITY LOCK】外部サイトへの移動は制限されています。');
+            alert('【SECURITY LOCK】');
             return false;
           }
         } catch (err) {}
       }
     };
-
-    // 2. ブラウザを閉じたりURLを変えようとした時の最終防衛
     const preventDeparture = (e: BeforeUnloadEvent) => {
       if (isLocked) {
-        // 標準の警告ダイアログを表示
         e.preventDefault();
-        e.returnValue = ''; // 最近のブラウザではカスタム文言は無視され、標準警告が出る
-        
-        // 【物理的ブロックハック】
-        // ユーザーが「離れる」を選ぼうとする隙を与えず、履歴を書き換え続けてページを保持
-        setTimeout(() => {
-          if (isLocked) {
-            window.history.pushState(null, '', window.location.href);
-          }
-        }, 100);
+        e.returnValue = '';
       }
     };
-
-    // 3. ブラウザの「戻る」ボタンによる外部（履歴）への離脱を阻止
-    // 常に自分自身のURLを履歴の先頭に積み続けることで「戻る」を無効化
-    window.history.pushState(null, '', window.location.href);
-    const handlePopState = () => {
-      if (isLocked) {
-        window.history.pushState(null, '', window.location.href);
-        alert('【LOCKED】戻る操作は制限されています。');
-      }
-    };
-
     window.addEventListener('click', handleExternalClick, true);
     window.addEventListener('beforeunload', preventDeparture);
-    window.addEventListener('popstate', handlePopState);
-
     return () => {
       window.removeEventListener('click', handleExternalClick, true);
       window.removeEventListener('beforeunload', preventDeparture);
-      window.removeEventListener('popstate', handlePopState);
     };
   }, [isLocked]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[85vh] text-center space-y-24 animate-in fade-in duration-1000">
+    <div className="flex flex-col items-center justify-center min-h-[85vh] text-center space-y-24 animate-in fade-in duration-1000 relative">
       
-      {/* 繊細で美しいタイポグラフィ */}
+      {/* 隠し管理者エリア (バージョン表示) */}
+      <div className="fixed bottom-4 left-4 z-[200]">
+        <button 
+          onClick={handleAdminLogout}
+          className="text-[8px] font-black text-white/5 hover:text-emerald-500/20 tracking-[0.5em] transition-colors uppercase cursor-default"
+        >
+          v3.50.2.build.final
+        </button>
+      </div>
+
       <div className="space-y-4">
         <p className="text-emerald-500/40 text-sm font-black tracking-[1.2em] uppercase animate-in slide-in-from-top-4 duration-1000">
           Experience the Future
@@ -104,23 +78,15 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
         </h1>
       </div>
 
-      {/* スマートで宝石のようなSTARTボタン */}
       <button
         onClick={onNext}
-        onMouseDown={handlePressStart}
-        onMouseUp={handleReleaseStart}
-        onMouseLeave={handleReleaseStart}
-        onTouchStart={handlePressStart}
-        onTouchEnd={handleReleaseStart}
         className="group relative flex items-center justify-center w-80 h-80 transition-all duration-1000 active:scale-95"
       >
-        {/* 深い奥行きを作る光 of 宝石 */}
         <div className="absolute inset-0 bg-emerald-500/10 rounded-full blur-[100px] group-hover:bg-emerald-500/20 transition-all duration-1000" />
         <div className="absolute inset-0 border border-white/5 rounded-full scale-[1.6] opacity-10 group-hover:scale-125 group-hover:opacity-40 transition-all duration-1000" />
         
         <div className="relative w-full h-full bg-black/40 backdrop-blur-3xl border border-white/10 rounded-full flex flex-col items-center justify-center shadow-[0_0_80px_rgba(0,0,0,0.8)] overflow-hidden group-hover:border-emerald-500/40 transition-all duration-700">
           <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-transparent to-transparent animate-[pulse_4s_infinite]" />
-          
           <div className="relative z-10 space-y-6 flex flex-col items-center">
             <div className="w-16 h-1 bg-emerald-500 rounded-full group-hover:w-32 transition-all duration-700 shadow-[0_0_20px_rgba(16,185,129,1)]" />
             <p className="text-4xl font-thin tracking-[0.4em] text-white/90 group-hover:text-white transition-all duration-700 group-hover:tracking-[0.6em]">START</p>
@@ -132,7 +98,6 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
         <div className="absolute -inset-10 border-t-2 border-emerald-500/20 rounded-full animate-[spin_10s_linear_infinite] opacity-0 group-hover:opacity-100 transition-opacity" />
       </button>
 
-      {/* フッター */}
       <div className="flex flex-col items-center gap-4 opacity-60 group hover:opacity-100 transition-opacity duration-1000 cursor-default">
          <span className="text-[10px] md:text-xs font-black tracking-[1em] uppercase text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]">Intelligent Check-in System</span>
          <div className="w-px h-16 bg-gradient-to-b from-emerald-400 to-transparent shadow-[0_0_10px_rgba(16,185,129,0.3)]" />
