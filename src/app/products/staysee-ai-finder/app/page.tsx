@@ -11,10 +11,29 @@ import { CreditCard, CheckCircle2 } from 'lucide-react';
 
 type Step = 'start' | 'lang' | 'type' | 'search' | 'identity' | 'form' | 'payment' | 'complete';
 
+const TRANSLATIONS: any = {
+  ja: { search: '予約検索', identity: '本人確認', form: '名簿記入', confirm: '最終確認', payment: '完了', restart: '最初からやり直す', finish: 'チェックイン完了', welcome: 'ごゆっくりお過ごしください', room: 'お部屋番号 / 鍵番号', back: 'TOPへ戻る' },
+  en: { search: 'Search', identity: 'Verify', form: 'Register', confirm: 'Confirm', payment: 'Finish', restart: 'Restart', finish: 'Check-in Complete', welcome: 'Have a pleasant stay', room: 'Room / Key Number', back: 'Back to Top' },
+  'zh-cn': { search: '搜索预约', identity: '身份验证', form: '填写登记', confirm: '最终确认', payment: '完成', restart: '重新开始', finish: '入住完成', welcome: '祝您入住愉快', room: '房号 / 钥匙号码', back: '返回首页' },
+  'zh-tw': { search: '搜尋預約', identity: '身份驗證', form: '填寫登記', confirm: '最終確認', payment: '完成', restart: '重新開始', finish: '入住完成', welcome: '祝您入住愉快', room: '房號 / 鑰匙號碼', back: '返回首頁' },
+  ko: { search: '예약 검색', identity: '본인 확인', form: '명부 작성', confirm: '최종 확인', payment: '완료', restart: '처음부터', finish: '체크인 완료', welcome: '편안한 시간 되세요', room: '객실 번호 / 키 번호', back: 'TOP으로' },
+  th: { search: 'ค้นหา', identity: 'ยืนยันตัวตน', form: 'ลงทะเบียน', confirm: 'ยืนยัน', payment: 'เสร็จสิ้น', restart: 'เริ่มใหม่', finish: 'เช็คอินเสร็จสมบูรณ์', welcome: 'ขอให้มีความสุขกับการพักผ่อน', room: 'หมายเลขห้อง / รหัสผ่าน', back: 'กลับสู่หน้าแรก' },
+  vi: { search: 'Tìm kiếm', identity: 'Xác minh', form: 'Đăng ký', confirm: 'Xác nhận', payment: 'Hoàn tất', restart: 'Bắt đầu lại', finish: 'Nhận phòng hoàn tất', welcome: 'Chúc quý khách một kỳ nghỉ vui vẻ', room: 'Số phòng / Mã khóa', back: 'Quay lại' },
+  id: { search: 'Cari Reservasi', identity: 'Verifikasi', form: 'Registrasi', confirm: 'Konfirmasi', payment: 'Selesai', restart: 'Mulai Ulang', finish: 'Check-in Selesai', welcome: 'Semoga istirahat Anda menyenangkan', room: 'Nomor Kamar / PIN', back: 'Kembali' },
+  fr: { search: 'Rechercher', identity: 'Vérifier', form: 'S\'enregistrer', confirm: 'Confirmer', payment: 'Terminer', restart: 'Redémarrer', finish: 'Enregistrement terminé', welcome: 'Passez un bon séjour', room: 'Numéro de chambre / Code', back: 'Retour' },
+  es: { search: 'Buscar', identity: 'Verificar', form: 'Registrarse', confirm: 'Confirmar', payment: 'Finalizar', restart: 'Reiniciar', finish: 'Check-in completado', welcome: 'Que tenga una buena estancia', room: 'Número de habitación / Clave', back: 'Volver' },
+  de: { search: 'Suchen', identity: 'Verifizieren', form: 'Registrieren', confirm: 'Bestätigen', payment: 'Fertig', restart: 'Neustart', finish: 'Check-in abgeschlossen', welcome: 'Genießen Sie Ihren Aufenthalt', room: 'Zimmernummer / Code', back: 'Zurück' },
+  it: { search: 'Cerca', identity: 'Verifica', form: 'Registrati', confirm: 'Conferma', payment: 'Fine', restart: 'Riavvia', finish: 'Check-in completato', welcome: 'Goditi il soggiorno', room: 'Numero camera / Chiave', back: 'Torna su' },
+  pt: { search: 'Buscar', identity: 'Verificar', form: 'Registrar', confirm: 'Confirmar', payment: 'Concluir', restart: 'Reiniciar', finish: 'Check-in concluído', welcome: 'Tenha uma boa estadia', room: 'Número do quarto / Chave', back: 'Voltar' },
+  ru: { search: 'Поиск', identity: 'Проверка', form: 'Регистрация', confirm: 'Подтвердить', payment: 'Готово', restart: 'Начать сначала', finish: 'Регистрация завершена', welcome: 'Приятного отдыха', room: 'Номер комнаты / Код', back: 'На главную' },
+  ar: { search: 'بحث', identity: 'تحقق', form: 'تسجيل', confirm: 'تأكيد', payment: 'إنهاء', restart: 'إعادة تشغيل', finish: 'اكتمل تسجيل الدخول', welcome: 'إقامة سعيدة', room: 'رقم الغرفة / رمز القفل', back: 'العودة' },
+  hi: { search: 'खोजें', identity: 'सत्यापन', form: 'पंजीकरण', confirm: 'पुष्टि करें', payment: 'समाप्त', restart: 'पुनः आरंभ करें', finish: 'चेक-इन पूरा हुआ', welcome: 'आपका प्रवास सुखद हो', room: 'कमरा नंबर / कोड', back: 'वापस जाएं' },
+};
+
 const StayseeAppPage = () => {
   const [step, setStep] = useState<Step>('start');
   const [selectedLang, setSelectedLang] = useState('ja');
-  const [reservation, setReservation] = useState<any>(null);
+  const t = TRANSLATIONS[selectedLang] || TRANSLATIONS.en;
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [guestInfo, setGuestInfo] = useState<any>(null);
 
@@ -63,11 +82,11 @@ const StayseeAppPage = () => {
             />
             
             {[
-              { id: 'search', label: '予約検索' },
-              { id: 'identity', label: '本人確認' },
-              { id: 'form', label: '名簿記入' },
-              { id: 'confirm', label: '最終確認' },
-              { id: 'payment', label: '完了' }
+              { id: 'search', label: t.search },
+              { id: 'identity', label: t.identity },
+              { id: 'form', label: t.form },
+              { id: 'confirm', label: t.confirm },
+              { id: 'payment', label: t.payment }
             ].map((s, idx) => {
               const steps_list = ['search', 'identity', 'form', 'confirm', 'payment', 'complete'];
               const isActive = step === s.id;
