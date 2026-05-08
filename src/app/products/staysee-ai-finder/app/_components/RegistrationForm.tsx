@@ -64,7 +64,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ reservation, onNext
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full bg-[#12141c] border-2 border-white/5 rounded-3xl py-8 px-10 text-4xl font-black tracking-tighter focus:border-emerald-500/30 focus:outline-none transition-all text-white"
+                className="w-full bg-[#12141c] border-2 border-white/5 rounded-3xl py-8 px-10 text-4xl font-black tracking-tighter focus:border-emerald-500/30 focus:outline-none transition-all text-white overflow-hidden text-ellipsis"
               />
             </div>
 
@@ -76,7 +76,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ reservation, onNext
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full bg-[#12141c] border-2 border-white/5 rounded-3xl py-8 px-10 text-4xl font-black tracking-tighter focus:border-emerald-500/30 focus:outline-none transition-all text-white"
+                className="w-full bg-[#12141c] border-2 border-white/5 rounded-3xl py-8 px-10 text-4xl font-black tracking-tighter focus:border-emerald-500/30 focus:outline-none transition-all text-white overflow-hidden text-ellipsis"
               />
             </div>
           </div>
@@ -90,7 +90,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ reservation, onNext
               placeholder="Address"
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              className="w-full bg-[#12141c] border-2 border-white/5 rounded-3xl py-8 px-10 text-3xl font-black tracking-tight focus:border-emerald-500/30 focus:outline-none transition-all text-white placeholder:text-gray-800"
+              className="w-full bg-[#12141c] border-2 border-white/5 rounded-3xl py-8 px-10 text-3xl font-black tracking-tight focus:border-emerald-500/30 focus:outline-none transition-all text-white placeholder:text-gray-800 overflow-hidden text-ellipsis"
             />
           </div>
 
@@ -102,7 +102,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ reservation, onNext
               type="text"
               value={formData.occupation}
               onChange={(e) => setFormData({ ...formData, occupation: e.target.value })}
-              className="w-full bg-[#12141c] border-2 border-white/5 rounded-3xl py-8 px-10 text-3xl font-black tracking-tight focus:border-emerald-500/30 focus:outline-none transition-all text-white"
+              className="w-full bg-[#12141c] border-2 border-white/5 rounded-3xl py-8 px-10 text-3xl font-black tracking-tight focus:border-emerald-500/30 focus:outline-none transition-all text-white overflow-hidden text-ellipsis"
             />
           </div>
         </div>
