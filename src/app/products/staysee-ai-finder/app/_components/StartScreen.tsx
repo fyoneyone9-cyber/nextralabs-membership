@@ -94,13 +94,14 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
   return (
     <div className="flex flex-col items-center justify-center min-h-[85vh] text-center space-y-24 animate-in fade-in duration-1000 relative">
       
-      {/* 隠し管理者アクセスポイント (超低視認性) */}
-      <div className="fixed bottom-4 left-4 z-[200]">
+      {/* 隠し管理者アクセスポイント (少しだけ見えるように調整) */}
+      <div className="fixed bottom-6 left-6 z-[200]">
         <button 
           onClick={handleAdminLogout}
-          className="text-[6px] font-black text-white/[0.02] hover:text-emerald-500/10 tracking-[1em] transition-all uppercase cursor-default select-none"
+          className="text-[9px] font-black text-slate-700 hover:text-emerald-500 transition-colors uppercase cursor-default select-none tracking-[0.2em] flex items-center gap-2 opacity-50 hover:opacity-100"
         >
-          SYS.V3.MASTER.SECURED
+          <div className="w-1.5 h-1.5 rounded-full bg-slate-800 border border-slate-700" />
+          v3.50.2.build.final
         </button>
       </div>
 
