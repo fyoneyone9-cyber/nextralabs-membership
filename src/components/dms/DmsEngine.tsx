@@ -160,9 +160,18 @@ export default function DmsEngine() {
            </div>
            <Card className="bg-[#0a0b14] border-white/5 rounded-[2rem] shadow-2xl overflow-hidden min-h-[600px]">
              <div className="overflow-x-auto"><table className="w-full text-left text-[11px] whitespace-nowrap"><thead className="bg-black/40 text-slate-600 font-black uppercase border-b border-white/5 tracking-widest"><tr><th className="p-6">ステータス</th><th className="p-6">物件名</th><th className="p-6">部屋</th><th className="p-6">人数 / 予約者</th><th className="p-6">予約元</th><th className="p-6">チェックイン</th><th className="p-6">チェックアウト</th><th className="p-6 text-right">詳細</th></tr></thead>
-                 <tbody className="divide-y divide-white/5 text-slate-300">
+                 <tbody className="divide-y divide-white/5 text-slate-200">
                    {bookings.map(b => (
-                     <tr key={b.id} className="hover:bg-emerald-500/5 transition-colors group"><td className="p-6"><div className="px-3 py-1 bg-emerald-500 text-slate-950 font-black text-[10px] rounded-full text-center italic">confirmed</div></td><td className="p-6 font-bold text-slate-500">ビジネスホテルアップル</td><td className="p-6 font-black text-white text-sm">{b.allocate_rooms?.[0]?.room_id || '---'}</td><td className="p-6"><p className="text-slate-600 font-bold text-[9px] uppercase">{b.person_number || '1'}</p><Link href={`/dms/bookings/${b.id}`} className="text-indigo-400 font-black text-sm uppercase hover:underline">{b.name_kanji}</Link></td><td className="p-6 font-black text-slate-500 uppercase italic">STAYSEE</td><td className="p-6 font-black italic">{b.start_date.substring(5)}</td><td className="p-6 font-black italic">{b.end_date.substring(5)}</td><td className="p-6 text-right"><Link href={`/dms/bookings/${b.id}`}><Button variant="ghost" size="sm" className="text-emerald-500 hover:bg-emerald-500/10 rounded-xl"><ArrowRight size={18}/></Button></Link></td></tr>
+                     <tr key={b.id} className="hover:bg-emerald-500/5 transition-colors group">
+                       <td className="p-6"><div className="px-3 py-1 bg-emerald-500 text-slate-950 font-black text-[10px] rounded-full text-center italic">confirmed</div></td>
+                       <td className="p-6 font-bold text-slate-400">ビジネスホテルアップル</td>
+                       <td className="p-6 font-black text-white text-sm">{b.allocate_rooms?.[0]?.room_id || '---'}</td>
+                       <td className="p-6"><p className="text-slate-500 font-bold text-[9px] uppercase">{b.person_number || '1'}</p><Link href={`/dms/bookings/${b.id}`} className="text-indigo-400 font-black text-sm uppercase hover:underline">{b.name_kanji}</Link></td>
+                       <td className="p-6 font-black text-slate-400 uppercase italic">STAYSEE</td>
+                       <td className="p-6 font-black italic text-white">{b.start_date.substring(5)}</td>
+                       <td className="p-6 font-black italic text-white">{b.end_date.substring(5)}</td>
+                       <td className="p-6 text-right"><Link href={`/dms/bookings/${b.id}`}><Button variant="ghost" size="sm" className="text-emerald-500 hover:bg-emerald-500/10 rounded-xl"><ArrowRight size={18}/></Button></Link></td>
+                     </tr>
                    ))}
                  </tbody>
                </table></div></Card>
