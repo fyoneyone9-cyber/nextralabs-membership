@@ -23,23 +23,35 @@ export default function UniversalConverterApp() {
   const handleProcess = async () => {
     if (!file) return
     setIsProcessing(true); setProgress(10);
-    // 憲法遵守：gsk aidrive compress/convert 実務API連携ロジックを再接続
+    // 憲法遵守：gsk API への認証リクエストを堅牢化し「Backend denied access」を回避
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('mode', mode);
-      formData.append('target', targetFormat);
+      const res = await fetch('/api/tools/universal-converter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          fileName: file.name,
+          mode: mode,
+          target: targetFormat
+        }),
+      });
 
-      // 進捗シミュレーションを挟みつつバックエンド(gsk)を叩く
-      const timer = setInterval(() => setProgress(p => p < 90 ? p + 10 : p), 500);
-      
-      await new Promise(r => setTimeout(r, 3000)); // 実際のAPI処理待機
-      
-      clearInterval(timer);
+      if (!res.ok) {
+        const errorData = await res.json();
+        if (errorData.detail === 'Access denied') {
+           throw new Error('BACKEND_DENIED');
+        }
+        throw new Error('PROCESS_FAILED');
+      }
+
+      const data = await res.json();
       setProgress(100);
-      setResultUrl(`https://www.genspark.ai/api/files/s/output_${Date.now()}.${targetFormat === 'pdf-min' ? 'pdf' : targetFormat}`);
-    } catch (e) {
-      alert('AI処理中にエラーが発生しました');
+      setResultUrl(data.downloadUrl);
+    } catch (e: any) {
+      if (e.message === 'BACKEND_DENIED') {
+        alert('認証エラー：アクセスが拒否されました。一度ログアウトして再ログインをお試しください。');
+      } else {
+        alert('AI処理中にエラーが発生しました。時間を置いて再度お試しください。');
+      }
     } finally {
       setIsProcessing(false);
     }
