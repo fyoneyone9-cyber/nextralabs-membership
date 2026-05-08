@@ -34,7 +34,6 @@ const StayseeAppPage = () => {
   };
 
   return (
-  return (
     <div className="min-h-screen bg-[#02040a] text-white flex flex-col overflow-hidden font-sans selection:bg-emerald-500/30">
       {/* 動的なグラデーション背景 */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
