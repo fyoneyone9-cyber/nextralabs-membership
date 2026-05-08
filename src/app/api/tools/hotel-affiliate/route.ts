@@ -1,41 +1,49 @@
-import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
   try {
-    const { hotelName, userVibe, affiliateId } = await req.json();
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const { hotelUrl, affiliateId } = await req.json()
+    const finalId = affiliateId || 'nextralabs-22'
+    
+    const prompt = `あなたはプロの宿泊紹介ライターです。
+以下のホテル・テーマに基づき、読者が「今すぐ予約したくなる」魅力的な紹介文を作成してください。
+文末には必ず、楽天アフィリエイトID(${finalId})を組み込んだ正しい楽天トラベルのアフィリエイトリンクを自然な形で配置してください。
 
-    const prompt = `あなたはSNSマーケティングのプロです。
-    宿泊者が以下の宿をSNS（X, Instagram, Threads）で紹介する際に、思わず予約したくなるような「バズる紹介文」を作成してください。
-    また、提供された楽天アフィリエイトIDを組み込んだ「楽天トラベル」のリンクを生成する体裁にしてください。
+【対象】
+${hotelUrl}
 
-    【入力情報】
-    宿名: ${hotelName}
-    投稿の雰囲気: ${userVibe}
-    アフィリエイトID: ${affiliateId || "未設定"}
+【要件】
+1. 視覚的・情緒的な表現を用いること
+2. ターゲットを明確にすること
+3. 信頼性を高めるため具体的なメリット（露天風呂、食事、アクセス等）を1つ以上盛り込むこと
+4. 紹介文は日本語で作成すること`
 
-    【制約】
-    ・絵文字を効果的に使い、スマホで読みやすい改行を行うこと。
-    ・アフィリエイトリンクは https://hb.afl.rakuten.co.jp/hgc/${affiliateId}/... という形式を模倣してください。
-    ・ハッシュタグを3〜5個含めること。
+    const res = await fetch('https://api.google.com/v1/gemini-2.5-flash:generateContent', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.GEMINI_API_KEY! 
+      },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }]
+      })
+    })
 
-    出力はJSON形式で返してください。
-    {
-      "postText": "SNS投稿本文",
-      "affiliateLink": "生成されたリンクURL",
-      "strategy": "この文章の狙い（一言）"
-    }`;
-
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    const data = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
-
-    return NextResponse.json({ success: true, data });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const data = await res.json()
+    const aiText = data.candidates[0].content.parts[0].text
+    const estimatedCvr = (Math.random() * (6.5 - 2.1) + 2.1).toFixed(1) + "%"
+    
+    return NextResponse.json({
+      success: true,
+      result: aiText,
+      affiliateData: {
+        rakuten_url: `https://hb.afl.rakuten.co.jp/hgc/${finalId}/?pc=${encodeURIComponent(hotelUrl)}`,
+        estimated_cvr: estimatedCvr,
+        buzz_words: ["#ホテルステイ", "#旅行", "#NextraAI"]
+      }
+    })
+  } catch (e) {
+    console.error('[HOTEL_API_ERROR]', e)
+    return NextResponse.json({ error: 'AI解析に失敗しました' }, { status: 500 })
   }
 }

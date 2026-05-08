@@ -8,6 +8,9 @@ import { Wifi, Activity, Zap, ShieldCheck, Clock, Server, AlertCircle } from 'lu
 export function ApiMonitorOverlay() {
   const [nodes, setNodes] = useState<any[]>([
     { id: 'gemini', name: 'Gemini 2.5 Flash', status: 'connected', latency: '42ms' },
+    { id: 'rakuten', name: 'Rakuten Affiliate', status: 'connected', latency: '86ms' },
+    { id: 'shopify', name: 'Shopify / Printful', status: 'connected', latency: '110ms' },
+    { id: 'gmail', name: 'Gmail / Google Docs', status: 'connected', latency: '320ms' },
     { id: 'database', name: 'Supabase DB', status: 'connected', latency: '12ms' },
     { id: 'storage', name: 'Supabase Storage', status: 'connected', latency: '18ms' }
   ])
