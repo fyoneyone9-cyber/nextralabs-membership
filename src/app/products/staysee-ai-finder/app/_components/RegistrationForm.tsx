@@ -98,12 +98,27 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ reservation, onNext
             <label className="flex items-center gap-2 text-xs font-black text-emerald-500/40 uppercase tracking-[0.3em] ml-2">
               <Briefcase size={14} strokeWidth={3} /> Occupation / 職業
             </label>
-            <input
-              type="text"
-              value={formData.occupation}
-              onChange={(e) => setFormData({ ...formData, occupation: e.target.value })}
-              className="w-full bg-[#12141c] border-2 border-white/5 rounded-3xl py-8 px-10 text-3xl font-black tracking-tight focus:border-emerald-500/30 focus:outline-none transition-all text-white overflow-hidden text-ellipsis"
-            />
+            <div className="relative">
+              <select
+                value={formData.occupation}
+                onChange={(e) => setFormData({ ...formData, occupation: e.target.value })}
+                className="w-full bg-[#12141c] border-2 border-white/5 rounded-3xl py-8 px-10 text-3xl font-black tracking-tight focus:border-emerald-500/30 focus:outline-none transition-all text-white appearance-none cursor-pointer"
+              >
+                <option value="" disabled>選択してください</option>
+                <option value="公務員">公務員</option>
+                <option value="経営者・役員">経営者・役員</option>
+                <option value="会社員（正社員）">会社員（正社員）</option>
+                <option value="会社員（契約・派遣社員）">会社員（契約・派遣社員）</option>
+                <option value="自営業・自由業（フリーランス）">自営業・自由業（フリーランス）</option>
+                <option value="専業主婦・主夫">専業主婦・主夫</option>
+                <option value="パート・アルバイト">パート・アルバイト</option>
+                <option value="学生">学生</option>
+                <option value="無職・その他">無職・その他</option>
+              </select>
+              <div className="absolute right-10 top-1/2 -translate-y-1/2 pointer-events-none text-emerald-500/40">
+                <Briefcase size={24} />
+              </div>
+            </div>
           </div>
         </div>
 
