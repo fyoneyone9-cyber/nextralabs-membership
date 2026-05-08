@@ -249,12 +249,32 @@ export default function DmsEngine() {
                           <th className="p-4 text-right">操作</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <tr className="border-b">
-                          <td colSpan={4} className="p-20 text-center text-gray-400 font-bold uppercase tracking-widest">
-                            データはありません。
-                          </td>
-                        </tr>
+                      <tbody className="text-slate-900">
+                        {pmsList.length > 0 ? pmsList.map((p) => (
+                          <tr key={p.id} className="border-b hover:bg-slate-50">
+                            <td className="p-4 font-bold">{p.type}</td>
+                            <td className="p-4">
+                              <Badge className={p.status === '有効' ? 'bg-emerald-500 text-white' : 'bg-slate-300 text-slate-600'}>
+                                {p.status}
+                              </Badge>
+                            </td>
+                            <td className="p-4 text-slate-500">{p.memo}</td>
+                            <td className="p-4 text-right space-x-2">
+                              <Button variant="outline" size="sm" onClick={() => togglePmsStatus(p.id)} className="text-[10px] h-7 px-3 border-slate-200 text-slate-600">
+                                {p.status === '有効' ? '無効にする' : '有効にする'}
+                              </Button>
+                              <Button variant="ghost" size="sm" onClick={() => deletePms(p.id)} className="text-red-500 hover:bg-red-50 hover:text-red-600 h-7 px-2">
+                                <X size={14} />
+                              </Button>
+                            </td>
+                          </tr>
+                        )) : (
+                          <tr>
+                            <td colSpan={4} className="p-20 text-center text-gray-400 font-bold uppercase tracking-widest">
+                              データはありません。
+                            </td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </Card>
