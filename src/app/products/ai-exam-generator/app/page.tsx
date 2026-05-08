@@ -32,8 +32,34 @@ const ExamApp = () => {
         '社内の知識やノウハウを共有する仕組み'
       ],
       ans: 0
+    },
+    {
+      id: 2,
+      text: 'フィッシング詐欺の説明として、適切なものはどれか？',
+      hint: '偽のWebサイトに誘導して情報を盗み出す手口です。',
+      options: [
+        'キーボード入力を監視して盗み取る',
+        '実在する企業を装ったメールで偽サイトへ誘導し、情報を盗む',
+        '大量のデータを送りつけてシステムを停止させる',
+        'ウイルスを添付してPC内のデータを破壊する'
+      ],
+      ans: 1
+    },
+    {
+      id: 3,
+      text: 'パブリッククラウドの説明として、適切なものはどれか？',
+      hint: '不特定多数のユーザーが共同で利用する形態です。',
+      options: [
+        '自社専用に構築された環境',
+        '特定の企業グループだけで共有する環境',
+        'インターネットを通じて不特定多数のユーザーに提供される環境',
+        '自社内に設置したサーバーをネットワーク越しに使う環境'
+      ],
+      ans: 2
     }
   ]
+
+  const question = mockQuestions[currentQuestion % mockQuestions.length]
 
   if (!started) {
     return (
@@ -128,20 +154,20 @@ const ExamApp = () => {
             </div>
             
             <p className="text-lg text-white font-bold leading-relaxed">
-              {mockQuestions[0].text}
+              {question.text}
             </p>
 
             {showHint && (
               <div className="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-300">
                 <p className="text-xs text-emerald-400 font-medium leading-relaxed italic">
-                  💡 Hint: {mockQuestions[0].hint}
+                  💡 Hint: {question.hint}
                 </p>
               </div>
             )}
           </div>
 
           <div className="grid grid-cols-1 gap-3">
-            {mockQuestions[0].options.map((opt, i) => (
+            {question.options.map((opt, i) => (
               <button 
                 key={i}
                 onClick={() => setSelectedAnswer(i)}
