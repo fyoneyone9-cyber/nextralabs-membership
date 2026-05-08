@@ -15,7 +15,7 @@ import {
 
 const TOOLS = [
   { id: 'pdf-compressor', cat: 'biz', title: 'PDF AIコンプレッサー', sub: '品質維持 × 極限圧縮 × 憲法遵守', icon: FileDown, plan: 'ライト' },
-  { id: 'staysee-ai-finder', cat: 'hotel', title: 'Nextra AI', sub: '宿泊予約・鍵発行を完全同期', icon: Building2, plan: 'プレミアム' },
+  { id: 'staysee-ai-finder', cat: 'hotel', title: 'Nextra AI', sub: '宿泊予約・鍵発行を完全同期 (Staysee AI Finder)', icon: Building2, plan: 'プレミアム' },
   { id: 'comp-price-monitor', cat: 'hotel', title: '競合AI価格監視', sub: '楽天API連携 × 価格最適化OS', icon: LineChart, plan: 'プレミアム' },
   { id: 'hotel-affiliate', cat: 'hotel', title: 'アフィリエイトAI連携', sub: '宿紹介 × 楽天収益化OS', icon: Network, plan: 'スタンダード' },
   { id: 'moving-checker', cat: 'hotel', title: 'AI引越し安心チェッカー', sub: '治安・物件リスクを徹底分析', icon: Home, plan: '無料' },
