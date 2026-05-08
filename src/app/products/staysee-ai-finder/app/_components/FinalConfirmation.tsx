@@ -67,11 +67,11 @@ const FinalConfirmation: React.FC<FinalConfirmationProps> = ({ reservation, gues
              <div className="space-y-4">
                 <div className="flex justify-between items-end pb-4 border-b border-white/5">
                    <span className="text-gray-500 font-bold">宿泊代金（税込）</span>
-                   <span className="text-4xl font-black text-white">¥4,500</span>
+                   <span className="text-4xl font-black text-white">¥{(reservation?.amount || 0).toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
                    <span className="text-gray-600">うち消費税(10%)</span>
-                   <span className="font-bold">¥409</span>
+                   <span className="font-bold">¥{Math.floor((reservation?.amount || 0) * 0.1).toLocaleString()}</span>
                 </div>
              </div>
           </div>
