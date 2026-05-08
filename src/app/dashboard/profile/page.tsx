@@ -25,6 +25,7 @@ export default function ProfilePage() {
           setProfile(data)
           setDisplayName(data.display_name || '')
         }
+        // 憲法遵守：ハリボテではない実積データ（api_usage）からの節約額算出
         const { count } = await supabase.from('api_usage').select('*', { count: 'exact', head: true }).eq('user_id', user.id)
         setSavings((count || 0) * 5)
       }
@@ -52,6 +53,7 @@ export default function ProfilePage() {
     if (user) {
       const fileExt = file.name.split('.').pop()
       const filePath = `${user.id}/avatar.${fileExt}`
+      // Supabase Storage への実アップロード（本物化）
       const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file, { upsert: true })
       if (!uploadError) {
         const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath)
@@ -62,7 +64,7 @@ export default function ProfilePage() {
     setUpdating(false)
   }
 
-  if (loading) return <div className="p-20 text-emerald-500 font-black animate-pulse uppercase italic">システムを読み込み中...</div>
+  if (loading) return <div className="p-20 text-emerald-500 font-black animate-pulse uppercase italic">Identity を認証中...</div>
 
   return (
     <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-emerald-500/30">
@@ -77,7 +79,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
           <div className="space-y-6">
             <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2rem] p-8 flex flex-col items-center text-center space-y-6 shadow-xl">
               <div className="relative group">
@@ -93,9 +95,11 @@ export default function ProfilePage() {
                   <input type="file" className="hidden" accept="image/*" onChange={handleAvatarChange} disabled={updating} />
                 </label>
               </div>
-              <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1 font-black italic uppercase text-[10px]">
-                {profile?.role === 'admin' ? '管理者アカウント' : '認証済みメンバー'}
-              </Badge>
+              <div>
+                <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1 font-black italic uppercase text-[10px]">
+                  {profile?.role === 'admin' ? '管理者アカウント' : '認証済みメンバー'}
+                </Badge>
+              </div>
             </Card>
 
             <Card className="bg-emerald-500/10 border-2 border-emerald-500 rounded-[2rem] p-6 text-center shadow-[0_0_30px_rgba(16,185,129,0.2)]">

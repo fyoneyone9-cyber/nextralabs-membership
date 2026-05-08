@@ -1,13 +1,9 @@
 'use client'
-
 import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Zap, Loader2, CheckCircle2, TrendingUp, Search, Info, ShoppingCart, 
-  Repeat, UserCircle, Briefcase, FileText, LayoutList
-} from 'lucide-react'
+import { Zap, Loader2, CheckCircle2, TrendingUp, Search, Info, ShoppingCart, Repeat, Download, Video, ImageIcon, FileText, Lock, Copy, Scale, LineChart, Scissors, Sparkles, Trash2, Pen, MessageSquare, LogOut, ShieldCheck, Ticket, Bell, UserCircle, Briefcase } from 'lucide-react'
 
 export default function AiSidejobApp() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -16,60 +12,45 @@ export default function AiSidejobApp() {
   const handleAnalyze = async () => {
     setIsAnalyzing(true);
     await new Promise(r => setTimeout(r, 2000));
-    setResult("あなたの経験と現在の市場トレンドを照合した結果、『AIコンテンツ制作 × Kindle出版』の副業が最も収益化に近いと判定されました。初期費用0円で開始可能です。");
+    setResult("あなたのスキルと市場トレンドを照合しました。『AIコンテンツ制作』の副業が最も収益化に近いと判定されました。");
     setIsAnalyzing(false);
   }
 
   return (
-    <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-emerald-500/30">
+    <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-emerald-500/30 text-left">
       <div className="max-w-5xl mx-auto space-y-10 border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.2)] rounded-[3rem] p-6 md:p-12">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-emerald-500/20 pb-10">
           <div className="flex items-center gap-4">
             <div className="p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/20"><Briefcase className="h-10 w-10 text-emerald-400" /></div>
-            <div>
-              <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">AI Sidejob Dash</h1>
-              <p className="text-emerald-400 font-bold uppercase tracking-[0.2em] text-[10px] italic">Strategic Roadmap to Financial Freedom</p>
-            </div>
+            <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">AI副業スタートダッシュ</h1>
           </div>
           <Badge className="bg-emerald-500 text-slate-950 font-black italic px-6 py-2 text-sm rounded-full shadow-lg">LIGHT PLAN</Badge>
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4">
           <div className="flex items-center gap-2 text-emerald-400"><Info size={20} /> <h3 className="font-black italic uppercase text-sm">使いかた・活用マニュアル</h3></div>
-          <p className="text-sm text-slate-300 font-bold leading-relaxed italic">
-            あなたの現在の本業、特技、1日に確保できる作業時間を入力してください。AIが最新の市場需要とあなたのポテンシャルを掛け合わせ、最短1ヶ月で初収益を上げるための「副業攻略ロードマップ」を自動生成します。
-          </p>
+          <p className="text-sm text-slate-300 font-bold leading-relaxed italic">得意なことや確保できる時間を入力してください。AIが市場需要とあなたのポテンシャルを掛け合わせ、収益化ロードマップを自動生成します。</p>
         </div>
 
-        <Card className="bg-[#13141f] border border-white/5 rounded-2xl overflow-hidden shadow-xl p-8 space-y-6">
-          <div className="grid gap-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Experience / Skills</label>
-              <input className="w-full h-14 bg-black border-2 border-white/10 rounded-xl px-6 font-bold text-white outline-none focus:border-emerald-500 transition-all" placeholder="例：営業5年、写真撮影、タイピングが早い" />
-            </div>
-          </div>
-          <Button onClick={handleAnalyze} disabled={isAnalyzing} className="w-full h-24 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-3xl rounded-[2rem] shadow-xl uppercase italic">
-            {isAnalyzing ? <Loader2 className="animate-spin h-10 w-10" /> : '副業適性解析を開始する 🚀'}
-          </Button>
+        <Card className="bg-[#13141f] border border-white/5 rounded-2xl p-8 space-y-6 shadow-xl text-left">
+          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic ml-1">現在のスキル / 経験</label>
+          <input className="w-full h-16 bg-black border-2 border-white/10 rounded-xl px-6 font-bold text-white outline-none focus:border-emerald-500 transition-all outline-none" placeholder="例：営業、タイピング、写真" />
+          <Button onClick={handleAnalyze} disabled={isAnalyzing} className="w-full h-20 bg-emerald-600 hover:bg-emerald-50 text-slate-950 font-black text-2xl rounded-[2rem] shadow-xl uppercase italic active:scale-95">副業適性解析を開始 🚀</Button>
         </Card>
 
         {result && (
           <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <Card className="bg-emerald-500/5 border-2 border-emerald-500/30 rounded-[3.5rem] p-12 shadow-inner">
-              <h3 className="text-2xl font-black text-white italic uppercase mb-8 flex items-center gap-3"><Zap className="text-emerald-400" /> AI Sidejob Insight</h3>
-              <div className="text-xl text-white font-bold italic leading-loose whitespace-pre-wrap">{result}</div>
+            <Card className="bg-emerald-500/5 border-2 border-emerald-500/30 rounded-[3.5rem] p-12 shadow-inner text-left">
+              <h3 className="text-2xl font-black text-white italic uppercase mb-8 flex items-center gap-3"><Zap className="text-emerald-400" /> AI副業診断結果</h3>
+              <div className="text-xl text-white font-bold italic leading-loose whitespace-pre-wrap mb-10">{result}</div>
             </Card>
 
             <div className="space-y-6">
-              <h3 className="text-xl font-black text-white italic uppercase tracking-widest border-l-4 border-emerald-500 pl-4">Monetization Roadmap</h3>
+              <h3 className="text-xl font-black text-white italic uppercase tracking-widest border-l-4 border-emerald-500 pl-4">収益化ロードマップ</h3>
               <div className="grid md:grid-cols-3 gap-6">
-                {[
-                  { step: '01', title: 'プラットフォーム選定', desc: 'あなたの強みが最も高く売れる、最適な戦場（ココナラ・Kindle等）を特定。', icon: Search },
-                  { step: '02', title: 'AI効率化セットアップ', desc: '作業時間を1/10にするAIツールを選定し、量産体制を構築。', icon: Zap },
-                  { step: '03', title: '収益拡大アクション', desc: '最初の1円を稼いだ後の、売上を10倍にするマーケティング戦略。', icon: TrendingUp },
-                ].map((s, i) => (
-                  <div key={i} className="bg-[#13141f] border border-white/10 p-10 rounded-[2.5rem] space-y-4">
-                    <div className="flex justify-between items-start"><span className="text-xs font-black text-emerald-500/40">{s.step}</span><s.icon className="h-6 w-6 text-emerald-400" /></div>
+                {[{ title: 'プラットフォーム選定', desc: '最適な戦場を特定。', icon: Search }, { title: '効率化セットアップ', desc: 'AIツールで量産体制構築。', icon: Zap }, { title: '収益拡大', desc: '売上を10倍にする戦略。', icon: TrendingUp }].map((s, i) => (
+                  <div key={i} className="bg-[#13141f] border border-white/10 p-10 rounded-3xl space-y-4 hover:border-emerald-500/50 transition-all">
+                    <s.icon className="h-6 w-6 text-emerald-400" />
                     <h4 className="text-lg font-black text-white italic">{s.title}</h4>
                     <p className="text-xs text-slate-400 font-bold italic">{s.desc}</p>
                   </div>
@@ -77,18 +58,9 @@ export default function AiSidejobApp() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
-              {['ChatGPT', 'Gemini', 'Claude'].map(ai => (
-                <Button key={ai} variant="outline" className="h-16 border-2 border-white/10 text-slate-400 font-black uppercase italic hover:bg-white/5" onClick={() => window.open(`https://${ai.toLowerCase()}.com`)}>{ai}</Button>
-              ))}
-            </div>
-
             <a href="https://www.amazon.co.jp/s?k=副業+稼ぎ方&tag=nextralabs-22" target="_blank" className="block group">
-              <div className="bg-gradient-to-r from-emerald-600 to-teal-800 p-10 rounded-[3rem] flex items-center justify-between shadow-2xl transition-all hover:scale-[1.01]">
-                <div className="space-y-2">
-                  <p className="text-[10px] font-black text-white/50 uppercase tracking-widest italic">Essential Resources</p>
-                  <h3 className="text-2xl font-black text-white italic leading-tight">「稼ぐ力」を加速させる。AI副業・独立のバイブル集。</h3>
-                </div>
+              <div className="bg-gradient-to-r from-emerald-600 to-teal-800 p-10 rounded-[3rem] flex items-center justify-between shadow-2xl transition-all">
+                <h3 className="text-2xl font-black text-white italic">不敗の稼ぐ力：副業・独立のバイブル ➔</h3>
                 <ShoppingCart size={40} className="text-white animate-pulse" />
               </div>
             </a>

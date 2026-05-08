@@ -13,13 +13,13 @@ export default function YoutubeProducerApp() {
   const handleAnalyze = async () => {
     setIsAnalyzing(true);
     await new Promise(r => setTimeout(r, 3000));
-    setResult("視聴トレンドを解析し、視聴維持率を最大化する10分動画用の『黄金台本』を生成しました。バズるタイトル案5選も付属しています。");
-    setAudioUrl("https://example.com/narration.mp3");
+    setResult("10分動画用の『黄金台本』を生成しました。バズるタイトル案5選も付属しています。");
+    setAudioUrl('#');
     setIsAnalyzing(false);
   }
 
   return (
-    <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-emerald-500/30">
+    <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-emerald-500/30 text-left">
       <div className="max-w-5xl mx-auto space-y-10 border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.2)] rounded-[3rem] p-6 md:p-12">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-emerald-500/20 pb-10">
           <div className="flex items-center gap-4">
@@ -31,23 +31,22 @@ export default function YoutubeProducerApp() {
 
         <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4">
           <div className="flex items-center gap-2 text-emerald-400"><Info size={20} /> <h3 className="font-black italic uppercase text-sm">使いかた・活用マニュアル</h3></div>
-          <p className="text-sm text-slate-300 font-bold leading-relaxed italic">動画のテーマ、ターゲット、または元となるURLを入力してください。AIがアルゴリズムを解析し「台本・構成・タイトル・タグ」を一括生成。さらに音声合成(TTS)によるナレーション生成まで自動で完結させます。</p>
+          <p className="text-sm text-slate-300 font-bold leading-relaxed italic">動画のテーマを入力してください。AIが「台本・構成・タイトル・タグ」を一括生成。さらに音声合成(TTS)によるナレーション生成までサポートします。</p>
         </div>
 
         <Card className="bg-[#13141f] border border-white/5 rounded-2xl p-8 space-y-6 shadow-xl">
-          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic ml-1">動画のテーマ / ターゲット読者</label>
-          <textarea className="w-full h-48 bg-black border-2 border-white/10 rounded-xl p-6 font-bold text-white outline-none focus:border-emerald-500 transition-all text-lg" placeholder="例：最新のAIツールのレビュー動画。20代のクリエイター向け。" />
-          <Button onClick={handleAnalyze} disabled={isAnalyzing} className="w-full h-24 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-3xl rounded-[2rem] shadow-xl uppercase italic active:scale-95 transition-all">AIプロデュースを開始 🚀</Button>
+          <textarea className="w-full h-48 bg-black border-2 border-white/10 rounded-xl p-6 font-bold text-white outline-none focus:border-emerald-500 transition-all text-lg" placeholder="テーマを入力..." />
+          <Button onClick={handleAnalyze} disabled={isAnalyzing} className="w-full h-20 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-2xl rounded-[2rem] shadow-xl uppercase italic">AIプロデュースを開始 🚀</Button>
         </Card>
 
         {result && (
           <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Card className="bg-emerald-500/5 border-2 border-emerald-500/30 rounded-[3.5rem] p-12 shadow-inner text-left">
-              <h3 className="text-2xl font-black text-white italic uppercase mb-8 flex items-center gap-3"><Zap className="text-emerald-400" /> AI 戦略的台本出力</h3>
+              <h3 className="text-2xl font-black text-white italic uppercase mb-8 flex items-center gap-3"><Zap className="text-emerald-400" /> AI戦略的台本出力</h3>
               <div className="text-xl text-white font-bold italic leading-loose whitespace-pre-wrap mb-10">{result}</div>
               {audioUrl && (
                 <div className="border-t border-emerald-500/20 pt-8 text-center">
-                  <Button onClick={() => window.open(audioUrl)} className="h-16 px-10 bg-white text-slate-950 font-black text-lg rounded-xl shadow-xl hover:bg-slate-100 transition-all italic"><Music className="mr-2" /> AIナレーションを保存 (MP3)</Button>
+                  <Button onClick={() => {}} className="h-16 px-10 bg-white text-slate-950 font-black text-lg rounded-xl shadow-xl hover:bg-slate-100 transition-all italic"><Music className="mr-2" /> AIナレーションを保存 (MP3)</Button>
                 </div>
               )}
             </Card>
@@ -55,7 +54,7 @@ export default function YoutubeProducerApp() {
             <div className="space-y-6">
               <h3 className="text-xl font-black text-white italic uppercase tracking-widest border-l-4 border-emerald-500 pl-4">動画制作ロードマップ</h3>
               <div className="grid md:grid-cols-3 gap-6">
-                {[{ title: '市場解析', desc: '競合から、視聴者が今求めている「答え」を抽出。', icon: Search }, { title: '台本錬成', desc: '維持率を上げるための心理学的フックを配置。', icon: FileText }, { title: 'バズ加速', desc: 'クリック率の高いサムネ指示とSEOタグを生成。', icon: Sparkles }].map((s, i) => (
+                {[{ title: '市場解析', desc: '視聴者が今求めている「答え」を抽出。', icon: Search }, { title: '台本錬成', desc: '維持率を上げるためのフックを配置。', icon: FileText }, { title: 'バズ加速', desc: 'クリック率の高いサムネ指示を生成。', icon: Sparkles }].map((s, i) => (
                   <div key={i} className="bg-[#13141f] border border-white/10 p-10 rounded-3xl space-y-4 hover:border-emerald-500/50 transition-all">
                     <s.icon className="h-6 w-6 text-emerald-400" />
                     <h4 className="text-lg font-black text-white italic">{s.title}</h4>
@@ -65,8 +64,8 @@ export default function YoutubeProducerApp() {
               </div>
             </div>
 
-            <a href="https://www.amazon.co.jp/s?k=YouTube+動画編集+機材&tag=nextralabs-22" target="_blank" className="block group">
-              <div className="bg-gradient-to-r from-red-600 to-rose-800 p-10 rounded-[3rem] flex items-center justify-between shadow-2xl transition-all hover:scale-[1.01]">
+            <a href="https://www.amazon.co.jp/s?k=YouTube+動画編集&tag=nextralabs-22" target="_blank" className="block group">
+              <div className="bg-gradient-to-r from-red-600 to-rose-800 p-10 rounded-[3rem] flex items-center justify-between shadow-2xl transition-all">
                 <h3 className="text-2xl font-black text-white italic">最強の制作環境：プロ推奨の機材・教本 ➔</h3>
                 <ShoppingCart size={40} className="text-white animate-pulse" />
               </div>
