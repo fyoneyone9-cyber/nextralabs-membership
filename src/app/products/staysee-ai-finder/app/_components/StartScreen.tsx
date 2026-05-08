@@ -46,9 +46,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
             alert('【SECURITY LOCK】外部サイトへの移動は制限されています。');
             return false;
           }
-        } catch (err) {
-          // 不正なURL形式などの場合
-        }
+        } catch (err) {}
       }
     };
 
@@ -60,12 +58,24 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
       }
     };
 
+    // 3. ブラウザの「戻る」ボタンによる外部（履歴）への離脱を阻止
+    // 常に自分自身のURLを履歴の先頭に積み続けることで「戻る」を無効化
+    window.history.pushState(null, '', window.location.href);
+    const handlePopState = () => {
+      if (isLocked) {
+        window.history.pushState(null, '', window.location.href);
+        alert('【LOCKED】戻る操作は制限されています。15秒長押しで解除してください。');
+      }
+    };
+
     window.addEventListener('click', handleExternalClick, true);
     window.addEventListener('beforeunload', preventDeparture);
+    window.addEventListener('popstate', handlePopState);
 
     return () => {
       window.removeEventListener('click', handleExternalClick, true);
       window.removeEventListener('beforeunload', preventDeparture);
+      window.removeEventListener('popstate', handlePopState);
     };
   }, [isLocked]);
 
