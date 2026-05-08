@@ -67,213 +67,153 @@ export default async function AdminPage() {
     'office-politics-graph': '社内政治相関図',
   }
 
+  // ツール利用統計 (api_usage)
+  const { data: usageData } = await supabase
+    .from('api_usage')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(100)
+
+  // ツールIDごとの合計利用回数集計
+  const usageStats = (usageData || []).reduce((acc: any, curr: any) => {
+    acc[curr.tool_id] = (acc[curr.tool_id] || 0) + 1
+    return acc
+  }, {})
+
+  const toolDisplayNames: Record<string, string> = {
+    'universal-converter': '究極AIマルチコンバーター',
+    'staysee-ai-finder': 'Staysee AI Finder',
+    'inbox-organizer': 'Gmail AI Accelerator',
+    'ai-exam-generator': 'AI問題生成 & 苦手分析',
+    ...productNames
+  }
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">管理画面</h1>
-        <p className="text-muted-foreground">NextraLabs ストア管理ダッシュボード</p>
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="flex justify-between items-end mb-8">
+        <div>
+          <h1 className="text-4xl font-black italic uppercase tracking-tighter text-white">Nextra Admin Central</h1>
+          <p className="text-emerald-500 font-bold uppercase tracking-widest text-xs italic">Management Dashboard • MASTERMODEL Quality</p>
+        </div>
+        <Badge variant="outline" className="border-emerald-500/50 text-emerald-400 font-black italic px-4 py-1">ADMIN ONLY</Badge>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">総ユーザー数</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{userCount || 0}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">有料会員数</CardTitle>
-            <ShieldCheck className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{subCount || 0}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">単品購入数</CardTitle>
-            <CreditCard className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{purchaseCount || 0}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">お問い合わせ</CardTitle>
-            <MessageSquare className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{contactCount || 0}</div>
-            {newContactCount > 0 && (
-              <p className="text-xs text-orange-500 font-medium mt-1">🔴 未対応 {newContactCount}件</p>
-            )}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">販売中ツール</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">11</div>
-          </CardContent>
-        </Card>
+      {/* Stats Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        {[
+          { label: '総会員数', val: userCount || 0, icon: Users, color: 'text-blue-400' },
+          { label: 'プレミアム会員', val: subCount || 0, icon: ShieldCheck, color: 'text-emerald-400' },
+          { label: 'ツール総稼働数', val: (usageData || []).length, icon: TrendingUp, color: 'text-orange-400' },
+          { label: '未対応連絡', val: newContactCount, icon: MessageSquare, color: newContactCount > 0 ? 'text-red-400' : 'text-slate-400' }
+        ].map((s, i) => (
+          <Card key={i} className="bg-[#13141f] border-2 border-white/5 rounded-2xl overflow-hidden">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start mb-2">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">{s.label}</p>
+                <s.icon className={`h-4 w-4 ${s.color}`} />
+              </div>
+              <div className="text-3xl font-black italic text-white">{s.val}</div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      {/* Contact List */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            📩 お問い合わせ（最新20件）
-            {newContactCount > 0 && (
-              <Badge className="bg-orange-500 text-white border-0 text-xs">{newContactCount}件 未対応</Badge>
-            )}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {(contacts || []).length === 0 ? (
-            <p className="text-muted-foreground text-sm py-4 text-center">まだお問い合わせがありません</p>
-          ) : (
-            <div className="space-y-4">
-              {(contacts || []).map((c: any) => (
-                <div key={c.id} className={`border rounded-xl p-4 ${c.status === 'new' ? 'border-orange-300 bg-orange-50/50 dark:bg-orange-950/10' : 'border-border'}`}>
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold">{c.name}</span>
-                      <a href={`mailto:${c.email}`} className="text-sm text-blue-500 hover:underline">{c.email}</a>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="text-xs">{c.category_label || c.category}</Badge>
-                      {c.status === 'new' ? (
-                        <Badge className="bg-orange-500 text-white border-0 text-xs">未対応</Badge>
-                      ) : c.status === 'replied' ? (
-                        <Badge className="bg-green-500 text-white border-0 text-xs">返信済</Badge>
-                      ) : (
-                        <Badge variant="outline" className="text-xs">クローズ</Badge>
-                      )}
-                    </div>
-                  </div>
-                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{c.message}</p>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    {c.created_at ? new Date(c.created_at).toLocaleString('ja-JP') : '—'}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* User List */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>ユーザー一覧（最新50件）</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left py-3 px-2 font-medium text-muted-foreground">名前</th>
-                  <th className="text-left py-3 px-2 font-medium text-muted-foreground">ユーザーID</th>
-                  <th className="text-left py-3 px-2 font-medium text-muted-foreground">ロール</th>
-                  <th className="text-left py-3 px-2 font-medium text-muted-foreground">プラン</th>
-                  <th className="text-left py-3 px-2 font-medium text-muted-foreground">購入済み</th>
-                  <th className="text-left py-3 px-2 font-medium text-muted-foreground">登録日</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(profiles || []).map((p: any) => (
-                  <tr key={p.id} className="border-b hover:bg-muted/50">
-                    <td className="py-3 px-2 font-medium">{p.display_name || '—'}</td>
-                    <td className="py-3 px-2 text-muted-foreground font-mono text-xs">{p.user_id?.slice(0, 12)}...</td>
-                    <td className="py-3 px-2">
-                      {p.role === 'admin' ? (
-                        <Badge variant="destructive" className="text-xs">管理者</Badge>
-                      ) : (
-                        <Badge variant="secondary" className="text-xs">一般</Badge>
-                      )}
-                    </td>
-                    <td className="py-3 px-2">
-                      {activeSubUserIds.has(p.user_id) ? (
-                        <Badge className="bg-green-500 text-white border-0 text-xs">プレミアム</Badge>
-                      ) : (
-                        <Badge variant="outline" className="text-xs">無料</Badge>
-                      )}
-                    </td>
-                    <td className="py-3 px-2">
-                      <div className="flex flex-wrap gap-1">
-                        {(purchaseMap.get(p.user_id) || []).map((pid: string) => (
-                          <Badge key={pid} variant="secondary" className="text-xs">
-                            {productNames[pid] || pid}
-                          </Badge>
-                        ))}
-                        {!(purchaseMap.get(p.user_id) || []).length && (
-                          <span className="text-muted-foreground">—</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="py-3 px-2 text-muted-foreground">
-                      {p.created_at ? new Date(p.created_at).toLocaleDateString('ja-JP') : '—'}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Recent Purchases */}
-      <Card>
-        <CardHeader>
-          <CardTitle>購入履歴（最新50件）</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {(purchases || []).length === 0 ? (
-            <p className="text-muted-foreground text-sm py-4 text-center">まだ購入履歴がありません</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-3 px-2 font-medium text-muted-foreground">ツール</th>
-                    <th className="text-left py-3 px-2 font-medium text-muted-foreground">ユーザーID</th>
-                    <th className="text-left py-3 px-2 font-medium text-muted-foreground">ステータス</th>
-                    <th className="text-left py-3 px-2 font-medium text-muted-foreground">購入日</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(purchases || []).map((p: any, i: number) => (
-                    <tr key={i} className="border-b hover:bg-muted/50">
-                      <td className="py-3 px-2 font-medium">
-                        {productNames[p.product_id] || p.product_id}
-                      </td>
-                      <td className="py-3 px-2 text-muted-foreground font-mono text-xs">
-                        {p.user_id?.slice(0, 8)}...
-                      </td>
-                      <td className="py-3 px-2">
-                        <Badge className="bg-green-500 text-white border-0 text-xs">
-                          {p.status}
-                        </Badge>
-                      </td>
-                      <td className="py-3 px-2 text-muted-foreground">
-                        {p.created_at ? new Date(p.created_at).toLocaleDateString('ja-JP') : '—'}
-                      </td>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Main Column */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* User List */}
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2rem] overflow-hidden">
+            <CardHeader className="border-b border-white/5 bg-white/5">
+              <CardTitle className="text-lg font-black italic uppercase tracking-tight text-white flex items-center gap-2">
+                <Users className="h-5 w-5 text-emerald-500" /> 最新の会員登録
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-black/20 text-slate-500 border-b border-white/5">
+                      <th className="text-left py-4 px-6 font-black uppercase text-[10px] tracking-widest">Name / ID</th>
+                      <th className="text-left py-4 px-6 font-black uppercase text-[10px] tracking-widest">Plan</th>
+                      <th className="text-left py-4 px-6 font-black uppercase text-[10px] tracking-widest">Date</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {(profiles || []).map((p: any) => (
+                      <tr key={p.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                        <td className="py-4 px-6">
+                          <div className="font-bold text-white">{p.display_name || 'Anonymous User'}</div>
+                          <div className="text-[10px] text-slate-500 font-mono tracking-tighter">{p.user_id}</div>
+                        </td>
+                        <td className="py-4 px-6">
+                          {activeSubUserIds.has(p.user_id) ? (
+                            <Badge className="bg-emerald-500 text-slate-950 border-0 font-black italic px-2 py-0.5 text-[10px]">PREMIUM</Badge>
+                          ) : (
+                            <Badge variant="outline" className="text-slate-500 border-slate-700 font-bold px-2 py-0.5 text-[10px]">FREE</Badge>
+                          )}
+                        </td>
+                        <td className="py-4 px-6 text-slate-400 text-xs font-bold italic">
+                          {p.created_at ? new Date(p.created_at).toLocaleDateString('ja-JP') : '—'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-8">
+          {/* Tool Usage Stats */}
+          <Card className="bg-[#13141f] border-2 border-emerald-500/20 rounded-[2rem] overflow-hidden">
+            <CardHeader className="border-b border-white/5 bg-emerald-500/5">
+              <CardTitle className="text-lg font-black italic uppercase tracking-tight text-white flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-emerald-500" /> ツール利用統計
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                {Object.entries(usageStats).length === 0 ? (
+                  <p className="text-slate-500 text-xs text-center py-10 font-bold italic">データ未蓄積</p>
+                ) : (
+                  Object.entries(usageStats).sort((a: any, b: any) => b[1] - a[1]).map(([tid, count]: any) => (
+                    <div key={tid} className="group">
+                      <div className="flex justify-between items-end mb-1">
+                        <span className="text-xs font-black text-slate-300 uppercase italic group-hover:text-emerald-400 transition-colors">
+                          {toolDisplayNames[tid] || tid}
+                        </span>
+                        <span className="text-sm font-black text-white italic">{count}回</span>
+                      </div>
+                      <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" 
+                          style={{ width: `${Math.min(100, (count / (usageData || []).length) * 500)}%` }} 
+                        />
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* New Contacts Alert */}
+          {newContactCount > 0 && (
+            <Card className="bg-red-500/10 border-2 border-red-500 rounded-[2rem] overflow-hidden">
+              <CardContent className="p-6 flex flex-col items-center text-center">
+                <MessageSquare className="h-10 w-10 text-red-500 mb-4 animate-bounce" />
+                <h3 className="text-xl font-black text-white italic uppercase tracking-tighter mb-1">未対応の連絡</h3>
+                <p className="text-red-500 font-bold italic text-sm mb-6">{newContactCount}件のメッセージが届いています</p>
+                <Button className="w-full bg-red-500 hover:bg-red-600 text-white font-black italic uppercase rounded-xl">
+                  内容を確認する
+                </Button>
+              </CardContent>
+            </Card>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }
