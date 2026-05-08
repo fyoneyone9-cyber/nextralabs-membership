@@ -31,7 +31,6 @@ export default function DmsEngine() {
   const [session, setSession] = useState<any>(null);
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState('checkin');
-  const [isDarkMode, setIsDarkMode] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(true);
   const [editingBooking, setEditingBooking] = useState<any>(null);
@@ -59,7 +58,13 @@ export default function DmsEngine() {
   useEffect(() => {
     setMounted(true);
     const data = localStorage.getItem('dms_session');
-    if (data) setSession(JSON.parse(data));
+    if (data) {
+      try {
+        setSession(JSON.parse(data));
+      } catch (e) {
+        console.error('Session parse error:', e);
+      }
+    }
     fetchStayseeBookings();
   }, []);
 
