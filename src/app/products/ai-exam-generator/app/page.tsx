@@ -48,21 +48,31 @@ const ExamApp = () => {
 
         <div className="grid grid-cols-1 gap-4">
           {[
-            { id: 'it-passport', title: 'ITパスポート', sub: 'ストラテジ・マネジメント・テクノロジ' },
-            { id: 'fe', title: '基本情報技術者', sub: '科目A：知識問題集中トレーニング' },
-            { id: 'comptia', title: 'CompTIA Security+', sub: 'セキュリティリスクと対策の理解' }
+            { id: 'it-passport', title: 'ITパスポート', sub: 'ストラテジ・マネジメント・テクノロジ', disabled: false },
+            { id: 'fe', title: '基本情報技術者', sub: '科目A：知識問題集中トレーニング', disabled: true },
+            { id: 'comptia', title: 'CompTIA Security+', sub: 'セキュリティリスクと対策の理解', disabled: true }
           ].map((exam) => (
             <Card 
               key={exam.id}
-              className={`cursor-pointer transition-all border-2 rounded-2xl bg-[#0a0a0f] hover:border-emerald-500/50 ${examType === exam.id ? 'border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.2)]' : 'border-white/5'}`}
-              onClick={() => setExamType(exam.id)}
+              className={`cursor-pointer transition-all border-2 rounded-2xl bg-[#0a0a0f] ${
+                exam.disabled 
+                  ? 'opacity-50 grayscale cursor-not-allowed border-white/5' 
+                  : examType === exam.id 
+                    ? 'border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:border-emerald-500/50' 
+                    : 'border-white/5 hover:border-emerald-500/50'
+              }`}
+              onClick={() => !exam.disabled && setExamType(exam.id)}
             >
               <CardContent className="p-6 flex items-center justify-between">
                 <div>
-                  <h3 className="text-white font-bold">{exam.title}</h3>
+                  <h3 className={`font-bold ${exam.disabled ? 'text-slate-400' : 'text-white'}`}>{exam.title}</h3>
                   <p className="text-xs text-slate-500">{exam.sub}</p>
                 </div>
-                {examType === exam.id && <CheckCircle2 className="text-emerald-500 w-5 h-5" />}
+                {exam.disabled ? (
+                  <Badge variant="outline" className="text-[10px] border-slate-700 text-slate-500 font-black uppercase">Coming Soon</Badge>
+                ) : (
+                  examType === exam.id && <CheckCircle2 className="text-emerald-500 w-5 h-5" />
+                )}
               </CardContent>
             </Card>
           ))}
@@ -85,7 +95,7 @@ const ExamApp = () => {
       setSelectedAnswer(null);
       setShowHint(false);
       setIsAnswered(false);
-      // setCurrentQuestion(currentQuestion + 1);
+      setCurrentQuestion(currentQuestion + 1);
     }
   }
 

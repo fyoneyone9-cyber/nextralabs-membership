@@ -21,8 +21,13 @@ import {
 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'PDF AIコンプレッサー | NextraLabs',
-  description: '憲法に基づいた安全なPDF圧縮ツール。高品質を維持したままファイルサイズを最小化。',
+  title: 'PDF AIコンプレッサー | 品質を落とさずファイルサイズを極限削減 - NextraLabs',
+  description: '【2026年最新】NextraLabsのPDF AIコンプレッサーは、Gemini 2.5 Flashと独自のアルゴリズムで、PDFの視覚的品質を維持したまま、ファイルサイズを最大90%削減。憲法遵守のセキュアな設計で、ビジネスを加速。',
+  keywords: ['PDF 圧縮 AI', 'ファイル軽量化', 'PDF サイズ 削減', 'オンライン PDF コンプレッサー', 'NextraLabs', 'Ninja3'],
+  openGraph: {
+    title: 'PDF AIコンプレッサー | 15MBを2MBに。品質そのまま、スマートに。',
+    description: '重いPDFにさよならを。NextraLabsのMASTERMODELが、あなたの業務を爆速化。',
+  }
 }
 
 const features = [
@@ -189,18 +194,32 @@ export default function PdfCompressorPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="container mx-auto px-4 py-10">
-        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-[2.5rem] p-10 md:p-16 text-center shadow-2xl shadow-emerald-500/20 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
-          <h2 className="text-3xl md:text-5xl font-black text-slate-950 mb-6 italic uppercase tracking-tighter">
-            今すぐPDFをスマートに
-          </h2>
-          <p className="text-slate-900 font-bold mb-10 max-w-xl mx-auto">
-            重いファイルを軽量化して、業務を加速。
-            NextraLabsの品質を、あなたのブラウザで。
-          </p>
-          <div className="flex justify-center gap-4">
-            <ToolLaunchButton productId="pdf-compressor" />
+      <section className="container mx-auto px-4 py-20">
+        <div className="relative group">
+          <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-[3rem] blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+          <div className="relative bg-gradient-to-br from-emerald-600 to-teal-800 border-2 border-emerald-400/50 rounded-[3rem] p-12 md:p-24 text-center shadow-2xl overflow-hidden">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl" />
+            
+            <div className="relative z-10 space-y-8">
+              <Badge className="bg-white/10 text-white border-white/20 px-4 py-1 font-black tracking-widest uppercase text-xs">
+                Streamline Your Workflow
+              </Badge>
+              <h2 className="text-4xl md:text-7xl font-black text-white mb-6 italic uppercase tracking-tighter leading-none">
+                今すぐPDFを <br className="md:hidden" />
+                <span className="text-emerald-300">スマートに</span>
+              </h2>
+              <p className="text-emerald-50/80 font-bold mb-10 max-w-2xl mx-auto leading-relaxed text-lg">
+                重いファイルを軽量化して、業務を加速。 <br className="hidden md:block" />
+                NextraLabsのMASTERMODEL品質を、あなたのブラウザで即座に体験。
+              </p>
+              <div className="flex justify-center gap-6">
+                <ToolLaunchButton productId="pdf-compressor" className="h-20 px-12 bg-white text-emerald-900 font-black text-2xl rounded-2xl hover:scale-105 transition-all shadow-[0_20px_40px_rgba(0,0,0,0.3)]" />
+              </div>
+              <p className="mt-8 text-[10px] font-black text-emerald-300/60 uppercase tracking-[0.4em] italic">
+                Verified Master System Integrated
+              </p>
+            </div>
           </div>
         </div>
       </section>
