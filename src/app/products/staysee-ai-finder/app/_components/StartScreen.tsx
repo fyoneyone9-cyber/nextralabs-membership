@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 interface StartScreenProps {
   onNext: () => void;
@@ -8,7 +8,6 @@ interface StartScreenProps {
 
 const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
   const [pressTimer, setPressTimer] = React.useState<any>(null);
-
   const [isLocked, setIsLocked] = React.useState(true);
 
   const handlePressStart = (e: React.MouseEvent | React.TouchEvent) => {
@@ -39,13 +38,16 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
       const target = e.target as HTMLElement;
       const anchor = target.closest('a');
       if (anchor && anchor.href) {
-        const url = new URL(anchor.href);
-        // NextraLabs以外のドメインへの移動を強制キャンセル
-        if (url.origin !== window.location.origin) {
-          e.preventDefault();
-          e.stopPropagation();
-          alert('【SECURITY LOCK】外部サイトへの移動は制限されています。');
-          return false;
+        try {
+          const url = new URL(anchor.href);
+          if (url.origin !== window.location.origin) {
+            e.preventDefault();
+            e.stopPropagation();
+            alert('【SECURITY LOCK】外部サイトへの移動は制限されています。');
+            return false;
+          }
+        } catch (err) {
+          // 不正なURL形式などの場合
         }
       }
     };
@@ -66,6 +68,11 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
       window.removeEventListener('beforeunload', preventDeparture);
     };
   }, [isLocked]);
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[85vh] text-center space-y-24 animate-in fade-in duration-1000">
+      
+      {/* 繊細で美しいタイポグラフィ */}
       <div className="space-y-4">
         <p className="text-emerald-500/40 text-sm font-black tracking-[1.2em] uppercase animate-in slide-in-from-top-4 duration-1000">
           Experience the Future
@@ -88,13 +95,11 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
         onTouchEnd={handleReleaseStart}
         className="group relative flex items-center justify-center w-80 h-80 transition-all duration-1000 active:scale-95"
       >
-        {/* 深い奥行きを作る光の層 */}
+        {/* 深い奥行きを作る光 of 宝石 */}
         <div className="absolute inset-0 bg-emerald-500/10 rounded-full blur-[100px] group-hover:bg-emerald-500/20 transition-all duration-1000" />
         <div className="absolute inset-0 border border-white/5 rounded-full scale-[1.6] opacity-10 group-hover:scale-125 group-hover:opacity-40 transition-all duration-1000" />
         
-        {/* メインボタン: 究極のグラスモフィズム */}
         <div className="relative w-full h-full bg-black/40 backdrop-blur-3xl border border-white/10 rounded-full flex flex-col items-center justify-center shadow-[0_0_80px_rgba(0,0,0,0.8)] overflow-hidden group-hover:border-emerald-500/40 transition-all duration-700">
-          {/* 内部で静かに動く光 */}
           <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-transparent to-transparent animate-[pulse_4s_infinite]" />
           
           <div className="relative z-10 space-y-6 flex flex-col items-center">
@@ -104,7 +109,6 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
           </div>
         </div>
 
-        {/* 外側の繊細なデコレーションリング */}
         <div className="absolute -inset-10 border border-emerald-500/5 rounded-full animate-[spin_30s_linear_infinite]" />
         <div className="absolute -inset-10 border-t-2 border-emerald-500/20 rounded-full animate-[spin_10s_linear_infinite] opacity-0 group-hover:opacity-100 transition-opacity" />
       </button>
