@@ -1,6 +1,7 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
+import { createBrowserClient } from '@supabase/ssr'
 import { Badge } from '@/components/ui/badge'
 import {
   Star, Rocket, Building2, TrendingUp, Share2, ShieldCheck, Network, Wallet, Youtube,
@@ -97,19 +98,56 @@ export default function DashboardClient({ user, profile, subscription }: any) {
   const [mounted, setMounted] = useState(false)
   const [activeTab, setActiveTab] = useState<'all' | 'favorites' | 'accessible'>('all')
 
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+
+  // Supabaseからお気に入りを取得
+  const loadFavorites = useCallback(async () => {
+    if (!user?.id) return
+    try {
+      const { data } = await supabase
+        .from('user_favorites')
+        .select('tool_id')
+        .eq('user_id', user.id)
+      if (data) setFavorites(data.map((r: any) => r.tool_id))
+    } catch (e) {
+      console.error('[FAVORITES_LOAD_ERROR]', e)
+    }
+  }, [user?.id])
+
   useEffect(() => {
     setMounted(true)
-    try {
-      const saved = localStorage.getItem('nextra_favorites')
-      if (saved) setFavorites(JSON.parse(saved))
-    } catch {}
-  }, [])
+    loadFavorites()
+  }, [loadFavorites])
 
-  const toggleFavorite = (e: React.MouseEvent, id: string) => {
+  const toggleFavorite = async (e: React.MouseEvent, id: string) => {
     e.preventDefault(); e.stopPropagation()
-    const next = favorites.includes(id) ? favorites.filter(f => f !== id) : [...favorites, id]
-    setFavorites(next)
-    localStorage.setItem('nextra_favorites', JSON.stringify(next))
+    if (!user?.id) return
+
+    const isFav = favorites.includes(id)
+
+    // 楽観的UI更新（即時反映）
+    setFavorites(prev => isFav ? prev.filter(f => f !== id) : [...prev, id])
+
+    try {
+      if (isFav) {
+        await supabase
+          .from('user_favorites')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('tool_id', id)
+      } else {
+        await supabase
+          .from('user_favorites')
+          .upsert({ user_id: user.id, tool_id: id }, { onConflict: 'user_id,tool_id' })
+      }
+    } catch (e) {
+      console.error('[FAVORITES_TOGGLE_ERROR]', e)
+      // 失敗したら元に戻す
+      setFavorites(prev => isFav ? [...prev, id] : prev.filter(f => f !== id))
+    }
   }
 
   if (!mounted) return null
