@@ -127,7 +127,10 @@ export default function DmsEngine() {
   };
 
   const handleSavePms = () => {
-    if (!newPms.type || !newPms.apiKey) return;
+    if (!newPms.type || !newPms.apiKey) {
+      alert('種別とAPIキーは必須です');
+      return;
+    }
     const item = { ...newPms, id: Date.now().toString() };
     setPmsList(prev => [...prev, item]);
     setPmsView('list');

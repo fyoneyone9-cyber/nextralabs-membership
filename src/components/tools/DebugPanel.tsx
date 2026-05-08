@@ -112,7 +112,7 @@ export function DebugPanel({ data }: { data?: any }) {
   if (!isMounted) return null;
 
   return (
-    <div className="fixed bottom-6 left-6 z-[10001] flex flex-col items-start font-sans">
+    <div className="fixed bottom-6 right-6 z-[10001] flex flex-col items-end font-sans">
       <button 
         onClick={() => setIsOpen(!isOpen)} 
         className="flex items-center justify-center w-12 h-12 rounded-2xl border bg-black/40 backdrop-blur-md shadow-2xl border-white/5 text-slate-400 hover:text-emerald-500 transition-colors"
@@ -121,7 +121,7 @@ export function DebugPanel({ data }: { data?: any }) {
       </button>
       
       {isOpen && (
-        <div className="fixed top-20 left-6 w-[95vw] max-w-2xl bg-[#050507]/98 backdrop-blur-3xl border-2 border-white/10 p-8 rounded-[3rem] shadow-2xl space-y-6 animate-in slide-in-from-top-4 duration-500">
+        <div className="fixed top-20 right-6 w-[95vw] max-w-2xl bg-[#050507]/98 backdrop-blur-3xl border-2 border-white/10 p-8 rounded-[3rem] shadow-2xl space-y-6 animate-in slide-in-from-top-4 duration-500">
           {!isAuth ? (
             <div className="py-10 space-y-6 text-center">
               <Terminal className="text-emerald-500 mx-auto" size={40} />
