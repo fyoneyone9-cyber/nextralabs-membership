@@ -1,4 +1,5 @@
 import React from 'react';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,6 +7,16 @@ import { Badge } from '@/components/ui/badge';
 import { Utensils, Camera, Zap, Video, Rocket, ArrowLeft, Sparkles, ChefHat } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'AIレシピ | 冷蔵庫スキャンで残り物からプロの味を - NextraLabs',
+  description: '「今日、何作ろう？」をAIが解決。冷蔵庫の余り物を撮影するだけでGemini 2.5 Flashが最適レシピを提案。調理動画連動で誰でも天才シェフに。食材ロスゼロを目指す究極のキッチン・アシスト。',
+  keywords: ['AIレシピ', '冷蔵庫スキャン', '残り物 料理', '時短レシピ AI', '献立作成 自動', '食材ロス削減', 'NextraLabs', 'Ninja3'],
+  openGraph: {
+    title: 'AIレシピ | 写真1枚でプロの献立をプロデュース',
+    description: 'もう献立に迷わない。あなたの冷蔵庫が、今日から三ツ星レストランに。',
+  }
+};
 
 export default function AiRecipeLandingPage() {
   const features = [
@@ -108,10 +119,12 @@ export default function AiRecipeLandingPage() {
                     </div>
                     
                     <div className="space-y-4">
-                      <div className="aspect-video bg-black/40 rounded-2xl border border-dashed border-white/10 flex flex-col items-center justify-center gap-2">
-                        <Camera className="w-8 h-8 text-slate-600" />
-                        <span className="text-[10px] text-slate-600 font-black uppercase">Upload Fridge Photo</span>
-                      </div>
+                      <Link href="/products/ai-recipe/app" className="block group/cam">
+                        <div className="aspect-video bg-black/40 rounded-2xl border border-dashed border-white/10 flex flex-col items-center justify-center gap-2 group-hover/cam:border-emerald-500/50 group-hover/cam:bg-emerald-500/5 transition-all">
+                          <Camera className="w-8 h-8 text-slate-600 group-hover/cam:text-emerald-500 transition-colors" />
+                          <span className="text-[10px] text-slate-600 font-black uppercase group-hover/cam:text-emerald-400">Launch Camera & Analyze</span>
+                        </div>
+                      </Link>
                       <div className="space-y-2">
                         <div className="h-2 bg-slate-800 rounded-full w-3/4"></div>
                         <div className="h-2 bg-slate-800 rounded-full w-1/2"></div>
