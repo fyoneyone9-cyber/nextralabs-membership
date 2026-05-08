@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { TouchpadOff as Touch } from 'lucide-react';
 
 interface StartScreenProps {
   onNext: () => void;
@@ -9,49 +8,51 @@ interface StartScreenProps {
 
 const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] text-center space-y-16 animate-in fade-in zoom-in duration-1000">
-      <div className="space-y-6">
-        <h1 className="text-6xl font-black tracking-tighter leading-tight italic">
+    <div className="flex flex-col items-center justify-center min-h-[85vh] text-center space-y-24 animate-in fade-in duration-1000">
+      
+      {/* 繊細で美しいタイポグラフィ */}
+      <div className="space-y-4">
+        <p className="text-emerald-500/40 text-sm font-black tracking-[1.2em] uppercase animate-in slide-in-from-top-4 duration-1000">
+          Experience the Future
+        </p>
+        <h1 className="text-8xl font-thin tracking-tighter leading-tight text-white/90">
           Welcome to<br/>
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">
+          <span className="font-black italic text-transparent bg-clip-text bg-gradient-to-tr from-emerald-400 via-emerald-500 to-teal-200 drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]">
             Premium Stay
           </span>
         </h1>
-        <p className="text-gray-500 text-xl font-medium tracking-widest uppercase">
-          ボタンを押して開始してください
-        </p>
       </div>
 
+      {/* スマートで宝石のようなSTARTボタン */}
       <button
         onClick={onNext}
-        className="group relative flex items-center justify-center w-96 h-96 transition-all duration-700 active:scale-95"
+        className="group relative flex items-center justify-center w-80 h-80 transition-all duration-1000 active:scale-95"
       >
-        {/* 外側の光輪 */}
-        <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-3xl group-hover:bg-emerald-500/40 transition-all duration-700 animate-pulse" />
+        {/* 深い奥行きを作る光の層 */}
+        <div className="absolute inset-0 bg-emerald-500/10 rounded-full blur-[100px] group-hover:bg-emerald-500/20 transition-all duration-1000" />
+        <div className="absolute inset-0 border border-white/5 rounded-full scale-[1.6] opacity-10 group-hover:scale-125 group-hover:opacity-40 transition-all duration-1000" />
         
-        {/* メインボタン本体 */}
-        <div className="relative w-full h-full bg-white/5 backdrop-blur-2xl border border-white/10 rounded-full flex flex-col items-center justify-center shadow-2xl overflow-hidden group-hover:border-emerald-500/50 transition-all duration-700">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+        {/* メインボタン: 究極のグラスモフィズム */}
+        <div className="relative w-full h-full bg-black/40 backdrop-blur-3xl border border-white/10 rounded-full flex flex-col items-center justify-center shadow-[0_0_80px_rgba(0,0,0,0.8)] overflow-hidden group-hover:border-emerald-500/40 transition-all duration-700">
+          {/* 内部で静かに動く光 */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-transparent to-transparent animate-[pulse_4s_infinite]" />
           
-          <div className="relative z-10 text-white mb-6 group-hover:text-emerald-400 transition-all duration-700 group-hover:scale-110">
-            <Touch size={140} strokeWidth={0.5} />
-          </div>
-          
-          <div className="relative z-10 text-center">
-            <p className="text-4xl font-black mb-2 tracking-[0.2em] group-hover:tracking-[0.3em] transition-all duration-700">START</p>
-            <div className="h-1 w-12 bg-emerald-500 mx-auto rounded-full group-hover:w-24 transition-all duration-700" />
+          <div className="relative z-10 space-y-6 flex flex-col items-center">
+            <div className="w-16 h-1 bg-emerald-500 rounded-full group-hover:w-32 transition-all duration-700 shadow-[0_0_20px_rgba(16,185,129,1)]" />
+            <p className="text-4xl font-thin tracking-[0.4em] text-white/90 group-hover:text-white transition-all duration-700 group-hover:tracking-[0.6em]">START</p>
+            <div className="w-8 h-0.5 bg-white/20 rounded-full group-hover:bg-emerald-500/50 transition-all" />
           </div>
         </div>
 
-        {/* 装飾用の回転リング */}
-        <div className="absolute -inset-4 border-2 border-dashed border-emerald-500/20 rounded-full animate-[spin_20s_linear_infinite] group-hover:border-emerald-500/40 transition-colors" />
+        {/* 外側の繊細なデコレーションリング */}
+        <div className="absolute -inset-10 border border-emerald-500/5 rounded-full animate-[spin_30s_linear_infinite]" />
+        <div className="absolute -inset-10 border-t-2 border-emerald-500/20 rounded-full animate-[spin_10s_linear_infinite] opacity-0 group-hover:opacity-100 transition-opacity" />
       </button>
 
-      <div className="pt-10 opacity-20 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-1000">
-         <div className="flex flex-col items-center gap-4">
-            <div className="w-1 h-20 bg-gradient-to-b from-emerald-500 to-transparent rounded-full animate-bounce" />
-            <span className="text-xs font-bold tracking-[0.5em] uppercase">Smart Check-in System</span>
-         </div>
+      {/* 控えめなフッター */}
+      <div className="flex flex-col items-center gap-4 opacity-20 group hover:opacity-100 transition-opacity duration-1000 cursor-default">
+         <span className="text-[9px] font-black tracking-[1em] uppercase text-emerald-500">Intelligent Check-in System</span>
+         <div className="w-px h-16 bg-gradient-to-b from-emerald-500 to-transparent" />
       </div>
     </div>
   );
