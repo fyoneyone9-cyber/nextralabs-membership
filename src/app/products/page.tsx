@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useSearchParams } from 'next/navigation'
 import React, { useState, useEffect, useCallback, Suspense } from 'react'
 import Link from 'next/link'
@@ -44,7 +44,7 @@ const TOOLS = [
   { id: 'office-politics-graph', cat: 'mind', title: '社内政治 AI相関図', sub: '人間関係の暗部を可視化', icon: Network, plan: '無料' },
   { id: 'interior-coordinator', cat: 'mind', title: 'Interior AI Sync', sub: '空間分析 × 楽天一括購入OS', icon: Sofa, plan: 'プレミアム' },
   { id: 'ai-recipe', cat: 'life', title: 'AIレシピ献立コーチ', sub: '冷蔵庫の残り物 × 栄養最適化', icon: Utensils, plan: 'スタンダード' },
-  { id: 'exam-scheduler', cat: 'edu', title: '資格試験 AIスケジューラー', sub: 'ITパスポート・基本情報・問題生成をAIが自動計画', icon: ClipboardCheck, plan: 'スタンダード' },
+  { id: 'exam-scheduler', cat: 'edu', title: '資格試験 AIスケジューラー', sub: '試験日から逆算して学習計画を自動生成', icon: ClipboardCheck, plan: 'スタンダード' },
   { id: 'location-finder', cat: 'hotel', title: 'AIロケーションファインダー', sub: '出店・移住の最適地をデータ分析', icon: MapPin, plan: 'スタンダード' },
   { id: 'smart-gardening', cat: 'life', title: 'AIスマートガーデニング', sub: '植物の声を聴く育成アドバイザー', icon: Sprout, plan: 'スタンダード' },
   { id: 'ticket-scout', cat: 'life', title: 'AIチケットスカウト', sub: '争奪戦に勝つための先行情報収集', icon: Ticket, plan: 'スタンダード' }
@@ -54,6 +54,7 @@ const CATEGORIES = [
   { id: 'hotel', title: '宿泊・不動産DX', icon: Hotel, color: 'border-emerald-500' },
   { id: 'sns', title: 'SNS・コンテンツ戦略', icon: Share2, color: 'border-orange-500' },
   { id: 'life', title: '防犯・資産・ライフ', icon: ShieldCheck, color: 'border-red-500' },
+  { id: 'edu', title: '学習・自己研鑽', icon: BookOpen, color: 'border-purple-500' },
   { id: 'biz', title: 'ビジネス・自動化', icon: Briefcase, color: 'border-blue-500' },
   { id: 'mind', title: '人間心理・対人戦略', icon: HeartHandshake, color: 'border-pink-500' }
 ]
@@ -75,7 +76,6 @@ function ProductCard({ product, isFav, onToggleFav }: {
 
   return (
     <Card className="h-full bg-[#13141f] transition-all duration-300 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group shadow-xl relative border-2 border-emerald-500 shadow-emerald-500/10 hover:border-emerald-400">
-      {/* ★ お気に入りボタン */}
       <button
         onClick={e => onToggleFav(e, product.id)}
         className={`absolute top-4 right-4 z-20 p-1.5 rounded-xl transition-all ${
@@ -132,7 +132,6 @@ function ProductsList() {
     setRandomFree(TOOLS.filter(t => t.plan === '無料').sort(() => 0.5 - Math.random()).slice(0, 3))
     setPickupTools([...filteredTools].sort(() => 0.5 - Math.random()).slice(0, 3))
 
-    // ユーザー取得 & お気に入り読み込み
     const loadFavs = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
@@ -203,11 +202,6 @@ function ProductsList() {
 export default function ProductsPage() {
   return (
     <Suspense fallback={<div className="text-emerald-500 font-bold p-10">Loading...</div>}>
-      <ProductsList />
-    </Suspense>
-  )
-}
-rald-500 font-bold p-10">Loading...</div>}>
       <ProductsList />
     </Suspense>
   )
