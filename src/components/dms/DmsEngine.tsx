@@ -174,6 +174,77 @@ export default function DmsEngine() {
             </Card>
           )}
 
+          {/* 物件一覧画面 */}
+          {activeTab === 'property' && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/5">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                  <input placeholder="検索" className={"pl-10 pr-4 py-2 border-2 border-white/10 rounded-full text-sm w-80 bg-black focus:border-emerald-500 outline-none"} />
+                </div>
+                <div className="flex gap-3">
+                  <Button className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg px-6">
+                    <Plus size={18} className="mr-2" /> 新規作成
+                  </Button>
+                  <Button variant="outline" className="border-indigo-500/50 text-indigo-400 hover:bg-indigo-500/10 font-bold rounded-lg px-6">
+                    <RefreshCw size={18} className="mr-2" /> 物件・鍵デバイス情報同期
+                  </Button>
+                </div>
+              </div>
+
+              <Card className={"rounded-xl overflow-hidden border " + cardClass}>
+                <table className="w-full text-left text-[11px]">
+                  <thead className={isDarkMode ? "bg-black/50 text-slate-500 uppercase font-black" : "bg-slate-50 text-slate-400"}>
+                    <tr>
+                      <th className="p-4">物件名</th>
+                      <th className="p-4">PMS連携</th>
+                      <th className="p-4">住所</th>
+                      <th className="p-4 text-center">部屋</th>
+                      <th className="p-4 text-center">操作</th>
+                      <th className="p-4 text-center">無人モード</th>
+                      <th className="p-4 text-center">ログ</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y border-inherit">
+                    {[
+                      { name: 'ビジネスホテルアップル', pms: 'Staysee', address: '愛知県名古屋市中村区黄金通1-22', unmanned: true },
+                      { name: 'ネクストラ・ベイサイド静岡', pms: 'Beds24', address: '静岡県静岡市清水区...', unmanned: false },
+                      { name: 'サイバー・レジデンス島根', pms: 'Staysee', address: '島根県松江市...', unmanned: true }
+                    ].map((prop, idx) => (
+                      <tr key={idx} className="hover:bg-emerald-500/5 transition-colors">
+                        <td className="p-6">
+                          <span className="text-indigo-400 font-black hover:underline cursor-pointer text-sm">{prop.name}</span>
+                        </td>
+                        <td className="p-6 font-bold text-slate-500">{prop.pms}</td>
+                        <td className="p-6 text-slate-400">{prop.address}</td>
+                        <td className="p-6 text-center">
+                          <Button size="sm" variant="outline" className="bg-indigo-500/10 border-indigo-500/30 text-indigo-400 h-8 font-black">
+                            <Building size={14} className="mr-1" /> 部屋
+                          </Button>
+                        </td>
+                        <td className="p-6 text-center">
+                          <button className="p-3 bg-indigo-500 text-white rounded-full shadow-lg hover:scale-110 transition-transform">
+                            <PenLine size={16} />
+                          </button>
+                        </td>
+                        <td className="p-6 text-center">
+                          <div className={`w-12 h-6 rounded-full relative transition-colors cursor-pointer ${prop.unmanned ? 'bg-indigo-600' : 'bg-slate-700'}`}>
+                            <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${prop.unmanned ? 'left-7' : 'left-1'}`} />
+                          </div>
+                        </td>
+                        <td className="p-6 text-center">
+                          <Button size="sm" variant="outline" className="bg-indigo-500/10 border-indigo-500/30 text-indigo-400 h-8 font-black">
+                             ログ
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Card>
+            </div>
+          )}
+
           {activeTab === 'checkin' && (
             <Card className={"rounded-xl overflow-hidden border " + cardClass}>
               <div className="p-4 bg-black/10 flex justify-between items-center border-b border-inherit">
