@@ -88,9 +88,9 @@ const ReservationSearch: React.FC<ReservationSearchProps> = ({ onNext }) => {
       </div>
 
       {/* 入力エリア */}
-      <div className="relative group max-w-3xl mx-auto">
+      <div className="relative group max-w-3xl mx-auto min-h-[460px]">
         <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-[40px] blur opacity-10 group-focus-within:opacity-30 transition-opacity" />
-        <div className="relative bg-black/40 backdrop-blur-2xl border border-white/10 rounded-[40px] p-10">
+        <div className="relative bg-black/40 backdrop-blur-2xl border border-white/10 rounded-[40px] p-10 h-full flex flex-col justify-center">
           <div className="space-y-8">
             <div className="relative">
               {searchMode !== 'qr' ? (
@@ -107,7 +107,7 @@ const ReservationSearch: React.FC<ReservationSearchProps> = ({ onNext }) => {
                   </div>
                 </>
               ) : (
-                <div className="w-full bg-emerald-500/5 border-2 border-dashed border-emerald-500/20 rounded-[40px] py-20 flex flex-col items-center justify-center gap-6 animate-pulse">
+                <div className="w-full bg-emerald-500/5 border-2 border-dashed border-emerald-500/20 rounded-[40px] py-20 flex flex-col items-center justify-center gap-6 animate-pulse min-h-[300px]">
                   <QrCode size={120} className="text-emerald-500" strokeWidth={1} />
                   <div className="text-center space-y-2">
                     <p className="text-2xl font-black tracking-widest text-emerald-500">SCANNING...</p>
@@ -128,7 +128,7 @@ const ReservationSearch: React.FC<ReservationSearchProps> = ({ onNext }) => {
               )}
             </div>
 
-            {searchMode !== 'qr' && (
+            {searchMode !== 'qr' ? (
               <button
                 onClick={handleSearch}
                 disabled={!inputValue || isSearching}
@@ -141,6 +141,8 @@ const ReservationSearch: React.FC<ReservationSearchProps> = ({ onNext }) => {
               >
                 {isSearching ? 'SEARCHING...' : 'SEARCH'}
               </button>
+            ) : (
+              <div className="h-[120px]" /> /* QRモード時の高さ維持用スペーサー */
             )}
           </div>
         </div>
