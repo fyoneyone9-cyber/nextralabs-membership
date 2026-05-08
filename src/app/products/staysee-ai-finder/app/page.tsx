@@ -14,6 +14,7 @@ import { shrinkImageForAi } from '@/lib/ai-saver';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
+import { ActiveLockBadge } from '@/components/tools/ActiveLockBadge';
 
 type Step = 'start' | 'lang' | 'type' | 'search' | 'identity' | 'form' | 'confirm' | 'payment' | 'complete';
 
@@ -72,7 +73,10 @@ const StayseeAppPage = () => {
             <span className="text-xs font-bold text-emerald-500 tracking-[0.5em] mt-2 uppercase italic">Hospitality Intelligence OS</span>
           </div>
         </div>
-        <Badge className="bg-emerald-600 text-slate-950 font-black px-6 py-2 rounded-full shadow-lg">MASTERMODEL v2.9.3</Badge>
+        <div className="flex items-center gap-4">
+          <ActiveLockBadge />
+          <Badge className="bg-emerald-600 text-slate-950 font-black px-6 py-2 rounded-full shadow-lg">MASTERMODEL v2.9.3</Badge>
+        </div>
       </header>
 
       <main className="flex-1 flex flex-col items-center justify-center px-10 py-20 relative">
