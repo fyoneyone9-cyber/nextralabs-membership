@@ -37,6 +37,7 @@ const StayseeAppPage = () => {
   const router = useRouter();
   const [isKioskMode, setIsKioskMode] = useState(false);
   const [step, setStep] = useState<Step>('start');
+  const [type, setType] = useState<'checkin' | 'checkout'>('checkin');
   const [selectedLang, setSelectedLang] = useState('ja');
   const [reservation, setReservation] = useState<any>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
@@ -199,6 +200,23 @@ const StayseeAppPage = () => {
                       </span>
                     </div>
                     {isActive && <div className="absolute -top-4 w-3 h-3 bg-emerald-400 rounded-full animate-ping" />}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </main>
+
+      <footer className="p-8 text-center opacity-30 text-xs">
+        <p>© 2026 NextraLabs x Staysee. v3.22.9</p>
+      </footer>
+    </div>
+  );
+};
+
+export default StayseeAppPage;
+3 bg-emerald-400 rounded-full animate-ping" />}
                   </div>
                 );
               })}
