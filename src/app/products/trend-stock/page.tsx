@@ -75,8 +75,8 @@ export default function TrendStockPage() {
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <TrendingUp className="text-emerald-500" />
             Trend Stock
-            <Badge className={`text-[10px] animate-pulse ${data?.mode === 'AI_AUTONOMOUS' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'}`}>
-              ● {data?.mode === 'AI_AUTONOMOUS' ? 'AI AUTONOMOUS' : 'LIVE TREND'}
+            <Badge className="text-[10px] bg-blue-600 text-white font-bold border-none">
+              ● RAKUTEN RAW DATA
             </Badge>
           </h1>
           <p className="text-muted-foreground">SNSトレンド×楽天急上昇から「今売れる」を自動仕入れ</p>
@@ -165,14 +165,18 @@ export default function TrendStockPage() {
           data?.items.map((item: any, index: number) => (
             <Card key={index} className="overflow-hidden hover:shadow-md transition-shadow">
               <div className="flex flex-col sm:flex-row p-4 gap-4 items-center">
-                <div className="relative">
+                <div className="relative w-24 h-24 shrink-0 bg-slate-800 rounded border border-white/10 flex items-center justify-center overflow-hidden">
                   <img 
                     src={item.imageUrl} 
                     alt={item.name} 
-                    className="w-24 h-24 object-cover rounded border bg-white"
+                    className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
                   />
-                  <Badge className="absolute -top-2 -left-2 bg-slate-800 text-white w-6 h-6 flex items-center justify-center p-0 rounded-full text-xs">
+                  <ShoppingCart className="absolute h-8 w-8 text-emerald-500/20" />
+                  <Badge className="absolute -top-2 -left-2 bg-emerald-500 text-slate-950 w-6 h-6 flex items-center justify-center p-0 rounded-full text-xs font-bold border-2 border-slate-950">
                     {index + 1}
                   </Badge>
                 </div>
