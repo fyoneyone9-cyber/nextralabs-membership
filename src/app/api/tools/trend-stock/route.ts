@@ -3,10 +3,12 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const DEFAULT_RAKUTEN_ID = '3e86f8a8.55831969.3e86f8a9.423985ee';
-const RAKUTEN_APP_ID = '1014902194600644342';
+const DEFAULT_RAKUTEN_ID = '534e3725.64346793.534e3726.d5412af4';
+const RAKUTEN_APP_ID = '21a92248-492b-4675-a876-027b5406e558';
 
 export async function GET(request: Request) {
+  // if (!RAKUTEN_APP_ID) { ... } は削除またはコメントアウト
+
   const cookieStore = cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
