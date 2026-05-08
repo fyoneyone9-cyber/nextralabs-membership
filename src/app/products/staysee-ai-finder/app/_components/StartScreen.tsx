@@ -7,21 +7,28 @@ interface StartScreenProps {
 }
 
 const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
+  const [pressTimer, setPressTimer] = React.useState<NodeJS.Timeout | null>(null);
+
+  const handlePressStart = () => {
+    const timer = setTimeout(() => {
+      if (confirm('管理モードを終了してログアウトしますか？')) {
+        localStorage.clear();
+        window.location.href = '/';
+      }
+    }, 15000);
+    setPressTimer(timer);
+  };
+
+  const handleReleaseStart = () => {
+    if (pressTimer) {
+      clearTimeout(pressTimer);
+      setPressTimer(null);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[85vh] text-center space-y-24 animate-in fade-in duration-1000">
       
-      {/* 隠しログアウトボタン */}
-      <button 
-        onClick={() => {
-          localStorage.removeItem('supabase.auth.token'); // 必要に応じて調整
-          window.location.href = '/';
-        }}
-        className="fixed top-4 right-4 w-10 h-10 opacity-0 hover:opacity-10 transition-opacity z-[100] cursor-default"
-        title="Admin Logout"
-      >
-        .
-      </button>
-
       {/* 繊細で美しいタイポグラフィ */}
       <div className="space-y-4">
         <p className="text-emerald-500/40 text-sm font-black tracking-[1.2em] uppercase animate-in slide-in-from-top-4 duration-1000">
@@ -38,6 +45,11 @@ const StartScreen: React.FC<StartScreenProps> = ({ onNext }) => {
       {/* スマートで宝石のようなSTARTボタン */}
       <button
         onClick={onNext}
+        onMouseDown={handlePressStart}
+        onMouseUp={handleReleaseStart}
+        onMouseLeave={handleReleaseStart}
+        onTouchStart={handlePressStart}
+        onTouchEnd={handleReleaseStart}
         className="group relative flex items-center justify-center w-80 h-80 transition-all duration-1000 active:scale-95"
       >
         {/* 深い奥行きを作る光の層 */}
