@@ -38,6 +38,8 @@ export const metadata: Metadata = {
   },
 }
 
+import { HeaderWrapper, FooterWrapper } from '@/components/layout-wrappers'
+
 export default function RootLayout({
   children,
 }: {
@@ -59,14 +61,3 @@ export default function RootLayout({
   )
 }
 
-import { usePathname } from 'next/navigation'
-function HeaderWrapper() {
-  const pathname = usePathname()
-  if (pathname?.startsWith('/dms')) return null
-  return <Header />
-}
-function FooterWrapper() {
-  const pathname = usePathname()
-  if (pathname?.startsWith('/dms')) return null
-  return <Footer />
-}
