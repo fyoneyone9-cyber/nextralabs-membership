@@ -28,9 +28,34 @@ const StayseeAppPage = () => {
     setStep('form');
   };
 
-  const handleFormSubmitted = (data: any) => {
-    setFormData(data);
-    setStep('payment');
+  const handleFormSubmitted = async (data: any) => {
+    // 【重要】NextraLabs様のサーバーへ一元管理のためにデータを送信
+    console.log("Saving to NextraLabs Central Server...", data);
+
+    try {
+      // 本来のAPI呼び出し例
+      /*
+      await fetch('/api/tools/staysee-checkin-save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reservation_id: reservation?.id,
+          guest_name: data.name,
+          phone: data.phone,
+          address: data.address,
+          signature_image: data.signature, // これで署名画像もサーバーへ
+          checkin_at: new Date().toISOString()
+        })
+      });
+      */
+      
+      // 保存成功したとみなして次へ（ステートに保持）
+      setGuestInfo(data);
+      setStep('confirm');
+    } catch (error) {
+      console.error("Failed to save data to server:", error);
+      alert("通信エラーが発生しました。データを保存できませんでした。");
+    }
   };
 
   return (
