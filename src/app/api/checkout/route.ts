@@ -8,7 +8,9 @@ import { stripe } from '@/lib/stripe'
  * 環境変数がない場合のフェイルセーフとしてハードコード
  */
 const PRICE_IDS = {
-  light: 'price_1TSLd55HQYoJh51tKxN9A7E1', // 仮の値（必要に応じて修正）
+  // ⚠️ 必ずVercel環境変数 STRIPE_LIGHT_PRICE_ID を設定してください
+  // ここのフォールバック値は本番では使わないこと
+  light: process.env.STRIPE_LIGHT_PRICE_ID || '',
   standard: 'price_1TRYU05HQYoJh51tWIeoMqf0',
   premium: 'price_1TRYVG5HQYoJh51tKFh7eI3x'
 };
@@ -28,7 +30,8 @@ export async function POST(request: NextRequest) {
     console.log(`[CHECKOUT] Initializing for plan: ${plan}, priceId: ${priceId}`);
 
     if (!priceId) {
-      return NextResponse.json({ error: 'Stripe Price IDが設定されていません。Vercelの環境変数を確認してください。' }, { status: 500 })
+      console.error(`[CHECKOUT] Price ID missing for plan: ${plan}. Set STRIPE_${plan.toUpperCase()}_PRICE_ID in Vercel env.`)
+      return NextResponse.json({ error: `Stripe Price IDが設定されていません（plan: ${plan}）。Vercelの環境変数を確認してください。` }, { status: 500 })
     }
 
     let user: any = null

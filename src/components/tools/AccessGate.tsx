@@ -1,15 +1,57 @@
-﻿'use client'
+'use client'
 import React, { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
-import { Loader2, Lock, ShieldAlert } from 'lucide-react'
+import { Loader2, ShieldAlert } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+
+// =============================================
+// 🔒 プラン別ツール分類 (MEMORY.md 正式版と統一)
+// =============================================
+
+// プレミアム専用ツール (¥1,980/月)
+const PREMIUM_IDS = [
+  'inbox-organizer',
+  'prompt-master',
+  'youtube-producer',
+  'pet-translator',
+  'ai-select-shop',
+  'staysee-ai-finder',
+  'ai-sidejob',
+  'interior-coordinator',
+  'youtube-coordinator',
+]
+
+// スタンダード以上で使えるツール (¥980/月〜)
+const STANDARD_IDS = [
+  'buy-smart-nav',
+  'scam-defender',
+  'shopping-stopper',
+  'closet-coach',
+  'buzz-writer',
+  'comm-coach',
+  'resignation-assistant',
+  'ai-konkatsu',
+  'money-guard',
+  'shio-taiou',
+  'trend-stock',
+]
+
+// ライト以上で使えるツール (¥480/月〜)
+const LIGHT_IDS = [
+  'expense-sync',
+  'contact-sync',
+  'price-tracker',
+]
+
+// 無料ツール（ログインのみ必要）
+// office-politics-graph, moving-checker, evidence-manager など上記に含まれないもの
 
 export function AccessGate({ children, productId }: { children: React.ReactNode, productId: string }) {
   const [status, setStatus] = useState<'loading' | 'authorized' | 'unauthorized'>('loading')
   const router = useRouter()
   const pathname = usePathname()
-  
+
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -19,15 +61,15 @@ export function AccessGate({ children, productId }: { children: React.ReactNode,
     async function checkAccess() {
       try {
         const { data: { session } } = await supabase.auth.getSession()
-        
+
         if (!session) {
-          router.push("/login?returnTo=" + encodeURIComponent(pathname))
+          router.push('/login?returnTo=' + encodeURIComponent(pathname))
           return
         }
 
-        const user = session.user;
+        const user = session.user
 
-        // 👑 憲法：管理者（NextraLabs様）は常に全パスを通過
+        // 👑 管理者（NextraLabs様）は常に全パス通過
         if (user.email === 'f.yoneyone9@gmail.com') {
           setStatus('authorized')
           return
@@ -40,43 +82,25 @@ export function AccessGate({ children, productId }: { children: React.ReactNode,
           .eq('status', 'active')
           .maybeSingle()
 
-        const userPlan = subscription?.plan || 'free';
+        const userPlan = subscription?.plan || 'free'
 
-        // プレミアムツール一覧
-        const premiumIds = [
-          'ai-select-shop', 'youtube-producer', 'scam-defender', 
-          'vintage-hunter', 'inbox-organizer', 'staysee-ai-finder',
-          'comp-price-monitor', 'interior-coordinator', 'youtube-coordinator'
-        ];
-        // スタンダードツール一覧
-        const standardIds = [
-          'pr-command', 'ai-konkatsu', 'money-guard', 
-          'disaster-guard', 'shopping-stopper', 'hotel-affiliate', 'trend-stock'
-        ];
-        // ライトプランツール一覧
-        const lightIds = [
-          'sns-auto-poster', 'expense-sync', 'contact-sync', 'price-tracker', 'ai-sidejob', 'prompt-master'
-        ];
-
-        if (premiumIds.includes(productId)) {
-          if (userPlan === 'premium') setStatus('authorized');
-          else setStatus('unauthorized');
-        } else if (standardIds.includes(productId)) {
-          if (userPlan === 'premium' || userPlan === 'standard') setStatus('authorized');
-          else setStatus('unauthorized');
-        } else if (lightIds.includes(productId)) {
-          if (userPlan === 'premium' || userPlan === 'standard' || userPlan === 'light') setStatus('authorized');
-          else setStatus('unauthorized');
+        if (PREMIUM_IDS.includes(productId)) {
+          setStatus(userPlan === 'premium' ? 'authorized' : 'unauthorized')
+        } else if (STANDARD_IDS.includes(productId)) {
+          setStatus(['premium', 'standard'].includes(userPlan) ? 'authorized' : 'unauthorized')
+        } else if (LIGHT_IDS.includes(productId)) {
+          setStatus(['premium', 'standard', 'light'].includes(userPlan) ? 'authorized' : 'unauthorized')
         } else {
-          setStatus('authorized');
+          // 無料ツール：ログインしていれば通過
+          setStatus('authorized')
         }
       } catch (e) {
-        console.error('[ACCESS_GATE_ERROR]', e);
-        setStatus('unauthorized');
+        console.error('[ACCESS_GATE_ERROR]', e)
+        setStatus('unauthorized')
       }
     }
     checkAccess()
-  }, [productId, pathname, router, supabase.auth])
+  }, [productId, pathname, router])
 
   if (status === 'loading') {
     return (

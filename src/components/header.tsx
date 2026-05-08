@@ -14,6 +14,7 @@ export function Header() {
   const { theme, setTheme } = useTheme()
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
+  const [userPlan, setUserPlan] = useState<string | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -33,6 +34,8 @@ export function Header() {
       if (currentUser) {
         const { data } = await supabase.from('profiles').select('*').eq('user_id', currentUser.id).maybeSingle()
         setProfile(data)
+        const { data: sub } = await supabase.from('subscriptions').select('plan').eq('user_id', currentUser.id).eq('status', 'active').maybeSingle()
+        setUserPlan(sub?.plan ?? 'free')
       }
     }
     getUser()
@@ -104,10 +107,14 @@ export function Header() {
                 </div>
                 {profile?.role === 'admin' ? (
                   <Badge className="bg-blue-600 text-white text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-blue-800 shadow-lg">ADMIN</Badge>
+                ) : userPlan === 'premium' ? (
+                  <Badge className="bg-amber-500 text-slate-950 text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-amber-700 shadow-lg uppercase">PREMIUM</Badge>
+                ) : userPlan === 'standard' ? (
+                  <Badge className="bg-emerald-500 text-slate-950 text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-emerald-700 shadow-lg uppercase">STANDARD</Badge>
+                ) : userPlan === 'light' ? (
+                  <Badge className="bg-sky-500 text-slate-950 text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-sky-700 shadow-lg uppercase">LIGHT</Badge>
                 ) : (
-                  <Badge className="bg-emerald-500 text-slate-950 text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-emerald-700 shadow-lg uppercase">
-                    MASTER
-                  </Badge>
+                  <Badge className="bg-slate-600 text-white text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-slate-800 shadow-lg uppercase">FREE</Badge>
                 )}
               </div>
               <Button variant="ghost" size="sm" onClick={handleLogout}><LogOut className="h-4 w-4 mr-1" />ログアウト</Button>

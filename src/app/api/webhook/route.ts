@@ -76,9 +76,12 @@ export async function POST(request: NextRequest) {
           .maybeSingle()
 
         if (existingSub) {
-          // Determine plan from price ID
+          // Determine plan from price ID (light/standard/premium 全対応)
           const priceId = subUpdated.items?.data?.[0]?.price?.id
-          const updatedPlan = priceId === process.env.STRIPE_PREMIUM_PRICE_ID ? 'premium' : 'standard'
+          let updatedPlan = 'standard'
+          if (priceId === process.env.STRIPE_PREMIUM_PRICE_ID) updatedPlan = 'premium'
+          else if (priceId === process.env.STRIPE_LIGHT_PRICE_ID) updatedPlan = 'light'
+          else updatedPlan = 'standard'
           await supabaseAdmin.from('subscriptions').update({
             status: subUpdated.status,
             plan: updatedPlan,
