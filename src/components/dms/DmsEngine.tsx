@@ -117,32 +117,52 @@ export default function DmsEngine() {
               </div>
               <table className="w-full text-left text-xs">
                 <thead className="bg-black/50 text-slate-500">
-                  <tr><th className="p-4">ステータス</th><th className="p-4">宿泊者</th><th className="p-4">部屋</th><th className="p-4 text-right">操作</th></tr>
+                  <tr>
+                    <th className="p-4">ステータス</th>
+                    <th className="p-4">物件名</th>
+                    <th className="p-4">部屋</th>
+                    <th className="p-4">宿泊者</th>
+                    <th className="p-4">予約元</th>
+                    <th className="p-4">チェックイン</th>
+                    <th className="p-4">チェックアウト</th>
+                    <th className="p-4">連絡先</th>
+                    <th className="p-4 text-right">詳細</th>
+                  </tr>
                 </thead>
                 <tbody className="divide-y border-inherit text-slate-300">
                   {[
-                    { id: 'RSV001', name: 'SEKIDO KENJI', room: 'Room 302', status: '未チェックイン' },
-                    { id: 'RSV002', name: 'NEXTRALABS', room: 'Room 501', status: '滞在中' }
+                    { id: '678056', name: 'ゆかわ まさる', room: '302', status: 'confirmed', property: 'ビジネスホテルアップル', checkin: '5/8', checkout: '5/9', phone: '09060108776', source: 'DMS' },
+                    { id: '382380', name: '西中 慎吾', room: '303', status: 'confirmed', property: 'ビジネスホテルアップル', checkin: '5/8', checkout: '5/9', phone: '08016281642', source: 'DMS' },
+                    { id: '582045', name: '武田 泰賢', room: '401', status: 'confirmed', property: 'ビジネスホテルアップル', checkin: '5/8', checkout: '5/9', phone: '09072502627', source: 'DMS' },
+                    { id: '894872', name: 'SEKIDO KENJI', room: '403', status: 'confirmed', property: 'ビジネスホテルアップル', checkin: '5/8', checkout: '5/9', phone: '09023308560', source: 'DMS' },
+                    { id: '737663', name: '羽田 州秀', room: '405', status: 'confirmed', property: 'ビジネスホテルアップル', checkin: '5/8', checkout: '5/9', phone: '09060726485', source: 'DMS' },
                   ].map((booking) => (
-                    <tr key={booking.id} className="hover:bg-emerald-500/5 transition-colors group">
-                      <td className="p-4 md:p-6">
-                        <Badge className={booking.status === '滞年中' ? 'bg-blue-500/20 text-blue-400' : 'bg-emerald-500/20 text-emerald-400'}>
-                          {booking.status}
+                    <tr key={booking.id} className="hover:bg-emerald-500/5 transition-colors group border-b border-white/5">
+                      <td className="p-4">
+                        <Badge className="bg-emerald-500 text-slate-950 font-black text-[10px] px-2 py-0.5 rounded">
+                          {booking.status.toUpperCase()}
                         </Badge>
                       </td>
-                      <td className="p-4 md:p-6">
-                        <button 
-                          onClick={() => setEditingBooking(booking)}
-                          className="text-indigo-400 font-black hover:underline text-sm uppercase tracking-tight text-left"
+                      <td className="p-4 font-bold text-white text-xs">{booking.property}</td>
+                      <td className="p-4 font-black text-emerald-500 text-xs">Room {booking.room}</td>
+                      <td className="p-4">
+                        <Link 
+                          href={`/dms/bookings/${booking.id}`}
+                          className="text-indigo-400 font-black hover:underline text-sm uppercase tracking-tight text-left block"
                         >
                           {booking.name}
-                        </button>
+                        </Link>
                       </td>
-                      <td className="p-4 md:p-6 font-bold">{booking.room}</td>
-                      <td className="p-4 md:p-6 text-right">
-                        <Button variant="ghost" size="sm" onClick={() => setEditingBooking(booking)} className="md:opacity-0 group-hover:opacity-100">
-                          <Edit3 size={16} />
-                        </Button>
+                      <td className="p-4 text-[10px] font-bold text-slate-500">{booking.source}</td>
+                      <td className="p-4 text-[10px] font-bold text-slate-400">{booking.checkin}</td>
+                      <td className="p-4 text-[10px] font-bold text-slate-400">{booking.checkout}</td>
+                      <td className="p-4 text-[10px] font-mono text-slate-500">{booking.phone}</td>
+                      <td className="p-4 text-right">
+                        <Link href={`/dms/bookings/${booking.id}`}>
+                          <Button variant="ghost" size="sm" className="text-emerald-500 hover:bg-emerald-500/10">
+                            <ArrowRight size={16} />
+                          </Button>
+                        </Link>
                       </td>
                     </tr>
                   ))}
