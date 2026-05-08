@@ -10,7 +10,7 @@ import {
   Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, 
   ClipboardCheck, Heart, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, 
   Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, Ticket, BookOpen, 
-  Sprout, Zap, Droplets, Utensils, Building2, Hotel, Key, Lock, CreditCard, Coins, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, FileDown, Brain
+  Sprout, Zap, Droplets, Utensils, Building2, Hotel, Key, Lock, CreditCard, Coins, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, FileDown, Brain, Repeat
 } from 'lucide-react'
 
 const TOOLS = [
@@ -73,10 +73,10 @@ function ProductCard({ product, isFav, onToggleFav }: {
   const planLabelMap: Record<string, string> = { '無料': 'FREE', 'ライト': 'LIGHT', 'スタンダード': 'STANDARD', 'プレミアム': 'MASTER' }
   const displayBadge = planLabelMap[product.plan] || 'BASIC'
   const planBadgeColors: Record<string, string> = {
-    '無料': 'bg-slate-500/20 text-slate-400 border-slate-500/30',
-    'ライト': 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-    'スタンダード': 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-    'プレミアム': 'bg-orange-500/20 text-orange-400 border-orange-500/30'
+    '無料': 'bg-slate-500/20 text-slate-300 border-slate-500/40',
+    'ライト': 'bg-blue-500/20 text-blue-300 border-blue-500/40',
+    'スタンダード': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+    'プレミアム': 'bg-orange-500/20 text-orange-300 border-orange-500/40'
   }
   const badgeClass = "text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border " + (planBadgeColors[product.plan] || planBadgeColors['無料'])
 
@@ -98,8 +98,8 @@ function ProductCard({ product, isFav, onToggleFav }: {
         </div>
         <div className="flex-1">
           <h3 className="text-base md:text-lg font-black text-white mb-1 tracking-tight">{product.title}</h3>
-          <p className="text-emerald-500 text-[10px] md:text-xs font-bold mb-2 italic">{product.sub}</p>
-          <p className="text-slate-400 text-[10px] md:text-[11px] leading-relaxed mb-4 line-clamp-2 italic">{product.sub}を実現するソリューション。</p>
+          <p className="text-emerald-300 text-[10px] md:text-xs font-bold mb-2 italic">{product.sub}</p>
+          <p className="text-white text-[10px] md:text-[11px] leading-relaxed mb-4 line-clamp-2 italic">{product.sub}を実現するソリューション。</p>
         </div>
         <div className="pt-4 border-t border-white/5 flex flex-col gap-2.5 mt-auto">
           <Link href={"/products/" + product.id} className="block w-full">
@@ -170,9 +170,9 @@ function ProductsList() {
   if (!mounted) return null
 
   return (
-    <div className="min-h-screen bg-[#050507] text-slate-200 pb-10 font-sans">
+    <div className="min-h-screen bg-[#050507] text-slate-100 pb-10 font-sans">
       <div className="max-w-6xl mx-auto px-4 pt-10 md:pt-16 text-center mb-10 md:mb-16 space-y-3">
-        <Badge variant="outline" className="px-3 py-0.5 text-[8px] md:text-[10px] font-black text-emerald-500 border-emerald-500/20 uppercase tracking-[0.2em]">Master Catalogue</Badge>
+        <Badge variant="outline" className="px-3 py-0.5 text-[8px] md:text-[10px] font-black text-emerald-400 border-emerald-500/40 uppercase tracking-[0.2em]">Master Catalogue</Badge>
         <h1 className="text-3xl md:text-7xl font-black text-white tracking-tighter uppercase leading-none italic">AI ツールストア</h1>
       </div>
       <div className="max-w-6xl mx-auto px-4 space-y-8 md:space-y-16">
@@ -200,7 +200,7 @@ function ProductsList() {
           </section>
         ))}
       </div>
-      <div className="text-center opacity-10 mt-10 font-black uppercase tracking-[0.3em] italic text-[8px]">Nextra AILabs 2026</div>
+      <div className="text-center opacity-10 mt-10 font-black uppercase tracking-[0.3em] italic text-[8px]">Nextra Labs 2026</div>
     </div>
   )
 }
