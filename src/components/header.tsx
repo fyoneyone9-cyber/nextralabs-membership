@@ -96,8 +96,12 @@ export function Header() {
               <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">ダッシュボード</Link>
               <Link href="/dashboard/profile">
                 <div className="flex items-center gap-2 p-1 pr-3 bg-black/40 backdrop-blur-md rounded-full border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.1)] group hover:border-emerald-500/60 transition-all cursor-pointer">
-                  <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
-                    <User className="h-4 w-4 text-slate-950" />
+                  <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform overflow-hidden">
+                    {profile?.avatar_url ? (
+                      <img src={profile.avatar_url} className="w-full h-full object-cover" />
+                    ) : (
+                      <User className="h-4 w-4 text-slate-950" />
+                    )}
                   </div>
                   <div className="flex flex-col leading-none mr-1">
                     <span className="text-[10px] font-black text-white italic tracking-tighter uppercase mb-0.5">{profile?.display_name || user.email?.split("@")[0]}</span>
