@@ -18,8 +18,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ reservation, onNext
     name: reservation?.name || '',
     phone: reservation?.phone || '',
     email: '',
-    address: '',
-    occupation: '',
+    address: reservation?.address || '',
+    occupation: reservation?.occupation || '',
     isSignatureEmpty: true
   });
 
@@ -46,96 +46,95 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ reservation, onNext
   };
 
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4">宿泊者名簿の記入</h2>
-        <p className="text-gray-400">必要事項を入力し、最後にサインをお願いします</p>
+    <div className="space-y-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 pb-32">
+      <div className="text-center space-y-4">
+        <h1 className="text-5xl font-black tracking-tighter">REGISTRATION</h1>
+        <p className="text-gray-500 text-lg font-bold tracking-[0.4em] uppercase">宿泊者名簿のご記入をお願いします</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white/5 p-8 rounded-[40px] border border-white/10">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
         {/* 基本情報入力 */}
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <label className="flex items-center gap-2 text-sm font-bold text-gray-500 ml-2">
-              <User size={16} /> お名前
+        <div className="lg:col-span-3 space-y-6 bg-white/5 backdrop-blur-2xl border border-white/10 p-12 rounded-[60px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-3">
+              <label className="flex items-center gap-2 text-xs font-black text-emerald-500/50 uppercase tracking-widest ml-2">
+                <User size={14} /> Full Name / お名前
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full bg-white/5 border-2 border-white/10 rounded-3xl py-6 px-8 text-2xl font-black focus:border-emerald-500/50 focus:outline-none transition-all"
+              />
+            </div>
+
+            <div className="space-y-3">
+              <label className="flex items-center gap-2 text-xs font-black text-emerald-500/50 uppercase tracking-widest ml-2">
+                <Phone size={14} /> Phone / 電話番号
+              </label>
+              <input
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className="w-full bg-white/5 border-2 border-white/10 rounded-3xl py-6 px-8 text-2xl font-black focus:border-emerald-500/50 focus:outline-none transition-all"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <label className="flex items-center gap-2 text-xs font-black text-emerald-500/50 uppercase tracking-widest ml-2">
+              <MapPin size={14} /> Address / ご住所
             </label>
             <input
               type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full bg-black/20 border-2 border-white/10 rounded-2xl py-4 px-6 text-xl focus:border-emerald-500 focus:outline-none transition-colors"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="flex items-center gap-2 text-sm font-bold text-gray-500 ml-2">
-              <Phone size={16} /> 電話番号
-            </label>
-            <input
-              type="tel"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full bg-black/20 border-2 border-white/10 rounded-2xl py-4 px-6 text-xl focus:border-emerald-500 focus:outline-none transition-colors"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="flex items-center gap-2 text-sm font-bold text-gray-500 ml-2">
-              <MapPin size={16} /> ご住所
-            </label>
-            <input
-              type="text"
-              placeholder="例：神奈川県海老名市..."
+              placeholder="Address"
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              className="w-full bg-black/20 border-2 border-white/10 rounded-2xl py-4 px-6 text-xl focus:border-emerald-500 focus:outline-none transition-colors"
+              className="w-full bg-white/5 border-2 border-white/10 rounded-3xl py-6 px-8 text-2xl font-black focus:border-emerald-500/50 focus:outline-none transition-all"
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="flex items-center gap-2 text-sm font-bold text-gray-500 ml-2">
-              <Briefcase size={16} /> 職業
+          <div className="space-y-3">
+            <label className="flex items-center gap-2 text-xs font-black text-emerald-500/50 uppercase tracking-widest ml-2">
+              <Briefcase size={14} /> Occupation / 職業
             </label>
             <input
               type="text"
               value={formData.occupation}
               onChange={(e) => setFormData({ ...formData, occupation: e.target.value })}
-              className="w-full bg-black/20 border-2 border-white/10 rounded-2xl py-4 px-6 text-xl focus:border-emerald-500 focus:outline-none transition-colors"
+              className="w-full bg-white/5 border-2 border-white/10 rounded-3xl py-6 px-8 text-2xl font-black focus:border-emerald-500/50 focus:outline-none transition-all"
             />
           </div>
         </div>
 
         {/* 署名エリア */}
-        <div className="space-y-4">
-          <label className="flex items-center gap-2 text-sm font-bold text-gray-500 ml-2">
-            <Edit3 size={16} /> ご署名
-          </label>
-          <div className="relative bg-white rounded-3xl overflow-hidden h-[300px] border-4 border-white shadow-inner">
-            <SignatureCanvas
-              ref={sigCanvas}
-              onBegin={() => setFormData({ ...formData, isSignatureEmpty: false })}
-              penColor="black"
-              canvasProps={{
-                className: "w-full h-full cursor-crosshair"
-              }}
-            />
-            <button
-              onClick={clearSignature}
-              className="absolute top-4 right-4 p-3 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition-colors"
-            >
-              <Trash2 size={20} />
-            </button>
-            {formData.isSignatureEmpty && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
-                <p className="text-black text-2xl font-bold border-2 border-dashed border-black/30 p-8 rounded-2xl">
-                  ここにサインしてください
-                </p>
-              </div>
-            )}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-10 rounded-[60px] flex flex-col h-full">
+            <label className="flex items-center gap-2 text-xs font-black text-emerald-500/50 uppercase tracking-widest mb-6">
+              <Edit3 size={14} /> Signature / ご署名
+            </label>
+            <div className="relative flex-1 bg-white rounded-[40px] overflow-hidden min-h-[350px] shadow-2xl">
+              <SignatureCanvas
+                ref={sigCanvas}
+                onBegin={() => setFormData({ ...formData, isSignatureEmpty: false })}
+                penColor="black"
+                canvasProps={{
+                  className: "w-full h-full cursor-crosshair"
+                }}
+              />
+              <button
+                onClick={clearSignature}
+                className="absolute top-6 right-6 p-4 bg-red-50 text-red-500 rounded-full hover:bg-red-500 hover:text-white transition-all shadow-lg"
+              >
+                <Trash2 size={24} />
+              </button>
+              {formData.isSignatureEmpty && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-10">
+                  <p className="text-black text-4xl font-black italic">Sign Here</p>
+                </div>
+              )}
+            </div>
           </div>
-          <p className="text-center text-sm text-gray-500">
-            ※枠内に指またはペンで署名してください
-          </p>
         </div>
       </div>
 
@@ -143,13 +142,13 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ reservation, onNext
         onClick={handleSubmit}
         disabled={formData.isSignatureEmpty || !formData.address}
         className={`
-          w-full py-6 rounded-2xl text-2xl font-bold transition-all shadow-lg
+          w-full py-12 rounded-[40px] text-4xl font-black tracking-[0.3em] transition-all shadow-2xl
           ${formData.isSignatureEmpty || !formData.address
-            ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-            : 'bg-emerald-500 text-white hover:bg-emerald-400 shadow-emerald-500/20'}
+            ? 'bg-white/5 text-gray-800 cursor-not-allowed'
+            : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-emerald-500/40 active:scale-[0.98]'}
         `}
       >
-        記入内容を確認して次へ進む
+        CONFIRM & NEXT
       </button>
     </div>
   );

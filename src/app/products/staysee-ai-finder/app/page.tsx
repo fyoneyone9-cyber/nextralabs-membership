@@ -34,27 +34,32 @@ const StayseeAppPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0b10] text-white flex flex-col overflow-hidden font-sans">
-      {/* 背景の装飾的な光 */}
+    <div className="min-h-screen bg-[#02040a] text-white flex flex-col overflow-hidden font-sans selection:bg-emerald-500/30">
+      {/* 動的なグラデーション背景 */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-[20%] -left-[10%] w-[60%] h-[60%] bg-emerald-500/10 blur-[120px] rounded-full" />
-        <div className="absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] bg-blue-500/10 blur-[120px] rounded-full" />
+        <div className="absolute top-[-10%] left-[-10%] w-[70%] h-[70%] bg-emerald-600/10 blur-[120px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] bg-blue-600/10 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[20%] right-[10%] w-[40%] h-[40%] bg-purple-600/5 blur-[100px] rounded-full" />
       </div>
 
       {/* ヘッダー */}
-      <header className="p-8 flex justify-between items-center relative z-10">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-            <span className="font-bold">S</span>
+      <header className="p-10 flex justify-between items-center relative z-20 backdrop-blur-md bg-black/5 border-b border-white/5">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
+            <span className="font-black text-2xl italic">S</span>
           </div>
-          <span className="font-bold tracking-tight opacity-50">Staysee AI Finder</span>
+          <div className="flex flex-col">
+            <span className="font-black text-xl tracking-tighter leading-none">STAYSEE</span>
+            <span className="text-[10px] font-bold text-emerald-500 tracking-[0.4em] mt-1">AI FINDER</span>
+          </div>
         </div>
-        {step !== 'start' && step !== 'lang' && (
+        {step !== 'start' && (
           <button 
             onClick={() => setStep('start')}
-            className="px-6 py-2 bg-white/10 hover:bg-white/20 rounded-full text-sm font-bold transition-colors"
+            className="group flex items-center gap-2 px-8 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-sm font-bold transition-all"
           >
-            最初からやり直す
+            <div className="w-2 h-2 bg-red-500 rounded-full group-hover:animate-ping" />
+            RESET
           </button>
         )}
       </header>
@@ -86,6 +91,14 @@ const StayseeAppPage = () => {
             <RegistrationForm 
               reservation={reservation} 
               onNext={handleFormSubmitted} 
+            />
+          )}
+
+          {step === 'confirm' && (
+            <FinalConfirmation
+              reservation={reservation}
+              guestInfo={guestInfo}
+              onNext={() => setStep('payment')}
             />
           )}
 

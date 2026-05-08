@@ -6,8 +6,9 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { 
   PenLine, MessageSquare, Building, Lock, Monitor, Video, Car, FileBarChart, 
-  Settings, Users, Database, LogOut, LayoutDashboard, ChevronDown, Menu, X, ArrowRight, Search, RefreshCw, Download, Plus, Moon, Sun
+  Settings, Users, Database, LogOut, LayoutDashboard, ChevronDown, Menu, X, ArrowRight, Search, RefreshCw, Download, Plus, Moon, Sun, Edit3
 } from 'lucide-react'
+import DmsBookingEditor from './DmsBookingEditor'
 
 const MENU_ITEMS = [
   { id: 'checkin', label: 'チェックイン', icon: PenLine },
@@ -34,6 +35,7 @@ export default function DmsEngine() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(true);
+  const [editingBooking, setEditingBooking] = useState<any>(null);
   const [session, setSession] = useState(null);
   const [mounted, setMounted] = useState(false);
 
@@ -186,24 +188,69 @@ export default function DmsEngine() {
               </div>
               <table className="w-full text-left text-xs">
                 <thead className={isDarkMode ? "bg-black/50 text-slate-500" : "bg-slate-50 text-slate-400"}>
-                  <tr><th className="p-4">ステータス</th><th className="p-4">宿泊者</th><th className="p-4">部屋</th><th className="p-4 text-right">詳細</th></tr>
+                  <tr><th className="p-4">ステータス</th><th className="p-4">宿泊者</th><th className="p-4">部屋</th><th className="p-4 text-right">操作</th></tr>
                 </thead>
-                                <tbody className="divide-y border-inherit">
-                  <tr className="hover:bg-emerald-500/5 transition-colors">
-                    <td className="p-6"><Link href="/dms/properties/PROP-001" className="text-indigo-400 font-bold hover:underline uppercase tracking-tight">ネクストラ・ベイサイド静岡</Link></td>
-                    <td className="p-6 font-medium text-slate-500">Beds24 (165875)</td>
-                    <td className="p-6"><Badge className="bg-emerald-500/20 text-emerald-500 border-0 text-[8px] font-black uppercase">Active</Badge></td>
-                    <td className="p-6 text-right"><ArrowRight size={16} className="ml-auto opacity-20" /></td>
+                <tbody className="divide-y border-inherit">
+                  <tr className="hover:bg-emerald-500/5 transition-colors group">
+                    <td className="p-6">
+                      <Badge className="bg-emerald-500/20 text-emerald-500 border-0 text-[10px] font-black uppercase">未チェックイン</Badge>
+                    </td>
+                    <td className="p-6">
+                      <button 
+                        onClick={() => setEditingBooking({ id: 'RSV001', name: 'SEKIDO KENJI', phone: '080-1234-5678' })}
+                        className="text-indigo-400 font-black hover:underline text-sm tracking-tight uppercase"
+                      >
+                        SEKIDO KENJI
+                      </button>
+                    </td>
+                    <td className="p-6 font-bold text-slate-500">Room 302</td>
+                    <td className="p-6 text-right">
+                      <Button 
+                        size="xs" 
+                        variant="ghost" 
+                        onClick={() => setEditingBooking({ id: 'RSV001', name: 'SEKIDO KENJI', phone: '080-1234-5678' })}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Edit3 size={14} />
+                      </Button>
+                    </td>
                   </tr>
-                  <tr className="hover:bg-emerald-500/5 transition-colors">
-                    <td className="p-6"><Link href="/dms/properties/PROP-002" className="text-indigo-400 font-bold hover:underline uppercase tracking-tight">サイバー・レジデンス島根</Link></td>
-                    <td className="p-6 font-medium text-slate-500">Staysee (442135)</td>
-                    <td className="p-6"><Badge className="bg-emerald-500/20 text-emerald-500 border-0 text-[8px] font-black uppercase">Active</Badge></td>
-                    <td className="p-6 text-right"><ArrowRight size={16} className="ml-auto opacity-20" /></td>
+                  <tr className="hover:bg-emerald-500/5 transition-colors group">
+                    <td className="p-6">
+                      <Badge className="bg-blue-500/20 text-blue-500 border-0 text-[10px] font-black uppercase">滞在中</Badge>
+                    </td>
+                    <td className="p-6">
+                      <button 
+                        onClick={() => setEditingBooking({ id: 'RSV002', name: 'NEXTRALABS', phone: '080-0000-0000' })}
+                        className="text-indigo-400 font-black hover:underline text-sm tracking-tight uppercase"
+                      >
+                        NEXTRALABS
+                      </button>
+                    </td>
+                    <td className="p-6 font-bold text-slate-500">Room 501</td>
+                    <td className="p-6 text-right">
+                      <Button 
+                        size="xs" 
+                        variant="ghost" 
+                        onClick={() => setEditingBooking({ id: 'RSV002', name: 'NEXTRALABS', phone: '080-0000-0000' })}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Edit3 size={14} />
+                      </Button>
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </Card>
+          )}
+
+          {/* 編集モーダル */}
+          {editingBooking && (
+            <DmsBookingEditor 
+              booking={editingBooking} 
+              isDarkMode={isDarkMode} 
+              onClose={() => setEditingBooking(null)} 
+            />
           )}
 
           {/* デフォルト */}
