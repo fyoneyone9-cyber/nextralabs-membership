@@ -264,7 +264,7 @@ export default function PromptMaster() {
           {/* Right: action panel */}
           <div className="space-y-4">
             <Card
-              style={{ background: '#0d1117', border: '2px solid #10b981', boxShadow: '0 0 20px rgba(16,185,129,0.15)' }}
+              style={{ background: '#0d1117', border: '1px solid rgba(255,255,255,0.08)' }}
               className="rounded-xl p-6 space-y-5"
             >
               <div className="text-xs font-medium text-slate-500 text-center">PROMPT COMMAND HUB</div>
