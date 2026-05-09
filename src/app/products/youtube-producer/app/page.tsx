@@ -1,5 +1,6 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import React, { useState, useRef, useEffect } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -28,6 +29,13 @@ import {
 import { FFmpeg } from '@ffmpeg/ffmpeg'
 import { fetchFile, toBlobURL } from '@ffmpeg/util'
 
+// ⚡ 憲法：SSR無効化 (FFmpeg.wasmなどのブラウザ専用機能を使用するため)
+const YoutubeProducerAppInner = dynamic(() => Promise.resolve(YoutubeProducerApp), { ssr: false })
+
+export default function YoutubeProducerAppPage() {
+  return <YoutubeProducerAppInner />
+}
+
 // ジャンル設定
 const GENRES = [
   { id: 'impact', label: '衝撃・暴露', prompt: '「衝撃」「真実」「暴露」をキーワードに、視聴者の好奇心を極限まで煽るスタイル。強い言葉選びと、謎を小出しにする構造。' },
@@ -42,7 +50,7 @@ const GENRES = [
   { id: 'short', label: 'ショート動画特化', prompt: '最初の3秒で勝負を決める超高密度スタイル。無駄を削ぎ落とし、インパクトのみを追求。' },
 ]
 
-export default function YoutubeProducerApp() {
+function YoutubeProducerApp() {
   const [activeTab, setActiveTab] = useState('input')
   const [isProcessing, setIsProcessing] = useState<Record<string, boolean>>({})
   const [error, setError] = useState<string | null>(null)
