@@ -1,342 +1,453 @@
-﻿'use client'
+'use client'
 import React, { useState, useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { 
-  ArrowRight, CheckCircle2, Zap, RotateCcw, ClipboardPaste, 
-  Building2, Camera, Loader2, Lock, Coins, Settings, Info, Key,
-  UserPlus, List, Search, RefreshCw, Database, ShieldCheck, Eye, EyeOff, Sparkles,
-  PhoneCall, CreditCard, ClipboardList, LogOut, QrCode, Monitor, Languages, PenTool
+import {
+  CheckCircle2, Zap, Lock, Camera, Loader2, Eye, EyeOff,
+  UserPlus, List, Search, Settings, Key, LogOut, QrCode,
+  Monitor, ClipboardList, PenTool, ArrowRight
 } from 'lucide-react'
-import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const TABS = [
-  { id: 'kiosk', label: 'KIOSKトップ', icon: Monitor, desc: '待機・言語選択' },
-  { id: 'search', label: '予約検索', icon: Search, desc: 'QR/予約番号' },
-  { id: 'checkin', label: '自動チェックイン', icon: UserPlus, desc: '本人確認・台帳記帳' },
-  { id: 'lock', label: '鍵発行', icon: Key, desc: 'アクセス権デプロイ' },
-  { id: 'checkout', label: 'チェックアウト', icon: LogOut, desc: '1秒退館・精算' },
-  { id: 'bookings', label: 'DMS予約管理', icon: List, desc: '統合台帳' },
-  { id: 'settings', label: 'システム設定', icon: Settings, desc: 'API一元管理' },
-];
+  { id: 'kiosk',    label: 'KIOSKトップ',    icon: Monitor,       desc: '待機・言語選択' },
+  { id: 'search',   label: '予約検索',        icon: Search,        desc: 'QR/予約番号' },
+  { id: 'checkin',  label: '自動チェックイン', icon: UserPlus,      desc: '本人確認・台帳記帳' },
+  { id: 'lock',     label: '鍵発行',          icon: Key,           desc: 'アクセス権デプロイ' },
+  { id: 'checkout', label: 'チェックアウト',   icon: LogOut,        desc: '1秒退館・精算' },
+  { id: 'bookings', label: 'DMS予約管理',      icon: List,          desc: '統合台帳' },
+  { id: 'settings', label: 'システム設定',     icon: Settings,      desc: 'API一元管理' },
+]
+
+const inputCls = `w-full h-11 rounded-lg px-4 text-sm text-slate-200 placeholder-slate-600 outline-none transition-colors`
+const inputStyle = { background: '#13141f', border: '1px solid #334155' }
 
 const MasterEngine = () => {
-  const [activeTab, setActiveTab] = useState('kiosk');
-  const [isMounted, setIsMounted] = useState(false);
-  const [pmsApiKey, setPmsApiKey] = useState('');
-  const [lockApiKey, setLockApiKey] = useState('');
-  const [pmsType, setPmsType] = useState('');
-  const [lockType, setLockType] = useState('');
-  const [showPmsKey, setShowPmsKey] = useState(false);
-  const [showLockKey, setShowLockKey] = useState(false);
-  const [image, setImage] = useState(null);
-  const [checkinStatus, setCheckinStatus] = useState('IDLE');
-  const [lockKeyData, setLockKeyData] = useState(null);
-  const [isIssuingKey, setIsIssuingKey] = useState(false);
-  // 台帳フィールド（PMS自動入力 + 手動編集可能）
-  const [ledgerName, setLedgerName] = useState('');
-  const [ledgerAddress, setLedgerAddress] = useState('');
-  const [ledgerOccupation, setLedgerOccupation] = useState('');
-  const [ledgerTravel, setLedgerTravel] = useState('');
-
-  const fileInputRef = useRef(null);
+  const [activeTab, setActiveTab] = useState('kiosk')
+  const [isMounted, setIsMounted] = useState(false)
+  const [pmsApiKey, setPmsApiKey] = useState('')
+  const [lockApiKey, setLockApiKey] = useState('')
+  const [pmsType, setPmsType] = useState('')
+  const [lockType, setLockType] = useState('')
+  const [showPmsKey, setShowPmsKey] = useState(false)
+  const [showLockKey, setShowLockKey] = useState(false)
+  const [checkinStatus, setCheckinStatus] = useState('IDLE')
+  const [ledgerName, setLedgerName] = useState('')
+  const [ledgerAddress, setLedgerAddress] = useState('')
+  const [ledgerOccupation, setLedgerOccupation] = useState('')
+  const [ledgerTravel, setLedgerTravel] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    setIsMounted(true);
-    const k1 = localStorage.getItem('nextra_pms_key');
-    const k2 = localStorage.getItem('nextra_lock_key');
-    const t1 = localStorage.getItem('nextra_pms_type');
-    const t2 = localStorage.getItem('nextra_lock_type');
-    if (k1) setPmsApiKey(k1);
-    if (k2) setLockApiKey(k2);
-    if (t1) setPmsType(t1);
-    if (t2) setLockType(t2);
-  }, []);
+    setIsMounted(true)
+    const k1 = localStorage.getItem('nextra_pms_key')
+    const k2 = localStorage.getItem('nextra_lock_key')
+    const t1 = localStorage.getItem('nextra_pms_type')
+    const t2 = localStorage.getItem('nextra_lock_type')
+    if (k1) setPmsApiKey(k1)
+    if (k2) setLockApiKey(k2)
+    if (t1) setPmsType(t1)
+    if (t2) setLockType(t2)
+  }, [])
 
   const runCheckin = async () => {
-    setCheckinStatus('SCANNING');
-    await new Promise(r => setTimeout(r, 2000));
-    // PMS自動入力（実際はAPIから取得。ここではデモ値）
-    setLedgerName('山田 太郎');
-    setLedgerAddress('東京都渋谷区1-2-3');
-    setLedgerOccupation('会社員');
-    setLedgerTravel('大阪 → 東京 → 横浜');
-    setCheckinStatus('VERIFIED');
-  };
+    setCheckinStatus('SCANNING')
+    await new Promise(r => setTimeout(r, 2000))
+    setLedgerName('山田 太郎')
+    setLedgerAddress('東京都渋谷区1-2-3')
+    setLedgerOccupation('会社員')
+    setLedgerTravel('大阪 → 東京 → 横浜')
+    setCheckinStatus('VERIFIED')
+  }
 
-  if (!isMounted) return null;
+  if (!isMounted) return null
 
   return (
-    <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-8 min-h-screen text-slate-200 bg-[#050507] border-4 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] shadow-[0_0_100px_rgba(16,185,129,0.2)]">
-      <div className="text-center space-y-4">
-        <Badge className="bg-emerald-600 px-6 py-1 font-black tracking-widest uppercase text-[10px]">Nextra AI Autonomous OS</Badge>
-        <h1 className="text-6xl md:text-[10rem] font-black text-white uppercase italic tracking-tighter leading-none">Nextra AI</h1>
-        <p className="text-emerald-500 font-black uppercase tracking-[0.4em] italic text-sm md:text-xl text-center">次世代スマートチェックイン・プロトコル</p>
+    <div
+      className="min-h-screen pb-24"
+      style={{ background: '#050507', fontFamily: "'Inter', 'Noto Sans JP', sans-serif" }}
+    >
+      {/* Hero */}
+      <div className="max-w-5xl mx-auto px-6 pt-14 pb-8 space-y-3">
+        <div
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-medium"
+          style={{ borderColor: 'rgba(16,185,129,0.3)', color: '#34d399', background: 'rgba(16,185,129,0.08)' }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          Nextra AI Autonomous OS
+        </div>
+        <h1 className="text-3xl md:text-4xl font-semibold text-slate-100 tracking-tight leading-[1.2]">
+          次世代スマート<span style={{ color: '#10b981' }}>チェックイン</span>プロトコル
+        </h1>
+        <p className="text-slate-400 text-sm">PMS連携・本人確認・鍵発行を完全自動化するホテルDXシステム。</p>
       </div>
 
-      {/* 🧭 ナビゲーション */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 px-2">
-        {TABS.map((tab) => (
-          <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={"p-4 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-2 group " + (activeTab === tab.id ? 'bg-emerald-600 border-white text-white shadow-xl scale-[1.05]' : 'bg-[#13141f] border-white/5 text-slate-500 hover:text-white hover:border-emerald-500/50')}>
-            <tab.icon className={activeTab === tab.id ? 'text-white' : 'text-emerald-500'} size={28} />
-            <div className="text-center">
-              <p className="text-[11px] font-black uppercase italic leading-none mb-1">{tab.label}</p>
-              <p className="text-[8px] font-bold opacity-40 leading-none">{tab.desc}</p>
-            </div>
-          </button>
-        ))}
-      </div>
+      <div className="max-w-5xl mx-auto px-6 space-y-5">
+        {/* タブナビ */}
+        <div
+          className="flex gap-1 p-1 rounded-xl overflow-x-auto"
+          style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+        >
+          {TABS.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all shrink-0"
+              style={
+                activeTab === tab.id
+                  ? { background: '#10b981', color: '#fff' }
+                  : { color: '#64748b' }
+              }
+            >
+              <tab.icon size={13} />
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-      <div className="mt-4 text-left min-h-[600px]">
-        {/* --- 👑 KIOSKトップ画面 --- */}
+        {/* --- KIOSKトップ --- */}
         {activeTab === 'kiosk' && (
-          <div className="animate-in fade-in h-full flex flex-col items-center justify-center space-y-12 py-20 bg-gradient-to-br from-[#0a0b14] to-[#13141f] rounded-[4rem] border-2 border-white/5 shadow-2xl relative">
-             <div className="text-center space-y-8 relative z-10">
-                <div className="flex justify-center gap-6 mb-12">
-                   {['日本語', 'English', '中文', '한국어'].map(lang => (
-                     <Badge key={lang} variant="outline" className="px-6 py-2 border-white/10 text-slate-400 font-bold hover:text-emerald-400 cursor-pointer">{lang}</Badge>
-                   ))}
-                </div>
-                <p className="text-emerald-500 font-black uppercase tracking-[0.4em] italic text-2xl animate-pulse">Touch Start to Check-in</p>
-                <div className="w-80 h-80 bg-white rounded-full flex flex-col items-center justify-center shadow-[0_0_100px_rgba(255,255,255,0.15)] cursor-pointer hover:scale-105 transition-all group mx-auto" onClick={() => setActiveTab('search')}>
-                   <div className="w-32 h-32 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-xl mb-4 group-hover:animate-ping-slow"><Zap size={64} fill="currentColor" /></div>
-                   <p className="text-slate-900 text-4xl font-black italic uppercase">Start</p>
-                </div>
-             </div>
+          <div
+            className="rounded-xl flex flex-col items-center justify-center py-20 space-y-10"
+            style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+          >
+            {/* 言語選択 */}
+            <div className="flex gap-2 flex-wrap justify-center">
+              {['日本語', 'English', '中文', '한국어'].map(lang => (
+                <button
+                  key={lang}
+                  className="px-4 py-1.5 rounded-full text-xs font-medium transition-colors"
+                  style={{ background: '#13141f', border: '1px solid #334155', color: '#94a3b8' }}
+                  onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.5)')}
+                  onMouseLeave={e => (e.currentTarget.style.borderColor = '#334155')}
+                >
+                  {lang}
+                </button>
+              ))}
+            </div>
+            <p className="text-sm font-medium text-slate-400 tracking-widest">TOUCH START TO CHECK-IN</p>
+            {/* STARTボタン */}
+            <button
+              onClick={() => setActiveTab('search')}
+              className="w-48 h-48 rounded-full flex flex-col items-center justify-center gap-3 transition-transform hover:scale-105 shadow-2xl"
+              style={{ background: '#fff', boxShadow: '0 0 60px rgba(255,255,255,0.1)' }}
+            >
+              <div
+                className="w-20 h-20 rounded-full flex items-center justify-center"
+                style={{ background: '#4f46e5' }}
+              >
+                <Zap size={36} className="text-white" fill="currentColor" />
+              </div>
+              <span className="text-slate-900 text-xl font-bold">START</span>
+            </button>
           </div>
         )}
 
-        {/* --- 🔍 予約検索 --- */}
+        {/* --- 予約検索 --- */}
         {activeTab === 'search' && (
-          <div className="grid md:grid-cols-2 gap-8 animate-in slide-in-from-bottom-8">
-            <Card className="bg-[#13141f] p-12 rounded-[3rem] border-2 border-white/5 flex flex-col items-center justify-center space-y-8 hover:border-emerald-500/50 transition-all cursor-pointer" onClick={() => setActiveTab('checkin')}>
-               <QrCode size={120} className="text-emerald-500" />
-               <h3 className="text-3xl font-black italic uppercase">QRコードで検索</h3>
-            </Card>
-            <Card className="bg-[#13141f] p-12 rounded-[3rem] border-2 border-white/5 flex flex-col items-center justify-center space-y-8 hover:border-indigo-500/50 transition-all cursor-pointer" onClick={() => setActiveTab('checkin')}>
-               <ClipboardList size={120} className="text-indigo-400" />
-               <h3 className="text-3xl font-black italic uppercase">予約番号で検索</h3>
-            </Card>
+          <div className="grid md:grid-cols-2 gap-4">
+            {[
+              { icon: QrCode, label: 'QRコードで検索', color: '#10b981' },
+              { icon: ClipboardList, label: '予約番号で検索', color: '#6366f1' },
+            ].map(item => (
+              <button
+                key={item.label}
+                onClick={() => setActiveTab('checkin')}
+                className="rounded-xl p-10 flex flex-col items-center justify-center gap-5 transition-all hover:scale-[1.02]"
+                style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = `${item.color}60`)}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = '#1e293b')}
+              >
+                <item.icon size={48} style={{ color: item.color }} />
+                <p className="text-base font-semibold text-slate-200">{item.label}</p>
+              </button>
+            ))}
           </div>
         )}
 
-        {/* --- 📝 自動チェックイン (詳細マニュアル準拠) --- */}
+        {/* --- 自動チェックイン --- */}
         {activeTab === 'checkin' && (
-          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-10 space-y-12 animate-in fade-in">
-             <div className="flex items-center justify-between border-b border-white/5 pb-8 text-left">
-                <div>
-                   <h3 className="text-4xl font-black text-white italic uppercase">宿泊者情報の登録</h3>
-                   <p className="text-slate-500 font-bold mt-2">旅館業法に基づき、正確な情報をご入力ください。</p>
+          <div
+            className="rounded-xl p-6 space-y-6"
+            style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+          >
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div>
+                <h3 className="text-lg font-semibold text-slate-100">宿泊者情報の登録</h3>
+                <p className="text-xs text-slate-500 mt-1">旅館業法に基づき、正確な情報をご入力ください。</p>
+              </div>
+              <span
+                className="text-xs px-3 py-1 rounded-full font-medium animate-pulse"
+                style={{ background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.25)' }}
+              >
+                Identity Verification Active
+              </span>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-5">
+              {/* Step1: IDスキャン */}
+              <div
+                className="rounded-xl p-5 space-y-4"
+                style={{ background: '#13141f', border: '1px solid #1e293b' }}
+              >
+                <p className="text-xs font-semibold text-slate-500">Step 1 — ID Scan</p>
+                <div
+                  className="rounded-lg aspect-video flex flex-col items-center justify-center gap-3 cursor-pointer transition-colors"
+                  style={{ border: '2px dashed #334155', background: '#0a0b0f' }}
+                  onClick={() => fileInputRef.current?.click()}
+                  onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.4)')}
+                  onMouseLeave={e => (e.currentTarget.style.borderColor = '#334155')}
+                >
+                  <input type="file" ref={fileInputRef} onChange={runCheckin} className="hidden" accept="image/*" />
+                  {checkinStatus === 'SCANNING' && <Loader2 size={36} className="text-emerald-400 animate-spin" />}
+                  {checkinStatus === 'VERIFIED' && <CheckCircle2 size={36} style={{ color: '#10b981' }} />}
+                  {checkinStatus === 'IDLE' && <Camera size={36} className="text-slate-600" />}
+                  <p className="text-xs text-slate-500">
+                    {checkinStatus === 'VERIFIED' ? 'スキャン完了' : checkinStatus === 'SCANNING' ? 'AI読み取り中...' : '身分証をスキャン'}
+                  </p>
                 </div>
-                <Badge className="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-6 py-2 rounded-full font-black italic uppercase animate-pulse">Identity Verification Active</Badge>
-             </div>
-             <div className="grid lg:grid-cols-2 gap-12 text-left">
-                <div className="space-y-8">
-                   <div className="bg-black/60 p-8 rounded-[2.5rem] border-2 border-emerald-500/20 shadow-inner">
-                      <p className="text-emerald-500 font-black uppercase text-xs mb-6 tracking-widest">Step 1: ID Scan</p>
-                      <div className="border-4 border-dashed border-white/10 rounded-2xl aspect-video flex flex-col items-center justify-center gap-4 bg-white/5 cursor-pointer hover:bg-white/10" onClick={() => fileInputRef.current?.click()}>
-                         <input type="file" ref={fileInputRef} onChange={runCheckin} className="hidden" accept="image/*" />
-                         {checkinStatus === 'VERIFIED' ? <CheckCircle2 size={64} className="text-emerald-500" /> : <Camera size={64} className="text-slate-700" />}
-                         <p className="font-black italic uppercase text-slate-500">{checkinStatus === 'VERIFIED' ? 'Scan Completed' : '身分証をスキャン'}</p>
-                      </div>
-                   </div>
+              </div>
+
+              {/* Step2: 台帳記入 */}
+              <div
+                className="rounded-xl p-5 space-y-4"
+                style={{ background: '#13141f', border: '1px solid #1e293b' }}
+              >
+                <p className="text-xs font-semibold text-slate-500">Step 2 — Ledger Entry</p>
+                <div className="space-y-3">
+                  {[
+                    { label: '氏名', value: ledgerName, set: setLedgerName, placeholder: '氏名を入力' },
+                    { label: '住所', value: ledgerAddress, set: setLedgerAddress, placeholder: '住所を入力' },
+                  ].map(f => (
+                    <div key={f.label} className="space-y-1">
+                      <label className="text-[10px] font-medium text-slate-600">{f.label}</label>
+                      <input
+                        value={f.value}
+                        onChange={e => f.set(e.target.value)}
+                        placeholder={checkinStatus === 'SCANNING' ? 'AI読み取り中...' : f.placeholder}
+                        className={inputCls}
+                        style={inputStyle}
+                        onFocus={e => (e.target.style.borderColor = '#10b981')}
+                        onBlur={e => (e.target.style.borderColor = '#334155')}
+                      />
+                    </div>
+                  ))}
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-medium text-slate-600">職業</label>
+                    <select
+                      value={ledgerOccupation}
+                      onChange={e => setLedgerOccupation(e.target.value)}
+                      className={inputCls}
+                      style={{ ...inputStyle, appearance: 'none' as any }}
+                    >
+                      <option value="">職業を選択...</option>
+                      {['会社員','自営業','公務員','学生','無職','その他'].map(o => (
+                        <option key={o} value={o}>{o}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-medium text-slate-600">前泊地・行先地</label>
+                    <input
+                      value={ledgerTravel}
+                      onChange={e => setLedgerTravel(e.target.value)}
+                      placeholder="例：大阪 → 東京 → 横浜"
+                      list="travel-suggestions"
+                      className={inputCls}
+                      style={inputStyle}
+                      onFocus={e => (e.target.style.borderColor = '#10b981')}
+                      onBlur={e => (e.target.style.borderColor = '#334155')}
+                    />
+                    <datalist id="travel-suggestions">
+                      {['自宅','東京','大阪','京都','名古屋','福岡','札幌','海外'].map(v => (
+                        <option key={v} value={v} />
+                      ))}
+                    </datalist>
+                  </div>
+                  <div
+                    className="flex items-center gap-3 p-3 rounded-lg"
+                    style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)' }}
+                  >
+                    <PenTool size={14} className="text-indigo-400 shrink-0" />
+                    <span className="text-xs text-slate-400">署名を行ってください</span>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('lock')}
+                    className="w-full h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all"
+                    style={{ background: '#10b981', color: '#fff' }}
+                  >
+                    PMS登録 ＆ 鍵発行へ <ArrowRight size={15} />
+                  </button>
                 </div>
-                <div className="bg-black/40 p-10 rounded-[2.5rem] border border-white/5 space-y-6">
-                   <p className="text-slate-500 font-black uppercase text-xs mb-4 tracking-widest">Step 2: Ledger Entry</p>
-                   <div className="grid grid-cols-1 gap-4">
-                      {/* 氏名 */}
-                      <div className="space-y-1">
-                        <label className="text-[10px] font-black text-slate-600 uppercase px-2">氏名</label>
-                        <input
-                          type="text"
-                          value={ledgerName}
-                          onChange={e => setLedgerName(e.target.value)}
-                          placeholder={checkinStatus === 'SCANNING' ? 'AI読み取り中...' : '氏名を入力'}
-                          className="w-full h-12 bg-white/5 rounded-xl border border-white/10 px-4 text-sm font-bold text-white placeholder:text-slate-600 focus:border-emerald-500/50 focus:outline-none transition-all"
-                        />
-                      </div>
-                      {/* 住所 */}
-                      <div className="space-y-1">
-                        <label className="text-[10px] font-black text-slate-600 uppercase px-2">住所</label>
-                        <input
-                          type="text"
-                          value={ledgerAddress}
-                          onChange={e => setLedgerAddress(e.target.value)}
-                          placeholder={checkinStatus === 'SCANNING' ? 'AI読み取り中...' : '住所を入力'}
-                          className="w-full h-12 bg-white/5 rounded-xl border border-white/10 px-4 text-sm font-bold text-white placeholder:text-slate-600 focus:border-emerald-500/50 focus:outline-none transition-all"
-                        />
-                      </div>
-                      {/* 職業（選択式） */}
-                      <div className="space-y-1">
-                        <label className="text-[10px] font-black text-slate-600 uppercase px-2">職業</label>
-                        <select
-                          value={ledgerOccupation}
-                          onChange={e => setLedgerOccupation(e.target.value)}
-                          className="w-full h-12 bg-[#0d0e17] rounded-xl border border-white/10 px-4 text-sm font-bold text-white focus:border-emerald-500/50 focus:outline-none transition-all appearance-none"
-                        >
-                          <option value="" className="bg-[#0d0e17]">職業を選択...</option>
-                          <option value="会社員" className="bg-[#0d0e17]">会社員</option>
-                          <option value="自営業" className="bg-[#0d0e17]">自営業</option>
-                          <option value="公務員" className="bg-[#0d0e17]">公務員</option>
-                          <option value="学生" className="bg-[#0d0e17]">学生</option>
-                          <option value="無職" className="bg-[#0d0e17]">無職</option>
-                          <option value="その他" className="bg-[#0d0e17]">その他</option>
-                        </select>
-                      </div>
-                      {/* 前泊地・行先地（選択＋自由入力） */}
-                      <div className="space-y-1">
-                        <label className="text-[10px] font-black text-slate-600 uppercase px-2">前泊地・行先地</label>
-                        <input
-                          type="text"
-                          value={ledgerTravel}
-                          onChange={e => setLedgerTravel(e.target.value)}
-                          placeholder={checkinStatus === 'SCANNING' ? 'AI読み取り中...' : '例：大阪 → 東京 → 横浜'}
-                          list="travel-suggestions"
-                          className="w-full h-12 bg-white/5 rounded-xl border border-white/10 px-4 text-sm font-bold text-white placeholder:text-slate-600 focus:border-emerald-500/50 focus:outline-none transition-all"
-                        />
-                        <datalist id="travel-suggestions">
-                          <option value="自宅" />
-                          <option value="東京" />
-                          <option value="大阪" />
-                          <option value="京都" />
-                          <option value="名古屋" />
-                          <option value="福岡" />
-                          <option value="札幌" />
-                          <option value="海外" />
-                        </datalist>
-                      </div>
-                      <div className="pt-4 flex flex-col gap-4">
-                         <div className="flex items-center gap-4 p-4 bg-indigo-500/10 rounded-2xl border border-indigo-500/20"><PenTool className="text-indigo-400" /><span className="text-sm font-black italic">署名を行ってください</span></div>
-                         <Button className="h-16 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xl rounded-2xl shadow-xl italic uppercase" onClick={() => setActiveTab('lock')}>PMS登録 ＆ 鍵発行へ ➔</Button>
-                      </div>
-                   </div>
-                </div>
-             </div>
-          </Card>
+              </div>
+            </div>
+          </div>
         )}
 
-        {/* --- 🔑 鍵発行 --- */}
+        {/* --- 鍵発行 --- */}
         {activeTab === 'lock' && (
-          <div className="animate-in zoom-in duration-500 flex flex-col items-center justify-center py-20 space-y-12">
-             <div className="relative">
-                <div className="absolute inset-0 bg-emerald-500 blur-[60px] opacity-20 animate-pulse" />
-                <Lock size={120} className="text-emerald-500 relative z-10" />
-             </div>
-             <div className="text-center space-y-4">
-                <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter">Your Access Key</h3>
-                <p className="text-slate-500 font-bold italic">チェックイン期間中のみ有効な暗証番号です。</p>
-             </div>
-             <div className="bg-black border-4 border-emerald-500 p-12 rounded-[4rem] shadow-2xl text-center min-w-[320px]">
-                <p className="text-emerald-500 font-black uppercase tracking-[0.4em] text-sm mb-6">Room: 201</p>
-                <p className="text-9xl font-black text-white italic tracking-widest drop-shadow-[0_0_30px_rgba(16,185,129,0.5)]">8 4 2 1</p>
-             </div>
-             <Button variant="outline" className="border-white/10 text-slate-500 hover:text-white px-10 h-14 rounded-full font-black uppercase italic" onClick={() => setActiveTab('kiosk')}>Finish ➔</Button>
-          </div>
-        )}
-        
-        {/* --- 📊 DMS予約管理 (And-IoT DMS 再現) --- */}
-        {activeTab === 'bookings' && (
-          <div className="space-y-6 animate-in fade-in">
-             <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] overflow-hidden shadow-2xl">
-               <table className="w-full text-left">
-                 <thead className="bg-black/50 text-[10px] font-black text-slate-500 uppercase border-b border-white/5"><tr className="italic"><th className="p-8">予約ID</th><th className="p-8">宿泊者</th><th className="p-8">部屋</th><th className="p-8">ステータス</th></tr></thead>
-                 <tbody className="text-sm font-bold italic">
-                   <tr className="border-b border-white/5 hover:bg-white/5 transition-colors"><td className="p-8 text-emerald-500 font-mono">BK-8821</td><td className="p-8 text-white">ゲスト 太郎 様</td><td className="p-8">201</td><td className="p-8"><Badge className="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 uppercase">Confirmed</Badge></td></tr>
-                 </tbody>
-               </table>
-             </Card>
+          <div
+            className="rounded-xl p-10 flex flex-col items-center justify-center gap-8"
+            style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+          >
+            <Lock size={48} style={{ color: '#10b981' }} />
+            <div className="text-center space-y-1">
+              <h3 className="text-xl font-semibold text-slate-100">Your Access Key</h3>
+              <p className="text-xs text-slate-500">チェックイン期間中のみ有効な暗証番号です。</p>
+            </div>
+            <div
+              className="rounded-xl px-12 py-8 text-center"
+              style={{ background: '#13141f', border: '2px solid #10b981', boxShadow: '0 0 30px rgba(16,185,129,0.15)' }}
+            >
+              <p className="text-xs font-medium text-slate-500 mb-3">Room: 201</p>
+              <p className="text-6xl font-bold text-slate-100 tracking-[0.2em]" style={{ color: '#10b981' }}>8421</p>
+            </div>
+            <button
+              onClick={() => setActiveTab('kiosk')}
+              className="px-8 h-10 rounded-lg text-sm font-semibold transition-all"
+              style={{ background: '#1e293b', color: '#94a3b8', border: '1px solid #334155' }}
+            >
+              Finish →
+            </button>
           </div>
         )}
 
-        {/* --- ⚙️ 設定 --- */}
+        {/* --- DMS予約管理 --- */}
+        {activeTab === 'bookings' && (
+          <div
+            className="rounded-xl overflow-hidden"
+            style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+          >
+            <table className="w-full text-left text-sm">
+              <thead style={{ background: '#13141f', borderBottom: '1px solid #1e293b' }}>
+                <tr>
+                  {['予約ID','宿泊者','部屋','ステータス'].map(h => (
+                    <th key={h} className="px-5 py-3 text-xs font-medium text-slate-500">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr style={{ borderBottom: '1px solid #1e293b' }}>
+                  <td className="px-5 py-4 font-mono text-sm" style={{ color: '#10b981' }}>BK-8821</td>
+                  <td className="px-5 py-4 text-slate-200">ゲスト 太郎 様</td>
+                  <td className="px-5 py-4 text-slate-400">201</td>
+                  <td className="px-5 py-4">
+                    <span
+                      className="text-xs px-2 py-1 rounded-full font-medium"
+                      style={{ background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.25)' }}
+                    >
+                      Confirmed
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* --- システム設定 --- */}
         {activeTab === 'settings' && (
-          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-12 animate-in fade-in space-y-10">
-             <div className="flex items-center gap-4 text-emerald-500"><Settings size={32} /><h3 className="text-3xl font-black uppercase italic">API Environment</h3></div>
-             <div className="grid md:grid-cols-2 gap-10 text-left">
-               {/* PMS選択 */}
-               <div className="space-y-4">
-                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-1 italic">PMSシステム</label>
-                 <select
-                   value={pmsType}
-                   onChange={e => setPmsType(e.target.value)}
-                   className="w-full h-12 bg-black border-2 border-white/10 rounded-2xl px-6 text-white font-bold focus:border-emerald-500/50 focus:outline-none transition-all"
-                 >
-                   <option value="">PMSを選択...</option>
-                   <option value="staysee">Staysee</option>
-                   <option value="easy-kaikei">イージー会計</option>
-                   <option value="opera">Oracle OPERA</option>
-                   <option value="mews">Mews</option>
-                   <option value="apaleo">apaleo</option>
-                   <option value="other">その他</option>
-                 </select>
-                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-1 italic">PMS API KEY</label>
-                 <div className="relative flex items-center">
-                   <input
-                     type={showPmsKey ? 'text' : 'password'}
-                     value={pmsApiKey}
-                     onChange={e => setPmsApiKey(e.target.value)}
-                     placeholder="PMS APIキーを入力"
-                     className="w-full h-16 bg-black border-2 border-white/10 rounded-2xl px-6 pr-14 text-emerald-500 font-mono focus:border-emerald-500/50 focus:outline-none transition-all"
-                   />
-                   <button type="button" onClick={() => setShowPmsKey(v => !v)} className="absolute right-4 text-slate-500 hover:text-white">
-                     {showPmsKey ? <EyeOff size={20} /> : <Eye size={20} />}
-                   </button>
-                 </div>
-               </div>
-               {/* 鍵デバイス選択 */}
-               <div className="space-y-4">
-                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-1 italic">鍵デバイス</label>
-                 <select
-                   value={lockType}
-                   onChange={e => setLockType(e.target.value)}
-                   className="w-full h-12 bg-black border-2 border-white/10 rounded-2xl px-6 text-white font-bold focus:border-emerald-500/50 focus:outline-none transition-all"
-                 >
-                   <option value="">鍵デバイスを選択...</option>
-                   <option value="remotelock">RemoteLock</option>
-                   <option value="switchbot">SwitchBot</option>
-                   <option value="assa">ASSA ABLOY (Visionline)</option>
-                   <option value="dormakaba">dormakaba</option>
-                   <option value="salto">SALTO Systems</option>
-                   <option value="bitlock">bitlock</option>
-                   <option value="sesame">SESAME</option>
-                   <option value="other">その他</option>
-                 </select>
-                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest px-1 italic">鍵デバイス API KEY</label>
-                 <div className="relative flex items-center">
-                   <input
-                     type={showLockKey ? 'text' : 'password'}
-                     value={lockApiKey}
-                     onChange={e => setLockApiKey(e.target.value)}
-                     placeholder="鍵デバイス APIキーを入力"
-                     className="w-full h-16 bg-black border-2 border-white/10 rounded-2xl px-6 pr-14 text-emerald-500 font-mono focus:border-emerald-500/50 focus:outline-none transition-all"
-                   />
-                   <button type="button" onClick={() => setShowLockKey(v => !v)} className="absolute right-4 text-slate-500 hover:text-white">
-                     {showLockKey ? <EyeOff size={20} /> : <Eye size={20} />}
-                   </button>
-                 </div>
-               </div>
-             </div>
-             <Button
-               onClick={() => {
-                 localStorage.setItem('nextra_pms_key', pmsApiKey);
-                 localStorage.setItem('nextra_lock_key', lockApiKey);
-                 localStorage.setItem('nextra_pms_type', pmsType);
-                 localStorage.setItem('nextra_lock_type', lockType);
-                 alert('設定を保存しました');
-               }}
-               className="h-16 px-12 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl italic uppercase shadow-xl"
-             >
-               Save Configuration ➔
-             </Button>
-          </Card>
+          <div
+            className="rounded-xl p-6 space-y-5"
+            style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+          >
+            <div className="flex items-center gap-2 text-sm font-semibold text-slate-200">
+              <Settings size={15} style={{ color: '#10b981' }} />
+              API Environment
+            </div>
+            <div className="grid md:grid-cols-2 gap-5">
+              {/* PMS */}
+              <div className="space-y-3">
+                <label className="text-xs font-medium text-slate-500">PMSシステム</label>
+                <select
+                  value={pmsType}
+                  onChange={e => setPmsType(e.target.value)}
+                  className={inputCls}
+                  style={{ ...inputStyle, appearance: 'none' as any }}
+                >
+                  <option value="">PMSを選択...</option>
+                  {['Staysee','イージー会計','Oracle OPERA','Mews','apaleo','その他'].map(o => (
+                    <option key={o}>{o}</option>
+                  ))}
+                </select>
+                <label className="text-xs font-medium text-slate-500">PMS API KEY</label>
+                <div className="relative">
+                  <input
+                    type={showPmsKey ? 'text' : 'password'}
+                    value={pmsApiKey}
+                    onChange={e => setPmsApiKey(e.target.value)}
+                    placeholder="PMS APIキーを入力"
+                    className={`${inputCls} pr-10 font-mono`}
+                    style={{ ...inputStyle, color: '#10b981' }}
+                    onFocus={e => (e.target.style.borderColor = '#10b981')}
+                    onBlur={e => (e.target.style.borderColor = '#334155')}
+                  />
+                  <button type="button" onClick={() => setShowPmsKey(v => !v)} className="absolute right-3 top-3 text-slate-500 hover:text-slate-300">
+                    {showPmsKey ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+              {/* 鍵デバイス */}
+              <div className="space-y-3">
+                <label className="text-xs font-medium text-slate-500">鍵デバイス</label>
+                <select
+                  value={lockType}
+                  onChange={e => setLockType(e.target.value)}
+                  className={inputCls}
+                  style={{ ...inputStyle, appearance: 'none' as any }}
+                >
+                  <option value="">鍵デバイスを選択...</option>
+                  {['RemoteLock','SwitchBot','ASSA ABLOY (Visionline)','dormakaba','SALTO Systems','bitlock','SESAME','その他'].map(o => (
+                    <option key={o}>{o}</option>
+                  ))}
+                </select>
+                <label className="text-xs font-medium text-slate-500">鍵デバイス API KEY</label>
+                <div className="relative">
+                  <input
+                    type={showLockKey ? 'text' : 'password'}
+                    value={lockApiKey}
+                    onChange={e => setLockApiKey(e.target.value)}
+                    placeholder="鍵デバイス APIキーを入力"
+                    className={`${inputCls} pr-10 font-mono`}
+                    style={{ ...inputStyle, color: '#10b981' }}
+                    onFocus={e => (e.target.style.borderColor = '#10b981')}
+                    onBlur={e => (e.target.style.borderColor = '#334155')}
+                  />
+                  <button type="button" onClick={() => setShowLockKey(v => !v)} className="absolute right-3 top-3 text-slate-500 hover:text-slate-300">
+                    {showLockKey ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                localStorage.setItem('nextra_pms_key', pmsApiKey)
+                localStorage.setItem('nextra_lock_key', lockApiKey)
+                localStorage.setItem('nextra_pms_type', pmsType)
+                localStorage.setItem('nextra_lock_type', lockType)
+                alert('設定を保存しました')
+              }}
+              className="h-11 px-8 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all"
+              style={{ background: '#10b981', color: '#fff' }}
+            >
+              Save Configuration <ArrowRight size={14} />
+            </button>
+          </div>
         )}
       </div>
-      <div className="text-center opacity-10 font-black uppercase tracking-[0.5em] italic text-[8px] pb-10 mt-10">Nextra AI Autonomous Front System • 2026</div>
+
+      <div className="text-center mt-16 opacity-20">
+        <p className="text-xs text-slate-600 tracking-widest">Nextra AI Autonomous Front System · NextraLabs 2026</p>
+      </div>
     </div>
   )
 }
 
-const NoSSR = dynamic(() => Promise.resolve(MasterEngine), { ssr: false, loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Initializing Nextra AI...</div> });
-export default function HotelPage() { return <NoSSR />; }
+const NoSSR = dynamic(() => Promise.resolve(MasterEngine), {
+  ssr: false,
+  loading: () => (
+    <div className="min-h-screen bg-[#050507] flex items-center justify-center">
+      <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  ),
+})
+
+export default function HotelPage() { return <NoSSR /> }
