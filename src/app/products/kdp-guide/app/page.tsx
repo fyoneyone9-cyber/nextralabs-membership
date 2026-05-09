@@ -21,7 +21,7 @@ const KDP_STEPS = [
         text: 'KDPアカウント作成と居住地設定', 
         detail: 'Amazon.co.jp（日本）のアカウントでログインし、居住国を「日本」に設定。',
         subItems: [
-          { id: 'acc-1', text: 'KDP公式サイト(kdp.amazon.co.jp)へアクセス', url: 'https://kdp.amazon.co.jp/ja_JP/' },
+          { id: 'acc-1', text: 'KDP公式サイトへアクセス', url: 'https://www.amazon.co.jp/kindle-direct-publishing?tag=nextralabs-22' },
           { id: 'acc-2', text: '既存のAmazonアカウントでサインイン' },
           { id: 'acc-3', text: '利用規約に同意' },
           { id: 'acc-4', text: '「マイアカウント」をクリック' },
@@ -34,7 +34,7 @@ const KDP_STEPS = [
         text: '米国源泉徴収 30% ➔ 0% 回避設定', 
         detail: '日本のマイナンバーを「TIN」として入力し、米国との租税条約を適用。',
         subItems: [
-          { id: 'tax-1', text: 'マイアカウント ➔ 税務情報の更新 をクリック', url: 'https://kdp.amazon.co.jp/dashboard?ref_=kdp_kdp_menu_acc' },
+          { id: 'tax-1', text: '税務情報の更新画面を開く', url: 'https://www.amazon.co.jp/gp/f.html?ie=UTF8&node=2292728051&tag=nextralabs-22' },
           { id: 'tax-2', text: '税務プロフィールの作成を開始' },
           { id: 'tax-3', text: '「個人」「米国市民ではない」「仲介代行ではない」を選択' },
           { id: 'tax-4', text: 'TIN（納税者番号）欄にマイナンバー(12桁)を入力' },
@@ -46,7 +46,7 @@ const KDP_STEPS = [
         text: '国内銀行口座の登録（SWIFT不要）', 
         detail: '売上を受け取る口座。日本の銀行名・店番・口座番号を入力。',
         subItems: [
-          { id: 'bank-1', text: 'マイアカウント ➔ 銀行口座 をクリック', url: 'https://kdp.amazon.co.jp/dashboard?ref_=kdp_kdp_menu_acc' },
+          { id: 'bank-1', text: '銀行口座の登録画面を開く', url: 'https://www.amazon.co.jp/gp/f.html?ie=UTF8&node=2292728051&tag=nextralabs-22' },
           { id: 'bank-2', text: '銀行の所在地「日本」を選択' },
           { id: 'bank-3', text: '口座名義（カタカナ）を入力' },
           { id: 'bank-4', text: '銀行名・店番号・口座番号を入力して追加' },
