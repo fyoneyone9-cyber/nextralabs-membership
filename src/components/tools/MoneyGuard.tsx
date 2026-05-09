@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 
@@ -78,8 +78,8 @@ const MasterEngine = () => {
   return (
     <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
       <div className="text-center space-y-1 md:space-y-3">
-        <div className="inline-block bg-red-600 text-white font-black italic tracking-widest px-4 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full shadow-lg">Psychological Defense Command v7.0-MASTER</div>
-        <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">AI家計防衛シミュレーター</h1>
+        <div className="inline-block bg-red-600 text-white font-bold tracking-tight px-4 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full shadow-lg">Psychological Defense Command v7.0-MASTER</div>
+        <h1 className="text-4xl md:text-6xl font-bold text-white uppercase tracking-tighter leading-none drop-shadow-2xl">AI家計防衛シミュレーター</h1>
       </div>
 
       <div className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 md:p-16 shadow-2xl relative overflow-hidden animate-in fade-in zoom-in-95">
@@ -88,11 +88,11 @@ const MasterEngine = () => {
         <div className="bg-[#0a0b14] border border-white/5 rounded-3xl p-8 mb-12 flex items-start gap-6 shadow-inner">
           <div className="w-10 h-10 rounded-full border border-red-500/30 flex items-center justify-center shrink-0 text-red-500 font-bold">!</div>
           <div className="space-y-1">
-            <p className="text-[10px] font-black text-red-500/70 uppercase tracking-[0.2em] italic mb-2">Defense Protocol</p>
+            <p className="text-[10px] font-bold text-red-500/70 uppercase tracking-[0.2em] mb-2">Defense Protocol</p>
             <div className="space-y-1 text-xs md:text-sm font-bold text-slate-400">
-              <p className="flex items-center gap-3"><span className="text-red-600 italic">#1</span> レシートや明細を撮影してアップロード（自動で保存されます）</p>
-              <p className="flex items-center gap-3"><span className="text-red-600 italic">#2</span> 防衛指示をコピー。AIに**画像を添付**してこの指示を投げる</p>
-              <p className="flex items-center gap-3"><span className="text-red-600 italic">#3</span> AIのアドバイス結果を右のエリアに戻す</p>
+              <p className="flex items-center gap-3"><span className="text-red-600 ">#1</span> レシートや明細を撮影してアップロード（自動で保存されます）</p>
+              <p className="flex items-center gap-3"><span className="text-red-600 ">#2</span> 防衛指示をコピー。AIに**画像を添付**してこの指示を投げる</p>
+              <p className="flex items-center gap-3"><span className="text-red-600 ">#3</span> AIのアドバイス結果を右のエリアに戻す</p>
             </div>
           </div>
         </div>
@@ -108,7 +108,7 @@ const MasterEngine = () => {
                 <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center border-2 border-white/10 group-hover:border-red-600 transition-all">
                   <span className="text-5xl">📷</span>
                 </div>
-                <p className="text-3xl text-white font-black italic uppercase tracking-[0.1em] group-hover:text-red-500 text-center px-4">
+                <p className="text-3xl text-white font-bold uppercase tracking-[0.1em] group-hover:text-red-500 text-center px-4">
                   TAP TO SCAN<br/>
                   <span className="text-xs text-slate-500 font-bold">RECEPT / STATEMENT</span>
                 </p>
@@ -120,7 +120,7 @@ const MasterEngine = () => {
               <div className="relative aspect-video rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl bg-black">
                 <img src={image} alt="Evidence" className="object-contain w-full h-full p-4" />
                 <button onClick={() => { setImage(null); setFileName(null); }} className="absolute top-6 right-6 bg-black/50 hover:bg-red-600 p-2 rounded-full text-white h-12 w-12 transition-all">✕</button>
-                <div className="absolute bottom-6 left-6 bg-emerald-500 text-slate-950 font-black text-[10px] px-4 py-1 rounded-full animate-pulse">IMAGE_SAVED_FOR_AI</div>
+                <div className="absolute bottom-6 left-6 bg-emerald-500 text-slate-950 font-bold text-[10px] px-4 py-1 rounded-full animate-pulse">IMAGE_SAVED_FOR_AI</div>
               </div>
             )}
 
@@ -129,24 +129,24 @@ const MasterEngine = () => {
                 value={inputText} 
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="購入の言い訳や迷いを打ち込んでください..."
-                className="w-full h-32 bg-[#0a0b14] border-2 border-white/5 rounded-2xl p-6 text-sm text-white focus:border-red-600 outline-none italic shadow-inner"
+                className="w-full h-32 bg-[#0a0b14] border-2 border-white/5 rounded-2xl p-6 text-sm text-white focus:border-red-600 outline-none shadow-inner"
               />
               <button 
                 onClick={() => { navigator.clipboard.writeText(FINAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} 
-                className={`w-full h-24 text-xl font-black rounded-2xl transition-all shadow-2xl ${copied ? 'bg-emerald-500 text-slate-950 scale-95' : 'bg-red-600 text-white hover:bg-red-500'}`}
+                className={`w-full h-24 text-xl font-bold rounded-2xl transition-all shadow-2xl ${copied ? 'bg-emerald-500 text-slate-950 scale-95' : 'bg-red-600 text-white hover:bg-red-500'}`}
               >
                 {copied ? '✅ COPY COMPLETE' : '防衛指示をコピー'}
               </button>
               <div className="grid grid-cols-3 gap-4">
-                 <button className="h-24 bg-white/5 border-2 border-white/10 rounded-2xl text-xs font-black uppercase italic text-slate-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all flex flex-col items-center justify-center gap-2" onClick={() => window.open('https://chatgpt.com', '_blank')}>
+                 <button className="h-24 bg-white/5 border-2 border-white/10 rounded-2xl text-xs font-bold uppercase text-slate-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all flex flex-col items-center justify-center gap-2" onClick={() => window.open('https://chatgpt.com', '_blank')}>
                     <span className="text-2xl">💬</span>
                     CHATGPT
                  </button>
-                 <button className="h-24 bg-white/5 border-2 border-white/10 rounded-2xl text-xs font-black uppercase italic text-slate-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all flex flex-col items-center justify-center gap-2" onClick={() => window.open('https://gemini.google.com', '_blank')}>
+                 <button className="h-24 bg-white/5 border-2 border-white/10 rounded-2xl text-xs font-bold uppercase text-slate-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all flex flex-col items-center justify-center gap-2" onClick={() => window.open('https://gemini.google.com', '_blank')}>
                     <span className="text-2xl">✨</span>
                     GEMINI
                  </button>
-                 <button className="h-24 bg-white/5 border-2 border-white/10 rounded-2xl text-xs font-black uppercase italic text-slate-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all flex flex-col items-center justify-center gap-2" onClick={() => window.open('https://claude.ai', '_blank')}>
+                 <button className="h-24 bg-white/5 border-2 border-white/10 rounded-2xl text-xs font-bold uppercase text-slate-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all flex flex-col items-center justify-center gap-2" onClick={() => window.open('https://claude.ai', '_blank')}>
                     <span className="text-2xl">❄️</span>
                     CLAUDE
                  </button>
@@ -158,13 +158,13 @@ const MasterEngine = () => {
              <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-red-600/10 flex items-center justify-center border border-red-500/20">
-                    <span className="text-red-500 text-2xl font-black">!</span>
+                    <span className="text-red-500 text-2xl font-bold">!</span>
                   </div>
-                  <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter">分析結果を戻す</h3>
+                  <h3 className="text-2xl font-bold text-white uppercase tracking-tighter">分析結果を戻す</h3>
                 </div>
                 <div className="text-right leading-none">
-                  <p className="text-[10px] font-black text-red-500 uppercase italic mb-1">Dopamine Risk</p>
-                  <p className="text-4xl font-black text-white italic">{riskScore}%</p>
+                  <p className="text-[10px] font-bold text-red-500 uppercase mb-1">Dopamine Risk</p>
+                  <p className="text-4xl font-bold text-white ">{riskScore}%</p>
                 </div>
              </div>
              
@@ -172,15 +172,15 @@ const MasterEngine = () => {
                value={appraisalResult} 
                onChange={(e) => setAppraisalResult(e.target.value)} 
                placeholder="AIからの厳しいアドバイスをペースト..." 
-               className="flex-1 bg-[#13141f] border border-white/5 rounded-[2.5rem] p-10 text-base text-slate-300 focus:border-red-600 outline-none font-mono italic shadow-inner min-h-[400px] leading-relaxed" 
+               className="flex-1 bg-[#13141f] border border-white/5 rounded-[2.5rem] p-10 text-base text-slate-300 focus:border-red-600 outline-none font-mono shadow-inner min-h-[400px] leading-relaxed" 
              />
              
              {appraisalResult && (
                 <div className="p-8 bg-red-600 border-4 border-red-500 rounded-[2rem] shadow-[0_0_50px_rgba(220,38,38,0.5)] animate-in zoom-in-95 duration-500 text-center space-y-4">
-                   <div className="flex items-center justify-center gap-4 text-white font-black italic uppercase tracking-widest text-xl">
+                   <div className="flex items-center justify-center gap-4 text-white font-bold uppercase tracking-tight text-xl">
                       <span className="animate-ping">🚨</span> DEFENSE SEQUENCE ACTIVE <span className="animate-ping">🚨</span>
                    </div>
-                   <p className="text-white text-lg font-black italic leading-relaxed">
+                   <p className="text-white text-lg font-bold leading-relaxed">
                       警告：脳がドーパミンに支配されています！<br/>
                       今すぐブラウザを閉じ、このレポートを3回読み直してください。<br/>
                       冷静になるまで購入ボタンを押すことは許可されません。
