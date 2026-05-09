@@ -299,7 +299,7 @@ function YoutubeProducerApp() {
               </div>
               <div className="space-y-4">
                 <p className="text-sm text-slate-300 font-bold leading-relaxed italic">
-                  動画の内容を入力してください。巨大なファイルや長時間の動画は、以下の外部AIで文字起こしした結果を貼り付けるのが最も確実です。
+                  動画の内容を入力してください。巨大なファイルや長時間の動画は、以下の外部AIに動画を添付して実行し、その結果（文字起こし文章）をここに貼り付けてください。
                 </p>
                 <div className="grid grid-cols-3 gap-3">
                   <a href="https://claud.ai" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-3 text-center hover:bg-white/10 transition-all group">
