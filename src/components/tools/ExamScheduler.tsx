@@ -2,10 +2,10 @@
 
 import { useState, useCallback, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
-  BookOpen, Plus, Trash2, Calendar, CheckCircle2, XCircle, Loader2, LogIn, ChevronDown, ChevronUp, Clock, Rss, AlertCircle, Info, RefreshCw,
+  BookOpen, Plus, Trash2, Calendar, CheckCircle2, Loader2, RefreshCw,
 } from 'lucide-react'
 
 interface ExamConfig {
@@ -35,7 +35,7 @@ const PRESET_EXAMS: Omit<ExamConfig, 'id' | 'rssStatus' | 'rssFoundDate'>[] = [
   { name: '基本情報技術者', rss: 'https://www.ipa.go.jp/about/press/rss.rdf', studyWeeks: 12, sessionsPerWeek: 4, sessionHours: 2, examDate: '' },
   { name: '応用情報技術者', rss: 'https://www.ipa.go.jp/about/press/rss.rdf', studyWeeks: 16, sessionsPerWeek: 4, sessionHours: 2.5, examDate: '' },
   { name: 'CompTIA Security+', rss: 'https://www.comptia.org/rss/news', studyWeeks: 12, sessionsPerWeek: 3, sessionHours: 2, examDate: '' },
-  { name: 'AWS Solutions Architect', rss: 'https://aws.amazon.com/blogs/aws/feed/', studyWeeks: 10, sessionsPerWeek: 3, sessionHours: 2, examDate: '' },
+  { name: 'AWS ソリューションアーキテクト', rss: 'https://aws.amazon.com/blogs/aws/feed/', studyWeeks: 10, sessionsPerWeek: 3, sessionHours: 2, examDate: '' },
 ]
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''
@@ -51,7 +51,6 @@ export default function ExamScheduler() {
   const [loading, setLoading] = useState(false)
   const [loadingStep, setLoadingStep] = useState('')
   const [results, setResults] = useState<ResultItem[] | null>(null)
-  const [expandedId, setExpandedId] = useState<string | null>(null)
   const [authLoading, setAuthLoading] = useState(false)
 
   useEffect(() => {
@@ -100,7 +99,7 @@ export default function ExamScheduler() {
     if (!googleToken) return
     setLoading(true)
     try {
-      setLoadingStep('🤖 AIが学習スケジュールを生成中...')
+      setLoadingStep('AI学習スケジュールを生成中...')
       const res = await fetch('/api/exam-scheduler', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -123,81 +122,211 @@ export default function ExamScheduler() {
     }
   }
 
+  const rssStatusLabel = (status: ExamConfig['rssStatus'], date: string) => {
+    if (status === 'checking') return <span className="text-slate-400 text-xs">確認中...</span>
+    if (status === 'found') return <span className="text-emerald-400 text-xs font-semibold">✓ 試験日: {date}</span>
+    if (status === 'notfound') return <span className="text-amber-400 text-xs">試験日が見つかりません</span>
+    if (status === 'error') return <span className="text-red-400 text-xs">取得エラー</span>
+    return null
+  }
+
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-gray-100 p-4 md:p-8 font-sans">
-      <div className="max-w-4xl mx-auto space-y-10 pb-40">
-        <div className="text-center space-y-4">
-          <Badge className="bg-emerald-500 text-white font-black italic tracking-widest px-6 py-2 text-xs uppercase rounded-full shadow-lg">LEARNING OPTIMIZER</Badge>
-          <h1 className="text-4xl md:text-7xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl">Exam Scheduler</h1>
-          <p className="text-slate-400 font-bold italic">試験日RSS自動取得 × AI学習計画 × Googleカレンダー一括登録</p>
+    <div className="min-h-screen bg-[#050507] text-slate-200 font-sans p-5 md:p-10">
+      <div className="max-w-3xl mx-auto space-y-8 pb-32">
+
+        {/* タイトル */}
+        <div className="text-center space-y-3 pt-4">
+          <Badge className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold px-4 py-1 text-xs rounded-full">
+            学習スケジューラー
+          </Badge>
+          <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">
+            試験<span className="text-emerald-400">スケジューラー</span>
+          </h1>
+          <p className="text-slate-400 text-sm">試験日RSS自動取得 × AI学習計画 × Googleカレンダー一括登録</p>
         </div>
 
-        {/* STEP 1: AUTH */}
-        <Card className={`bg-slate-900 border-4 transition-all ${googleToken ? 'border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.2)]' : 'border-slate-800'}`}>
-          <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-            <div className="flex items-center gap-6">
-              <div className={`w-16 h-16 rounded-3xl flex items-center justify-center shadow-2xl ${googleToken ? 'bg-emerald-500 text-white' : 'bg-slate-800 text-slate-500'}`}>
-                <Calendar className="w-8 h-8" />
+        {/* STEP 1: Googleログイン */}
+        <Card className={`bg-[#0d0f1a] border-2 transition-all rounded-2xl ${googleToken ? 'border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.15)]' : 'border-white/5'}`}>
+          <CardContent className="p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${googleToken ? 'bg-emerald-500 text-slate-950' : 'bg-white/5 text-slate-500'}`}>
+                <Calendar size={22} />
               </div>
-              <div>
-                <p className="text-xl font-black text-white italic uppercase tracking-tighter">{googleToken ? 'Google Account Connected' : 'Step 1: Connect Calendar'}</p>
-                <p className="text-sm text-slate-500 font-bold">{googleToken ? 'カレンダーへの書き込み準備が整いました' : 'ログインして学習計画を自動登録しましょう'}</p>
+              <div className="text-left">
+                <p className="font-black text-white text-sm">
+                  {googleToken ? 'Googleアカウント連携済み' : 'STEP 1：カレンダーを連携'}
+                </p>
+                <p className="text-slate-500 text-xs mt-0.5">
+                  {googleToken ? 'カレンダーへの書き込み権限が付与されています' : 'ログインして学習計画を自動登録しましょう'}
+                </p>
               </div>
             </div>
             {!googleToken && (
-              <Button onClick={handleGoogleAuth} className="h-14 bg-white text-black hover:bg-slate-200 font-black px-10 rounded-2xl text-lg uppercase italic shadow-xl">Google Login ↗</Button>
+              <Button
+                onClick={handleGoogleAuth}
+                disabled={authLoading}
+                className="h-11 bg-white text-slate-950 hover:bg-slate-100 font-black px-8 rounded-xl text-sm shrink-0"
+              >
+                {authLoading ? <Loader2 size={16} className="animate-spin mr-2" /> : null}
+                Googleログイン →
+              </Button>
             )}
           </CardContent>
         </Card>
 
-        {/* STEP 2: CONFIG */}
-        <div className="space-y-6">
+        {/* STEP 2: 試験設定 */}
+        <div className="space-y-4">
           {exams.map((exam, idx) => (
-            <Card key={exam.id} className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 shadow-2xl">
-              <div className="space-y-8">
-                <div className="flex justify-between items-center"><h3 className="text-2xl font-black text-white italic uppercase tracking-tighter flex items-center gap-3"><BookOpen className="text-emerald-500" /> Exam #{idx + 1}</h3>{exams.length > 1 && <Button variant="ghost" onClick={() => setExams(exams.filter(e => e.id !== exam.id))}><Trash2 className="text-red-500" /></Button>}</div>
-                <div className="grid md:grid-cols-2 gap-8">
-                   <div className="space-y-6 text-left">
-                      <div><label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block">Exam Name</label><input type="text" value={exam.name} onChange={e => updateExam(exam.id, 'name', e.target.value)} className="w-full h-14 bg-slate-950 border-2 border-slate-800 rounded-2xl px-6 text-white font-bold focus:border-emerald-500 outline-none shadow-inner" /></div>
-                      <div><label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block">RSS for Exam Date</label><div className="flex gap-2"><input type="text" value={exam.rss} onChange={e => updateExam(exam.id, 'rss', e.target.value)} className="flex-1 h-12 bg-slate-950 border-2 border-slate-800 rounded-xl px-4 text-xs font-mono" /><Button onClick={() => checkRss(exam.id)} variant="outline" className="h-12 border-slate-800 text-xs font-black uppercase"><RefreshCw className={`w-3 h-3 mr-1 ${exam.rssStatus === 'checking' ? 'animate-spin' : ''}`} /> check</Button></div></div>
-                   </div>
-                   <div className="space-y-6 text-left">
-                      <div><label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block">Manual Exam Date</label><input type="date" value={exam.examDate} onChange={e => updateExam(exam.id, 'examDate', e.target.value)} className="w-full h-14 bg-slate-950 border-2 border-slate-800 rounded-2xl px-6 text-white font-bold" /></div>
-                      <div className="grid grid-cols-2 gap-4">
-                         <div><label className="text-[10px] font-black text-slate-500 uppercase">Weeks</label><input type="number" value={exam.studyWeeks} onChange={e => updateExam(exam.id, 'studyWeeks', e.target.value)} className="w-full h-12 bg-slate-950 border-2 border-slate-800 rounded-xl px-4" /></div>
-                         <div><label className="text-[10px] font-black text-slate-500 uppercase">h/Day</label><input type="number" value={exam.sessionHours} onChange={e => updateExam(exam.id, 'sessionHours', e.target.value)} className="w-full h-12 bg-slate-950 border-2 border-slate-800 rounded-xl px-4" /></div>
-                      </div>
-                   </div>
+            <Card key={exam.id} className="bg-[#0d0f1a] border border-white/5 rounded-2xl shadow-xl">
+              <CardContent className="p-6 space-y-5">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-black text-white flex items-center gap-2 text-base">
+                    <BookOpen size={16} className="text-emerald-400" />
+                    試験 #{idx + 1}
+                  </h3>
+                  {exams.length > 1 && (
+                    <button onClick={() => setExams(exams.filter(e => e.id !== exam.id))} className="text-slate-600 hover:text-red-400 transition-colors">
+                      <Trash2 size={16} />
+                    </button>
+                  )}
                 </div>
-              </div>
+
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {/* 試験名 */}
+                  <div className="space-y-1.5 text-left">
+                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">試験名</label>
+                    <input
+                      type="text"
+                      value={exam.name}
+                      onChange={e => updateExam(exam.id, 'name', e.target.value)}
+                      className="w-full h-11 bg-black/40 border border-white/10 rounded-lg px-4 text-white text-sm font-semibold outline-none focus:border-emerald-500 transition-all"
+                    />
+                  </div>
+
+                  {/* 試験日（手動） */}
+                  <div className="space-y-1.5 text-left">
+                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">試験日（手動入力）</label>
+                    <input
+                      type="date"
+                      value={exam.examDate}
+                      onChange={e => updateExam(exam.id, 'examDate', e.target.value)}
+                      className="w-full h-11 bg-black/40 border border-white/10 rounded-lg px-4 text-white text-sm font-semibold outline-none focus:border-emerald-500 transition-all"
+                    />
+                  </div>
+
+                  {/* RSS URL */}
+                  <div className="space-y-1.5 text-left sm:col-span-2">
+                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">試験日RSSで自動取得</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={exam.rss}
+                        onChange={e => updateExam(exam.id, 'rss', e.target.value)}
+                        className="flex-1 h-11 bg-black/40 border border-white/10 rounded-lg px-4 text-xs font-mono text-slate-300 outline-none focus:border-emerald-500 transition-all"
+                      />
+                      <Button
+                        onClick={() => checkRss(exam.id)}
+                        variant="ghost"
+                        className="h-11 border border-white/10 text-slate-400 hover:bg-white/5 rounded-lg px-4 text-xs font-semibold shrink-0"
+                      >
+                        <RefreshCw size={13} className={`mr-1.5 ${exam.rssStatus === 'checking' ? 'animate-spin' : ''}`} />
+                        確認
+                      </Button>
+                    </div>
+                    {rssStatusLabel(exam.rssStatus, exam.rssFoundDate) && (
+                      <div className="mt-1">{rssStatusLabel(exam.rssStatus, exam.rssFoundDate)}</div>
+                    )}
+                  </div>
+
+                  {/* 学習期間・時間 */}
+                  <div className="space-y-1.5 text-left">
+                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">学習期間（週）</label>
+                    <input
+                      type="number"
+                      value={exam.studyWeeks}
+                      onChange={e => updateExam(exam.id, 'studyWeeks', e.target.value)}
+                      className="w-full h-11 bg-black/40 border border-white/10 rounded-lg px-4 text-white text-sm font-semibold outline-none focus:border-emerald-500 transition-all"
+                    />
+                  </div>
+                  <div className="space-y-1.5 text-left">
+                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">1日あたりの時間（h）</label>
+                    <input
+                      type="number"
+                      value={exam.sessionHours}
+                      onChange={e => updateExam(exam.id, 'sessionHours', e.target.value)}
+                      className="w-full h-11 bg-black/40 border border-white/10 rounded-lg px-4 text-white text-sm font-semibold outline-none focus:border-emerald-500 transition-all"
+                    />
+                  </div>
+                </div>
+              </CardContent>
             </Card>
           ))}
-          <Button onClick={() => setExams([...exams, newExam()])} variant="outline" className="w-full h-16 border-2 border-dashed border-slate-800 text-slate-500 hover:bg-slate-900 font-black rounded-3xl uppercase italic"><Plus className="mr-2" /> Add Another Exam</Button>
+
+          {/* 試験を追加 */}
+          <button
+            onClick={() => setExams([...exams, newExam()])}
+            className="w-full h-14 border-2 border-dashed border-white/10 hover:border-emerald-500/40 text-slate-500 hover:text-emerald-400 rounded-2xl font-semibold text-sm transition-all flex items-center justify-center gap-2"
+          >
+            <Plus size={16} /> 試験を追加
+          </button>
         </div>
 
-        {/* STEP 3: EXECUTE */}
-        <Button onClick={handleSubmit} disabled={!googleToken || loading} className="w-full h-24 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-[2.5rem] shadow-2xl flex flex-col items-center justify-center group transition-all">
+        {/* STEP 3: 実行ボタン */}
+        <Button
+          onClick={handleSubmit}
+          disabled={!googleToken || loading}
+          className="w-full h-16 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white font-black rounded-2xl shadow-xl text-lg transition-all"
+        >
           {loading ? (
-            <div className="flex flex-col items-center"><Loader2 className="animate-spin mb-1" /><p className="text-[10px] uppercase tracking-widest">{loadingStep}</p></div>
+            <div className="flex items-center gap-3">
+              <Loader2 size={20} className="animate-spin" />
+              <span className="text-sm">{loadingStep}</span>
+            </div>
           ) : (
-            <div className="flex items-center gap-4 text-3xl italic uppercase tracking-tighter"><Calendar className="w-10 h-10 group-hover:scale-110 transition-transform" /> Generate & Sync to Google</div>
+            <div className="flex items-center gap-3">
+              <Calendar size={22} />
+              スケジュールを生成してGoogleカレンダーに登録
+            </div>
           )}
         </Button>
 
+        {/* 結果表示 */}
         {results && (
-          <div className="space-y-4 animate-in slide-in-from-bottom-8">
-            <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter flex items-center gap-3"><CheckCircle2 className="text-emerald-500" /> Mission Success</h2>
+          <div className="space-y-4">
+            <h2 className="text-xl font-black text-white flex items-center gap-2">
+              <CheckCircle2 size={20} className="text-emerald-400" /> 登録完了
+            </h2>
             {results.map(r => (
-              <Card key={r.name} className="bg-slate-900 border-2 border-emerald-500/30 p-6 rounded-3xl">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-4"><div className="w-10 h-10 bg-emerald-500/10 rounded-full flex items-center justify-center"><Calendar className="text-emerald-500" /></div><div><p className="font-black text-white">{r.name}</p><p className="text-[10px] text-slate-500 uppercase">{r.examDate} ({r.daysUntil} days left)</p></div></div>
-                  <div className="text-right"><p className="text-xl font-black text-emerald-500 italic">{r.registered} Events</p><p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Added to Calendar</p></div>
-                </div>
+              <Card key={r.name} className="bg-[#0d0f1a] border border-emerald-500/20 rounded-2xl">
+                <CardContent className="p-5 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center">
+                      <Calendar size={18} className="text-emerald-400" />
+                    </div>
+                    <div className="text-left">
+                      <p className="font-black text-white text-sm">{r.name}</p>
+                      <p className="text-slate-500 text-xs mt-0.5">{r.examDate}（残り {r.daysUntil} 日）</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xl font-black text-emerald-400">{r.registered}件</p>
+                    <p className="text-slate-600 text-[9px] font-semibold uppercase">カレンダー登録済</p>
+                  </div>
+                </CardContent>
               </Card>
             ))}
-            <div className="pt-8 text-center"><Button onClick={() => window.open('https://calendar.google.com', '_blank')} variant="outline" className="border-slate-800 text-emerald-500 font-black px-10 h-16 rounded-2xl uppercase italic">Check Google Calendar ↗</Button></div>
+            <div className="text-center pt-4">
+              <Button
+                onClick={() => window.open('https://calendar.google.com', '_blank')}
+                variant="ghost"
+                className="border border-white/10 text-emerald-400 hover:bg-emerald-500/10 font-semibold px-8 h-12 rounded-xl text-sm"
+              >
+                Googleカレンダーで確認 →
+              </Button>
+            </div>
           </div>
         )}
+
       </div>
     </div>
   )
