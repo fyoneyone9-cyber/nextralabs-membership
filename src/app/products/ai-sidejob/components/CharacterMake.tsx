@@ -70,14 +70,35 @@ export const CharacterMake: React.FC<CharacterMakeProps> = ({ onComplete, isSubm
         <div className="space-y-8 animate-in fade-in slide-in-from-right-6 duration-500">
           <div className="text-center">
             <h2 className="text-4xl font-black text-white italic tracking-tighter uppercase">現在の「装備」を選択</h2>
-            <p className="text-lg text-emerald-400/80 font-bold mt-3 italic">あなたの武器を複数選べ ➔</p>
+            <p className="text-lg text-emerald-400/80 font-bold mt-3 italic">あなたの武器を全て選べ（複数可） ➔</p>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <SkillTag label="SNS投稿" icon={<Smartphone size={24}/>} active={data.skills.includes('sns')} onClick={() => toggleSkill('sns')} />
-            <SkillTag label="文字入力" icon={<Briefcase size={24}/>} active={data.skills.includes('writing')} onClick={() => toggleSkill('writing')} />
-            <SkillTag label="画像作成" icon={<Palette size={24}/>} active={data.skills.includes('design')} onClick={() => toggleSkill('design')} />
-            <SkillTag label="リサーチ" icon={<Laptop size={24}/>} active={data.skills.includes('research')} onClick={() => toggleSkill('research')} />
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+            {/* デジタル・SNS系 */}
+            <SkillTag label="SNS投稿" icon={<Smartphone size={20}/>} active={data.skills.includes('sns')} onClick={() => toggleSkill('sns')} />
+            <SkillTag label="フリマ出品" icon={<ShoppingCart size={20}/>} active={data.skills.includes('mercari')} onClick={() => toggleSkill('mercari')} />
+            <SkillTag label="ポイ活" icon={<Zap size={20}/>} active={data.skills.includes('points')} onClick={() => toggleSkill('points')} />
+            <SkillTag label="リサーチ" icon={<Search size={20}/>} active={data.skills.includes('research')} onClick={() => toggleSkill('research')} />
+            
+            {/* クリエイティブ系 */}
+            <SkillTag label="画像作成" icon={<Palette size={20}/>} active={data.skills.includes('design')} onClick={() => toggleSkill('design')} />
+            <SkillTag label="動画編集" icon={<Video size={20}/>} active={data.skills.includes('video')} onClick={() => toggleSkill('video')} />
+            <SkillTag label="文章作成" icon={<Pen size={20}/>} active={data.skills.includes('writing')} onClick={() => toggleSkill('writing')} />
+            <SkillTag label="お悩み相談" icon={<MessageSquare size={20}/>} active={data.skills.includes('consulting')} onClick={() => toggleSkill('consulting')} />
+
+            {/* AI・IT系 */}
+            <SkillTag label="ChatGPT" icon={<Sparkles size={20}/>} active={data.skills.includes('chatgpt')} onClick={() => toggleSkill('chatgpt')} />
+            <SkillTag label="画像生成AI" icon={<ImageIcon size={20}/>} active={data.skills.includes('stable_diffusion')} onClick={() => toggleSkill('stable_diffusion')} />
+            <SkillTag label="データ入力" icon={<Laptop size={20}/>} active={data.skills.includes('data_entry')} onClick={() => toggleSkill('data_entry')} />
+            <SkillTag label="翻訳" icon={<Scale size={20}/>} active={data.skills.includes('translation')} onClick={() => toggleSkill('translation')} />
+
+            {/* リアル・生活系 */}
+            <SkillTag label="運転" icon={<Briefcase size={20}/>} active={data.skills.includes('driving')} onClick={() => toggleSkill('driving')} />
+            <SkillTag label="掃除・家事" icon={<CheckCircle2 size={20}/>} active={data.skills.includes('housework')} onClick={() => toggleSkill('housework')} />
+            <SkillTag label="接客・販売" icon={<UserCircle size={20}/>} active={data.skills.includes('sales')} onClick={() => toggleSkill('sales')} />
+            <SkillTag label="商品梱包" icon={<Download size={20}/>} active={data.skills.includes('packing')} onClick={() => toggleSkill('packing')} />
           </div>
+
           <button 
             disabled={data.skills.length === 0}
             onClick={nextStep}
