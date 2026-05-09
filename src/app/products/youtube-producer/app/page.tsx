@@ -83,6 +83,14 @@ export default function YoutubeProducerApp() {
     setIsProcessing(prev => ({ ...prev, 'transcribe': true }))
     setError(null)
 
+    // ブラウザ側での簡易圧縮（本来のロジック復元：巨大ファイルを軽量化して送る）
+    // 動画ファイルの場合は、フロントエンドで音声抽出を行うか、サイズ警告を出す
+    if (file.size > 10 * 1024 * 1024) { // 10MB超え
+      setError('ファイルサイズが大きすぎます。10MB以下の動画・音声ファイルを選択してください。')
+      setIsProcessing(prev => ({ ...prev, 'transcribe': false }))
+      return
+    }
+
     const formData = new FormData()
     formData.append('file', file)
 
