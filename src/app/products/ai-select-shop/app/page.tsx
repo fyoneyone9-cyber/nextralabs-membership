@@ -11,9 +11,17 @@ const MasterEngine = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [trends, setTrends] = useState<{ id: number; name: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLive, setIsLive] = useState(false);
   const [keyword, setKeyword] = useState('');
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishResult, setPublishResult] = useState<{ url?: string; error?: string } | null>(null);
+
+  // 9件フォールバック（3列×3行グリッドを常に埋める）
+  const FALLBACK_TRENDS = [
+    'AI活用術', '副業・在宅ワーク', '節約・投資',
+    'ChatGPT最新情報', '動画・コンテンツ制作', '健康・ダイエット',
+    '転職・キャリア', 'ガジェット・テック', 'SNSマーケティング'
+  ];
 
   useEffect(() => { fetchTrends(); }, []);
 
@@ -22,9 +30,20 @@ const MasterEngine = () => {
     try {
       const r = await fetch('/api/trends', { cache: 'no-store' });
       const d = await r.json();
-      if (d.trends) setTrends(d.trends.slice(0, 9).map((t: string, i: number) => ({ id: i, name: t })));
+      if (d.trends && d.trends.length > 0) {
+        // 常に9件に揃える（足りない場合はフォールバックで補填）
+        const fetched: string[] = d.trends.slice(0, 9);
+        const padded = fetched.length >= 9
+          ? fetched
+          : [...fetched, ...FALLBACK_TRENDS.filter(f => !fetched.includes(f))].slice(0, 9);
+        setTrends(padded.map((t: string, i: number) => ({ id: i, name: t })));
+        setIsLive(d.isLive === true);
+      } else {
+        throw new Error('no trends');
+      }
     } catch {
-      setTrends([{ id: 0, name: 'AIビジネス' }, { id: 1, name: '時短術' }, { id: 2, name: 'Web3' }]);
+      setTrends(FALLBACK_TRENDS.map((t, i) => ({ id: i, name: t })));
+      setIsLive(false);
     } finally { setIsLoading(false); }
   };
 
@@ -75,22 +94,54 @@ const MasterEngine = () => {
 
         {currentStep === 1 && (
           <div className="space-y-10">
-            <div className="flex items-center gap-4 ml-4">
-              <div className="h-8 w-2 bg-emerald-500 rounded-full"></div>
-              <h4 className="text-3xl font-black text-white italic uppercase tracking-widest">1. トレンド・キーワードを選択</h4>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-in fade-in duration-500">
-              {trends.map(t => (
-                <Card 
-                  key={t.id} 
-                  onClick={() => { setKeyword(t.name); setCurrentStep(2); window.scrollTo(0,0); }} 
-                  className="bg-[#13141f] border-4 border-white/5 p-12 rounded-[3.5rem] hover:border-emerald-500 cursor-pointer transition-all text-center group shadow-2xl active:scale-95"
+            <div className="flex items-center justify-between ml-4 mr-4">
+              <div className="flex items-center gap-4">
+                <div className="h-8 w-2 bg-emerald-500 rounded-full"></div>
+                <h4 className="text-3xl font-black text-white italic uppercase tracking-widest">1. トレンド・キーワードを選択</h4>
+              </div>
+              <div className="flex items-center gap-3">
+                {isLoading ? (
+                  <span className="flex items-center gap-2 text-xs font-black text-slate-400 italic uppercase tracking-widest">
+                    <Loader2 size={14} className="animate-spin text-emerald-400" /> 取得中...
+                  </span>
+                ) : (
+                  <span className={`flex items-center gap-2 text-xs font-black italic uppercase tracking-widest ${isLive ? 'text-emerald-400' : 'text-slate-500'}`}>
+                    <span className={`h-2 w-2 rounded-full ${isLive ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`}></span>
+                    {isLive ? 'LIVE TREND' : 'STABLE DATA'}
+                  </span>
+                )}
+                <button
+                  onClick={fetchTrends}
+                  className="text-xs font-black italic uppercase tracking-widest text-slate-500 hover:text-emerald-400 transition-colors border border-white/10 hover:border-emerald-500/40 rounded-xl px-4 py-2"
                 >
-                  <Badge className="mb-6 bg-emerald-500/20 text-emerald-400 border-emerald-500/30 px-4 py-1 font-black italic">TREND SYNC</Badge>
-                  <p className="text-4xl font-black italic text-white uppercase group-hover:text-emerald-400 transition-colors leading-tight">{t.name}</p>
-                </Card>
-              ))}
+                  ↻ 更新
+                </button>
+              </div>
             </div>
+
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {[...Array(9)].map((_, i) => (
+                  <div key={i} className="bg-[#13141f] border-4 border-white/5 rounded-[3.5rem] p-12 animate-pulse flex flex-col items-center gap-4">
+                    <div className="h-5 w-24 bg-white/10 rounded-full"></div>
+                    <div className="h-10 w-32 bg-white/10 rounded-2xl"></div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-in fade-in duration-500">
+                {trends.map(t => (
+                  <Card
+                    key={t.id}
+                    onClick={() => { setKeyword(t.name); setCurrentStep(2); window.scrollTo(0, 0); }}
+                    className="bg-[#13141f] border-4 border-white/5 p-12 rounded-[3.5rem] hover:border-emerald-500 cursor-pointer transition-all text-center group shadow-2xl active:scale-95"
+                  >
+                    <Badge className="mb-6 bg-emerald-500/20 text-emerald-400 border-emerald-500/30 px-4 py-1 font-black italic">TREND SYNC</Badge>
+                    <p className="text-4xl font-black italic text-white uppercase group-hover:text-emerald-400 transition-colors leading-tight">{t.name}</p>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
