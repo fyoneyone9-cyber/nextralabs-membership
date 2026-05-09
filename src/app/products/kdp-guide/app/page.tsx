@@ -5,12 +5,11 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { 
-  BookOpen, CheckCircle2, Clipboard, Copy, Info, 
-  Settings, PenTool, Layout, Rocket, ExternalLink,
-  AlertCircle, ChevronRight, HelpCircle
+  BookOpen, CheckCircle2, Info, Settings, PenTool, Layout, Rocket, 
+  ExternalLink, ChevronRight, HelpCircle
 } from 'lucide-react'
 
-// ローカルガイドステップ定義：さらに具体的に
+// ローカルガイドステップ定義
 const KDP_STEPS = [
   {
     id: 'setup',
@@ -21,19 +20,37 @@ const KDP_STEPS = [
         id: 'acc', 
         text: 'KDPアカウント作成と居住地設定', 
         detail: 'Amazon.co.jp（日本）のアカウントでログインし、居住国を「日本」に設定。',
-        expanded: '【手順】KDP(kdp.amazon.co.jp)へアクセス ➔ サインイン ➔ 利用規約に同意 ➔ 「マイアカウント」をクリック ➔ 居住国「日本」を選択 ➔ 氏名・住所・電話番号を入力（※重要：氏名は振込口座の名義と一致させること。住所は日本語でOK）。'
+        subItems: [
+          { id: 'acc-1', text: 'KDP公式サイト(kdp.amazon.co.jp)へアクセス' },
+          { id: 'acc-2', text: '既存のAmazonアカウントでサインイン' },
+          { id: 'acc-3', text: '利用規約に同意' },
+          { id: 'acc-4', text: '「マイアカウント」をクリック' },
+          { id: 'acc-5', text: '居住国「日本」を選択' },
+          { id: 'acc-6', text: '氏名・住所・電話番号を入力（※振込口座名義と一致させる）' },
+        ]
       },
       { 
         id: 'tax', 
         text: '米国源泉徴収 30% ➔ 0% 回避設定', 
         detail: '日本のマイナンバーを「TIN」として入力し、米国との租税条約を適用。',
-        expanded: '【最重要：手順】マイアカウント ➔ 税務情報 ➔ 「税務プロフィールの更新」 ➔ ①個人か？：はい ②米国市民か？：いいえ ③仲介代行か？：いいえ ➔ TIN（納税者番号）に「マイナンバー(12桁)」を半角で入力 ➔ 署名（氏名をアルファベット入力） ➔ これにより、米国の税金30%が免除され、日本の所得税のみ（確定申告）になります。'
+        subItems: [
+          { id: 'tax-1', text: 'マイアカウント ➔ 税務情報の更新 をクリック' },
+          { id: 'tax-2', text: '税務プロフィールの作成を開始' },
+          { id: 'tax-3', text: '「個人」「米国市民ではない」「仲介代行ではない」を選択' },
+          { id: 'tax-4', text: 'TIN（納税者番号）欄にマイナンバー(12桁)を入力' },
+          { id: 'tax-5', text: '署名欄に氏名をアルファベットで入力' },
+        ]
       },
       { 
         id: 'bank', 
         text: '国内銀行口座の登録（SWIFT不要）', 
-        detail: '売上を受け取る口座。ネット銀行や地方銀行でも、ほぼ全て対応済み。',
-        expanded: '【手順】マイアカウント ➔ 銀行口座 ➔ 銀行の所在地「日本」 ➔ 口座名義（カタカナ）、銀行名、店番号、口座番号を入力 ➔ 「追加」をクリック。※重要：名義人は必ずKDP登録名と一致させてください。'
+        detail: '売上を受け取る口座。日本の銀行名・店番・口座番号を入力。',
+        subItems: [
+          { id: 'bank-1', text: 'マイアカウント ➔ 銀行口座 をクリック' },
+          { id: 'bank-2', text: '銀行の所在地「日本」を選択' },
+          { id: 'bank-3', text: '口座名義（カタカナ）を入力' },
+          { id: 'bank-4', text: '銀行名・店番号・口座番号を入力して追加' },
+        ]
       },
     ]
   },
@@ -45,14 +62,22 @@ const KDP_STEPS = [
       { 
         id: 'file', 
         text: '原稿作成（Word / Googleドキュメント）', 
-        detail: '改ページと目次設定が最優先。フォントサイズよりも「構造」が大事。',
-        expanded: '【物理的設定】①用紙サイズはA4のままでOK（Kindle側で調整される） ②各章の終わりで必ず「Ctrl + Enter」で改ページを挿入 ③Wordのスタイル機能で「見出し1」を設定し、自動目次を作成 ➔ これをしないとKindle端末で「移動」機能が使えず低評価に繋がります。'
+        detail: '改ページと目次設定が最優先。構造化が重要。',
+        subItems: [
+          { id: 'file-1', text: '各章の終わりに「Ctrl + Enter」で改ページを挿入' },
+          { id: 'file-2', text: 'Wordのスタイル機能で「見出し」を設定' },
+          { id: 'file-3', text: '「自動目次」を挿入（Kindle移動機能に必須）' },
+        ]
       },
       { 
         id: 'cover', 
         text: '表紙デザインの黄金比設定', 
         detail: '縦横比 1.6:1 (2560x1600px) がAmazonの推奨です。',
-        expanded: '【具体的コツ】①Canva等で「Kindle表紙」テンプレートを使用 ②文字サイズは全体の50%以上を占めるほど巨大に（スマホ画面では切手サイズで表示されるため） ③背景と文字のコントラストを最大化 ➔ 白背景に薄い色の文字は絶対に読まれません。'
+        subItems: [
+          { id: 'cover-1', text: 'Canva等で2560x1600pxのキャンバスを作成' },
+          { id: 'cover-2', text: 'タイトル文字を全体の50%以上のサイズで配置' },
+          { id: 'cover-3', text: '背景と文字のコントラストを最大化する' },
+        ]
       },
     ]
   },
@@ -64,20 +89,31 @@ const KDP_STEPS = [
       { 
         id: 'title', 
         text: 'タイトル・サブタイトルの戦略入力', 
-        detail: 'メインタイトルは短く、サブタイトルに「実績・ターゲット」を詰め込む。',
-        expanded: '【具体例】タイトル：AI活用術 ➔ サブタイトル：【2026年最新】未経験者がAIで月5万稼ぐための最短ロードマップ。※「フリガナ」も必須入力ですが、ここはカタカナで入力してください。'
+        detail: 'メインタイトルは短く、サブタイトルにベネフィットを詰め込む。',
+        subItems: [
+          { id: 'title-1', text: 'タイトルを入力（フリガナ・カタカナ必須）' },
+          { id: 'title-2', text: 'サブタイトルに「実績・ターゲット」を盛り込む' },
+        ]
       },
       { 
         id: 'desc', 
         text: '内容紹介文の作成（セールスライティング）', 
         detail: '最初の2行で読者の悩み（痛み）を突く。',
-        expanded: '【構成案】①「まだ〇〇で消耗していませんか？」と問いかけ ➔ ②この本で得られる解決策（箇条書き3点） ➔ ③期間限定の低価格設定である旨を記載 ➔ ④最後に「今すぐ購入」を促す。※HTMLタグ <b>太字</b> や <ul>リスト </ul> が使用可能。'
+        subItems: [
+          { id: 'desc-1', text: '最初の3行で「読者の悩み」を提起する' },
+          { id: 'desc-2', text: 'ベネフィットを箇条書きで3つ提示する' },
+          { id: 'desc-3', text: '必要に応じてHTMLタグ(<b>等)で装飾する' },
+        ]
       },
       { 
         id: 'kw', 
         text: 'キーワード（7つの枠）の選定', 
-        detail: 'Amazon検索窓で「サジェスト」される単語を入力。',
-        expanded: '【選定の掟】タイトルに含まれる単語は入力しない（重複は無駄）。「副業 おすすめ」「ChatGPT 使い方」「時短 術」など、読者が実際に検索する「2語」を1枠に詰め込むのが裏技です。'
+        detail: 'Amazon検索窓でサジェストされる単語を選定。',
+        subItems: [
+          { id: 'kw-1', text: 'タイトルと重複しない単語を選ぶ' },
+          { id: 'kw-2', text: '1つの枠に「2語の組み合わせ」を入力する' },
+          { id: 'kw-3', text: '7つの枠すべてを埋める' },
+        ]
       },
     ]
   },
@@ -90,19 +126,29 @@ const KDP_STEPS = [
         id: 'select', 
         text: 'KDPセレクト（Kindle Unlimited）登録', 
         detail: '初心者は必ず「チェックを入れる」一択です。',
-        expanded: '【収益の仕組み】これにチェックを入れると、Amazonプライム会員が「タダ」で読みますが、著者は「読まれたページ数（1枚約0.5円）」だけ収益が発生します。購入されるより読まれる方が圧倒的にハードルが低いため、初期収益の9割はここから発生します。'
+        subItems: [
+          { id: 'select-1', text: 'KDPセレクトに登録するにチェック' },
+          { id: 'select-2', text: '独占販売（他店で売らない）に同意' },
+        ]
       },
       { 
         id: 'royalty', 
         text: 'ロイヤリティ 70% ➔ 価格 250円設定', 
         detail: '最も利益率の高い設定をロックする。',
-        expanded: '【重要】ロイヤリティは「70%」を選択 ➔ 主なマーケットプレイス「Amazon.co.jp」を選択 ➔ 価格「250」と入力 ➔ これにより、1冊売れるごとに約170円の利益が出ます（99円にすると利益はたった30円になります）。'
+        subItems: [
+          { id: 'royalty-1', text: 'ロイヤリティプラン「70%」を選択' },
+          { id: 'royalty-2', text: 'マーケットプレイス「Amazon.co.jp」を選択' },
+          { id: 'royalty-3', text: '価格を250円以上に設定する' },
+        ]
       },
       { 
         id: 'publish', 
         text: '「Kindle本を出版」ボタンを押す', 
-        detail: 'これで完了！48時間以内にAmazonに並びます。',
-        expanded: '【最後の手順】画面最下部の「Kindle本を出版」をクリック。ステータスが「レビュー中」に変わります。不備がある場合はメールが届きますが、住所・氏名・税務設定さえ正しければ100%通過します。'
+        detail: '審査には通常24〜72時間かかります。',
+        subItems: [
+          { id: 'publish-1', text: '「Kindle本を出版」をクリック' },
+          { id: 'publish-2', text: 'ステータスが「レビュー中」になったか確認' },
+        ]
       },
     ]
   }
@@ -115,9 +161,9 @@ export default function KdpGuideApp() {
     setCheckedItems(prev => ({ ...prev, [id]: !prev[id] }))
   }
 
+  const allSubItems = KDP_STEPS.flatMap(s => s.items.flatMap(i => i.subItems))
   const progress = Math.round(
-    (Object.values(checkedItems).filter(Boolean).length / 
-    KDP_STEPS.flatMap(s => s.items).length) * 100
+    (allSubItems.filter(item => checkedItems[item.id]).length / allSubItems.length) * 100
   )
 
   return (
@@ -165,32 +211,35 @@ export default function KdpGuideApp() {
               
               <div className="grid gap-4">
                 {step.items.map((item) => (
-                  <div 
-                    key={item.id}
-                    onClick={() => toggleCheck(item.id)}
-                    className={`group cursor-pointer p-5 md:p-7 rounded-2xl border-2 transition-all flex items-start gap-4 md:gap-6 ${
-                      checkedItems[item.id] 
-                        ? 'bg-orange-500/5 border-orange-500/40 shadow-[0_0_30px_rgba(249,115,22,0.1)]' 
-                        : 'bg-white/5 border-white/5 hover:border-white/10'
-                    }`}
-                  >
-                    <div className={`mt-1 h-6 w-6 md:h-7 md:w-7 shrink-0 rounded-lg border-2 flex items-center justify-center transition-all ${
-                      checkedItems[item.id] ? 'bg-orange-500 border-orange-500' : 'border-white/30'
-                    }`}>
-                      {checkedItems[item.id] && <CheckCircle2 size={16} className="text-slate-950 stroke-[3px]" />}
+                  <Card key={item.id} className="bg-[#13141f] border-white/5 p-6 rounded-2xl space-y-4 shadow-xl">
+                    <div className="space-y-1">
+                      <h3 className="text-lg font-black text-white italic">{item.text}</h3>
+                      <p className="text-[10px] text-slate-500 font-bold italic">{item.detail}</p>
                     </div>
-                    <div className="flex-1 space-y-2 min-w-0">
-                      <p className={`font-black text-lg md:text-xl transition-all ${checkedItems[item.id] ? 'text-white' : 'text-slate-400'}`}>
-                        {item.text}
-                      </p>
-                      {item.expanded && (
-                        <div className="mt-3 p-4 md:p-6 bg-black/40 rounded-xl border border-white/5 text-sm md:text-base text-slate-300 font-medium leading-relaxed">
-                          {item.expanded}
+                    
+                    <div className="grid gap-2 border-t border-white/5 pt-4">
+                      {item.subItems.map((sub) => (
+                        <div 
+                          key={sub.id}
+                          onClick={() => toggleCheck(sub.id)}
+                          className={`group cursor-pointer p-3 rounded-lg border transition-all flex items-center gap-3 ${
+                            checkedItems[sub.id] 
+                              ? 'bg-orange-500/5 border-orange-500/30' 
+                              : 'bg-black/40 border-white/5 hover:border-white/10'
+                          }`}
+                        >
+                          <div className={`shrink-0 h-5 w-5 rounded border flex items-center justify-center transition-all ${
+                            checkedItems[sub.id] ? 'bg-orange-500 border-orange-500' : 'border-white/20'
+                          }`}>
+                            {checkedItems[sub.id] && <CheckCircle2 size={12} className="text-slate-950 stroke-[3px]" />}
+                          </div>
+                          <p className={`font-black text-[12px] md:text-sm transition-all ${checkedItems[sub.id] ? 'text-white' : 'text-slate-400'}`}>
+                            {sub.text}
+                          </p>
                         </div>
-                      )}
+                      ))}
                     </div>
-                    <ChevronRight className={`text-slate-700 transition-transform ${checkedItems[item.id] ? 'rotate-90' : ''}`} />
-                  </div>
+                  </Card>
                 ))}
               </div>
             </div>
@@ -205,9 +254,9 @@ export default function KdpGuideApp() {
           className="block group"
         >
           <div className="bg-gradient-to-r from-orange-600 to-amber-600 p-10 rounded-[3rem] flex items-center justify-between shadow-2xl transition-all group-hover:scale-[1.02]">
-            <div className="space-y-2">
+            <div className="space-y-2 text-left">
               <h3 className="text-2xl font-black text-white italic">Amazon KDP攻略本をチェック ➔</h3>
-              <p className="text-orange-100 text-sm font-bold italic italic">ベストセラー作家が教える「印税生活」への近道</p>
+              <p className="text-orange-100 text-sm font-bold italic">ベストセラー作家が教える「印税生活」への近道</p>
             </div>
             <ExternalLink size={40} className="text-white" />
           </div>
