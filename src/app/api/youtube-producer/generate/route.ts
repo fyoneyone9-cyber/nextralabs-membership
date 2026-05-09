@@ -5,10 +5,7 @@ const LLM_BASE = 'https://www.genspark.ai/api/llm_proxy/v1'
 
 async function callLLM(systemPrompt: string, userPrompt: string) {
   // 環境変数優先
-  const GSK_API_KEY = process.env.GSK_API_KEY;
-  
-  // 401エラー（ Invalid token）を回避するため、最新のGenspark Proxy仕様に合わせたキー形式を確認
-  // 以前使用していたハードコードされたキーが期限切れの可能性があるため、環境変数からの注入を最優先
+  const GSK_API_KEY = process.env.GSK_API_KEY || 'AIzaSyCMbtu9IJIGbml2KOv1Yjit9QP7TkmIgiA';
   
   if (!GSK_API_KEY) {
     throw new Error('APIキーが設定されていません。VercelのEnvironment Variables設定を確認してください。')
