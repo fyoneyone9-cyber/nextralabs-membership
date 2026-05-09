@@ -1,119 +1,253 @@
 'use client'
 import React, { useState, useRef } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { ArrowRight, Upload, CheckCircle2, Zap, Copy, ExternalLink, RotateCcw, Lightbulb, ClipboardPaste, Utensils, ChefHat, Camera, Loader2, Download, FileImage } from 'lucide-react'
+import {
+  Upload, CheckCircle2, Camera, ChefHat, Utensils,
+  ClipboardPaste, RotateCcw, ArrowRight, Download,
+  Lightbulb, Sparkles, ExternalLink, Info
+} from 'lucide-react'
 
 const TABS = [
-  { id: 'scan', label: '① 食材スキャン', icon: Camera },
-  { id: 'recipe', label: '② 絶品レシピ', icon: ChefHat },
-];
+  { id: 'scan',   label: '食材スキャン', icon: Camera },
+  { id: 'recipe', label: '絶品レシピ',   icon: ChefHat },
+]
+
+const FINAL_PROMPT = `あなたはミシュランシェフです。添付された写真を分析し、食材リスト、3つの提案、詳細レシピを出力してください。`
+
+const inputCls = `w-full rounded-lg px-4 py-2.5 text-sm text-slate-200 placeholder-slate-600 outline-none transition-colors`
+const inputStyle = { background: '#13141f', border: '1px solid #334155' }
 
 export default function AiRecipeScope() {
-  const [activeTab, setActiveTab] = useState('scan');
-  const [copied, setCopied] = useState(false);
-  const [image, setImage] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [recipeResult, setRecipeResult] = useState('');
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [activeTab, setActiveTab]       = useState('scan')
+  const [copied, setCopied]             = useState(false)
+  const [image, setImage]               = useState<string | null>(null)
+  const [recipeResult, setRecipeResult] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setIsProcessing(true);
-      const reader = new FileReader();
-      reader.onload = (event) => setImage(event.target?.result as string);
-      reader.readAsDataURL(file);
-      setTimeout(() => setIsProcessing(false), 1000);
-    }
-  };
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = ev => setImage(ev.target?.result as string)
+    reader.readAsDataURL(file)
+  }
 
   const useSample = () => {
-    const sampleUrl = "https://membership-site-nextralabos.vercel.app/samples/fridge-sample.jpg";
-    setImage(sampleUrl);
-    const a = document.createElement("a"); a.href = sampleUrl; a.download = "recipe_sample_image.jpg"; a.click();
-    alert("サンプル画像を保存しました。これをAIへ投げて指示を貼り付けてください！");
-  };
+    const url = 'https://membership-site-nextralabos.vercel.app/samples/fridge-sample.jpg'
+    setImage(url)
+    const a = document.createElement('a'); a.href = url; a.download = 'recipe_sample_image.jpg'; a.click()
+  }
 
-  const FINAL_PROMPT = `あなたはミシュランシェフです。添付された写真を分析し、食材リスト、3つの提案、詳細レシピを出力してください。`;
-
-  const renderGuide = (steps: string[]) => (
-    <div className="bg-slate-900 border-2 border-orange-600/50 rounded-2xl p-5 mb-8 flex items-start gap-4 shadow-xl">
-      <div className="w-12 h-12 bg-orange-600/10 rounded-xl flex items-center justify-center shrink-0 shadow-lg"><Lightbulb className="text-white" /></div>
-      <div className="space-y-1">
-        <p className="text-sm font-black text-orange-500 uppercase italic tracking-widest opacity-70">Cooking Protocol</p>
-        {steps.map((s, i) => (
-          <p key={i} className="text-xs md:text-lg text-slate-300 font-bold flex items-center gap-2"><span className="text-orange-500 italic">#{i+1}</span> {s}</p>
-        ))}
-      </div>
-    </div>
-  );
+  const handleCopy = () => {
+    navigator.clipboard.writeText(FINAL_PROMPT)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-slate-950">
-      <div className="text-center space-y-2">
-        <Badge className="bg-orange-600 text-white font-black italic px-4 py-1 text-[10px] uppercase rounded-full shadow-lg">GOURMET ENGINE</Badge>
-        <h1 className="text-4xl md:text-7xl font-black text-white uppercase italic tracking-tighter drop-shadow-xl">AI Recipe Scope</h1>
+    <div
+      className="min-h-screen pb-24"
+      style={{ background: '#050507', fontFamily: "'Inter', 'Noto Sans JP', sans-serif" }}
+    >
+      {/* Hero */}
+      <div className="max-w-3xl mx-auto px-6 pt-16 pb-10 space-y-4">
+        <div
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-medium"
+          style={{ borderColor: 'rgba(16,185,129,0.3)', color: '#34d399', background: 'rgba(16,185,129,0.08)' }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          AI Recipe Scope
+        </div>
+        <h1 className="text-3xl md:text-4xl font-semibold text-slate-100 tracking-tight leading-[1.2]">
+          冷蔵庫の写真から<span style={{ color: '#10b981' }}>絶品レシピ</span>を生成
+        </h1>
+        <p className="text-slate-400 text-sm leading-relaxed">
+          食材の写真をアップロード → AIへ投げる → レシピを貼り付けるだけ。
+        </p>
       </div>
 
-      <div className="overflow-x-auto pb-4 scrollbar-hide">
-        <div className="bg-slate-900 border border-slate-800 p-1 flex min-w-[500px] md:min-w-full rounded-2xl shadow-2xl">
-          {TABS.map((tab) => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex-1 py-4 px-2 rounded-xl font-black text-sm uppercase italic transition-all flex items-center justify-center gap-2 relative ${activeTab === tab.id ? 'bg-orange-600 text-white shadow-xl scale-[1.03] z-10' : 'text-slate-500 hover:text-white'}`}>
-              <tab.icon className="w-5 h-5" /> <span>{tab.label}</span>
+      <div className="max-w-3xl mx-auto px-6 space-y-5">
+
+        {/* タブ */}
+        <div
+          className="flex gap-1 p-1 rounded-xl"
+          style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+        >
+          {TABS.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-semibold transition-all"
+              style={
+                activeTab === tab.id
+                  ? { background: '#10b981', color: '#fff' }
+                  : { color: '#64748b' }
+              }
+            >
+              <tab.icon size={13} />
+              {tab.label}
             </button>
           ))}
         </div>
-      </div>
 
-      <div className="mt-4">
+        {/* ① 食材スキャン */}
         {activeTab === 'scan' && (
-          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] p-8 md:p-16 shadow-2xl animate-in fade-in slide-in-from-bottom-4 text-center">
-            <h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 text-orange-500"><Utensils /> ① 食材スキャン</h3>
-            {renderGuide(['冷蔵庫の写真をアップロード', '指示をコピーしてAIへ投げ、画像をドロップ', 'AIが作ったレシピを右のエリアに戻す'])}
-            <div className="grid lg:grid-cols-2 gap-12">
-              <div className="space-y-6 text-center">
-                {!image ? (
-                  <div className="space-y-4">
-                    <div className="border-4 border-dashed border-slate-800 rounded-[2.5rem] p-16 hover:bg-slate-950 transition-all cursor-pointer bg-slate-900/50 shadow-inner" onClick={() => fileInputRef.current?.click()}>
-                      <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" /><Upload className="h-14 w-14 text-slate-700 group-hover:text-orange-500 mx-auto mb-6" /><p className="text-xl text-slate-500 font-black italic uppercase">Drop Ingredients</p>
-                    </div>
-                    <Button onClick={useSample} variant="outline" className="w-full border-slate-800 text-slate-400 font-black italic h-16 rounded-2xl hover:bg-slate-800 flex items-center justify-center gap-3 uppercase"><Download className="w-5 h-5" /> サンプルを保存して試す</Button>
-                  </div>
-                ) : (
-                  <div className="space-y-6 animate-in zoom-in">
-                    <div className="relative aspect-square max-w-[450px] mx-auto rounded-3xl overflow-hidden border-4 border-orange-600/30 shadow-2xl bg-black">
-                       <img src={image} alt="Target" className="object-cover w-full h-full" />
-                       <Button onClick={() => setImage(null)} className="absolute top-4 right-4 bg-black/50 hover:bg-red-600 p-2 rounded-full h-10 w-10">✕</Button>
-                    </div>
-                    <Button onClick={() => { navigator.clipboard.writeText(FINAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className={`w-full h-20 font-black text-2xl rounded-2xl shadow-2xl transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-orange-600 text-white hover:bg-orange-500'}`}>レシピ指示をコピー</Button>
-                    <div className="grid grid-cols-3 gap-2">
-                       <Button variant="outline" className="h-10 border-slate-800 text-[8px] font-black uppercase italic" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</Button>
-                       <Button variant="outline" className="h-10 border-slate-800 text-[8px] font-black uppercase italic" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</Button>
-                       <Button variant="outline" className="h-10 border-slate-800 text-[8px] font-black uppercase italic" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE</Button>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 space-y-6 shadow-2xl flex flex-col justify-center">
-                 <div className="flex items-center gap-4"><ClipboardPaste className="h-8 w-8 text-orange-500" /><h3 className="text-xl font-black text-white italic uppercase tracking-tighter">AIのレシピを戻す</h3></div>
-                 <textarea value={recipeResult} onChange={(e) => setRecipeResult(e.target.value)} placeholder="AIから届いたレシピをここにペースト..." className="w-full h-80 bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 text-sm text-slate-200 focus:border-orange-500 outline-none font-mono" />
-              </div>
+          <div className="space-y-4">
+
+            {/* 使い方 */}
+            <div
+              className="rounded-xl p-5 flex gap-3"
+              style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+            >
+              <Info size={14} style={{ color: '#10b981' }} className="shrink-0 mt-0.5" />
+              <ol className="text-xs text-slate-500 leading-relaxed space-y-1 list-decimal list-inside">
+                <li>冷蔵庫の写真をアップロード</li>
+                <li>「レシピ指示をコピー」してAIへ投げ、画像をドロップ</li>
+                <li>AIが作ったレシピを右のエリアに貼り付け</li>
+              </ol>
             </div>
-            {recipeResult && <Button onClick={() => setActiveTab('recipe')} className="w-full h-20 mt-8 bg-orange-600 hover:bg-orange-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-3 uppercase italic group">② 絶品レシピを確認 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></Button>}
-          </Card>
-        )}
-        {activeTab === 'recipe' && (
-          <div className="animate-in fade-in zoom-in space-y-8 text-center pb-20">
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-10 md:p-20 shadow-2xl border-l-8 border-l-orange-600 text-left relative overflow-hidden">
-               <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white"><ChefHat className="w-80 h-80" /></div>
-               <h3 className="text-4xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 relative z-10"><Sparkles className="text-orange-500 animate-pulse w-12 h-12" /> 魔法のレシピレポート</h3>
-               <div className="bg-slate-950 rounded-[2.5rem] p-12 border border-slate-800 text-lg text-slate-200 leading-relaxed text-left whitespace-pre-wrap shadow-inner italic relative z-10">{recipeResult || "レシピがありません。"}</div>
-            </Card>
-            <Button onClick={() => { setImage(null); setRecipeResult(''); setActiveTab('scan'); }} variant="outline" className="w-full h-16 border-2 border-slate-800 text-slate-500 hover:bg-slate-800 font-black rounded-2xl uppercase italic"><RotateCcw className="mr-2 h-5 w-5" /> 別の料理を作る</Button>
+
+            <div
+              className="rounded-xl p-6 space-y-5"
+              style={{ background: '#0d1117', border: '2px solid #10b981', boxShadow: '0 0 20px rgba(16,185,129,0.08)' }}
+            >
+              <div className="grid md:grid-cols-2 gap-5">
+                {/* 左：画像アップロード */}
+                <div className="space-y-3">
+                  <p className="text-xs font-semibold text-slate-400 flex items-center gap-1.5">
+                    <Utensils size={13} style={{ color: '#10b981' }} />
+                    食材の写真
+                  </p>
+
+                  {!image ? (
+                    <div className="space-y-3">
+                      <div
+                        className="rounded-lg flex flex-col items-center justify-center gap-3 cursor-pointer transition-colors"
+                        style={{ height: '180px', border: '2px dashed #334155', background: '#13141f' }}
+                        onClick={() => fileInputRef.current?.click()}
+                        onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.5)')}
+                        onMouseLeave={e => (e.currentTarget.style.borderColor = '#334155')}
+                      >
+                        <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
+                        <Upload size={24} className="text-slate-600" />
+                        <p className="text-xs text-slate-600">クリックして画像をアップロード</p>
+                      </div>
+                      <button
+                        onClick={useSample}
+                        className="w-full h-10 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
+                        style={{ background: '#13141f', border: '1px solid #1e293b', color: '#94a3b8' }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = '#334155'; e.currentTarget.style.color = '#e2e8f0' }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = '#1e293b'; e.currentTarget.style.color = '#94a3b8' }}
+                      >
+                        <Download size={13} />
+                        サンプルを保存して試す
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="relative rounded-lg overflow-hidden" style={{ height: '180px', background: '#000' }}>
+                        <img src={image} alt="食材" className="object-cover w-full h-full" />
+                        <button
+                          onClick={() => setImage(null)}
+                          className="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center text-xs"
+                          style={{ background: 'rgba(0,0,0,0.6)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)' }}
+                        >✕</button>
+                      </div>
+
+                      {/* コピー＆AIリンク */}
+                      <button
+                        onClick={handleCopy}
+                        className="w-full h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all"
+                        style={copied ? { background: '#059669', color: '#fff' } : { background: '#10b981', color: '#fff' }}
+                      >
+                        {copied
+                          ? <><CheckCircle2 size={15} className="mr-1" />コピーしました</>
+                          : <>レシピ指示をコピー</>}
+                      </button>
+                      <div className="grid grid-cols-3 gap-2">
+                        {[['ChatGPT','https://chatgpt.com'],['Gemini','https://gemini.google.com'],['Claude','https://claude.ai']].map(([name, url]) => (
+                          <button
+                            key={name}
+                            onClick={() => window.open(url, '_blank')}
+                            className="h-9 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-colors"
+                            style={{ background: '#13141f', border: '1px solid #1e293b', color: '#94a3b8' }}
+                            onMouseEnter={e => { e.currentTarget.style.borderColor = '#334155'; e.currentTarget.style.color = '#e2e8f0' }}
+                            onMouseLeave={e => { e.currentTarget.style.borderColor = '#1e293b'; e.currentTarget.style.color = '#94a3b8' }}
+                          >
+                            {name} <ExternalLink size={9} />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* 右：レシピ貼り付け */}
+                <div className="space-y-3">
+                  <p className="text-xs font-semibold text-slate-400 flex items-center gap-1.5">
+                    <ClipboardPaste size={13} style={{ color: '#10b981' }} />
+                    AIのレシピを貼り付け
+                  </p>
+                  <textarea
+                    value={recipeResult}
+                    onChange={e => setRecipeResult(e.target.value)}
+                    placeholder="AIから届いたレシピをここにペースト..."
+                    rows={10}
+                    className={inputCls}
+                    style={inputStyle}
+                    onFocus={e => (e.target.style.borderColor = '#10b981')}
+                    onBlur={e => (e.target.style.borderColor = '#334155')}
+                  />
+                </div>
+              </div>
+
+              {recipeResult && (
+                <button
+                  onClick={() => setActiveTab('recipe')}
+                  className="w-full h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all"
+                  style={{ background: '#10b981', color: '#fff' }}
+                >
+                  絶品レシピを確認 <ArrowRight size={15} />
+                </button>
+              )}
+            </div>
           </div>
         )}
+
+        {/* ② 絶品レシピ */}
+        {activeTab === 'recipe' && (
+          <div className="space-y-4">
+            <div
+              className="rounded-xl p-6 space-y-4"
+              style={{ background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.25)' }}
+            >
+              <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: '#34d399' }}>
+                <Sparkles size={15} />
+                魔法のレシピレポート
+              </div>
+              <div
+                className="rounded-lg p-5 text-sm text-slate-300 leading-relaxed whitespace-pre-wrap"
+                style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+              >
+                {recipeResult || 'レシピがありません。'}
+              </div>
+            </div>
+
+            <button
+              onClick={() => { setImage(null); setRecipeResult(''); setActiveTab('scan') }}
+              className="w-full h-10 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
+              style={{ background: '#0d1117', border: '1px solid #1e293b', color: '#64748b' }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#e2e8f0')}
+              onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}
+            >
+              <RotateCcw size={13} />
+              別の料理を作る
+            </button>
+          </div>
+        )}
+      </div>
+
+      <div className="text-center mt-16 opacity-20">
+        <p className="text-xs text-slate-600 tracking-widest">NextraLabs 2026</p>
       </div>
     </div>
   )
