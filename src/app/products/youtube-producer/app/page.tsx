@@ -75,6 +75,34 @@ function YoutubeProducerApp() {
   const [seo, setSeo] = useState<any>(null)
   const [bgm, setBgm] = useState<any>(null)
 
+  // ⚡ 憲法：ページ離脱してもクリアさせない（Persistence）
+  // マウント時にlocalStorageから復元
+  useEffect(() => {
+    const saved = localStorage.getItem('yt_producer_state')
+    if (saved) {
+      try {
+        const state = JSON.parse(saved)
+        setTranscript(state.transcript || '')
+        setGenre(state.genre || 'entertainment')
+        setScriptType(state.scriptType || 'standard')
+        setScript(state.script || null)
+        setCharacters(state.characters || null)
+        setThumbnails(state.thumbnails || null)
+        setSeo(state.seo || null)
+        setBgm(state.bgm || null)
+        if (state.activeTab) setActiveTab(state.activeTab)
+      } catch (e) {
+        console.error('復元エラー:', e)
+      }
+    }
+  }, [])
+
+  // 状態が変化するたびに保存
+  useEffect(() => {
+    const state = { transcript, genre, scriptType, script, characters, thumbnails, seo, bgm, activeTab }
+    localStorage.setItem('yt_producer_state', JSON.stringify(state))
+  }, [transcript, genre, scriptType, script, characters, thumbnails, seo, bgm, activeTab])
+
   useEffect(() => {
     const load = async () => {
       const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd'
@@ -260,7 +288,13 @@ function YoutubeProducerApp() {
 
           <TabsContent value="strategy" className="space-y-10 animate-in fade-in">
             {seo && (<div className="max-w-5xl mx-auto space-y-12"><h3 className="text-4xl font-black text-white italic uppercase flex items-center gap-4 justify-center tracking-tighter"><Search className="text-emerald-400 h-10 w-10" /> 最終ステップ: YouTube SEO 最適化</h3><Card className="bg-[#13141f] border-4 border-emerald-500/20 rounded-[3.5rem] p-16 space-y-12 shadow-[0_30px_100px_rgba(0,0,0,0.5)]"><div><label className="text-sm font-black text-emerald-500 uppercase italic tracking-widest block mb-6 ml-4">推奨タイトル</label><div className="flex items-center justify-between gap-8 bg-black/40 p-8 rounded-[2rem] border-2 border-white/5 shadow-inner"><p className="text-4xl text-white font-black italic leading-tight flex-1">{seo.main}</p><Button onClick={() => { navigator.clipboard.writeText(seo.main); alert("コピーしました！"); }} className="shrink-0 h-20 px-10 bg-emerald-500 text-slate-950 font-black italic text-xl rounded-2xl shadow-lg hover:bg-emerald-400 transition-all active:scale-95">コピー 📋</Button></div></div><div className="grid grid-cols-2 gap-12 text-left"><div><label className="text-sm font-black text-white/30 uppercase italic tracking-widest block mb-4 ml-2">検索タグ</label><div className="flex flex-wrap gap-3">{seo.tags.slice(0, 10).map((t: any, i: number) => (<Badge key={i} className="bg-white/5 text-slate-400 border-2 border-white/10 font-bold italic text-sm px-4 py-2 rounded-lg">#{t}</Badge>))}</div></div><div><label className="text-sm font-black text-white/30 uppercase italic tracking-widest block mb-4 ml-2">タイトル候補</label><ul className="space-y-3 font-bold italic">{seo.alternatives.slice(0, 3).map((a: any, i: number) => <li key={i} className="bg-white/5 p-4 rounded-xl border border-white/5 text-slate-400 text-sm">・{a}</li>)}</ul></div></div><div className="pt-8 border-t-2 border-white/5"><div className="flex items-center justify-between mb-6"><label className="text-sm font-black text-white/30 uppercase italic tracking-widest ml-2">概要欄 (説明文)</label><Button onClick={() => { navigator.clipboard.writeText(seo.description); alert("コピーしました！"); }} className="h-14 px-8 bg-white/5 text-slate-400 border-2 border-white/10 font-black italic text-sm rounded-xl hover:bg-white/10 transition-all active:scale-95">全文を一括コピー 📋</Button></div><div className="bg-black/60 rounded-[2.5rem] p-10 text-xl text-slate-300 font-bold italic leading-[1.8] h-[400px] overflow-y-auto border-2 border-white/5 shadow-inner">{seo.description}</div></div></Card></div>)}
-            <div className="pt-16 text-center"><Button onClick={() => { setTranscript(''); setScript(null); setCharacters(null); setThumbnails(null); setSeo(null); setBgm(null); setActiveTab('input'); window.scrollTo(0,0); }} className="h-32 px-16 bg-white text-slate-950 font-black text-3xl rounded-[3rem] border-4 border-white/10 italic uppercase shadow-[0_20px_50px_rgba(255,255,255,0.1)] hover:bg-emerald-400 transition-all active:scale-95">新しい動画をプロデュースする</Button></div>
+            <div className="pt-16 text-center"><Button onClick={() => { 
+              if(confirm('全てのデータをクリアして新しい動画を作成しますか？')) {
+                setTranscript(''); setScript(null); setCharacters(null); setThumbnails(null); setSeo(null); setBgm(null); setActiveTab('input'); 
+                localStorage.removeItem('yt_producer_state');
+                window.scrollTo(0,0); 
+              }
+            }} className="h-32 px-16 bg-white text-slate-950 font-black text-3xl rounded-[3rem] border-4 border-white/10 italic uppercase shadow-[0_20px_50px_rgba(255,255,255,0.1)] hover:bg-emerald-400 transition-all active:scale-95">新しい動画をプロデュースする</Button></div>
           </TabsContent>
         </Tabs>
 
