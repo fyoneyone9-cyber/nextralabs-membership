@@ -9,7 +9,8 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
-    const { url: targetUrl } = await req.json();
+    const body = await req.json();
+    const { url: targetUrl } = body;
     
     let keyword = "最新家電"; 
     if (targetUrl && targetUrl.includes('rakuten.co.jp')) {
@@ -20,21 +21,34 @@ export async function POST(req: Request) {
     }
 
     // 🔑 楽天AppID (NextraLabs 共有マスターキー)
-    // .trim() を追加して不要な改行やスペースを排除
-    const RAKUTEN_APP_ID = (process.env.RAKUTEN_APP_ID || '1020081822830310242').trim(); 
+    // 既存の rakuten-search で動作実績のある文字列をそのまま使用
+    const RAKUTEN_APP_ID = '1020081822830310242'; 
     
+    // URLの構築（クエリパラメータの順序を rakuten-search に合わせる）
     const apiUrl = `https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${RAKUTEN_APP_ID}&hits=10&sort=%2BitemPrice`;
 
-    const res = await fetch(apiUrl, { cache: 'no-store' });
+    // Fetch実行
+    const res = await fetch(apiUrl, { 
+      method: 'GET',
+      cache: 'no-store' 
+    });
+    
     const data = await res.json();
 
     if (!res.ok || data.error) {
-      throw new Error(data.error_description || data.message || 'Rakuten API Error');
+      const errorMsg = data.error_description || data.message || 'Rakuten API Error';
+      // エラーの詳細をログに出力
+      console.error('[MARKET_SCAN_DEBUG]', {
+        status: res.status,
+        error: errorMsg,
+        appIdUsed: RAKUTEN_APP_ID.substring(0, 5) + '...'
+      });
+      throw new Error(errorMsg);
     }
 
     const items = data.Items || [];
     if (items.length === 0) {
-      throw new Error('商品が見つかりませんでした。別のキーワードやURLでお試しください。');
+      throw new Error('商品が見つかりませんでした。');
     }
 
     const targetItem = items[0].Item;
@@ -63,11 +77,10 @@ export async function POST(req: Request) {
       winRate = diff > 10 ? '5%' : diff > 5 ? '15%' : '40%';
     }
 
-    let suggestionText = "";
+    let suggestionText = `【良好】あなたのショップは現在市場で優位な位置にあります。推定成約率は ${winRate} です。`;
     if (parseInt(winRate) < 50) {
-      suggestionText = `【警告】競合店「${rivals.find(r => r.effective_price === minRivalEffective)?.name}」が実質価格 ¥${minRivalEffective.toLocaleString()} でリードしています。現在の価格設定ではカート獲得率が ${winRate} まで低下しており、機会損失が発生しています。ポイントを ${targetPoints + 5}% 以上に引き上げるか、販売価格の調整を強く推奨します。`;
-    } else {
-      suggestionText = `【良好】あなたのショップは現在市場で優位な位置にあります。推定成約率は ${winRate} です。このままの価格を維持しつつ、在庫切れに注意して利益を最大化してください。`;
+      const rivalName = rivals.find(r => r.effective_price === minRivalEffective)?.name;
+      suggestionText = `【警告】競合店「${rivalName}」が実質価格 ¥${minRivalEffective.toLocaleString()} でリードしています。現在の成約率は ${winRate} です。ポイントを ${targetPoints + 5}% 以上に引き上げるか、販売価格の調整を推奨します。`;
     }
 
     return NextResponse.json({
