@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import Link from 'next/link'
 import React, { useState, useEffect } from 'react'
 import { Badge } from '@/components/ui/badge'
@@ -104,10 +104,10 @@ export default function DmsEngine() {
         <div className="p-5 border-b border-white/5">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center">
-              <span className="font-black text-slate-950 text-sm italic">N</span>
+              <span className="font-bold text-slate-950 text-sm ">N</span>
             </div>
             <div>
-              <p className="font-black text-white text-sm tracking-tight">Nextra DMS</p>
+              <p className="font-bold text-white text-sm tracking-tight">Nextra DMS</p>
               <p className="text-[9px] text-slate-500 font-medium">{currentDate}</p>
             </div>
           </div>
@@ -161,7 +161,7 @@ export default function DmsEngine() {
         {/* ヘッダー */}
         <header className="h-14 border-b border-white/5 bg-[#0d0f1a] px-6 flex items-center justify-between sticky top-0 z-40">
           <div className="flex items-center gap-3">
-            <h2 className="text-base font-black text-white flex items-center gap-2">
+            <h2 className="text-base font-bold text-white flex items-center gap-2">
               {activeTab === 'checkin' && <><PenLine size={18} className="text-emerald-400" /> チェックイン一覧</>}
               {activeTab === 'property' && <><Building size={18} className="text-emerald-400" /> 物件一覧</>}
               {activeTab === 'lock-list' && <><Lock size={18} className="text-emerald-400" /> 錠デバイス一覧</>}
@@ -286,11 +286,11 @@ export default function DmsEngine() {
                             <td className="px-4 py-3 text-slate-400 text-xs">ビジネスホテルアップル</td>
                             <td className="px-4 py-3">
                               <p className="text-slate-600 text-[9px] font-medium uppercase">（未設定）</p>
-                              <span className="text-sm font-black text-white">{b.allocate_rooms?.[0]?.room_id || '---'}</span>
+                              <span className="text-sm font-bold text-white">{b.allocate_rooms?.[0]?.room_id || '---'}</span>
                             </td>
                             <td className="px-4 py-3 text-center">
                               <p className="text-slate-500 text-[9px] font-medium">{b.person_number || '1'}名</p>
-                              <Link href={`/dms/bookings/${b.id}`} className="text-emerald-400 font-black text-xs hover:underline">
+                              <Link href={`/dms/bookings/${b.id}`} className="text-emerald-400 font-bold text-xs hover:underline">
                                 {b.name_kanji}
                               </Link>
                             </td>
