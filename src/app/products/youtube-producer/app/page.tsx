@@ -287,22 +287,35 @@ function YoutubeProducerApp() {
                       <>
                         <Loader2 className="animate-spin h-4 w-4" />
                         {compressProgress > 0 ? `圧縮中 ${compressProgress}%` : '読み起こし中...'}
-                        {compressProgress > 0 && (
-                          <div className="absolute bottom-0 left-0 h-1 bg-emerald-500 transition-all duration-300" style={{ width: `${compressProgress}%` }} />
-                        )}
                       </>
                     ) : (
                       <>
                         <Upload size={14} />
-                        動画・音声から読み起こし
+                        直接読み起こし (推奨: 数MB以内)
                       </>
                     )}
                   </Button>
                 </div>
               </div>
-              <p className="text-sm text-slate-300 font-bold leading-relaxed italic">
-                動画にしたい内容を入力してください。または、上のボタンから**動画ファイルや音声ファイル**をアップロードすれば、AIがブラウザ上で音声を自動圧縮して読み起こします。
-              </p>
+              <div className="space-y-4">
+                <p className="text-sm text-slate-300 font-bold leading-relaxed italic">
+                  動画の内容を入力してください。巨大なファイルや長時間の動画は、以下の外部AIで文字起こしした結果を貼り付けるのが最も確実です。
+                </p>
+                <div className="grid grid-cols-3 gap-3">
+                  <a href="https://claud.ai" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-3 text-center hover:bg-white/10 transition-all group">
+                    <p className="text-[10px] font-black text-slate-500 group-hover:text-emerald-400 mb-1">Anthropic</p>
+                    <p className="text-xs font-black text-white italic">Claude</p>
+                  </a>
+                  <a href="https://chatgpt.com" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-3 text-center hover:bg-white/10 transition-all group">
+                    <p className="text-[10px] font-black text-slate-500 group-hover:text-emerald-400 mb-1">OpenAI</p>
+                    <p className="text-xs font-black text-white italic">ChatGPT</p>
+                  </a>
+                  <a href="https://gemini.google.com" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-3 text-center hover:bg-white/10 transition-all group">
+                    <p className="text-[10px] font-black text-slate-500 group-hover:text-emerald-400 mb-1">Google</p>
+                    <p className="text-xs font-black text-white italic">Gemini</p>
+                  </a>
+                </div>
+              </div>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
