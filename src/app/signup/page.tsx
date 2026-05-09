@@ -55,16 +55,16 @@ export default function SignupPage() {
 
   if (success) {
     return (
-      <div className="flex items-center justify-center min-h-[80vh] px-4">
-        <Card className="w-full max-w-md">
+      <div className="min-h-screen bg-[#050507] flex items-center justify-center px-4 py-10 font-sans">
+        <Card className="w-full max-w-md bg-[#13141f] border border-emerald-500/20 rounded-3xl shadow-[0_0_60px_rgba(16,185,129,0.08)]">
           <CardContent className="p-8 text-center">
-            <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-2">登録ありがとうございます！</h2>
-            <p className="text-muted-foreground mb-4">
+            <CheckCircle className="h-16 w-16 text-emerald-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-black italic uppercase tracking-tight text-white mb-2">登録ありがとうございます！</h2>
+            <p className="text-slate-400 text-sm mb-6">
               確認メールを送信しました。メール内のリンクをクリックして、アカウントを有効化してください。
             </p>
             <Link href="/login">
-              <Button variant="outline">ログインページへ</Button>
+              <Button className="w-full h-12 border-2 border-emerald-500/40 text-emerald-400 font-black rounded-2xl hover:border-emerald-400 bg-transparent transition-all">ログインページへ</Button>
             </Link>
           </CardContent>
         </Card>
@@ -73,16 +73,16 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh] px-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen bg-[#050507] flex items-center justify-center px-4 py-10 font-sans">
+      <Card className="w-full max-w-md bg-[#13141f] border border-emerald-500/20 rounded-3xl shadow-[0_0_60px_rgba(16,185,129,0.08)]">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">新規登録</CardTitle>
-          <CardDescription>無料アカウントを作成しましょう</CardDescription>
+          <CardTitle className="text-2xl font-black italic uppercase tracking-tight text-white">新規登録</CardTitle>
+          <CardDescription className="text-slate-400 text-sm">無料アカウントを作成しましょう</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="displayName">表示名</Label>
+              <Label htmlFor="displayName" className="text-xs font-black uppercase tracking-widest text-emerald-400">表示名</Label>
               <Input
                 id="displayName"
                 type="text"
@@ -90,10 +90,11 @@ export default function SignupPage() {
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 required
+                className="w-full h-12 bg-[#13141f] border border-white/10 rounded-xl px-4 text-slate-100 placeholder:text-slate-600 focus:border-emerald-500 focus:ring-0 outline-none transition-all text-sm font-bold"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">メールアドレス</Label>
+              <Label htmlFor="email" className="text-xs font-black uppercase tracking-widest text-emerald-400">メールアドレス</Label>
               <Input
                 id="email"
                 type="email"
@@ -101,10 +102,11 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="w-full h-12 bg-[#13141f] border border-white/10 rounded-xl px-4 text-slate-100 placeholder:text-slate-600 focus:border-emerald-500 focus:ring-0 outline-none transition-all text-sm font-bold"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">パスワード</Label>
+              <Label htmlFor="password" className="text-xs font-black uppercase tracking-widest text-emerald-400">パスワード</Label>
               <Input
                 id="password"
                 type="password"
@@ -113,10 +115,11 @@ export default function SignupPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
+                className="w-full h-12 bg-[#13141f] border border-white/10 rounded-xl px-4 text-slate-100 placeholder:text-slate-600 focus:border-emerald-500 focus:ring-0 outline-none transition-all text-sm font-bold"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">パスワード確認</Label>
+              <Label htmlFor="confirmPassword" className="text-xs font-black uppercase tracking-widest text-emerald-400">パスワード確認</Label>
               <Input
                 id="confirmPassword"
                 type="password"
@@ -125,16 +128,17 @@ export default function SignupPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 minLength={6}
+                className="w-full h-12 bg-[#13141f] border border-white/10 rounded-xl px-4 text-slate-100 placeholder:text-slate-600 focus:border-emerald-500 focus:ring-0 outline-none transition-all text-sm font-bold"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" disabled={loading} className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-base rounded-2xl uppercase tracking-wide transition-all shadow-lg shadow-emerald-500/20">
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               アカウント作成
             </Button>
           </form>
-          <div className="mt-6 text-center text-sm text-muted-foreground">
+          <div className="mt-6 text-center text-sm text-slate-400">
             すでにアカウントをお持ちの方は{' '}
-            <Link href="/login" className="text-primary hover:underline font-medium">
+            <Link href="/login" className="text-emerald-400 hover:text-emerald-300 font-medium">
               ログイン
             </Link>
           </div>

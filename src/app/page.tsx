@@ -13,7 +13,7 @@ export default function HomePage() {
 
   return (
     <div className="animate-in fade-in duration-700 bg-[#050507] text-slate-200 min-h-screen flex flex-col">
-      <section className="relative overflow-hidden pt-16 pb-12 md:pt-32 md:pb-24 bg-slate-950 text-center">
+      <section className="relative overflow-hidden pt-16 pb-12 md:pt-32 md:pb-24 bg-[#050507] text-center">
         <div className="container mx-auto px-6 relative">
           <Badge variant="outline" className="px-3 py-0.5 text-[10px] font-black text-emerald-500 border-emerald-500/20 uppercase mb-6">Nextra Labs AIプラットフォーム</Badge>
           <h1 className="text-4xl md:text-8xl font-black text-white italic tracking-tighter mb-6 leading-none uppercase">AIツールで<br /><span className="bg-gradient-to-r from-emerald-400 to-teal-500 bg-clip-text text-transparent">業務を自動化</span></h1>
