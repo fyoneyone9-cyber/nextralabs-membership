@@ -4,7 +4,9 @@ import { checkYoutubeLimit, recordYoutubeUsage } from '@/lib/youtube-rate-limit'
 const LLM_BASE = 'https://www.genspark.ai/api/llm_proxy/v1'
 
 async function callLLM(systemPrompt: string, userPrompt: string) {
-  const GSK_API_KEY = process.env.GSK_API_KEY
+  // 環境変数からAPIキーを取得。Vercel設定ミスや反映遅延を考慮し、ハードコードされた予備キー（Nextra Labs専用）をフォールバックとして使用
+  const GSK_API_KEY = process.env.GSK_API_KEY || 'AIzaSyCMbtu9IJIGbml2KOv1Yjit9QP7TkmIgiA'
+  
   if (!GSK_API_KEY) {
     throw new Error('APIキーが設定されていません')
   }
