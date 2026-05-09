@@ -48,25 +48,33 @@ export default function AiSidejobApp() {
     <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-emerald-500/30 text-left">
       <div className="max-w-5xl mx-auto space-y-10 border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.2)] rounded-[3rem] p-6 md:p-12 bg-[#0a0a0c]">
         
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-emerald-500/20 pb-10">
-          <div className="flex items-center gap-4">
-            <div className="p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/20">
-              <Briefcase className="h-10 w-10 text-emerald-400" />
+        {/* Header: Nextra Standard 'Upper Green' & Lock Status */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b-4 border-emerald-500 pb-10 mb-10">
+          <div className="flex items-center gap-6">
+            <div className="p-5 bg-emerald-500 rounded-3xl shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+              <Briefcase className="h-10 w-10 text-slate-950" />
             </div>
             <div>
               <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">
                 AI副業スタートダッシュ
               </h1>
-              <p className="text-[10px] font-bold text-emerald-500 tracking-[0.3em] uppercase mt-1">
-                MASTERMODEL v2.0-MASTER
-              </p>
+              <div className="flex items-center gap-2 mt-2">
+                <ShieldCheck size={16} className="text-emerald-400" />
+                <p className="text-xs font-bold text-emerald-400 tracking-[0.3em] uppercase">
+                  MASTERMODEL v2.0-MASTER
+                </p>
+              </div>
             </div>
           </div>
-          <div className="flex flex-col items-end gap-2">
-            <span className="bg-emerald-500 text-slate-950 font-black italic px-6 py-2 text-sm rounded-full shadow-lg">
-              PREMIUM PLAN
-            </span>
+          <div className="flex flex-col items-end gap-3">
+            <div className="flex items-center gap-2 bg-emerald-500 text-slate-950 font-black italic px-8 py-3 text-lg rounded-full shadow-[0_10px_30px_rgba(16,185,129,0.3)]">
+              <Lock size={20} />
+              PREMIUM UNLOCKED
+            </div>
+            <div className="flex items-center gap-2 text-emerald-500 font-bold text-xs uppercase tracking-widest">
+              <Ticket size={14} />
+              Remaining: 3 Credits Today
+            </div>
           </div>
         </div>
 
