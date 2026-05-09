@@ -21,24 +21,31 @@ export async function POST(req: Request) {
     }
 
     // 🔑 楽天AppID & AccessKey (NextraLabs Trend Stock アプリ)
-    const RAKUTEN_APP_ID = '3ae4deb7-eb42-46a4-8123-d4cf632ccea2';
-    // accessKeyが必要な最新API (2026-04-01) に対応
-    const RAKUTEN_ACCESS_KEY = '534e3725.64346793.534e3726.d5412af4'; // スクショのAffiliateIDと酷似していますが一旦これで試行
+    // IDを環境変数から取得、またはスクショの値を直接使用
+    const RAKUTEN_APP_ID = process.env.RAKUTEN_APP_ID || '3ae4deb7-eb42-46a4-8123-d4cf632ccea2';
+    // 最新API (2026-04-01) は accessKey が必須。環境変数にない場合は空文字を渡すが、エラーになる可能性が高い
+    const RAKUTEN_ACCESS_KEY = process.env.RAKUTEN_ACCESS_KEY || ''; 
 
-    // エンドポイントを最新版 (2026-04-01) に更新
-    const apiUrl = `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${RAKUTEN_APP_ID}&accessKey=${RAKUTEN_ACCESS_KEY}&hits=10&sort=%2BitemPrice&formatVersion=2`;
+    // エンドポイントを最新版 (2026-04-01) に設定
+    const apiUrl = `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${RAKUTEN_APP_ID}${RAKUTEN_ACCESS_KEY ? `&accessKey=${RAKUTEN_ACCESS_KEY}` : ''}&hits=10&sort=%2BitemPrice&formatVersion=2`;
 
     const res = await fetch(apiUrl, { cache: 'no-store' });
     const data = await res.json();
 
+    // エラー時のフォールバック (旧版API + 旧版ID)
     if (!res.ok || data.error) {
-      // 古いエンドポイントへのフォールバック（ApplicationIDがUUID形式でない場合などを考慮）
-      const fallbackUrl = `https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${RAKUTEN_APP_ID}&hits=10&sort=%2BitemPrice&formatVersion=2`;
+      console.warn('[MARKET_SCAN] 最新APIでエラーが発生しました。旧版IDでリトライします。', data.error_description || data.message);
+      
+      const OLD_APP_ID = '1020081822830310242'; // 旧形式ID
+      const fallbackUrl = `https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${OLD_APP_ID}&hits=10&sort=%2BitemPrice&formatVersion=2`;
+      
       const fallbackRes = await fetch(fallbackUrl, { cache: 'no-store' });
       const fallbackData = await fallbackRes.json();
       
-      if (!fallbackRes.ok) {
-        throw new Error(data.error_description || fallbackData.error_description || 'Rakuten API Error');
+      if (!fallbackRes.ok || fallbackData.error) {
+         // 両方失敗した場合は、詳細なエラーを返す
+         const errorMsg = fallbackData.error_description || fallbackData.message || data.error_description || 'Rakuten API Error';
+         throw new Error(errorMsg);
       }
       return processItems(fallbackData);
     }
@@ -46,9 +53,10 @@ export async function POST(req: Request) {
     return processItems(data);
 
     function processItems(apiData: any) {
+      // 共通のデータ抽出ロジック
       const items = apiData.items || apiData.Items || [];
       if (items.length === 0) {
-        throw new Error('商品が見つかりませんでした。');
+        throw new Error('該当する商品が見つかりませんでした。キーワードを変えてお試しください。');
       }
 
       const getItemData = (item: any) => item.Item ? item.Item : item;
