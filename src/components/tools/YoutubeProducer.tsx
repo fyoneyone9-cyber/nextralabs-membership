@@ -59,26 +59,21 @@ const MasterEngine = () => {
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => { setIsMounted(true); }, []);
 
-  // 🚀 【本物化】ジャンル選択時に自動で指示テキストの冒頭に挿入する
   const updateGenreInInput = (genre: string) => {
     setSelectedGenre(genre);
     const genreLine = `【ジャンル】：${genre}`;
     setInputData(prev => {
-      // 既存のジャンル行を削除し、常に1行目に新ジャンルを入れる
       const otherLines = prev.split('\n').filter(l => !l.startsWith('【ジャンル】：'));
       return [genreLine, ...otherLines].join('\n').trim();
     });
   };
 
-  // 🚀 【本物化】戦略パレット選択時の挙動
   const toggleStrategy = (strategy: any) => {
     const strategyLine = strategy.content;
     setInputData(prev => {
       if (prev.includes(strategyLine)) {
-        // すでに選択済みなら削除
         return prev.split('\n').filter(l => l !== strategyLine).join('\n').trim();
       } else {
-        // 未選択なら追加
         return `${prev}\n${strategyLine}`.trim();
       }
     });
@@ -161,32 +156,42 @@ const MasterEngine = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-10 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
-      <div className="text-center space-y-1 md:space-y-3">
-        <Badge className="bg-red-600 text-white font-black italic px-3 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full">クリエイティブ自動化OS</Badge>
-        <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">AI YouTubeプロデューサー</h1>
-        <div className="inline-block bg-emerald-600 text-white font-black px-4 py-0.5 rounded-full uppercase italic text-[8px] md:text-[10px] tracking-widest shadow-lg">v2.1-MASTER</div>
+      {/* ヘッダー — 憲法準拠: font-semibold, no italic, no uppercase */}
+      <div className="text-center space-y-2 md:space-y-4">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-medium">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          クリエイティブ自動化 OS
+        </div>
+        <h1 className="text-3xl md:text-5xl font-semibold text-white tracking-tight leading-[1.15]">
+          AI <span className="text-emerald-400">YouTube</span>プロデューサー
+        </h1>
+        <div className="inline-block bg-emerald-600 text-white font-medium px-4 py-1 rounded-full text-xs shadow-lg">
+          v2.1-MASTER
+        </div>
       </div>
 
+      {/* ステッパー */}
       <div className="max-w-4xl mx-auto px-4 overflow-x-auto pb-4 scrollbar-hide">
         <div className="flex items-center justify-between min-w-[500px] relative">
           <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-800 -translate-y-1/2 z-0" />
           {STEPS.map((s, i) => (
             <div key={i} className="relative z-10 flex flex-col items-center gap-1">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black italic text-[12px] transition-all ${i <= activeStepIndex ? 'bg-red-600 text-white shadow-lg scale-110' : 'bg-slate-900 text-slate-600 border border-slate-800'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold text-[12px] transition-all ${i <= activeStepIndex ? 'bg-emerald-600 text-white shadow-lg scale-110' : 'bg-slate-900 text-slate-600 border border-slate-800'}`}>
                 {i < activeStepIndex ? <CheckCircle2 size={14} /> : i + 1}
               </div>
-              <span className={`text-[10px] font-black uppercase italic ${i <= activeStepIndex ? 'text-red-500' : 'text-slate-700'}`}>{s}</span>
+              <span className={`text-[10px] font-medium ${i <= activeStepIndex ? 'text-emerald-400' : 'text-slate-700'}`}>{s}</span>
             </div>
           ))}
         </div>
       </div>
 
+      {/* タブ */}
       <div className="overflow-x-auto pb-4 scrollbar-hide">
         <div className="bg-slate-900/50 border border-white/5 p-2 flex min-w-[600px] md:min-w-full rounded-2xl gap-2">
           {TABS.map((tab) => {
             const isLocked = tab.id !== 'transcribe' && !transcriptionResult && !inputData;
             return (
-              <button key={tab.id} disabled={isLocked} onClick={() => !isLocked && setActiveTab(tab.id)} className={`flex-1 py-4 px-2 rounded-xl font-black text-xs md:text-sm uppercase italic transition-all flex flex-col items-center justify-center gap-2 relative ${activeTab === tab.id ? 'bg-emerald-600 text-white shadow-xl scale-[1.03] z-10' : isLocked ? 'opacity-10 cursor-not-allowed' : 'text-slate-500 hover:text-white'}`}>
+              <button key={tab.id} disabled={isLocked} onClick={() => !isLocked && setActiveTab(tab.id)} className={`flex-1 py-4 px-2 rounded-xl font-medium text-xs md:text-sm transition-all flex flex-col items-center justify-center gap-2 relative ${activeTab === tab.id ? 'bg-emerald-600 text-white shadow-xl scale-[1.03] z-10' : isLocked ? 'opacity-10 cursor-not-allowed' : 'text-slate-500 hover:text-white'}`}>
                 <tab.icon className="w-5 h-5" /> <span>{tab.label}</span>
                 {isLocked && <Lock className="w-3 h-3 absolute top-2 right-2 opacity-20" />}
               </button>
@@ -198,33 +203,33 @@ const MasterEngine = () => {
       <div className="mt-4">
         {activeTab === 'transcribe' && (
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-6 md:p-12 shadow-2xl animate-in fade-in">
-            <h3 className="text-xl md:text-4xl font-black text-white italic uppercase tracking-tighter mb-8 flex items-center gap-4"><Volume2 className="text-red-500" size={40} /> ① 音声文字起こし</h3>
+            <h3 className="text-xl md:text-3xl font-semibold text-white tracking-tight mb-8 flex items-center gap-4"><Volume2 className="text-emerald-400" size={32} /> ① 音声文字起こし</h3>
             <div className="grid lg:grid-cols-2 gap-12">
               <div className="space-y-8">
                 {!file ? (
-                  <div className="border-4 border-dashed border-white/10 rounded-[3rem] p-20 text-center hover:bg-white/5 cursor-pointer shadow-inner relative transition-all group" onClick={() => fileInputRef.current?.click()}>
+                  <div className="border-2 border-dashed border-white/10 rounded-[2rem] p-20 text-center hover:bg-white/5 cursor-pointer shadow-inner relative transition-all group" onClick={() => fileInputRef.current?.click()}>
                     <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="video/*,audio/*" />
-                    <Upload className="h-16 w-16 text-slate-700 mx-auto mb-6 group-hover:text-red-500 transition-colors" />
-                    <p className="text-xl text-slate-500 font-black italic uppercase">ファイルをドロップ</p>
+                    <Upload className="h-12 w-12 text-slate-700 mx-auto mb-6 group-hover:text-emerald-400 transition-colors" />
+                    <p className="text-lg text-slate-500 font-medium">ファイルをドロップ</p>
                   </div>
                 ) : (
-                  <div className="bg-black border border-white/10 rounded-[3rem] p-10 space-y-8 text-center shadow-2xl">
-                    <p className="text-lg text-white font-black truncate">{file.name}</p>
+                  <div className="bg-black border border-white/10 rounded-[2rem] p-10 space-y-8 text-center shadow-2xl">
+                    <p className="text-lg text-white font-semibold truncate">{file.name}</p>
                     {isProcessing ? (
                       <div className="space-y-4 py-10">
-                        <Loader2 className="animate-spin text-red-500 mx-auto" size={48} />
-                        <p className="text-red-500 text-sm font-black italic animate-pulse">解析中... {progress}%</p>
+                        <Loader2 className="animate-spin text-emerald-400 mx-auto" size={48} />
+                        <p className="text-emerald-400 text-sm font-medium">解析中... {progress}%</p>
                       </div>
                     ) : processedFileUrl && (
                       <div className="space-y-4">
-                        <a href={processedFileUrl} download="audio.mp3" className="w-full h-20 bg-white text-black font-black rounded-2xl flex items-center justify-center gap-4 uppercase italic text-lg shadow-xl hover:bg-slate-200 transition-all"><Download size={24} /> ② MP3を保存</a>
+                        <a href={processedFileUrl} download="audio.mp3" className="w-full h-14 bg-white text-black font-semibold rounded-xl flex items-center justify-center gap-4 text-base shadow-xl hover:bg-slate-200 transition-all"><Download size={20} /> MP3を保存</a>
                         <div className="grid grid-cols-1 gap-3">
                           <button onClick={() => {
                             handleCopy("添付した音声ファイルの内容を、一言一句正確に文字起こししてください。");
                             alert('指示をコピーしました。Geminiを開いて【MP3ファイルを貼り付け】してから、この指示を送信してください。');
-                          }} className={`w-full h-20 font-black rounded-2xl transition-all shadow-xl text-xl ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-red-600 text-white hover:bg-red-600'}`}>③ 指示をコピー</button>
-                          <button onClick={() => window.open('https://gemini.google.com', '_blank')} className="h-16 bg-white/10 border-2 border-blue-500/30 text-blue-400 font-black italic rounded-2xl uppercase hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center gap-3">
-                            <span className="text-xl">✨</span> Gemini で文字起こし 🚀
+                          }} className={`w-full h-14 font-semibold rounded-xl transition-all shadow-xl text-base ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-emerald-600 text-white hover:bg-emerald-500'}`}>指示をコピー</button>
+                          <button onClick={() => window.open('https://gemini.google.com', '_blank')} className="h-12 bg-white/10 border border-emerald-500/30 text-emerald-400 font-medium rounded-xl hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center gap-3">
+                            <span>✨</span> Gemini で文字起こし →
                           </button>
                         </div>
                       </div>
@@ -232,34 +237,34 @@ const MasterEngine = () => {
                   </div>
                 )}
               </div>
-              <div className="bg-black rounded-[3rem] p-10 border border-white/5 space-y-6 shadow-inner flex flex-col min-h-[400px] relative overflow-hidden">
+              <div className="bg-black rounded-[2rem] p-10 border border-white/5 space-y-6 shadow-inner flex flex-col min-h-[400px] relative overflow-hidden">
                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-30" />
-                 <div className="flex items-center gap-4 text-white font-black italic uppercase text-lg"><ClipboardPaste className="text-emerald-400" size={24} /> ④ 文字起こし結果</div>
-                 <textarea value={transcriptionResult} onChange={(e) => setTranscriptionResult(e.target.value)} placeholder="AIが作成した文字起こしをここに貼り付けてください..." className="flex-1 bg-[#13141f] border-2 border-white/5 rounded-[2rem] p-8 text-sm text-slate-200 focus:border-emerald-500 outline-none font-mono italic shadow-inner leading-relaxed" />
+                 <div className="flex items-center gap-4 text-white font-semibold text-base"><ClipboardPaste className="text-emerald-400" size={20} /> 文字起こし結果を貼り付け</div>
+                 <textarea value={transcriptionResult} onChange={(e) => setTranscriptionResult(e.target.value)} placeholder="AIが作成した文字起こしをここに貼り付けてください..." className="flex-1 bg-[#13141f] border border-white/5 rounded-xl p-6 text-sm text-slate-200 focus:border-emerald-500 outline-none font-mono shadow-inner leading-relaxed" />
               </div>
             </div>
             {(transcriptionResult || processedFileUrl) && (
-               <button onClick={() => setActiveTab('script')} className="w-full h-24 mt-12 bg-emerald-600 text-white font-black rounded-[2rem] shadow-xl flex items-center justify-center gap-4 uppercase italic text-2xl active:scale-95 transition-all border-b-8 border-emerald-800 active:border-b-0">⑤ 台本構成へ進む <ArrowRight size={32} /></button>
+               <button onClick={() => setActiveTab('script')} className="w-full h-14 mt-10 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl shadow-xl flex items-center justify-center gap-3 text-base active:scale-95 transition-all">台本構成へ進む <ArrowRight size={20} /></button>
             )}
           </Card>
         )}
 
         {activeTab === 'script' && (
           <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-6 md:p-12 shadow-2xl animate-in fade-in">
-            <h3 className="text-xl md:text-4xl font-black text-white italic uppercase tracking-tighter mb-10 flex items-center gap-4"><FileText className="text-red-500" size={40} /> ② 台本構成プロンプト</h3>
+            <h3 className="text-xl md:text-3xl font-semibold text-white tracking-tight mb-10 flex items-center gap-4"><FileText className="text-emerald-400" size={32} /> ② 台本構成プロンプト</h3>
             
-            <div className="space-y-8 mb-12 text-left">
-              <div className="flex items-center gap-3 text-orange-500 px-4"><Zap size={28} /><p className="text-lg font-black uppercase italic tracking-widest">動画戦略パレット</p></div>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div className="space-y-6 mb-10 text-left">
+              <div className="flex items-center gap-3 text-emerald-400 px-2"><Zap size={20} /><p className="text-base font-semibold">動画戦略パレット</p></div>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                 {STRATEGY_PARTS.map((p, i) => {
                   const isActive = inputData.includes(p.content);
                   return (
                     <button 
                       key={i} 
                       onClick={() => toggleStrategy(p)} 
-                      className={`h-24 border-2 font-black text-xs md:text-sm uppercase italic rounded-2xl transition-all shadow-lg flex flex-col items-center justify-center gap-2 ${isActive ? 'bg-orange-600 border-white text-white scale-95' : 'border-white/5 bg-black text-slate-500 hover:border-orange-500/50'}`}
+                      className={`h-20 border font-medium text-xs rounded-xl transition-all shadow flex flex-col items-center justify-center gap-1.5 ${isActive ? 'bg-emerald-600 border-emerald-500 text-white scale-95' : 'border-white/10 bg-slate-900/50 text-slate-400 hover:border-emerald-500/50 hover:text-slate-200'}`}
                     >
-                      <span className="text-2xl">{p.label.split(' ')[0]}</span>
+                      <span className="text-xl">{p.label.split(' ')[0]}</span>
                       {p.label.split(' ')[1]}
                     </button>
                   );
@@ -267,43 +272,90 @@ const MasterEngine = () => {
               </div>
             </div>
 
-            <div className="bg-black p-8 rounded-[3rem] border border-white/5 space-y-8 shadow-inner mb-12 text-center relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-30" />
-              <div className="flex flex-wrap justify-center gap-3">
-                {GENRES.map(g => <button key={g} onClick={() => updateGenreInInput(g)} className={`px-6 py-2 rounded-xl font-black text-xs transition-all ${selectedGenre === g ? 'bg-red-600 text-white shadow-lg scale-110' : 'bg-slate-900 text-slate-600 border border-white/5 hover:text-slate-300'}`}>{g}</button>)}
+            <div className="bg-black p-8 rounded-[2rem] border border-white/5 space-y-6 shadow-inner mb-10 text-center relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-30" />
+              <div className="flex flex-wrap justify-center gap-2">
+                {GENRES.map(g => <button key={g} onClick={() => updateGenreInInput(g)} className={`px-4 py-1.5 rounded-lg font-medium text-xs transition-all ${selectedGenre === g ? 'bg-emerald-600 text-white shadow scale-105' : 'bg-slate-900 text-slate-500 border border-white/5 hover:text-slate-300 hover:border-emerald-500/30'}`}>{g}</button>)}
               </div>
-              <textarea value={inputData} onChange={(e) => setInputData(e.target.value)} placeholder="上の戦略パレットから動画の方向性を選んでください..." className="w-full h-32 bg-[#13141f] border-2 border-white/5 rounded-[2rem] p-8 text-lg text-white font-bold focus:border-red-600 outline-none leading-relaxed shadow-inner italic" />
-              <div className="grid md:grid-cols-2 gap-6">
-                <button onClick={() => handleCopy(PROMPTS.script)} className={`h-24 font-black rounded-3xl transition-all shadow-2xl text-xl border-b-8 ${copied ? 'bg-emerald-500 border-emerald-800 text-slate-950' : 'bg-red-600 border-red-800 text-white hover:bg-red-500'}`}>{copied ? '✅ コピー完了' : '① 構成指示をコピー'}</button>
-                <button onClick={() => window.open('https://claude.ai', '_blank')} className="h-24 bg-white/5 border-2 border-white/10 text-slate-400 font-black italic rounded-3xl uppercase hover:text-white hover:bg-white/10 transition-all text-xl flex items-center justify-center gap-4">② CLAUDE で実行 🚀</button>
+              <textarea value={inputData} onChange={(e) => setInputData(e.target.value)} placeholder="上の戦略パレットから動画の方向性を選んでください..." className="w-full h-32 bg-[#13141f] border border-white/5 rounded-xl p-6 text-base text-white font-medium focus:border-emerald-500 outline-none leading-relaxed shadow-inner" />
+              <div className="grid md:grid-cols-2 gap-4">
+                <button onClick={() => handleCopy(PROMPTS.script)} className={`h-14 font-semibold rounded-xl transition-all shadow text-base ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-emerald-600 text-white hover:bg-emerald-500'}`}>{copied ? '✅ コピー完了' : '① 構成指示をコピー'}</button>
+                <button onClick={() => window.open('https://claude.ai', '_blank')} className="h-14 bg-white/5 border border-white/10 text-slate-400 font-medium rounded-xl hover:text-white hover:bg-white/10 transition-all text-base flex items-center justify-center gap-2">② Claude で実行 →</button>
               </div>
             </div>
 
-            <div className="bg-black rounded-[3rem] p-10 border border-white/5 space-y-6 shadow-inner relative overflow-hidden text-left">
+            <div className="bg-black rounded-[2rem] p-8 border border-white/5 space-y-5 shadow-inner relative overflow-hidden text-left">
                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4 text-orange-500 font-black italic uppercase text-lg"><ClipboardPaste size={28} /> ③ 完成した台本をペースト</div>
-                  {score && <div className="text-right leading-none bg-red-600/10 p-4 rounded-2xl border border-red-500/20"><p className="text-[10px] font-black text-red-500 italic uppercase">Viral Score</p><p className="text-4xl font-black text-white italic">{score}%</p></div>}
+                  <div className="flex items-center gap-3 text-emerald-400 font-semibold text-base"><ClipboardPaste size={20} /> 完成した台本をペースト</div>
+                  {score && <div className="text-right leading-none bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/20"><p className="text-[10px] font-medium text-emerald-400">Viral Score</p><p className="text-3xl font-semibold text-white">{score}%</p></div>}
                </div>
-               <textarea value={scriptResult} onChange={(e) => setScriptResult(e.target.value)} placeholder="AIから出力された台本を貼り付けると、バズり期待度の自動計測が始まります..." className="w-full h-80 bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-10 text-lg text-slate-200 focus:border-orange-500 outline-none font-sans leading-relaxed shadow-inner italic" />
-               <button onClick={() => setActiveTab('character')} className="w-full h-20 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-4 uppercase italic text-xl transition-all active:scale-95">④ 次工程：視覚設計へ <ArrowRight size={28} /></button>
+               <textarea value={scriptResult} onChange={(e) => setScriptResult(e.target.value)} placeholder="AIから出力された台本を貼り付けると、バズり期待度の自動計測が始まります..." className="w-full h-64 bg-[#13141f] border border-white/5 rounded-xl p-8 text-base text-slate-200 focus:border-emerald-500 outline-none font-sans leading-relaxed shadow-inner" />
+               <button onClick={() => setActiveTab('character')} className="w-full h-12 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-xl shadow flex items-center justify-center gap-3 text-base transition-all active:scale-95">次工程：視覚設計へ <ArrowRight size={20} /></button>
             </div>
           </Card>
         )}
         
-        {activeTab === 'character' && <Card className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 md:p-20 shadow-2xl text-center relative overflow-hidden"><div className="absolute top-0 left-0 w-full h-2 bg-red-600/30" /><h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-12 flex items-center justify-center gap-6"><Scissors className="text-red-500" size={48} /> ③ 登場人物プロンプト</h3><div className="bg-black rounded-[2.5rem] p-10 border border-white/5 text-left h-48 overflow-y-auto text-sm text-slate-400 font-mono italic mb-10 shadow-inner leading-relaxed">{PROMPTS.character}</div><div className="grid md:grid-cols-2 gap-8"><button onClick={() => handleCopy(PROMPTS.character)} className={`h-24 text-2xl font-black rounded-3xl shadow-2xl transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-red-600 text-white hover:bg-red-500'}`}>{copied ? '✅ コピー完了' : '① 指示をコピー'}</button><button onClick={() => window.open('https://chatgpt.com', '_blank')} className="h-24 bg-white/5 border-2 border-white/10 text-slate-400 font-black italic rounded-3xl uppercase hover:text-white transition-all text-xl">② CHATGPT 🚀</button></div><button onClick={() => setActiveTab('thumbnail')} className="w-full mt-10 h-16 text-slate-600 hover:text-slate-400 font-black uppercase italic transition-all flex items-center justify-center gap-2">③ Skip to Thumbnail <ChevronRight /></button></Card>}
-        {activeTab === 'thumbnail' && <Card className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 md:p-20 shadow-2xl text-center relative overflow-hidden"><div className="absolute top-0 left-0 w-full h-2 bg-red-600/30" /><h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-12 flex items-center justify-center gap-6"><ImageIcon className="text-red-500" size={48} /> ④ サムネイル設計</h3><div className="bg-black rounded-[2.5rem] p-10 border border-white/5 text-left h-48 overflow-y-auto text-sm text-slate-400 font-mono italic mb-10 shadow-inner leading-relaxed">{PROMPTS.thumbnail}</div><div className="grid md:grid-cols-2 gap-8"><button onClick={() => handleCopy(PROMPTS.thumbnail)} className={`h-24 text-2xl font-black rounded-3xl shadow-2xl transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-red-600 text-white hover:bg-red-500'}`}>{copied ? '✅ コピー完了' : '① 指示をコピー'}</button><button onClick={() => window.open('https://chatgpt.com', '_blank')} className="h-24 bg-white/5 border-2 border-white/10 text-slate-400 font-black italic rounded-3xl uppercase hover:text-white transition-all text-xl">② CHATGPT 🚀</button></div><button onClick={() => setActiveTab('seo')} className="w-full mt-10 h-16 text-slate-600 hover:text-slate-400 font-black uppercase italic transition-all flex items-center justify-center gap-2">③ Skip to SEO <ChevronRight /></button></Card>}
-        {activeTab === 'seo' && <Card className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 md:p-20 shadow-2xl text-center relative overflow-hidden"><div className="absolute top-0 left-0 w-full h-2 bg-red-600/30" /><h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-12 flex items-center justify-center gap-6"><Type className="text-red-500" size={48} /> ⑤ SEO・タイトル</h3><div className="bg-black rounded-[2.5rem] p-10 border border-white/5 text-left h-48 overflow-y-auto text-sm text-slate-400 font-mono italic mb-10 shadow-inner leading-relaxed">{PROMPTS.seo}</div><div className="grid md:grid-cols-2 gap-8"><button onClick={() => handleCopy(PROMPTS.seo)} className={`h-24 text-2xl font-black rounded-3xl shadow-2xl transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-red-600 text-white hover:bg-red-500'}`}>{copied ? '✅ コピー完了' : '① 指示をコピー'}</button><button onClick={() => window.open('https://gemini.google.com', '_blank')} className="h-24 bg-white/5 border-2 border-white/10 text-slate-400 font-black italic rounded-3xl uppercase hover:text-white transition-all text-xl">② GEMINI 🚀</button></div><button onClick={() => setActiveTab('bgm')} className="w-full mt-10 h-16 text-slate-600 hover:text-slate-400 font-black uppercase italic transition-all flex items-center justify-center gap-2">③ Skip to BGM <ChevronRight /></button></Card>}
-        {activeTab === 'bgm' && <Card className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 md:p-20 shadow-2xl text-center relative overflow-hidden"><div className="absolute top-0 left-0 w-full h-2 bg-red-600/30" /><h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-12 flex items-center justify-center gap-6"><Music className="text-red-500" size={48} /> ⑥ BGM・サウンド</h3><div className="bg-black rounded-[2.5rem] p-10 border border-white/5 text-left h-48 overflow-y-auto text-sm text-slate-400 font-mono italic mb-10 shadow-inner leading-relaxed">{PROMPTS.bgm}</div><div className="grid md:grid-cols-2 gap-8"><button onClick={() => handleCopy(PROMPTS.bgm)} className={`h-24 text-2xl font-black rounded-3xl shadow-2xl transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-red-600 text-white hover:bg-red-600'}`}>{copied ? '✅ コピー完了' : '① 指示をコピー'}</button><button onClick={() => window.open('https://suno.com', '_blank')} className="h-24 bg-white/5 border-2 border-white/10 text-slate-400 font-black italic rounded-3xl uppercase hover:text-white transition-all text-xl">② SUNO AI 🚀</button></div><button onClick={() => { setTranscriptionResult(''); setScriptResult(''); setInputData(''); setFile(null); setActiveTab('transcribe'); }} className="w-full mt-12 h-20 border-4 border-white/10 text-slate-600 hover:text-white font-black rounded-[2rem] uppercase italic flex items-center justify-center gap-4 text-xl active:scale-95 transition-all shadow-xl"><RotateCcw size={32} /> 新しい動画制作を開始</button></Card>}
+        {activeTab === 'character' && (
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-10 md:p-16 shadow-2xl text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-40" />
+            <h3 className="text-2xl md:text-4xl font-semibold text-white tracking-tight mb-10 flex items-center justify-center gap-4"><Scissors className="text-emerald-400" size={36} /> ③ 登場人物プロンプト</h3>
+            <div className="bg-black rounded-[1.5rem] p-8 border border-white/5 text-left h-48 overflow-y-auto text-sm text-slate-400 font-mono mb-8 shadow-inner leading-relaxed">{PROMPTS.character}</div>
+            <div className="grid md:grid-cols-2 gap-6">
+              <button onClick={() => handleCopy(PROMPTS.character)} className={`h-14 text-base font-semibold rounded-xl shadow transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-emerald-600 text-white hover:bg-emerald-500'}`}>{copied ? '✅ コピー完了' : '① 指示をコピー'}</button>
+              <button onClick={() => window.open('https://chatgpt.com', '_blank')} className="h-14 bg-white/5 border border-white/10 text-slate-400 font-medium rounded-xl hover:text-white transition-all text-base">② ChatGPT →</button>
+            </div>
+            <button onClick={() => setActiveTab('thumbnail')} className="w-full mt-8 h-12 text-slate-600 hover:text-slate-400 font-medium transition-all flex items-center justify-center gap-2">サムネイルへ <ChevronRight size={16} /></button>
+          </Card>
+        )}
+
+        {activeTab === 'thumbnail' && (
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-10 md:p-16 shadow-2xl text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-40" />
+            <h3 className="text-2xl md:text-4xl font-semibold text-white tracking-tight mb-10 flex items-center justify-center gap-4"><ImageIcon className="text-emerald-400" size={36} /> ④ サムネイル設計</h3>
+            <div className="bg-black rounded-[1.5rem] p-8 border border-white/5 text-left h-48 overflow-y-auto text-sm text-slate-400 font-mono mb-8 shadow-inner leading-relaxed">{PROMPTS.thumbnail}</div>
+            <div className="grid md:grid-cols-2 gap-6">
+              <button onClick={() => handleCopy(PROMPTS.thumbnail)} className={`h-14 text-base font-semibold rounded-xl shadow transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-emerald-600 text-white hover:bg-emerald-500'}`}>{copied ? '✅ コピー完了' : '① 指示をコピー'}</button>
+              <button onClick={() => window.open('https://chatgpt.com', '_blank')} className="h-14 bg-white/5 border border-white/10 text-slate-400 font-medium rounded-xl hover:text-white transition-all text-base">② ChatGPT →</button>
+            </div>
+            <button onClick={() => setActiveTab('seo')} className="w-full mt-8 h-12 text-slate-600 hover:text-slate-400 font-medium transition-all flex items-center justify-center gap-2">SEOへ <ChevronRight size={16} /></button>
+          </Card>
+        )}
+
+        {activeTab === 'seo' && (
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-10 md:p-16 shadow-2xl text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-40" />
+            <h3 className="text-2xl md:text-4xl font-semibold text-white tracking-tight mb-10 flex items-center justify-center gap-4"><Type className="text-emerald-400" size={36} /> ⑤ SEO・タイトル</h3>
+            <div className="bg-black rounded-[1.5rem] p-8 border border-white/5 text-left h-48 overflow-y-auto text-sm text-slate-400 font-mono mb-8 shadow-inner leading-relaxed">{PROMPTS.seo}</div>
+            <div className="grid md:grid-cols-2 gap-6">
+              <button onClick={() => handleCopy(PROMPTS.seo)} className={`h-14 text-base font-semibold rounded-xl shadow transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-emerald-600 text-white hover:bg-emerald-500'}`}>{copied ? '✅ コピー完了' : '① 指示をコピー'}</button>
+              <button onClick={() => window.open('https://gemini.google.com', '_blank')} className="h-14 bg-white/5 border border-white/10 text-slate-400 font-medium rounded-xl hover:text-white transition-all text-base">② Gemini →</button>
+            </div>
+            <button onClick={() => setActiveTab('bgm')} className="w-full mt-8 h-12 text-slate-600 hover:text-slate-400 font-medium transition-all flex items-center justify-center gap-2">BGMへ <ChevronRight size={16} /></button>
+          </Card>
+        )}
+
+        {activeTab === 'bgm' && (
+          <Card className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-10 md:p-16 shadow-2xl text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-40" />
+            <h3 className="text-2xl md:text-4xl font-semibold text-white tracking-tight mb-10 flex items-center justify-center gap-4"><Music className="text-emerald-400" size={36} /> ⑥ BGM・サウンド</h3>
+            <div className="bg-black rounded-[1.5rem] p-8 border border-white/5 text-left h-48 overflow-y-auto text-sm text-slate-400 font-mono mb-8 shadow-inner leading-relaxed">{PROMPTS.bgm}</div>
+            <div className="grid md:grid-cols-2 gap-6">
+              <button onClick={() => handleCopy(PROMPTS.bgm)} className={`h-14 text-base font-semibold rounded-xl shadow transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-emerald-600 text-white hover:bg-emerald-500'}`}>{copied ? '✅ コピー完了' : '① 指示をコピー'}</button>
+              <button onClick={() => window.open('https://suno.com', '_blank')} className="h-14 bg-white/5 border border-white/10 text-slate-400 font-medium rounded-xl hover:text-white transition-all text-base">② Suno AI →</button>
+            </div>
+            <button onClick={() => { setTranscriptionResult(''); setScriptResult(''); setInputData(''); setFile(null); setActiveTab('transcribe'); }} className="w-full mt-10 h-12 border border-white/10 text-slate-600 hover:text-white font-medium rounded-xl flex items-center justify-center gap-3 text-base active:scale-95 transition-all"><RotateCcw size={18} /> 新しい動画制作を開始</button>
+          </Card>
+        )}
       </div>
       <DebugPanel data={{ activeTab, isProcessing, scriptReady: !!scriptResult }} toolId="youtube-producer-master" />
-      <div className="text-center opacity-20 mt-20 font-black uppercase tracking-[0.5em] italic text-[10px]">YouTube Production OS • NextraLabs 2026</div>
+      <div className="text-center opacity-20 mt-16 font-medium text-[10px] tracking-widest">YouTube Production OS • NextraLabs 2026</div>
     </div>
   )
 }
 
 const YoutubeProducerWithNoSSR = dynamic(() => Promise.resolve(MasterEngine), {
   ssr: false,
-  loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Initializing Youtube Master...</div>
+  loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-medium text-emerald-500 tracking-widest">Initializing Youtube Master...</div>
 })
 
 export default function NoSSRWrapper() {
