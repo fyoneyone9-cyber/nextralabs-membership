@@ -12,9 +12,10 @@ export default function UniversalConverterApp() {
   const [targetFormat, setTargetFormat] = useState('mp4')
   const [isProcessing, setIsProcessing] = useState(false)
   const [resultUrl, setResultUrl] = useState<string | null>(null)
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
 
   const handleModeChange = (newMode: 'video' | 'image' | 'pdf') => {
-    setMode(newMode); setFile(null); setResultUrl(null);
+    setMode(newMode); setFile(null); setResultUrl(null); setDownloadUrl(null);
     if (newMode === 'video') setTargetFormat('mp4')
     else if (newMode === 'image') setTargetFormat('webp')
     else setTargetFormat('pdf-min')
@@ -24,8 +25,23 @@ export default function UniversalConverterApp() {
     if (!file) return
     setIsProcessing(true);
     await new Promise(r => setTimeout(r, 3000));
-    setResultUrl('#');
+    // 実際の変換後はダウンロードURLをセット（現在はデモとしてObjectURLを生成）
+    const objectUrl = URL.createObjectURL(file)
+    setDownloadUrl(objectUrl)
+    setResultUrl(objectUrl);
     setIsProcessing(false);
+  }
+
+  const handleDownload = () => {
+    if (!downloadUrl || !file) return
+    const a = document.createElement('a')
+    a.href = downloadUrl
+    const ext = targetFormat === 'mp3' ? 'mp3' : targetFormat === 'pdf-min' ? 'pdf' : targetFormat
+    const baseName = file.name.replace(/\.[^.]+$/, '')
+    a.download = `${baseName}_converted.${ext}`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
   }
 
   return (
@@ -76,8 +92,8 @@ export default function UniversalConverterApp() {
             <div className="space-y-8 text-center">
               <CheckCircle2 className="h-20 w-20 text-emerald-500 mx-auto" />
               <h2 className="text-4xl font-black text-white italic uppercase leading-none">完了しました</h2>
-              <Button onClick={() => {}} className="h-20 px-12 bg-white text-emerald-950 font-black text-2xl rounded-2xl shadow-xl italic"><Download className="mr-3 h-6 w-6" /> ファイルを保存</Button>
-              <br/><Button variant="ghost" onClick={() => setResultUrl(null)} className="text-slate-500 font-bold italic underline">他のファイルを処理</Button>
+              <Button onClick={handleDownload} className="h-20 px-12 bg-white text-emerald-950 font-black text-2xl rounded-2xl shadow-xl italic"><Download className="mr-3 h-6 w-6" /> ファイルを保存</Button>
+              <br/><Button variant="ghost" onClick={() => { setResultUrl(null); setDownloadUrl(null); }} className="text-slate-500 font-bold italic underline">他のファイルを処理</Button>
             </div>
           )}
         </Card>
