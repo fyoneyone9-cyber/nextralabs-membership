@@ -150,11 +150,45 @@ const MasterEngine = () => {
     ctx.fillStyle = S.bg; ctx.globalAlpha = 0.85
     ctx.beginPath(); ctx.arc(cx, cy, pr, 0, Math.PI*2); ctx.fill()
     ctx.globalAlpha = 1
-    ctx.font = printPosition === 'chest-left' ? S.font.replace(/\d+px/, '16px') : S.font
+
+    const isSmall = printPosition === 'chest-left'
+    const baseFontSize = isSmall ? 16 : 28
+    // キーワードの長さに応じてフォントサイズを自動調整
+    const maxWidth = pr * 1.6
+    let fontSize = baseFontSize
+    const fontBase = S.font.replace(/[\d.]+px/, `${fontSize}px`)
+    ctx.font = fontBase
+    while (ctx.measureText(keyword).width > maxWidth && fontSize > 10) {
+      fontSize -= 1
+      ctx.font = S.font.replace(/[\d.]+px/, `${fontSize}px`)
+    }
+
     const resolvedColor = textColorId !== 'auto' ? (TEXT_COLORS.find(c => c.id === textColorId)?.hex || S.textColor) : S.textColor
     ctx.fillStyle = resolvedColor!
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
-    ctx.fillText(keyword, cx, cy)
+
+    // 長いテキストは複数行に分割して描画
+    const words = keyword.split('')
+    const maxLineWidth = pr * 1.7
+    let lines: string[] = []
+    let current = ''
+    for (const ch of keyword) {
+      const test = current + ch
+      if (ctx.measureText(test).width > maxLineWidth && current.length > 0) {
+        lines.push(current)
+        current = ch
+      } else {
+        current = test
+      }
+    }
+    if (current) lines.push(current)
+
+    const lineHeight = fontSize * 1.3
+    const totalH = lineHeight * lines.length
+    lines.forEach((line, i) => {
+      const y = cy - totalH / 2 + lineHeight * i + lineHeight / 2
+      ctx.fillText(line, cx, y)
+    })
     ctx.restore()
     setMockupDataUrl(canvas.toDataURL('image/png'))
   }, [keyword, style, tshirtColor, textColorId, printPosition])
