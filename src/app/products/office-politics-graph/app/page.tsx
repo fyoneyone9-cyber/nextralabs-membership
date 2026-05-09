@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/badge'
 import { 
   Network, Zap, ShieldAlert, TrendingUp, ShoppingCart, 
   UserPlus, Info, Trash2, MousePointer2, Link, ArrowRight,
-  User, Lock, Save, Download, HelpCircle, Upload, Eye, MousePointer
+  User, Lock, Save, Download, HelpCircle, Upload, Eye, MousePointer,
+  X, Plus, MoreHorizontal
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -27,11 +28,12 @@ interface Connection {
   type: 'ally' | 'enemy' | 'neutral';
 }
 
-export default function OfficePoliticsBoard() {
+export default function MobileFirstPoliticsBoard() {
   const [members, setMembers] = useState<Member[]>([])
   const [connections, setConnections] = useState<Connection[]>([])
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null)
   const [isLinking, setIsLinking] = useState(false)
+  const [showMenu, setShowMenu] = useState(false)
   const canvasRef = useRef<HTMLDivElement>(null)
 
   // 初期ロード
@@ -46,37 +48,34 @@ export default function OfficePoliticsBoard() {
   const saveToLocal = () => {
     localStorage.setItem('nextra_politics_members', JSON.stringify(members))
     localStorage.setItem('nextra_politics_conns', JSON.stringify(connections))
-    alert('【保存完了】ブラウザに記憶しました 🔒')
+    alert('保存完了 🔒')
   }
 
-  // メンバー追加
+  // メンバー追加 (スマホの中央付近に追加)
   const addMember = () => {
     const newMember: Member = {
       id: Math.random().toString(36).substr(2, 9),
-      name: '氏名を入力',
-      role: '役割・派閥',
-      power: 5,
-      x: 50 + Math.random() * 100,
-      y: 150 + Math.random() * 100,
+      name: '氏名',
+      role: '役割',
+      power: 6,
+      x: 50,
+      y: 150,
     }
     setMembers([...members, newMember])
   }
 
-  // 削除
   const removeMember = (id: string) => {
     setMembers(members.filter(m => m.id !== id))
     setConnections(connections.filter(c => c.fromId !== id && c.toId !== id))
     if (selectedMemberId === id) setSelectedMemberId(null)
   }
 
-  // 接続作成
   const handleMemberClick = (id: string) => {
     if (isLinking && selectedMemberId && selectedMemberId !== id) {
       const existingIdx = connections.findIndex(c => 
         (c.fromId === selectedMemberId && c.toId === id) || 
         (c.fromId === id && c.toId === selectedMemberId)
       )
-
       if (existingIdx >= 0) {
         const newConns = [...connections]
         const types: Connection['type'][] = ['ally', 'enemy', 'neutral']
@@ -96,224 +95,155 @@ export default function OfficePoliticsBoard() {
     const from = members.find(m => m.id === conn.fromId)
     const to = members.find(m => m.id === conn.toId)
     if (!from || !to) return null
-    return { x1: from.x + 100, y1: from.y + 60, x2: to.x + 100, y2: to.y + 60 }
+    return { x1: from.x + 70, y1: from.y + 50, x2: to.x + 70, y2: to.y + 50 }
   }
 
   return (
-    <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-8 font-sans selection:bg-emerald-500/30 text-left overflow-hidden">
+    <div className="fixed inset-0 bg-[#050507] text-white font-sans overflow-hidden touch-none selection:bg-emerald-500/30">
       
-      {/* メインボード */}
-      <div className="max-w-full mx-auto h-[92vh] border-[6px] border-emerald-500 shadow-[0_0_120px_rgba(16,185,129,0.15)] rounded-[4rem] flex flex-col relative bg-[#0a0a0c]">
-        
-        {/* ヘッダー：デカ文字 & デカボタン */}
-        <div className="p-8 border-b-2 border-emerald-500/20 flex flex-wrap items-center justify-between gap-6 bg-black/60 backdrop-blur-xl rounded-t-[3.5rem] z-50">
-          <div className="flex items-center gap-6">
-            <div className="p-4 bg-emerald-500/10 rounded-3xl border-2 border-emerald-500/30">
-              <Network className="h-12 w-12 text-emerald-400" />
-            </div>
-            <div>
-              <h1 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter text-white">不敗の社内政治ボード</h1>
-              <div className="flex items-center gap-2 mt-2">
-                <Badge className="bg-emerald-500 text-slate-950 font-black px-4 py-1 text-sm rounded-lg">完全ローカル・機密保持モード</Badge>
+      {/* スマホ最優先：全画面キャンバス */}
+      <div 
+        ref={canvasRef}
+        className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:40px_40px] z-0"
+        onClick={() => { setSelectedMemberId(null); setIsLinking(false); }}
+      >
+        {/* 背景のロゴ（うっすら） */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none">
+          <Network size={300} />
+        </div>
+
+        {/* 関係線 */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none">
+          {connections.map((conn, i) => {
+            const coords = getLineCoords(conn); if (!coords) return null;
+            const color = conn.type === 'ally' ? '#3b82f6' : conn.type === 'enemy' ? '#ef4444' : '#94a3b8';
+            const dash = conn.type === 'neutral' ? '8,8' : '0';
+            return <line key={i} x1={coords.x1} y1={coords.y1} x2={coords.x2} y2={coords.y2} stroke={color} strokeWidth="6" strokeDasharray={dash} className="opacity-80" />
+          })}
+        </svg>
+
+        {/* 人物カード（スマホ操作用サイズ） */}
+        {members.map((m) => (
+          <motion.div
+            key={m.id}
+            drag
+            dragMomentum={false}
+            onDrag={(e, info) => {
+              const n = [...members]; const i = n.findIndex(it => it.id === m.id);
+              n[i].x += info.delta.x; n[i].y += info.delta.y; setMembers(n);
+            }}
+            initial={{ x: m.x, y: m.y }}
+            className={`absolute w-32 p-4 rounded-[2rem] border-[3px] shadow-2xl transition-all
+              ${selectedMemberId === m.id ? 'border-emerald-500 bg-[#1a1c2e] scale-110 z-50' : 'border-white/10 bg-[#13141f] z-10'}
+            `}
+            style={{ x: m.x, y: m.y, left: 0, top: 0 }}
+            onClick={(e) => { e.stopPropagation(); handleMemberClick(m.id); }}
+          >
+            <div className="flex flex-col items-center gap-2">
+              <div className={`p-2 rounded-full ${selectedMemberId === m.id ? 'bg-emerald-500 text-black' : 'bg-slate-800 text-slate-400'}`}>
+                <User size={20} />
+              </div>
+              <input className="bg-transparent text-center font-black text-white w-full outline-none text-xs" value={m.name} onChange={(e) => {
+                const n = [...members]; n.find(i => i.id === m.id)!.name = e.target.value; setMembers(n);
+              }} onClick={(e) => e.stopPropagation()} />
+              <div className="flex gap-1">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className={`w-2 h-2 rounded-full ${i < Math.floor(m.power/3.4) ? 'bg-emerald-500' : 'bg-white/10'}`} />
+                ))}
               </div>
             </div>
-          </div>
+            {selectedMemberId === m.id && (
+              <button onClick={(e) => { e.stopPropagation(); removeMember(m.id); }} className="absolute -top-2 -right-2 bg-red-500 p-1.5 rounded-full shadow-lg"><X size={12}/></button>
+            )}
+          </motion.div>
+        ))}
+      </div>
 
-          <div className="flex flex-wrap items-center gap-4">
-            <Button onClick={addMember} className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black italic rounded-2xl px-8 h-16 text-xl shadow-[0_10px_30px_rgba(16,185,129,0.3)] transition-all active:scale-95">
-              <UserPlus size={24} className="mr-3" /> 人物を追加
-            </Button>
+      {/* トップバー：ステータスのみ */}
+      <div className="absolute top-0 inset-x-0 p-6 flex justify-between items-center z-50 pointer-events-none">
+        <div className="bg-black/60 backdrop-blur-md border border-emerald-500/30 px-4 py-2 rounded-2xl pointer-events-auto">
+          <h1 className="text-sm font-black italic tracking-tighter flex items-center gap-2">
+            <Network size={16} className="text-emerald-400" />
+            不敗の社内政治ボード
+          </h1>
+        </div>
+        <Button onClick={() => setShowMenu(!showMenu)} className="bg-black/60 border border-white/10 w-12 h-12 rounded-2xl pointer-events-auto">
+          <MoreHorizontal size={20} />
+        </Button>
+      </div>
+
+      {/* 右下：フローティング・アクション・ボタン (FAB) */}
+      <div className="absolute bottom-32 right-6 z-50 flex flex-col gap-4">
+        <Button onClick={addMember} className="w-16 h-16 bg-emerald-500 hover:bg-emerald-400 text-black rounded-full shadow-[0_10px_40px_rgba(16,185,129,0.5)] active:scale-90 transition-all">
+          <Plus size={32} />
+        </Button>
+      </div>
+
+      {/* ボトム・コントロール：親指で届く範囲 */}
+      <div className="absolute bottom-6 inset-x-6 z-50">
+        <div className="bg-black/80 backdrop-blur-2xl border-2 border-emerald-500/20 p-4 rounded-[2.5rem] flex items-center gap-4 shadow-2xl">
+          <Button 
+            onClick={(e) => { e.stopPropagation(); setIsLinking(!isLinking); }}
+            disabled={!selectedMemberId}
+            className={`flex-1 h-16 rounded-2xl font-black italic text-lg transition-all ${isLinking ? 'bg-blue-500 text-white animate-pulse' : 'bg-white/5 text-slate-400 border border-white/10'}`}
+          >
+            <Link size={20} className="mr-2" /> {isLinking ? '相手を選ぶ' : '線を引く'}
+          </Button>
+          
+          <a href="https://www.amazon.co.jp/s?k=職場の人間関係+心理学&tag=nextralabs-22" target="_blank" className="bg-gradient-to-r from-emerald-600 to-teal-800 w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg active:scale-95 transition-all">
+            <ShoppingCart size={24} className="text-white" />
+          </a>
+        </div>
+      </div>
+
+      {/* サイドメニュー：設定・保存・ガイド */}
+      <AnimatePresence>
+        {showMenu && (
+          <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} className="absolute inset-y-0 right-0 w-64 bg-black/90 backdrop-blur-xl border-l border-white/10 z-[100] p-8 flex flex-col gap-8">
+            <div className="flex justify-between items-center border-b border-white/10 pb-4">
+              <h2 className="font-black italic text-emerald-400">MENU</h2>
+              <Button onClick={() => setShowMenu(false)} variant="ghost" className="p-0 h-8 w-8"><X /></Button>
+            </div>
             
-            <div className="flex items-center bg-white/5 rounded-2xl border-2 border-white/10 p-2 gap-2">
-              <Button onClick={saveToLocal} variant="ghost" className="text-emerald-400 hover:bg-emerald-500/10 font-black h-12 italic rounded-xl px-5 text-sm">
-                <Save size={18} className="mr-2" /> ブラウザ保存
-              </Button>
-              <div className="w-[2px] h-8 bg-white/10" />
+            <div className="flex flex-col gap-4">
+              <Button onClick={() => { saveToLocal(); setShowMenu(false); }} className="justify-start font-bold italic h-14 bg-white/5 border border-white/10 rounded-xl"><Save size={18} className="mr-3 text-emerald-500" /> ブラウザ保存</Button>
               <Button onClick={() => {
                 const data = JSON.stringify({ members, connections });
                 const blob = new Blob([data], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `politics_map_${new Date().toISOString().split('T')[0]}.json`;
-                a.click();
-              }} variant="ghost" className="text-blue-400 hover:bg-blue-500/10 font-black h-12 italic rounded-xl px-5 text-sm">
-                <Download size={18} className="mr-2" /> ファイル保存
-              </Button>
-              <div className="w-[2px] h-8 bg-white/10" />
-              <label className="cursor-pointer text-amber-400 hover:bg-amber-500/10 font-black h-12 italic rounded-xl px-5 text-sm flex items-center transition-colors">
-                <Upload size={18} className="mr-2" /> 読み込み
+                a.download = `politics_map.json`; a.click();
+              }} className="justify-start font-bold italic h-14 bg-white/5 border border-white/10 rounded-xl"><Download size={18} className="mr-3 text-blue-500" /> ファイル書出</Button>
+              <label className="flex items-center gap-3 px-4 font-bold italic h-14 bg-white/5 border border-white/10 rounded-xl cursor-pointer">
+                <Upload size={18} className="text-amber-500" /> 読み込み
                 <input type="file" className="hidden" accept=".json" onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  const reader = new FileReader();
-                  reader.onload = (re) => {
-                    try {
-                      const { members: m, connections: c } = JSON.parse(re.target?.result as string);
-                      setMembers(m); setConnections(c);
-                      alert('データを復元しました');
-                    } catch (err) { alert('形式エラー'); }
-                  };
-                  reader.readAsText(file);
+                  const f = e.target.files?.[0]; if (!f) return;
+                  const r = new FileReader(); r.onload = (re) => {
+                    try { const { members: m, connections: c } = JSON.parse(re.target?.result as string); setMembers(m); setConnections(c); setShowMenu(false); } catch (e) {}
+                  }; r.readAsText(f);
                 }} />
               </label>
             </div>
-          </div>
-        </div>
 
-        {/* キャンバスエリア */}
-        <div 
-          ref={canvasRef}
-          className="flex-1 relative overflow-hidden bg-[radial-gradient(#1e293b_2px,transparent_2px)] [background-size:60px_60px] cursor-crosshair"
-          onClick={() => { setSelectedMemberId(null); setIsLinking(false); }}
-        >
-          {/* コネクション（太い線） */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none">
-            {connections.map((conn, i) => {
-              const coords = getLineCoords(conn);
-              if (!coords) return null;
-              const color = conn.type === 'ally' ? '#3b82f6' : conn.type === 'enemy' ? '#ef4444' : '#94a3b8';
-              const dash = conn.type === 'neutral' ? '10,10' : '0';
-              return (
-                <line 
-                  key={i} 
-                  x1={coords.x1} y1={coords.y1} x2={coords.x2} y2={coords.y2} 
-                  stroke={color} strokeWidth="5" strokeDasharray={dash}
-                  className="transition-all duration-300 opacity-80"
-                />
-              )
-            })}
-          </svg>
-
-          {/* メンバー（デカカード） */}
-          {members.map((m) => (
-            <motion.div
-              key={m.id}
-              drag
-              dragMomentum={false}
-              onDrag={(e, info) => {
-                const newMembers = [...members];
-                const idx = newMembers.findIndex(item => item.id === m.id);
-                newMembers[idx].x += info.delta.x;
-                newMembers[idx].y += info.delta.y;
-                setMembers(newMembers);
-              }}
-              initial={{ x: m.x, y: m.y }}
-              className={`absolute w-52 p-6 rounded-[2.5rem] cursor-grab active:cursor-grabbing shadow-2xl border-4 transition-all group
-                ${selectedMemberId === m.id ? 'border-emerald-500 scale-110 z-40 bg-[#1a1c2e]' : 'border-white/10 bg-[#13141f]'}
-              `}
-              style={{ x: m.x, y: m.y, left: 0, top: 0 }}
-              onClick={(e) => { e.stopPropagation(); handleMemberClick(m.id); }}
-            >
-              <div className="flex flex-col items-center gap-4">
-                <div className={`p-4 rounded-full ${selectedMemberId === m.id ? 'bg-emerald-500' : 'bg-slate-800'}`}>
-                  <User size={36} className={selectedMemberId === m.id ? 'text-slate-950' : 'text-slate-400'} />
-                </div>
-                <input 
-                  className="bg-transparent text-center font-black text-white w-full outline-none text-xl placeholder:text-white/20"
-                  value={m.name}
-                  placeholder="氏名を入力"
-                  onChange={(e) => {
-                    const newMembers = [...members];
-                    newMembers.find(item => item.id === m.id)!.name = e.target.value;
-                    setMembers(newMembers);
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                />
-                <input 
-                  className="bg-transparent text-center font-bold text-emerald-500/70 w-full outline-none text-sm uppercase italic"
-                  value={m.role}
-                  placeholder="役割・派閥"
-                  onChange={(e) => {
-                    const newMembers = [...members];
-                    newMembers.find(item => item.id === m.id)!.role = e.target.value;
-                    setMembers(newMembers);
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                />
-                <div className="flex flex-col items-center gap-2 mt-2 w-full">
-                  <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">POWER LEVEL</p>
-                  <div className="flex gap-1">
-                    {[...Array(5)].map((_, i) => (
-                      <div 
-                        key={i} 
-                        className={`w-3 h-3 rounded-full cursor-pointer transition-all ${i < Math.floor(m.power/2) ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-white/10'}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const newMembers = [...members];
-                          newMembers.find(item => item.id === m.id)!.power = (i + 1) * 2;
-                          setMembers(newMembers);
-                        }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <button onClick={(e) => { e.stopPropagation(); removeMember(m.id); }} className="absolute -top-3 -right-3 p-2 bg-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-xl hover:scale-125"><Trash2 size={16} className="text-white" /></button>
-            </motion.div>
-          ))}
-
-          {/* 巨大な初期ガイド */}
-          {members.length === 0 && (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none p-12">
-              <div className="max-w-2xl text-center space-y-8 bg-black/40 p-12 rounded-[4rem] backdrop-blur-sm border-2 border-white/5">
-                <MousePointer className="h-32 w-32 mx-auto text-emerald-500/20 animate-bounce" />
-                <h2 className="text-6xl font-black italic text-white/20 uppercase tracking-tighter">作図を開始</h2>
-                <p className="text-2xl text-white/40 font-bold italic">右上の「人物を追加」ボタンで、<br/>職場のキーマンを配置してください。</p>
-              </div>
+            <div className="mt-auto bg-emerald-500/5 p-4 rounded-2xl border border-emerald-500/20">
+              <p className="text-[10px] font-black text-emerald-500 italic uppercase mb-2">Guide</p>
+              <p className="text-[10px] font-bold text-white/40 leading-relaxed italic">
+                1. 右下の[＋]で人物追加<br/>
+                2. 人物をドラッグして配置<br/>
+                3. 人物を選んで[線を引く]<br/>
+                4. 線をタップして関係変更
+              </p>
             </div>
-          )}
-        </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-        {/* ボトムパネル：デカい凡例 */}
-        <div className="p-8 bg-black/80 border-t-2 border-emerald-500/20 backdrop-blur-xl rounded-b-[3.5rem] z-50 flex flex-wrap items-center justify-between gap-6">
-          <div className="flex items-center gap-12">
-            <div className="flex items-center gap-4">
-              <div className="w-6 h-6 bg-blue-500 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.5)]" /> <span className="text-xl font-black italic text-white">味方</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="w-6 h-6 bg-red-500 rounded-full shadow-[0_0_15px_rgba(239,68,68,0.5)]" /> <span className="text-xl font-black italic text-white">対立</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="w-6 h-6 bg-slate-400 border-2 border-dashed border-white rounded-full" /> <span className="text-xl font-black italic text-white">中立</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <Button 
-              onClick={(e) => { e.stopPropagation(); setIsLinking(!isLinking); }}
-              disabled={!selectedMemberId}
-              className={`h-20 px-12 rounded-[2rem] font-black italic text-2xl transition-all shadow-2xl ${isLinking ? 'bg-blue-500 text-white animate-pulse scale-105' : 'bg-white/5 text-slate-400 border-2 border-white/10 hover:border-emerald-500'}`}
-            >
-              <Link size={28} className="mr-3" /> {isLinking ? '相手を選んでください' : '関係線を引く'}
-            </Button>
-            
-            <a href="https://www.amazon.co.jp/s?k=職場の人間関係+心理学&tag=nextralabs-22" target="_blank" className="bg-gradient-to-r from-emerald-600 to-teal-800 h-20 px-10 rounded-[2rem] flex items-center gap-4 hover:scale-105 transition-all shadow-[0_10px_40px_rgba(16,185,129,0.3)]">
-              <span className="text-lg font-black italic text-white uppercase tracking-tighter">心理戦術を学ぶ ➔</span>
-              <ShoppingCart size={28} className="text-white" />
-            </a>
-          </div>
-        </div>
-
-        {/* 【デカ文字】常駐クイックマニュアル */}
-        <div className="absolute top-48 right-12 bg-emerald-500/5 border-2 border-emerald-500/20 p-10 rounded-[3rem] max-w-sm pointer-events-none hidden xl:block shadow-2xl backdrop-blur-md">
-          <div className="flex items-center gap-3 text-emerald-400 mb-6 font-black italic text-2xl"><Info size={24}/> 使い方ガイド</div>
-          <div className="space-y-6">
-            {[
-              { t: '配置', d: '「人物を追加」してドラッグで移動。' },
-              { t: '接続', d: '人物を選んで「関係線を引く」を押し、別の人物をクリック。' },
-              { t: '変更', d: '線を何度かクリックすると「味方・対立」が切り替わります。' },
-              { t: '保存', d: 'ブラウザかファイルに保存して秘密を守る。' }
-            ].map((item, idx) => (
-              <div key={idx} className="space-y-1">
-                <p className="text-emerald-500 font-black italic text-lg uppercase tracking-widest">STEP {idx + 1}: {item.t}</p>
-                <p className="text-white/60 font-bold italic text-base leading-relaxed">{item.d}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
+      {/* ヘルプヒント（PCで見ている時のみ） */}
+      <div className="hidden xl:block absolute left-12 bottom-32 max-w-xs pointer-events-none opacity-20">
+        <p className="text-[80px] font-black italic uppercase leading-none text-white">Politics<br/>Mapping</p>
       </div>
+
     </div>
   )
 }
