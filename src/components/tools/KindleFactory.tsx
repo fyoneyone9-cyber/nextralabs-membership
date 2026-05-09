@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useCallback, useEffect } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { Loader2, BookOpen, Download, FileText, Sparkles, Crown, Zap, Lock, PenLine, Copy, CheckCheck, AlertTriangle } from 'lucide-react'
@@ -34,7 +34,7 @@ const PLAN_CONFIG: Record<UserPlan, {
   light: {
     label: 'ライト',
     badge: 'LIGHT',
-    badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+    badgeColor: 'bg-emerald-500/20 text-blue-400 border-emerald-500/30',
     dailyLimit: 3,
     genres: ['副業・収入アップ', 'AI活用', '家計管理・節約', '自己啓発', 'ビジネス', '健康・美容', '育児・教育', '投資・資産運用'],
     hasDocx: true,
@@ -56,7 +56,7 @@ const PLAN_CONFIG: Record<UserPlan, {
   premium: {
     label: 'プレミアム',
     badge: 'PREMIUM',
-    badgeColor: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+    badgeColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
     dailyLimit: 15,
     genres: ['副業・収入アップ', 'AI活用', '家計管理・節約', '自己啓発', 'ビジネス', '健康・美容', '育児・教育', '投資・資産運用', '料理・レシピ', '旅行・体験記', '転職・キャリア', '英語学習', 'マインドフルネス', '起業・スタートアップ'],
     hasDocx: true,
@@ -121,10 +121,10 @@ function LockedFeature({ requiredPlan, label }: { requiredPlan: string; label: s
     <div className="flex items-center gap-2 p-3 bg-black/40 border border-white/10 rounded-xl opacity-60">
       <Lock size={14} className="text-slate-500 shrink-0" />
       <span className="text-slate-500 text-sm font-bold">{label}</span>
-      <Badge className={`ml-auto text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border ${
-        requiredPlan === 'light' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
+      <Badge className={`ml-auto text-[9px] font-bold uppercase tracking-tight px-2 py-0.5 rounded-full border ${
+        requiredPlan === 'light' ? 'bg-emerald-500/20 text-blue-400 border-emerald-500/30' :
         requiredPlan === 'standard' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
-        'bg-orange-500/20 text-orange-400 border-orange-500/30'
+        'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
       }`}>{requiredPlan.toUpperCase()}以上</Badge>
     </div>
   )
@@ -263,11 +263,11 @@ export function KindleFactory() {
         <div className="flex items-center justify-between flex-wrap gap-3 mb-2">
           <div className="flex items-center gap-3">
             <BookOpen className="text-emerald-500" size={32} />
-            <h1 className="text-3xl font-black text-white italic uppercase tracking-tighter">
+            <h1 className="text-3xl font-bold text-white uppercase tracking-tighter">
               Kindle AI ファクトリー
             </h1>
           </div>
-          <Badge className={`text-xs font-black uppercase tracking-widest px-4 py-1 rounded-full border ${config.badgeColor}`}>
+          <Badge className={`text-xs font-bold uppercase tracking-tight px-4 py-1 rounded-full border ${config.badgeColor}`}>
             {config.badge} プラン
           </Badge>
         </div>
@@ -284,7 +284,7 @@ export function KindleFactory() {
             const isActive = p === userPlan
             return (
               <div key={p} className={`rounded-xl p-3 border transition-all ${isActive ? 'border-emerald-500/60 bg-emerald-500/10' : 'border-white/5 opacity-50'}`}>
-                <Badge className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border mb-2 ${c.badgeColor}`}>{c.badge}</Badge>
+                <Badge className={`text-[9px] font-bold uppercase tracking-tight px-2 py-0.5 rounded-full border mb-2 ${c.badgeColor}`}>{c.badge}</Badge>
                 <ul className="text-xs text-slate-400 space-y-1 font-bold">
                   <li>📄 {c.dailyLimit === 999 ? '無制限' : `1日${c.dailyLimit}回`}</li>
                   <li>⚡️ 最大8000字</li>
@@ -314,11 +314,11 @@ export function KindleFactory() {
       {/* 入力フォーム */}
       <div className="max-w-3xl mx-auto px-4">
         <div className="bg-[#13141f] border-2 border-emerald-500/20 rounded-[2rem] p-6 md:p-8 space-y-5 shadow-[0_0_40px_rgba(16,185,129,0.08)]">
-          <h2 className="text-xl font-black text-white uppercase italic tracking-tight">📝 本の設定</h2>
+          <h2 className="text-xl font-bold text-white uppercase tracking-tight">📝 本の設定</h2>
 
           {/* テーマ */}
           <div className="space-y-2">
-            <label className="text-sm font-black text-emerald-400 uppercase tracking-wider">
+            <label className="text-sm font-bold text-emerald-400 uppercase tracking-wider">
               テーマ <span className="text-red-400">*</span>
             </label>
             <input
@@ -334,7 +334,7 @@ export function KindleFactory() {
 
           {/* ジャンル */}
           <div className="space-y-2">
-            <label className="text-sm font-black text-emerald-400 uppercase tracking-wider">
+            <label className="text-sm font-bold text-emerald-400 uppercase tracking-wider">
               ジャンル <span className="text-red-400">*</span>
             </label>
             <div className="flex flex-wrap gap-2 mb-2">
@@ -369,7 +369,7 @@ export function KindleFactory() {
             <div className="p-4 bg-red-500/10 border-2 border-red-500/40 rounded-xl flex items-start gap-3 animate-in fade-in zoom-in duration-300">
               <AlertTriangle className="text-red-400 shrink-0" size={20} />
               <div className="space-y-1">
-                <p className="text-red-400 text-base font-black uppercase italic tracking-wider">生成エラーが発生しました</p>
+                <p className="text-red-400 text-base font-bold uppercase tracking-wider">生成エラーが発生しました</p>
                 <p className="text-red-300 text-sm font-bold leading-relaxed">{error}</p>
                 <p className="text-red-400/60 text-[10px] font-bold mt-1">※Gemini APIの制限やネットワークエラーの可能性があります。しばらく時間を置いてお試しください。</p>
               </div>
@@ -380,7 +380,7 @@ export function KindleFactory() {
             type="button"
             onClick={handleGenerate}
             disabled={loading || remaining <= 0}
-            className={`w-full h-14 rounded-xl font-black text-lg uppercase italic transition-all ${
+            className={`w-full h-14 rounded-xl font-bold text-lg uppercase transition-all ${
               loading || remaining <= 0
                 ? 'bg-slate-700 text-slate-500 cursor-not-allowed'
                 : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_0_30px_rgba(16,185,129,0.3)] active:scale-95'
@@ -404,7 +404,7 @@ export function KindleFactory() {
           <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-5">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xl">✅</span>
-              <h3 className="font-black text-emerald-400 uppercase italic">原稿の生成が完了！</h3>
+              <h3 className="font-bold text-emerald-400 uppercase ">原稿の生成が完了！</h3>
             </div>
             <div className="flex flex-wrap gap-4 text-sm font-bold text-emerald-300">
               <span>📖 {result.title}</span>
@@ -414,13 +414,13 @@ export function KindleFactory() {
 
           {/* ダウンロードボタン */}
           <div className="bg-[#13141f] border border-white/10 rounded-2xl p-5 space-y-3">
-            <h4 className="font-black text-white text-sm uppercase tracking-wider">📥 ダウンロード</h4>
+            <h4 className="font-bold text-white text-sm uppercase tracking-wider">📥 ダウンロード</h4>
             <div className="flex flex-col sm:flex-row gap-3">
               {/* DOCXダウンロード */}
               {config.hasDocx ? (
                 <button
                   onClick={handleDownloadDocx}
-                  className="flex-1 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white py-3 px-5 rounded-xl font-black text-sm uppercase transition-all active:scale-95"
+                  className="flex-1 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white py-3 px-5 rounded-xl font-bold text-sm uppercase transition-all active:scale-95"
                 >
                   <Download size={16} />DOCX原稿
                 </button>
@@ -432,7 +432,7 @@ export function KindleFactory() {
               {config.hasKdpSheet ? (
                 <button
                   onClick={handleDownloadKdp}
-                  className="flex-1 flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-emerald-400 border border-emerald-500/40 py-3 px-5 rounded-xl font-black text-sm uppercase transition-all active:scale-95"
+                  className="flex-1 flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-emerald-400 border border-emerald-500/40 py-3 px-5 rounded-xl font-bold text-sm uppercase transition-all active:scale-95"
                 >
                   <FileText size={16} />KDP入稿チートシート
                 </button>
@@ -443,10 +443,10 @@ export function KindleFactory() {
 
             {/* 表紙プロンプト */}
             {config.hasCoverPrompt && result.coverPrompt ? (
-              <div className="mt-2 p-4 bg-orange-500/10 border border-orange-500/20 rounded-xl">
+              <div className="mt-2 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
                 <div className="flex items-center gap-2 mb-2">
-                  <Sparkles size={14} className="text-orange-400" />
-                  <span className="text-orange-400 font-black text-xs uppercase tracking-wider">表紙プロンプト（AI画像生成用）</span>
+                  <Sparkles size={14} className="text-emerald-400" />
+                  <span className="text-emerald-400 font-bold text-xs uppercase tracking-wider">表紙プロンプト（AI画像生成用）</span>
                 </div>
                 <p className="text-slate-300 text-sm font-bold leading-relaxed">{result.coverPrompt}</p>
               </div>
@@ -457,7 +457,7 @@ export function KindleFactory() {
 
           {/* プレビュー */}
           <div className="bg-[#13141f] border border-white/10 rounded-2xl p-5">
-            <h4 className="font-black text-white text-sm uppercase tracking-wider mb-3">👁️ 原稿プレビュー（最初の1000字）</h4>
+            <h4 className="font-bold text-white text-sm uppercase tracking-wider mb-3">👁️ 原稿プレビュー（最初の1000字）</h4>
             <div className="bg-black/40 rounded-xl p-4 text-sm text-slate-300 leading-relaxed whitespace-pre-wrap font-mono max-h-64 overflow-y-auto border border-white/5">
               {result.preview}
               {result.charCount > 1000 && (
@@ -467,9 +467,9 @@ export function KindleFactory() {
           </div>
 
           {/* 次のステップ */}
-          <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-5">
-            <h4 className="font-black text-amber-400 text-sm uppercase tracking-wider mb-3">📌 次のステップ</h4>
-            <ol className="space-y-2 text-sm text-amber-300 font-bold">
+          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5">
+            <h4 className="font-bold text-emerald-400 text-sm uppercase tracking-wider mb-3">📌 次のステップ</h4>
+            <ol className="space-y-2 text-sm text-emerald-300 font-bold">
               {[
                 'DOCXをWordまたはGoogleドキュメントで開き、内容を確認・加筆修正',
                 'Canva等でカバー画像を作成（推奨: 2560×1600px）',
@@ -477,7 +477,7 @@ export function KindleFactory() {
                 '審査後（24〜72時間）に販売開始！',
               ].map((s, i) => (
                 <li key={i} className="flex items-start gap-2">
-                  <span className="text-amber-500 font-black min-w-[20px]">{i + 1}.</span>
+                  <span className="text-emerald-500 font-bold min-w-[20px]">{i + 1}.</span>
                   {s}
                 </li>
               ))}
