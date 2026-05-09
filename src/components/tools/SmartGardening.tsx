@@ -202,8 +202,7 @@ export default function SmartGardening() {
       <canvas ref={canvasRef} className="hidden" />
 
       {/* ヘッダー */}
-      <div className="rounded-2xl mx-4 mt-6 mb-8 p-6 md:p-10 bg-[#0a0a0c] max-w-4xl md:mx-auto"
-        style={{ border: '2px solid #10b981', boxShadow: '0 0 20px rgba(16,185,129,0.12)' }}>
+      <div className="rounded-2xl mx-4 mt-6 mb-8 p-6 md:p-10 bg-[#0a0a0c] max-w-4xl md:mx-auto border border-white/5">
         <div className="flex items-center gap-4 mb-2">
           <div className="p-3 bg-emerald-500 rounded-xl shadow-[0_0_16px_rgba(16,185,129,0.4)]">
             <Sprout className="h-7 w-7 text-slate-950" />
