@@ -1,11 +1,12 @@
 ﻿'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import {
   Upload, CheckCircle2, Home, ShieldCheck, MapPin,
   Loader2, Search, Zap, Info, TrendingUp, ShoppingCart,
-  Copy, ChevronRight, ExternalLink, ArrowLeft
+  Copy, ChevronRight, ExternalLink, ArrowLeft,
+  Camera, SwitchCamera, X
 } from 'lucide-react'
 
 const ENTRY_MODES = [
@@ -41,7 +42,71 @@ const MasterEngine = () => {
   const [result, setResult] = useState<string | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [file, setFile] = useState<File | null>(null)
+  const [filePreview, setFilePreview] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+
+  // カメラ関連
+  const [uploadMode, setUploadMode] = useState<'file' | 'camera'>('file')
+  const [isCameraActive, setIsCameraActive] = useState(false)
+  const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment')
+  const [cameraError, setCameraError] = useState<string | null>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const streamRef = useRef<MediaStream | null>(null)
+
+  const startCamera = useCallback(async (facing: 'environment' | 'user' = 'environment') => {
+    setCameraError(null)
+    if (streamRef.current) { streamRef.current.getTracks().forEach(t => t.stop()); streamRef.current = null }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facing, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false })
+      streamRef.current = stream
+      if (videoRef.current) { videoRef.current.srcObject = stream; videoRef.current.setAttribute('playsinline', 'true'); await videoRef.current.play() }
+      setIsCameraActive(true)
+    } catch (err: any) {
+      setCameraError(err.name === 'NotAllowedError' ? 'カメラへのアクセスが拒否されました。ブラウザ設定から許可してください。' : err.name === 'NotFoundError' ? 'カメラが見つかりません。' : `カメラを起動できませんでした（${err.name}）`)
+    }
+  }, [])
+
+  const stopCamera = useCallback(() => {
+    if (streamRef.current) { streamRef.current.getTracks().forEach(t => t.stop()); streamRef.current = null }
+    if (videoRef.current) videoRef.current.srcObject = null
+    setIsCameraActive(false)
+  }, [])
+
+  const flipCamera = useCallback(() => {
+    const next = facingMode === 'environment' ? 'user' : 'environment'
+    setFacingMode(next); startCamera(next)
+  }, [facingMode, startCamera])
+
+  const capturePhoto = useCallback(() => {
+    if (!videoRef.current || !canvasRef.current) return
+    const video = videoRef.current; const canvas = canvasRef.current
+    canvas.width = video.videoWidth; canvas.height = video.videoHeight
+    const ctx = canvas.getContext('2d')!
+    if (facingMode === 'user') { ctx.translate(canvas.width, 0); ctx.scale(-1, 1) }
+    ctx.drawImage(video, 0, 0)
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.9)
+    // dataURLをFileオブジェクトに変換
+    fetch(dataUrl).then(r => r.blob()).then(blob => {
+      const f = new File([blob], 'camera-capture.jpg', { type: 'image/jpeg' })
+      setFile(f); setFilePreview(dataUrl); setResult(null)
+    })
+    stopCamera()
+  }, [facingMode, stopCamera])
+
+  // カメラタブ切替時に自動起動
+  useEffect(() => {
+    if (uploadMode === 'camera' && !filePreview && mode !== 'selection') startCamera(facingMode)
+    if (uploadMode === 'file') stopCamera()
+  }, [uploadMode]) // eslint-disable-line
+
+  // モード変更時にカメラ停止・状態リセット
+  const handleModeChange = (newMode: string) => {
+    stopCamera(); setUploadMode('file'); setFile(null); setFilePreview(null); setResult(null); setMode(newMode)
+  }
+
+  // アンマウント時カメラ停止
+  useEffect(() => () => stopCamera(), [stopCamera])
 
   useEffect(() => { setIsMounted(true) }, [])
 
@@ -106,7 +171,7 @@ const MasterEngine = () => {
             {ENTRY_MODES.map(item => (
               <button
                 key={item.id}
-                onClick={() => setMode(item.id)}
+                onClick={() => handleModeChange(item.id)}
                 className="rounded-xl p-6 text-left space-y-4 transition-all hover:scale-[1.02]"
                 style={{ background: '#0d1117', border: '1px solid #1e293b' }}
                 onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.4)')}
@@ -139,7 +204,7 @@ const MasterEngine = () => {
         {mode !== 'selection' && (
           <div className="space-y-4">
             <button
-              onClick={() => { setMode('selection'); setResult(null); setFile(null) }}
+              onClick={() => handleModeChange('selection')}
               className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-300 transition-colors"
             >
               <ArrowLeft size={13} /> モード選択に戻る
@@ -154,29 +219,117 @@ const MasterEngine = () => {
                 {currentMode?.label} — 解析プロトコル
               </div>
 
-              {/* ファイルアップロード */}
-              <div
-                className="relative rounded-lg flex flex-col items-center justify-center gap-3 cursor-pointer transition-colors"
-                style={{ height: '160px', border: '2px dashed #334155', background: '#13141f' }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.5)')}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = '#334155')}
-              >
-                <input
-                  type="file"
-                  onChange={e => setFile(e.target.files?.[0] || null)}
-                  className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                  accept="image/*,.pdf"
-                />
-                <Upload size={24} style={{ color: file ? '#10b981' : '#475569' }} />
-                <div className="text-center pointer-events-none">
-                  <p className="text-sm font-medium text-slate-400">
-                    {file ? file.name : 'ファイルをドロップ、またはクリック'}
-                  </p>
-                  <p className="text-xs text-slate-600 mt-1">
-                    {file ? `${(file.size / 1024 / 1024).toFixed(1)}MB — 準備完了` : '物件写真・契約書（PDF/画像）'}
-                  </p>
+              {/* hidden canvas */}
+              <canvas ref={canvasRef} className="hidden" />
+
+              {/* アップロード / カメラ タブ（内見モードのみカメラ表示） */}
+              {mode === 'room' && (
+                <div className="flex gap-2 p-1 rounded-lg" style={{ background: '#0a0a0c' }}>
+                  <button
+                    onClick={() => setUploadMode('file')}
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium transition-all ${uploadMode === 'file' ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                  >
+                    <Upload size={13} /> ファイル
+                  </button>
+                  <button
+                    onClick={() => setUploadMode('camera')}
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium transition-all ${uploadMode === 'camera' ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                  >
+                    <Camera size={13} /> カメラ撮影
+                  </button>
                 </div>
-              </div>
+              )}
+
+              {/* カメラビュー */}
+              {mode === 'room' && uploadMode === 'camera' && !filePreview && (
+                <div className="space-y-3">
+                  {cameraError && (
+                    <div className="flex items-start gap-2 text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 text-xs">
+                      {cameraError}
+                    </div>
+                  )}
+                  <div className="relative rounded-lg overflow-hidden aspect-video" style={{ background: '#0a0a0c', border: '1px solid #1e293b' }}>
+                    <video
+                      ref={videoRef}
+                      autoPlay playsInline muted
+                      className={`w-full h-full object-cover transition-opacity duration-500 ${isCameraActive ? 'opacity-100' : 'opacity-0'} ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`}
+                    />
+                    {!isCameraActive && !cameraError && (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                        <Loader2 className="h-6 w-6 text-emerald-400 animate-spin" />
+                        <p className="text-xs text-slate-500">カメラを起動中...</p>
+                      </div>
+                    )}
+                    {isCameraActive && (
+                      <>
+                        <button onClick={flipCamera} className="absolute top-2 right-2 bg-black/50 hover:bg-black/80 text-white p-1.5 rounded-lg transition-all backdrop-blur-sm">
+                          <SwitchCamera size={15} />
+                        </button>
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <div className="w-40 h-40 rounded-xl" style={{ border: '2px solid rgba(16,185,129,0.5)' }} />
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <button
+                    onClick={capturePhoto}
+                    disabled={!isCameraActive}
+                    className="w-full h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                    style={{ background: '#10b981', color: '#fff' }}
+                    onMouseEnter={e => { if (isCameraActive) e.currentTarget.style.background = '#059669' }}
+                    onMouseLeave={e => { e.currentTarget.style.background = '#10b981' }}
+                  >
+                    <Camera size={15} /> 部屋を撮影する
+                  </button>
+                </div>
+              )}
+
+              {/* 撮影プレビュー */}
+              {filePreview && (
+                <div className="relative rounded-lg overflow-hidden aspect-video" style={{ border: '1px solid #1e293b' }}>
+                  <img src={filePreview} alt="preview" className="w-full h-full object-cover" />
+                  <button
+                    onClick={() => { setFile(null); setFilePreview(null); if (uploadMode === 'camera') startCamera(facingMode) }}
+                    className="absolute top-2 right-2 bg-black/60 hover:bg-slate-700 text-white text-xs font-medium px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition-all"
+                  >
+                    <X size={11} /> 撮り直す
+                  </button>
+                </div>
+              )}
+
+              {/* ファイルアップロード（ファイルモード or 内見以外） */}
+              {(uploadMode === 'file' || mode !== 'room') && !filePreview && (
+                <div
+                  className="relative rounded-lg flex flex-col items-center justify-center gap-3 cursor-pointer transition-colors"
+                  style={{ height: '160px', border: '2px dashed #334155', background: '#13141f' }}
+                  onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.5)')}
+                  onMouseLeave={e => (e.currentTarget.style.borderColor = '#334155')}
+                >
+                  <input
+                    type="file"
+                    onChange={e => {
+                      const f = e.target.files?.[0] || null
+                      setFile(f)
+                      if (f && f.type.startsWith('image/')) {
+                        const reader = new FileReader()
+                        reader.onload = ev => setFilePreview(ev.target?.result as string)
+                        reader.readAsDataURL(f)
+                      } else { setFilePreview(null) }
+                    }}
+                    className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                    accept="image/*,.pdf"
+                  />
+                  <Upload size={24} style={{ color: file ? '#10b981' : '#475569' }} />
+                  <div className="text-center pointer-events-none">
+                    <p className="text-sm font-medium text-slate-400">
+                      {file ? file.name : 'ファイルをドロップ、またはクリック'}
+                    </p>
+                    <p className="text-xs text-slate-600 mt-1">
+                      {file ? `${(file.size / 1024 / 1024).toFixed(1)}MB — 準備完了` : '物件写真・契約書（PDF/画像）'}
+                    </p>
+                  </div>
+                </div>
+              )}
 
               <button
                 onClick={handleAnalyze}
