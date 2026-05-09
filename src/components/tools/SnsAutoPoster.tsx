@@ -66,7 +66,7 @@ const MasterEngine = () => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto p-4 md:p-8 space-y-6 min-h-screen text-slate-200 pb-24 border-2 border-emerald-500/30 rounded-2xl bg-[#050507]">
+    <div className="max-w-5xl mx-auto p-4 md:p-8 space-y-6 min-h-screen text-slate-200 pb-24 bg-[#050507]">
 
       {/* ヘッダー */}
       <div className="text-center space-y-2 pt-2">
