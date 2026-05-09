@@ -25,22 +25,35 @@ export default function CompPriceMonitorApp() {
   const handleAnalyze = async () => {
     if (!targetUrl) return;
     setIsAnalyzing(true);
-    // 憲法遵守：楽天API等と連携した実務価格監視ロジック（本物）を再接続
-    await new Promise(r => setTimeout(r, 2500));
-    setResult("競合3社の最新価格とポイント還元率をスキャンしました。現在、店舗Aがタイムセールを開始し、あなたのショップのカート獲得率が12%低下しています。即座にポイントを+2%調整し、優位性を確保することを強く推奨します。");
-    setMonitorData({
-      rival_prices: [
-        { name: '競合A社', price: '¥14,800', status: 'SALE', points: '10倍' },
-        { name: '競合B社', price: '¥15,200', status: '通常', points: '1倍' }
-      ],
-      win_rate: '85%',
-      suggestion: 'ポイント+2%設定'
-    });
-    setIsAnalyzing(false);
+    setResult(null);
+    setMonitorData(null);
+    
+    try {
+      // MASTERMODEL: 楽天API連携による本物スキャン
+      const response = await fetch('/api/tools/market-scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: targetUrl })
+      });
+      
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || '解析に失敗しました');
+      }
+
+      setMonitorData(data);
+      setResult(data.suggestion_text);
+    } catch (error: any) {
+      console.error(error);
+      setResult(`【エラー】${error.message}。正しいURLまたはキーワードを入力してください。`);
+    } finally {
+      setIsAnalyzing(false);
+    }
   }
 
   const copyPrompt = () => {
-    const prompt = `あなたはEC価格戦略コンサルタントです。以下の競合状況に基づき、利益を削らずに売上を最大化する「勝てるリプライス戦略」を立案してください。\n\n【競合データ】\n${result}`;
+    const prompt = `あなたはEC価格戦略コンサルタントです。以下の競合状況に基づき、利益を削らずに売上を最大化する「勝てるリプライス戦略」を立案してください。\n\n【市場データ】\n自社実質価格: ¥${monitorData?.target_item?.effective_price}\nライバル最安値(実質): ¥${Math.min(...monitorData?.rival_prices.map((r:any)=>r.effective_price))}\n\n【詳細レポート】\n${result}`;
     navigator.clipboard.writeText(prompt);
     alert('戦略プロンプトをコピーしました。外部AIへ貼り付けて使用してください。');
   };
@@ -173,6 +186,22 @@ export default function CompPriceMonitorApp() {
 
             {/* Amazon収益化 */}
             <a href="https://www.amazon.co.jp/s?k=ネットショップ+経営+戦略&tag=nextralabs-22" target="_blank" className="block group">
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-900 p-16 rounded-[4rem] flex items-center justify-between shadow-2xl transition-all hover:scale-[1.01] relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-10"><LineChart size={300} className="text-white" /></div>
+                <div className="space-y-4 text-left relative z-10">
+                  <p className="text-white/60 text-xs font-black uppercase tracking-[0.4em]">Essential E-commerce Library</p>
+                  <h3 className="text-3xl md:text-5xl font-black text-white italic leading-tight">不敗のEC運営：AI時代の価格戦略と心理術。 ➔</h3>
+                </div>
+                <ShoppingCart size={60} className="text-white animate-pulse shrink-0 relative z-10" />
+              </div>
+            </a>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+��&tag=nextralabs-22" target="_blank" className="block group">
               <div className="bg-gradient-to-r from-blue-600 to-indigo-900 p-16 rounded-[4rem] flex items-center justify-between shadow-2xl transition-all hover:scale-[1.01] relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-10"><LineChart size={300} className="text-white" /></div>
                 <div className="space-y-4 text-left relative z-10">
