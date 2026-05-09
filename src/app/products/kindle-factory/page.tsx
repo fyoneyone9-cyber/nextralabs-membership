@@ -27,9 +27,9 @@ export default function KindleFactoryLp() {
       {/* 機能 */}
       <section className="max-w-4xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-8">
         {[
-          { icon: <Sparkles size={28} />, title: 'AI原稿自動生成', desc: 'テーマ・ジャンルを選ぶだけ。最大10,000字のKindle本原稿をAIが即座に作成。' },
-          { icon: <Download size={28} />, title: 'KDP入稿用DOCX出力', desc: 'Wordで開けるDOCXファイルをそのままKDPにアップロードできます。' },
-          { icon: <FileText size={28} />, title: 'KDP入稿チートシート', desc: 'タイトル・著者名・キーワード・説明文など入稿に必要な情報をまとめて出力。' },
+          { icon: <Sparkles size={28} />, title: 'AI原稿自動生成', desc: 'テーマ・ジャンルを選ぶだけ。最大10,000字のKindle本原稿をAIが即座に作成。Gemini 2.5 Flash搭載で高品質・高速生成。' },
+          { icon: <Download size={28} />, title: 'KDP入稿用DOCX出力', desc: 'Wordで開けるDOCXファイルをそのままKDPにアップロードできます。入稿作業を大幅に短縮。' },
+          { icon: <FileText size={28} />, title: 'KDP入稿チートシート', desc: 'タイトル・著者名・キーワード・説明文など入稿に必要な情報をまとめて出力（STANDARDプラン以上）。' },
           { icon: <Crown size={28} />, title: '表紙プロンプト生成', desc: 'Midjourney・DALL-Eで使える表紙画像生成プロンプトを自動作成（PREMIUMプラン）。' },
         ].map((f, i) => (
           <div key={i} className="bg-[#13141f] border-2 border-white/5 p-8 rounded-[2rem] space-y-4 hover:border-emerald-500/30 transition-all group">
@@ -48,10 +48,10 @@ export default function KindleFactoryLp() {
           </h3>
           <ol className="space-y-4">
             {[
-              { step: '01', title: 'テーマ・ジャンルを入力', desc: '副業・AI活用・自己啓発などのジャンルからワンクリックで選択' },
-              { step: '02', title: 'AIが原稿を自動生成', desc: '30〜60秒でKDP入稿可能なDOCX原稿が完成' },
-              { step: '03', title: 'WordまたはGoogleドキュメントで確認・加筆', desc: '内容を確認し、必要に応じて修正・加筆' },
-              { step: '04', title: 'Canva等で表紙を作成', desc: '推奨サイズ 2560×1600px。表紙プロンプト機能（PREMIUM）でAI画像生成も可' },
+              { step: '01', title: 'テーマ・ジャンルを入力', desc: '副業・AI活用・自己啓発などのジャンルからワンクリックで選択。または自由入力も可能。' },
+              { step: '02', title: 'AIが原稿を自動生成', desc: '30〜60秒でKDP入稿可能なDOCX原稿が完成。Gemini 2.5 Flashによる高品質生成。' },
+              { step: '03', title: 'WordまたはGoogleドキュメントで確認・加筆', desc: '内容を確認し、必要に応じて修正・加筆。プレビューで事前確認も可能。' },
+              { step: '04', title: 'Canva等で表紙を作成', desc: '推奨サイズ 2560×1600px。表紙プロンプト機能（PREMIUM）でAI画像生成も可。' },
               { step: '05', title: 'KDPダッシュボードで登録・出版', desc: 'KDP入稿チートシートを見ながら入力。審査通過後（24〜72時間）に販売開始！' },
             ].map((s) => (
               <li key={s.step} className="flex gap-4 items-start">
@@ -64,6 +64,29 @@ export default function KindleFactoryLp() {
             ))}
           </ol>
         </div>
+      </section>
+
+      {/* プラン比較 */}
+      <section className="max-w-3xl mx-auto px-4 py-8">
+        <h3 className="text-2xl font-black text-white italic uppercase text-center mb-6">プラン別機能</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { name: 'FREE', color: 'border-slate-500/40 text-slate-400', items: ['1日1回', '原稿プレビュー', '—', '—', '—'] },
+            { name: 'LIGHT', color: 'border-blue-500/40 text-blue-400', items: ['1日3回', '原稿プレビュー', 'DOCX出力', '—', '—'] },
+            { name: 'STANDARD', color: 'border-emerald-500/40 text-emerald-400', items: ['1日5回', '原稿プレビュー', 'DOCX出力', 'KDP表', '—'] },
+            { name: 'PREMIUM', color: 'border-orange-500/40 text-orange-400', items: ['1日15回', '原稿プレビュー', 'DOCX出力', 'KDP表', '表紙プロンプト'] },
+          ].map((p, i) => (
+            <div key={i} className={`bg-[#13141f] border-2 ${p.color} rounded-2xl p-4 space-y-2`}>
+              <p className={`font-black text-sm uppercase ${p.color.split(' ')[1]}`}>{p.name}</p>
+              {p.items.map((item, j) => (
+                <p key={j} className={`text-xs font-bold ${item === '—' ? 'text-slate-600' : 'text-slate-300'}`}>{item}</p>
+              ))}
+            </div>
+          ))}
+        </div>
+        <p className="text-center text-xs text-slate-500 font-bold mt-4">
+          <a href="/pricing" className="text-emerald-400 underline">プランをアップグレード</a>してすべての機能を使えるようにしましょう
+        </p>
       </section>
 
       {/* CTA */}

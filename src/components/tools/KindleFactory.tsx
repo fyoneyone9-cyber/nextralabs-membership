@@ -209,7 +209,7 @@ export function KindleFactory() {
         body: JSON.stringify({
           theme: theme.trim(),
           genre: genre.trim(),
-          maxChars: isAdmin ? 10000 : config.maxChars,
+          maxChars: isAdmin ? 10000 : (userPlan === 'premium' ? 8000 : userPlan === 'standard' ? 6000 : 5000),
           includeCoverPrompt: config.hasCoverPrompt,
           isAdmin,
         }),
