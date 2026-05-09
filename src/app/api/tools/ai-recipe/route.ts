@@ -1,9 +1,19 @@
-﻿import { NextResponse } from 'next/server';
+﻿import { checkApiLimit } from '@/lib/api-limit';
+import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
+  // 🛡️ レート制限（1日10回）
+  const limitCheck = await checkApiLimit('ai-recipe', 10);
+  if (!limitCheck.allowed) {
+    return NextResponse.json(
+      { error: '本日の利用上限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
+
   try {
     const { image } = await req.json();
     if (!image) return NextResponse.json({ error: '写真が必要です' }, { status: 400 });
