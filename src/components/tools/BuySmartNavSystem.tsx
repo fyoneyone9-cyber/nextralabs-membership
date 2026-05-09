@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
@@ -49,7 +49,7 @@ const MasterEngine = () => {
       {/* ヘッダー */}
       <div className="text-center space-y-2 pt-4">
         <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold px-4 py-1 rounded-full">中古・新品 価格比較</Badge>
-        <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight">
+        <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight">
           AI<span className="text-emerald-400">比較</span>ナビ
         </h1>
         <p className="text-slate-400 text-sm">楽天APIからリアルタイム相場を取得。Gemini AIが「本当の損得」を判定します。</p>
@@ -70,7 +70,7 @@ const MasterEngine = () => {
         <button
           onClick={() => runAnalysis()}
           disabled={isAnalyzing || !query}
-          className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm transition-all"
+          className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm transition-all"
         >
           {isAnalyzing
             ? <><Loader2 className="animate-spin" size={16} /> AI解析中...</>
@@ -113,15 +113,15 @@ const MasterEngine = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-black/40 border border-blue-500/20 rounded-xl p-4 space-y-1">
-                  <Badge className="bg-blue-500/10 text-blue-300 border border-blue-500/20 text-[9px] font-semibold">新品最安値</Badge>
-                  <p className="text-2xl font-black text-white">
+                <div className="bg-black/40 border border-emerald-500/20 rounded-xl p-4 space-y-1">
+                  <Badge className="bg-emerald-500/10 text-blue-300 border border-emerald-500/20 text-[9px] font-semibold">新品最安値</Badge>
+                  <p className="text-2xl font-bold text-white">
                     {result?.data?.minPrice ? `¥${result.data.minPrice.toLocaleString()}` : isAnalyzing ? '---' : 'データなし'}
                   </p>
                 </div>
-                <div className="bg-black/40 border border-orange-500/20 rounded-xl p-4 space-y-1">
-                  <Badge className="bg-orange-500/10 text-orange-300 border border-orange-500/20 text-[9px] font-semibold">中古相場</Badge>
-                  <p className="text-2xl font-black text-white">
+                <div className="bg-black/40 border border-emerald-500/20 rounded-xl p-4 space-y-1">
+                  <Badge className="bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 text-[9px] font-semibold">中古相場</Badge>
+                  <p className="text-2xl font-bold text-white">
                     {result?.data?.avgPrice ? `¥${result.data.avgPrice.toLocaleString()}` : isAnalyzing ? '---' : 'データなし'}
                   </p>
                 </div>
@@ -136,7 +136,7 @@ const MasterEngine = () => {
                       <img src={item.img} className="w-10 h-10 rounded-lg object-cover border border-white/10 shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-semibold text-slate-300 group-hover:text-white truncate">{item.name}</p>
-                        <p className="text-sm font-black text-emerald-400">¥{item.price.toLocaleString()}</p>
+                        <p className="text-sm font-bold text-emerald-400">¥{item.price.toLocaleString()}</p>
                       </div>
                       <ArrowRight size={13} className="text-slate-600 group-hover:text-emerald-400 shrink-0" />
                     </a>
@@ -150,7 +150,7 @@ const MasterEngine = () => {
           <div className="md:col-span-1">
             <div className={`h-full bg-[#0d0f1a] border rounded-2xl p-5 space-y-4 flex flex-col ${
               result?.verdict === 'new' ? 'border-emerald-500/40' :
-              result?.verdict === 'used' ? 'border-orange-500/40' :
+              result?.verdict === 'used' ? 'border-emerald-500/40' :
               'border-white/5'
             }`}>
               <div className="flex items-center gap-2">
@@ -168,12 +168,12 @@ const MasterEngine = () => {
                 <>
                   <div className={`text-center p-4 rounded-xl ${
                     result.verdict === 'new' ? 'bg-emerald-500/10' :
-                    result.verdict === 'used' ? 'bg-orange-500/10' : 'bg-white/5'
+                    result.verdict === 'used' ? 'bg-emerald-500/10' : 'bg-white/5'
                   }`}>
-                    <p className="text-2xl font-black text-white mb-1">{result.status || '判定中'}</p>
+                    <p className="text-2xl font-bold text-white mb-1">{result.status || '判定中'}</p>
                     <Badge className={`text-[9px] font-semibold ${
                       result.verdict === 'new' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/20' :
-                      'bg-orange-500/20 text-orange-400 border-orange-500/20'
+                      'bg-emerald-500/20 text-emerald-400 border-emerald-500/20'
                     } border`}>{result.verdict === 'new' ? '新品推奨' : result.verdict === 'used' ? '中古推奨' : '検討中'}</Badge>
                   </div>
                   <p className="text-xs text-slate-400 leading-relaxed flex-1">
