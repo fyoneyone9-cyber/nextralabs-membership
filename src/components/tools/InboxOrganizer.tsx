@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { Card, CardContent } from '@/components/ui/card'
@@ -15,7 +15,7 @@ const GOOGLE_SCOPES = 'https://www.googleapis.com/auth/gmail.readonly https://ww
 
 const quadrantConfig = [
   { id: 'urgent_important',     label: '今すぐ対応',  color: 'text-red-400',      border: 'border-red-500/30',      icon: Zap },
-  { id: 'urgent_not_important', label: '早めに対応',  color: 'text-amber-400',    border: 'border-amber-500/30',    icon: Clock },
+  { id: 'urgent_not_important', label: '早めに対応',  color: 'text-emerald-400',    border: 'border-emerald-500/30',    icon: Clock },
   { id: 'not_urgent_important', label: '計画対応',    color: 'text-emerald-400',  border: 'border-emerald-500/30',  icon: ListChecks },
   { id: 'not_urgent_not_important', label: '整理対象', color: 'text-slate-500',  border: 'border-slate-700',       icon: Filter },
   { id: 'pending',              label: '未分類',      color: 'text-slate-600',    border: 'border-slate-800',       icon: Mail },
@@ -154,7 +154,7 @@ const MasterEngine = () => {
     <div className="max-w-4xl mx-auto space-y-4">
       {/* Toast */}
       {toast && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[999] bg-[#13141f] border border-emerald-500/50 text-emerald-400 font-black text-sm px-6 py-3 rounded-2xl shadow-2xl animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[999] bg-[#13141f] border border-emerald-500/50 text-emerald-400 font-bold text-sm px-6 py-3 rounded-2xl shadow-2xl animate-in fade-in slide-in-from-top-2 duration-300">
           {toast}
         </div>
       )}
@@ -185,8 +185,8 @@ const MasterEngine = () => {
               {quadrantConfig.filter(q => q.id !== 'pending').map(q => (
                 <div key={q.id} className={`bg-black/60 backdrop-blur-md border ${q.border} p-2 rounded-xl text-center`}>
                   <q.icon className={`h-4 w-4 mx-auto mb-1 ${q.color}`} />
-                  <div className="text-[10px] font-black text-white italic">{emails.filter(e => e.quadrant === q.id).length}</div>
-                  <div className={`text-[8px] font-black italic ${q.color}`}>{q.label}</div>
+                  <div className="text-[10px] font-bold text-white ">{emails.filter(e => e.quadrant === q.id).length}</div>
+                  <div className={`text-[8px] font-bold ${q.color}`}>{q.label}</div>
                 </div>
               ))}
             </div>
@@ -195,7 +195,7 @@ const MasterEngine = () => {
           {/* メールリスト */}
           <div className="space-y-3">
             {emails.length === 0 && !loading ? (
-              <div className="py-20 text-center opacity-20 italic font-black uppercase text-xl">Inbox Zero Achieved</div>
+              <div className="py-20 text-center opacity-20 font-bold uppercase text-xl">Inbox Zero Achieved</div>
             ) : (
               emails.map((email) => {
                 const q = getQuadrant(email.quadrant)
@@ -206,13 +206,13 @@ const MasterEngine = () => {
                       <div className="flex justify-between items-start gap-4">
                         <div className="space-y-1 flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <Badge variant="outline" className={`text-[8px] font-black ${q.color} border-current/30 uppercase tracking-tighter`}>
+                            <Badge variant="outline" className={`text-[8px] font-bold ${q.color} border-current/30 uppercase tracking-tighter`}>
                               {q.label}
                             </Badge>
-                            <span className="text-[9px] font-black text-slate-500 truncate italic">{email.from}</span>
+                            <span className="text-[9px] font-bold text-slate-500 truncate ">{email.from}</span>
                           </div>
-                          <h4 className="text-base font-black text-white leading-tight italic">{email.subject}</h4>
-                          <p className="text-[11px] text-slate-500 italic truncate">{email.snippet}</p>
+                          <h4 className="text-base font-bold text-white leading-tight ">{email.subject}</h4>
+                          <p className="text-[11px] text-slate-500 truncate">{email.snippet}</p>
                         </div>
                         <Button variant="ghost" size="sm" onClick={() => setExpandedId(expandedId === email.id ? null : email.id)} className="h-8 w-8 p-0 text-slate-500 flex-shrink-0">
                           {expandedId === email.id ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
@@ -222,7 +222,7 @@ const MasterEngine = () => {
                       {/* 本文展開 */}
                       {expandedId === email.id && (
                         <div className="animate-in slide-in-from-top-2 duration-300">
-                          <div className="bg-black/40 rounded-xl p-4 text-sm text-slate-300 leading-relaxed italic whitespace-pre-wrap border border-white/5 mb-2 max-h-60 overflow-y-auto">
+                          <div className="bg-black/40 rounded-xl p-4 text-sm text-slate-300 leading-relaxed whitespace-pre-wrap border border-white/5 mb-2 max-h-60 overflow-y-auto">
                             {email.body || email.snippet}
                           </div>
                         </div>
@@ -235,7 +235,7 @@ const MasterEngine = () => {
                             <Button
                               onClick={() => generateAiReply(email)}
                               disabled={isGenerating[email.id]}
-                              className="flex-1 h-12 bg-white/5 hover:bg-white/10 text-emerald-400 border border-emerald-500/30 font-black text-xs rounded-xl transition-all uppercase italic"
+                              className="flex-1 h-12 bg-white/5 hover:bg-white/10 text-emerald-400 border border-emerald-500/30 font-bold text-xs rounded-xl transition-all uppercase "
                             >
                               {isGenerating[email.id] ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : <Zap size={14} className="mr-2" />}
                               {isGenerating[email.id] ? '文体学習中...' : 'AI返信案を生成'}
@@ -260,29 +260,29 @@ const MasterEngine = () => {
                         ) : (
                           <div className="space-y-3 animate-in fade-in duration-500">
                             <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-4">
-                              <p className="text-xs text-emerald-400 font-black mb-2 uppercase italic flex items-center gap-2">
+                              <p className="text-xs text-emerald-400 font-bold mb-2 uppercase flex items-center gap-2">
                                 <ShieldCheck size={12} /> AI Draft — 文体学習済み
                               </p>
-                              <p className="text-sm text-white italic leading-relaxed whitespace-pre-wrap">{replyTexts[email.id]}</p>
+                              <p className="text-sm text-white leading-relaxed whitespace-pre-wrap">{replyTexts[email.id]}</p>
                             </div>
                             <div className="grid grid-cols-3 gap-2">
                               <Button
                                 onClick={() => { navigator.clipboard.writeText(replyTexts[email.id]); showToast('📋 コピーしました') }}
-                                className="bg-slate-800 hover:bg-slate-700 text-white font-black text-[10px] rounded-lg h-10"
+                                className="bg-slate-800 hover:bg-slate-700 text-white font-bold text-[10px] rounded-lg h-10"
                               >
                                 <Copy size={12} className="mr-1" /> COPY
                               </Button>
                               <Button
                                 onClick={() => saveDraft(email)}
                                 disabled={isDrafting[email.id]}
-                                className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[10px] rounded-lg h-10"
+                                className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] rounded-lg h-10"
                               >
                                 {isDrafting[email.id] ? <Loader2 className="animate-spin h-3 w-3" /> : <Send size={12} className="mr-1" />} DRAFT
                               </Button>
                               <Button
                                 onClick={() => doAction(email, 'trash')}
                                 disabled={isActing[email.id]}
-                                className="bg-red-900/40 hover:bg-red-800/60 text-red-400 font-black text-[10px] rounded-lg h-10"
+                                className="bg-red-900/40 hover:bg-red-800/60 text-red-400 font-bold text-[10px] rounded-lg h-10"
                               >
                                 {isActing[email.id] ? <Loader2 className="animate-spin h-3 w-3" /> : <Trash2 size={12} className="mr-1" />} TRASH
                               </Button>
@@ -297,7 +297,7 @@ const MasterEngine = () => {
             )}
           </div>
 
-          <Button onClick={() => { localStorage.removeItem('nextra_google_token'); setGoogleToken(null); setEmails([]); }} variant="ghost" className="w-full text-slate-600 hover:text-red-400 text-[10px] font-black uppercase italic py-8">
+          <Button onClick={() => { localStorage.removeItem('nextra_google_token'); setGoogleToken(null); setEmails([]); }} variant="ghost" className="w-full text-slate-600 hover:text-red-400 text-[10px] font-bold uppercase py-8">
             <Trash2 size={12} className="mr-2" /> Terminate Session
           </Button>
         </div>
