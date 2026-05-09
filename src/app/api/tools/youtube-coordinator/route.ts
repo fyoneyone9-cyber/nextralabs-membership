@@ -1,3 +1,4 @@
+﻿import { checkApiLimit } from '@/lib/api-limit';
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
@@ -126,6 +127,15 @@ async function searchRakutenItems(keyword: string) {
 }
 
 export async function POST(req: Request) {
+  // 🛡️ レート制限（1日10回）
+  const limitCheck = await checkApiLimit('youtube-coordinator', 10);
+  if (!limitCheck.allowed) {
+    return NextResponse.json(
+      { error: '本日の利用上限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
+
   try {
     const { videoUrl } = await req.json();
     if (!videoUrl) {
