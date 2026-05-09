@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
@@ -11,7 +11,7 @@ const StayseeFinderLP = () => {
     <div className="min-h-screen bg-[#050507] text-slate-100 font-sans pb-32 selection:bg-emerald-500/30 text-left">
       {/* ヒーローセクション */}
       <section className="max-w-6xl mx-auto px-4 pt-24 pb-20 text-center space-y-10 border-b border-emerald-500/20">
-        <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-6 py-1 rounded-full font-black uppercase text-[10px] tracking-widest italic">💎 MASTERMODEL v2.9</Badge>
+        <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-6 py-1 rounded-full font-black uppercase text-[10px] tracking-widest italic">💎 ✓ 完成</Badge>
         <h1 className="text-5xl md:text-8xl font-black text-white italic tracking-tighter uppercase leading-none">
           Staysee <span className="text-emerald-500">AI</span> Finder
         </h1>

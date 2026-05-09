@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { Zap, Diamond, Palette, Smartphone, Laptop, Briefcase, Clock, Calendar, Rocket, ShieldCheck } from 'lucide-react';
@@ -32,7 +32,7 @@ export const CharacterMake: React.FC<CharacterMakeProps> = ({ onComplete, isSubm
       {/* MASTER品質の証 */}
       <div className="absolute top-6 right-8 flex items-center gap-2 text-xs font-black text-emerald-400 bg-emerald-500/10 px-4 py-2 rounded-full uppercase tracking-[0.2em] border border-emerald-500/20">
         <ShieldCheck size={16} />
-        MASTERMODEL v2.0
+        ✓ 完成
       </div>
 
       <div className="flex justify-between mb-12 gap-3">

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { Briefcase, Info, ShoppingCart, ShieldCheck, Lock, Ticket } from 'lucide-react';
@@ -61,7 +61,7 @@ export default function AiSidejobApp() {
               <div className="flex items-center gap-2 mt-2">
                 <ShieldCheck size={16} className="text-emerald-400" />
                 <p className="text-xs font-bold text-emerald-400 tracking-[0.3em] uppercase">
-                  MASTERMODEL v2.0-MASTER
+                  ✓ 完成-MASTER
                 </p>
               </div>
             </div>

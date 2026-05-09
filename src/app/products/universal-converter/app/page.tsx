@@ -50,17 +50,16 @@ export default function UniversalConverterApp() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-emerald-500/20 pb-10">
           <div className="flex items-center gap-4 text-left">
             <div className="p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/20"><Repeat className="h-10 w-10 text-emerald-400" /></div>
-            <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white leading-none">究極AIマルチコンバーター</h1>
+            <h1 className="text-2xl md:text-4xl font-black text-white leading-tight">究極AI<span className="text-emerald-400">マルチコンバーター</span></h1>
           </div>
           <div className="flex flex-col items-end gap-2">
-            <Badge className="bg-emerald-500 text-slate-950 font-black italic px-6 py-2 text-sm rounded-full shadow-lg shadow-emerald-500/20">MASTERMODEL v2.3</Badge>
-            <ApiLinkIndicator model="Edge Media Converter Engine" />
+            <Badge className="bg-emerald-500 text-slate-950 font-semibold px-4 py-1 text-xs rounded-full">✓ 完成</Badge>
           </div>
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4 text-left">
-          <div className="flex items-center gap-2 text-emerald-400"><Info size={20} /> <h3 className="font-black italic uppercase text-sm">使いかた・活用マニュアル</h3></div>
-          <p className="text-sm text-slate-300 font-bold leading-relaxed italic">動画・画像・PDFをこれ一台で。モードを選択し、ファイルをアップロードしてください。AIが画質を維持したまま最適処理します。</p>
+          <div className="flex items-center gap-2 text-emerald-400"><Info size={20} /> <h3 className="font-semibold text-sm">使いかた・活用マニュアル</h3></div>
+          <p className="text-sm text-slate-300 leading-relaxed">動画・画像・PDFをこれ一台で。モードを選択し、ファイルをアップロードしてください。AIが画質を維持したまま最適処理します。</p>
         </div>
 
         <div className="grid grid-cols-3 gap-2">
