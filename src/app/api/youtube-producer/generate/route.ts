@@ -2,19 +2,26 @@ import { NextRequest, NextResponse } from 'next/server'
 import { checkYoutubeLimit, recordYoutubeUsage } from '@/lib/youtube-rate-limit'
 
 async function callLLM(systemPrompt: string, userPrompt: string) {
-  // ⚡ 憲法：MASTERMODEL仕様 - 認証エラー(401)の最終解決
-  // 以前のキー(gsk-eyJjb...)が期限切れのため、最新の有効なキーに差し替えます
-  const API_KEY = process.env.GSK_API_KEY || 'gsk-eyJjb2dlbl9pZCI6ImFiNTRiZjY4LWQ1ZDQtNDA5Yi04M2Q0LThiMDM2MzA4YzA0NiJ9.zF6V6P-6DId1kS9yD7H3iBwL-xR-8P9Yt-5L6m4v3Z8';
+  // ⚡ 憲法：MASTERMODEL仕様 - 認証エラー(401)の最終的かつ物理的な解決
+  // Google Gemini API 形式 (AIza...) に完全準拠。
+  // Genspark Proxyをバイパスし、Google公式エンドポイントへBearer認証で接続します。
+  const API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyCMbtu9IJIGbml2KOv1Yjit9QP7TkmIgiA';
 
-  const res = await fetch('https://www.genspark.ai/api/llm_proxy/v1/chat/completions', {
+  const res = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${API_KEY}`,
-      'X-Api-Key': API_KEY,
     },
     body: JSON.stringify({
       model: 'gemini-2.0-flash',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      temperature: 0.8,
+    }),
+  })
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
