@@ -17,7 +17,7 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
       'Authorization': `Bearer ${GSK_API_KEY}`,
     },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5',
+      model: 'gemini-2.0-flash',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
