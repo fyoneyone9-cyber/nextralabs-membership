@@ -15,6 +15,10 @@ export default function AIKonkatsuApp() {
   const [result, setResult] = useState<string | null>(null);
   const [recommendations, setRecommendations] = useState<any[]>([]);
 
+  // ビルドエラーの原因だった定義をここに配置
+  const traitsList = ['真面目', '聞き上手', '楽観的', '慎重派', 'アクティブ', '穏やか'];
+  const prioritiesList = ['価値観の一致', '経済力・安定', '趣味の共有', '家事育児協力', '外見・清潔感'];
+
   const toggleTrait = (trait: string) => {
     setSelectedTraits(prev => prev.includes(trait) ? prev.filter(t => t !== trait) : [...prev, trait]);
   };
@@ -53,8 +57,8 @@ export default function AIKonkatsuApp() {
         }]);
       }
       setResult(aiText.split('[CATEGORY_START]')[0]);
-    } catch (e) { 
-      alert("通信エラー: " + e.message + "\nURLを確認してください: " + SUPABASE_URL); 
+    } catch (e: any) { 
+      alert("通信エラー: " + e.message); 
     } finally { setLoading(false); }
   };
 
@@ -75,7 +79,7 @@ export default function AIKonkatsuApp() {
               <User className="w-4 h-4 text-emerald-500" /> あなたの性格
             </label>
             <div className="grid grid-cols-3 gap-2">
-              {traits.map(t => (
+              {traitsList.map(t => (
                 <button key={t} onClick={() => toggleTrait(t)} className={`py-3 rounded-xl text-xs font-bold border-2 transition-all ${selectedTraits.includes(t) ? 'bg-emerald-500 border-emerald-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'bg-slate-900 border-slate-800 text-slate-500 hover:border-slate-700'}`}>{t}</button>
               ))}
             </div>
@@ -87,7 +91,7 @@ export default function AIKonkatsuApp() {
               <Target className="w-4 h-4 text-emerald-500" /> お相手に求めるもの
             </label>
             <div className="grid grid-cols-2 gap-2">
-              {priorities.map(p => (
+              {prioritiesList.map(p => (
                 <button key={p} onClick={() => togglePriority(p)} className={`py-3 px-4 rounded-xl text-xs font-bold border-2 flex justify-between items-center transition-all ${selectedPriorities.includes(p) ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400' : 'bg-slate-900 border-slate-800 text-slate-500'}`}>{p} {selectedPriorities.includes(p) && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}</button>
               ))}
             </div>
