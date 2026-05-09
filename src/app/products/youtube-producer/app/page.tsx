@@ -61,7 +61,7 @@ function YoutubeProducerApp() {
 
   // 状態保持
   const [transcript, setTranscript] = useState('')
-  const [genre, setGenre] = useState(GENRES[0].id)
+  const [genre, setGenre] = useState('entertainment') // デフォルトをエンタメに変更
   const [script, setScript] = useState<any>(null)
   const [characters, setCharacters] = useState<any[] | null>(null)
   const [thumbnails, setThumbnails] = useState<any[] | null>(null)
