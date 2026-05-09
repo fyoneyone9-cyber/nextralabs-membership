@@ -15,9 +15,6 @@ export default function AIKonkatsuApp() {
   const [result, setResult] = useState<string | null>(null);
   const [recommendations, setRecommendations] = useState<any[]>([]);
 
-  const traits = ['真面目', '聞き上手', '楽観的', '慎重派', 'アクティブ', '穏やか'];
-  const priorities = ['価値観の一致', '経済力・安定', '趣味の共有', '家事育児協力', '外見・清潔感'];
-
   const toggleTrait = (trait: string) => {
     setSelectedTraits(prev => prev.includes(trait) ? prev.filter(t => t !== trait) : [...prev, trait]);
   };
@@ -40,6 +37,12 @@ export default function AIKonkatsuApp() {
         }),
       });
       const data = await response.json();
+      
+      if (data.error) {
+        alert("AIエラー: " + data.error);
+        return;
+      }
+
       const aiText = data.text;
       const match = aiText.match(/\[CATEGORY_START\]([\s\S]*?)\[CATEGORY_END\]/);
       if (match) {
@@ -50,7 +53,9 @@ export default function AIKonkatsuApp() {
         }]);
       }
       setResult(aiText.split('[CATEGORY_START]')[0]);
-    } catch (e) { alert("エラーが発生しました。"); } finally { setLoading(false); }
+    } catch (e) { 
+      alert("通信エラー: " + e.message + "\nURLを確認してください: " + SUPABASE_URL); 
+    } finally { setLoading(false); }
   };
 
   return (
