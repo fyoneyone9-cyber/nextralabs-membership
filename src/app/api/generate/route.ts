@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import {
   Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     // Gemini 2.5 Flash で原稿生成
     // ========================
     const genAI = new GoogleGenerativeAI(geminiKey)
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
 
     const manuscriptPrompt = `
 あなたはKindle電子書籍の専門ライターです。以下の条件で電子書籍の原稿を執筆してください。
