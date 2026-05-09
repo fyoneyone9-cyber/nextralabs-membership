@@ -21,8 +21,19 @@ export async function POST(req: Request) {
     }
 
     // 🔑 楽天AppID (NextraLabs 共有マスターキー)
-    const RAKUTEN_APP_ID = '1020081822830310242'; 
+    // .env.local または Vercel の環境変数 RAKUTEN_APP_ID を優先、なければハードコード
+    const RAKUTEN_APP_ID = process.env.RAKUTEN_APP_ID || '1020081822830310242'; 
     
+    // アプリケーションIDが不正な場合のフォールバック（デモモード）
+    if (RAKUTEN_APP_ID === 'YOUR_APP_ID') {
+       return NextResponse.json({
+         success: true,
+         target_item: { name: "デモ商品", base_price: 10000, points: 1, effective_price: 9900 },
+         rival_prices: [{ name: "競合A", price: 9500, effective_price: 8550, points: 10, status: "SALE" }],
+         win_rate: "10%",
+         suggestion_text: "【デモ】楽天APIキーを設定してください。"
+       });
+    }
     // 競合調査のため、あえて価格の安い順に取得
     const apiUrl = `https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${RAKUTEN_APP_ID}&hits=10&sort=%2BitemPrice`;
 
