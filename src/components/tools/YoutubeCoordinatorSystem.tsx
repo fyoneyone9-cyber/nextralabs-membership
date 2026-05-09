@@ -281,16 +281,52 @@ const MasterEngine = () => {
           </div>
         )}
 
-        {/* 空状態 */}
+        {/* 空状態 + サンプル動画 */}
         {!analysisResult && !isAnalyzing && !errorMsg && (
-          <div
-            style={{ background: '#0d1117', border: '1px solid #1e293b' }}
-            className="rounded-xl p-12 flex flex-col items-center justify-center gap-4 opacity-30"
-          >
-            <Layers size={40} />
-            <p className="text-sm text-center leading-relaxed">
-              YouTubeのURLを貼り付けて<br />「解析する」を押してください
-            </p>
+          <div className="space-y-4">
+            <div
+              style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+              className="rounded-xl p-10 flex flex-col items-center justify-center gap-3 opacity-40"
+            >
+              <Layers size={36} />
+              <p className="text-sm text-center leading-relaxed">
+                YouTubeのURLを貼り付けて<br />「解析する」を押してください
+              </p>
+            </div>
+
+            {/* サンプル動画リンク */}
+            <div style={{ background: '#0d1117', border: '1px solid #1e293b' }} className="rounded-xl p-5 space-y-3">
+              <p className="text-xs font-semibold text-slate-400 flex items-center gap-2">
+                <Play size={12} style={{ color: '#10b981' }} />
+                試してみる — ファッション系 人気動画
+              </p>
+              <div className="space-y-2">
+                {[
+                  { label: 'GU 新作コーデ紹介 2024', url: 'https://www.youtube.com/results?search_query=GU+コーデ+2024' },
+                  { label: 'ZARA・H&M プチプラコーデ', url: 'https://www.youtube.com/results?search_query=ZARA+H%26M+プチプラコーデ' },
+                  { label: 'ユニクロ メンズコーデ', url: 'https://www.youtube.com/results?search_query=ユニクロ+メンズコーデ' },
+                  { label: 'トレンドコーデ 春夏 2024', url: 'https://www.youtube.com/results?search_query=トレンドコーデ+春夏+2024' },
+                ].map((item) => (
+                  <button
+                    key={item.url}
+                    onClick={() => window.open(item.url, '_blank')}
+                    className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 transition-all group"
+                    style={{ background: '#13141f', border: '1px solid #334155' }}
+                    onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.4)')}
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = '#334155')}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Youtube size={13} className="text-red-400 shrink-0" />
+                      {item.label}
+                    </div>
+                    <ExternalLink size={11} className="text-slate-600 group-hover:text-emerald-400 transition-colors shrink-0" />
+                  </button>
+                ))}
+              </div>
+              <p className="text-[10px] text-slate-600 leading-relaxed">
+                ※ YouTubeで動画を見つけたら、そのURLをコピーして上の入力欄に貼り付けてください
+              </p>
+            </div>
           </div>
         )}
 
