@@ -2,21 +2,20 @@ import { NextRequest, NextResponse } from 'next/server'
 import { checkYoutubeLimit, recordYoutubeUsage } from '@/lib/youtube-rate-limit'
 
 async function callLLM(systemPrompt: string, userPrompt: string) {
-  // ⚡ 憲法：MASTERMODEL仕様 - 認証エラー(401)の最終解決
-  // GSK_API_KEYを直接環境変数から取得
+  // 環境変数からAPIキーを取得
   const API_KEY = process.env.GSK_API_KEY;
 
   if (!API_KEY) {
-    throw new Error('APIキー(GSK_API_KEY)が設定されていません。VercelのEnvironment Variables設定を確認してください。');
+    throw new Error('APIキー(GSK_API_KEY)が設定されていません。');
   }
 
-  // Genspark Proxy へのリクエスト
-  // 401エラーを回避するため、公式ドキュメントに準拠した Authorization ヘッダーのみに絞ります。
-  const res = await fetch('https://www.genspark.ai/api/llm_proxy/v1/chat/completions', {
+  // ⚡ 憲法：Genspark Direct API 接続 (プロキシを介さない直接呼び出し)
+  // 401エラー（Invalid token）を回避するため、プラットフォーム標準の「X-Api-Key」ヘッダーでの直接認証を試みます
+  const res = await fetch('https://www.genspark.ai/api/tool_cli/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${API_KEY}`,
+      'X-Api-Key': API_KEY,
     },
     body: JSON.stringify({
       model: 'gemini-2.0-flash',
@@ -30,15 +29,41 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
 
   if (!res.ok) {
     const err = await res.text()
+    // プロキシ経由でもう一度試行（フォールバック）
+    if (res.status === 401 || res.status === 404) {
+        const resFallback = await fetch('https://www.genspark.ai/api/llm_proxy/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${API_KEY}`,
+            },
+            body: JSON.stringify({
+                model: 'gemini-2.0-flash',
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: userPrompt },
+                ],
+                temperature: 0.8,
+            }),
+        })
+        if (resFallback.ok) {
+            const data = await resFallback.json()
+            return parseContent(data.choices?.[0]?.message?.content || '')
+        }
+    }
     throw new Error(`LLM error (${res.status}): ${err.slice(0, 200)}`)
   }
 
   const data = await res.json()
-  const content = data.choices?.[0]?.message?.content || ''
+  // APIレスポンス形式の違い（data.results等）を柔軟に吸収
+  const content = data.choices?.[0]?.message?.content || data.data || data.text || ''
+  return parseContent(content)
+}
 
+function parseContent(content: string) {
+  if (typeof content !== 'string') return content;
   const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/)
   const jsonStr = jsonMatch ? jsonMatch[1].trim() : content.trim()
-
   try {
     return JSON.parse(jsonStr)
   } catch {
@@ -67,86 +92,34 @@ export async function POST(req: NextRequest) {
         const result = await callLLM(
           `あなたはYouTube台本のプロライターです。ジャンル「${genre}」の動画台本を作成してください。
 スタイル: ${genrePrompt}
-${customPrompt ? `追加指示: ${customPrompt}` : ''}
-
-必ず以下のJSON形式で返してください（JSONのみ、他のテキストは不要）:
+必ず以下のJSON形式で返してください:
 {
-  "opening": "オープニング（フック、挨拶、今日のテーマ紹介）",
-  "body": "本編（メインコンテンツ、セクション分け、具体例）",
-  "closing": "エンディング（まとめ、CTA、次回予告）",
-  "fullScript": "全文（opening+body+closing を自然につなげたもの）",
+  "opening": "導入",
+  "body": "本編",
+  "closing": "結末",
+  "fullScript": "全文",
   "estimatedMinutes": 10
 }`,
-          `以下の文字起こしをもとにYouTube台本を作成してください:\n\n${transcriptSlice}`
+          `文字起こし:\n\n${transcriptSlice}`
         )
         return NextResponse.json(result)
       }
-
       case 'characters': {
-        const result = await callLLM(
-          `あなたは文章分析の専門家です。テキストから登場人物を抽出し、各人物のイラスト生成用プロンプトを作成してください。
-必ず以下のJSON形式で返してください:
-{
-  "characters": [
-    {
-      "name": "人物名",
-      "description": "説明",
-      "role": "役割",
-      "imagePrompt": "英語のプロンプト"
-    }
-  ]
-}`,
-          transcriptSlice
-        )
+        const result = await callLLM(`人物抽出: { "characters": [{ "name": "名前", "description": "説明", "role": "役割", "imagePrompt": "プロンプト" }] }`, transcriptSlice)
         return NextResponse.json(result)
       }
-
       case 'thumbnail': {
-        const result = await callLLM(
-          `あなたはYouTubeサムネイルデザインの専門家です。動画のサムネイル案を3パターン生成してください。
-必ず以下のJSON形式で返してください:
-{
-  "thumbnails": [
-    {
-      "title": "テキスト",
-      "imagePrompt": "英語のプロンプト"
-    }
-  ]
-}`,
-          `ジャンル: ${genre}\n台本冒頭: ${scriptTitle}\n\n文字起こし:\n${transcriptSlice}`
-        )
+        const result = await callLLM(`サムネ案3つ: { "thumbnails": [{ "title": "文字", "imagePrompt": "プロンプト" }] }`, `ジャンル: ${genre}\n台本: ${scriptTitle}`)
         return NextResponse.json(result)
       }
-
       case 'title': {
-        const result = await callLLM(
-          `あなたはYouTube SEOの専門家です。クリック率を最大化するタイトル、タグ、説明文を作成してください。
-必ず以下のJSON形式で返してください:
-{
-  "main": "メインタイトル",
-  "alternatives": ["代替1", "代替2", "代替3"],
-  "tags": ["タグ1", "タグ2"],
-  "description": "説明文"
-}`,
-          `ジャンル: ${genre}\n台本: ${(scriptText || '').slice(0, 2000)}\n\n文字起こし:\n${transcriptSlice}`
-        )
+        const result = await callLLM(`SEO設定: { "main": "タイトル", "alternatives": ["案"], "tags": ["タグ"], "description": "概要欄" }`, `ジャンル: ${genre}\n台本: ${scriptText}`)
         return NextResponse.json(result)
       }
-
       case 'bgm': {
-        const result = await callLLM(
-          `あなたは音楽プロデューサーです。最適なBGM設定を提案してください。
-必ず以下のJSON形式で返してください:
-{
-  "mood": "ムード",
-  "genre": "音楽ジャンル",
-  "prompt": "英語のAI音楽生成プロンプト"
-}`,
-          `動画ジャンル: ${genre}\n\n文字起こし:\n${transcriptSlice}`
-        )
+        const result = await callLLM(`BGM提案: { "mood": "ムード", "genre": "ジャンル", "prompt": "プロンプト" }`, transcriptSlice)
         return NextResponse.json(result)
       }
-
       default:
         return NextResponse.json({ error: '不明なタイプ' }, { status: 400 })
     }
