@@ -53,6 +53,7 @@ function YoutubeProducerApp() {
   const [isProcessing, setIsProcessing] = useState<Record<string, boolean>>({})
   const [error, setError] = useState<string | null>(null)
   const [compressProgress, setCompressProgress] = useState(0)
+  const [loadingStep, setLoadingStep] = useState<string | null>(null) // 読み込み中のメッセージ用
   const fileInputRef = useRef<HTMLInputElement>(null)
   
   // FFmpeg関連
@@ -91,6 +92,18 @@ function YoutubeProducerApp() {
   const callApi = async (type: string, data: any) => {
     setIsProcessing(prev => ({ ...prev, [type]: true }))
     setError(null)
+    
+    // ステップごとのリアルタイムメッセージ設定
+    const messages: Record<string, string> = {
+      'script': '黄金台本を錬成中... これには15〜30秒ほどかかります。最高の結果を出すため、このまま少しお待ちください 🚀',
+      'characters': '登場人物のビジュアルを設計中...',
+      'thumbnail': 'バズるサムネイル案を構成中...',
+      'title': 'SEOタイトルの最適解を算出中...',
+      'bgm': '最適なサウンドをセレクト中...',
+      'transcribe': 'AIが動画の内容を読み起こしています...'
+    }
+    setLoadingStep(messages[type] || '処理中...')
+
     try {
       const res = await fetch('/api/youtube-producer/generate', {
         method: 'POST',
@@ -105,6 +118,7 @@ function YoutubeProducerApp() {
       return null
     } finally {
       setIsProcessing(prev => ({ ...prev, [type]: false }))
+      setLoadingStep(null)
     }
   }
 
@@ -222,6 +236,13 @@ function YoutubeProducerApp() {
             プレミアム・マスターモデル
           </Badge>
         </div>
+
+        {loadingStep && (
+          <div className="bg-emerald-500/10 border-2 border-emerald-500/50 rounded-3xl p-8 animate-pulse flex flex-col items-center gap-4 text-center">
+            <Loader2 className="h-10 w-10 text-emerald-400 animate-spin" />
+            <p className="text-lg text-emerald-400 font-black italic">{loadingStep}</p>
+          </div>
+        )}
 
         {error && (
           <div className="bg-red-500/10 border border-red-500/50 rounded-2xl p-4 flex items-center gap-3 text-red-500 font-bold italic">
