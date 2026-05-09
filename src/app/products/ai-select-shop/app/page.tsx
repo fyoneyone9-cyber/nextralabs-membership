@@ -2,28 +2,344 @@
 import dynamic from 'next/dynamic'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import {
-  Loader2, CheckCircle2, Info, Zap, ShoppingCart,
-  TrendingUp, Palette, Package, RefreshCw, ExternalLink, AlertCircle
+  Loader2, CheckCircle2, Zap, ShoppingCart,
+  TrendingUp, Package, RefreshCw, ExternalLink, AlertCircle, Shuffle
 } from 'lucide-react'
 
 // ──────────────────────────────────────────────
-// デザインスタイル定義
+// デザインスタイル定義（描画ロジック付き）
 // ──────────────────────────────────────────────
-const STYLES = [
-  { id: 'japanese',   name: '和風',         bg: '#1a0000', textColor: '#c0392b', font: 'bold 28px serif' },
-  { id: 'street',     name: 'ストリート',   bg: '#111111', textColor: '#ffdd00', font: 'bold 30px Impact,sans-serif' },
-  { id: 'retro',      name: 'レトロ',       bg: '#2c1a0e', textColor: '#ff6b35', font: 'bold 26px Georgia,serif' },
-  { id: 'cyberpunk',  name: 'サイバー',     bg: '#000020', textColor: '#00ffff', font: 'bold 28px monospace' },
-  { id: 'kawaii',     name: 'かわいい',     bg: '#fff0f5', textColor: '#ff69b4', font: 'bold 28px sans-serif' },
-  { id: 'minimal',    name: 'ミニマル',     bg: '#ffffff', textColor: '#111111', font: '300 28px Helvetica,sans-serif' },
-  { id: 'gold',       name: 'ラグジュアリー', bg: '#0a0a00', textColor: '#d4af37', font: 'bold 26px Georgia,serif' },
-  { id: 'neon',       name: 'ネオン',       bg: '#000000', textColor: '#39ff14', font: 'bold 28px monospace' },
-  { id: 'nature',     name: 'ボタニカル',   bg: '#f1f8f1', textColor: '#2ecc71', font: 'bold 26px Georgia,serif' },
-  { id: 'gradient',   name: 'グラデーション', bg: '#1a0033', textColor: '#ffffff', font: 'bold 28px sans-serif' },
-  { id: 'wave',       name: '波・和柄',     bg: '#1a4a8a', textColor: '#ffffff', font: 'bold 26px serif' },
-  { id: 'popart',     name: 'ポップアート', bg: '#ffff00', textColor: '#e91e63', font: 'bold 30px Impact,sans-serif' },
+type StyleDef = {
+  id: string
+  name: string
+  draw: (ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, text: string) => void
+}
+
+const STYLES: StyleDef[] = [
+  {
+    id: 'japanese',
+    name: '⛩ 和風',
+    draw: (ctx, cx, cy, r, text) => {
+      // 赤丸＋白テキスト
+      ctx.fillStyle = '#c0392b'
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill()
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 4
+      ctx.beginPath(); ctx.arc(cx, cy, r - 6, 0, Math.PI * 2); ctx.stroke()
+      ctx.font = `bold ${Math.floor(r * 0.45)}px serif`
+      ctx.fillStyle = '#ffffff'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy)
+    },
+  },
+  {
+    id: 'street',
+    name: '🏙 ストリート',
+    draw: (ctx, cx, cy, r, text) => {
+      // 黒背景＋黄色テキスト＋斜め線
+      ctx.fillStyle = '#111111'
+      ctx.beginPath(); ctx.rect(cx - r, cy - r * 0.7, r * 2, r * 1.4); ctx.fill()
+      ctx.strokeStyle = '#ffdd00'; ctx.lineWidth = 3
+      ctx.beginPath(); ctx.rect(cx - r + 4, cy - r * 0.7 + 4, r * 2 - 8, r * 1.4 - 8); ctx.stroke()
+      ctx.font = `900 ${Math.floor(r * 0.48)}px Impact,sans-serif`
+      ctx.fillStyle = '#ffdd00'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy)
+    },
+  },
+  {
+    id: 'retro',
+    name: '📻 レトロ',
+    draw: (ctx, cx, cy, r, text) => {
+      // クリーム背景＋アーチ状テキスト風
+      ctx.fillStyle = '#f5e6c8'
+      ctx.beginPath()
+      ctx.roundRect(cx - r, cy - r * 0.8, r * 2, r * 1.6, 16)
+      ctx.fill()
+      ctx.strokeStyle = '#5c3d1e'; ctx.lineWidth = 5
+      ctx.beginPath()
+      ctx.roundRect(cx - r + 5, cy - r * 0.8 + 5, r * 2 - 10, r * 1.6 - 10, 12)
+      ctx.stroke()
+      // 飾り線
+      ctx.strokeStyle = '#5c3d1e'; ctx.lineWidth = 2
+      ctx.beginPath(); ctx.moveTo(cx - r * 0.7, cy + r * 0.3); ctx.lineTo(cx + r * 0.7, cy + r * 0.3); ctx.stroke()
+      ctx.font = `bold ${Math.floor(r * 0.42)}px Georgia,serif`
+      ctx.fillStyle = '#5c3d1e'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy - r * 0.05)
+      ctx.font = `${Math.floor(r * 0.18)}px Georgia,serif`
+      ctx.fillStyle = '#a0785a'
+      ctx.fillText('VINTAGE COLLECTION', cx, cy + r * 0.5)
+    },
+  },
+  {
+    id: 'cyberpunk',
+    name: '🌃 サイバー',
+    draw: (ctx, cx, cy, r, text) => {
+      ctx.fillStyle = '#000020'
+      ctx.beginPath(); ctx.rect(cx - r, cy - r * 0.75, r * 2, r * 1.5); ctx.fill()
+      // グリッド線
+      ctx.strokeStyle = 'rgba(0,255,255,0.15)'; ctx.lineWidth = 1
+      for (let i = -r; i <= r; i += 20) {
+        ctx.beginPath(); ctx.moveTo(cx + i, cy - r * 0.75); ctx.lineTo(cx + i, cy + r * 0.75); ctx.stroke()
+      }
+      // メインテキスト
+      ctx.shadowColor = '#00ffff'; ctx.shadowBlur = 12
+      ctx.font = `bold ${Math.floor(r * 0.44)}px monospace`
+      ctx.fillStyle = '#00ffff'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy)
+      ctx.shadowBlur = 0
+      // アンダーライン
+      ctx.strokeStyle = '#ff00ff'; ctx.lineWidth = 2
+      ctx.beginPath(); ctx.moveTo(cx - r * 0.6, cy + r * 0.38); ctx.lineTo(cx + r * 0.6, cy + r * 0.38); ctx.stroke()
+    },
+  },
+  {
+    id: 'kawaii',
+    name: '🎀 かわいい',
+    draw: (ctx, cx, cy, r, text) => {
+      // パステルピンク背景
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r)
+      grad.addColorStop(0, '#ffe4f0'); grad.addColorStop(1, '#ffb7c5')
+      ctx.fillStyle = grad
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill()
+      // 星の装飾
+      ctx.fillStyle = '#ff69b4'
+      for (let i = 0; i < 5; i++) {
+        const angle = (i / 5) * Math.PI * 2 - Math.PI / 2
+        const sx = cx + Math.cos(angle) * r * 0.78
+        const sy = cy + Math.sin(angle) * r * 0.78
+        ctx.font = `${Math.floor(r * 0.18)}px sans-serif`
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+        ctx.fillText('★', sx, sy)
+      }
+      ctx.font = `bold ${Math.floor(r * 0.42)}px "Noto Sans JP",sans-serif`
+      ctx.fillStyle = '#c2185b'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy)
+    },
+  },
+  {
+    id: 'minimal',
+    name: '⬜ ミニマル',
+    draw: (ctx, cx, cy, r, text) => {
+      ctx.fillStyle = '#fafafa'
+      ctx.beginPath(); ctx.rect(cx - r, cy - r * 0.6, r * 2, r * 1.2); ctx.fill()
+      ctx.font = `300 ${Math.floor(r * 0.4)}px Helvetica,sans-serif`
+      ctx.fillStyle = '#111111'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy)
+      ctx.strokeStyle = '#111111'; ctx.lineWidth = 1.5
+      ctx.beginPath(); ctx.moveTo(cx - r * 0.4, cy + r * 0.35); ctx.lineTo(cx + r * 0.4, cy + r * 0.35); ctx.stroke()
+    },
+  },
+  {
+    id: 'gold',
+    name: '💎 ラグジュアリー',
+    draw: (ctx, cx, cy, r, text) => {
+      ctx.fillStyle = '#0a0a00'
+      ctx.beginPath()
+      ctx.roundRect(cx - r, cy - r * 0.75, r * 2, r * 1.5, 8)
+      ctx.fill()
+      // ゴールドボーダー
+      const borderGrad = ctx.createLinearGradient(cx - r, cy, cx + r, cy)
+      borderGrad.addColorStop(0, '#b8960c'); borderGrad.addColorStop(0.5, '#ffe566'); borderGrad.addColorStop(1, '#b8960c')
+      ctx.strokeStyle = borderGrad; ctx.lineWidth = 3
+      ctx.beginPath()
+      ctx.roundRect(cx - r + 4, cy - r * 0.75 + 4, r * 2 - 8, r * 1.5 - 8, 6)
+      ctx.stroke()
+      // テキスト
+      const textGrad = ctx.createLinearGradient(cx, cy - r * 0.3, cx, cy + r * 0.3)
+      textGrad.addColorStop(0, '#ffe566'); textGrad.addColorStop(1, '#d4af37')
+      ctx.font = `bold ${Math.floor(r * 0.42)}px Georgia,serif`
+      ctx.fillStyle = textGrad
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy)
+    },
+  },
+  {
+    id: 'neon',
+    name: '💡 ネオン',
+    draw: (ctx, cx, cy, r, text) => {
+      ctx.fillStyle = '#000000'
+      ctx.beginPath(); ctx.rect(cx - r, cy - r * 0.7, r * 2, r * 1.4); ctx.fill()
+      // ネオングロウ
+      ctx.shadowColor = '#39ff14'; ctx.shadowBlur = 20
+      ctx.strokeStyle = '#39ff14'; ctx.lineWidth = 2
+      ctx.beginPath(); ctx.rect(cx - r + 6, cy - r * 0.7 + 6, r * 2 - 12, r * 1.4 - 12); ctx.stroke()
+      ctx.font = `bold ${Math.floor(r * 0.44)}px monospace`
+      ctx.fillStyle = '#39ff14'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy)
+      ctx.shadowBlur = 0
+    },
+  },
+  {
+    id: 'nature',
+    name: '🌿 ボタニカル',
+    draw: (ctx, cx, cy, r, text) => {
+      ctx.fillStyle = '#f1f8f1'
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill()
+      ctx.strokeStyle = '#2ecc71'; ctx.lineWidth = 3
+      ctx.beginPath(); ctx.arc(cx, cy, r - 5, 0, Math.PI * 2); ctx.stroke()
+      // 葉っぱ装飾
+      ctx.font = `${Math.floor(r * 0.22)}px sans-serif`
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText('🌿', cx - r * 0.58, cy - r * 0.58)
+      ctx.fillText('🌿', cx + r * 0.58, cy + r * 0.58)
+      ctx.font = `bold ${Math.floor(r * 0.4)}px Georgia,serif`
+      ctx.fillStyle = '#1a6b3a'
+      ctx.fillText(text, cx, cy)
+    },
+  },
+  {
+    id: 'gradient',
+    name: '🌈 グラデーション',
+    draw: (ctx, cx, cy, r, text) => {
+      const grad = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r)
+      grad.addColorStop(0, '#6366f1'); grad.addColorStop(0.5, '#a855f7'); grad.addColorStop(1, '#ec4899')
+      ctx.fillStyle = grad
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill()
+      ctx.shadowColor = 'rgba(168,85,247,0.6)'; ctx.shadowBlur = 16
+      ctx.font = `700 ${Math.floor(r * 0.42)}px sans-serif`
+      ctx.fillStyle = '#ffffff'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy)
+      ctx.shadowBlur = 0
+    },
+  },
+  {
+    id: 'wave',
+    name: '🌊 波・和柄',
+    draw: (ctx, cx, cy, r, text) => {
+      ctx.fillStyle = '#1a4a8a'
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill()
+      // 波紋
+      ctx.strokeStyle = 'rgba(126,200,227,0.4)'; ctx.lineWidth = 2
+      for (let i = 1; i <= 3; i++) {
+        ctx.beginPath(); ctx.arc(cx, cy, r * 0.3 * i, 0, Math.PI * 2); ctx.stroke()
+      }
+      ctx.font = `bold ${Math.floor(r * 0.42)}px serif`
+      ctx.fillStyle = '#ffffff'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy)
+    },
+  },
+  {
+    id: 'popart',
+    name: '🎨 ポップアート',
+    draw: (ctx, cx, cy, r, text) => {
+      ctx.fillStyle = '#ffff00'
+      ctx.beginPath(); ctx.rect(cx - r, cy - r * 0.75, r * 2, r * 1.5); ctx.fill()
+      // ドット
+      ctx.fillStyle = 'rgba(233,30,99,0.15)'
+      for (let x = cx - r; x <= cx + r; x += 18) {
+        for (let y = cy - r * 0.75; y <= cy + r * 0.75; y += 18) {
+          ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.fill()
+        }
+      }
+      ctx.strokeStyle = '#000000'; ctx.lineWidth = 4
+      ctx.beginPath(); ctx.rect(cx - r + 4, cy - r * 0.75 + 4, r * 2 - 8, r * 1.5 - 8); ctx.stroke()
+      ctx.font = `900 ${Math.floor(r * 0.46)}px Impact,sans-serif`
+      ctx.fillStyle = '#e91e63'
+      ctx.strokeStyle = '#000000'; ctx.lineWidth = 3
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.strokeText(text, cx, cy)
+      ctx.fillText(text, cx, cy)
+    },
+  },
+  {
+    id: 'anime',
+    name: '🌸 アニメ',
+    draw: (ctx, cx, cy, r, text) => {
+      const grad = ctx.createRadialGradient(cx, cy - r * 0.3, 0, cx, cy, r)
+      grad.addColorStop(0, '#1a1a4e'); grad.addColorStop(1, '#0d0d2b')
+      ctx.fillStyle = grad
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill()
+      // 桜
+      ctx.font = `${Math.floor(r * 0.18)}px sans-serif`
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ;[[-0.65, -0.55], [0.65, -0.55], [-0.65, 0.55], [0.65, 0.55]].forEach(([dx, dy]) => {
+        ctx.fillText('🌸', cx + dx * r, cy + dy * r)
+      })
+      ctx.shadowColor = '#ff6ec7'; ctx.shadowBlur = 10
+      ctx.font = `bold ${Math.floor(r * 0.42)}px "Noto Sans JP",sans-serif`
+      ctx.fillStyle = '#ff6ec7'
+      ctx.fillText(text, cx, cy)
+      ctx.shadowBlur = 0
+    },
+  },
+  {
+    id: 'vintage',
+    name: '🗿 ヴィンテージ',
+    draw: (ctx, cx, cy, r, text) => {
+      ctx.fillStyle = '#e8d5a3'
+      ctx.beginPath()
+      ctx.roundRect(cx - r, cy - r * 0.8, r * 2, r * 1.6, 20)
+      ctx.fill()
+      // エイジング効果
+      ctx.fillStyle = 'rgba(92,61,30,0.08)'
+      ctx.beginPath(); ctx.arc(cx - r * 0.3, cy - r * 0.3, r * 0.6, 0, Math.PI * 2); ctx.fill()
+      ctx.strokeStyle = '#5c3d1e'; ctx.lineWidth = 4
+      ctx.beginPath()
+      ctx.roundRect(cx - r + 6, cy - r * 0.8 + 6, r * 2 - 12, r * 1.6 - 12, 16)
+      ctx.stroke()
+      ctx.strokeStyle = '#5c3d1e'; ctx.lineWidth = 2
+      ctx.beginPath()
+      ctx.roundRect(cx - r + 14, cy - r * 0.8 + 14, r * 2 - 28, r * 1.6 - 28, 12)
+      ctx.stroke()
+      ctx.font = `bold ${Math.floor(r * 0.4)}px Georgia,serif`
+      ctx.fillStyle = '#3d2610'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy - r * 0.08)
+      ctx.font = `italic ${Math.floor(r * 0.16)}px Georgia,serif`
+      ctx.fillStyle = '#7a5230'
+      ctx.fillText('EST. 2026', cx, cy + r * 0.5)
+    },
+  },
+  {
+    id: 'typo',
+    name: '🔤 タイポ',
+    draw: (ctx, cx, cy, r, text) => {
+      ctx.fillStyle = '#ffffff'
+      ctx.beginPath(); ctx.rect(cx - r, cy - r, r * 2, r * 2); ctx.fill()
+      // 大きく背景テキスト
+      ctx.font = `900 ${Math.floor(r * 1.2)}px Helvetica,sans-serif`
+      ctx.fillStyle = 'rgba(0,0,0,0.06)'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text.charAt(0), cx, cy)
+      // メインテキスト
+      ctx.font = `900 ${Math.floor(r * 0.46)}px Helvetica,sans-serif`
+      ctx.fillStyle = '#000000'
+      ctx.fillText(text, cx, cy)
+      ctx.strokeStyle = '#ff3300'; ctx.lineWidth = 4
+      ctx.beginPath()
+      ctx.moveTo(cx - r * 0.7, cy + r * 0.38)
+      ctx.lineTo(cx + r * 0.7, cy + r * 0.38)
+      ctx.stroke()
+    },
+  },
+  {
+    id: 'monochrome',
+    name: '🖤 モノクロ',
+    draw: (ctx, cx, cy, r, text) => {
+      ctx.fillStyle = '#1a1a1a'
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill()
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3
+      ctx.beginPath(); ctx.arc(cx, cy, r - 8, 0, Math.PI * 2); ctx.stroke()
+      ctx.strokeStyle = '#888888'; ctx.lineWidth = 1
+      ctx.beginPath(); ctx.arc(cx, cy, r - 14, 0, Math.PI * 2); ctx.stroke()
+      ctx.font = `300 ${Math.floor(r * 0.4)}px Helvetica,sans-serif`
+      ctx.fillStyle = '#ffffff'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy)
+    },
+  },
 ]
 
+// ──────────────────────────────────────────────
+// Tシャツカラー
+// ──────────────────────────────────────────────
 const TSHIRT_COLORS = [
   { id: 'white',  name: '白',      hex: '#FFFFFF' },
   { id: 'black',  name: '黒',      hex: '#1a1a1a' },
@@ -37,6 +353,14 @@ const TSHIRT_COLORS = [
   { id: 'orange', name: 'オレンジ', hex: '#ea580c' },
 ]
 
+// ──────────────────────────────────────────────
+// サイズ定義
+// ──────────────────────────────────────────────
+const ALL_SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL']
+
+// ──────────────────────────────────────────────
+// フォールバックトレンド
+// ──────────────────────────────────────────────
 const FALLBACK_TRENDS = [
   'AI活用術', '副業・在宅ワーク', '節約・投資',
   'ChatGPT最新', '動画制作', '健康・ダイエット',
@@ -44,13 +368,13 @@ const FALLBACK_TRENDS = [
 ]
 
 // ──────────────────────────────────────────────
-// Tシャツ描画ヘルパー
+// Tシャツ輪郭描画
 // ──────────────────────────────────────────────
-function drawTshirt(ctx: CanvasRenderingContext2D, w: number, h: number) {
+function drawTshirtShape(ctx: CanvasRenderingContext2D, w: number, h: number) {
   ctx.beginPath()
   ctx.moveTo(w * 0.20, h * 0.08)
   ctx.lineTo(w * 0.35, h * 0.04)
-  ctx.quadraticCurveTo(w * 0.50, h * 0.13, w * 0.65, h * 0.04)
+  ctx.quadraticCurveTo(w * 0.50, h * 0.14, w * 0.65, h * 0.04)
   ctx.lineTo(w * 0.80, h * 0.08)
   ctx.lineTo(w * 0.97, h * 0.28)
   ctx.lineTo(w * 0.80, h * 0.34)
@@ -72,6 +396,7 @@ const AISelectShopApp = () => {
   const [keyword, setKeyword] = useState('')
   const [styleId, setStyleId] = useState('japanese')
   const [tshirtColorId, setTshirtColorId] = useState('black')
+  const [selectedSizes, setSelectedSizes] = useState<string[]>(['S', 'M', 'L', 'XL'])
   const [mockupDataUrl, setMockupDataUrl] = useState<string | null>(null)
   const [isPublishing, setIsPublishing] = useState(false)
   const [publishResult, setPublishResult] = useState<{ url?: string; error?: string } | null>(null)
@@ -101,7 +426,24 @@ const AISelectShopApp = () => {
 
   useEffect(() => { fetchTrends() }, [])
 
-  // ── Tシャツモックアップ描画 ──
+  // ── ランダム生成 ──
+  const handleRandom = () => {
+    const randomStyle = STYLES[Math.floor(Math.random() * STYLES.length)]
+    const randomColor = TSHIRT_COLORS[Math.floor(Math.random() * TSHIRT_COLORS.length)]
+    setStyleId(randomStyle.id)
+    setTshirtColorId(randomColor.id)
+  }
+
+  // ── サイズ選択トグル ──
+  const toggleSize = (size: string) => {
+    setSelectedSizes(prev =>
+      prev.includes(size)
+        ? prev.length > 1 ? prev.filter(s => s !== size) : prev
+        : [...prev, size]
+    )
+  }
+
+  // ── Canvas描画 ──
   const drawDesign = useCallback(() => {
     const canvas = canvasRef.current
     if (!canvas || !keyword) return
@@ -119,34 +461,27 @@ const AISelectShopApp = () => {
 
     // Tシャツ本体
     ctx.save()
-    drawTshirt(ctx, w, h)
-    ctx.shadowColor = 'rgba(0,0,0,0.4)'
-    ctx.shadowBlur = 16
+    drawTshirtShape(ctx, w, h)
+    ctx.shadowColor = 'rgba(0,0,0,0.5)'
+    ctx.shadowBlur = 20
     ctx.fillStyle = TC.hex
     ctx.fill()
-    ctx.strokeStyle = TC.hex === '#FFFFFF' ? '#e2e8f0' : TC.hex
-    ctx.lineWidth = 2
-    ctx.stroke()
+    // ハイライト（折り目感）
+    const shineGrad = ctx.createLinearGradient(w * 0.2, 0, w * 0.8, 0)
+    shineGrad.addColorStop(0, 'rgba(255,255,255,0.12)')
+    shineGrad.addColorStop(0.4, 'rgba(255,255,255,0.05)')
+    shineGrad.addColorStop(1, 'rgba(0,0,0,0.05)')
+    ctx.fillStyle = shineGrad
+    ctx.fill()
     ctx.restore()
 
-    // デザイン印刷エリア（クリップ）
+    // デザイン（クリップ内）
     ctx.save()
-    drawTshirt(ctx, w, h)
+    drawTshirtShape(ctx, w, h)
     ctx.clip()
-
-    const cx = w / 2, cy = h * 0.50, pr = h * 0.18
-    ctx.fillStyle = S.bg
-    ctx.globalAlpha = 0.85
-    ctx.beginPath()
-    ctx.arc(cx, cy, pr, 0, Math.PI * 2)
-    ctx.fill()
-    ctx.globalAlpha = 1
-
-    ctx.font = S.font
-    ctx.fillStyle = S.textColor
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-    ctx.fillText(keyword.length > 8 ? keyword.slice(0, 8) + '…' : keyword, cx, cy)
+    const cx = w / 2, cy = h * 0.52, r = h * 0.22
+    const shortText = keyword.length > 7 ? keyword.slice(0, 7) + '…' : keyword
+    S.draw(ctx, cx, cy, r, shortText)
     ctx.restore()
 
     setMockupDataUrl(canvas.toDataURL('image/png'))
@@ -169,7 +504,7 @@ const AISelectShopApp = () => {
           style: styleId,
           mockupUrl: mockupDataUrl,
           tshirtColor: tshirtColorId,
-          sizes: ['S', 'M', 'L', 'XL'],
+          sizes: selectedSizes,
         }),
       })
       const data = await res.json()
@@ -192,13 +527,12 @@ const AISelectShopApp = () => {
   // ──────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-[#0f172a] text-slate-100" style={{ fontFamily: "'Inter','Noto Sans JP',sans-serif" }}>
-      {/* エメラルドトップバー */}
       <div className="h-1 bg-emerald-500 w-full" />
 
       <div className="max-w-5xl mx-auto px-4 py-12 space-y-10">
 
         {/* ヘッダー */}
-        <div className="space-y-3">
+        <div className="space-y-2">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="text-xs font-medium text-emerald-400 tracking-wide">
@@ -208,7 +542,7 @@ const AISelectShopApp = () => {
           <h1 className="text-4xl font-semibold text-white tracking-tight leading-[1.15]">
             AIセレクトショップ
           </h1>
-          <p className="text-slate-400 leading-relaxed text-base max-w-xl">
+          <p className="text-slate-400 text-sm max-w-xl leading-relaxed">
             トレンドを選んでデザインを生成。Shopifyへ自動出品して在庫ゼロで販売をはじめましょう。
           </p>
         </div>
@@ -261,7 +595,7 @@ const AISelectShopApp = () => {
                   <button
                     key={t.id}
                     onClick={() => { setKeyword(t.name); setStep(2); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
-                    className="h-20 bg-[#1e293b] border border-slate-700/50 hover:border-emerald-500 hover:bg-[#1e293b]/80 rounded-xl px-5 text-left font-medium text-slate-200 hover:text-emerald-400 transition-all group"
+                    className="h-20 bg-[#1e293b] border border-slate-700/50 hover:border-emerald-500 hover:bg-[#1e293b]/80 rounded-xl px-5 text-left font-medium text-slate-200 hover:text-emerald-400 transition-all"
                   >
                     <span className="text-xs text-slate-500 block mb-1">TREND</span>
                     <span className="text-base">{t.name}</span>
@@ -301,10 +635,11 @@ const AISelectShopApp = () => {
             </div>
 
             <div className="grid lg:grid-cols-2 gap-6">
-              {/* 左：設定 */}
-              <div className="space-y-5">
+              {/* 左：設定パネル */}
+              <div className="space-y-4">
+
                 {/* キーワード */}
-                <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-3">
+                <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-2">
                   <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">キーワード</label>
                   <input
                     value={keyword}
@@ -313,18 +648,27 @@ const AISelectShopApp = () => {
                   />
                 </div>
 
-                {/* スタイル */}
+                {/* デザインスタイル + ランダムボタン */}
                 <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-3">
-                  <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">デザインスタイル</label>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">デザインスタイル</label>
+                    <button
+                      onClick={handleRandom}
+                      className="flex items-center gap-1.5 text-xs font-medium text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 rounded-lg px-3 py-1.5 transition-all"
+                    >
+                      <Shuffle size={12} />
+                      ランダム
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-4 gap-2">
                     {STYLES.map(s => (
                       <button
                         key={s.id}
                         onClick={() => setStyleId(s.id)}
-                        className={`py-2 px-1 rounded-lg text-xs font-medium transition-all ${
+                        className={`py-2 px-1 rounded-lg text-xs font-medium transition-all leading-tight ${
                           styleId === s.id
                             ? 'bg-emerald-500 text-slate-950'
-                            : 'bg-[#0f172a] text-slate-400 hover:text-slate-200 border border-slate-700/50'
+                            : 'bg-[#0f172a] text-slate-400 hover:text-slate-200 border border-slate-700/50 hover:border-slate-600'
                         }`}
                       >
                         {s.name}
@@ -343,7 +687,9 @@ const AISelectShopApp = () => {
                         onClick={() => setTshirtColorId(c.id)}
                         title={c.name}
                         className={`w-8 h-8 rounded-full border-2 transition-all ${
-                          tshirtColorId === c.id ? 'border-emerald-400 scale-110' : 'border-slate-600 hover:border-slate-400'
+                          tshirtColorId === c.id
+                            ? 'border-emerald-400 scale-110 shadow-[0_0_8px_rgba(16,185,129,0.5)]'
+                            : 'border-slate-600 hover:border-slate-400'
                         }`}
                         style={{ backgroundColor: c.hex }}
                       />
@@ -351,10 +697,34 @@ const AISelectShopApp = () => {
                   </div>
                 </div>
 
+                {/* サイズ選択 */}
+                <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">販売サイズ</label>
+                    <span className="text-xs text-slate-500">{selectedSizes.length}種選択中</span>
+                  </div>
+                  <div className="flex gap-2 flex-wrap">
+                    {ALL_SIZES.map(size => (
+                      <button
+                        key={size}
+                        onClick={() => toggleSize(size)}
+                        className={`h-9 px-4 rounded-lg text-sm font-medium transition-all border ${
+                          selectedSizes.includes(size)
+                            ? 'bg-emerald-500 text-slate-950 border-emerald-500'
+                            : 'bg-[#0f172a] text-slate-400 border-slate-700/50 hover:border-slate-500 hover:text-slate-200'
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-slate-500">※ 1つ以上選択必須。Printful対応サイズ</p>
+                </div>
+
                 {/* エラー表示 */}
                 {publishResult?.error && (
-                  <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-sm text-red-400">
-                    <AlertCircle size={16} />
+                  <div className="flex items-start gap-2 bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-sm text-red-400">
+                    <AlertCircle size={16} className="shrink-0 mt-0.5" />
                     {publishResult.error}
                   </div>
                 )}
@@ -362,7 +732,7 @@ const AISelectShopApp = () => {
                 {/* 出品ボタン */}
                 <button
                   onClick={handlePublish}
-                  disabled={isPublishing || !keyword || !mockupDataUrl}
+                  disabled={isPublishing || !keyword || !mockupDataUrl || selectedSizes.length === 0}
                   className="w-full h-12 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-base rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(16,185,129,0.25)]"
                 >
                   {isPublishing ? (
@@ -375,7 +745,14 @@ const AISelectShopApp = () => {
 
               {/* 右：プレビュー */}
               <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 flex flex-col items-center gap-4">
-                <p className="text-xs font-medium text-slate-400 uppercase tracking-wide self-start">プレビュー</p>
+                <div className="flex items-center justify-between w-full">
+                  <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">プレビュー</p>
+                  {styleId && (
+                    <span className="text-xs text-emerald-400 font-medium">
+                      {STYLES.find(s => s.id === styleId)?.name}
+                    </span>
+                  )}
+                </div>
                 <canvas
                   ref={canvasRef}
                   width={400}
@@ -396,7 +773,10 @@ const AISelectShopApp = () => {
             <div className="bg-[#1e293b] border border-emerald-500/30 rounded-2xl p-8 flex flex-col items-center gap-4 text-center">
               <CheckCircle2 className="h-16 w-16 text-emerald-500" />
               <h2 className="text-2xl font-semibold text-white">出品完了</h2>
-              <p className="text-slate-400 text-sm">商品がShopifyストアへ同期されました。受注後は自動で生産・配送されます。</p>
+              <p className="text-slate-400 text-sm">
+                商品がShopifyストアへ同期されました。<br />
+                選択サイズ: <span className="text-emerald-400 font-medium">{selectedSizes.join(' / ')}</span>
+              </p>
               {publishResult?.url && publishResult.url !== '#' && (
                 <a
                   href={publishResult.url}
@@ -443,7 +823,7 @@ const AISelectShopApp = () => {
           <span>© 2026 NextraLabs</span>
           <span className="flex items-center gap-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            Shopify × Printful Engine v2.0
+            Shopify × Printful Engine v2.1
           </span>
         </div>
       </div>
