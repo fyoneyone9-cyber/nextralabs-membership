@@ -380,9 +380,14 @@ function YoutubeProducerApp() {
           </TabsContent>
 
           <TabsContent value="visual" className="space-y-12 animate-in fade-in slide-in-from-right-4 duration-500">
-            <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-3xl p-8 space-y-4 text-center">
-              <h3 className="text-xl font-black text-emerald-400 italic uppercase">ステップ 4: ビジュアル設計（GPTFELL連携）</h3>
-              <p className="text-slate-300 font-bold italic">登場人物やサムネイルのプロンプトをコピーして、画像生成AI（GPTFELL等）に貼り付けてください。</p>
+            <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-3xl p-8 space-y-6 text-center">
+              <h3 className="text-xl font-black text-emerald-400 italic uppercase">ステップ 4: ビジュアル設計（GPT連携）</h3>
+              <div className="flex flex-col items-center gap-4">
+                <p className="text-slate-300 font-bold italic">登場人物やサムネイルのプロンプトをコピーして、以下のGPT画像生成AIに貼り付けてください。</p>
+                <a href="https://chatgpt.com/?model=gpt-4o" target="_blank" className="bg-white text-slate-950 px-10 py-4 rounded-2xl font-black text-lg shadow-xl hover:bg-emerald-400 transition-all flex items-center gap-2 italic uppercase">
+                  <ImageIcon size={24} /> ChatGPT 画像生成を開く ➔
+                </a>
+              </div>
             </div>
 
             <div className="grid md:grid-cols-2 gap-12">
