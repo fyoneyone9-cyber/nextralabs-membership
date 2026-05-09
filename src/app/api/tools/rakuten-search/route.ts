@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,9 +12,9 @@ export async function POST(req: Request) {
     const { keyword } = await req.json();
     
     // 🔑 楽天AppID (NextraLabs 共有マスターキー)
-    const RAKUTEN_APP_ID = '1020081822830310242'; 
+    const RAKUTEN_APP_ID = '5b11580f-bdb5-4659-b89a-63db8ef20abf'; 
     
-    const url = `https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${RAKUTEN_APP_ID}&hits=5&sort=%2BitemPrice&usedFlag=1`;
+    const url = `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=5b11580f-bdb5-4659-b89a-63db8ef20abf&accessKey=pk_FfxUYuFakO3oY9BEo0YxLAyRlMP6oeiwFk2lHMGwNiB&accessKey=pk_FfxUYuFakO3oY9BEo0YxLAyRlMP6oeiwFk2lHMGwNiB&hits=5&sort=%2BitemPrice&usedFlag=1`;
 
     const res = await fetch(url, { cache: 'no-store' });
     const data = await res.json();
