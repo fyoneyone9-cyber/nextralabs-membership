@@ -1,6 +1,16 @@
+﻿import { checkApiLimit } from '@/lib/api-limit';
 import { NextResponse } from 'next/server'
 
 export async function GET() {
+  // 🛡️ レート制限（1日10回）
+  const limitCheck = await checkApiLimit('gnews', 10);
+  if (!limitCheck.allowed) {
+    return NextResponse.json(
+      { error: '本日の利用上限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
+
   const API_KEY = process.env.GNEWS_API_KEY || '0d64d6796845143fe7f3759f1366bf2f';
   // 日本国内の最新ニュースを「時間順」で検索
   const url = `https://gnews.io/api/v4/search?q=日本&lang=ja&country=jp&max=10&sortby=publishedAt&apikey=${API_KEY}`;
