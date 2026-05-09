@@ -1,3 +1,4 @@
+﻿import { checkApiLimit } from '@/lib/api-limit';
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
@@ -8,6 +9,15 @@ const supabase = createClient(
 
 // GET: プロフィール取得
 export async function GET(req: NextRequest) {
+  // 🛡️ レート制限（1日10回）
+  const limitCheck = await checkApiLimit('profile', 10);
+  if (!limitCheck.allowed) {
+    return NextResponse.json(
+      { error: '本日の利用上限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
+
   const userId = req.nextUrl.searchParams.get('user_id')
   if (!userId) return NextResponse.json({ error: 'user_id required' }, { status: 400 })
 
@@ -23,6 +33,15 @@ export async function GET(req: NextRequest) {
 
 // POST: 表示名更新
 export async function POST(req: NextRequest) {
+  // 🛡️ レート制限（1日10回）
+  const limitCheck = await checkApiLimit('profile', 10);
+  if (!limitCheck.allowed) {
+    return NextResponse.json(
+      { error: '本日の利用上限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
+
   const { user_id, display_name } = await req.json()
   if (!user_id) return NextResponse.json({ error: 'user_id required' }, { status: 400 })
 
