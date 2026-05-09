@@ -17,6 +17,17 @@ export async function checkYoutubeLimit(): Promise<{ error: string; status: numb
     return { error: 'ログインが必要です。', status: 401 }
   }
 
+  // 管理者（Ninja）チェック：管理者は制限をバイパス
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+  
+  if (profile?.role === 'admin' || profile?.role === 'Ninja') {
+    return null; // 無制限
+  }
+
   // JSTで今日の日付（YYYY-MM-DD）
   const todayJST = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10)
   const startOfDay = `${todayJST}T00:00:00+09:00`
