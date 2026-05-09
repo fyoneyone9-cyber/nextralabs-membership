@@ -1,9 +1,19 @@
+﻿import { checkApiLimit } from '@/lib/api-limit';
 import { NextResponse } from 'next/server';
 import { nextraAiEngine } from '@/lib/ai-engine';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
+  // 🛡️ レート制限（1日10回）
+  const limitCheck = await checkApiLimit('sales-automation', 10);
+  if (!limitCheck.allowed) {
+    return NextResponse.json(
+      { error: '本日の利用上限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
+
   try {
     const { domain, targetPerson, prompt: userPrompt } = await req.json();
 
