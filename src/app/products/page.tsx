@@ -10,12 +10,14 @@ import {
   FileText, ArrowRight, Network, Store, 
   ClipboardCheck, ShieldCheck, Wallet, Home, 
   Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, Ticket, BookOpen, 
-  Sprout, Zap, Building2, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils
+  Sprout, Zap, Building2, Database, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils
 } from 'lucide-react'
 
 const TOOLS = [
   { id: 'universal-converter/app', cat: 'compress', title: '究極AIマルチコンバーター', sub: '動画・画像・PDFへの変換圧縮', icon: Repeat, plan: 'ライト' },
-  { id: 'staysee-ai-finder/app', cat: 'hotel', title: 'Staysee AI Finder', sub: '宿泊予約と鍵発行を完全同期', icon: Building2, plan: 'プレミアム' },
+    { id: 'nextra-ai/app', cat: 'hotel', title: 'Nextra AI', sub: 'ホテルDX チェックインOS', icon: Building2, plan: 'プレミアム' },
+  { id: 'dms/app', cat: 'hotel', title: 'Nextra DMS', sub: '予約・宿泊管理システム', icon: Database, plan: 'プレミアム' },
+{ id: 'staysee-ai-finder/app', cat: 'hotel', title: 'Staysee AI Finder', sub: '宿泊予約と鍵発行を完全同期', icon: Building2, plan: 'プレミアム' },
   { id: 'hotel-affiliate/app', cat: 'hotel', title: 'アフィリエイト連携', sub: '宿泊紹介と楽天収益化OS', icon: Network, plan: 'スタンダード' },
   { id: 'moving-checker/app', cat: 'hotel', title: 'AI引越し安心チェッカー', sub: '治安と物件リスクを徹底解析', icon: Home, plan: '無料' },
   { id: 'sns-auto-poster/app', cat: 'sns', title: 'AI SNSオートポスター', sub: 'バズを量産するマルチSNS生成', icon: Share2, plan: 'ライト' },
