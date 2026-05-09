@@ -1,4 +1,10 @@
-﻿import Link from 'next/link'
+﻿// ============================================================
+// 🔒 LOCKED — KindleFactory product page
+// 完成済みツール。NextraLabs様の明示的な指示なしに
+// このファイルを編集・削除・移動することを禁止する。
+// Locked: 2026-05-10
+// ============================================================
+import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { BookOpen, FileText, Sparkles, Download, Crown } from 'lucide-react'
 
