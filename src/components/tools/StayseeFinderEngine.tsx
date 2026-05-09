@@ -13,7 +13,6 @@ const TABS = [
   { id: 'checkin',  label: '自動チェックイン', icon: UserPlus,      desc: '本人確認・台帳記帳' },
   { id: 'lock',     label: '鍵発行',          icon: Key,           desc: 'アクセス権デプロイ' },
   { id: 'checkout', label: 'チェックアウト',   icon: LogOut,        desc: '1秒退館・精算' },
-  { id: 'bookings', label: 'DMS予約管理',      icon: List,          desc: '統合台帳' },
   { id: 'settings', label: 'システム設定',     icon: Settings,      desc: 'API一元管理' },
 ]
 
@@ -359,39 +358,6 @@ const MasterEngine = () => {
             >
               Finish →
             </button>
-          </div>
-        )}
-
-        {/* --- DMS予約管理 --- */}
-        {activeTab === 'bookings' && (
-          <div
-            className="rounded-xl overflow-hidden"
-            style={{ background: '#0d1117', border: '1px solid #1e293b' }}
-          >
-            <table className="w-full text-left text-sm">
-              <thead style={{ background: '#13141f', borderBottom: '1px solid #1e293b' }}>
-                <tr>
-                  {['予約ID','宿泊者','部屋','ステータス'].map(h => (
-                    <th key={h} className="px-5 py-3 text-xs font-medium text-slate-500">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                <tr style={{ borderBottom: '1px solid #1e293b' }}>
-                  <td className="px-5 py-4 font-mono text-sm" style={{ color: '#10b981' }}>BK-8821</td>
-                  <td className="px-5 py-4 text-slate-200">ゲスト 太郎 様</td>
-                  <td className="px-5 py-4 text-slate-400">201</td>
-                  <td className="px-5 py-4">
-                    <span
-                      className="text-xs px-2 py-1 rounded-full font-medium"
-                      style={{ background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.25)' }}
-                    >
-                      Confirmed
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         )}
 
