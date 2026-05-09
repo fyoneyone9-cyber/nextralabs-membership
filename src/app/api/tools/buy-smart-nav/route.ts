@@ -1,9 +1,19 @@
-﻿import { NextResponse } from 'next/server';
+﻿import { checkApiLimit } from '@/lib/api-limit';
+import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
+  // 🛡️ レート制限（1日10回）
+  const limitCheck = await checkApiLimit('buy-smart-nav', 10);
+  if (!limitCheck.allowed) {
+    return NextResponse.json(
+      { error: '本日の利用上限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
+
   try {
     const { keyword } = await req.json();
     const RAKUTEN_APP_ID = '5b11580f-bdb5-4659-b89a-63db8ef20abf';
