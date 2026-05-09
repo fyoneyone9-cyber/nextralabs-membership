@@ -1,4 +1,4 @@
-'use client'
+�ｿ�ｿ'use client'
 import React, { useState, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
@@ -13,7 +13,7 @@ const MasterEngine = () => {
   const [copied, setCopied] = useState(false);
   const [weather, setWeather] = useState<any>(null);
 
-  // 刁E�E��E�フォーム用スチE�E�EチE
+  // 蛻・�ｽE�ｽ�ｽE�ｽ繝輔か繝ｼ繝�逕ｨ繧ｹ繝・�ｽE�ｽE繝・
   const [pref, setPref] = useState('');
   const [city, setCity] = useState('');
   const [stock, setStock] = useState('');
@@ -36,7 +36,7 @@ const MasterEngine = () => {
   const getMyLocation = () => {
     setIsLocating(true);
     if (typeof navigator === 'undefined' || !navigator.geolocation) {
-      alert("お使ぁE�E�Eブラウザは位置惁E�E��E�に対応してぁE�E��E�せん、E);
+      alert("お使いのブラウザは位置情報に対応していません");
       setIsLocating(false);
       return;
     }
@@ -49,33 +49,33 @@ const MasterEngine = () => {
       },
       (err) => {
         console.error(err);
-        alert("位置惁E�E��E�の取得に失敗しました。手動で入力してください、E);
+        alert("位置情報の取得に失敗しました。手動で入力してください");
         setIsLocating(false);
       }
     );
   };
 
-  const FINAL_PROMPT = `あなた�Eプロの災害対策コンサルタントです、E
-以下�E「�E皁E�E��E�関推奨の共通防災知識」と【屁E�E��E�環墁E�E��E�ータ】に基づき、生存確玁E�E��E�最大化する「生存戦略レポ�Eト」を作�Eしてください、E
+  const FINAL_PROMPT = `縺ゅ↑縺滂ｿｽE繝励Ο縺ｮ轣ｽ螳ｳ蟇ｾ遲悶さ繝ｳ繧ｵ繝ｫ繧ｿ繝ｳ繝医〒縺吶・
+莉･荳具ｿｽE縲鯉ｿｽE逧・�ｽE�ｽ�ｽE�ｽ髢｢謗ｨ螂ｨ縺ｮ蜈ｱ騾夐亟轣ｽ遏･隴倥阪→縲仙ｱ・�ｽE�ｽ�ｽE�ｽ迺ｰ蠅・�ｽE�ｽ�ｽE�ｽ繝ｼ繧ｿ縲代↓蝓ｺ縺･縺阪∫函蟄倡｢ｺ邇・�ｽE�ｽ�ｽE�ｽ譛螟ｧ蛹悶☆繧九檎函蟄俶姶逡･繝ｬ繝晢ｿｽE繝医阪ｒ菴懶ｿｽE縺励※縺上□縺輔＞縲・
 
-【�E通防災知識�E鉁E�E��E�、E
-1. 生存優先頁E�E��E�、E・3・3の法則、E 3刁E呼吸)、E時間(体温)、E日(水)を死守せよ、E
-2. 家庭冁E�E��E�蓁E 最佁E日刁E�E��E�推奨1週間�Eの水(1人1日3L)と食料、E
-3. 発災時行動: シェイクアウチEまず低く、E�E��E�を守り、動かなぁEの徹底、E
-4. 防御筁E ブレーカー遮断、ハザード�EチE�E�E確認、家族間連絡手段(171)の確立、E
+縲撰ｿｽE騾夐亟轣ｽ遏･隴假ｿｽE驩・�ｽE�ｽ�ｽE�ｽ縲・
+1. 逕溷ｭ伜━蜈磯�・�ｽE�ｽ�ｽE�ｽ縲・繝ｻ3繝ｻ3縺ｮ豕募援縲・ 3蛻・蜻ｼ蜷ｸ)縲・譎る俣(菴捺ｸｩ)縲・譌･(豌ｴ)繧呈ｭｻ螳医○繧医・
+2. 螳ｶ蠎ｭ蜀・�ｽE�ｽ�ｽE�ｽ闢・ 譛菴・譌･蛻・�ｽE�ｽ�ｽE�ｽ謗ｨ螂ｨ1騾ｱ髢難ｿｽE縺ｮ豌ｴ(1莠ｺ1譌･3L)縺ｨ鬟滓侭縲・
+3. 逋ｺ轣ｽ譎り｡悟虚: 繧ｷ繧ｧ繧､繧ｯ繧｢繧ｦ繝・縺ｾ縺壻ｽ弱￥縲・�ｽE�ｽ�ｽE�ｽ繧貞ｮ医ｊ縲∝虚縺九↑縺・縺ｮ蠕ｹ蠎輔・
+4. 髦ｲ蠕｡遲・ 繝悶Ξ繝ｼ繧ｫ繝ｼ驕ｮ譁ｭ縲√ワ繧ｶ繝ｼ繝会ｿｽE繝・�ｽE�ｽE遒ｺ隱阪∝ｮｶ譌城俣騾｣邨｡謇区ｮｵ(171)縺ｮ遒ｺ遶九・
 
-【屁E�E��E�環墁E�E��E�ータ、E
-現在位置�E�E�E�座標！E ${location ? `${location.lat}, ${location.lng}` : "未特宁E}
-現在の気象: ${weather ? `気温:${weather.temperature}℁E 風送E${weather.windspeed}km/h` : "不�E"}
-都道府県: ${pref || "未入劁E}
-市区町杁E ${city || "未入劁E}
-備蓄状況E ${stock || "未入劁E}
-住屁E�E��E�慁E ${housing || "未入劁E}
+縲仙ｱ・�ｽE�ｽ�ｽE�ｽ迺ｰ蠅・�ｽE�ｽ�ｽE�ｽ繝ｼ繧ｿ縲・
+迴ｾ蝨ｨ菴咲ｽｮ�ｽE�ｽE�ｽE�ｽ蠎ｧ讓呻ｼ・ ${location ? `${location.lat}, ${location.lng}` : "譛ｪ迚ｹ螳・}
+迴ｾ蝨ｨ縺ｮ豌苓ｱ｡: ${weather ? `豌玲ｸｩ:${weather.temperature}邃・ 鬚ｨ騾・${weather.windspeed}km/h` : "荳搾ｿｽE"}
+驛ｽ驕灘ｺ懃恁: ${pref || "譛ｪ蜈･蜉・}
+蟶ょ玄逕ｺ譚・ ${city || "譛ｪ蜈･蜉・}
+蛯呵塘迥ｶ豕・ ${stock || "譛ｪ蜈･蜉・}
+菴丞ｱ・�ｽE�ｽ�ｽE�ｽ諷・ ${housing || "譛ｪ蜈･蜉・}
 
-1. 【地域リスク診断、E 地霁E�E��E�洪水、土砂災害などのリスク刁E�E��E�。現在の気象条件が避難に与える影響も老E�E�E、E
-2. 【備蓁E�E��E�適化、E 現状の不足物賁E�E��E�優先頁E�E��E�E
-3. 【生存戦略、E 発災征E2時間の具体的な行動計画
-4. 【避難所選定、E 近隣の安�Eな避難エリアの提桁E;
+1. 縲仙慍蝓溘Μ繧ｹ繧ｯ險ｺ譁ｭ縲・ 蝨ｰ髴・�ｽE�ｽ�ｽE�ｽ豢ｪ豌ｴ縲∝悄遐ら⊃螳ｳ縺ｪ縺ｩ縺ｮ繝ｪ繧ｹ繧ｯ蛻・�ｽE�ｽ�ｽE�ｽ縲ら樟蝨ｨ縺ｮ豌苓ｱ｡譚｡莉ｶ縺碁∩髮｣縺ｫ荳弱∴繧句ｽｱ髻ｿ繧り・�ｽE�ｽE縲・
+2. 縲仙ｙ闢・�ｽE�ｽ�ｽE�ｽ驕ｩ蛹悶・ 迴ｾ迥ｶ縺ｮ荳崎ｶｳ迚ｩ雉・�ｽE�ｽ�ｽE�ｽ蜆ｪ蜈磯�・�ｽE�ｽ�ｽE�ｽE
+3. 縲千函蟄俶姶逡･縲・ 逋ｺ轣ｽ蠕・2譎る俣縺ｮ蜈ｷ菴鍋噪縺ｪ陦悟虚險育判
+4. 縲宣∩髮｣謇驕ｸ螳壹・ 霑鷹團縺ｮ螳会ｿｽE縺ｪ驕ｿ髮｣繧ｨ繝ｪ繧｢縺ｮ謠先｡・;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(FINAL_PROMPT);
@@ -89,7 +89,7 @@ const MasterEngine = () => {
     <div className="max-w-4xl mx-auto p-2 md:p-10 space-y-4 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-1 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)] print:border-0 print:shadow-none print:my-0 print:p-0">
         <div className="text-center space-y-1">
           <Badge className="bg-emerald-600 text-white font-semibold px-3 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full">Survival Intelligence Hub</Badge>
-          <h1 className="text-2xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">AI防災パ�EソナルガイチE/h1>
+          <h1 className="text-2xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">AI髦ｲ轣ｽ繝托ｿｽE繧ｽ繝翫Ν繧ｬ繧､繝・/h1>
           <div className="inline-block bg-emerald-600 text-white font-black px-4 py-0.5 rounded-full uppercase italic text-[8px] md:text-[10px] tracking-widest shadow-lg">MASTERMODEL</div>
         </div>
 
@@ -112,7 +112,7 @@ const MasterEngine = () => {
                   className="w-full h-16 bg-white/5 hover:bg-white/10 border-2 border-white/10 text-white font-black rounded-2xl flex items-center justify-center gap-4 transition-all active:scale-95 group relative overflow-hidden"
                 >
                   <MapPin className={`w-6 h-6 ${isLocating ? 'animate-ping' : 'group-hover:text-emerald-400'}`} />
-                  <span className="text-sm md:text-base uppercase italic">{isLocating ? "定位中..." : "GPSで現在地・天気を特宁E}</span>
+                  <span className="text-sm md:text-base uppercase italic">{isLocating ? "螳壻ｽ堺ｸｭ..." : "GPS縺ｧ迴ｾ蝨ｨ蝨ｰ繝ｻ螟ｩ豌励ｒ迚ｹ螳・}</span>
                 </button>
 
                 {location && (
@@ -123,7 +123,7 @@ const MasterEngine = () => {
                      </div>
                      <div className="bg-black/50 border border-white/5 p-4 rounded-xl text-center">
                         <p className="text-[8px] font-black text-slate-500 uppercase mb-1 italic">Realtime Weather</p>
-                        <p className="text-xs font-bold text-white uppercase italic">{weather ? `${weather.temperature}℁E/ ${weather.windspeed}km/h` : "Syncing..."}</p>
+                        <p className="text-xs font-bold text-white uppercase italic">{weather ? `${weather.temperature}邃・/ ${weather.windspeed}km/h` : "Syncing..."}</p>
                      </div>
                   </div>
                 )}
@@ -132,21 +132,21 @@ const MasterEngine = () => {
              <div className="space-y-4 bg-black/40 p-6 rounded-[2rem] border border-white/5 shadow-inner">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                     <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">都道府県</label>
-                     <input value={pref} onChange={(e) => setPref(e.target.value)} placeholder="神奈川県" className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-emerald-500 outline-none transition-all" />
+                     <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">驛ｽ驕灘ｺ懃恁</label>
+                     <input value={pref} onChange={(e) => setPref(e.target.value)} placeholder="逾槫･亥ｷ晉恁" className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-emerald-500 outline-none transition-all" />
                   </div>
                   <div className="space-y-1.5">
-                     <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">市区町杁E/label>
-                     <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="海老名币E className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-emerald-500 outline-none transition-all" />
+                     <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">蟶ょ玄逕ｺ譚・/label>
+                     <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="豬ｷ閠∝錐蟶・ className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-emerald-500 outline-none transition-all" />
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                   <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">備蓄状況E�E��E�水・食料など�E�E�E�E/label>
-                   <input value={stock} onChange={(e) => setStock(e.target.value)} placeholder="侁E 水10L, 非常飁E日刁E�E��E�めE className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-emerald-500 outline-none transition-all" />
+                   <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">蛯呵塘迥ｶ豕・�ｽE�ｽ�ｽE�ｽ豌ｴ繝ｻ鬟滓侭縺ｪ縺ｩ�ｽE�ｽE�ｽE�ｽE/label>
+                   <input value={stock} onChange={(e) => setStock(e.target.value)} placeholder="萓・ 豌ｴ10L, 髱槫ｸｸ鬟・譌･蛻・�ｽE�ｽ�ｽE�ｽ繧・ className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-emerald-500 outline-none transition-all" />
                 </div>
                 <div className="space-y-1.5">
-                   <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">住屁E�E��E�態（木造・マンション等！E/label>
-                   <input value={housing} onChange={(e) => setHousing(e.target.value)} placeholder="侁E 木造2階建て" className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-emerald-500 outline-none transition-all" />
+                   <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">菴丞ｱ・�ｽE�ｽ�ｽE�ｽ諷具ｼ域惠騾�繝ｻ繝槭Φ繧ｷ繝ｧ繝ｳ遲会ｼ・/label>
+                   <input value={housing} onChange={(e) => setHousing(e.target.value)} placeholder="萓・ 譛ｨ騾�2髫主ｻｺ縺ｦ" className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-emerald-500 outline-none transition-all" />
                 </div>
              </div>
 
@@ -155,17 +155,17 @@ const MasterEngine = () => {
                  onClick={handleCopy} 
                  className={`w-full h-20 text-xl font-black rounded-2xl transition-all shadow-2xl border-b-4 ${copied ? 'bg-emerald-500 border-emerald-700 text-slate-950 scale-95' : 'bg-emerald-600 border-emerald-800 text-white hover:bg-emerald-500'}`}
                >
-                 {copied ? '✁ECOPY COMPLETE' : '① 診断持E�E��E�をコピ�E'}
+                 {copied ? '笨・COPY COMPLETE' : '竭� 險ｺ譁ｭ謖・�ｽE�ｽ�ｽE�ｽ繧偵さ繝費ｿｽE'}
                </button>
                <div className="grid grid-cols-3 gap-3">
                   <button className="h-16 bg-white/5 border-2 border-emerald-500/30 rounded-2xl text-[10px] font-black uppercase italic text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://chatgpt.com', '_blank')}>
-                    <span className="text-xl">💬</span> CHATGPT
+                    <span className="text-xl">町</span> CHATGPT
                   </button>
                   <button className="h-16 bg-white/5 border-2 border-emerald-500/30 rounded-2xl text-[10px] font-black uppercase italic text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://gemini.google.com', '_blank')}>
-                    <span className="text-xl">✨</span> GEMINI
+                    <span className="text-xl">笨ｨ</span> GEMINI
                   </button>
                   <button className="h-16 bg-white/5 border-2 border-slate-500/30 rounded-2xl text-[10px] font-black uppercase italic text-slate-400 hover:bg-slate-600 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://claude.ai', '_blank')}>
-                    <span className="text-xl">🤁E/span> CLAUDE
+                    <span className="text-xl">､・/span> CLAUDE
                   </button>
                </div>
              </div>
@@ -180,13 +180,13 @@ const MasterEngine = () => {
                 <div className="w-12 h-12 rounded-xl bg-emerald-600/10 flex items-center justify-center border-2 border-emerald-500/30">
                   <ClipboardPaste className="text-emerald-400" />
                 </div>
-                <h3 className="text-xl md:text-3xl font-black text-white italic uppercase tracking-tighter">② 生存戦略レポ�EチE/h3>
+                <h3 className="text-xl md:text-3xl font-black text-white italic uppercase tracking-tighter">竭｡ 逕溷ｭ俶姶逡･繝ｬ繝晢ｿｽE繝・/h3>
              </div>
              
              <textarea 
                value={report} 
                onChange={(e) => setReport(e.target.value)} 
-               placeholder="AIからの戦略レポ�Eトをここにペ�EスチE.." 
+               placeholder="AI縺九ｉ縺ｮ謌ｦ逡･繝ｬ繝晢ｿｽE繝医ｒ縺薙％縺ｫ繝夲ｿｽE繧ｹ繝・.." 
                className="flex-1 bg-[#0d0f1a] border-2 border-white/10 rounded-[2rem] p-6 text-sm text-slate-300 focus:border-emerald-500 outline-none font-mono leading-relaxed min-h-[400px] resize-none" 
              />
              
