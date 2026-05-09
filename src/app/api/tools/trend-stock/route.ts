@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { checkApiLimit } from '@/lib/api-limit';
 
@@ -28,7 +28,7 @@ export async function GET() {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     // AIに生データ級のリアルタイムトレンドを生成させる
     const prompt = `2026年5月の日本の楽天市場での最新トレンド商品を5つ選び、JSONのみで出力。format: [{"name": "","catchcopy": "","imageUrl": "https://tshop.r10s.jp/sample.jpg","url": "https://hb.afl.rakuten.co.jp/hgc/${DEFAULT_RAKUTEN_ID}/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F商品名%2F"}]`;
