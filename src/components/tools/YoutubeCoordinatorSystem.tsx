@@ -64,6 +64,14 @@ const MasterEngine = () => {
 
   const totalProducts = analysisResult?.results.reduce((acc, r) => acc + r.products.length, 0) ?? 0
 
+  const presets = [
+    { label: '結婚相談所リアル体験談｜1年で成婚する秘訣', url: 'https://www.youtube.com/watch?v=-0SYREouHeg' },
+    { label: 'マッチングアプリとの違いは？成婚の秘訣', url: 'https://www.youtube.com/watch?v=7-ydEP3vEEQ' },
+    { label: '【成功率UP】仮交際・真剣交際・プロポーズ完全解説', url: 'https://www.youtube.com/watch?v=kSfsHNDyT-U' },
+    { label: '結婚相談所で半年成婚した30代女性のリアル体験談', url: 'https://www.youtube.com/watch?v=_7Ze4HfPqHw' },
+    { label: 'お見合い成功の注意点（女性編）', url: 'https://www.youtube.com/watch?v=dnGbuoc3XBs' },
+  ]
+
   if (!isMounted) return null
 
   return (
@@ -124,6 +132,27 @@ const MasterEngine = () => {
                 ? <><Loader2 size={14} className="animate-spin" />解析中...</>
                 : <><Search size={14} />解析する</>}
             </button>
+          </div>
+
+          {/* プリセット */}
+          <div className="mt-4 pt-4" style={{ borderTop: '1px solid #1e293b' }}>
+            <p className="text-xs text-slate-500 mb-2 font-medium">📌 プリセット動画から選ぶ</p>
+            <div className="flex flex-wrap gap-2">
+              {presets.map((p, i) => (
+                <button
+                  key={i}
+                  onClick={() => setVideoUrl(p.url)}
+                  className="text-xs px-3 py-1.5 rounded-full transition-all"
+                  style={{
+                    background: videoUrl === p.url ? 'rgba(16,185,129,0.15)' : '#13141f',
+                    border: videoUrl === p.url ? '1px solid #10b981' : '1px solid #334155',
+                    color: videoUrl === p.url ? '#34d399' : '#94a3b8',
+                  }}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* How it works */}
