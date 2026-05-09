@@ -163,30 +163,31 @@ export default function KdpGuideApp() {
                 <h2 className="text-2xl font-black italic uppercase tracking-tight">{step.title}</h2>
               </div>
               
-              <div className="grid gap-4">
+              <div className="grid gap-2">
                 {step.items.map((item) => (
                   <div 
                     key={item.id}
                     onClick={() => toggleCheck(item.id)}
-                    className={`group cursor-pointer p-6 rounded-2xl border-2 transition-all flex items-start gap-4 ${
+                    className={`group cursor-pointer p-4 rounded-xl border transition-all flex items-start gap-3 ${
                       checkedItems[item.id] 
-                        ? 'bg-orange-500/10 border-orange-500/50 shadow-[0_0_20px_rgba(249,115,22,0.1)]' 
-                        : 'bg-white/5 border-white/5 hover:border-white/20'
+                        ? 'bg-orange-500/5 border-orange-500/30' 
+                        : 'bg-white/5 border-white/5 hover:border-white/10'
                     }`}
                   >
-                    <div className={`mt-1 h-6 w-6 rounded-md border-2 flex items-center justify-center transition-all ${
+                    <div className={`mt-0.5 h-4 w-4 rounded border flex items-center justify-center transition-all ${
                       checkedItems[item.id] ? 'bg-orange-500 border-orange-500' : 'border-white/20'
                     }`}>
-                      {checkedItems[item.id] && <CheckCircle2 size={16} className="text-slate-950" />}
+                      {checkedItems[item.id] && <CheckCircle2 size={12} className="text-slate-950" />}
                     </div>
-                    <div className="flex-1 space-y-2">
-                      <p className={`font-black text-lg transition-all ${checkedItems[item.id] ? 'text-white' : 'text-slate-400'}`}>
+                    <div className="flex-1 space-y-1">
+                      <p className={`font-black text-sm md:text-base transition-all ${checkedItems[item.id] ? 'text-white' : 'text-slate-400'}`}>
                         {item.text}
                       </p>
-                      <p className="text-xs text-slate-500 font-bold italic">{item.detail}</p>
-                      <div className="mt-4 p-5 bg-black/60 rounded-xl border border-white/10 text-[12px] text-slate-200 font-bold leading-relaxed shadow-inner">
-                        {item.expanded}
-                      </div>
+                      {item.expanded && (
+                        <div className="mt-2 p-3 bg-black/60 rounded-lg border border-white/10 text-[10px] md:text-[11px] text-slate-300 font-bold leading-relaxed shadow-inner">
+                          {item.expanded}
+                        </div>
+                      )}
                     </div>
                     <ChevronRight className={`text-slate-700 transition-transform ${checkedItems[item.id] ? 'rotate-90' : ''}`} />
                   </div>
