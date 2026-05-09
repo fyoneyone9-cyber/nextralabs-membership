@@ -1,48 +1,56 @@
-﻿html, body { background-color: #050507 !important; color-scheme: dark; }
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
+    /* === Genspark Claw Dark Theme (Default) === */
+    --background: 220 14% 6%;         /* #0d0f12 ほぼ黒 */
+    --foreground: 210 20% 92%;        /* #e5e9ef 明るいホワイト */
+    --card: 220 13% 9%;               /* #131619 カード背景 */
+    --card-foreground: 210 20% 92%;
+    --primary: 252 87% 67%;           /* #7c6fec パープル〜ブルー */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 13% 13%;         /* #1c2028 セカンダリ */
+    --secondary-foreground: 210 20% 85%;
+    --muted: 220 13% 13%;
+    --muted-foreground: 215 15% 55%;  /* #7a8494 サブテキスト */
+    --accent: 252 87% 67%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 16%;            /* #212730 ボーダー */
+    --input: 220 13% 14%;
+    --ring: 252 87% 67%;
+    --radius: 0.75rem;
+
+    /* Genspark アクセントカラー（カスタム変数） */
+    --gsk-purple: 252 87% 67%;        /* #7c6fec */
+    --gsk-blue: 217 91% 60%;          /* #4a90e2 */
+    --gsk-cyan: 191 85% 55%;          /* #22d3ee */
+    --gsk-emerald: 160 84% 39%;       /* #10b981 */
   }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+  /* ライトモードは使わない方針だが念のため維持 */
+  .light {
+    --background: 0 0% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --primary: 252 87% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 93%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 220 14% 93%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 252 87% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 88%;
+    --input: 214 32% 88%;
+    --ring: 252 87% 60%;
+    --radius: 0.75rem;
   }
 }
 
@@ -50,18 +58,33 @@
   * {
     @apply border-border;
   }
+  html {
+    color-scheme: dark;
+  }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-/* Vercel Toolbar などの余計なオーバーレイを強制非表示 */
-#vercel-live-feedback,
-.__vercel_toolbar,
-.vercel-toolbar-root,
-[data-vercel-toolbar] {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
+/* === Genspark Claw グローバルスタイル === */
+@layer utilities {
+  /* グラデーションテキスト — Genspark 紫→青→緑 */
+  .gsk-gradient-text {
+    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 50%, #34d399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* カードホバーエフェクト */
+  .gsk-card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .gsk-card:hover {
+    border-color: hsl(var(--primary) / 0.5);
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.1);
+  }
 }

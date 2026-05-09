@@ -6,7 +6,7 @@ export function Footer() {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="text-lg font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+            <h3 className="text-lg font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
               NextraLabs AI Tool Store
             </h3>
             <p className="mt-2 text-sm text-muted-foreground">

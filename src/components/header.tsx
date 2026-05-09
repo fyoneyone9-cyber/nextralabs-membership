@@ -60,7 +60,7 @@ export function Header() {
         {/* ロゴとXアイコン */}
         <div className="flex items-center">
           <Link href="/" className="mr-6">
-            <span className="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">NextraLabs</span>
+            <span className="text-xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">NextraLabs</span>
           </Link>
           <a 
             href="https://x.com/0022_sougo" 
