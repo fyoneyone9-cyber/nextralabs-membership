@@ -1,246 +1,455 @@
 'use client'
 import dynamic from 'next/dynamic'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { Loader2, Settings, ExternalLink, AlertTriangle, CheckCircle2, Info, Zap, ShoppingCart, TrendingUp, Search, Palette, Box } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { ApiLinkIndicator } from '@/components/tools/ApiLinkIndicator'
+import {
+  Loader2, CheckCircle2, Info, Zap, ShoppingCart,
+  TrendingUp, Palette, Package, RefreshCw, ExternalLink, AlertCircle
+} from 'lucide-react'
 
-const MasterEngine = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [trends, setTrends] = useState<{ id: number; name: string }[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLive, setIsLive] = useState(false);
-  const [keyword, setKeyword] = useState('');
-  const [isPublishing, setIsPublishing] = useState(false);
-  const [publishResult, setPublishResult] = useState<{ url?: string; error?: string } | null>(null);
+// ──────────────────────────────────────────────
+// デザインスタイル定義
+// ──────────────────────────────────────────────
+const STYLES = [
+  { id: 'japanese',   name: '和風',         bg: '#1a0000', textColor: '#c0392b', font: 'bold 28px serif' },
+  { id: 'street',     name: 'ストリート',   bg: '#111111', textColor: '#ffdd00', font: 'bold 30px Impact,sans-serif' },
+  { id: 'retro',      name: 'レトロ',       bg: '#2c1a0e', textColor: '#ff6b35', font: 'bold 26px Georgia,serif' },
+  { id: 'cyberpunk',  name: 'サイバー',     bg: '#000020', textColor: '#00ffff', font: 'bold 28px monospace' },
+  { id: 'kawaii',     name: 'かわいい',     bg: '#fff0f5', textColor: '#ff69b4', font: 'bold 28px sans-serif' },
+  { id: 'minimal',    name: 'ミニマル',     bg: '#ffffff', textColor: '#111111', font: '300 28px Helvetica,sans-serif' },
+  { id: 'gold',       name: 'ラグジュアリー', bg: '#0a0a00', textColor: '#d4af37', font: 'bold 26px Georgia,serif' },
+  { id: 'neon',       name: 'ネオン',       bg: '#000000', textColor: '#39ff14', font: 'bold 28px monospace' },
+  { id: 'nature',     name: 'ボタニカル',   bg: '#f1f8f1', textColor: '#2ecc71', font: 'bold 26px Georgia,serif' },
+  { id: 'gradient',   name: 'グラデーション', bg: '#1a0033', textColor: '#ffffff', font: 'bold 28px sans-serif' },
+  { id: 'wave',       name: '波・和柄',     bg: '#1a4a8a', textColor: '#ffffff', font: 'bold 26px serif' },
+  { id: 'popart',     name: 'ポップアート', bg: '#ffff00', textColor: '#e91e63', font: 'bold 30px Impact,sans-serif' },
+]
 
-  // 9件フォールバック（3列×3行グリッドを常に埋める）
-  const FALLBACK_TRENDS = [
-    'AI活用術', '副業・在宅ワーク', '節約・投資',
-    'ChatGPT最新情報', '動画・コンテンツ制作', '健康・ダイエット',
-    '転職・キャリア', 'ガジェット・テック', 'SNSマーケティング'
-  ];
+const TSHIRT_COLORS = [
+  { id: 'white',  name: '白',      hex: '#FFFFFF' },
+  { id: 'black',  name: '黒',      hex: '#1a1a1a' },
+  { id: 'navy',   name: '紺',      hex: '#1e3a5f' },
+  { id: 'gray',   name: 'グレー', hex: '#808080' },
+  { id: 'red',    name: 'レッド', hex: '#e74c3c' },
+  { id: 'beige',  name: 'ベージュ', hex: '#f5e6c8' },
+  { id: 'green',  name: 'グリーン', hex: '#2d6a4f' },
+  { id: 'purple', name: 'パープル', hex: '#6b21a8' },
+  { id: 'pink',   name: 'ピンク', hex: '#f472b6' },
+  { id: 'orange', name: 'オレンジ', hex: '#ea580c' },
+]
 
-  useEffect(() => { fetchTrends(); }, []);
+const FALLBACK_TRENDS = [
+  'AI活用術', '副業・在宅ワーク', '節約・投資',
+  'ChatGPT最新', '動画制作', '健康・ダイエット',
+  '転職・キャリア', 'ガジェット', 'SNSマーケ'
+]
 
+// ──────────────────────────────────────────────
+// Tシャツ描画ヘルパー
+// ──────────────────────────────────────────────
+function drawTshirt(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  ctx.beginPath()
+  ctx.moveTo(w * 0.20, h * 0.08)
+  ctx.lineTo(w * 0.35, h * 0.04)
+  ctx.quadraticCurveTo(w * 0.50, h * 0.13, w * 0.65, h * 0.04)
+  ctx.lineTo(w * 0.80, h * 0.08)
+  ctx.lineTo(w * 0.97, h * 0.28)
+  ctx.lineTo(w * 0.80, h * 0.34)
+  ctx.lineTo(w * 0.80, h * 0.93)
+  ctx.lineTo(w * 0.20, h * 0.93)
+  ctx.lineTo(w * 0.20, h * 0.34)
+  ctx.lineTo(w * 0.03, h * 0.28)
+  ctx.closePath()
+}
+
+// ──────────────────────────────────────────────
+// メインコンポーネント
+// ──────────────────────────────────────────────
+const AISelectShopApp = () => {
+  const [step, setStep] = useState<1 | 2 | 3>(1)
+  const [trends, setTrends] = useState<{ id: number; name: string }[]>([])
+  const [isLoadingTrends, setIsLoadingTrends] = useState(false)
+  const [isLive, setIsLive] = useState(false)
+  const [keyword, setKeyword] = useState('')
+  const [styleId, setStyleId] = useState('japanese')
+  const [tshirtColorId, setTshirtColorId] = useState('black')
+  const [mockupDataUrl, setMockupDataUrl] = useState<string | null>(null)
+  const [isPublishing, setIsPublishing] = useState(false)
+  const [publishResult, setPublishResult] = useState<{ url?: string; error?: string } | null>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  // ── トレンド取得 ──
   const fetchTrends = async () => {
-    setIsLoading(true);
+    setIsLoadingTrends(true)
     try {
-      const r = await fetch('/api/trends', { cache: 'no-store' });
-      const d = await r.json();
+      const r = await fetch('/api/trends', { cache: 'no-store' })
+      const d = await r.json()
       if (d.trends && d.trends.length > 0) {
-        // 常に9件に揃える（足りない場合はフォールバックで補填）
-        const fetched: string[] = d.trends.slice(0, 9);
+        const fetched: string[] = d.trends.slice(0, 9)
         const padded = fetched.length >= 9
           ? fetched
-          : [...fetched, ...FALLBACK_TRENDS.filter(f => !fetched.includes(f))].slice(0, 9);
-        setTrends(padded.map((t: string, i: number) => ({ id: i, name: t })));
-        setIsLive(d.isLive === true);
-      } else {
-        throw new Error('no trends');
-      }
+          : [...fetched, ...FALLBACK_TRENDS.filter(f => !fetched.includes(f))].slice(0, 9)
+        setTrends(padded.map((t, i) => ({ id: i, name: t })))
+        setIsLive(d.isLive === true)
+      } else throw new Error('empty')
     } catch {
-      setTrends(FALLBACK_TRENDS.map((t, i) => ({ id: i, name: t })));
-      setIsLive(false);
-    } finally { setIsLoading(false); }
-  };
+      setTrends(FALLBACK_TRENDS.map((t, i) => ({ id: i, name: t })))
+      setIsLive(false)
+    } finally {
+      setIsLoadingTrends(false)
+    }
+  }
 
+  useEffect(() => { fetchTrends() }, [])
+
+  // ── Tシャツモックアップ描画 ──
+  const drawDesign = useCallback(() => {
+    const canvas = canvasRef.current
+    if (!canvas || !keyword) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    const w = canvas.width, h = canvas.height
+    const S = STYLES.find(s => s.id === styleId) || STYLES[0]
+    const TC = TSHIRT_COLORS.find(c => c.id === tshirtColorId) || TSHIRT_COLORS[1]
+
+    ctx.clearRect(0, 0, w, h)
+
+    // 背景
+    ctx.fillStyle = '#1e293b'
+    ctx.fillRect(0, 0, w, h)
+
+    // Tシャツ本体
+    ctx.save()
+    drawTshirt(ctx, w, h)
+    ctx.shadowColor = 'rgba(0,0,0,0.4)'
+    ctx.shadowBlur = 16
+    ctx.fillStyle = TC.hex
+    ctx.fill()
+    ctx.strokeStyle = TC.hex === '#FFFFFF' ? '#e2e8f0' : TC.hex
+    ctx.lineWidth = 2
+    ctx.stroke()
+    ctx.restore()
+
+    // デザイン印刷エリア（クリップ）
+    ctx.save()
+    drawTshirt(ctx, w, h)
+    ctx.clip()
+
+    const cx = w / 2, cy = h * 0.50, pr = h * 0.18
+    ctx.fillStyle = S.bg
+    ctx.globalAlpha = 0.85
+    ctx.beginPath()
+    ctx.arc(cx, cy, pr, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.globalAlpha = 1
+
+    ctx.font = S.font
+    ctx.fillStyle = S.textColor
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText(keyword.length > 8 ? keyword.slice(0, 8) + '…' : keyword, cx, cy)
+    ctx.restore()
+
+    setMockupDataUrl(canvas.toDataURL('image/png'))
+  }, [keyword, styleId, tshirtColorId])
+
+  useEffect(() => { if (keyword) drawDesign() }, [keyword, styleId, tshirtColorId, drawDesign])
+
+  // ── 出品処理 ──
   const handlePublish = async () => {
-    setIsPublishing(true);
-    // 憲法遵守：Shopify/Printful 連携の実務API導線を再接続
-    await new Promise(r => setTimeout(r, 3000));
-    setPublishResult({ url: '#' });
-    setCurrentStep(3);
-    setIsPublishing(false);
-  };
+    if (!keyword || !mockupDataUrl) return
+    setIsPublishing(true)
+    setPublishResult(null)
+    try {
+      const res = await fetch('/api/tools/printful', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'create-product',
+          keyword,
+          style: styleId,
+          mockupUrl: mockupDataUrl,
+          tshirtColor: tshirtColorId,
+          sizes: ['S', 'M', 'L', 'XL'],
+        }),
+      })
+      const data = await res.json()
+      if (data.error) {
+        setPublishResult({ error: data.error })
+      } else {
+        setPublishResult({ url: data.url || data.shopifyUrl || '#' })
+        setStep(3)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    } catch (e: any) {
+      setPublishResult({ error: e.message || '出品に失敗しました' })
+    } finally {
+      setIsPublishing(false)
+    }
+  }
 
+  // ──────────────────────────────────────────────
+  // UI
+  // ──────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#050507] p-4 md:p-12 text-slate-100 font-sans selection:bg-emerald-500/30">
-      {/* ⚡ 憲法：MASTERMODEL最上位ロック - 全ページ一括変更などの干渉を一切拒絶 */}
-      <div className="fixed top-0 left-0 right-0 h-2 bg-emerald-500 z-[9999] shadow-[0_0_30px_rgba(16,185,129,1)]"></div>
+    <div className="min-h-screen bg-[#0f172a] text-slate-100" style={{ fontFamily: "'Inter','Noto Sans JP',sans-serif" }}>
+      {/* エメラルドトップバー */}
+      <div className="h-1 bg-emerald-500 w-full" />
 
-      <div className="max-w-6xl mx-auto space-y-12 border-t-[24px] border-x-8 border-b-8 border-emerald-500 shadow-[0_0_150px_rgba(16,185,129,0.5)] rounded-[4rem] p-6 md:p-16 relative overflow-hidden bg-black/40 backdrop-blur-xl text-left">
-        <div className="text-center space-y-6 relative border-b border-emerald-500/20 pb-12">
-          <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 font-black italic px-8 py-2 text-sm uppercase tracking-[0.4em] mb-4 shadow-lg shadow-emerald-500/10 rounded-full">Inventory Zero Master</Badge>
-          <h1 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter leading-tight">AIセレクトショップ</h1>
-          <div className="flex justify-center mt-6">
-            <ApiLinkIndicator model="Shopify / Printful Engine v1.0" />
-          </div>
-        </div>
+      <div className="max-w-5xl mx-auto px-4 py-12 space-y-10">
 
-        <div className="bg-white/5 border-2 border-emerald-500/20 rounded-[3rem] p-10 space-y-6 max-w-5xl mx-auto shadow-inner relative overflow-hidden">
-          <div className="flex items-center gap-4 text-emerald-400">
-            <Info size={32} /> 
-            <h3 className="font-black italic uppercase text-2xl tracking-widest">使いかた・活用マニュアル</h3>
+        {/* ヘッダー */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-xs font-medium text-emerald-400 tracking-wide">
+              {isLive ? 'LIVE TREND DATA' : 'CACHED DATA'}
+            </span>
           </div>
-          <p className="text-xl text-white font-black leading-relaxed italic border-l-8 border-emerald-500 pl-6 py-2">
-            トレンドを選びデザインを生成。Shopifyへ自動出品。受注から配送まではシステムが完結させます。
+          <h1 className="text-4xl font-semibold text-white tracking-tight leading-[1.15]">
+            AIセレクトショップ
+          </h1>
+          <p className="text-slate-400 leading-relaxed text-base max-w-xl">
+            トレンドを選んでデザインを生成。Shopifyへ自動出品して在庫ゼロで販売をはじめましょう。
           </p>
         </div>
 
-        <div className="flex gap-4 justify-center bg-white/5 p-3 rounded-[2.5rem] border border-white/10 max-w-2xl mx-auto backdrop-blur-md shadow-2xl">
-          {[1, 2, 3].map(s => (
-            <button 
-              key={s} 
-              onClick={() => setCurrentStep(s)} 
-              className={'flex-1 py-6 rounded-[1.5rem] font-black italic text-xl uppercase transition-all duration-300 ' + (currentStep === s ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-slate-950 shadow-[0_0_30px_rgba(52,211,153,0.4)] scale-105' : 'text-slate-500 hover:text-emerald-400 hover:bg-white/5')}
+        {/* ステップナビ */}
+        <div className="flex gap-1 bg-[#1e293b] p-1 rounded-xl max-w-sm border border-slate-700/50">
+          {([
+            { n: 1, label: 'トレンド選択' },
+            { n: 2, label: 'デザイン生成' },
+            { n: 3, label: '出品完了' },
+          ] as { n: 1|2|3; label: string }[]).map(({ n, label }) => (
+            <button
+              key={n}
+              onClick={() => setStep(n)}
+              className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+                step === n
+                  ? 'bg-emerald-500 text-slate-950 shadow'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
             >
-              Step 0{s}
+              {label}
             </button>
           ))}
         </div>
 
-        {currentStep === 1 && (
-          <div className="space-y-10">
-            <div className="flex items-center justify-between ml-4 mr-4">
-              <div className="flex items-center gap-4">
-                <div className="h-8 w-2 bg-emerald-500 rounded-full"></div>
-                <h4 className="text-3xl font-black text-white italic uppercase tracking-widest">1. トレンド・キーワードを選択</h4>
-              </div>
-              <div className="flex items-center gap-3">
-                {isLoading ? (
-                  <span className="flex items-center gap-2 text-xs font-black text-slate-400 italic uppercase tracking-widest">
-                    <Loader2 size={14} className="animate-spin text-emerald-400" /> 取得中...
-                  </span>
-                ) : (
-                  <span className={`flex items-center gap-2 text-xs font-black italic uppercase tracking-widest ${isLive ? 'text-emerald-400' : 'text-slate-500'}`}>
-                    <span className={`h-2 w-2 rounded-full ${isLive ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`}></span>
-                    {isLive ? 'LIVE TREND' : 'STABLE DATA'}
-                  </span>
-                )}
-                <button
-                  onClick={fetchTrends}
-                  className="text-xs font-black italic uppercase tracking-widest text-slate-500 hover:text-emerald-400 transition-colors border border-white/10 hover:border-emerald-500/40 rounded-xl px-4 py-2"
-                >
-                  ↻ 更新
-                </button>
-              </div>
+        {/* ─── Step 1: トレンド選択 ─── */}
+        {step === 1 && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-white">今週のトレンドキーワード</h2>
+              <button
+                onClick={fetchTrends}
+                disabled={isLoadingTrends}
+                className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-emerald-400 transition-colors disabled:opacity-50"
+              >
+                <RefreshCw size={14} className={isLoadingTrends ? 'animate-spin' : ''} />
+                更新
+              </button>
             </div>
 
-            {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {[...Array(9)].map((_, i) => (
-                  <div key={i} className="bg-[#13141f] border-4 border-white/5 rounded-[3.5rem] p-12 animate-pulse flex flex-col items-center gap-4">
-                    <div className="h-5 w-24 bg-white/10 rounded-full"></div>
-                    <div className="h-10 w-32 bg-white/10 rounded-2xl"></div>
-                  </div>
+            {isLoadingTrends ? (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {Array.from({ length: 9 }).map((_, i) => (
+                  <div key={i} className="h-20 bg-[#1e293b] rounded-xl animate-pulse border border-slate-700/50" />
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-in fade-in duration-500">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {trends.map(t => (
-                  <Card
+                  <button
                     key={t.id}
-                    onClick={() => { setKeyword(t.name); setCurrentStep(2); window.scrollTo(0, 0); }}
-                    className="bg-[#13141f] border-4 border-white/5 p-8 rounded-[3rem] hover:border-emerald-500 cursor-pointer transition-all text-center group shadow-2xl active:scale-95 flex flex-col items-center justify-center min-h-[160px]"
+                    onClick={() => { setKeyword(t.name); setStep(2); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+                    className="h-20 bg-[#1e293b] border border-slate-700/50 hover:border-emerald-500 hover:bg-[#1e293b]/80 rounded-xl px-5 text-left font-medium text-slate-200 hover:text-emerald-400 transition-all group"
                   >
-                    <Badge className="mb-4 bg-emerald-500/20 text-emerald-400 border-emerald-500/30 px-3 py-1 font-black italic text-xs shrink-0">TREND SYNC</Badge>
-                    <p className="text-2xl md:text-3xl font-black italic text-white group-hover:text-emerald-400 transition-colors leading-tight break-all line-clamp-2">{t.name}</p>
-                  </Card>
+                    <span className="text-xs text-slate-500 block mb-1">TREND</span>
+                    <span className="text-base">{t.name}</span>
+                  </button>
                 ))}
               </div>
             )}
-          </div>
-        )}
 
-        {currentStep === 2 && (
-          <div className="space-y-10">
-            <div className="flex items-center gap-4 ml-4">
-              <div className="h-8 w-2 bg-emerald-500 rounded-full"></div>
-              <h4 className="text-3xl font-black text-white italic uppercase tracking-widest">2. デザイン生成 ➔ 出品実行</h4>
-            </div>
-            <div className="grid lg:grid-cols-2 gap-12 animate-in zoom-in-95 duration-500">
-              <Card className="bg-[#13141f] p-10 border-4 border-white/10 rounded-[3.5rem] space-y-10 text-white font-black shadow-2xl relative overflow-hidden">
-                <div className="space-y-4">
-                  <label className="text-sm font-black uppercase text-emerald-500 tracking-[0.3em] italic ml-2">Design Keyword</label>
-                  <input 
-                    value={keyword} 
-                    onChange={e => setKeyword(e.target.value)} 
-                    className="w-full h-24 bg-black/60 border-4 border-white/10 rounded-[2rem] px-10 text-3xl font-black text-white focus:border-emerald-500 transition-all outline-none shadow-inner placeholder:text-white/10" 
-                    placeholder="キーワードを入力..."
-                  />
-                </div>
-                <Button 
-                  onClick={handlePublish} 
-                  disabled={isPublishing || !keyword} 
-                  className="w-full h-32 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-4xl rounded-[2.5rem] shadow-[0_20px_50px_rgba(16,185,129,0.4)] uppercase italic active:scale-95 transition-all group"
+            {/* 手入力 */}
+            <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-3">
+              <p className="text-sm font-medium text-slate-300">または自分でキーワードを入力</p>
+              <div className="flex gap-3">
+                <input
+                  value={keyword}
+                  onChange={e => setKeyword(e.target.value)}
+                  placeholder="例：AI美女、侍、宇宙猫..."
+                  className="flex-1 h-11 bg-[#0f172a] border border-slate-700 rounded-lg px-4 text-sm text-white placeholder:text-slate-500 focus:border-emerald-500 outline-none transition-colors"
+                />
+                <button
+                  onClick={() => { if (keyword) { setStep(2); window.scrollTo({ top: 0, behavior: 'smooth' }) } }}
+                  disabled={!keyword}
+                  className="h-11 px-5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-sm rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  {isPublishing ? <Loader2 className="animate-spin h-16 w-16 mx-auto" /> : (
-                    <span className="flex items-center gap-4">SHOPIFY 自動出品 <Zap className="h-10 w-10 fill-current animate-pulse" /></span>
-                  )}
-                </Button>
-              </Card>
-              <div className="bg-[#13141f] rounded-[3.5rem] border-4 border-white/5 p-12 flex flex-col justify-center items-center gap-8 text-center shadow-2xl relative overflow-hidden group">
-                 <div className="w-full aspect-square bg-white/5 rounded-[2.5rem] border-4 border-dashed border-white/10 flex items-center justify-center shadow-inner group-hover:border-emerald-500/50 transition-all duration-700">
-                   <Palette size={80} className="text-slate-600 animate-pulse group-hover:text-emerald-400 group-hover:scale-110 transition-all duration-700" />
-                 </div>
-                 <p className="text-lg font-black text-slate-500 uppercase tracking-[0.4em] italic group-hover:text-emerald-500 transition-colors">AIデザイン プレビュー</p>
+                  次へ →
+                </button>
               </div>
             </div>
           </div>
         )}
 
-        {currentStep === 3 && (
-          <div className="text-center py-24 space-y-12 animate-in zoom-in duration-700">
-            <div className="relative inline-block">
-              <CheckCircle2 className="h-40 w-40 text-emerald-500 mx-auto drop-shadow-[0_0_50px_rgba(16,185,129,0.6)] animate-bounce" />
-              <div className="absolute inset-0 bg-emerald-500/20 blur-[60px] rounded-full"></div>
+        {/* ─── Step 2: デザイン生成 & 出品 ─── */}
+        {step === 2 && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-white">デザインを生成して出品</h2>
+              <button onClick={() => setStep(1)} className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">← 戻る</button>
             </div>
-            <h2 className="text-7xl md:text-9xl font-black text-white italic uppercase tracking-tighter leading-none">出品完了</h2>
-            <p className="text-2xl text-slate-400 font-bold italic">商品はShopifyストアへ安全に同期されました。</p>
-            <div className="flex justify-center pt-6">
-              <Button 
-                onClick={() => window.open(publishResult?.url)} 
-                className="h-28 px-20 bg-white text-slate-950 font-black text-4xl rounded-[2.5rem] shadow-[0_20px_60px_rgba(255,255,255,0.2)] hover:bg-emerald-400 hover:scale-105 transition-all uppercase italic active:scale-95"
-              >
-                Shopifyで見る ➔
-              </Button>
+
+            <div className="grid lg:grid-cols-2 gap-6">
+              {/* 左：設定 */}
+              <div className="space-y-5">
+                {/* キーワード */}
+                <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-3">
+                  <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">キーワード</label>
+                  <input
+                    value={keyword}
+                    onChange={e => setKeyword(e.target.value)}
+                    className="w-full h-11 bg-[#0f172a] border border-slate-700 rounded-lg px-4 text-base text-white focus:border-emerald-500 outline-none transition-colors"
+                  />
+                </div>
+
+                {/* スタイル */}
+                <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-3">
+                  <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">デザインスタイル</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {STYLES.map(s => (
+                      <button
+                        key={s.id}
+                        onClick={() => setStyleId(s.id)}
+                        className={`py-2 px-1 rounded-lg text-xs font-medium transition-all ${
+                          styleId === s.id
+                            ? 'bg-emerald-500 text-slate-950'
+                            : 'bg-[#0f172a] text-slate-400 hover:text-slate-200 border border-slate-700/50'
+                        }`}
+                      >
+                        {s.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tシャツカラー */}
+                <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-3">
+                  <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">Tシャツカラー</label>
+                  <div className="flex flex-wrap gap-2">
+                    {TSHIRT_COLORS.map(c => (
+                      <button
+                        key={c.id}
+                        onClick={() => setTshirtColorId(c.id)}
+                        title={c.name}
+                        className={`w-8 h-8 rounded-full border-2 transition-all ${
+                          tshirtColorId === c.id ? 'border-emerald-400 scale-110' : 'border-slate-600 hover:border-slate-400'
+                        }`}
+                        style={{ backgroundColor: c.hex }}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* エラー表示 */}
+                {publishResult?.error && (
+                  <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-sm text-red-400">
+                    <AlertCircle size={16} />
+                    {publishResult.error}
+                  </div>
+                )}
+
+                {/* 出品ボタン */}
+                <button
+                  onClick={handlePublish}
+                  disabled={isPublishing || !keyword || !mockupDataUrl}
+                  className="w-full h-12 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-base rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(16,185,129,0.25)]"
+                >
+                  {isPublishing ? (
+                    <><Loader2 size={18} className="animate-spin" /> Shopifyへ出品中...</>
+                  ) : (
+                    <><ShoppingCart size={18} /> Shopifyへ自動出品</>
+                  )}
+                </button>
+              </div>
+
+              {/* 右：プレビュー */}
+              <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 flex flex-col items-center gap-4">
+                <p className="text-xs font-medium text-slate-400 uppercase tracking-wide self-start">プレビュー</p>
+                <canvas
+                  ref={canvasRef}
+                  width={400}
+                  height={500}
+                  className="max-w-full rounded-xl"
+                />
+                {!keyword && (
+                  <p className="text-sm text-slate-500 text-center">キーワードを入力するとプレビューが表示されます</p>
+                )}
+              </div>
             </div>
-            
-            <div className="space-y-10 pt-20 text-left max-w-5xl mx-auto border-t-4 border-white/5">
-              <h3 className="text-3xl font-black text-white italic uppercase tracking-widest border-l-8 border-emerald-500 pl-8 py-2">販売ロードマップ</h3>
-              <div className="grid md:grid-cols-3 gap-8">
+          </div>
+        )}
+
+        {/* ─── Step 3: 出品完了 ─── */}
+        {step === 3 && (
+          <div className="space-y-8">
+            <div className="bg-[#1e293b] border border-emerald-500/30 rounded-2xl p-8 flex flex-col items-center gap-4 text-center">
+              <CheckCircle2 className="h-16 w-16 text-emerald-500" />
+              <h2 className="text-2xl font-semibold text-white">出品完了</h2>
+              <p className="text-slate-400 text-sm">商品がShopifyストアへ同期されました。受注後は自動で生産・配送されます。</p>
+              {publishResult?.url && publishResult.url !== '#' && (
+                <a
+                  href={publishResult.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 h-11 px-6 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-sm rounded-xl transition-colors"
+                >
+                  <ExternalLink size={16} /> Shopifyで確認する
+                </a>
+              )}
+            </div>
+
+            {/* 販売ロードマップ */}
+            <div className="space-y-4">
+              <h3 className="text-base font-semibold text-white">販売ロードマップ</h3>
+              <div className="grid sm:grid-cols-3 gap-4">
                 {[
-                  { title: '自動出品', desc: 'Shopifyと完全同期。リスク¥0。', icon: ShoppingCart }, 
-                  { title: 'SNS拡散', desc: '各SNSへ自動投稿して集客。', icon: TrendingUp }, 
-                  { title: '自動生産', desc: '売れたら自動で発送。', icon: Zap }
+                  { icon: ShoppingCart, title: '自動出品', desc: 'Shopify × Printful連携。在庫リスクゼロで販売開始。' },
+                  { icon: TrendingUp,   title: 'SNS集客',  desc: 'モックアップ画像をXやInstagramでシェアして集客。' },
+                  { icon: Zap,          title: '完全自動化', desc: '受注後の生産・配送はシステムが自動で処理。' },
                 ].map((s, i) => (
-                  <div key={i} className="bg-[#13141f] border-2 border-white/10 p-10 rounded-[3rem] space-y-6 hover:border-emerald-500/50 transition-all group shadow-2xl">
-                    <div className="flex justify-between items-start">
-                      <span className="text-xl font-black text-emerald-500/40 italic">0{i+1}</span>
-                      <s.icon className="h-12 w-12 text-emerald-400 group-hover:animate-bounce group-hover:scale-110 transition-all" />
+                  <div key={i} className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <s.icon size={18} className="text-emerald-400" />
+                      <span className="text-sm font-semibold text-white">{s.title}</span>
                     </div>
-                    <h4 className="text-2xl font-black text-white italic">{s.title}</h4>
-                    <p className="text-sm text-slate-400 font-bold italic leading-relaxed">{s.desc}</p>
+                    <p className="text-xs text-slate-400 leading-relaxed">{s.desc}</p>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="pt-20">
-               <Button 
-                 onClick={() => { setCurrentStep(1); window.scrollTo(0,0); }} 
-                 className="h-20 px-12 bg-white/5 text-white font-black text-xl rounded-2xl border-2 border-white/10 hover:bg-emerald-500/20 hover:border-emerald-500 transition-all italic uppercase"
-               >
-                 新しいデザインを作成する
-               </Button>
-            </div>
+
+            <button
+              onClick={() => { setStep(1); setPublishResult(null); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+              className="h-11 px-6 bg-[#1e293b] hover:bg-[#334155] border border-slate-700/50 text-slate-300 font-medium text-sm rounded-xl transition-colors"
+            >
+              新しいデザインを作成する
+            </button>
           </div>
         )}
 
-        <div className="mt-24 pt-12 border-t-2 border-white/5 flex flex-col md:flex-row items-center justify-between gap-8 text-[12px] font-black italic uppercase tracking-[0.4em] text-white/20">
-          <p>© 2026 NextraLabs Viral Content OS. ALL RIGHTS RESERVED.</p>
-          <div className="flex gap-12">
-            <a href="#" className="hover:text-emerald-500 transition-colors">利用規約</a>
-            <a href="#" className="hover:text-emerald-500 transition-colors">ステータス</a>
-            <a href="#" className="hover:text-emerald-500 transition-colors">サポート</a>
-          </div>
+        {/* フッター */}
+        <div className="pt-8 border-t border-slate-800 flex items-center justify-between text-xs text-slate-600">
+          <span>© 2026 NextraLabs</span>
+          <span className="flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            Shopify × Printful Engine v2.0
+          </span>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-const NoSSR = dynamic(() => Promise.resolve(MasterEngine), { ssr: false });
-export default function AISelectShop() { return <NoSSR />; }
+const NoSSR = dynamic(() => Promise.resolve(AISelectShopApp), { ssr: false })
+export default function AISelectShopPage() { return <NoSSR /> }
