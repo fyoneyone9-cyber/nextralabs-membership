@@ -10,6 +10,7 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${API_KEY}`,
       'X-Api-Key': API_KEY,
     },
     body: JSON.stringify({
