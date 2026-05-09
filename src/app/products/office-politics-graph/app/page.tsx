@@ -78,14 +78,13 @@ export default function MobileFirstPoliticsBoard() {
     const from = members.find(m => m.id === conn.fromId)
     const to = members.find(m => m.id === conn.toId)
     if (!from || !to) return null
-    // カードサイズの変更（w-48, h-56想定）に合わせて調整
     return { x1: from.x + 96, y1: from.y + 112, x2: to.x + 96, y2: to.y + 112 }
   }
 
   return (
     <div className="fixed inset-0 bg-[#050507] text-white font-sans overflow-hidden touch-none selection:bg-emerald-500/30">
       
-      {/* 全画面キャンバス：グリッドをより太く */}
+      {/* 全画面キャンバス */}
       <div className="absolute inset-0 bg-[radial-gradient(#1e293b_2px,transparent_2px)] [background-size:80px_80px] z-0" onClick={() => { setSelectedMemberId(null); setIsLinking(false); }}>
         <svg className="absolute inset-0 w-full h-full pointer-events-none">
           {connections.map((conn, i) => {
@@ -119,24 +118,21 @@ export default function MobileFirstPoliticsBoard() {
         ))}
       </div>
 
-      {/* ヘッダー：より重厚に */}
-      <div className="absolute top-0 inset-x-0 p-8 flex justify-between items-center z-50">
-        <div className="bg-black/80 backdrop-blur-2xl border-4 border-emerald-500/40 px-8 py-4 rounded-[2rem] flex items-center gap-4 shadow-[0_0_50px_rgba(16,185,129,0.3)]">
-          <Network size={28} className="text-emerald-400" />
-          <h1 className="text-2xl font-black italic tracking-tighter uppercase text-white">不敗の社内政治ボード</h1>
+      {/* ヘッダー：h-auto で中身に合わせる */}
+      <div className="absolute top-0 inset-x-0 p-4 md:p-8 flex justify-between items-start z-50 pointer-events-none">
+        <div className="bg-black/80 backdrop-blur-2xl border-4 border-emerald-500/40 px-6 md:px-8 py-3 md:py-4 rounded-[1.5rem] md:rounded-[2rem] flex items-center gap-4 shadow-[0_0_50px_rgba(16,185,129,0.3)] pointer-events-auto max-w-[80%]">
+          <Network size={28} className="text-emerald-400 shrink-0" />
+          <h1 className="text-lg md:text-2xl font-black italic tracking-tighter uppercase text-white leading-tight">不敗の社内政治ボード</h1>
         </div>
-        <Button onClick={() => setShowMenu(!showMenu)} className="bg-black/80 border-4 border-white/10 w-20 h-20 rounded-[2rem] shadow-2xl active:scale-90 transition-all"><MoreHorizontal size={36} /></Button>
+        <Button onClick={() => setShowMenu(!showMenu)} className="bg-black/80 border-4 border-white/10 w-14 h-14 md:w-20 md:h-20 rounded-[1.2rem] md:rounded-[2rem] shadow-2xl active:scale-90 transition-all pointer-events-auto shrink-0 flex items-center justify-center">
+          <MoreHorizontal size={36} />
+        </Button>
       </div>
 
-      {/* チュートリアル：最前面(z-50)に配置 */}
+      {/* チュートリアル：最前面 */}
       <AnimatePresence>
         {showTutorial && members.length === 0 && (
-          <motion.div 
-            initial={{ y: 20, opacity: 0 }} 
-            animate={{ y: 0, opacity: 1 }} 
-            exit={{ opacity: 0 }}
-            className="absolute inset-x-6 top-32 z-[100] bg-black/90 backdrop-blur-2xl border-4 border-emerald-500/50 p-10 rounded-[3.5rem] space-y-8 shadow-[0_0_150px_rgba(16,185,129,0.4)]"
-          >
+          <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-x-6 top-32 z-[100] bg-black/90 backdrop-blur-2xl border-4 border-emerald-500/50 p-10 rounded-[3.5rem] space-y-8 shadow-[0_0_150px_rgba(16,185,129,0.4)]">
             <div className="flex items-center justify-between text-emerald-400 font-black italic text-3xl">
               <div className="flex items-center gap-4"><BookOpen size={40}/> START GUIDE</div>
               <Button onClick={() => setShowTutorial(false)} variant="ghost" className="h-12 w-12 p-0 rounded-full text-white/50"><X size={32}/></Button>
@@ -146,41 +142,39 @@ export default function MobileFirstPoliticsBoard() {
               <div className="flex gap-6 items-start"><Badge className="bg-emerald-500 text-black text-xl px-4 py-1">2</Badge> <p>指で自由に動かして「勢力」を可視化</p></div>
               <div className="flex gap-6 items-start"><Badge className="bg-emerald-500 text-black text-xl px-4 py-1">3</Badge> <p>人物を選択 ➔ [ 関係線を引く ] で繋ぐ</p></div>
             </div>
-            <Button onClick={() => setShowTutorial(false)} className="w-full h-20 bg-emerald-500 text-black font-black text-2xl rounded-2xl border-b-8 border-emerald-700 shadow-xl">
-              作図を開始する
-            </Button>
+            <Button onClick={() => setShowTutorial(false)} className="w-full h-20 bg-emerald-500 text-black font-black text-2xl rounded-2xl border-b-8 border-emerald-700 shadow-xl">作図を開始する</Button>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 巨大FAB */}
-      <div className="absolute bottom-40 right-10 z-50 flex flex-col items-end gap-4">
-        <div className="bg-emerald-500 text-black px-6 py-2 rounded-full font-black italic text-sm shadow-xl animate-bounce">人物を召喚 ➔</div>
-        <Button onClick={addMember} className="w-28 h-28 bg-emerald-500 hover:bg-emerald-400 text-black rounded-[2.5rem] shadow-[0_20px_60px_rgba(16,185,129,0.6)] active:scale-90 transition-all border-b-[12px] border-emerald-700">
+      {/* 巨大追加ボタン：位置をボトムパネルの上に浮かせ、重なりを回避 */}
+      <div className="absolute bottom-48 right-10 z-[60] flex flex-col items-end gap-4 pointer-events-none">
+        <div className="bg-emerald-500 text-black px-6 py-2 rounded-full font-black italic text-sm shadow-xl animate-bounce pointer-events-auto">人物を召喚 ➔</div>
+        <Button onClick={addMember} className="w-28 h-28 bg-emerald-500 hover:bg-emerald-400 text-black rounded-[2.5rem] shadow-[0_20px_60px_rgba(16,185,129,0.6)] active:scale-90 transition-all border-b-[12px] border-emerald-700 pointer-events-auto">
           <Plus size={60} />
         </Button>
       </div>
 
-      {/* ボトム操作：超巨大化 */}
+      {/* ボトム操作：レイアウトを flex で整理し、ボタンが重ならないように修正 */}
       <div className="absolute bottom-10 inset-x-10 z-50 flex flex-col gap-6">
         <div className="bg-black/90 backdrop-blur-3xl border-4 border-emerald-500/30 p-6 rounded-[3.5rem] flex items-center gap-6 shadow-[0_30px_100px_rgba(0,0,0,0.8)]">
           <Button 
             onClick={(e) => { e.stopPropagation(); setIsLinking(!isLinking); }}
             disabled={!selectedMemberId}
-            className={`flex-1 h-28 rounded-[2.5rem] font-black italic text-4xl transition-all border-b-[12px] ${isLinking ? 'bg-blue-600 border-blue-800 text-white animate-pulse' : 'bg-white/5 text-white/30 border-white/10'}`}
+            className={`flex-[3] h-28 rounded-[2.5rem] font-black italic text-4xl transition-all border-b-[12px] ${isLinking ? 'bg-blue-600 border-blue-800 text-white animate-pulse' : 'bg-white/5 text-white/30 border-white/10'}`}
           >
             <Link size={44} className="mr-5" /> {isLinking ? '相手を選択' : '関係線を引く'}
           </Button>
           
-          <a href="https://www.amazon.co.jp/s?k=職場の人間関係+心理学&tag=nextralabs-22" target="_blank" className="bg-gradient-to-r from-emerald-600 to-teal-800 w-28 h-28 rounded-[2.5rem] flex items-center justify-center shadow-2xl border-b-[12px] border-teal-950 hover:scale-105 transition-all">
+          <a href="https://www.amazon.co.jp/s?k=職場の人間関係+心理学&tag=nextralabs-22" target="_blank" className="flex-1 h-28 rounded-[2.5rem] bg-gradient-to-r from-emerald-600 to-teal-800 flex items-center justify-center shadow-2xl border-b-[12px] border-teal-950 hover:scale-105 transition-all">
             <ShoppingCart size={48} className="text-white" />
           </a>
         </div>
         
         {/* 凡例 */}
         <div className="flex justify-center gap-12 bg-black/60 backdrop-blur-md py-4 rounded-[2rem] border-2 border-white/10 mx-10">
-          <div className="flex items-center gap-4"><div className="w-6 h-6 bg-blue-500 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.5)]" /><span className="text-xl font-black italic text-white/80">味方</span></div>
-          <div className="flex items-center gap-4"><div className="w-6 h-6 bg-red-500 rounded-full shadow-[0_0_15px_rgba(239,68,68,0.5)]" /><span className="text-xl font-black italic text-white/80">対立</span></div>
+          <div className="flex items-center gap-4"><div className="w-6 h-6 bg-blue-500 rounded-full" /><span className="text-xl font-black italic text-white/80">味方</span></div>
+          <div className="flex items-center gap-4"><div className="w-6 h-6 bg-red-500 rounded-full" /><span className="text-xl font-black italic text-white/80">対立</span></div>
           <div className="flex items-center gap-4"><div className="w-6 h-6 bg-slate-400 border-2 border-dashed border-white rounded-full" /><span className="text-xl font-black italic text-white/80">中立</span></div>
         </div>
       </div>
@@ -212,17 +206,9 @@ export default function MobileFirstPoliticsBoard() {
                 }} />
               </label>
             </div>
-
-            <div className="mt-auto bg-emerald-500/10 p-8 rounded-[3rem] border-2 border-emerald-500/20 space-y-6">
-              <p className="font-black text-emerald-500 italic text-xl uppercase">Tactical Advice</p>
-              <p className="text-lg font-bold text-white/60 leading-relaxed italic">
-                情報を制する者が組織を制す。このマップは、あなたの戦場を可視化するための「究極の武器」です。
-              </p>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>
-
     </div>
   )
 }
