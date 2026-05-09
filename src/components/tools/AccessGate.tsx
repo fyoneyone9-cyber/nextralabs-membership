@@ -40,7 +40,7 @@ const STANDARD_IDS = [
 const LIGHT_IDS = [
   'expense-sync',
   'contact-sync',
-  'price-tracker',
+
 ]
 
 // 無料ツール（ログインのみ必要）

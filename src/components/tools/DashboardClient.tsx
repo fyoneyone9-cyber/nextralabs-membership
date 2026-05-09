@@ -63,7 +63,7 @@ const TOOL_CATEGORIES = [
       { id: 'universal-converter', name: '究極AIマルチコンバーター',  icon: Repeat,       color: 'text-emerald-400', plan: 'light' },
       { id: 'expense-sync',       name: 'Expense Sync',        icon: DollarSign,   color: 'text-green-400',  plan: 'light' },
       { id: 'contact-sync',       name: 'Contact Sync',        icon: UserPlus,     color: 'text-emerald-400', plan: 'light' },
-      { id: 'price-tracker',      name: '底値監視AI予測',      icon: LineChart,    color: 'text-cyan-400',   plan: 'light' },
+
       { id: 'office-politics-graph', name: '社内政治 AI相関図',      icon: Network,      color: 'text-emerald-400',  plan: 'free' },
       { id: 'moving-checker',        name: 'AI引越し安心チェッカー', icon: Home,         color: 'text-teal-400',    plan: 'free' },
       { id: 'ai-recipe',            name: 'AIレシピ献立コーチ',       icon: Utensils,     color: 'text-emerald-400',  plan: 'free' },
