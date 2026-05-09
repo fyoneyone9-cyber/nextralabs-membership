@@ -335,6 +335,331 @@ const STYLES: StyleDef[] = [
       ctx.fillText(text, cx, cy)
     },
   },
+  // ────────────────── 新規追加スタイル ──────────────────
+  {
+    id: 'motivational',
+    name: '💪 モチベ',
+    draw: (ctx, cx, cy, r, text) => {
+      // 黒地＋太い赤ライン＋英語風インパクト
+      ctx.fillStyle = '#0a0a0a'
+      ctx.beginPath(); ctx.rect(cx - r, cy - r * 0.85, r * 2, r * 1.7); ctx.fill()
+      // 赤の斜めストライプ背景
+      ctx.save()
+      ctx.beginPath(); ctx.rect(cx - r, cy - r * 0.85, r * 2, r * 1.7); ctx.clip()
+      ctx.strokeStyle = 'rgba(239,68,68,0.15)'; ctx.lineWidth = 12
+      for (let i = -r * 2; i <= r * 2; i += 28) {
+        ctx.beginPath(); ctx.moveTo(cx + i - r * 0.85, cy - r * 0.85); ctx.lineTo(cx + i + r * 0.85, cy + r * 0.85); ctx.stroke()
+      }
+      ctx.restore()
+      // 上部赤帯
+      ctx.fillStyle = '#ef4444'
+      ctx.beginPath(); ctx.rect(cx - r, cy - r * 0.85, r * 2, r * 0.28); ctx.fill()
+      ctx.font = `900 ${Math.floor(r * 0.5)}px Impact,sans-serif`
+      ctx.fillStyle = '#ffffff'
+      ctx.strokeStyle = '#000'; ctx.lineWidth = 2
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.strokeText(text, cx, cy + r * 0.1)
+      ctx.fillText(text, cx, cy + r * 0.1)
+      ctx.font = `700 ${Math.floor(r * 0.16)}px Helvetica,sans-serif`
+      ctx.fillStyle = '#ef4444'
+      ctx.fillText('NEVER GIVE UP', cx, cy + r * 0.62)
+    },
+  },
+  {
+    id: 'aesthetic',
+    name: '🌙 エモ系',
+    draw: (ctx, cx, cy, r, text) => {
+      // 夜空グラデ＋月＋星
+      const grad = ctx.createLinearGradient(cx, cy - r, cx, cy + r)
+      grad.addColorStop(0, '#0f0c29'); grad.addColorStop(0.5, '#302b63'); grad.addColorStop(1, '#24243e')
+      ctx.fillStyle = grad
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill()
+      // 星
+      ctx.fillStyle = 'rgba(255,255,255,0.8)'
+      const stars = [[0.3, -0.6], [-0.55, -0.3], [0.6, 0.1], [-0.2, 0.7], [0.5, 0.65], [-0.6, 0.5]]
+      stars.forEach(([dx, dy]) => {
+        ctx.beginPath(); ctx.arc(cx + dx * r, cy + dy * r, 1.5, 0, Math.PI * 2); ctx.fill()
+      })
+      // 月
+      ctx.fillStyle = '#fffde7'
+      ctx.beginPath(); ctx.arc(cx + r * 0.45, cy - r * 0.45, r * 0.2, 0, Math.PI * 2); ctx.fill()
+      ctx.fillStyle = '#302b63'
+      ctx.beginPath(); ctx.arc(cx + r * 0.55, cy - r * 0.5, r * 0.16, 0, Math.PI * 2); ctx.fill()
+      // テキスト
+      ctx.shadowColor = '#a78bfa'; ctx.shadowBlur = 10
+      ctx.font = `600 ${Math.floor(r * 0.38)}px "Noto Sans JP",sans-serif`
+      ctx.fillStyle = '#e9d5ff'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy + r * 0.1)
+      ctx.shadowBlur = 0
+    },
+  },
+  {
+    id: 'surf',
+    name: '🏄 サーフ',
+    draw: (ctx, cx, cy, r, text) => {
+      // 明るいオレンジ×ターコイズ
+      const grad = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r)
+      grad.addColorStop(0, '#0891b2'); grad.addColorStop(1, '#0e7490')
+      ctx.fillStyle = grad
+      ctx.beginPath(); ctx.roundRect(cx - r, cy - r * 0.8, r * 2, r * 1.6, 20); ctx.fill()
+      // 波形装飾
+      ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 3
+      ctx.beginPath()
+      for (let x = cx - r; x <= cx + r; x += 8) {
+        const y = cy + r * 0.55 + Math.sin((x - cx) * 0.08) * 8
+        x === cx - r ? ctx.moveTo(x, y) : ctx.lineTo(x, y)
+      }
+      ctx.stroke()
+      // 太陽
+      ctx.fillStyle = '#fbbf24'
+      ctx.beginPath(); ctx.arc(cx + r * 0.6, cy - r * 0.5, r * 0.18, 0, Math.PI * 2); ctx.fill()
+      ctx.font = `900 ${Math.floor(r * 0.45)}px Impact,sans-serif`
+      ctx.fillStyle = '#ffffff'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy)
+      ctx.font = `600 ${Math.floor(r * 0.15)}px Helvetica,sans-serif`
+      ctx.fillStyle = 'rgba(255,255,255,0.7)'
+      ctx.fillText('SURF VIBES', cx, cy + r * 0.5)
+    },
+  },
+  {
+    id: 'dragonball',
+    name: '⚡ バトル',
+    draw: (ctx, cx, cy, r, text) => {
+      // 爆発的なオーラ
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r)
+      grad.addColorStop(0, '#fef08a'); grad.addColorStop(0.4, '#f59e0b'); grad.addColorStop(1, '#92400e')
+      ctx.fillStyle = grad
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill()
+      // 放射線
+      ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = 2
+      for (let i = 0; i < 12; i++) {
+        const angle = (i / 12) * Math.PI * 2
+        ctx.beginPath()
+        ctx.moveTo(cx + Math.cos(angle) * r * 0.5, cy + Math.sin(angle) * r * 0.5)
+        ctx.lineTo(cx + Math.cos(angle) * r * 0.95, cy + Math.sin(angle) * r * 0.95)
+        ctx.stroke()
+      }
+      ctx.shadowColor = '#fbbf24'; ctx.shadowBlur = 15
+      ctx.font = `900 ${Math.floor(r * 0.46)}px Impact,sans-serif`
+      ctx.fillStyle = '#1a1a1a'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx + 2, cy + 2)
+      ctx.fillStyle = '#ffffff'
+      ctx.fillText(text, cx, cy)
+      ctx.shadowBlur = 0
+    },
+  },
+  {
+    id: 'nature2',
+    name: '🍃 山・自然',
+    draw: (ctx, cx, cy, r, text) => {
+      // 山の稜線シルエット
+      const skyGrad = ctx.createLinearGradient(cx, cy - r, cx, cy + r)
+      skyGrad.addColorStop(0, '#1e3a5f'); skyGrad.addColorStop(0.6, '#3b6aa0'); skyGrad.addColorStop(1, '#1a3a2a')
+      ctx.fillStyle = skyGrad
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill()
+      // 山
+      ctx.fillStyle = '#1a3a2a'
+      ctx.beginPath()
+      ctx.moveTo(cx - r, cy + r * 0.5)
+      ctx.lineTo(cx - r * 0.3, cy - r * 0.2)
+      ctx.lineTo(cx + r * 0.3, cy + r * 0.1)
+      ctx.lineTo(cx + r, cy + r * 0.5)
+      ctx.closePath(); ctx.fill()
+      // 雪山
+      ctx.fillStyle = '#e2e8f0'
+      ctx.beginPath()
+      ctx.moveTo(cx - r * 0.3, cy - r * 0.2)
+      ctx.lineTo(cx - r * 0.18, cy - r * 0.42)
+      ctx.lineTo(cx - r * 0.06, cy - r * 0.2)
+      ctx.closePath(); ctx.fill()
+      ctx.font = `bold ${Math.floor(r * 0.38)}px "Noto Sans JP",serif`
+      ctx.fillStyle = '#ffffff'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy + r * 0.7)
+    },
+  },
+  {
+    id: 'cats',
+    name: '🐱 猫・動物',
+    draw: (ctx, cx, cy, r, text) => {
+      // パステルベージュ
+      ctx.fillStyle = '#fef3c7'
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill()
+      // 猫顔シルエット
+      ctx.fillStyle = '#f59e0b'
+      // 顔
+      ctx.beginPath(); ctx.arc(cx, cy - r * 0.1, r * 0.38, 0, Math.PI * 2); ctx.fill()
+      // 耳
+      ctx.beginPath(); ctx.moveTo(cx - r * 0.28, cy - r * 0.38); ctx.lineTo(cx - r * 0.42, cy - r * 0.62); ctx.lineTo(cx - r * 0.12, cy - r * 0.38); ctx.closePath(); ctx.fill()
+      ctx.beginPath(); ctx.moveTo(cx + r * 0.28, cy - r * 0.38); ctx.lineTo(cx + r * 0.42, cy - r * 0.62); ctx.lineTo(cx + r * 0.12, cy - r * 0.38); ctx.closePath(); ctx.fill()
+      // 目
+      ctx.fillStyle = '#1a1a1a'
+      ctx.beginPath(); ctx.arc(cx - r * 0.14, cy - r * 0.14, r * 0.055, 0, Math.PI * 2); ctx.fill()
+      ctx.beginPath(); ctx.arc(cx + r * 0.14, cy - r * 0.14, r * 0.055, 0, Math.PI * 2); ctx.fill()
+      // テキスト
+      ctx.font = `bold ${Math.floor(r * 0.35)}px "Noto Sans JP",sans-serif`
+      ctx.fillStyle = '#92400e'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy + r * 0.6)
+    },
+  },
+  {
+    id: 'oldmoney',
+    name: '🎩 オールドマネー',
+    draw: (ctx, cx, cy, r, text) => {
+      // クリーム×ダークグリーン（preppy）
+      ctx.fillStyle = '#f8f4e8'
+      ctx.beginPath(); ctx.roundRect(cx - r, cy - r * 0.8, r * 2, r * 1.6, 8); ctx.fill()
+      // ダークグリーンのボーダー
+      ctx.strokeStyle = '#1a3d2b'; ctx.lineWidth = 5
+      ctx.beginPath(); ctx.roundRect(cx - r + 5, cy - r * 0.8 + 5, r * 2 - 10, r * 1.6 - 10, 5); ctx.stroke()
+      ctx.strokeStyle = '#1a3d2b'; ctx.lineWidth = 1.5
+      ctx.beginPath(); ctx.roundRect(cx - r + 10, cy - r * 0.8 + 10, r * 2 - 20, r * 1.6 - 20, 4); ctx.stroke()
+      // クレスト風装飾
+      ctx.font = `${Math.floor(r * 0.18)}px serif`
+      ctx.fillStyle = '#1a3d2b'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText('✦', cx - r * 0.5, cy - r * 0.5)
+      ctx.fillText('✦', cx + r * 0.5, cy - r * 0.5)
+      ctx.font = `600 ${Math.floor(r * 0.4)}px Georgia,serif`
+      ctx.fillStyle = '#1a3d2b'
+      ctx.fillText(text, cx, cy)
+      ctx.font = `italic ${Math.floor(r * 0.15)}px Georgia,serif`
+      ctx.fillStyle = '#4a7c59'
+      ctx.fillText('EST. MCMXXI', cx, cy + r * 0.52)
+    },
+  },
+  {
+    id: 'skateboard',
+    name: '🛹 スケート',
+    draw: (ctx, cx, cy, r, text) => {
+      // 白地＋カラフルなクラックパターン
+      ctx.fillStyle = '#f8fafc'
+      ctx.beginPath(); ctx.rect(cx - r, cy - r * 0.8, r * 2, r * 1.6); ctx.fill()
+      // カラフルな縦線
+      const colors = ['#ef4444', '#f59e0b', '#22c55e', '#3b82f6', '#a855f7']
+      colors.forEach((c, i) => {
+        ctx.strokeStyle = c; ctx.lineWidth = 5
+        const x = cx - r * 0.6 + (i * r * 0.3)
+        ctx.beginPath(); ctx.moveTo(x, cy - r * 0.8); ctx.lineTo(x + r * 0.1, cy + r * 0.8); ctx.stroke()
+      })
+      ctx.font = `900 ${Math.floor(r * 0.46)}px Impact,sans-serif`
+      ctx.fillStyle = '#0f172a'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy)
+      ctx.font = `700 ${Math.floor(r * 0.15)}px Helvetica,sans-serif`
+      ctx.fillStyle = '#64748b'
+      ctx.fillText('SKATE • GRIND • REPEAT', cx, cy + r * 0.55)
+    },
+  },
+  {
+    id: 'abstract2',
+    name: '🔷 幾何学',
+    draw: (ctx, cx, cy, r, text) => {
+      ctx.fillStyle = '#1e1b4b'
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill()
+      // 幾何学図形
+      const shapes = [
+        { x: -0.5, y: -0.4, size: 0.22, color: '#6366f1', rotate: 45 },
+        { x: 0.4,  y: -0.3, size: 0.18, color: '#a855f7', rotate: 30 },
+        { x: -0.3, y: 0.4,  size: 0.2,  color: '#ec4899', rotate: 60 },
+        { x: 0.5,  y: 0.35, size: 0.15, color: '#8b5cf6', rotate: 15 },
+      ]
+      shapes.forEach(s => {
+        ctx.save()
+        ctx.translate(cx + s.x * r, cy + s.y * r)
+        ctx.rotate((s.rotate * Math.PI) / 180)
+        ctx.strokeStyle = s.color; ctx.lineWidth = 2.5
+        ctx.globalAlpha = 0.7
+        ctx.beginPath(); ctx.rect(-s.size * r, -s.size * r, s.size * r * 2, s.size * r * 2); ctx.stroke()
+        ctx.restore()
+      })
+      ctx.globalAlpha = 1
+      ctx.shadowColor = '#a855f7'; ctx.shadowBlur = 8
+      ctx.font = `700 ${Math.floor(r * 0.4)}px sans-serif`
+      ctx.fillStyle = '#ffffff'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy)
+      ctx.shadowBlur = 0
+    },
+  },
+  {
+    id: 'y2k',
+    name: '💿 Y2K',
+    draw: (ctx, cx, cy, r, text) => {
+      // シルバー×ホログラム風
+      const grad = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r)
+      grad.addColorStop(0, '#c0c0c0'); grad.addColorStop(0.25, '#e8e8ff'); grad.addColorStop(0.5, '#ffc0cb'); grad.addColorStop(0.75, '#c0ffee'); grad.addColorStop(1, '#c0c0c0')
+      ctx.fillStyle = grad
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill()
+      // CD反射風
+      ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 1
+      for (let i = 1; i <= 4; i++) {
+        ctx.beginPath(); ctx.arc(cx, cy, r * 0.2 * i, 0, Math.PI * 2); ctx.stroke()
+      }
+      ctx.fillStyle = '#f8f8ff'
+      ctx.beginPath(); ctx.arc(cx, cy, r * 0.1, 0, Math.PI * 2); ctx.fill()
+      ctx.font = `900 ${Math.floor(r * 0.38)}px Impact,sans-serif`
+      ctx.fillStyle = '#1a1a2e'
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.strokeText(text, cx, cy)
+      ctx.fillText(text, cx, cy)
+    },
+  },
+  {
+    id: 'zen',
+    name: '☯ 禅・墨',
+    draw: (ctx, cx, cy, r, text) => {
+      // 白地＋墨絵風
+      ctx.fillStyle = '#fafaf7'
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill()
+      // 墨の円
+      ctx.strokeStyle = 'rgba(20,20,20,0.8)'; ctx.lineWidth = 3
+      ctx.setLineDash([8, 4])
+      ctx.beginPath(); ctx.arc(cx, cy, r * 0.85, 0, Math.PI * 2); ctx.stroke()
+      ctx.setLineDash([])
+      // 薄い墨しみ
+      ctx.fillStyle = 'rgba(20,20,20,0.06)'
+      ctx.beginPath(); ctx.arc(cx - r * 0.2, cy + r * 0.1, r * 0.5, 0, Math.PI * 2); ctx.fill()
+      ctx.font = `bold ${Math.floor(r * 0.5)}px serif`
+      ctx.fillStyle = 'rgba(20,20,20,0.88)'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx + r * 0.04, cy + r * 0.04)
+      ctx.fillStyle = 'rgba(20,20,20,0.12)'
+      ctx.fillText(text, cx, cy)
+    },
+  },
+  {
+    id: 'toxic',
+    name: '☣ ストリート系',
+    draw: (ctx, cx, cy, r, text) => {
+      // ハーフトーン＋酸＋グリーン
+      ctx.fillStyle = '#0a1a0a'
+      ctx.beginPath(); ctx.rect(cx - r, cy - r * 0.8, r * 2, r * 1.6); ctx.fill()
+      // グリーングロウ
+      ctx.shadowColor = '#4ade80'; ctx.shadowBlur = 20
+      ctx.strokeStyle = '#4ade80'; ctx.lineWidth = 2
+      ctx.beginPath(); ctx.rect(cx - r + 5, cy - r * 0.8 + 5, r * 2 - 10, r * 1.6 - 10); ctx.stroke()
+      // ドット
+      ctx.shadowBlur = 0
+      ctx.fillStyle = 'rgba(74,222,128,0.1)'
+      for (let x = cx - r; x <= cx + r; x += 16) {
+        for (let y = cy - r * 0.8; y <= cy + r * 0.8; y += 16) {
+          ctx.beginPath(); ctx.arc(x, y, 3.5, 0, Math.PI * 2); ctx.fill()
+        }
+      }
+      ctx.shadowColor = '#4ade80'; ctx.shadowBlur = 12
+      ctx.font = `900 ${Math.floor(r * 0.46)}px monospace`
+      ctx.fillStyle = '#4ade80'
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, cy)
+      ctx.shadowBlur = 0
+    },
+  },
 ]
 
 // ──────────────────────────────────────────────

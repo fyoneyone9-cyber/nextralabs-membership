@@ -1,4 +1,4 @@
-﻿'use client'
+﻿﻿'use client'
 import { useSearchParams } from 'next/navigation'
 import React, { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
@@ -89,18 +89,20 @@ function ProductCard({ product, isFav, onToggleFav }: {
           <div className="p-2.5 rounded-xl bg-white/5 border border-white/10"><product.icon className="h-5 w-5 md:h-6 md:w-6 text-emerald-400" /></div>
           <Badge className="bg-slate-950/50 text-slate-500 border border-white/10 px-2 py-0.5 font-bold text-[8px] md:text-[9px] uppercase tracking-widest mr-7">{displayBadge}</Badge>
         </div>
-        <div className="flex-1">
-          <h3 className="text-base md:text-lg font-semibold text-white mb-1 tracking-tight flex items-center gap-2">
-            <div className="relative flex h-1.5 w-1.5 shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-            </div>
+        <div className="flex-1 space-y-2">
+          <h3 className="text-base md:text-lg font-semibold text-white tracking-tight leading-snug">
             {product.title}
           </h3>
           {product.done && (
-            <span className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[9px] font-semibold px-2 py-0.5 rounded-full mt-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block mr-0.5" />稼働中</span>
+            <span className="inline-flex items-center gap-1.5 bg-emerald-500/15 text-emerald-400 border border-emerald-500/40 text-xs font-medium px-2.5 py-1 rounded-full">
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              稼働中
+            </span>
           )}
-          <p className="text-slate-400 text-[11px] md:text-xs font-normal mb-2 leading-relaxed">{product.sub}</p>
+          <p className="text-slate-400 text-xs font-normal leading-relaxed">{product.sub}</p>
         </div>
         <div className="pt-4 border-t border-white/5 flex flex-col gap-2.5 mt-auto">
           <Link href={"/products/" + product.id} className="block w-full">
