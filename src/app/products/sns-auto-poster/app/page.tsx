@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect } from 'react'
 import {
   Zap, Loader2, CheckCircle2, TrendingUp,
@@ -53,6 +53,17 @@ export default function SnsAutoPosterApp() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic: finalTopic, sns: targetSns, trend: selectedTrend }),
       })
+      if (res.status === 401) {
+        const errData = await res.json().catch(() => ({}))
+        if (errData.reason === 'unauthenticated') {
+          const current = encodeURIComponent(window.location.pathname)
+          window.location.href = `/auth/login?redirect=${current}`
+          return
+        }
+      }
+      if (res.status === 429) {
+        throw new Error('本日の利用制限に達しました。明日またご利用ください。')
+      }
       const data = await res.json()
       if (!data.success) throw new Error(data.error || '生成に失敗しました')
       setResult(data)

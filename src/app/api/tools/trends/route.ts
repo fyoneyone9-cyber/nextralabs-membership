@@ -1,4 +1,4 @@
-import { checkApiLimit } from '@/lib/api-limit';
+﻿import { checkApiLimit } from '@/lib/api-limit';
 import { NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
@@ -79,8 +79,14 @@ export async function GET() {
   // 🛡️ レート制限（1日30回）
   const limitCheck = await checkApiLimit('trends', 30);
   if (!limitCheck.allowed) {
+    if (limitCheck.reason === 'unauthenticated') {
+      return NextResponse.json(
+        { error: 'このツールの利用には会員登録が必要です。', reason: 'unauthenticated' },
+        { status: 401 }
+      );
+    }
     return NextResponse.json(
-      { error: '本日の利用上限に達しました。明日またご利用ください。' },
+      { error: '本日の利用制限に達しました。明日またご利用ください。' },
       { status: 429 }
     );
   }

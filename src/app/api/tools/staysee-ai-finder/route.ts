@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { handleAiRequest } from '@/lib/ai-cache';
 import { checkApiLimit } from '@/lib/api-limit';
 
@@ -7,11 +7,17 @@ export async function POST(req: Request) {
     // クレジット保護：1日20回制限（B2Bのためやや多めに設定）
     const limitCheck = await checkApiLimit('staysee-ai-finder', 20);
     if (!limitCheck.allowed) {
+    if (limitCheck.reason === 'unauthenticated') {
       return NextResponse.json(
-        { error: '本日の検索上限に達しました。明日またご利用ください。' },
-        { status: 429 }
+        { error: 'このツールの利用には会員登録が必要です。', reason: 'unauthenticated' },
+        { status: 401 }
       );
     }
+    return NextResponse.json(
+      { error: '本日の利用制限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
     const STAYSEE_API_KEY = userApiKey || process.env.STAYSEE_API_KEY || 'sk_b54ca47f884c30d98dc429d3cbbbc29c';
 
     if (action === 'search-booking') {

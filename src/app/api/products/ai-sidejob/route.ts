@@ -1,10 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import { checkApiLimit } from '@/lib/api-limit';
 
 const execPromise = promisify(exec);
 
 export async function POST(req: NextRequest) {
+  // 【憲法8条】API呼び出しツールは会員登録必須
+  const limitCheck = await checkApiLimit('ai-sidejob', 10);
+  if (!limitCheck.allowed) {
+    if (limitCheck.reason === 'unauthenticated') {
+      return NextResponse.json(
+        { error: 'このツールの利用には会員登録が必要です。', reason: 'unauthenticated' },
+        { status: 401 }
+      );
+    }
+    return NextResponse.json(
+      { error: '本日の利用制限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
+
   try {
     const body = await req.json();
     const { style, skills, time } = body;

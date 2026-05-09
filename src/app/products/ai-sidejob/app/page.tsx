@@ -21,6 +21,20 @@ export default function AiSidejobApp() {
         body: JSON.stringify(userData),
       });
       
+      if (response.status === 401) {
+        const errData = await response.json().catch(() => ({}))
+        if (errData.reason === 'unauthenticated') {
+          const current = encodeURIComponent(window.location.pathname)
+          window.location.href = `/auth/login?redirect=${current}`
+          return
+        }
+      }
+      if (response.status === 429) {
+        alert('本日の利用制限に達しました。明日またご利用ください。')
+        setStatus('input')
+        return
+      }
+      
       const data = await response.json();
       setResultData(data);
       setStatus('result');

@@ -1,9 +1,24 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
+import { checkApiLimit } from '@/lib/api-limit';
 
 const GSK_BASE = 'https://www.genspark.ai'
 
 export async function POST(req: NextRequest) {
   try {
+  // 【憲法8条】API呼び出しツールは会員登録必須
+  const limitCheck = await checkApiLimit('youtube-producer-audio', 5);
+  if (!limitCheck.allowed) {
+    if (limitCheck.reason === 'unauthenticated') {
+      return NextResponse.json(
+        { error: 'このツールの利用には会員登録が必要です。', reason: 'unauthenticated' },
+        { status: 401 }
+      );
+    }
+    return NextResponse.json(
+      { error: '本日の利用制限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
     const { prompt, mood, genre } = await req.json()
 
     const GSK_API_KEY = process.env.GSK_API_KEY

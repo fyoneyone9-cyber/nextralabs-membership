@@ -105,7 +105,7 @@ const MasterEngine = () => {
   if (!isMounted) return null;
 
   return (
-    <div className="max-w-4xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-10 bg-[#050507] text-left border-2 border-emerald-500 rounded-2xl my-1 md:my-4 shadow-[0_0_40px_rgba(16,185,129,0.15)]">
+    <div className="max-w-4xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-10 bg-[#050507] text-left rounded-2xl my-1 md:my-4">
       <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
         <div className="text-center space-y-2 pt-2">
           <h1 className="text-2xl md:text-4xl font-bold text-white tracking-tight leading-tight">AI副業スタートダッシュ</h1>

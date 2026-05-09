@@ -3,7 +3,9 @@ import { cookies } from 'next/headers';
 
 /**
  * NextraLabs クレジット保護ガード
- * 1日あたりの利用回数をチェックし、制限を超えている場合はエラーを投げる
+ * 【憲法8条準拠】APIを1回でも呼び出すツールは会員登録必須。
+ * 未ログインユーザーは一切のAPIアクセスを拒否する。
+ * 1日あたりの利用回数をチェックし、制限を超えている場合はエラーを返す。
  */
 export async function checkApiLimit(toolId: string, limit: number = 20) {
   const cookieStore = cookies();
@@ -21,7 +23,10 @@ export async function checkApiLimit(toolId: string, limit: number = 20) {
 
   const { data: { session } } = await supabase.auth.getSession();
 
-  if (!session) return { allowed: true, userId: null }; 
+  // 【憲法8条】未ログインは全APIアクセス拒否（allowed: true → false に修正）
+  if (!session) {
+    return { allowed: false, userId: null, reason: 'unauthenticated' };
+  }
 
   const userId = session.user.id;
   const today = new Date().toISOString().split('T')[0];
@@ -42,7 +47,7 @@ export async function checkApiLimit(toolId: string, limit: number = 20) {
   const currentCount = usage?.count || 0;
 
   if (currentCount >= limit) {
-    return { allowed: false, userId, count: currentCount };
+    return { allowed: false, userId, count: currentCount, reason: 'limit_exceeded' };
   }
 
   if (!usage) {

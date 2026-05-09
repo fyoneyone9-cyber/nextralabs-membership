@@ -5,8 +5,14 @@ export async function POST(req: Request) {
   // 🛡️ レート制限（1日10回）
   const limitCheck = await checkApiLimit('gmail-draft', 10);
   if (!limitCheck.allowed) {
+    if (limitCheck.reason === 'unauthenticated') {
+      return NextResponse.json(
+        { error: 'このツールの利用には会員登録が必要です。', reason: 'unauthenticated' },
+        { status: 401 }
+      );
+    }
     return NextResponse.json(
-      { error: '本日の利用上限に達しました。明日またご利用ください。' },
+      { error: '本日の利用制限に達しました。明日またご利用ください。' },
       { status: 429 }
     );
   }

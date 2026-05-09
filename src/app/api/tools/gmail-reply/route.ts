@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { checkApiLimit } from "@/lib/api-limit";
 
@@ -9,11 +9,17 @@ export async function POST(req: Request) {
     // クレジット保護：1日10回制限
     const limitCheck = await checkApiLimit('gmail-reply', 10);
     if (!limitCheck.allowed) {
+    if (limitCheck.reason === 'unauthenticated') {
       return NextResponse.json(
-        { error: '本日の生成上限に達しました。明日またご利用ください。' },
-        { status: 429 }
+        { error: 'このツールの利用には会員登録が必要です。', reason: 'unauthenticated' },
+        { status: 401 }
       );
     }
+    return NextResponse.json(
+      { error: '本日の利用制限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
 
     const { subject, from, body, sentMessages } = await req.json();
 

@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
+import { checkApiLimit } from '@/lib/api-limit';
 import { checkYoutubeLimit, recordYoutubeUsage } from '@/lib/youtube-rate-limit'
 
 async function callLLM(systemPrompt: string, userPrompt: string) {
@@ -49,6 +50,20 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
 
 export async function POST(req: NextRequest) {
   try {
+  // 【憲法8条】API呼び出しツールは会員登録必須
+  const limitCheck = await checkApiLimit('youtube-producer-generate', 5);
+  if (!limitCheck.allowed) {
+    if (limitCheck.reason === 'unauthenticated') {
+      return NextResponse.json(
+        { error: 'このツールの利用には会員登録が必要です。', reason: 'unauthenticated' },
+        { status: 401 }
+      );
+    }
+    return NextResponse.json(
+      { error: '本日の利用制限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
     const limitError = await checkYoutubeLimit()
     if (limitError) {
       return NextResponse.json({ error: limitError.error }, { status: limitError.status })

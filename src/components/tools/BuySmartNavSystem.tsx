@@ -44,7 +44,7 @@ const MasterEngine = () => {
   if (!isMounted) return null
 
   return (
-    <div className="max-w-5xl mx-auto p-4 md:p-8 space-y-6 min-h-screen text-slate-200 bg-[#050507] border-2 border-emerald-500/30 rounded-2xl shadow-[0_0_40px_rgba(16,185,129,0.08)]">
+    <div className="max-w-5xl mx-auto p-4 md:p-8 space-y-6 min-h-screen text-slate-200 bg-[#050507] rounded-2xl">
 
       {/* ヘッダー */}
       <div className="text-center space-y-2 pt-4">
