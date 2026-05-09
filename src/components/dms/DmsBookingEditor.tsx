@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { X, Save, User, Calendar, Clock, CreditCard, Building, Lock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -24,7 +24,7 @@ export default function DmsBookingEditor({ booking, onClose }: DmsBookingEditorP
   });
 
   const inputClass = "w-full bg-white/5 border border-white/10 rounded-xl px-5 py-3 text-sm font-bold focus:border-emerald-500/50 outline-none text-white transition-all";
-  const labelClass = "text-[10px] font-black text-slate-500 mb-2 block uppercase tracking-widest ml-1";
+  const labelClass = "text-[10px] font-bold text-slate-500 mb-2 block uppercase tracking-tight ml-1";
 
   const handleSave = () => {
     // ここでクラウド(Supabase)保存ロジックを呼ぶ
@@ -39,10 +39,10 @@ export default function DmsBookingEditor({ booking, onClose }: DmsBookingEditorP
         {/* Header */}
         <div className="bg-white/5 border-b border-white/5 px-10 py-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-indigo-500/20 rounded-xl flex items-center justify-center border border-indigo-500/20">
-              <User className="text-indigo-400" size={20} />
+            <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center border border-emerald-500/20">
+              <User className="text-emerald-400" size={20} />
             </div>
-            <h2 className="text-xl font-black italic uppercase tracking-tighter text-white">
+            <h2 className="text-xl font-bold uppercase tracking-tighter text-white">
               {booking ? '宿泊情報編集' : '手動宿泊作成'}
             </h2>
           </div>
@@ -102,7 +102,7 @@ export default function DmsBookingEditor({ booking, onClose }: DmsBookingEditorP
               <div>
                 <label className={labelClass}>宿泊金額 (税込)*</label>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500 font-black">¥</span>
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500 font-bold">¥</span>
                   <input type="number" className={inputClass + " pl-10"} value={formData.billing_amount} onChange={e => setFormData({...formData, billing_amount: Number(e.target.value)})} />
                 </div>
               </div>
@@ -112,10 +112,10 @@ export default function DmsBookingEditor({ booking, onClose }: DmsBookingEditorP
 
         {/* Footer */}
         <div className="bg-white/5 border-t border-white/5 p-10 flex justify-end gap-4">
-          <Button onClick={onClose} variant="ghost" className="px-10 h-14 rounded-2xl font-black text-slate-500 hover:text-white uppercase tracking-widest italic">
+          <Button onClick={onClose} variant="ghost" className="px-10 h-14 rounded-2xl font-bold text-slate-500 hover:text-white uppercase tracking-tight ">
             Cancel
           </Button>
-          <Button onClick={handleSave} className="px-16 h-14 bg-[#5c59cc] hover:bg-[#4a47a3] text-white font-black rounded-2xl shadow-2xl shadow-indigo-500/40 uppercase italic tracking-tighter transition-all active:scale-95">
+          <Button onClick={handleSave} className="px-16 h-14 bg-[#5c59cc] hover:bg-[#4a47a3] text-white font-bold rounded-2xl shadow-2xl shadow-indigo-500/40 uppercase tracking-tighter transition-all active:scale-95">
             <Save size={18} className="mr-2" /> Save Reservation
           </Button>
         </div>
