@@ -5,16 +5,16 @@ import { checkYoutubeLimit, recordYoutubeUsage } from '@/lib/youtube-rate-limit'
 const LLM_BASE = 'https://generativelanguage.googleapis.com/v1beta/openai'
 
 async function callLLM(systemPrompt: string, userPrompt: string) {
-  // ⚡ 憲法：MASTERMODEL仕様 - 漏洩エラー回避のため環境変数からの注入を徹底
-  // セキュリティ上の理由で、漏洩報告されたキーを削除し、VercelのGSK_API_KEYを使用するように戻します。
+  // 環境変数優先
   const API_KEY = process.env.GSK_API_KEY;
 
   if (!API_KEY) {
-    throw new Error('APIキーが設定されていません。VercelのEnvironment Variablesで GSK_API_KEY を設定してください。');
+    throw new Error('APIキー(GSK_API_KEY)が設定されていません。VercelのEnvironment Variables設定を確認してください。');
   }
 
-  // Genspark Proxyを再度使用（こちらはGSK_API_KEY用）
-  const res = await fetch('https://www.genspark.ai/api/llm_proxy/v1/chat/completions', {
+  // ⚡ 憲法：Google Gemini OpenAI 互換エンドポイントへ直接接続（401エラー回避の最終手段）
+  // GSK_API_KEYがGoogle形式(AIza...)である場合、直接Googleのエンドポイントを叩くのが最も確実です
+  const res = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
