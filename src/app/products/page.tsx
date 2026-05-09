@@ -17,7 +17,7 @@ const TOOLS = [
   { id: 'universal-converter/app', cat: 'compress', title: '究極AIマルチコンバーター', sub: '動画・画像・PDFへの変換圧縮', icon: Repeat, plan: 'ライト', done: true },
   { id: 'nextra-ai/app', cat: 'hotel', title: 'Nextra AI（ホテルDX）', sub: 'チェックイン・予約・解錠OS', icon: Building2, plan: 'プレミアム' },
   { id: 'moving-checker/app', cat: 'hotel', title: 'AI引越し安心チェッカー', sub: '治安と物件リスクを徹底解析', icon: Home, plan: '無料' },
-  { id: 'sns-auto-poster/app', cat: 'sns', title: 'AI SNSオートポスター', sub: 'バズを量産するマルチSNS生成', icon: Share2, plan: 'ライト' },
+  { id: 'sns-auto-poster/app', cat: 'sns', title: 'AI SNSオートポスター', sub: 'バズを量産するマルチSNS生成', icon: Share2, plan: 'ライト', done: true },
   { id: 'ai-select-shop/app', cat: 'sns', title: 'AIセレクトショップ', sub: 'トレンド解析とShopify連携', icon: Store, plan: 'プレミアム' },
   { id: 'youtube-producer/app', cat: 'sns', title: 'AI YouTubeプロデューサー', sub: '全自動台本・構成作成', icon: Clapperboard, plan: 'プレミアム' , done: true },
   { id: 'youtube-coordinator/app', cat: 'sns', title: 'YouTube AI Sync', sub: '動画解析と楽天コーチ', icon: Play, plan: 'プレミアム' , done: true },
@@ -41,7 +41,7 @@ const TOOLS = [
   { id: 'ai-recipe/app', cat: 'life', title: 'AIレシピ献立コーチ', sub: '冷蔵庫の残り物と栄養最適化', icon: Utensils, plan: '無料' },
   { id: 'exam-scheduler/app', cat: 'edu', title: '資格試験AIスケジューラー', sub: '試験日から逆算して学習計画を自動生成', icon: ClipboardCheck, plan: 'スタンダード', done: true },
   { id: 'ai-exam-generator/app', cat: 'edu', title: 'AI問題生成 & 苦手分析', sub: '予想問題を無限生成と弱点ポイント可視化', icon: Brain, plan: 'プレミアム' , done: true },
-  { id: 'location-finder/app', cat: 'hotel', title: 'AIロケーションファインダー', sub: '出店・移住の最適地をデータ分析', icon: MapPin, plan: 'スタンダード' },
+  { id: 'location-finder/app', cat: 'hotel', title: 'AIロケーションファインダー', sub: '出店・移住の最適地をデータ分析', icon: MapPin, plan: 'スタンダード', done: true },
   { id: 'smart-gardening/app', cat: 'life', title: 'AIスマートガーデニング', sub: '植物の声を聴く育成アドバイザー', icon: Sprout, plan: 'スタンダード', done: true },
 ]
 
