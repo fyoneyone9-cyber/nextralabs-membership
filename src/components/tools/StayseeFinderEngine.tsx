@@ -165,16 +165,11 @@ const MasterEngine = () => {
             {/* STARTボタン */}
             <button
               onClick={() => setActiveTab('search')}
-              className="w-48 h-48 rounded-full flex flex-col items-center justify-center gap-3 transition-transform hover:scale-105 shadow-2xl"
-              style={{ background: '#fff', boxShadow: '0 0 60px rgba(255,255,255,0.1)' }}
+              className="w-48 h-48 rounded-[2rem] flex flex-col items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-[0_0_40px_rgba(16,185,129,0.2)]"
+              style={{ background: 'linear-gradient(135deg, #10b981, #059669)' }}
             >
-              <div
-                className="w-20 h-20 rounded-full flex items-center justify-center"
-                style={{ background: '#4f46e5' }}
-              >
-                <Zap size={36} className="text-white" fill="currentColor" />
-              </div>
-              <span className="text-slate-900 text-xl font-bold">START</span>
+              <Zap size={48} className="text-white" fill="white" />
+              <span className="text-white text-lg font-bold tracking-widest">START</span>
             </button>
           </div>
         )}
