@@ -2,20 +2,18 @@ import { NextRequest, NextResponse } from 'next/server'
 import { checkYoutubeLimit, recordYoutubeUsage } from '@/lib/youtube-rate-limit'
 
 async function callLLM(systemPrompt: string, userPrompt: string) {
-  // 環境変数からAPIキーを取得
   const API_KEY = process.env.GSK_API_KEY;
 
   if (!API_KEY) {
     throw new Error('APIキー(GSK_API_KEY)が設定されていません。');
   }
 
-  // ⚡ 憲法：Genspark Direct API 接続 (プロキシを介さない直接呼び出し)
-  // 401エラー（Invalid token）を回避するため、プラットフォーム標準の「X-Api-Key」ヘッダーでの直接認証を試みます
-  const res = await fetch('https://www.genspark.ai/api/tool_cli/chat/completions', {
+  // 🚀 憲法：MASTERMODEL - 最も実績のある OpenAI 互換エンドポイントに固定
+  const res = await fetch('https://www.genspark.ai/api/llm_proxy/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-Api-Key': API_KEY,
+      'Authorization': `Bearer ${API_KEY}`,
     },
     body: JSON.stringify({
       model: 'gemini-2.0-flash',
@@ -29,34 +27,11 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
 
   if (!res.ok) {
     const err = await res.text()
-    // プロキシ経由でもう一度試行（フォールバック）
-    if (res.status === 401 || res.status === 404) {
-        const resFallback = await fetch('https://www.genspark.ai/api/llm_proxy/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${API_KEY}`,
-            },
-            body: JSON.stringify({
-                model: 'gemini-2.0-flash',
-                messages: [
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: userPrompt },
-                ],
-                temperature: 0.8,
-            }),
-        })
-        if (resFallback.ok) {
-            const data = await resFallback.json()
-            return parseContent(data.choices?.[0]?.message?.content || '')
-        }
-    }
     throw new Error(`LLM error (${res.status}): ${err.slice(0, 200)}`)
   }
 
   const data = await res.json()
-  // APIレスポンス形式の違い（data.results等）を柔軟に吸収
-  const content = data.choices?.[0]?.message?.content || data.data || data.text || ''
+  const content = data.choices?.[0]?.message?.content || ''
   return parseContent(content)
 }
 
