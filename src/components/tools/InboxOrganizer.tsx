@@ -14,11 +14,11 @@ const GOOGLE_CLIENT_ID = '239583936801-ev71grs66ehp0kn3kahr2bdrl0v9iidj.apps.goo
 const GOOGLE_SCOPES = 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.compose'
 
 const quadrantConfig = [
-  { id: 'urgent_important',     label: '今すぐ対応',  color: 'text-red-400',    border: 'border-red-500/30',    icon: Zap },
-  { id: 'urgent_not_important', label: '早めに対応',  color: 'text-amber-400',  border: 'border-amber-500/30',  icon: Clock },
-  { id: 'not_urgent_important', label: '計画対応',    color: 'text-blue-400',   border: 'border-blue-500/30',   icon: ListChecks },
-  { id: 'not_urgent_not_important', label: '整理対象', color: 'text-slate-500', border: 'border-slate-700',     icon: Filter },
-  { id: 'pending',              label: '未分類',      color: 'text-slate-600',  border: 'border-slate-800',     icon: Mail },
+  { id: 'urgent_important',     label: '今すぐ対応',  color: 'text-red-400',      border: 'border-red-500/30',      icon: Zap },
+  { id: 'urgent_not_important', label: '早めに対応',  color: 'text-amber-400',    border: 'border-amber-500/30',    icon: Clock },
+  { id: 'not_urgent_important', label: '計画対応',    color: 'text-emerald-400',  border: 'border-emerald-500/30',  icon: ListChecks },
+  { id: 'not_urgent_not_important', label: '整理対象', color: 'text-slate-500',  border: 'border-slate-700',       icon: Filter },
+  { id: 'pending',              label: '未分類',      color: 'text-slate-600',    border: 'border-slate-800',       icon: Mail },
 ]
 
 function getQuadrant(id: string) {
@@ -161,22 +161,24 @@ const MasterEngine = () => {
 
       {!googleToken ? (
         <Card className="bg-[#13141f] border-2 border-emerald-500/20 rounded-[2rem] p-12 text-center shadow-2xl">
-          <div className="w-20 h-20 bg-blue-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8">
-            <Mail className="h-10 w-10 text-blue-500" />
+          <div className="w-20 h-20 bg-emerald-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8">
+            <Mail className="h-10 w-10 text-emerald-400" />
           </div>
-          <h2 className="text-3xl font-black text-white italic uppercase mb-4">Connect Gmail</h2>
-          <p className="text-slate-400 font-bold mb-2 italic text-sm">AIが未読メールを瞬時に整理・解析します</p>
-          <p className="text-slate-600 text-xs mb-10 italic">🧠 あなたの文体を学習してパーソナライズ返信</p>
-          <Button onClick={login} className="h-20 w-full bg-white text-black font-black text-2xl rounded-2xl shadow-xl hover:scale-105 transition-all uppercase italic">
-            連携を開始する
-          </Button>
+          <h2 className="text-2xl font-semibold text-white tracking-tight mb-4">Connect Gmail</h2>
+          <p className="text-slate-400 text-sm leading-relaxed mb-2">AIが未読メールを瞬時に整理・解析します</p>
+          <p className="text-slate-500 text-xs mb-10">🧠 あなたの文体を学習してパーソナライズ返信</p>
+          <button onClick={login} className="h-12 w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-base rounded-lg shadow-lg transition-all"
+            style={{ boxShadow: '0 0 12px rgba(16,185,129,0.3)' }}>
+            連携を開始する →
+          </button>
         </Card>
       ) : (
         <div className="space-y-4">
           {/* ヘッダー：更新ボタン ＋ 4象限カウンター */}
           <div className="sticky top-0 z-[50] pt-4 pb-2 bg-[#050507]/80 backdrop-blur-md space-y-2">
-            <Button onClick={() => fetchEmails(googleToken)} disabled={loading} className="w-full h-16 bg-blue-600 hover:bg-blue-500 text-white font-black text-xl rounded-2xl shadow-[0_10px_30px_rgba(37,99,235,0.4)] transition-all active:scale-95 italic">
-              {loading ? <Loader2 className="animate-spin h-6 w-6 mr-2" /> : <RotateCw className="h-6 w-6 mr-2" />}
+            <Button onClick={() => fetchEmails(googleToken)} disabled={loading} className="w-full h-12 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-base rounded-lg transition-all active:scale-95"
+              style={{ boxShadow: '0 0 12px rgba(16,185,129,0.3)' }}>
+              {loading ? <Loader2 className="animate-spin h-5 w-5 mr-2" /> : <RotateCw className="h-5 w-5 mr-2" />}
               最新メールを解析
             </Button>
             <div className="grid grid-cols-4 gap-2">
@@ -241,7 +243,7 @@ const MasterEngine = () => {
                             <Button
                               onClick={() => doAction(email, 'archive')}
                               disabled={isActing[email.id]}
-                              className="h-12 w-12 bg-white/5 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 rounded-xl"
+                              className="h-12 w-12 bg-white/5 hover:bg-slate-500/20 text-slate-400 border border-slate-500/20 rounded-xl"
                               title="アーカイブ"
                             >
                               {isActing[email.id] ? <Loader2 className="animate-spin h-4 w-4" /> : <Archive size={14} />}
@@ -310,11 +312,13 @@ export default function InboxOrganizer() {
   return (
     <div className="min-h-screen bg-[#050507] text-slate-100 font-sans p-4 pb-20 selection:bg-emerald-500/30">
       <div className="text-center mb-6">
-        <Badge variant="outline" className="border-blue-500/30 text-blue-400 font-black italic px-4 py-0.5 text-[8px] uppercase tracking-widest mb-2 shadow-lg">
+        <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 font-medium px-4 py-0.5 text-xs rounded-full mb-3">
           Nextra Intelligence MASTER
         </Badge>
-        <h1 className="text-3xl font-black text-white italic uppercase tracking-tighter">Gmail AI Accelerator</h1>
-        <p className="text-slate-500 text-xs italic mt-1">🧠 送信履歴から文体を学習してパーソナライズ返信</p>
+        <h1 className="text-3xl md:text-4xl font-semibold text-white tracking-tight leading-[1.15]">
+          Gmail <span className="text-emerald-400">AI Accelerator</span>
+        </h1>
+        <p className="text-slate-500 text-sm mt-2 leading-relaxed">🧠 送信履歴から文体を学習してパーソナライズ返信</p>
       </div>
       <NoSSRWrapper />
     </div>
