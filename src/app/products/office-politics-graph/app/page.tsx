@@ -87,7 +87,7 @@ export default function NextraMasterLockedApp() {
       
       {/* 💎 MASTERMODEL VERIFIED HEADER 💎 */}
       <div className="absolute top-0 inset-x-0 h-[3px] bg-emerald-500 z-[1000] shadow-[0_0_20px_rgba(16,185,129,0.8)]" />
-      <div className="absolute top-[3px] right-10 bg-emerald-500 text-black px-5 py-1 font-black italic text-xs uppercase tracking-[0.2em] rounded-b-xl shadow-2xl z-[1000] flex items-center gap-2 border-x border-b border-emerald-400">
+      <div className="absolute top-[3px] right-10 bg-emerald-500 text-black px-5 py-1 font-semibold text-xs rounded-b-xl shadow-2xl z-[1000] flex items-center gap-2 border-x border-b border-emerald-400">
         <ShieldCheck size={12} /> MASTERMODEL VERIFIED 💎
       </div>
 
@@ -118,8 +118,8 @@ export default function NextraMasterLockedApp() {
           >
             <div className="flex flex-col items-center gap-3">
               <div className={`p-3 rounded-full ${selectedMemberId === m.id ? 'bg-emerald-500 text-black shadow-lg' : 'bg-slate-800 text-slate-400'}`}><User size={28} /></div>
-              <input className="bg-transparent text-center font-black text-white w-full outline-none text-lg placeholder:text-white/20" value={m.name} onChange={(e) => { const n = [...members]; n.find(i => i.id === m.id)!.name = e.target.value; setMembers(n); }} onClick={(e) => e.stopPropagation()} />
-              <input className="bg-transparent text-center font-bold text-emerald-500 w-full outline-none text-[10px] uppercase italic" value={m.role} onChange={(e) => { const n = [...members]; n.find(i => i.id === m.id)!.role = e.target.value; setMembers(n); }} onClick={(e) => e.stopPropagation()} />
+              <input className="bg-transparent text-center font-semibold text-white w-full outline-none text-lg placeholder:text-white/20" value={m.name} onChange={(e) => { const n = [...members]; n.find(i => i.id === m.id)!.name = e.target.value; setMembers(n); }} onClick={(e) => e.stopPropagation()} />
+              <input className="bg-transparent text-center font-medium text-emerald-500 w-full outline-none text-[10px]" value={m.role} onChange={(e) => { const n = [...members]; n.find(i => i.id === m.id)!.role = e.target.value; setMembers(n); }} onClick={(e) => e.stopPropagation()} />
               <div className="flex gap-1">{[...Array(3)].map((_, i) => (<div key={i} className={`w-3 h-3 rounded-full ${i < Math.floor(m.power/3.4) ? 'bg-emerald-500 shadow-md' : 'bg-white/10'}`} />))}</div>
             </div>
             {selectedMemberId === m.id && (<button onClick={(e) => { e.stopPropagation(); removeMember(m.id); }} className="absolute -top-3 -right-3 bg-red-600 p-2 rounded-full shadow-2xl border-2 border-white/20"><X size={14}/></button>)}
@@ -131,7 +131,7 @@ export default function NextraMasterLockedApp() {
       <div className="absolute top-16 inset-x-8 p-4 flex justify-between items-center z-50">
         <div className="bg-black/90 backdrop-blur-2xl border-2 border-emerald-500/40 px-6 py-3 rounded-2xl flex items-center gap-4 shadow-2xl">
           <ShieldCheck size={24} className="text-emerald-500" />
-          <h1 className="text-base md:text-xl font-black italic tracking-tighter uppercase text-white">社内政治戦略ボード</h1>
+          <h1 className="text-base md:text-xl font-semibold tracking-tight text-white">社内政治戦略ボード</h1>
         </div>
         <Button onClick={() => setShowMenu(!showMenu)} className="bg-black/90 border-2 border-white/10 w-14 h-14 rounded-2xl shadow-xl active:scale-95 transition-all text-emerald-500"><MoreHorizontal size={28} /></Button>
       </div>
@@ -140,23 +140,23 @@ export default function NextraMasterLockedApp() {
       <AnimatePresence>
         {showTutorial && members.length === 0 && (
           <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-x-8 top-44 z-[100] bg-black/95 backdrop-blur-2xl border-[4px] border-emerald-500 p-12 rounded-[4rem] space-y-8 shadow-[0_0_100px_rgba(16,185,129,0.3)] text-left">
-            <div className="flex items-center justify-between text-emerald-500 font-black italic text-3xl">
+            <div className="flex items-center justify-between text-emerald-500 font-semibold text-2xl">
               <div className="flex items-center gap-4"><BookOpen size={40}/> START GUIDE</div>
               <Button onClick={() => setShowTutorial(false)} variant="ghost" className="h-10 w-10 text-white/50"><X size={32}/></Button>
             </div>
-            <div className="space-y-6 text-white font-bold italic text-xl leading-relaxed">
+            <div className="space-y-6 text-white font-medium text-base leading-relaxed">
               <p>1. 右下の [ ＋ ] で登場人物を召喚</p>
               <p>2. 指で動かして「勢力図」を整理</p>
               <p>3. 人物を選んで [ 関係線を引く ] ➔ 相手をタップ</p>
             </div>
-            <Button onClick={() => setShowTutorial(false)} className="w-full h-20 bg-emerald-500 text-black font-black text-2xl rounded-3xl border-b-[10px] border-emerald-800 shadow-2xl">作図を開始する</Button>
+            <Button onClick={() => setShowTutorial(false)} className="w-full h-12 bg-emerald-500 text-black font-semibold text-base rounded-lg border-b-4 border-emerald-800 shadow-2xl">作図を開始する</Button>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* アクションボタン */}
       <div className="absolute bottom-44 right-10 z-50 flex flex-col items-end gap-4 pointer-events-none">
-        <Badge className="bg-emerald-500 text-black font-black italic px-6 py-2 shadow-2xl animate-pulse pointer-events-auto rounded-xl">召喚 ➔</Badge>
+        <Badge className="bg-emerald-500 text-black font-semibold px-6 py-2 shadow-2xl pointer-events-auto rounded-xl">召喚 →</Badge>
         <Button onClick={addMember} className="w-24 h-24 bg-emerald-500 hover:bg-emerald-400 text-black rounded-[2.5rem] shadow-[0_20px_80px_rgba(16,185,129,0.6)] active:scale-90 transition-all border-b-[12px] border-emerald-800 pointer-events-auto">
           <Plus size={52} />
         </Button>
@@ -169,9 +169,9 @@ export default function NextraMasterLockedApp() {
             <Button 
               onClick={(e) => { e.stopPropagation(); setIsLinking(!isLinking); }}
               disabled={!selectedMemberId}
-              className={`flex-[4] h-24 rounded-[2rem] font-black italic text-3xl transition-all border-b-[12px] ${isLinking ? 'bg-blue-600 border-blue-900 text-white animate-pulse' : 'bg-emerald-500 border-emerald-800 text-black shadow-lg shadow-emerald-500/20'}`}
+              className={`flex-[4] h-12 rounded-lg font-semibold text-base transition-all border-b-4 ${isLinking ? 'bg-blue-600 border-blue-900 text-white' : 'bg-emerald-500 border-emerald-800 text-black shadow-lg shadow-emerald-500/20'}`}
             >
-              <Link size={36} className="mr-4" /> {isLinking ? '相手を選ぶ' : '関係線を引く'}
+              <Link size={20} className="mr-3" /> {isLinking ? '相手を選ぶ' : '関係線を引く'}
             </Button>
             
             <a href="https://www.amazon.co.jp/s?k=職場の人間関係+心理学&tag=nextralabs-22" target="_blank" className="flex-1 h-24 rounded-[2rem] bg-gradient-to-br from-emerald-500 to-emerald-900 flex items-center justify-center shadow-2xl border-b-[12px] border-emerald-950 hover:scale-105 transition-all">
@@ -180,9 +180,9 @@ export default function NextraMasterLockedApp() {
           </div>
           
           <div className="flex justify-around bg-white/5 py-4 rounded-3xl border border-white/10">
-            <div className="flex items-center gap-4 text-left"><div className="w-5 h-5 bg-blue-500 rounded-full shadow-lg" /><span className="text-xs font-black italic text-white/60 uppercase tracking-widest">ALLY</span></div>
-            <div className="flex items-center gap-4 text-left"><div className="w-5 h-5 bg-red-600 rounded-full shadow-lg" /><span className="text-xs font-black italic text-white/60 uppercase tracking-widest">ENEMY</span></div>
-            <div className="flex items-center gap-4 text-left"><div className="w-5 h-5 bg-emerald-500 rounded-full shadow-lg" /><span className="text-xs font-black italic text-white/60 uppercase tracking-widest">NEUTRAL</span></div>
+            <div className="flex items-center gap-4 text-left"><div className="w-5 h-5 bg-blue-500 rounded-full shadow-lg" /><span className="text-xs font-medium text-white/60">味方</span></div>
+            <div className="flex items-center gap-4 text-left"><div className="w-5 h-5 bg-red-600 rounded-full shadow-lg" /><span className="text-xs font-medium text-white/60">敵対</span></div>
+            <div className="flex items-center gap-4 text-left"><div className="w-5 h-5 bg-emerald-500 rounded-full shadow-lg" /><span className="text-xs font-medium text-white/60">中立</span></div>
           </div>
         </div>
       </div>
@@ -192,19 +192,19 @@ export default function NextraMasterLockedApp() {
         {showMenu && (
           <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} className="absolute inset-y-0 right-0 w-80 bg-black/98 backdrop-blur-3xl border-l-[4px] border-emerald-500 z-[100] p-12 flex flex-col gap-10 text-left">
             <div className="flex justify-between items-center border-b-2 border-emerald-500 pb-8">
-              <div className="flex items-center gap-4 text-emerald-500 font-black italic text-2xl"><Target size={32}/> STRATEGY</div>
+              <div className="flex items-center gap-4 text-emerald-500 font-semibold text-lg"><Target size={24}/> STRATEGY</div>
               <Button onClick={() => setShowMenu(false)} variant="ghost" className="p-0 h-10 w-10 text-white"><X size={40} /></Button>
             </div>
             <div className="flex flex-col gap-6">
-              <Button onClick={() => { saveToLocal(); setShowMenu(false); }} className="justify-start font-black italic h-20 bg-white/5 border-2 border-emerald-500/40 rounded-2xl text-emerald-500 hover:bg-emerald-500/20 px-8 text-xl"><Save size={24} className="mr-6" /> ブラウザ保存</Button>
+              <Button onClick={() => { saveToLocal(); setShowMenu(false); }} className="justify-start font-semibold h-12 bg-white/5 border-2 border-emerald-500/40 rounded-xl text-emerald-500 hover:bg-emerald-500/20 px-6 text-sm"><Save size={18} className="mr-4" /> ブラウザ保存</Button>
               <Button onClick={() => {
                 const data = JSON.stringify({ members, connections });
                 const blob = new Blob([data], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a'); a.href = url; a.download = `politics_map.json`; a.click();
-              }} className="justify-start font-black italic h-20 bg-white/5 border-2 border-emerald-500/40 rounded-2xl text-blue-500 hover:bg-blue-500/20 px-8 text-xl"><Download size={24} className="mr-6" /> ファイル書出</Button>
-              <label className="flex items-center gap-6 px-8 font-black italic h-20 bg-white/5 border-2 border-emerald-500/40 rounded-2xl cursor-pointer text-amber-500 hover:bg-amber-500/20 text-xl">
-                <Upload size={24} /> 読込・復元
+              }} className="justify-start font-semibold h-12 bg-white/5 border-2 border-emerald-500/40 rounded-xl text-blue-500 hover:bg-blue-500/20 px-6 text-sm"><Download size={18} className="mr-4" /> ファイル書出</Button>
+              <label className="flex items-center gap-4 px-6 font-semibold h-12 bg-white/5 border-2 border-emerald-500/40 rounded-xl cursor-pointer text-amber-500 hover:bg-amber-500/20 text-sm">
+                <Upload size={18} /> 読込・復元
                 <input type="file" className="hidden" accept=".json" onChange={(e) => {
                   const f = e.target.files?.[0]; if (!f) return;
                   const r = new FileReader(); r.onload = (re) => {
@@ -214,7 +214,7 @@ export default function NextraMasterLockedApp() {
               </label>
             </div>
             <div className="mt-auto p-6 bg-emerald-500/10 rounded-[2.5rem] border-2 border-emerald-500/30">
-              <p className="text-xs font-black text-emerald-500 uppercase italic mb-3">Locked Status</p>
+              <p className="text-xs font-semibold text-emerald-500 mb-3">Locked Status</p>
               <p className="text-[10px] font-bold text-white/40 italic leading-relaxed">
                 このツールはNextraLabs MASTERMODELとして完全にロックされています。全ての機能はローカルで完結し、最高級のプライバシーを提供します。
               </p>
