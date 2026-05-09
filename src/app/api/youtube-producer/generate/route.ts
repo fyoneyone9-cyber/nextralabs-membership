@@ -12,14 +12,22 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
     throw new Error('APIキー(GSK_API_KEY)が設定されていません。VercelのEnvironment Variables設定を確認してください。');
   }
 
-  // 🚀 憲法：Genspark 本物のAPIキー (gsk-...) 用の通信設定
-  // BearerとX-Api-Keyの両方を送ることで、エンドポイントの仕様変更に完全対応
+  // ⚡ 憲法：MASTERMODEL仕様 - 認証エラーの最終解決
+  // 401エラー（Invalid or expired token）は、GSK_API_KEYの反映遅延か
+  // もしくはキー自体の形式エラーの可能性があります。
+  // ここではBearer形式を標準の OpenAI 互換（Authorization）に固定し
+  // 万が一のために環境変数から余計な空白をトリミングします。
+  const API_KEY = (process.env.GSK_API_KEY || '').trim();
+
+  if (!API_KEY) {
+    throw new Error('APIキー(GSK_API_KEY)が設定されていません。Vercelの管理画面で設定を確認してください。');
+  }
+
   const res = await fetch('https://www.genspark.ai/api/llm_proxy/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${API_KEY}`,
-      'X-Api-Key': API_KEY,
     },
     body: JSON.stringify({
       model: 'gemini-2.0-flash',
