@@ -15,10 +15,22 @@ export default function HomePage() {
     <div className="animate-in fade-in duration-700 bg-[#050507] text-slate-200 min-h-screen flex flex-col">
       <section className="relative overflow-hidden pt-16 pb-12 md:pt-32 md:pb-24 bg-[#050507] text-center">
         <div className="container mx-auto px-6 relative">
-          <Badge variant="outline" className="px-3 py-0.5 text-[10px] font-black text-emerald-500 border-emerald-500/20 uppercase mb-6">Nextra Labs AIプラットフォーム</Badge>
-          <h1 className="text-4xl md:text-8xl font-black text-white italic tracking-tighter mb-6 leading-none uppercase">AIツールで<br /><span className="bg-gradient-to-r from-emerald-400 to-teal-500 bg-clip-text text-transparent">業務を自動化</span></h1>
-          <p className="text-sm md:text-xl text-slate-400 max-w-xl mx-auto mb-8 font-bold italic">「指示したら、あとは全部やってくれる」全24の戦略的エンジン。</p>
-          <Link href="/products" className="inline-block"><Button size="lg" className="px-10 h-20 bg-emerald-500 text-slate-950 font-black rounded-2xl text-xl md:text-2xl uppercase italic tracking-widest shadow-[0_0_50px_rgba(16,185,129,0.3)] transition-transform hover:scale-105 active:scale-95">🔥 ツール一覧を見る</Button></Link>
+          <div className="inline-flex items-center gap-2 border border-emerald-500/30 rounded-full px-4 py-1.5 mb-10">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[11px] font-medium text-emerald-400 tracking-widest uppercase">Nextra Labs — AI Platform</span>
+          </div>
+          <h1 className="text-5xl md:text-7xl font-semibold text-white tracking-tight mb-6 leading-[1.1]">
+            AIツールで、<br />
+            <span className="text-emerald-400">業務を自動化。</span>
+          </h1>
+          <p className="text-base md:text-lg text-slate-400 max-w-lg mx-auto mb-10 leading-relaxed font-normal">
+            指示したら、あとは全部やってくれる。<br />24のAIツールが、あなたの時間を取り戻す。
+          </p>
+          <Link href="/products" className="inline-block">
+            <Button size="lg" className="px-8 h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold rounded-lg text-sm tracking-wide shadow-[0_0_24px_rgba(16,185,129,0.2)] transition-all hover:shadow-[0_0_32px_rgba(16,185,129,0.35)] hover:scale-[1.02] active:scale-95">
+              ツール一覧を見る <ArrowRight className="inline ml-1.5 h-4 w-4" />
+            </Button>
+          </Link>
         </div>
       </section>
 

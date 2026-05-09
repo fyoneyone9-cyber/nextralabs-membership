@@ -58,13 +58,13 @@ export default function SignupPage() {
       <div className="min-h-screen bg-[#050507] flex items-center justify-center px-4 py-10 font-sans">
         <Card className="w-full max-w-md bg-[#13141f] border border-emerald-500/20 rounded-3xl shadow-[0_0_60px_rgba(16,185,129,0.08)]">
           <CardContent className="p-8 text-center">
-            <CheckCircle className="h-16 w-16 text-emerald-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-black italic uppercase tracking-tight text-white mb-2">登録ありがとうございます！</h2>
-            <p className="text-slate-400 text-sm mb-6">
+            <CheckCircle className="h-16 w-16 text-emerald-400 mx-auto mb-4" />
+            <h2 className="text-2xl font-semibold tracking-tight text-white mb-3">登録ありがとうございます！</h2>
+            <p className="text-slate-400 text-sm mb-6 leading-relaxed">
               確認メールを送信しました。メール内のリンクをクリックして、アカウントを有効化してください。
             </p>
             <Link href="/login">
-              <Button className="w-full h-12 border-2 border-emerald-500/40 text-emerald-400 font-black rounded-2xl hover:border-emerald-400 bg-transparent transition-all">ログインページへ</Button>
+              <Button className="w-full h-12 border border-emerald-500/40 text-emerald-400 font-semibold rounded-lg hover:border-emerald-400 bg-transparent transition-all">ログインページへ</Button>
             </Link>
           </CardContent>
         </Card>
@@ -75,14 +75,18 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen bg-[#050507] flex items-center justify-center px-4 py-10 font-sans">
       <Card className="w-full max-w-md bg-[#13141f] border border-emerald-500/20 rounded-3xl shadow-[0_0_60px_rgba(16,185,129,0.08)]">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-black italic uppercase tracking-tight text-white">新規登録</CardTitle>
-          <CardDescription className="text-slate-400 text-sm">無料アカウントを作成しましょう</CardDescription>
+        <CardHeader className="text-center pb-2">
+          <div className="inline-flex items-center gap-2 border border-emerald-500/30 rounded-full px-4 py-1.5 mb-4 mx-auto">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[11px] font-medium text-emerald-400 tracking-widest uppercase">Nextra Labs</span>
+          </div>
+          <CardTitle className="text-2xl font-semibold tracking-tight text-white">新規登録</CardTitle>
+          <CardDescription className="text-slate-400 text-sm leading-relaxed">無料アカウントを作成しましょう</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="displayName" className="text-xs font-black uppercase tracking-widest text-emerald-400">表示名</Label>
+              <Label htmlFor="displayName" className="text-xs font-medium text-slate-400">表示名</Label>
               <Input
                 id="displayName"
                 type="text"
@@ -94,7 +98,7 @@ export default function SignupPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-xs font-black uppercase tracking-widest text-emerald-400">メールアドレス</Label>
+              <Label htmlFor="email" className="text-xs font-medium text-slate-400">メールアドレス</Label>
               <Input
                 id="email"
                 type="email"
@@ -106,7 +110,7 @@ export default function SignupPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-xs font-black uppercase tracking-widest text-emerald-400">パスワード</Label>
+              <Label htmlFor="password" className="text-xs font-medium text-slate-400">パスワード</Label>
               <Input
                 id="password"
                 type="password"
@@ -119,7 +123,7 @@ export default function SignupPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-xs font-black uppercase tracking-widest text-emerald-400">パスワード確認</Label>
+              <Label htmlFor="confirmPassword" className="text-xs font-medium text-slate-400">パスワード確認</Label>
               <Input
                 id="confirmPassword"
                 type="password"
@@ -131,7 +135,7 @@ export default function SignupPage() {
                 className="w-full h-12 bg-[#13141f] border border-white/10 rounded-xl px-4 text-slate-100 placeholder:text-slate-600 focus:border-emerald-500 focus:ring-0 outline-none transition-all text-sm font-bold"
               />
             </div>
-            <Button type="submit" disabled={loading} className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-base rounded-2xl uppercase tracking-wide transition-all shadow-lg shadow-emerald-500/20">
+            <Button type="submit" disabled={loading} className="w-full h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold rounded-lg transition-all shadow-[0_0_24px_rgba(16,185,129,0.2)] hover:shadow-[0_0_32px_rgba(16,185,129,0.35)] hover:scale-[1.02]">
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               アカウント作成
             </Button>

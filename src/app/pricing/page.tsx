@@ -75,8 +75,12 @@ export default function PricingPage() {
     <div className="min-h-screen bg-[#050507] text-slate-100 px-4 py-10 md:py-16 font-sans">
       <div className="container mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tight text-white mb-4">料金プラン</h1>
-          <p className="text-lg text-slate-400 max-w-xl mx-auto">
+          <div className="inline-flex items-center gap-2 border border-emerald-500/30 rounded-full px-4 py-1.5 mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[11px] font-medium text-emerald-400 tracking-widest uppercase">Pricing Plans</span>
+          </div>
+          <h1 className="text-3xl md:text-5xl font-semibold tracking-tight text-white mb-4 leading-[1.1]">料金プラン</h1>
+          <p className="text-base text-slate-400 max-w-xl mx-auto leading-relaxed">
             ¥480のライトから始めて、必要に応じてアップグレード。全プランいつでも解約OK。
           </p>
         </div>
@@ -119,9 +123,9 @@ export default function PricingPage() {
                 ))}
               </ul>
               {!user ? (
-                <Button className="w-full h-14 border-2 border-emerald-500/40 text-emerald-400 font-black rounded-2xl hover:border-emerald-400 bg-transparent transition-all" onClick={() => window.location.href = '/signup'}>無料で始める</Button>
+                <Button className="w-full h-12 border border-emerald-500/40 text-emerald-400 font-semibold rounded-lg hover:border-emerald-400 bg-transparent transition-all" onClick={() => window.location.href = '/signup'}>無料で始める <ArrowRight className="ml-1.5 h-4 w-4" /></Button>
               ) : !isPaid ? (
-                <Button className="w-full h-14 border-2 border-emerald-500/40 text-emerald-400 font-black rounded-2xl bg-transparent transition-all" disabled>現在のプラン</Button>
+                <Button className="w-full h-12 border border-emerald-500/40 text-emerald-400 font-semibold rounded-lg bg-transparent transition-all" disabled>現在のプラン</Button>
               ) : null}
             </CardContent>
           </Card>
@@ -147,12 +151,12 @@ export default function PricingPage() {
                 ))}
               </ul>
               {isPaid ? (
-                <Button className="w-full h-14 border-2 border-cyan-500/50 text-cyan-400 font-black rounded-2xl hover:border-cyan-400 bg-transparent transition-all" onClick={handleManage} disabled={loadingPlan === 'manage'}>
+                <Button className="w-full h-12 border border-cyan-500/50 text-cyan-400 font-semibold rounded-lg hover:border-cyan-400 bg-transparent transition-all" onClick={handleManage} disabled={loadingPlan === 'manage'}>
                   {loadingPlan === 'manage' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}プラン管理
                 </Button>
               ) : (
-                <Button className="w-full h-14 bg-cyan-500 hover:bg-cyan-600 text-white font-black rounded-2xl transition-all" onClick={() => handleCheckout('light')} disabled={loadingPlan === 'light'}>
-                  {loadingPlan === 'light' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}ライトプランに登録
+                <Button className="w-full h-12 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold rounded-lg transition-all" onClick={() => handleCheckout('light')} disabled={loadingPlan === 'light'}>
+                  {loadingPlan === 'light' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}ライトプランに登録 <ArrowRight className="ml-1.5 h-4 w-4" />
                 </Button>
               )}
             </CardContent>
@@ -186,12 +190,12 @@ export default function PricingPage() {
                 ))}
               </ul>
               {isPaid ? (
-                <Button className="w-full h-14 border-2 border-emerald-500/40 text-emerald-400 font-black rounded-2xl hover:border-emerald-400 bg-transparent transition-all" onClick={handleManage} disabled={loadingPlan === 'manage'}>
+                <Button className="w-full h-12 border border-emerald-500/40 text-emerald-400 font-semibold rounded-lg hover:border-emerald-400 bg-transparent transition-all" onClick={handleManage} disabled={loadingPlan === 'manage'}>
                   {loadingPlan === 'manage' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}プラン管理
                 </Button>
               ) : (
-                <Button className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl transition-all" onClick={() => handleCheckout('standard')} disabled={loadingPlan === 'standard'}>
-                  {loadingPlan === 'standard' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}スタンダードプランに登録
+                <Button className="w-full h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold rounded-lg shadow-[0_0_24px_rgba(16,185,129,0.2)] hover:shadow-[0_0_32px_rgba(16,185,129,0.35)] transition-all" onClick={() => handleCheckout('standard')} disabled={loadingPlan === 'standard'}>
+                  {loadingPlan === 'standard' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}スタンダードプランに登録 <ArrowRight className="ml-1.5 h-4 w-4" />
                 </Button>
               )}
             </CardContent>
@@ -220,12 +224,12 @@ export default function PricingPage() {
                 ))}
               </ul>
               {isPaid ? (
-                <Button className="w-full h-14 border-2 border-violet-500/50 text-violet-400 font-black rounded-2xl hover:border-violet-400 bg-transparent transition-all" onClick={handleManage} disabled={loadingPlan === 'manage'}>
+                <Button className="w-full h-12 border border-violet-500/50 text-violet-400 font-semibold rounded-lg hover:border-violet-400 bg-transparent transition-all" onClick={handleManage} disabled={loadingPlan === 'manage'}>
                   {loadingPlan === 'manage' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}プラン管理
                 </Button>
               ) : (
-                <Button className="w-full h-14 bg-violet-500 hover:bg-violet-600 text-white font-black rounded-2xl transition-all" onClick={() => handleCheckout('premium')} disabled={loadingPlan === 'premium'}>
-                  {loadingPlan === 'premium' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}プレミアムプランに登録
+                <Button className="w-full h-12 bg-violet-500 hover:bg-violet-400 text-white font-semibold rounded-lg transition-all" onClick={() => handleCheckout('premium')} disabled={loadingPlan === 'premium'}>
+                  {loadingPlan === 'premium' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}プレミアムプランに登録 <ArrowRight className="ml-1.5 h-4 w-4" />
                 </Button>
               )}
             </CardContent>
@@ -251,8 +255,8 @@ export default function PricingPage() {
                 ))}
               </ul>
               <Link href="/contact">
-                <Button className="w-full h-14 bg-amber-500 hover:bg-amber-600 text-white font-black rounded-2xl gap-2 transition-all">
-                  お問い合わせ<ArrowRight className="h-4 w-4" />
+                <Button className="w-full h-12 bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold rounded-lg gap-2 transition-all">
+                  お問い合わせ <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
             </CardContent>

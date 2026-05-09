@@ -130,18 +130,18 @@ export default function DashboardClient({ user, profile, subscription }: any) {
                 </div>
               </Link>
               <div className="text-left">
-                <p className="text-emerald-500 text-xs font-black uppercase tracking-[0.4em] mb-2">Welcome Master</p>
-                <h1 className="text-4xl md:text-5xl font-black text-white italic tracking-tighter leading-none">{displayName} <span className="text-xl md:text-2xl text-slate-500 not-italic">さん</span></h1>
-                <p className="text-slate-500 text-sm font-bold mt-3 font-mono">{user?.email}</p>
+                <p className="text-emerald-400 text-[11px] font-medium tracking-widest uppercase mb-2">Welcome</p>
+                <h1 className="text-3xl md:text-4xl font-semibold text-white tracking-tight leading-[1.1]">{displayName} <span className="text-lg md:text-xl text-slate-500 font-normal">さん</span></h1>
+                <p className="text-slate-500 text-sm font-normal mt-2 font-mono">{user?.email}</p>
               </div>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <Badge className={`text-lg font-black px-8 py-2 rounded-full border-2 ${meta.badge} shadow-lg italic`}>{meta.label}プラン</Badge>
-              <p className="text-slate-600 text-[10px] font-black uppercase tracking-[0.3em]">Identity Status</p>
+              <Badge className={`text-sm font-medium px-6 py-2 rounded-full border ${meta.badge} shadow-lg`}>{meta.label}プラン</Badge>
+              <p className="text-slate-600 text-[10px] font-medium tracking-widest uppercase">Plan</p>
             </div>
             <div className="flex gap-10">
-              <div className="text-center"><p className="text-5xl font-black text-white italic">{accessibleCount}</p><p className="text-slate-600 text-[10px] font-black uppercase tracking-widest mt-1">Access</p></div>
-              <div className="text-center"><p className="text-5xl font-black text-amber-400 italic">{favCount}</p><p className="text-slate-600 text-[10px] font-black uppercase tracking-widest mt-1">Favs</p></div>
+              <div className="text-center"><p className="text-4xl font-semibold text-white">{accessibleCount}</p><p className="text-slate-500 text-[10px] font-medium tracking-widest uppercase mt-1">利用可能</p></div>
+              <div className="text-center"><p className="text-4xl font-semibold text-emerald-400">{favCount}</p><p className="text-slate-500 text-[10px] font-medium tracking-widest uppercase mt-1">お気に入り</p></div>
             </div>
           </div>
         </div>
@@ -150,8 +150,8 @@ export default function DashboardClient({ user, profile, subscription }: any) {
           <div className="lg:col-span-2 space-y-12">
             {/* タブ */}
             <div className="flex gap-4 border-b border-white/5">
-              {[{ key: 'all', label: '全エンジン' }, { key: 'accessible', label: '利用可能' }, { key: 'favorites', label: 'お気に入り' }].map(tab => (
-                <button key={tab.key} onClick={() => setActiveTab(tab.key as any)} className={`px-6 py-4 text-sm font-black uppercase tracking-widest transition-all border-b-4 ${activeTab === tab.key ? 'border-emerald-500 text-white bg-emerald-500/5' : 'border-transparent text-slate-600 hover:text-slate-300'}`}>
+              {[{ key: 'all', label: '全ツール' }, { key: 'accessible', label: '利用可能' }, { key: 'favorites', label: 'お気に入り' }].map(tab => (
+                <button key={tab.key} onClick={() => setActiveTab(tab.key as any)} className={`px-5 py-3 text-sm font-medium transition-all border-b-2 ${activeTab === tab.key ? 'border-emerald-500 text-white' : 'border-transparent text-slate-500 hover:text-slate-300'}`}>
                   {tab.label}
                 </button>
               ))}
@@ -165,20 +165,20 @@ export default function DashboardClient({ user, profile, subscription }: any) {
               if (tools.length === 0) return null
               return (
                 <div key={cat.label} className="space-y-6 text-left">
-                  <div className={`flex items-center gap-4 border-l-8 ${cat.borderColor} pl-6`}>
-                    <h2 className={`font-black text-2xl uppercase tracking-tighter italic ${cat.color}`}>{cat.label}</h2>
+                  <div className={`flex items-center gap-3 border-l-4 ${cat.borderColor} pl-4`}>
+                    <h2 className={`font-semibold text-lg tracking-tight ${cat.color}`}>{cat.label}</h2>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {tools.map(tool => {
                       const locked = !hasAccess(plan, tool.plan)
                       const Icon = tool.icon
                       return (
-                        <div key={tool.id} className={`group relative rounded-[2rem] border-2 transition-all ${locked ? 'bg-black/40 border-white/5 opacity-40' : 'bg-[#13141f] border-white/10 hover:border-emerald-500/50 hover:shadow-2xl hover:scale-[1.02]'}`}>
-                          <Link href={locked ? '/pricing' : `/products/${tool.id}/app`} className="flex flex-col items-start gap-4 p-6">
-                            <div className={`w-12 h-12 rounded-[1rem] flex items-center justify-center bg-white/5 ${tool.color}`}>{locked ? <Lock size={24} /> : <Icon size={24} />}</div>
+                        <div key={tool.id} className={`group relative rounded-xl border transition-all ${locked ? 'bg-black/30 border-white/5 opacity-40' : 'bg-[#13141f] border-white/8 hover:border-emerald-500/30 hover:shadow-[0_0_16px_rgba(16,185,129,0.1)] hover:scale-[1.02]'}`}>
+                          <Link href={locked ? '/pricing' : `/products/${tool.id}/app`} className="flex flex-col items-start gap-3 p-5">
+                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center bg-white/5 ${tool.color}`}>{locked ? <Lock size={18} /> : <Icon size={18} />}</div>
                             <div className="space-y-1">
-                               <p className={`text-sm font-black italic leading-tight ${locked ? 'text-slate-600' : 'text-white'}`}>{tool.name}</p>
-                               <p className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">{locked ? 'Upgrade Required' : 'Launch Engine ➔'}</p>
+                               <p className={`text-sm font-medium leading-tight ${locked ? 'text-slate-600' : 'text-white'}`}>{tool.name}</p>
+                               <p className="text-[10px] text-slate-500">{locked ? 'アップグレードが必要' : '起動する →'}</p>
                             </div>
                           </Link>
                         </div>
