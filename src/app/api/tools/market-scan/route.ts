@@ -20,60 +20,58 @@ export async function POST(req: Request) {
       keyword = targetUrl;
     }
 
-    // 🔑 実績のある Application ID (rakuten-search.ts と同期)
-    const RAKUTEN_APP_ID = '1020081822830310242'; 
-    
-    // 【重要】実績のあるエンドポイントとパラメータ構成に完全に固定
-    const apiUrl = `https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${RAKUTEN_APP_ID}&hits=10&sort=%2BitemPrice`;
+    // 🔑 楽天AppID & AccessKey (NextraLabs様提供の確定値)
+    const RAKUTEN_APP_ID = process.env.RAKUTEN_APP_ID || '3ae4deb7-eb42-46a4-8123-d4cf632ccea2';
+    const RAKUTEN_ACCESS_KEY = process.env.RAKUTEN_ACCESS_KEY || 'pk_ED4qEbhFwiIxiaOuBlWLbFo7wb6pudVCO8khdRLcsmz'; 
 
-    console.log('[MARKET_SCAN_REQUEST]', apiUrl);
+    // エンドポイントを最新版 (2026-04-01) に設定
+    // 楽天の最新仕様では Access Key はヘッダーまたはクエリで送信。ここでは確実なクエリで送信。
+    const apiUrl = `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${RAKUTEN_APP_ID}&accessKey=${RAKUTEN_ACCESS_KEY}&hits=10&sort=%2BitemPrice&formatVersion=2`;
 
     const res = await fetch(apiUrl, { cache: 'no-store' });
     const data = await res.json();
 
     if (!res.ok || data.error) {
-      // 依然としてエラーが出る場合、モックデータを返してUIの動作を確認できるようにする (NextraLabs 憲法：ユーザーを止めない)
-      console.error('[MARKET_SCAN_ERROR_DETAIL]', data);
+      const errorMsg = data.error_description || data.message || 'Rakuten API Error';
+      // エラーログ（サーバー側）
+      console.error('[MARKET_SCAN_DEBUG]', { status: res.status, error: errorMsg });
       
-      // デモ用高品質データ（API疎通失敗時のフォールバック）
+      // 憲法：エラー時もユーザー体験を維持
       return NextResponse.json({
         success: true,
         is_demo: true,
         target_item: {
-          name: `${keyword} (API疎通待機中)`,
+          name: `${keyword} (API認証エラー発生中)`,
           base_price: 15800,
           points: 1,
           effective_price: 15642
         },
         rival_prices: [
           { name: '競合A社 (楽天)', price: 14800, effective_price: 13320, points: 10, status: 'SALE' },
-          { name: '競合B社 (Amazon)', price: 15200, effective_price: 15048, points: 1, status: '通常' },
-          { name: '競合C社 (Yahoo)', price: 15800, effective_price: 14220, points: 10, status: 'ポイントUP' }
+          { name: '競合B社 (Amazon)', price: 15200, effective_price: 15048, points: 1, status: '通常' }
         ],
         win_rate: '12%',
-        suggestion_text: `【API疎通待機中】現在楽天APIのApplicationIDを検証中です。表示されているのはシミュレーションデータです。解消には楽天デベロッパーコンソールでのドメイン許可が必要です。`
+        suggestion_text: `【認証エラー】楽天APIより "${errorMsg}" が返されました。Vercelの環境変数に正しいキーが設定されているか、または楽天コンソールでドメインが許可されているか再確認してください。`
       });
     }
 
-    const items = data.Items || [];
+    const items = data.items || []; // formatVersion=2 は小文字 items
     if (items.length === 0) {
       throw new Error('該当する商品が見つかりませんでした。');
     }
 
-    const getItemData = (item: any) => item.Item ? item.Item : item;
-    const firstItem = getItemData(items[0]);
+    const firstItem = items[0];
     const targetBasePrice = firstItem.itemPrice;
     const targetPoints = 1; 
     const targetEffectivePrice = Math.floor(targetBasePrice * (1 - targetPoints / 100));
 
-    const rivals = items.slice(1, 4).map((i: any, index: number) => {
-      const itemData = getItemData(i);
-      const price = itemData.itemPrice;
+    const rivals = items.slice(1, 4).map((item: any, index: number) => {
+      const price = item.itemPrice;
       const points = index === 0 ? 10 : index === 1 ? 5 : 1; 
       const effectivePrice = Math.floor(price * (1 - points / 100));
       
       return {
-        name: itemData.shopName || `競合店${String.fromCharCode(65 + index)}`,
+        name: item.shopName || `競合店${String.fromCharCode(65 + index)}`,
         price: price,
         effective_price: effectivePrice,
         points: points,
