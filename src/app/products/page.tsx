@@ -16,33 +16,33 @@ import {
 const TOOLS = [
   { id: 'universal-converter/app', cat: 'compress', title: '究極AIマルチコンバーター', sub: '動画・画像・PDFへの変換圧縮', icon: Repeat, plan: 'ライト' },
     { id: 'nextra-ai/app', cat: 'hotel', title: 'Nextra AI（ホテルDX）', sub: 'チェックイン・予約・解錠OS', icon: Building2, plan: 'プレミアム' },
-{ id: 'staysee-ai-finder/app', cat: 'hotel', title: 'Staysee AI Finder', sub: '宿泊予約と鍵発行を完全同期', icon: Building2, plan: 'プレミアム' },
+{ id: 'staysee-ai-finder/app', cat: 'hotel', title: 'Staysee AI Finder', sub: '宿泊予約と鍵発行を完全同期', icon: Building2, plan: 'プレミアム' , done: true },
   { id: 'hotel-affiliate/app', cat: 'hotel', title: 'アフィリエイト連携', sub: '宿泊紹介と楽天収益化OS', icon: Network, plan: 'スタンダード' },
   { id: 'moving-checker/app', cat: 'hotel', title: 'AI引越し安心チェッカー', sub: '治安と物件リスクを徹底解析', icon: Home, plan: '無料' },
   { id: 'sns-auto-poster/app', cat: 'sns', title: 'AI SNSオートポスター', sub: 'バズを量産するマルチSNS生成', icon: Share2, plan: 'ライト' },
   { id: 'ai-select-shop/app', cat: 'sns', title: 'AIセレクトショップ', sub: 'トレンド解析とShopify連携', icon: Store, plan: 'プレミアム' },
-  { id: 'youtube-producer/app', cat: 'sns', title: 'AI YouTubeプロデューサー', sub: '全自動台本・構成作成', icon: Clapperboard, plan: 'プレミアム' },
-  { id: 'youtube-coordinator/app', cat: 'sns', title: 'YouTube AI Sync', sub: '動画解析と楽天コーチ', icon: Play, plan: 'プレミアム' },
-  { id: 'kdp-guide/app', cat: 'edu', title: 'Kindle出版完全ナビ', sub: '執筆から出版までの一気通貫', icon: BookOpen, plan: '無料' },
+  { id: 'youtube-producer/app', cat: 'sns', title: 'AI YouTubeプロデューサー', sub: '全自動台本・構成作成', icon: Clapperboard, plan: 'プレミアム' , done: true },
+  { id: 'youtube-coordinator/app', cat: 'sns', title: 'YouTube AI Sync', sub: '動画解析と楽天コーチ', icon: Play, plan: 'プレミアム' , done: true },
+  { id: 'kdp-guide/app', cat: 'edu', title: 'Kindle出版完全ナビ', sub: '執筆から出版までの一気通貫', icon: BookOpen, plan: '無料' , done: true },
   { id: 'kindle-factory/app', cat: 'biz', title: 'Kindle AI ファクトリー', sub: 'AI解析でKDP入稿可能な原稿を自動生成', icon: Crown, plan: 'プレミアム' },
   { id: 'prompt-master/app', cat: 'biz', title: 'AI画像プロンプトマスター', sub: '究極 of 究極の画像パーツ工房', icon: Wand2, plan: 'ライト' },
   { id: 'scam-defender/app', cat: 'life', title: 'AI詐欺ディフェンダー', sub: '詐欺・悪意を即座に判定', icon: ShieldCheck, plan: 'プレミアム' },
-  { id: 'money-guard/app', cat: 'life', title: 'AI家計防衛シミュレーター', sub: '衝動買いの心理的阻止', icon: Wallet, plan: 'スタンダード' },
-  { id: 'loan-advisor/app', cat: 'life', title: 'AI借金完済・おまとめ診断', sub: '借金の一本化と完済への最短ルート', icon: CreditCard, plan: '無料' },
-  { id: 'disaster-guard/app', cat: 'life', title: 'AI防災パーソナルガイド', sub: '避難ルートと備蓄最適化', icon: Shield, plan: 'スタンダード' },
+  { id: 'money-guard/app', cat: 'life', title: 'AI家計防衛シミュレーター', sub: '衝動買いの心理的阻止', icon: Wallet, plan: 'スタンダード' , done: true },
+  { id: 'loan-advisor/app', cat: 'life', title: 'AI借金完済・おまとめ診断', sub: '借金の一本化と完済への最短ルート', icon: CreditCard, plan: '無料' , done: true },
+  { id: 'disaster-guard/app', cat: 'life', title: 'AI防災パーソナルガイド', sub: '避難ルートと備蓄最適化', icon: Shield, plan: 'スタンダード' , done: true },
   { id: 'shopping-stopper/app', cat: 'life', title: 'AI買い物依存ストッパー', sub: '散財の鎖を断ち切る', icon: ShieldAlert, plan: '無料' },
-  { id: 'buy-smart-nav/app', cat: 'life', title: '中古・新品AI比較ナビ', sub: '損得勘定とAI市場判定OS', icon: Scale, plan: '無料' },
-  { id: 'price-tracker/app', cat: 'life', title: '底値監視AI予測', sub: '価格変動とAI未来予測OS', icon: LineChart, plan: 'ライト' },
-  { id: 'inbox-organizer', cat: 'biz', title: 'Gmail AI Accelerator', sub: '未読ゼロを最速で実現', icon: Mail, plan: 'プレミアム' },
-  { id: 'contact-sync/app', cat: 'biz', title: 'Contact AI Sync', sub: '名刺の全自動登録OS', icon: UserPlus, plan: 'ライト' },
-  { id: 'expense-sync/app', cat: 'biz', title: 'Expense AI Sync', sub: '経費精算の全自動記帳OS', icon: Table, plan: 'ライト' },
+  { id: 'buy-smart-nav/app', cat: 'life', title: '中古・新品AI比較ナビ', sub: '損得勘定とAI市場判定OS', icon: Scale, plan: '無料' , done: true },
+  { id: 'price-tracker/app', cat: 'life', title: '底値監視AI予測', sub: '価格変動とAI未来予測OS', icon: LineChart, plan: 'ライト' , done: true },
+  { id: 'inbox-organizer', cat: 'biz', title: 'Gmail AI Accelerator', sub: '未読ゼロを最速で実現', icon: Mail, plan: 'プレミアム' , done: true },
+  { id: 'contact-sync/app', cat: 'biz', title: 'Contact AI Sync', sub: '名刺の全自動登録OS', icon: UserPlus, plan: 'ライト' , done: true },
+  { id: 'expense-sync/app', cat: 'biz', title: 'Expense AI Sync', sub: '経費精算の全自動記帳OS', icon: Table, plan: 'ライト' , done: true },
   { id: 'ai-report-generator/app', cat: 'biz', title: 'AIレポートジェネレーター', sub: '箇条書きからプロ級文書生成', icon: FileText, plan: '無料' },
-  { id: 'ai-sidejob/app', cat: 'biz', title: 'AI副業スタートダッシュ', sub: '適性診断と収益ロードマップ', icon: Briefcase, plan: 'プレミアム' },
-  { id: 'office-politics-graph/app', cat: 'mind', title: '社内政治 AI相関図', sub: '人間関係の暗部を可視化', icon: Network, plan: '無料' },
-  { id: 'interior-coordinator/app', cat: 'mind', title: 'Interior AI Sync', sub: '空間解析と楽天一括購入OS', icon: Sofa, plan: 'プレミアム' },
+  { id: 'ai-sidejob/app', cat: 'biz', title: 'AI副業スタートダッシュ', sub: '適性診断と収益ロードマップ', icon: Briefcase, plan: 'プレミアム' , done: true },
+  { id: 'office-politics-graph/app', cat: 'mind', title: '社内政治 AI相関図', sub: '人間関係の暗部を可視化', icon: Network, plan: '無料' , done: true },
+  { id: 'interior-coordinator/app', cat: 'mind', title: 'Interior AI Sync', sub: '空間解析と楽天一括購入OS', icon: Sofa, plan: 'プレミアム' , done: true },
   { id: 'ai-recipe/app', cat: 'life', title: 'AIレシピ献立コーチ', sub: '冷蔵庫の残り物と栄養最適化', icon: Utensils, plan: '無料' },
   { id: 'exam-scheduler/app', cat: 'edu', title: '資格試験AIスケジューラー', sub: '試験日から逆算して学習計画を自動生成', icon: ClipboardCheck, plan: 'スタンダード' },
-  { id: 'ai-exam-generator/app', cat: 'edu', title: 'AI問題生成 & 苦手分析', sub: '予想問題を無限生成と弱点ポイント可視化', icon: Brain, plan: 'プレミアム' },
+  { id: 'ai-exam-generator/app', cat: 'edu', title: 'AI問題生成 & 苦手分析', sub: '予想問題を無限生成と弱点ポイント可視化', icon: Brain, plan: 'プレミアム' , done: true },
   { id: 'location-finder/app', cat: 'hotel', title: 'AIロケーションファインダー', sub: '出店・移住の最適地をデータ分析', icon: MapPin, plan: 'スタンダード' },
   { id: 'smart-gardening/app', cat: 'life', title: 'AIスマートガーデニング', sub: '植物の声を聴く育成アドバイザー', icon: Sprout, plan: 'スタンダード' },
   { id: 'ticket-scout/app', cat: 'life', title: 'AIチケットスカウト', sub: '争奪戦に勝つための先行情報収集', icon: Ticket, plan: 'スタンダード' }
@@ -59,7 +59,7 @@ const CATEGORIES = [
 ]
 
 function ProductCard({ product, isFav, onToggleFav }: {
-  product: typeof TOOLS[0]
+  product: (typeof TOOLS[0]) & { done?: boolean } & { done?: boolean }
   isFav: boolean
   onToggleFav: (e: React.MouseEvent, id: string) => void
 }) {
@@ -97,6 +97,9 @@ function ProductCard({ product, isFav, onToggleFav }: {
             </div>
             {product.title}
           </h3>
+          {product.done && (
+            <span className="inline-flex items-center gap-1 bg-emerald-500 text-slate-950 text-[9px] font-bold px-2 py-0.5 rounded-full mt-1">✓ 完成</span>
+          )}
           <p className="text-slate-400 text-[11px] md:text-xs font-normal mb-2 leading-relaxed">{product.sub}</p>
         </div>
         <div className="pt-4 border-t border-white/5 flex flex-col gap-2.5 mt-auto">
