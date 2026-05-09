@@ -52,11 +52,11 @@ export function Header() {
     router.refresh()
   }
 
-  if (!mounted) return <header className="h-16 border-b bg-background/95" />
+  if (!mounted) return <header className="h-12 border-b bg-background/95" />
 
   return (
     <header className="sticky top-0 z-[9999] w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+      <div className="container mx-auto flex h-12 items-center justify-between px-4">
         {/* ロゴとXアイコン */}
         <div className="flex items-center">
           <Link href="/" className="mr-6">
@@ -104,18 +104,18 @@ export function Header() {
                     )}
                   </div>
                   <div className="flex flex-col leading-none mr-1">
-                    <span className="text-[10px] font-black text-white italic tracking-tighter uppercase mb-0.5">{profile?.display_name || user.email?.split("@")[0]}</span>
+                    <span className="text-[10px] font-bold text-white tracking-tighter uppercase mb-0.5">{profile?.display_name || user.email?.split("@")[0]}</span>
                   </div>
                   {profile?.role === 'admin' ? (
-                    <Badge className="bg-blue-600 text-white text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-blue-800 shadow-lg">ADMIN</Badge>
+                    <Badge className="bg-emerald-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-lg border-b-2 border-blue-800 shadow-lg">ADMIN</Badge>
                   ) : userPlan === 'premium' ? (
-                    <Badge className="bg-amber-500 text-slate-950 text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-amber-700 shadow-lg uppercase">PREMIUM</Badge>
+                    <Badge className="bg-emerald-500 text-slate-950 text-[9px] font-bold px-2 py-0.5 rounded-lg border-b-2 border-emerald-700 shadow-lg uppercase">PREMIUM</Badge>
                   ) : userPlan === 'standard' ? (
-                    <Badge className="bg-emerald-500 text-slate-950 text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-emerald-700 shadow-lg uppercase">STANDARD</Badge>
+                    <Badge className="bg-emerald-500 text-slate-950 text-[9px] font-bold px-2 py-0.5 rounded-lg border-b-2 border-emerald-700 shadow-lg uppercase">STANDARD</Badge>
                   ) : userPlan === 'light' ? (
-                    <Badge className="bg-sky-500 text-slate-950 text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-sky-700 shadow-lg uppercase">LIGHT</Badge>
+                    <Badge className="bg-sky-500 text-slate-950 text-[9px] font-bold px-2 py-0.5 rounded-lg border-b-2 border-sky-700 shadow-lg uppercase">LIGHT</Badge>
                   ) : (
-                    <Badge className="bg-slate-600 text-white text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-slate-800 shadow-lg uppercase">FREE</Badge>
+                    <Badge className="bg-slate-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-lg border-b-2 border-slate-800 shadow-lg uppercase">FREE</Badge>
                   )}
                 </div>
               </Link>
