@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import {
   ShieldAlert, ShieldCheck, Zap, AlertTriangle, Info, Camera, Trash2, ExternalLink, CheckCircle2
@@ -293,7 +293,7 @@ export default function ScamDefender() {
       </div>
 
       <div className="text-center mt-16 opacity-20">
-        <p className="text-xs text-slate-600 tracking-widest">Nextra Cyber Defense · NextraLabs 2026</p>
+        <p className="text-xs text-slate-600 tracking-tight">Nextra Cyber Defense · NextraLabs 2026</p>
       </div>
     </div>
   )
