@@ -1,9 +1,19 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { checkApiLimit } from '@/lib/api-limit';
 
 const DEFAULT_RAKUTEN_ID = '534e3725.64346793.534e3726.d5412af4';
 
 export async function GET() {
+  // クレジット保護：1日15回制限
+  const limitCheck = await checkApiLimit('trend-stock', 15);
+  if (!limitCheck.allowed) {
+    return NextResponse.json(
+      { error: '本日の利用上限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
+
   const apiKey = process.env.GEMINI_API_KEY;
   
   try {

@@ -128,7 +128,10 @@ const faqs = [
 
 export default function KdpGuidePage() {
   return (
-    <div>
+    <div className="relative">
+      {/* MASTERMODEL SECURITY LINE (聖域の証: エメラルドグリーン) */}
+      <div className="fixed top-0 left-0 w-full h-[1px] bg-emerald-500 z-[100] shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+      
       {/* Hero */}
       <section className="relative overflow-hidden py-16 md:py-24">
         <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5" />

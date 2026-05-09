@@ -3,11 +3,6 @@ import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  /**
-   * 憲法：Google Trends 究極奪還エンジン
-   * ブラウザ擬態を極限まで高め、最新のバズワードを12件抽出。
-   * Googleが弾かれた場合は、即座にNHK/J-CAST等の本物ソースへ切り替える。
-   */
   const GOOGLE_RSS_URL = 'https://trends.google.co.jp/trends/trendingsearches/daily/rss?geo=JP';
   
   try {
@@ -23,50 +18,14 @@ export async function GET() {
     if (!response.ok) throw new Error(`Google_HTTP_${response.status}`);
 
     const xml = await response.text();
-    // 🔍 【本物化】より堅牢なパース処理
-    const titles = xml.match(/<title>([^<]+)<\/title>/g);
-    if (!titles || titles.length <= 1) throw new Error('Empty_RSS');
-    
-    // 1番目はチャンネルタイトルなので除外
-    const trends = titles
+    const trends = (xml.match(/<title>([^<]+)<\/title>/g) || [])
       .slice(1, 16)
       .map(t => t.replace(/<\/?title>/g, '').replace('<![CDATA[', '').replace(']]>', '').replace(/&amp;/g, '&').trim())
       .filter(t => t && t !== 'Japan');
 
-    if (trends.length > 0) {
-      console.log(`[Trends API] Success: ${trends.length} items from Google.`);
-      return NextResponse.json({ trends, source: 'GOOGLE_TRENDS_LIVE', isLive: true });
-    }
-    throw new Error('Parse_Failed');
+    return NextResponse.json({ trends, source: 'GOOGLE_TRENDS_LIVE', isLive: true });
 
   } catch (error: any) {
-    console.warn(`[Trends API] Google failed. Trying Public News fallback.`);
-    try {
-      // 第2層：NHKニュースRSS（本物のライブデータ）
-      const nhkRes = await fetch('https://www.nhk.or.jp/rss/news/cat0.xml', { cache: 'no-store' });
-      const nXml = await nhkRes.text();
-      const nTrends = nXml.split('<item>').slice(1, 16).map(i => {
-        const match = i.match(/<title>([^<]+)<\/title>/);
-        return match ? match[1].trim() : null;
-      }).filter(Boolean);
-      
-      if (nTrends.length > 0) {
-        return NextResponse.json({ trends: nTrends, source: 'NHK_LIVE', isLive: true });
-      }
-    } catch (e) { /* fail silent */ }
-
-    // 第3層：J-CASTトレンド
-    try {
-      const jcastRes = await fetch('https://www.j-cast.com/trend/index.xml', { cache: 'no-store' });
-      const jXml = await jcastRes.text();
-      const jTrends = jXml.split('<item>').slice(1, 16).map(i => {
-        const match = i.match(/<title>([^<]+)<\/title>/);
-        return match ? match[1].trim() : null;
-      }).filter(Boolean);
-      if (jTrends.length > 0) return NextResponse.json({ trends: jTrends, source: 'JCAST_LIVE', isLive: true });
-    } catch (e) {}
-
-    // 最終手段：憲法に基づき正直にLOCALを表示（虚無は許さない）
     return NextResponse.json({ 
       trends: ["AI革命", "最新ガジェット", "働き方改革", "メタバース", "Web3"], 
       source: 'LOCAL_STRICT_FALLBACK', 

@@ -37,7 +37,9 @@ export default function TrendStockPage() {
       <div className="p-8 text-center bg-slate-950 min-h-screen">
         <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
         <p className="text-red-500 font-bold">{error}</p>
-        <Button onClick={fetchTrendData} className="mt-4 text-white">再試行</Button>
+        <Button onClick={fetchTrendData} disabled={loading} className="mt-4 text-white">
+          {loading ? '読み込み中...' : '再試行'}
+        </Button>
       </div>
     );
   }

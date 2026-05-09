@@ -1,15 +1,20 @@
 ﻿import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from "@google/generative-ai";
-
-/**
- * 🛠️ Nextra Master AI Reply Engine
- * 憲法：外部連携を介さず、このAPI単体でGeminiを叩き、返信案を生成して返す。
- */
+import { checkApiLimit } from "@/lib/api-limit";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function POST(req: Request) {
   try {
+    // クレジット保護：1日10回制限
+    const limitCheck = await checkApiLimit('gmail-reply', 10);
+    if (!limitCheck.allowed) {
+      return NextResponse.json(
+        { error: '本日の生成上限に達しました。明日またご利用ください。' },
+        { status: 429 }
+      );
+    }
+
     const { subject, from, body } = await req.json();
     
     // 🚀 Gemini 1.5 Flash を使用して爆速生成
