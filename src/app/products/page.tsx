@@ -98,7 +98,7 @@ function ProductCard({ product, isFav, onToggleFav }: {
             {product.title}
           </h3>
           {product.done && (
-            <span className="inline-flex items-center gap-1 bg-emerald-500 text-slate-950 text-[9px] font-bold px-2 py-0.5 rounded-full mt-1">✓ 完成</span>
+            <span className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[9px] font-semibold px-2 py-0.5 rounded-full mt-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block mr-0.5" />稼働中</span>
           )}
           <p className="text-slate-400 text-[11px] md:text-xs font-normal mb-2 leading-relaxed">{product.sub}</p>
         </div>
