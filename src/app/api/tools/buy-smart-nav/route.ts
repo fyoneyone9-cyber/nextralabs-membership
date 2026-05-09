@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export const dynamic = 'force-dynamic';
@@ -6,19 +6,19 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: Request) {
   try {
     const { keyword } = await req.json();
-    const RAKUTEN_APP_ID = '1020081822830310242';
+    const RAKUTEN_APP_ID = '5b11580f-bdb5-4659-b89a-63db8ef20abf';
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
     if (!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY is not configured');
 
     // 1. 楽天API (新品検索)
-    const newRes = await fetch(`https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${RAKUTEN_APP_ID}&hits=5&sort=%2BitemPrice&usedFlag=0`);
+    const newRes = await fetch(`https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=5b11580f-bdb5-4659-b89a-63db8ef20abf&accessKey=pk_FfxUYuFakO3oY9BEo0YxLAyRlMP6oeiwFk2lHMGwNiB&accessKey=pk_FfxUYuFakO3oY9BEo0YxLAyRlMP6oeiwFk2lHMGwNiB&hits=5&sort=%2BitemPrice&usedFlag=0`);
     const newData = await newRes.json();
     const newItems = newData.Items || [];
     const newPrice = newItems.length > 0 ? newItems[0].Item.itemPrice : 0;
 
     // 2. 楽天API (中古検索)
-    const usedRes = await fetch(`https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${RAKUTEN_APP_ID}&hits=10&sort=%2BitemPrice&usedFlag=1`);
+    const usedRes = await fetch(`https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=5b11580f-bdb5-4659-b89a-63db8ef20abf&accessKey=pk_FfxUYuFakO3oY9BEo0YxLAyRlMP6oeiwFk2lHMGwNiB&accessKey=pk_FfxUYuFakO3oY9BEo0YxLAyRlMP6oeiwFk2lHMGwNiB&hits=10&sort=%2BitemPrice&usedFlag=1`);
     const usedData = await usedRes.json();
     const usedItems = usedData.Items || [];
     const usedPrices = usedItems.map((i: any) => i.Item.itemPrice);
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 
     // 3. Geminiによる解析
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const prompt = `
 あなたはプロの買い出しアドバイザーです。以下の楽天市場のリアルタイムデータを元に、「新品」と「中古」のどちらを買うべきか150文字以内でズバリ回答してください。
