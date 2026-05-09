@@ -133,7 +133,7 @@ export default function ProfilePage() {
   if (loading) return (
     <div className="min-h-screen bg-[#050507] flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
-        <div className="w-10 h-10 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin" />
+        <div className="w-10 h-10 border-t-emerald-500 rounded-full animate-spin" />
         <p className="text-slate-500 text-sm font-semibold">読み込み中...</p>
       </div>
     </div>

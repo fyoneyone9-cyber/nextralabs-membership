@@ -46,7 +46,7 @@ export default function AiSidejobApp() {
 
   return (
     <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-emerald-500/30 text-left">
-      <div className="max-w-5xl mx-auto space-y-10 border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.2)] rounded-[3rem] p-6 md:p-12 bg-[#0a0a0c]">
+      <div className="max-w-5xl mx-auto space-y-10 rounded-[3rem] p-6 md:p-12 bg-[#0a0a0c]">
         
         {/* Header: Nextra Standard 'Upper Green' & Lock Status */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b-4 border-emerald-500 pb-10 mb-10">
@@ -98,7 +98,7 @@ export default function AiSidejobApp() {
           {status === 'analyzing' && (
             <div className="max-w-2xl mx-auto py-20 text-center space-y-8 bg-white/5 rounded-[3rem] border border-white/10 animate-pulse">
               <div className="relative inline-block">
-                <div className="h-24 w-24 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto" />
+                <div className="h-24 w-24 border-t-transparent rounded-full animate-spin mx-auto" />
                 <Briefcase className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-400 h-8 w-8" />
               </div>
               <div className="space-y-2">

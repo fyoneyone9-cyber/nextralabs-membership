@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* === Genspark Claw Dark Theme (Default) === */
+    --background: 220 14% 6%;         /* #0d0f12 ほぼ黒 */
+    --foreground: 210 20% 92%;        /* #e5e9ef 明るいホワイト */
+    --card: 220 13% 9%;               /* #131619 カード背景 */
+    --card-foreground: 210 20% 92%;
+    --primary: 252 87% 67%;           /* #7c6fec パープル〜ブルー */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 13% 13%;         /* #1c2028 セカンダリ */
+    --secondary-foreground: 210 20% 85%;
+    --muted: 220 13% 13%;
+    --muted-foreground: 215 15% 55%;  /* #7a8494 サブテキスト */
+    --accent: 252 87% 67%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 16%;            /* #212730 ボーダー */
+    --input: 220 13% 14%;
+    --ring: 252 87% 67%;
+    --radius: 0.75rem;
+
+    /* Genspark アクセントカラー（カスタム変数） */
+    --gsk-purple: 252 87% 67%;        /* #7c6fec */
+    --gsk-blue: 217 91% 60%;          /* #4a90e2 */
+    --gsk-cyan: 191 85% 55%;          /* #22d3ee */
+    --gsk-emerald: 160 84% 39%;       /* #10b981 */
+  }
+
+  /* ライトモードは使わない方針だが念のため維持 */
+  .light {
+    --background: 0 0% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --primary: 252 87% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 93%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 220 14% 93%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 252 87% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 88%;
+    --input: 214 32% 88%;
+    --ring: 252 87% 60%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground;
+    /* Genspark Claw と同じフォントスタック */
+    font-family: var(--font-inter), var(--font-noto-sans-jp),
+      "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+      "Noto Sans CJK JP", "Yu Gothic", "Meiryo",
+      -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* === Genspark Claw グローバルスタイル === */
+@layer utilities {
+  /* グラデーションテキスト — Genspark 紫→青→緑 */
+  .gsk-gradient-text {
+    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 50%, #34d399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* カードホバーエフェクト */
+  .gsk-card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .gsk-card:hover {
+    border-color: hsl(var(--primary) / 0.5);
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.1);
+  }
+}

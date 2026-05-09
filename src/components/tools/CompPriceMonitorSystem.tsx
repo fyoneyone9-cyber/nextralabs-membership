@@ -11,7 +11,7 @@ const MasterEngine = () => {
   useEffect(() => { setIsMounted(true); }, []);
   if (!isMounted) return null;
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 bg-[#050507] border-4 border-emerald-500/50 rounded-[4rem]">
+    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 bg-[#050507] rounded-[4rem]">
       <div className="text-center space-y-2">
         <Badge className="bg-emerald-600">HOTEL DX ENGINE</Badge>
         <h1 className="text-4xl md:text-6xl font-bold text-white uppercase ">競合AI価格監視</h1>

@@ -38,7 +38,7 @@ const InboxLpContent = () => {
               <li className="flex items-center gap-4"><Clock className="text-red-500 shrink-0" /> 定型文のコピペ作業に疲弊している</li>
             </ul>
           </div>
-          <div className="bg-black/50 border-4 border-emerald-500/20 rounded-[3rem] p-10 shadow-inner text-center">
+          <div className="bg-black/50 rounded-[3rem] p-10 shadow-inner text-center">
              <p className="text-blue-400 text-lg font-bold leading-loose">
                その時間、AIに任せてください。<br/>
                あなたは「送信ボタン」を押すだけです。

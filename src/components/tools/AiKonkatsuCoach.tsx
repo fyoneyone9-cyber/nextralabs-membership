@@ -25,7 +25,7 @@ export default function AiKonkatsuCoach() {
   const currentWeapon = WEAPONS.find(w => w.id === activeWeapon);
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-100 bg-[#050507] border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.2)] rounded-[3rem] md:rounded-[4rem] my-4">
+    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-100 bg-[#050507] rounded-[3rem] md:rounded-[4rem] my-4">
       <div className="text-center space-y-3">
         <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 font-bold px-4 py-0.5 text-[10px] uppercase tracking-tight mb-2">Marriage Strategic MASTER</Badge>
         <h1 className="text-4xl md:text-8xl font-bold text-white uppercase tracking-tighter">AI 婚活コーチ</h1>

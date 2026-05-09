@@ -36,7 +36,7 @@ const StayseeFinderLP = () => {
               <li className="flex items-center gap-4"><AlertTriangle className="text-red-500 shrink-0" /> チェックイン待ちによるゲストの満足度低下</li>
             </ul>
           </div>
-          <div className="bg-emerald-500/5 border-4 border-emerald-500/20 rounded-[3rem] p-12 shadow-inner">
+          <div className="bg-emerald-500/5 rounded-[3rem] p-12 shadow-inner">
             <p className="text-emerald-400 text-xl font-bold text-center leading-loose">
               その「隠れた人件費」、<br />
               Nextra AI が完全自動化します。

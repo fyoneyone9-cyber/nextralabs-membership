@@ -38,7 +38,7 @@ const ContactSyncLpContent = () => {
               <li className="flex items-center gap-4"><AlertTriangle className="text-red-500 shrink-0" /> 連絡先が整理されておらず、営業チャンスを逃している</li>
             </ul>
           </div>
-          <div className="bg-black/50 border-4 border-emerald-500/20 rounded-[3rem] p-10 shadow-inner text-center">
+          <div className="bg-black/50 rounded-[3rem] p-10 shadow-inner text-center">
              <p className="text-blue-400 text-lg font-bold leading-loose">
                AIがあなたの「専属秘書」になります。<br/>
                カメラを向けるだけで、一瞬で名簿化。

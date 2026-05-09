@@ -35,7 +35,7 @@ export default function DmsLoginPage() {
   return (
     <div className="min-h-screen bg-[#050507] flex items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#10b98110,transparent_70%)]" />
-      <Card className="w-full max-w-md bg-[#13141f] border-4 border-emerald-500/50 p-8 md:p-12 rounded-[3rem] shadow-[0_0_80px_rgba(16,185,129,0.2)] relative z-10 overflow-hidden">
+      <Card className="w-full max-w-md bg-[#13141f] p-8 md:p-12 rounded-[3rem] shadow-[0_0_80px_rgba(16,185,129,0.2)] relative z-10 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500" />
         <div className="space-y-10 text-center">
           <div className="flex flex-col items-center gap-4">

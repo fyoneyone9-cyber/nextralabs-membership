@@ -83,7 +83,7 @@ const MasterEngine = () => {
   if (!isClient) return null
 
   return (
-    <div className="max-w-4xl mx-auto p-4 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left border-4 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
+    <div className="max-w-4xl mx-auto p-4 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left rounded-[2rem] md:rounded-[4rem] my-2 md:my-4">
 
       {/* ヘッダー */}
       <div className="text-center space-y-2">

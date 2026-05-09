@@ -1,0 +1,300 @@
+'use client'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
+import {
+  ShieldAlert, ShieldCheck, Zap, AlertTriangle, Info, Camera, Trash2, ExternalLink, CheckCircle2
+} from 'lucide-react'
+
+const DANGER_KEYWORDS = [
+  '即日現金', '身分証不要', 'テレグラム', 'Telegram', 'シグナル', 'Signal',
+  '運び屋', '受け子', '出し子', '高額報酬', 'ホワイト案件', '裏バイト',
+  '未経験歓迎', 'ノルマなし', 'amezen', 'amazen', '楽天カード',
+  '重要なお知らせ', '本人確認', '異常なアクティビティ', 'ログイン制限',
+  '差し押さえ', 'アカウント停止',
+]
+
+export default function ScamDefender() {
+  const [inputText, setInputText]   = useState('')
+  const [senderInfo, setSenderInfo] = useState('')
+  const [subjectInfo, setSubjectInfo] = useState('')
+  const [riskScore, setRiskScore]   = useState(0)
+  const [detectedWords, setDetectedWords] = useState<string[]>([])
+  const [image, setImage]           = useState<string | null>(null)
+  const [copied, setCopied]         = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const analyze = useCallback((text: string, sender: string, subject: string) => {
+    const full = `${text} ${sender} ${subject}`.toLowerCase()
+    const found = DANGER_KEYWORDS.filter(w => full.includes(w.toLowerCase()))
+    setDetectedWords(found)
+    let score = 0
+    if (found.length > 0) score = 40 + found.length * 15
+    if (sender.toLowerCase().includes('amezen') || sender.toLowerCase().includes('amazen')) score += 30
+    if (subject.includes('停止') || subject.includes('制限') || subject.includes('重要')) score += 20
+    setRiskScore(Math.min(100, score))
+  }, [])
+
+  useEffect(() => { analyze(inputText, senderInfo, subjectInfo) }, [inputText, senderInfo, subjectInfo, analyze])
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = ev => setImage(ev.target?.result as string)
+    reader.readAsDataURL(file)
+  }
+
+  const PROMPT = `あなたはプロのサイバー犯罪捜査官です。以下の【証拠データ】を解析し、詐欺の可能性を判定してください。
+【送信者/ドメイン】: ${senderInfo}
+【件名】: ${subjectInfo}
+【本文】: ${inputText}
+
+1. 【詐欺スコア】: 0-100で判定
+2. 【手口の解説】: どのような詐欺か（闇バイト、フィッシング等）
+3. 【対策アドバイス】: 今すぐすべきこと`
+
+  const handleAnalyze = () => {
+    navigator.clipboard.writeText(PROMPT)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+    window.open('https://gemini.google.com', '_blank')
+  }
+
+  const clearAll = () => { setInputText(''); setSenderInfo(''); setSubjectInfo(''); setImage(null) }
+
+  const riskColor   = riskScore > 60 ? '#ef4444' : riskScore > 30 ? '#f59e0b' : '#10b981'
+  const riskLabel   = riskScore > 80 ? '⚠️ 危険度：高' : riskScore > 40 ? '注意：疑わしい' : '安全：問題なし'
+  const hasInput    = inputText || senderInfo || subjectInfo || image
+
+  const inputCls = `w-full rounded-lg px-4 py-2.5 text-sm text-slate-200 placeholder-slate-600 outline-none transition-colors resize-none`
+  const inputStyle = { background: '#13141f', border: '1px solid #334155' }
+  const focusBorder = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => (e.target.style.borderColor = '#10b981')
+  const blurBorder  = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => (e.target.style.borderColor = '#334155')
+
+  return (
+    <div
+      className="min-h-screen pb-24"
+      style={{ background: '#050507', fontFamily: "'Inter', 'Noto Sans JP', sans-serif" }}
+    >
+      {/* Hero */}
+      <div className="max-w-4xl mx-auto px-6 pt-16 pb-10 space-y-4">
+        <div
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-medium"
+          style={{ borderColor: 'rgba(16,185,129,0.3)', color: '#34d399', background: 'rgba(16,185,129,0.08)' }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          Scam Defender
+        </div>
+        <h1 className="text-3xl md:text-4xl font-semibold text-slate-100 tracking-tight leading-[1.2]">
+          怪しいメッセージを<span style={{ color: '#10b981' }}>AIで即鑑定</span>
+        </h1>
+        <p className="text-slate-400 text-sm leading-relaxed max-w-xl">
+          送信者・件名・本文を入力するだけ。AIがリアルタイムで詐欺リスクを算出し、手口と対策をアドバイスします。
+        </p>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-6">
+        <div className="grid lg:grid-cols-[280px_1fr] gap-5">
+
+          {/* 左：リスクメーター */}
+          <div className="space-y-4">
+            {/* スコアカード */}
+            <div
+              className="rounded-xl p-6 space-y-4"
+              style={{
+                background: '#0d1117',
+                border: `2px solid ${riskScore > 60 ? 'rgba(239,68,68,0.4)' : riskScore > 30 ? 'rgba(245,158,11,0.4)' : '#1e293b'}`,
+                boxShadow: riskScore > 60 ? '0 0 20px rgba(239,68,68,0.1)' : 'none',
+                transition: 'all 0.4s ease',
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-medium text-slate-500">リスクスコア</p>
+                <span
+                  className="w-2 h-2 rounded-full"
+                  style={{ background: hasInput ? riskColor : '#334155' }}
+                />
+              </div>
+              <div className="text-center py-3">
+                <p
+                  className="text-6xl font-bold tabular-nums transition-all duration-500"
+                  style={{ color: riskColor }}
+                >
+                  {riskScore}%
+                </p>
+                <p className="text-xs font-medium mt-2" style={{ color: riskColor }}>
+                  {hasInput ? riskLabel : '入力待ち'}
+                </p>
+              </div>
+              {/* プログレスバー */}
+              <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#1e293b' }}>
+                <div
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{ width: `${riskScore}%`, background: riskColor }}
+                />
+              </div>
+            </div>
+
+            {/* 検出キーワード */}
+            <div
+              className="rounded-xl p-5 space-y-3"
+              style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+            >
+              <p className="text-xs font-medium text-slate-500">検出されたキーワード</p>
+              {detectedWords.length > 0 ? (
+                <div className="flex flex-wrap gap-1.5">
+                  {detectedWords.map(w => (
+                    <span
+                      key={w}
+                      className="text-xs px-2 py-1 rounded-md font-medium"
+                      style={{ background: 'rgba(239,68,68,0.1)', color: '#fca5a5', border: '1px solid rgba(239,68,68,0.25)' }}
+                    >
+                      {w}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-slate-600">検出なし</p>
+              )}
+            </div>
+
+            {/* 使い方 */}
+            <div
+              className="rounded-xl p-5 flex gap-3"
+              style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+            >
+              <Info size={14} style={{ color: '#10b981' }} className="shrink-0 mt-0.5" />
+              <p className="text-xs text-slate-500 leading-relaxed">
+                怪しいテキストやスクリーンショットを入力してください。AIが犯罪手口と照合し、危険度をリアルタイム算出します。
+              </p>
+            </div>
+          </div>
+
+          {/* 右：入力フォーム */}
+          <div
+            className="rounded-xl p-6 space-y-4"
+            style={{ background: '#0d1117', border: '2px solid #10b981', boxShadow: '0 0 20px rgba(16,185,129,0.08)' }}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm font-semibold text-slate-200">
+                <ShieldAlert size={15} style={{ color: '#10b981' }} />
+                証拠を入力
+              </div>
+              <button
+                onClick={clearAll}
+                className="flex items-center gap-1 text-xs text-slate-600 hover:text-red-400 transition-colors"
+              >
+                <Trash2 size={12} />
+                クリア
+              </button>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              {/* テキスト入力 */}
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-medium text-slate-500">送信者 / ドメイン</label>
+                  <input
+                    type="text"
+                    value={senderInfo}
+                    onChange={e => setSenderInfo(e.target.value)}
+                    placeholder="info@unknown-scam.com / @fake_user..."
+                    className={inputCls}
+                    style={inputStyle}
+                    onFocus={focusBorder}
+                    onBlur={blurBorder}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-medium text-slate-500">件名</label>
+                  <input
+                    type="text"
+                    value={subjectInfo}
+                    onChange={e => setSubjectInfo(e.target.value)}
+                    placeholder="重要：アカウントが停止されました..."
+                    className={inputCls}
+                    style={inputStyle}
+                    onFocus={focusBorder}
+                    onBlur={blurBorder}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-medium text-slate-500">本文・募集文</label>
+                  <textarea
+                    value={inputText}
+                    onChange={e => setInputText(e.target.value)}
+                    placeholder="本文、SNS募集文などを貼り付け..."
+                    rows={8}
+                    className={inputCls}
+                    style={inputStyle}
+                    onFocus={focusBorder}
+                    onBlur={blurBorder}
+                  />
+                </div>
+              </div>
+
+              {/* 画像アップロード */}
+              <div className="space-y-1">
+                <label className="text-[10px] font-medium text-slate-500">スクリーンショット（任意）</label>
+                {!image ? (
+                  <div
+                    className="rounded-lg flex flex-col items-center justify-center gap-3 cursor-pointer transition-colors"
+                    style={{ height: '240px', border: '2px dashed #334155', background: '#13141f' }}
+                    onClick={() => fileInputRef.current?.click()}
+                    onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.5)')}
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = '#334155')}
+                  >
+                    <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
+                    <Camera size={28} className="text-slate-600" />
+                    <p className="text-xs text-slate-600">クリックしてアップロード</p>
+                  </div>
+                ) : (
+                  <div className="relative rounded-lg overflow-hidden" style={{ height: '240px', background: '#000' }}>
+                    <img src={image} alt="証拠" className="object-contain w-full h-full" />
+                    <button
+                      onClick={() => setImage(null)}
+                      className="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center text-xs transition-colors"
+                      style={{ background: 'rgba(0,0,0,0.6)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)' }}
+                    >
+                      ✕
+                    </button>
+                    <span
+                      className="absolute bottom-2 left-2 text-xs px-2 py-0.5 rounded-full font-medium"
+                      style={{ background: 'rgba(16,185,129,0.2)', color: '#34d399', border: '1px solid rgba(16,185,129,0.3)' }}
+                    >
+                      画像読込済
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* 鑑定ボタン */}
+            <button
+              onClick={handleAnalyze}
+              disabled={!hasInput}
+              className="w-full h-12 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all"
+              style={
+                !hasInput
+                  ? { background: '#1e293b', color: '#475569', cursor: 'not-allowed' }
+                  : copied
+                  ? { background: '#059669', color: '#fff' }
+                  : { background: '#10b981', color: '#fff' }
+              }
+            >
+              {copied
+                ? <><CheckCircle2 size={15} className="mr-1" />プロンプトをコピーしました — Geminiが開きます</>
+                : <><Zap size={15} className="mr-1" />AI徹底鑑定を開始 <ExternalLink size={13} /></>}
+            </button>
+            <p className="text-[10px] text-slate-600 text-center">
+              プロンプトをコピーしてGeminiへ貼り付けると詳細な鑑定結果が得られます
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="text-center mt-16 opacity-20">
+        <p className="text-xs text-slate-600 tracking-widest">Nextra Cyber Defense · NextraLabs 2026</p>
+      </div>
+    </div>
+  )
+}

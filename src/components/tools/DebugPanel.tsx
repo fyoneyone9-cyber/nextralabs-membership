@@ -121,7 +121,7 @@ export function DebugPanel({ data }: { data?: any }) {
       </button>
       
       {isOpen && (
-        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-md bg-[#050507]/98 backdrop-blur-3xl border-2 border-emerald-500/30 p-8 rounded-[3rem] shadow-[0_0_100px_rgba(16,185,129,0.2)] space-y-6 animate-in zoom-in-95 duration-300">
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-md bg-[#050507]/98 backdrop-blur-3xl border-2 border-emerald-500/30 p-8 rounded-[3rem] space-y-6 animate-in zoom-in-95 duration-300">
           {/* 終了ボタン (大きく、右上に配置) */}
           <button 
             onClick={() => setIsOpen(false)} 

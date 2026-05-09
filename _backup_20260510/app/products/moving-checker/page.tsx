@@ -1,0 +1,317 @@
+﻿import { Metadata } from 'next'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+
+export const metadata: Metadata = {
+  title: 'AI引っ越し安心チェッカー',
+  description: '物件の治安・騒音・トラブルリスクを30項目でスコア化。引っ越しコスト計算まで。無料。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/moving-checker' },
+  openGraph: { title: 'AI引っ越し安心チェッカー | NextraLabs', description: '物件の治安・騒音・トラブルリスクを30項目でスコア化。引っ越しコスト計算まで。無料。', url: 'https://membership-site-nextralabos.vercel.app/products/moving-checker', type: 'website' },
+}
+
+import { ToolLaunchButton } from '@/components/ToolLaunchButton'
+import {
+  ArrowLeft,
+  Code2,
+  HelpCircle,
+  ChevronRight,
+  Shield,
+  Clock,
+  Home,
+  MapPin,
+  Volume2,
+  ClipboardList,
+  Scale,
+  Phone,
+  Users,
+  Building,
+  Search,
+} from 'lucide-react'
+
+const features = [
+  {
+    icon: MapPin,
+    title: 'エリア安全度スコア',
+    description:
+      '市区町村の公開犯罪統計（警察庁オープンデータ準拠）をもとに、地域の治安傾向を5段階で表示。犯罪種別ごとの発生率も確認できる。',
+    color: 'text-blue-500',
+    bg: 'bg-blue-500/10',
+  },
+  {
+    icon: Volume2,
+    title: '騒音リスクチェッカー',
+    description:
+      '物件の構造（RC/鉄骨/木造）・階数・築年数・幹線道路距離・飲食店密度から騒音リスクを推定。内見時に確認すべきポイント20項目付き。',
+    color: 'text-amber-500',
+    bg: 'bg-amber-500/10',
+  },
+  {
+    icon: ClipboardList,
+    title: '物件トラブル予防チェック',
+    description:
+      '契約前に確認すべき30項目。管理会社の対応速度、共用部の清掃状態、ゴミ捨て場、掲示板の注意書き、駐輪場の整頓度…プロの目線を再現。',
+    color: 'text-green-500',
+    bg: 'bg-green-500/10',
+  },
+  {
+    icon: Scale,
+    title: 'トラブル対処テンプレート',
+    description:
+      '騒音・ゴミ出し・駐車場・ペット・タバコなど典型トラブルごとに段階的な対処法（①記録→②管理会社→③内容証明→④調停）をテンプレ化。',
+    color: 'text-purple-500',
+    bg: 'bg-purple-500/10',
+  },
+  {
+    icon: Home,
+    title: '引っ越しコスト計算機',
+    description:
+      '引っ越し費用の見積もり（初期費用・引越し業者・家具家電・ライフライン手続き）を一括計算。見落としがちな隠れコストもリストアップ。',
+    color: 'text-cyan-500',
+    bg: 'bg-cyan-500/10',
+  },
+  {
+    icon: Phone,
+    title: '相談窓口ガイド',
+    description:
+      '各自治体の無料法律相談、法テラス、警察相談(#9110)、国民生活センター(188)をワンタップで確認。トラブル種別ごとに適切な相談先を案内。',
+    color: 'text-rose-500',
+    bg: 'bg-rose-500/10',
+  },
+]
+
+const techStack = [
+  { category: 'フロントエンド', value: 'Next.js + React + TypeScript' },
+  { category: 'チェックロジック', value: 'ルールベース判定 + スコアリング' },
+  { category: 'データ参照', value: '警察庁犯罪統計(公開データ)準拠' },
+  { category: 'コスト計算', value: '国土交通省ガイドライン準拠' },
+  { category: 'UI', value: 'Tailwind CSS + shadcn/ui' },
+  { category: 'セキュリティ', value: 'サーバー送信なし・完全クライアント側処理' },
+]
+
+const setupSteps = [
+  { step: '1', title: 'ツールを起動', desc: '購入後、ダッシュボードからワンクリックで起動', time: '1秒' },
+  { step: '2', title: '物件情報を入力', desc: '構造・階数・エリアなどを入力', time: '3分' },
+  { step: '3', title: 'チェック結果を確認', desc: 'スコアとチェックリストで物件を総合評価', time: '即時' },
+]
+
+const targets = [
+  {
+    icon: Users,
+    title: '引っ越しを検討中の方',
+    description: '内見だけでは分からないリスクを事前にチェック。「住んでから後悔」を防ぐ。',
+  },
+  {
+    icon: Building,
+    title: '一人暮らしを始める方',
+    description: '初めての部屋選びで失敗しないために。30項目のチェックリストで安心の物件選び。',
+  },
+  {
+    icon: Search,
+    title: '近隣トラブルに悩んでいる方',
+    description: 'トラブル対処テンプレートで適切な対応を。段階的なエスカレーション方法を知っておこう。',
+  },
+]
+
+const faqs = [
+  { q: '実際の犯罪データを使っていますか？', a: '警察庁が公開している犯罪統計データの傾向をもとにスコアリングしています。リアルタイムのデータではなく、一般的な都市部・住宅街・郊外の傾向を参考にしています。' },
+  { q: '特定の住所を入力する必要がありますか？', a: 'いいえ。物件の構造や周辺環境の特徴を選択式で入力するだけです。個人情報や具体的な住所は不要です。' },
+  { q: 'トラブル対処テンプレートは法的に有効ですか？', a: '一般的な対処手順をまとめたものです。法的な書面（内容証明など）は、実際に送付する前に弁護士や法テラスに相談されることをおすすめします。' },
+  { q: '管理会社への相談文面も作れますか？', a: 'はい。トラブルの種類を選ぶと、管理会社への連絡テンプレート（メール文面）が生成されます。日時・状況を具体的に記録することがポイントです。' },
+  { q: 'データはどこに保存されますか？', a: 'すべてブラウザのlocalStorageに保存されます。サーバーには一切送信されません。' },
+]
+
+export default function MovingCheckerPage() {
+  return (
+    <div>
+      {/* Hero */}
+      <section className="relative overflow-hidden py-16 md:py-24">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-green-500/5" />
+        <div className="container mx-auto px-4 relative">
+          <Link href="/products" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-8 transition-colors">
+            <ArrowLeft className="h-4 w-4 mr-1" />ツール一覧に戻る
+          </Link>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <Badge className="mb-4 bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20">🏠 新商品</Badge>
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">AI引っ越し安心チェッカー</h1>
+              <p className="text-xl text-muted-foreground mb-2">エリア安全度 × 騒音リスク × トラブル予防</p>
+              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+                住んでから後悔しないために。<span className="text-foreground font-medium">物件の「見えないリスク」を事前にスコア化。</span>
+                <br />騒音・治安・トラブル対処まで、引っ越しの不安をまるごとケア。
+              </p>
+              <div className="flex flex-wrap gap-3 mb-8">
+                <Badge variant="outline" className="text-sm py-1">📍 エリア安全度</Badge>
+                <Badge variant="outline" className="text-sm py-1">🔊 騒音リスク</Badge>
+                <Badge variant="outline" className="text-sm py-1">📋 30項目チェック</Badge>
+                <Badge variant="outline" className="text-sm py-1">🔒 完全ローカル処理</Badge>
+              </div>
+              <div className="flex flex-wrap gap-4">
+                <Link href="/products/moving-checker/app">
+                  <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8">🆓 無料で体験する</Button>
+                </Link>
+              </div>
+              <div className="flex items-center gap-6 mt-6 text-sm text-muted-foreground">
+                <span className="flex items-center gap-1"><Shield className="h-4 w-4" />住所入力不要</span>
+                <span className="flex items-center gap-1"><Clock className="h-4 w-4" />即日利用可能</span>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="bg-gradient-to-br from-blue-500/20 to-green-500/20 rounded-2xl p-8 border border-blue-500/10">
+                <div className="bg-background/95 backdrop-blur rounded-xl p-6 shadow-2xl">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-3 h-3 rounded-full bg-red-500" />
+                    <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                    <div className="w-3 h-3 rounded-full bg-green-500" />
+                    <span className="text-xs text-muted-foreground ml-2">AI引っ越し安心チェッカー</span>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="bg-blue-500/10 rounded-lg p-3">
+                      <div className="text-xs text-blue-400 mb-1">📍 エリア安全度</div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl font-bold text-blue-400">★★★★☆</span>
+                        <span className="text-xs text-muted-foreground">安全度: 良好</span>
+                      </div>
+                      <div className="mt-2 flex gap-1">
+                        {[85, 90, 70, 95].map((v, i) => (
+                          <div key={i} className="flex-1">
+                            <div className="bg-gray-700/50 rounded-full h-1.5"><div className="bg-blue-400 h-1.5 rounded-full" style={{ width: `${v}%` }} /></div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="bg-amber-500/10 rounded-lg p-3">
+                      <div className="text-xs text-amber-400 mb-1">🔊 騒音リスク</div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">RC造 / 5階 / 築8年</span>
+                        <span className="text-lg font-bold text-green-400">低リスク</span>
+                      </div>
+                    </div>
+                    <div className="bg-green-500/10 rounded-lg p-3">
+                      <div className="text-xs text-green-400 mb-1">✅ チェックリスト進捗</div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">確認済み 24/30項目</span>
+                        <span className="text-lg font-bold text-green-400">80%</span>
+                      </div>
+                      <div className="mt-2 w-full bg-gray-700/50 rounded-full h-2">
+                        <div className="bg-green-500 h-2 rounded-full" style={{ width: '80%' }} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="py-16 border-t">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-4">6つの機能で住まいを守る</h2>
+          <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">「住んでから分かる問題」を、住む前に見つける。プロの不動産チェックをAIで再現。</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {features.map((f, i) => (
+              <Card key={i} className="hover:shadow-lg transition-shadow">
+                <CardContent className="pt-6">
+                  <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl ${f.bg} mb-4`}><f.icon className={`h-6 w-6 ${f.color}`} /></div>
+                  <h3 className="font-semibold text-lg mb-2">{f.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{f.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Setup */}
+      <section className="py-16 border-t">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">3ステップで安心チェック</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            {setupSteps.map((s, i) => (
+              <div key={i} className="text-center">
+                <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto mb-4"><span className="text-2xl font-bold text-blue-500">{s.step}</span></div>
+                <h3 className="font-semibold text-lg mb-2">{s.title}</h3>
+                <p className="text-sm text-muted-foreground">{s.desc}</p>
+                <Badge variant="outline" className="mt-3">{s.time}</Badge>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Target */}
+      <section className="py-16 border-t">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">こんな方におすすめ</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {targets.map((t, i) => (
+              <Card key={i} className="hover:shadow-lg transition-shadow">
+                <CardContent className="pt-6 text-center">
+                  <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto mb-4"><t.icon className="h-8 w-8 text-blue-500" /></div>
+                  <h3 className="font-semibold text-lg mb-2">{t.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{t.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Tech */}
+      <section className="py-16 border-t bg-muted/30">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-4"><Code2 className="inline h-8 w-8 mr-2" />技術スタック</h2>
+          <div className="max-w-2xl mx-auto">
+            <Card><CardContent className="pt-6"><div className="space-y-3">{techStack.map((t, i) => (<div key={i} className="flex items-center justify-between py-2 border-b last:border-0"><span className="text-sm font-medium">{t.category}</span><span className="text-sm text-muted-foreground">{t.value}</span></div>))}</div></CardContent></Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section className="py-16 border-t">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-4">料金</h2>
+          <div className="max-w-md mx-auto">
+            <Card className="border-green-500/30">
+              <CardContent className="pt-8 pb-8">
+                <Badge className="mb-4 bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20">無料体験</Badge>
+                <div className="text-5xl font-bold mb-2">¥0</div>
+                <p className="text-muted-foreground mb-6">登録不要で今すぐ体験できます</p>
+                <Link href="/products/moving-checker/app">
+                  <Button size="lg" className="w-full bg-green-600 hover:bg-green-700 text-white">🆓 無料で体験する</Button>
+                </Link>
+                <p className="text-xs text-muted-foreground mt-4">他の有料ツールも使うなら → 全ツール使い放題プラン（¥980/月）</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-16 border-t bg-muted/30">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-4"><HelpCircle className="inline h-8 w-8 mr-2" />よくある質問</h2>
+          <div className="max-w-3xl mx-auto space-y-4 mt-8">
+            {faqs.map((f, i) => (<Card key={i}><CardContent className="pt-6"><h3 className="font-semibold mb-2 flex items-start gap-2"><ChevronRight className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />{f.q}</h3><p className="text-sm text-muted-foreground pl-7">{f.a}</p></CardContent></Card>))}
+          </div>
+        </div>
+      </section>
+
+      {/* Amazon アソシエイト */}
+      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+        <p className="text-sm text-muted-foreground mb-3">🛒 引っ越しグッズをAmazonでチェック</p>
+        <a
+          href="https://www.amazon.co.jp/s?k=%E5%BC%95%E3%81%A3%E8%B6%8A%E3%81%97&tag=nextralabs-22"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+        >
+          Amazonで見る →
+        </a>
+      </div>
+    </div>
+  )
+}

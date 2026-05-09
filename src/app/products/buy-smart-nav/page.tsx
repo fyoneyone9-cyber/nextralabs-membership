@@ -38,7 +38,7 @@ const BuySmartLpContent = () => {
               <li className="flex items-center gap-4"><AlertTriangle className="text-red-500 shrink-0" /> フリマサイトの相場が分からず、高い買い物をした</li>
             </ul>
           </div>
-          <div className="bg-black/50 border-4 border-emerald-500/20 rounded-[3rem] p-10 shadow-inner text-center">
+          <div className="bg-black/50 rounded-[3rem] p-10 shadow-inner text-center">
              <p className="text-emerald-400 text-lg font-bold leading-loose text-left">
                AIが複数の市場を同時にパトロール。<br/>
                あなたが今選ぶべき「本物の賢い選択」を提示します。
