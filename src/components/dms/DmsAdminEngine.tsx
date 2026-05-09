@@ -45,16 +45,16 @@ export default function DmsAdminEngine() {
       <aside className={"fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col transform transition-transform md:relative md:translate-x-0 " + (isMobileMenuOpen ? "translate-x-0" : "-translate-x-full")}>
         <div className="p-6 border-b border-slate-100 bg-white">
           <div className="flex flex-col gap-1">
-             <div className="text-[20px] font-black text-slate-800 tracking-tighter">5/7(木)14:33</div>
+             <div className="text-[20px] font-bold text-slate-800 tracking-tighter">5/7(木)14:33</div>
              <div className="flex gap-2">
                 <div className="flex items-center gap-1 bg-slate-100 px-2 py-0.5 rounded text-[10px] font-bold text-slate-400"><Users size={12}/> 29</div>
-                <div className="flex items-center gap-1 bg-indigo-600 px-2 py-0.5 rounded text-[10px] font-bold text-white"><PenLine size={12}/> 2</div>
+                <div className="flex items-center gap-1 bg-emerald-600 px-2 py-0.5 rounded text-[10px] font-bold text-white"><PenLine size={12}/> 2</div>
              </div>
           </div>
         </div>
         <nav className="flex-1 py-4 bg-white">
           {ADMIN_MENU.map(item => (
-            <button key={item.id} onClick={() => { setActiveTab(item.id); setIsMobileMenuOpen(false); }} className={"w-full flex items-center gap-3 px-6 py-4 transition-all " + (activeTab === item.id ? "bg-slate-100 text-slate-900 border-r-4 border-slate-800 font-black" : "text-slate-500 hover:bg-slate-50 font-medium")}>
+            <button key={item.id} onClick={() => { setActiveTab(item.id); setIsMobileMenuOpen(false); }} className={"w-full flex items-center gap-3 px-6 py-4 transition-all " + (activeTab === item.id ? "bg-slate-100 text-slate-900 border-r-4 border-slate-800 font-bold" : "text-slate-500 hover:bg-slate-50 font-medium")}>
               <item.icon size={18} />
               <span className="text-sm">{item.label}</span>
             </button>
@@ -62,14 +62,14 @@ export default function DmsAdminEngine() {
         </nav>
         <div className="p-6 border-t border-slate-100 bg-slate-50/50">
           <p className="text-[10px] font-bold text-slate-400 uppercase">Master Admin</p>
-          <p className="text-xs font-black text-slate-700 truncate mb-4">f.yoneyone9@gmail.com</p>
+          <p className="text-xs font-bold text-slate-700 truncate mb-4">f.yoneyone9@gmail.com</p>
           <button onClick={handleLogout} className="flex items-center gap-2 text-slate-500 hover:text-red-500 text-xs font-bold transition-colors"><LogOut size={14} /> ログアウト</button>
           <p className="text-[8px] text-slate-300 font-bold mt-4">v3.50.1</p>
         </div>
       </aside>
 
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <header className="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 z-40">
+        <header className="h-12 bg-white border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 z-40">
            <div className="flex items-center gap-4">
              <button className="md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}><Menu size={20} /></button>
              <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
@@ -80,7 +80,7 @@ export default function DmsAdminEngine() {
                </div>
              </h2>
            </div>
-           <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold h-9 rounded-full px-6"><Plus size={16} className="mr-1" />新規登録</Button>
+           <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-9 rounded-full px-6"><Plus size={16} className="mr-1" />新規登録</Button>
         </header>
 
         <div className="p-8 overflow-y-auto">
@@ -96,8 +96,8 @@ export default function DmsAdminEngine() {
                       <td className="p-4 font-bold text-slate-700">{c.name}</td>
                       <td className="p-4 text-slate-600">{c.email}</td>
                       <td className="p-4 text-slate-400">{c.tel}</td>
-                      <td className="p-4"><Button size="xs" variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200 rounded text-[9px]"><Users size={12} className="mr-1"/> ユーザー</Button></td>
-                      <td className="p-4"><Button size="xs" variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200 rounded text-[9px]"><FileText size={12} className="mr-1"/> ログ</Button></td>
+                      <td className="p-4"><Button size="xs" variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 rounded text-[9px]"><Users size={12} className="mr-1"/> ユーザー</Button></td>
+                      <td className="p-4"><Button size="xs" variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 rounded text-[9px]"><FileText size={12} className="mr-1"/> ログ</Button></td>
                       <td className="p-4 text-center"><button className="p-1 hover:bg-slate-100 rounded text-slate-400"><PenLine size={14} /></button></td>
                     </tr>
                   ))}
