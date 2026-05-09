@@ -172,7 +172,7 @@ export default function ScamDefender() {
           {/* 右：入力フォーム */}
           <div
             className="rounded-xl p-6 space-y-4"
-            style={{ background: '#0d1117', border: '2px solid #10b981', boxShadow: '0 0 20px rgba(16,185,129,0.08)' }}
+            style={{ background: '#0d1117', border: '1px solid #334155' }}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-sm font-semibold text-slate-200">
