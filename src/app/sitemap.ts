@@ -21,7 +21,7 @@ const products = [
   'youtube-producer',
   'location-finder',
   'buzz-writer',
-  'ai-report-generator',
+
   'ai-select-shop',
   'resignation-assistant',
 ]

@@ -9,12 +9,12 @@ import { ArrowRight, Sparkles, Zap } from 'lucide-react'
 const RELATION_MAP: Record<string, string[]> = {
   'money-guard': ['shopping-stopper', 'buy-smart-nav'],
   'ai-recipe': ['smart-gardening', 'shopping-stopper'],
-  'ai-exam-generator': ['exam-scheduler', 'ai-report-generator'],
+  'ai-exam-generator': ['exam-scheduler', 'kindle-factory'],
   'kdp-guide': ['kindle-factory', 'prompt-master', 'buzz-writer'],
   'ai-sidejob': ['buzz-writer', 'prompt-master', 'inbox-organizer'],
   'staysee-ai-finder': ['location-finder'],
   // デフォルトはランダムまたは人気ツール
-  'default': ['money-guard', 'ai-exam-generator', 'ai-report-generator']
+  'default': ['money-guard', 'ai-exam-generator', 'kindle-factory']
 }
 
 // 簡易的なツール名引き辞書（実際は共通定数から引くのが理想）
@@ -26,7 +26,7 @@ const TOOL_NAMES: Record<string, string> = {
   'smart-gardening': 'AIスマートガーデニング',
   'ai-exam-generator': 'AI問題生成 & 苦手分析',
   'exam-scheduler': '資格試験 AIスケジューラー',
-  'ai-report-generator': 'AIレポートジェネレーター',
+
   'kdp-guide': 'Kindle出版AI完全ナビ',
   'kindle-factory': 'Kindle AI ファクトリー',
   'prompt-master': 'AI画像プロンプトマスター',

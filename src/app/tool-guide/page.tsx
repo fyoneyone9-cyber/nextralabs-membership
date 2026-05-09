@@ -27,7 +27,7 @@ const TOOL_DIRECTORY = [
   { id: 'moving-checker', name: 'AI引越し安心チェッカー', desc: '住所だけで周辺治安・物件リスクをAIが精密スコアリング。', icon: Home, color: 'text-emerald-400' },
   { id: 'buy-smart-nav', name: '中古・新品AI比較ナビ', desc: '市場価格をAIが比較。今、新品と中古どちらを買うべきか判定。', icon: Scale, color: 'text-emerald-400' },
   { id: 'kdp-guide', name: 'Kindle出版AI完全ナビ', desc: '執筆から申請まで。最短距離で作家デビューをAIがサポート。', icon: BookOpen, color: 'text-emerald-400' },
-  { id: 'ai-report-generator', name: 'AIレポートジェネレーター', desc: '箇条書きからプロ級のビジネス文書を瞬時に自動構成。', icon: FileText, color: 'text-slate-400' },
+
   { id: 'shopping-stopper', name: 'AI買い物依存ストッパー', desc: '散財の鎖を断ち切る。AIが購買行動を健全な方向へガイド。', icon: ShieldAlert, color: 'text-rose-400' },
   { id: 'scam-defender', name: 'AI詐欺ディフェンダー', desc: '詐欺・悪意のある連絡を即座に判定し、デジタル資産を保護。', icon: ShieldCheck, color: 'text-red-400' },
   { id: 'money-guard', name: 'AI家計防衛シミュレーター', desc: '衝動買いの心理を抑止。支出の致命傷を未然に防ぐ。', icon: Wallet, color: 'text-emerald-400' },

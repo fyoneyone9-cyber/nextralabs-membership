@@ -67,7 +67,7 @@ const TOOL_CATEGORIES = [
       { id: 'office-politics-graph', name: '社内政治 AI相関図',      icon: Network,      color: 'text-emerald-400',  plan: 'free' },
       { id: 'moving-checker',        name: 'AI引越し安心チェッカー', icon: Home,         color: 'text-teal-400',    plan: 'free' },
       { id: 'ai-recipe',            name: 'AIレシピ献立コーチ',       icon: Utensils,     color: 'text-emerald-400',  plan: 'free' },
-      { id: 'ai-report-generator',  name: 'AIレポートジェネレーター', icon: FileText,     color: 'text-blue-300',    plan: 'free' },
+
       { id: 'evidence-manager',      name: 'エビデンス・マネージャー', icon: Archive,      color: 'text-emerald-400', plan: 'free' },
     ]
   },
