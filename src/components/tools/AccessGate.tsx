@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
@@ -105,7 +105,7 @@ export function AccessGate({ children, productId }: { children: React.ReactNode,
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4 bg-slate-950 rounded-[3rem]">
         <Loader2 className="w-12 h-12 text-emerald-500 animate-spin" />
-        <p className="text-slate-500 font-bold animate-pulse uppercase tracking-widest text-[10px]">Verifying Intelligence Access...</p>
+        <p className="text-slate-500 font-bold animate-pulse uppercase tracking-tight text-[10px]">Verifying Intelligence Access...</p>
       </div>
     )
   }
@@ -117,12 +117,12 @@ export function AccessGate({ children, productId }: { children: React.ReactNode,
           <ShieldAlert className="w-12 h-12 text-red-600 animate-pulse" />
         </div>
         <div className="space-y-2">
-          <h2 className="text-4xl font-black text-white uppercase italic tracking-tighter">Access Forbidden</h2>
-          <p className="text-slate-500 font-bold italic">上位プランへのアップグレードが必要です。</p>
+          <h2 className="text-4xl font-bold text-white uppercase tracking-tighter">Access Forbidden</h2>
+          <p className="text-slate-500 font-bold ">上位プランへのアップグレードが必要です。</p>
         </div>
         <div className="flex flex-col w-full max-w-xs gap-3">
-          <Button onClick={() => router.push('/pricing')} className="bg-red-600 hover:bg-red-500 text-white font-black h-16 rounded-2xl text-xl shadow-xl transition-all active:scale-95 uppercase italic">Unlock Now</Button>
-          <Button onClick={() => router.push('/products')} variant="ghost" className="text-slate-600 hover:text-white font-black uppercase text-[10px] tracking-widest underline">Return to Catalogue</Button>
+          <Button onClick={() => router.push('/pricing')} className="bg-red-600 hover:bg-red-500 text-white font-bold h-12 rounded-2xl text-xl shadow-xl transition-all active:scale-95 uppercase ">Unlock Now</Button>
+          <Button onClick={() => router.push('/products')} variant="ghost" className="text-slate-600 hover:text-white font-bold uppercase text-[10px] tracking-tight underline">Return to Catalogue</Button>
         </div>
       </div>
     )
