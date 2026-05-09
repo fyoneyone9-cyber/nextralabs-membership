@@ -222,34 +222,37 @@ export default function KdpGuideApp() {
                       <p className="text-xs md:text-sm text-slate-400 font-bold leading-relaxed">{item.detail}</p>
                     </div>
                     
-                    <div className="grid gap-2 border-t border-white/5 pt-4">
+                      <div className="grid gap-2 border-t border-white/5 pt-4">
                       {item.subItems.map((sub) => (
                         <div 
                           key={sub.id}
                           onClick={() => toggleCheck(sub.id)}
-                          className={`group cursor-pointer p-3 rounded-lg border transition-all flex items-center gap-3 ${
+                          className={`group cursor-pointer p-4 rounded-xl border-2 transition-all flex flex-col gap-3 ${
                             checkedItems[sub.id] 
-                              ? 'bg-orange-500/5 border-orange-500/30' 
-                              : 'bg-black/40 border-white/5 hover:border-white/10'
+                              ? 'bg-orange-500/10 border-orange-500/40' 
+                              : 'bg-black/40 border-white/10 hover:border-white/20'
                           }`}
                         >
-                          <div className={`shrink-0 h-5 w-5 rounded border flex items-center justify-center transition-all ${
-                            checkedItems[sub.id] ? 'bg-orange-500 border-orange-500' : 'border-white/20'
-                          }`}>
-                            {checkedItems[sub.id] && <CheckCircle2 size={12} className="text-slate-950 stroke-[3px]" />}
+                          <div className="flex items-center gap-3">
+                            <div className={`shrink-0 h-6 w-6 rounded border-2 flex items-center justify-center transition-all ${
+                              checkedItems[sub.id] ? 'bg-orange-500 border-orange-500' : 'border-white/30'
+                            }`}>
+                              {checkedItems[sub.id] && <CheckCircle2 size={16} className="text-slate-950 stroke-[3px]" />}
+                            </div>
+                            <p className={`font-black text-sm md:text-base transition-all flex-1 ${checkedItems[sub.id] ? 'text-white' : 'text-slate-400'}`}>
+                              {sub.text}
+                            </p>
                           </div>
-                          <p className={`font-black text-[12px] md:text-sm transition-all flex-1 ${checkedItems[sub.id] ? 'text-white' : 'text-slate-400'}`}>
-                            {sub.text}
-                          </p>
+                          
                           {sub.url && (
                             <a 
                               href={sub.url} 
                               target="_blank" 
                               rel="noopener noreferrer" 
                               onClick={(e) => e.stopPropagation()}
-                              className="p-1.5 hover:bg-white/10 rounded-md text-emerald-400 transition-colors"
+                              className="w-full h-12 bg-emerald-600/20 hover:bg-emerald-600 border border-emerald-500/50 rounded-xl flex items-center justify-center gap-2 text-emerald-400 hover:text-slate-950 font-black italic transition-all shadow-lg"
                             >
-                              <ExternalLink size={14} />
+                              この手順の公式ページを開く <ExternalLink size={18} />
                             </a>
                           )}
                         </div>
