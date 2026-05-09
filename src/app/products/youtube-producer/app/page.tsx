@@ -302,18 +302,51 @@ function YoutubeProducerApp() {
                   動画の内容を入力してください。巨大なファイルや長時間の動画は、以下の外部AIに動画を添付して実行し、その結果（文字起こし文章）をここに貼り付けてください。
                 </p>
                 <div className="grid grid-cols-3 gap-3">
-                  <a href="https://claud.ai" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all group">
-                    <p className="text-xs font-black text-slate-500 group-hover:text-emerald-400 mb-1">Anthropic</p>
-                    <p className="text-lg font-black text-white italic">Claude</p>
-                  </a>
-                  <a href="https://chatgpt.com" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all group">
-                    <p className="text-xs font-black text-slate-500 group-hover:text-emerald-400 mb-1">OpenAI</p>
-                    <p className="text-lg font-black text-white italic">ChatGPT</p>
-                  </a>
-                  <a href="https://gemini.google.com" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all group">
-                    <p className="text-xs font-black text-slate-500 group-hover:text-emerald-400 mb-1">Google</p>
-                    <p className="text-lg font-black text-white italic">Gemini</p>
-                  </a>
+                  <div className="flex flex-col gap-2">
+                    <a href="https://claud.ai" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all group h-full">
+                      <p className="text-xs font-black text-slate-500 group-hover:text-emerald-400 mb-1">Anthropic</p>
+                      <p className="text-lg font-black text-white italic">Claude</p>
+                    </a>
+                    <Button 
+                      onClick={() => {
+                        navigator.clipboard.writeText("この動画を日本語で文字起こししてください。");
+                        alert("コピーしました！Claudeに貼り付けてください。");
+                      }}
+                      className="h-8 text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 font-black italic uppercase"
+                    >
+                      指示文をコピー 📋
+                    </Button>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <a href="https://chatgpt.com" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all group h-full">
+                      <p className="text-xs font-black text-slate-500 group-hover:text-emerald-400 mb-1">OpenAI</p>
+                      <p className="text-lg font-black text-white italic">ChatGPT</p>
+                    </a>
+                    <Button 
+                      onClick={() => {
+                        navigator.clipboard.writeText("この動画を日本語で文字起こししてください。");
+                        alert("コピーしました！ChatGPTに貼り付けてください。");
+                      }}
+                      className="h-8 text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 font-black italic uppercase"
+                    >
+                      指示文をコピー 📋
+                    </Button>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <a href="https://gemini.google.com" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all group h-full">
+                      <p className="text-xs font-black text-slate-500 group-hover:text-emerald-400 mb-1">Google</p>
+                      <p className="text-lg font-black text-white italic">Gemini</p>
+                    </a>
+                    <Button 
+                      onClick={() => {
+                        navigator.clipboard.writeText("この動画を日本語で文字起こししてください。");
+                        alert("コピーしました！Geminiに貼り付けてください。");
+                      }}
+                      className="h-8 text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 font-black italic uppercase"
+                    >
+                      指示文をコピー 📋
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
