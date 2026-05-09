@@ -778,35 +778,62 @@ const AISelectShopApp = () => {
     const S = STYLES.find(s => s.id === styleId) || STYLES[0]
     const TC = TSHIRT_COLORS.find(c => c.id === tshirtColorId) || TSHIRT_COLORS[1]
 
+    // ① 全クリア
     ctx.clearRect(0, 0, w, h)
 
-    // 背景
+    // ② 背景（チェッカーボード風 = 透明感を示す）
     ctx.fillStyle = '#1e293b'
     ctx.fillRect(0, 0, w, h)
 
-    // Tシャツ本体
+    // ③ Tシャツ影（別レイヤーで描く）
     ctx.save()
+    ctx.shadowColor = 'rgba(0,0,0,0.6)'
+    ctx.shadowBlur = 24
+    ctx.shadowOffsetY = 8
     drawTshirtShape(ctx, w, h)
-    ctx.shadowColor = 'rgba(0,0,0,0.5)'
-    ctx.shadowBlur = 20
     ctx.fillStyle = TC.hex
     ctx.fill()
-    // ハイライト（折り目感）
-    const shineGrad = ctx.createLinearGradient(w * 0.2, 0, w * 0.8, 0)
-    shineGrad.addColorStop(0, 'rgba(255,255,255,0.12)')
-    shineGrad.addColorStop(0.4, 'rgba(255,255,255,0.05)')
-    shineGrad.addColorStop(1, 'rgba(0,0,0,0.05)')
+    ctx.restore()
+
+    // ④ Tシャツ本体（影なし）
+    ctx.save()
+    drawTshirtShape(ctx, w, h)
+    ctx.fillStyle = TC.hex
+    ctx.fill()
+    // 光沢グラデ
+    const shineGrad = ctx.createLinearGradient(w * 0.15, h * 0.05, w * 0.85, h * 0.95)
+    shineGrad.addColorStop(0,   'rgba(255,255,255,0.18)')
+    shineGrad.addColorStop(0.3, 'rgba(255,255,255,0.06)')
+    shineGrad.addColorStop(1,   'rgba(0,0,0,0.10)')
     ctx.fillStyle = shineGrad
     ctx.fill()
     ctx.restore()
 
-    // デザイン（クリップ内）
+    // ⑤ デザイン印刷エリア（クリップして胸部中央に配置）
     ctx.save()
-    drawTshirtShape(ctx, w, h)
+    // 印刷エリアをクリップ（胸の中央 = Tシャツ内側の矩形）
+    const px = w * 0.27, py = h * 0.32
+    const pw = w * 0.46, ph = h * 0.38
+    ctx.beginPath()
+    ctx.roundRect(px, py, pw, ph, 8)
     ctx.clip()
-    const cx = w / 2, cy = h * 0.52, r = h * 0.22
-    const shortText = keyword.length > 7 ? keyword.slice(0, 7) + '…' : keyword
+
+    const cx = px + pw / 2
+    const cy = py + ph / 2
+    const r  = Math.min(pw, ph) * 0.46   // 印刷エリアの46%を半径に
+
+    const shortText = keyword.length > 6 ? keyword.slice(0, 6) + '…' : keyword
     S.draw(ctx, cx, cy, r, shortText)
+    ctx.restore()
+
+    // ⑥ 印刷エリアの枠線（薄く）
+    ctx.save()
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)'
+    ctx.lineWidth = 1
+    ctx.setLineDash([4, 4])
+    ctx.beginPath()
+    ctx.roundRect(px, py, pw, ph, 8)
+    ctx.stroke()
     ctx.restore()
 
     setMockupDataUrl(canvas.toDataURL('image/png'))
@@ -1094,24 +1121,67 @@ const AISelectShopApp = () => {
 
         {/* ─── Step 3: 出品完了 ─── */}
         {step === 3 && (
-          <div className="space-y-8">
-            <div className="bg-[#1e293b] border border-emerald-500/30 rounded-2xl p-8 flex flex-col items-center gap-4 text-center">
-              <CheckCircle2 className="h-16 w-16 text-emerald-500" />
-              <h2 className="text-2xl font-semibold text-white">出品完了</h2>
-              <p className="text-slate-400 text-sm">
-                商品がShopifyストアへ同期されました。<br />
-                選択サイズ: <span className="text-emerald-400 font-medium">{selectedSizes.join(' / ')}</span>
-              </p>
-              {publishResult?.url && publishResult.url !== '#' && (
+          <div className="space-y-6">
+            {/* 出品完了カード */}
+            <div className="bg-[#1e293b] border border-emerald-500/30 rounded-2xl p-6 space-y-5">
+              <div className="flex items-center gap-3">
+                <CheckCircle2 className="h-8 w-8 text-emerald-500 shrink-0" />
+                <div>
+                  <h2 className="text-lg font-semibold text-white">Shopifyへの出品が完了しました</h2>
+                  <p className="text-xs text-slate-400 mt-0.5">受注後はPrintfulが自動で生産・発送します</p>
+                </div>
+              </div>
+
+              {/* 出品詳細 */}
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="bg-[#0f172a] border border-slate-700/50 rounded-xl p-4 space-y-1">
+                  <p className="text-xs text-slate-500 uppercase tracking-wide">商品名</p>
+                  <p className="text-white font-medium">{keyword}</p>
+                </div>
+                <div className="bg-[#0f172a] border border-slate-700/50 rounded-xl p-4 space-y-1">
+                  <p className="text-xs text-slate-500 uppercase tracking-wide">デザイン</p>
+                  <p className="text-white font-medium">{STYLES.find(s => s.id === styleId)?.name || styleId}</p>
+                </div>
+                <div className="bg-[#0f172a] border border-slate-700/50 rounded-xl p-4 space-y-1">
+                  <p className="text-xs text-slate-500 uppercase tracking-wide">出品先</p>
+                  <p className="text-emerald-400 font-medium font-mono text-xs">z5ju1n-vs.myshopify.com</p>
+                </div>
+                <div className="bg-[#0f172a] border border-slate-700/50 rounded-xl p-4 space-y-1">
+                  <p className="text-xs text-slate-500 uppercase tracking-wide">販売サイズ</p>
+                  <p className="text-white font-medium text-xs">{selectedSizes.join(' / ')}</p>
+                </div>
+              </div>
+
+              {/* Shopifyリンク */}
+              <div className="flex gap-3">
+                {publishResult?.url && publishResult.url !== '#' ? (
+                  <a
+                    href={publishResult.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 h-11 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-sm rounded-xl transition-colors"
+                  >
+                    <ExternalLink size={16} /> Shopify管理画面で確認
+                  </a>
+                ) : (
+                  <a
+                    href="https://z5ju1n-vs.myshopify.com/admin/products"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 h-11 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-sm rounded-xl transition-colors"
+                  >
+                    <ExternalLink size={16} /> Shopify管理画面を開く
+                  </a>
+                )}
                 <a
-                  href={publishResult.url}
+                  href="https://z5ju1n-vs.myshopify.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 h-11 px-6 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-sm rounded-xl transition-colors"
+                  className="flex items-center justify-center gap-2 h-11 px-4 bg-[#0f172a] border border-slate-700/50 hover:border-emerald-500/50 text-slate-300 text-sm rounded-xl transition-colors"
                 >
-                  <ExternalLink size={16} /> Shopifyで確認する
+                  <ExternalLink size={14} /> ストア
                 </a>
-              )}
+              </div>
             </div>
 
             {/* 販売ロードマップ */}
