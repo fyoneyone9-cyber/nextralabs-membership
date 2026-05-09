@@ -1,39 +1,117 @@
-﻿'use client'
+'use client'
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import {
   ShieldAlert, ShieldCheck, Zap, AlertTriangle, Info, Camera, Trash2, ExternalLink, CheckCircle2
 } from 'lucide-react'
 
 const DANGER_KEYWORDS = [
+  // 闇バイト系
   '即日現金', '身分証不要', 'テレグラム', 'Telegram', 'シグナル', 'Signal',
   '運び屋', '受け子', '出し子', '高額報酬', 'ホワイト案件', '裏バイト',
-  '未経験歓迎', 'ノルマなし', 'amezen', 'amazen', '楽天カード',
+  '未経験歓迎', 'ノルマなし', '日払い', '即払い', '秘密厳守', '闇バイト',
+  '簡単作業', '在宅ワーク 高収入', '1日5万', '1日3万', '10万円',
+  // フィッシング系
+  'amezen', 'amazen', 'アマゾン', 'アマゾンプライム', 'Amaz0n',
+  '楽天カード', '楽天市場 確認', 'らくてん',
+  '三菱UFJ', 'みずほ', '三井住友 確認', 'ゆうちょ 確認',
   '重要なお知らせ', '本人確認', '異常なアクティビティ', 'ログイン制限',
-  '差し押さえ', 'アカウント停止',
+  '差し押さえ', 'アカウント停止', 'アカウントが停止', 'カード停止',
+  '不正アクセス', 'セキュリティ確認', '24時間以内', '48時間以内',
+  '緊急のお知らせ', '口座凍結', 'クリックしてください', 'こちらから確認',
+  // SMS詐欺
+  '荷物をお届け', '配達できません', '再配達', 'ヤマト運輸 確認',
+  '郵便局 確認', '佐川急便 確認',
+  // マルチ・投資詐欺
+  '副業 簡単', '投資 確実', '億り人', 'FX 必勝', '仮想通貨 無料',
+  '元本保証', '高利回り', 'ネットワークビジネス', 'MLM',
+]
+
+// URLパターン（怪しいドメイン特徴）
+const SUSPICIOUS_URL_PATTERNS = [
+  /https?:\/\/[a-z0-9-]+\.(xyz|top|click|online|site|fun|cn|ru)\//i,
+  /amazon\.[a-z]{3,}/i,
+  /rakuten-[a-z]/i,
+  /[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/,  // IPアドレス直打ち
+  /bit\.ly|tinyurl|t\.co\/[a-z0-9]+$/i,
+  /[a-z]+-amazon-[a-z]+\./i,
+  /amaz[o0]n\.[a-z]{2,4}\//i,
 ]
 
 export default function ScamDefender() {
   const [inputText, setInputText]   = useState('')
   const [senderInfo, setSenderInfo] = useState('')
   const [subjectInfo, setSubjectInfo] = useState('')
-  const [riskScore, setRiskScore]   = useState(0)
+  const [riskScore, setRiskScore]   = useState<number | null>(null)
   const [detectedWords, setDetectedWords] = useState<string[]>([])
+  const [detectedPatterns, setDetectedPatterns] = useState<string[]>([])
   const [image, setImage]           = useState<string | null>(null)
   const [copied, setCopied]         = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const analyze = useCallback((text: string, sender: string, subject: string) => {
-    const full = `${text} ${sender} ${subject}`.toLowerCase()
-    const found = DANGER_KEYWORDS.filter(w => full.includes(w.toLowerCase()))
+    const full = `${text} ${sender} ${subject}`
+    const fullLower = full.toLowerCase()
+
+    // キーワード検出
+    const found = DANGER_KEYWORDS.filter(w => fullLower.includes(w.toLowerCase()))
     setDetectedWords(found)
+
+    // URLパターン検出
+    const foundPatterns: string[] = []
+    SUSPICIOUS_URL_PATTERNS.forEach((pattern, i) => {
+      if (pattern.test(full)) {
+        const labels = [
+          '不審なドメイン(.xyz/.top等)',
+          'Amazon偽装URL',
+          '楽天偽装URL',
+          'IPアドレス直打ちURL',
+          '短縮URL使用',
+          '不審な短縮URL',
+          'Amazon偽装ドメイン',
+          'Amazon偽装スペル',
+        ]
+        foundPatterns.push(labels[i] || '不審なURL')
+      }
+    })
+    setDetectedPatterns(foundPatterns)
+
+    // スコア計算
     let score = 0
-    if (found.length > 0) score = 40 + found.length * 15
-    if (sender.toLowerCase().includes('amezen') || sender.toLowerCase().includes('amazen')) score += 30
-    if (subject.includes('停止') || subject.includes('制限') || subject.includes('重要')) score += 20
+
+    // キーワードによるスコア
+    if (found.length >= 1) score += 35
+    if (found.length >= 2) score += found.length * 12
+    if (found.length >= 4) score += 10
+
+    // URLパターンによるスコア
+    score += foundPatterns.length * 25
+
+    // 送信者ドメインの特別チェック
+    const senderL = sender.toLowerCase()
+    if (/amazon/i.test(senderL) && !/amazon\.co\.jp$|amazon\.com$/i.test(senderL)) score += 40
+    if (/rakuten/i.test(senderL) && !/rakuten\.co\.jp$/i.test(senderL)) score += 35
+    if (/[0-9]{5,}/.test(sender)) score += 20  // 数字だらけのアドレス
+    if (/@[^@]+\.[^.]{4,}$/.test(sender)) score += 15  // 変なTLD
+
+    // 件名の特別チェック
+    const subjectL = subject.toLowerCase()
+    if (subjectL.includes('停止') || subjectL.includes('制限')) score += 20
+    if (subjectL.includes('重要') || subjectL.includes('緊急')) score += 15
+    if (subjectL.includes('確認') && (subjectL.includes('アカウント') || subjectL.includes('カード'))) score += 20
+    if (subjectL.includes('口座') || subjectL.includes('凍結')) score += 25
+
     setRiskScore(Math.min(100, score))
   }, [])
 
-  useEffect(() => { analyze(inputText, senderInfo, subjectInfo) }, [inputText, senderInfo, subjectInfo, analyze])
+  useEffect(() => {
+    if (inputText || senderInfo || subjectInfo) {
+      analyze(inputText, senderInfo, subjectInfo)
+    } else {
+      setRiskScore(null)
+      setDetectedWords([])
+      setDetectedPatterns([])
+    }
+  }, [inputText, senderInfo, subjectInfo, analyze])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -59,11 +137,30 @@ export default function ScamDefender() {
     window.open('https://gemini.google.com', '_blank')
   }
 
-  const clearAll = () => { setInputText(''); setSenderInfo(''); setSubjectInfo(''); setImage(null) }
+  const clearAll = () => {
+    setInputText('')
+    setSenderInfo('')
+    setSubjectInfo('')
+    setImage(null)
+    setRiskScore(null)
+    setDetectedWords([])
+    setDetectedPatterns([])
+  }
 
-  const riskColor   = riskScore > 60 ? '#ef4444' : riskScore > 30 ? '#f59e0b' : '#10b981'
-  const riskLabel   = riskScore > 80 ? '⚠️ 危険度：高' : riskScore > 40 ? '注意：疑わしい' : '安全：問題なし'
+  const score = riskScore ?? 0
   const hasInput    = inputText || senderInfo || subjectInfo || image
+  const hasAnalyzed = riskScore !== null
+
+  const riskColor = score > 60 ? '#ef4444' : score > 30 ? '#f59e0b' : '#10b981'
+  const riskLabel = !hasAnalyzed
+    ? '入力待ち'
+    : score > 80
+    ? '⚠️ 危険度：高'
+    : score > 40
+    ? '⚠️ 注意：疑わしい'
+    : '✅ 安全：問題なし'
+
+  const displayColor = hasAnalyzed ? riskColor : '#475569'
 
   const inputCls = `w-full rounded-lg px-4 py-2.5 text-sm text-slate-200 placeholder-slate-600 outline-none transition-colors resize-none`
   const inputStyle = { background: '#13141f', border: '1px solid #334155' }
@@ -102,36 +199,41 @@ export default function ScamDefender() {
               className="rounded-xl p-6 space-y-4"
               style={{
                 background: '#0d1117',
-                border: `2px solid ${riskScore > 60 ? 'rgba(239,68,68,0.4)' : riskScore > 30 ? 'rgba(245,158,11,0.4)' : '#1e293b'}`,
-                boxShadow: riskScore > 60 ? '0 0 20px rgba(239,68,68,0.1)' : 'none',
+                border: `2px solid ${hasAnalyzed && score > 60 ? 'rgba(239,68,68,0.4)' : hasAnalyzed && score > 30 ? 'rgba(245,158,11,0.4)' : '#1e293b'}`,
+                boxShadow: hasAnalyzed && score > 60 ? '0 0 20px rgba(239,68,68,0.1)' : 'none',
                 transition: 'all 0.4s ease',
               }}
             >
               <div className="flex items-center justify-between">
                 <p className="text-xs font-medium text-slate-500">リスクスコア</p>
                 <span
-                  className="w-2 h-2 rounded-full"
-                  style={{ background: hasInput ? riskColor : '#334155' }}
+                  className="w-2 h-2 rounded-full transition-all duration-500"
+                  style={{ background: hasAnalyzed ? displayColor : '#334155' }}
                 />
               </div>
               <div className="text-center py-3">
                 <p
                   className="text-6xl font-bold tabular-nums transition-all duration-500"
-                  style={{ color: riskColor }}
+                  style={{ color: displayColor }}
                 >
-                  {riskScore}%
+                  {hasAnalyzed ? `${score}%` : '--'}
                 </p>
-                <p className="text-xs font-medium mt-2" style={{ color: riskColor }}>
-                  {hasInput ? riskLabel : '入力待ち'}
+                <p className="text-xs font-medium mt-2 transition-all duration-300" style={{ color: displayColor }}>
+                  {riskLabel}
                 </p>
               </div>
               {/* プログレスバー */}
-              <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#1e293b' }}>
+              <div className="h-2 rounded-full overflow-hidden" style={{ background: '#1e293b' }}>
                 <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{ width: `${riskScore}%`, background: riskColor }}
+                  className="h-full rounded-full transition-all duration-700 ease-out"
+                  style={{ width: hasAnalyzed ? `${score}%` : '0%', background: displayColor }}
                 />
               </div>
+              {hasAnalyzed && (
+                <p className="text-[10px] text-center text-slate-600">
+                  スキャン完了
+                </p>
+              )}
             </div>
 
             {/* 検出キーワード */}
@@ -139,8 +241,8 @@ export default function ScamDefender() {
               className="rounded-xl p-5 space-y-3"
               style={{ background: '#0d1117', border: '1px solid #1e293b' }}
             >
-              <p className="text-xs font-medium text-slate-500">検出されたキーワード</p>
-              {detectedWords.length > 0 ? (
+              <p className="text-xs font-medium text-slate-500">検出された危険シグナル</p>
+              {(detectedWords.length > 0 || detectedPatterns.length > 0) ? (
                 <div className="flex flex-wrap gap-1.5">
                   {detectedWords.map(w => (
                     <span
@@ -151,9 +253,20 @@ export default function ScamDefender() {
                       {w}
                     </span>
                   ))}
+                  {detectedPatterns.map(p => (
+                    <span
+                      key={p}
+                      className="text-xs px-2 py-1 rounded-md font-medium"
+                      style={{ background: 'rgba(245,158,11,0.1)', color: '#fcd34d', border: '1px solid rgba(245,158,11,0.25)' }}
+                    >
+                      🔗 {p}
+                    </span>
+                  ))}
                 </div>
               ) : (
-                <p className="text-xs text-slate-600">検出なし</p>
+                <p className="text-xs text-slate-600">
+                  {hasAnalyzed ? '危険なシグナルは検出されませんでした' : '入力待ち'}
+                </p>
               )}
             </div>
 
