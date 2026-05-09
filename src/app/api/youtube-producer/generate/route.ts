@@ -77,19 +77,67 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(result)
       }
       case 'characters': {
-        const result = await callLLM(`人物抽出: { "characters": [{ "name": "名前", "description": "説明", "role": "役割", "imagePrompt": "プロンプト" }] }`, transcriptSlice)
+        const result = await callLLM(
+          `あなたは文章分析の専門家です。テキストから登場人物を抽出し、各人物のイラスト生成用プロンプトを作成してください。
+
+必ず以下のJSON形式で返してください:
+{
+  "characters": [
+    {
+      "name": "人物名",
+      "description": "説明",
+      "role": "役割",
+      "imagePrompt": "英語のAI画像生成プロンプト。詳細な外見、服装、スタイルを含めてください。"
+    }
+  ]
+}`,
+          transcriptSlice
+        )
         return NextResponse.json(result)
       }
       case 'thumbnail': {
-        const result = await callLLM(`サムネ案3つ: { "thumbnails": [{ "title": "文字", "imagePrompt": "プロンプト" }] }`, `ジャンル: ${genre}\n台本: ${scriptTitle}`)
+        const result = await callLLM(
+          `あなたはYouTubeサムネイルの専門家です。映えるサムネイル構成案を3つ作成してください。
+必ず以下のJSON形式で返してください:
+{
+  "thumbnails": [
+    {
+      "title": "サムネイルに入れる文字",
+      "imagePrompt": "英語のAI画像生成プロンプト。16:9、高画質、YouTubeサムネイルとして映える構図。"
+    }
+  ]
+}`,
+          `ジャンル: ${genre}\n台本概要: ${scriptTitle}`
+        )
         return NextResponse.json(result)
       }
       case 'title': {
-        const result = await callLLM(`SEO設定: { "main": "タイトル", "alternatives": ["案"], "tags": ["タグ"], "description": "概要欄" }`, `ジャンル: ${genre}\n台本: ${scriptText}`)
+        const result = await callLLM(
+          `あなたはYouTube SEOの専門家です。クリック率を最大化するタイトル、タグ、説明文を作成してください。
+必ず以下のJSON形式で返してください:
+{
+  "main": "メインタイトル",
+  "alternatives": ["候補1", "候補2", "候補3"],
+  "tags": ["タグ1", "タグ2", "タグ3", "タグ4", "タグ5"],
+  "description": "YouTube概要欄（200-400文字程度）"
+}`,
+          `ジャンル: ${genre}\n台本内容: ${scriptText}`
+        )
         return NextResponse.json(result)
       }
       case 'bgm': {
-        const result = await callLLM(`BGM提案: { "mood": "ムード", "genre": "ジャンル", "prompt": "プロンプト" }`, transcriptSlice)
+        const result = await callLLM(
+          `あなたはYouTubeの音楽プロデューサーです。
+以下の要件で、Suno AIやUdioでそのまま使える音楽生成プロンプトを作成してください。
+
+必ず以下のJSON形式で返してください:
+{
+  "mood": "雰囲気（例：エネルギッシュ、リラックス等）",
+  "genre": "ジャンル（例：Lo-fi, Rock, J-POP等）",
+  "prompt": "英語のAI音楽生成プロンプト（Suno AI/Udio用。スタイル、楽器、BPM、ムードを含む詳細な指示）"
+}`,
+          `動画ジャンル: ${genre}\n\n文字起こし:\n${transcriptSlice}`
+        )
         return NextResponse.json(result)
       }
       default:
