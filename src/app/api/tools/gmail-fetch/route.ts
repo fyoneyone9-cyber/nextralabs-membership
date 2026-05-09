@@ -1,3 +1,4 @@
+﻿import { checkApiLimit } from '@/lib/api-limit';
 import { NextResponse } from 'next/server';
 
 async function extractBody(payload: any): Promise<string> {
@@ -16,6 +17,15 @@ async function extractBody(payload: any): Promise<string> {
 }
 
 export async function POST(req: Request) {
+  // 🛡️ レート制限（1日10回）
+  const limitCheck = await checkApiLimit('gmail-fetch', 10);
+  if (!limitCheck.allowed) {
+    return NextResponse.json(
+      { error: '本日の利用上限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
+
   try {
     const { accessToken } = await req.json();
     if (!accessToken) return NextResponse.json({ error: 'Access token is required' }, { status: 400 });
