@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React, { useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
@@ -36,16 +36,16 @@ export function ApiMonitorOverlay() {
           <div className="bg-emerald-500/10 px-4 py-2 border-b border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Activity size={12} className="text-emerald-400 animate-pulse" />
-              <span className="text-[9px] font-black text-white uppercase tracking-[0.2em] italic">System Sentinel</span>
+              <span className="text-[9px] font-bold text-white uppercase tracking-[0.2em] ">System Sentinel</span>
             </div>
-            <Badge variant="outline" className="text-[7px] border-emerald-500/30 text-emerald-500 px-1 py-0 h-4 uppercase font-black">Secure</Badge>
+            <Badge variant="outline" className="text-[7px] border-emerald-500/30 text-emerald-500 px-1 py-0 h-4 uppercase font-bold">Secure</Badge>
           </div>
           <CardContent className="p-4 space-y-3">
             {nodes.map(node => (
               <div key={node.id} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className={`w-1 h-1 rounded-full ${node.status === 'connected' ? 'bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,1)]' : 'bg-red-500'}`} />
-                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">{node.name}</span>
+                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-tight">{node.name}</span>
                 </div>
                 <span className="text-[8px] font-mono text-emerald-500/70">{node.latency}</span>
               </div>
@@ -53,7 +53,7 @@ export function ApiMonitorOverlay() {
             <div className="pt-2 mt-2 border-t border-white/5 flex items-center justify-between">
               <div className="flex items-center gap-1">
                 <ShieldCheck size={10} className="text-emerald-500/50" />
-                <span className="text-[7px] font-black text-slate-600 uppercase tracking-[0.1em] italic leading-tight">Neural Link Verified</span>
+                <span className="text-[7px] font-bold text-slate-600 uppercase tracking-[0.1em] leading-tight">Neural Link Verified</span>
               </div>
             </div>
           </CardContent>
