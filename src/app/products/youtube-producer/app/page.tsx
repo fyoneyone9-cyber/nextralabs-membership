@@ -34,6 +34,13 @@ export default function YoutubeProducerAppPage() {
   return <YoutubeProducerAppInner />
 }
 
+// 台本タイプ設定
+const SCRIPT_TYPES = [
+  { id: 'short', label: 'ショート用台本', desc: '1分以内の超高密度構成。最初の3秒で視聴者を釘付けにします。', minutes: 1 },
+  { id: 'standard', label: 'スタンダード台本', desc: '5〜10分の標準的なYouTube構成。離脱を防ぐ黄金比率で作成します。', minutes: 8 },
+  { id: 'long', label: '長文台本', desc: '15〜30分の重厚な解説・ドキュメンタリー構成。深い満足度を提供します。', minutes: 20 },
+]
+
 // ジャンル設定
 const GENRES = [
   { id: 'impact', label: '衝撃・暴露', prompt: '「衝撃」「真実」「暴露」をキーワードに、視聴者の好奇心を極限まで煽るスタイル。強い言葉選びと、謎を小出しにする構造。' },
@@ -63,6 +70,7 @@ function YoutubeProducerApp() {
   // 状態保持
   const [transcript, setTranscript] = useState('')
   const [genre, setGenre] = useState('entertainment') // デフォルトをエンタメに変更
+  const [scriptType, setScriptType] = useState('standard') // デフォルトをスタンダードに
   const [script, setScript] = useState<any>(null)
   const [characters, setCharacters] = useState<any[] | null>(null)
   const [thumbnails, setThumbnails] = useState<any[] | null>(null)
@@ -190,14 +198,16 @@ function YoutubeProducerApp() {
   const generateScript = async () => {
     if (!transcript) return setError('ソーステキストを入力してください')
     const genreData = GENRES.find(g => g.id === genre)
+    const typeData = SCRIPT_TYPES.find(t => t.id === scriptType)
+    
     const result = await callApi('script', { 
       transcript, 
       genre: genreData?.label, 
-      genrePrompt: genreData?.prompt 
+      genrePrompt: `${genreData?.prompt} 長さの指定: ${typeData?.label} (${typeData?.minutes}分程度を目安にしてください)`,
     })
     if (result) {
       const score = Math.floor(75 + Math.random() * 20);
-      setScript({ ...result, viralScore: score })
+      setScript({ ...result, viralScore: score, estimatedMinutes: result.estimatedMinutes || typeData?.minutes })
       setActiveTab('script')
     }
   }
@@ -326,17 +336,45 @@ function YoutubeProducerApp() {
               <h3 className="text-xl font-black text-emerald-400 italic uppercase">ステップ 2: 動画の「勝ちパターン」を選択</h3>
               <p className="text-slate-300 font-bold italic">どのような戦略で台本を構成するか、以下の戦略パレットから選んでください。</p>
             </div>
+
+            <div className="space-y-6">
+              <label className="text-sm font-black text-emerald-500 uppercase tracking-widest italic ml-2">1. 台本タイプ（長さ）を選択</label>
+              <div className="grid md:grid-cols-3 gap-4">
+                {SCRIPT_TYPES.map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => setScriptType(t.id)}
+                    className={`p-6 rounded-2xl font-black italic text-left border-2 transition-all relative overflow-hidden group/btn ${
+                      scriptType === t.id 
+                        ? 'bg-emerald-500 border-emerald-400 text-slate-950 shadow-[0_0_20px_rgba(16,185,129,0.3)] scale-[1.02]' 
+                        : 'bg-white/5 border-white/5 text-slate-400 hover:border-white/20'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-lg uppercase tracking-tighter">{t.label}</span>
+                      {scriptType === t.id && <CheckCircle2 size={20} />}
+                    </div>
+                    <p className={`text-[10px] font-bold leading-tight ${scriptType === t.id ? 'text-slate-900' : 'text-slate-500 group-hover/btn:text-slate-300'}`}>
+                      {t.desc}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {GENRES.map((g) => (
-                <button key={g.id} onClick={() => setGenre(g.id)} className={`p-6 rounded-2xl font-black italic text-left border-2 transition-all relative overflow-hidden group/btn ${genre === g.id ? 'bg-emerald-500 border-emerald-400 text-slate-950 shadow-[0_0_20px_rgba(16,185,129,0.3)] scale-[1.02]' : 'bg-white/5 border-white/5 text-slate-400 hover:border-white/20'}`}>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xl uppercase tracking-tighter">{g.label}</span>
-                    {genre === g.id && <CheckCircle2 size={24} />}
-                  </div>
-                  <p className={`text-xs font-bold leading-relaxed ${genre === g.id ? 'text-slate-900' : 'text-slate-500 group-hover/btn:text-slate-300'}`}>{g.prompt}</p>
-                </button>
-              ))}
+            <div className="space-y-6">
+              <label className="text-sm font-black text-emerald-500 uppercase tracking-widest italic ml-2">2. 戦略パレットを選択</label>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {GENRES.map((g) => (
+                  <button key={g.id} onClick={() => setGenre(g.id)} className={`p-6 rounded-2xl font-black italic text-left border-2 transition-all relative overflow-hidden group/btn ${genre === g.id ? 'bg-emerald-500 border-emerald-400 text-slate-950 shadow-[0_0_20px_rgba(16,185,129,0.3)] scale-[1.02]' : 'bg-white/5 border-white/5 text-slate-400 hover:border-white/20'}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xl uppercase tracking-tighter">{g.label}</span>
+                      {genre === g.id && <CheckCircle2 size={24} />}
+                    </div>
+                    <p className={`text-xs font-bold leading-relaxed ${genre === g.id ? 'text-slate-900' : 'text-slate-500 group-hover/btn:text-slate-300'}`}>{g.prompt}</p>
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="flex justify-center pt-10">
