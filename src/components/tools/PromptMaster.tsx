@@ -1,4 +1,10 @@
-﻿'use client'
+﻿// ============================================================
+// 🔒 LOCKED — PromptMaster
+// 完成済みツール。NextraLabs様の明示的な指示なしに
+// このファイルを編集・削除・移動することを禁止する。
+// Locked: 2026-05-10
+// ============================================================
+'use client'
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'

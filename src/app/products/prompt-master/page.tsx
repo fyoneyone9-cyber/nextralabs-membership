@@ -1,4 +1,10 @@
-﻿import { Metadata } from 'next'
+﻿// ============================================================
+// 🔒 LOCKED — PromptMaster product page
+// 完成済みツール。NextraLabs様の明示的な指示なしに
+// このファイルを編集・削除・移動することを禁止する。
+// Locked: 2026-05-10
+// ============================================================
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight, Wand2, BookOpen, SlidersHorizontal, Sparkles, ClipboardList, GraduationCap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
