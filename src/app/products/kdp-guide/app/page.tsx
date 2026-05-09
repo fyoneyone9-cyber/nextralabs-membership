@@ -163,21 +163,21 @@ export default function KdpGuideApp() {
                 <h2 className="text-2xl font-black italic uppercase tracking-tight">{step.title}</h2>
               </div>
               
-              <div className="grid gap-6">
+              <div className="grid gap-4 md:gap-8">
                 {step.items.map((item) => (
                   <div 
                     key={item.id}
                     onClick={() => toggleCheck(item.id)}
-                    className={`group cursor-pointer p-8 rounded-[2rem] border-2 transition-all flex items-start gap-6 ${
+                    className={`group cursor-pointer p-5 md:p-10 rounded-[2rem] md:rounded-[3rem] border-2 transition-all flex items-start gap-4 md:gap-8 ${
                       checkedItems[item.id] 
-                        ? 'bg-orange-500/10 border-orange-500/50 shadow-[0_0_50px_rgba(249,115,22,0.2)]' 
+                        ? 'bg-orange-500/10 border-orange-500/60 shadow-[0_0_60px_rgba(249,115,22,0.3)]' 
                         : 'bg-white/5 border-white/5 hover:border-white/20'
                     }`}
                   >
-                    <div className={`mt-2 h-8 w-8 rounded-lg border-2 flex items-center justify-center transition-all ${
+                    <div className={`mt-2 h-10 w-10 md:h-14 md:w-14 shrink-0 rounded-xl border-2 md:border-4 flex items-center justify-center transition-all ${
                       checkedItems[item.id] ? 'bg-orange-500 border-orange-500' : 'border-white/30'
                     }`}>
-                      {checkedItems[item.id] && <CheckCircle2 size={20} className="text-slate-950" />}
+                      {checkedItems[item.id] && <CheckCircle2 size={32} className="text-slate-950 stroke-[4px]" />}
                     </div>
                     <div className="flex-1 space-y-4">
                       <p className={`font-black text-2xl md:text-3xl transition-all ${checkedItems[item.id] ? 'text-white' : 'text-slate-400'}`}>
