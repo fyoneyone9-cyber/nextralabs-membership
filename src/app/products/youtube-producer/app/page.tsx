@@ -247,18 +247,18 @@ function YoutubeProducerApp() {
         )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="grid grid-cols-4 h-16 bg-white/5 border border-white/10 rounded-2xl p-1 gap-2">
-            <TabsTrigger value="input" className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-[10px]">
-              <Mic size={14} className="mr-2" /> 1. 入力
+          <TabsList className="grid grid-cols-4 h-20 bg-white/5 border border-white/10 rounded-2xl p-2 gap-2">
+            <TabsTrigger value="input" className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-sm md:text-lg">
+              <Mic size={20} className="mr-2" /> 1. 入力
             </TabsTrigger>
-            <TabsTrigger value="script" disabled={!script} className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-[10px]">
-              <FileText size={14} className="mr-2" /> 2. 台本
+            <TabsTrigger value="script" disabled={!script} className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-sm md:text-lg">
+              <FileText size={20} className="mr-2" /> 2. 台本
             </TabsTrigger>
-            <TabsTrigger value="visual" disabled={!script} className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-[10px]">
-              <ImageIcon size={14} className="mr-2" /> 3. 視覚
+            <TabsTrigger value="visual" disabled={!script} className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-sm md:text-lg">
+              <ImageIcon size={20} className="mr-2" /> 3. 視覚
             </TabsTrigger>
-            <TabsTrigger value="strategy" disabled={!script} className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-[10px]">
-              <Search size={14} className="mr-2" /> 4. 戦略
+            <TabsTrigger value="strategy" disabled={!script} className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-sm md:text-lg">
+              <Search size={20} className="mr-2" /> 4. 戦略
             </TabsTrigger>
           </TabsList>
 
@@ -298,21 +298,21 @@ function YoutubeProducerApp() {
                 </div>
               </div>
               <div className="space-y-4">
-                <p className="text-sm text-slate-300 font-bold leading-relaxed italic">
+                <p className="text-lg text-slate-100 font-black leading-relaxed italic">
                   動画の内容を入力してください。巨大なファイルや長時間の動画は、以下の外部AIに動画を添付して実行し、その結果（文字起こし文章）をここに貼り付けてください。
                 </p>
                 <div className="grid grid-cols-3 gap-3">
-                  <a href="https://claud.ai" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-3 text-center hover:bg-white/10 transition-all group">
-                    <p className="text-[10px] font-black text-slate-500 group-hover:text-emerald-400 mb-1">Anthropic</p>
-                    <p className="text-xs font-black text-white italic">Claude</p>
+                  <a href="https://claud.ai" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all group">
+                    <p className="text-xs font-black text-slate-500 group-hover:text-emerald-400 mb-1">Anthropic</p>
+                    <p className="text-lg font-black text-white italic">Claude</p>
                   </a>
-                  <a href="https://chatgpt.com" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-3 text-center hover:bg-white/10 transition-all group">
-                    <p className="text-[10px] font-black text-slate-500 group-hover:text-emerald-400 mb-1">OpenAI</p>
-                    <p className="text-xs font-black text-white italic">ChatGPT</p>
+                  <a href="https://chatgpt.com" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all group">
+                    <p className="text-xs font-black text-slate-500 group-hover:text-emerald-400 mb-1">OpenAI</p>
+                    <p className="text-lg font-black text-white italic">ChatGPT</p>
                   </a>
-                  <a href="https://gemini.google.com" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-3 text-center hover:bg-white/10 transition-all group">
-                    <p className="text-[10px] font-black text-slate-500 group-hover:text-emerald-400 mb-1">Google</p>
-                    <p className="text-xs font-black text-white italic">Gemini</p>
+                  <a href="https://gemini.google.com" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all group">
+                    <p className="text-xs font-black text-slate-500 group-hover:text-emerald-400 mb-1">Google</p>
+                    <p className="text-lg font-black text-white italic">Gemini</p>
                   </a>
                 </div>
               </div>
@@ -320,17 +320,17 @@ function YoutubeProducerApp() {
 
             <div className="grid md:grid-cols-3 gap-8">
               <div className="md:col-span-2 space-y-4">
-                <label className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic ml-2">ソース内容</label>
+                <label className="text-sm font-black text-emerald-500 uppercase tracking-widest italic ml-2">ソース内容</label>
                 <textarea 
                   value={transcript}
                   onChange={(e) => setTranscript(e.target.value)}
-                  className="w-full h-80 bg-black/60 border-2 border-white/10 rounded-[2rem] p-8 font-bold text-white outline-none focus:border-emerald-500 transition-all text-lg placeholder:text-white/10" 
+                  className="w-full h-80 bg-black/60 border-2 border-white/10 rounded-[2rem] p-8 font-bold text-white outline-none focus:border-emerald-500 transition-all text-xl placeholder:text-white/10" 
                   placeholder="ここに内容を入力、または文字起こしを貼り付け..." 
                 />
               </div>
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <label className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic ml-2">ジャンル選択</label>
+                  <label className="text-sm font-black text-emerald-500 uppercase tracking-widest italic ml-2">ジャンル選択</label>
                   <div className="space-y-2">
                     {GENRES.map((g) => (
                       <button
