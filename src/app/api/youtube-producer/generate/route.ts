@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     await recordYoutubeUsage()
 
     const body = await req.json()
-    const { type, transcript, genre, genrePrompt, customPrompt, scriptTitle, script: scriptText } = body
+    const { type, transcript, genre, genrePrompt, customPrompt, scriptTitle, script: scriptText, imageStyle, withLogo } = body
     const transcriptSlice = (transcript || '').slice(0, 8000)
 
     switch (type) {
@@ -78,7 +78,9 @@ export async function POST(req: NextRequest) {
       }
       case 'characters': {
         const result = await callLLM(
-          `あなたは文章分析の専門家です。テキストから登場人物を抽出し、各人物のイラスト生成用プロンプトを作成してください。
+          `あなたは文章分析の専門家です。テキストから登場人物を抽出し、指定された「画像スタイル」に基づいたイラスト生成用プロンプトを作成してください。
+
+指定画像スタイル: ${genrePrompt} (この指示に従ってプロンプトを構築してください)
 
 必ず以下のJSON形式で返してください:
 {
@@ -87,7 +89,7 @@ export async function POST(req: NextRequest) {
       "name": "人物名",
       "description": "説明",
       "role": "役割",
-      "imagePrompt": "英語のAI画像生成プロンプト。詳細な外見、服装、スタイルを含めてください。"
+      "imagePrompt": "英語のAI画像生成プロンプト。指定されたスタイルを反映し、詳細な外見、服装、背景を含めてください。"
     }
   ]
 }`,
@@ -97,13 +99,16 @@ export async function POST(req: NextRequest) {
       }
       case 'thumbnail': {
         const result = await callLLM(
-          `あなたはYouTubeサムネイルの専門家です。映えるサムネイル構成案を3つ作成してください。
+          `あなたはYouTubeサムネイルの専門家です。指定された「画像スタイル」に基づいた映えるサムネイル構成案を3つ作成してください。
+
+指定画像スタイル: ${genrePrompt}
+
 必ず以下のJSON形式で返してください:
 {
   "thumbnails": [
     {
       "title": "サムネイルに入れる文字",
-      "imagePrompt": "英語のAI画像生成プロンプト。16:9、高画質、YouTubeサムネイルとして映える構図。"
+      "imagePrompt": "英語のAI画像生成プロンプト。16:9、高画質、指定されたスタイルでYouTubeサムネイルとして映える構図。"
     }
   ]
 }`,

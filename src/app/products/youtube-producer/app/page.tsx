@@ -198,9 +198,13 @@ function YoutubeProducerApp() {
   }
 
   const generateExtras = async () => {
-    const charRes = await callApi('characters', { transcript })
+    const genreData = GENRES.find(g => g.id === genre)
+    const styleData = IMAGE_STYLES.find(s => s.id === imageStyle)
+    const genrePrompt = `画像スタイル: ${styleData?.label} (${styleData?.prompt})`;
+
+    const charRes = await callApi('characters', { transcript, genrePrompt })
     if (charRes) setCharacters(charRes.characters)
-    const thumbRes = await callApi('thumbnail', { transcript, genre, scriptTitle: script?.opening })
+    const thumbRes = await callApi('thumbnail', { transcript, genre, scriptTitle: script?.opening, genrePrompt })
     if (thumbRes) setThumbnails(thumbRes.thumbnails)
     const seoRes = await callApi('title', { transcript, script: script?.fullScript, genre })
     if (seoRes) setSeo(seoRes)
