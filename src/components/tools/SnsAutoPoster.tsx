@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
@@ -71,7 +71,7 @@ const MasterEngine = () => {
       {/* ヘッダー */}
       <div className="text-center space-y-2 pt-2">
         <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold px-4 py-1 rounded-full">SNS投稿自動生成</Badge>
-        <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight">
+        <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight">
           AI SNS<span className="text-emerald-400">オートポスター</span>
         </h1>
         <p className="text-slate-400 text-sm">トレンド×戦略でバズる投稿プロンプトを自動生成。ChatGPT/Geminiにコピペするだけ。</p>
@@ -172,7 +172,7 @@ const MasterEngine = () => {
           <button
             onClick={handleCopy}
             disabled={!topic}
-            className={`w-full h-14 rounded-2xl font-black text-base transition-all shadow-lg flex items-center justify-center gap-2 ${
+            className={`w-full h-14 rounded-2xl font-bold text-base transition-all shadow-lg flex items-center justify-center gap-2 ${
               copied
                 ? 'bg-emerald-500 text-slate-950'
                 : topic
