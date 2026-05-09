@@ -1,3 +1,4 @@
+﻿import { checkApiLimit } from '@/lib/api-limit';
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { checkRateLimit } from '@/lib/rateLimit';
@@ -6,6 +7,15 @@ import { NextRequest } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
+  // 🛡️ レート制限（1日10回）
+  const limitCheck = await checkApiLimit('smart-gardening', 10);
+  if (!limitCheck.allowed) {
+    return NextResponse.json(
+      { error: '本日の利用上限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
+
   const rateLimitResult = await checkRateLimit(req, 'smart-gardening');
   if (!rateLimitResult.allowed) return rateLimitResult.response!;
 
