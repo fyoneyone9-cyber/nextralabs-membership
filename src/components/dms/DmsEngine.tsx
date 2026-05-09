@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import DmsBookingEditor from './DmsBookingEditor'
 import DmsPropertyEditor from './DmsPropertyEditor'
+import LockListContent from './LockListEngine'
 import { CloudPmsStorage } from '@/lib/cloud-pms-storage'
 import { useSearchParams } from 'next/navigation'
 
@@ -138,9 +139,6 @@ export default function DmsEngine() {
 
         {/* フッター */}
         <div className="p-4 border-t border-white/5 space-y-3">
-          <div className="flex items-center gap-2 text-[10px] text-emerald-400 font-semibold">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> カメラ: ON
-          </div>
           <div className="text-[10px] font-semibold text-slate-300 leading-tight">
             有限会社黒潮屋
             <span className="block text-slate-500 font-normal text-[8px] mt-0.5">b.h.apple@beach.ocn...</span>
@@ -313,6 +311,9 @@ export default function DmsEngine() {
               </div>
             </>
           )}
+
+          {/* 錠デバイス一覧 */}
+          {activeTab === 'lock-list' && <LockListContent />}
 
           {/* 物件一覧 */}
           {activeTab === 'property' && propView === 'list' && (

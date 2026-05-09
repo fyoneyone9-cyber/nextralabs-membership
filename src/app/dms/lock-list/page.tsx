@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 
-const LockListEngine = dynamic(() => import('@/components/dms/LockListEngine'), { ssr: false })
+// DmsEngine を lock-list タブで開く
+const DmsEngine = dynamic(() => import('@/components/dms/DmsEngine'), { ssr: false })
 
 export default function LockListPage() {
   const [isAuth, setIsAuth] = useState(false)
@@ -14,6 +15,10 @@ export default function LockListPage() {
     if (!session) {
       router.push('/dms/login')
     } else {
+      // URLにタブパラメータを仕込んでDmsEngineに lock-list タブを開かせる
+      if (!window.location.search.includes('tab=')) {
+        router.replace('/dms/lock-list?tab=lock-list')
+      }
       setIsAuth(true)
     }
   }, [router])
@@ -29,7 +34,7 @@ export default function LockListPage() {
 
   return (
     <div className="no-global-layout">
-      <LockListEngine />
+      <DmsEngine />
     </div>
   )
 }
