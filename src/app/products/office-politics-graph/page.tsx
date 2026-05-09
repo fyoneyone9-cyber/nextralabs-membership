@@ -50,7 +50,7 @@ const features = [
 
 export default function OfficePoliticsPage() {
   return (
-    <div className="min-h-screen bg-[#050507] text-slate-100 pb-20 font-sans">
+    <div className="min-h-screen bg-[#050507] text-slate-100 pb-20 font-sans border-[10px] border-[#10b981] shadow-[inset_0_0_50px_rgba(16,185,129,0.3)]">
       {/* Hero */}
       <section className="relative overflow-hidden py-16 md:py-24 border-b border-emerald-500/20">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-blue-500/5" />
