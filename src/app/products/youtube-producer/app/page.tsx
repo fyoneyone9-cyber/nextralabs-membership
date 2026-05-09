@@ -231,7 +231,7 @@ function YoutubeProducerApp() {
         )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="grid grid-cols-4 h-20 bg-white/5 border border-white/10 rounded-2xl p-2 gap-2">
+          <TabsList className="grid grid-cols-5 h-20 bg-white/5 border border-white/10 rounded-2xl p-2 gap-2">
             <TabsTrigger value="input" className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-sm md:text-lg">
               <Mic size={20} className="mr-2" /> 1. 入力
             </TabsTrigger>
@@ -242,7 +242,10 @@ function YoutubeProducerApp() {
               <FileText size={20} className="mr-2" /> 3. 台本
             </TabsTrigger>
             <TabsTrigger value="visual" disabled={!script} className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-sm md:text-lg">
-              <ImageIcon size={20} className="mr-2" /> 4. 視覚/SEO
+              <ImageIcon size={20} className="mr-2" /> 4. 画像
+            </TabsTrigger>
+            <TabsTrigger value="strategy" disabled={!script} className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-sm md:text-lg">
+              <Search size={20} className="mr-2" /> 5. 戦略
             </TabsTrigger>
           </TabsList>
 
@@ -356,6 +359,59 @@ function YoutubeProducerApp() {
           </TabsContent>
 
           <TabsContent value="visual" className="space-y-12 animate-in fade-in slide-in-from-right-4 duration-500">
+            <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-3xl p-8 space-y-4 text-center">
+              <h3 className="text-xl font-black text-emerald-400 italic uppercase">ステップ 4: ビジュアル設計（GPTFELL連携）</h3>
+              <p className="text-slate-300 font-bold italic">登場人物やサムネイルのプロンプトをコピーして、画像生成AI（GPTFELL等）に貼り付けてください。</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-12">
+              <div className="space-y-6">
+                <h3 className="text-xl font-black text-white italic uppercase flex items-center gap-3"><Users className="text-emerald-400" /> 登場人物プロンプト</h3>
+                <div className="space-y-4">
+                  {characters?.map((char, i) => (
+                    <Card key={i} className="bg-white/5 border-white/10 rounded-2xl p-6 space-y-3">
+                      <div className="flex justify-between items-start">
+                        <h4 className="font-black text-emerald-400 italic text-lg">{char.name}</h4>
+                        <Button 
+                          onClick={() => { navigator.clipboard.writeText(char.imagePrompt); alert("プロンプトをコピーしました！"); }}
+                          className="h-8 text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 font-black italic"
+                        >
+                          コピー 📋
+                        </Button>
+                      </div>
+                      <p className="text-[10px] text-emerald-500/80 font-mono break-all leading-relaxed bg-black/40 p-4 rounded-xl border border-white/5">{char.imagePrompt}</p>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-6">
+                <h3 className="text-xl font-black text-white italic uppercase flex items-center gap-3"><ImageIcon className="text-emerald-400" /> サムネイル構成案</h3>
+                <div className="space-y-4">
+                  {thumbnails?.map((thumb, i) => (
+                    <Card key={i} className="bg-white/5 border-white/10 rounded-2xl p-6 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <Badge className="bg-red-600 text-white border-0 font-black italic">案 {i+1}: {thumb.title}</Badge>
+                        <Button 
+                          onClick={() => { navigator.clipboard.writeText(thumb.imagePrompt); alert("プロンプトをコピーしました！"); }}
+                          className="h-8 text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 font-black italic"
+                        >
+                          コピー 📋
+                        </Button>
+                      </div>
+                      <p className="text-[10px] text-slate-400 font-mono italic leading-relaxed bg-black/40 p-4 rounded-xl border border-white/5">{thumb.imagePrompt}</p>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-center pt-6">
+              <Button onClick={() => setActiveTab('strategy')} className="h-20 px-16 bg-white text-slate-950 font-black text-xl rounded-[2rem] shadow-xl hover:bg-slate-100 transition-all italic uppercase group">
+                 <span className="flex items-center gap-2">ステップ 5: 戦略/SEOへ進む <ChevronRight className="group-hover:translate-x-1 transition-transform" /></span>
+              </Button>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="strategy" className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-500">
             {seo && (
               <div className="space-y-10">
                 <div className="grid md:grid-cols-2 gap-10">
@@ -371,27 +427,24 @@ function YoutubeProducerApp() {
                     </Card>
                   </div>
                   <div className="space-y-6">
-                    <h3 className="text-xl font-black text-white italic uppercase flex items-center gap-3 tracking-widest"><Music className="text-emerald-400" /> サウンドプロデュース</h3>
+                    <h3 className="text-xl font-black text-white italic uppercase flex items-center gap-3 tracking-widest"><Music className="text-emerald-400" /> サウンドプロデュース（Suno連携）</h3>
                     <Card className="bg-gradient-to-br from-indigo-500/10 to-transparent border border-white/10 rounded-[2.5rem] p-10 space-y-6">
                       <div className="flex items-center justify-between"><Badge className="bg-indigo-500 text-white font-black italic px-4 py-1">{bgm?.genre}</Badge><span className="text-xs font-black text-white/20 italic tracking-widest uppercase">雰囲気: {bgm?.mood}</span></div>
-                      <div className="bg-black/40 rounded-2xl p-6 border border-white/5"><p className="text-[10px] text-white/40 uppercase mb-3 font-black tracking-widest italic">音楽生成プロンプト (Suno/ElevenLabs用)</p><p className="text-sm text-indigo-400 font-mono italic leading-relaxed">{bgm?.prompt}</p></div>
-                      <Button className="w-full h-16 bg-white/5 hover:bg-white/10 text-white font-black text-xs rounded-xl border border-white/10 italic uppercase"><Download size={14} className="mr-2" /> データをエクスポート</Button>
+                      <p className="text-xs text-slate-400 font-bold italic">おすすめAI：**Suno AI** や **Udio** を使用して、以下のプロンプトを貼り付けてBGMを生成してください。</p>
+                      <div className="bg-black/40 rounded-2xl p-6 border border-white/5"><p className="text-[10px] text-white/40 uppercase mb-3 font-black tracking-widest italic">音楽生成プロンプト</p><p className="text-sm text-indigo-400 font-mono italic leading-relaxed">{bgm?.prompt}</p></div>
+                      <div className="grid grid-cols-2 gap-4">
+                         <a href="https://suno.com" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all font-black text-xs italic uppercase">Suno AI ➔</a>
+                         <a href="https://udio.com" target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all font-black text-xs italic uppercase">Udio ➔</a>
+                      </div>
+                      <Button onClick={() => { navigator.clipboard.writeText(bgm?.prompt); alert("音楽プロンプトをコピーしました！"); }} className="w-full h-16 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-400 font-black text-xs rounded-xl border border-indigo-500/20 italic uppercase">
+                        プロンプトをコピー 📋
+                      </Button>
                     </Card>
                   </div>
                 </div>
               </div>
             )}
-            <div className="grid md:grid-cols-2 gap-12 pt-10 border-t border-white/5">
-              <div className="space-y-6">
-                <h3 className="text-xl font-black text-white italic uppercase flex items-center gap-3"><Users className="text-emerald-400" /> 登場人物プロンプト</h3>
-                <div className="space-y-4">{characters?.map((char, i) => <Card key={i} className="bg-white/5 border-white/10 rounded-2xl p-6 space-y-3"><div className="flex justify-between items-start"><h4 className="font-black text-emerald-400 italic text-lg">{char.name}</h4><Badge className="bg-emerald-500/20 text-emerald-400 border-0 text-[10px]">{char.role}</Badge></div><p className="text-xs text-slate-400 font-bold italic">{char.description}</p><div className="bg-black/40 rounded-xl p-4 border border-white/5"><p className="text-[10px] text-white/40 uppercase mb-2 font-black tracking-widest">画像生成用プロンプト</p><p className="text-xs text-emerald-500/80 font-mono break-all leading-relaxed">{char.imagePrompt}</p></div></Card>)}</div>
-              </div>
-              <div className="space-y-6">
-                <h3 className="text-xl font-black text-white italic uppercase flex items-center gap-3"><ImageIcon className="text-emerald-400" /> サムネイル構成案</h3>
-                <div className="space-y-4">{thumbnails?.map((thumb, i) => <Card key={i} className="bg-white/5 border-white/10 rounded-2xl p-6 space-y-4"><div className="flex items-center gap-2"><Badge className="bg-red-600 text-white border-0 font-black italic">案 {i+1}</Badge><h4 className="font-black text-white italic">{thumb.title}</h4></div><div className="bg-black/40 rounded-xl p-4 border border-white/5"><p className="text-[10px] text-white/40 uppercase mb-2 font-black tracking-widest">サムネイル指示文</p><p className="text-xs text-slate-400 font-mono italic leading-relaxed">{thumb.imagePrompt}</p></div></Card>)}</div>
-              </div>
-            </div>
-            <div className="pt-10"><Card className="bg-emerald-500 p-1 rounded-[3rem] shadow-[0_0_50px_rgba(16,185,129,0.3)]"><div className="bg-[#050507] rounded-[2.9rem] p-10 text-center space-y-6"><h4 className="text-3xl font-black text-white italic uppercase tracking-tighter italic">制作の準備は整いました</h4><p className="text-slate-400 font-bold italic max-w-2xl mx-auto">プロフェッショナルなYouTube戦略が完成しました。この台本を元に撮影を開始するか、AI動画生成ツールにプロンプトを投入して動画を完成させてください。</p><div className="flex justify-center gap-4"><Button onClick={() => { setTranscript(''); setScript(null); setSeo(null); setActiveTab('input'); }} className="h-16 px-10 bg-white/5 text-white font-black rounded-2xl border border-white/10 italic uppercase hover:bg-white/10">新しい動画を作る</Button><Button className="h-16 px-10 bg-emerald-500 text-slate-950 font-black rounded-2xl shadow-lg italic uppercase hover:bg-emerald-400">ダッシュボードへ</Button></div></div></Card></div>
+            <div className="pt-10"><Card className="bg-emerald-500 p-1 rounded-[3rem] shadow-[0_0_50px_rgba(16,185,129,0.3)]"><div className="bg-[#050507] rounded-[2.9rem] p-10 text-center space-y-6"><h4 className="text-3xl font-black text-white italic uppercase tracking-tighter italic">制作の準備は整いました</h4><p className="text-slate-400 font-bold italic max-w-2xl mx-auto">プロフェッショナルなYouTube戦略が完成しました。この台本を元に撮影を開始するか、AIツールにプロンプトを投入して動画を完成させてください。</p><div className="flex justify-center gap-4"><Button onClick={() => { setTranscript(''); setScript(null); setSeo(null); setActiveTab('input'); }} className="h-16 px-10 bg-white/5 text-white font-black rounded-2xl border border-white/10 italic uppercase hover:bg-white/10">新しい動画を作る</Button><Button className="h-16 px-10 bg-emerald-500 text-slate-950 font-black rounded-2xl shadow-lg italic uppercase hover:bg-emerald-400">ダッシュボードへ</Button></div></div></Card></div>
           </TabsContent>
         </Tabs>
 
