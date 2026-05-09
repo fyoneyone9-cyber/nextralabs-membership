@@ -94,25 +94,28 @@ async function analyzeFashionWithGemini(
 
 // 楽天商品検索API
 async function searchRakutenItems(keyword: string) {
-  const appId = process.env.RAKUTEN_APP_ID;
-  const affiliateId = process.env.RAKUTEN_AFFILIATE_ID;
+  const appId = '1020081822830310242';
+  const affiliateId = process.env.RAKUTEN_AFFILIATE_ID || '534e3725.64346793.534e3726.d5412af4';
   const encodedKeyword = encodeURIComponent(keyword);
-  const url = `https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?applicationId=${appId}&affiliateId=${affiliateId}&keyword=${encodedKeyword}&hits=3&sort=-reviewCount&imageFlag=1&formatVersion=2`;
+  const url = `https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?format=json&applicationId=${appId}&affiliateId=${affiliateId}&keyword=${encodedKeyword}&hits=3&sort=-reviewCount&imageFlag=1&formatVersion=2`;
 
   const res = await fetch(url);
   const data = await res.json();
 
   if (!data.Items || data.Items.length === 0) return [];
 
-  return data.Items.slice(0, 3).map((item: any) => ({
-    name: item.itemName?.slice(0, 40) + (item.itemName?.length > 40 ? '…' : ''),
-    price: `¥${Number(item.itemPrice).toLocaleString()}`,
-    imageUrl: item.mediumImageUrls?.[0]?.imageUrl || item.smallImageUrls?.[0]?.imageUrl || null,
-    itemUrl: item.affiliateUrl || item.itemUrl,
-    shopName: item.shopName,
-    reviewAverage: item.reviewAverage,
-    reviewCount: item.reviewCount,
-  }));
+  return data.Items.slice(0, 3).map((entry: any) => {
+    const item = entry.Item || entry;
+    return {
+      name: (item.itemName || '').slice(0, 40) + ((item.itemName || '').length > 40 ? '…' : ''),
+      price: `¥${Number(item.itemPrice).toLocaleString()}`,
+      imageUrl: item.mediumImageUrls?.[0]?.imageUrl || item.smallImageUrls?.[0]?.imageUrl || null,
+      itemUrl: item.affiliateUrl || item.itemUrl,
+      shopName: item.shopName || '',
+      reviewAverage: item.reviewAverage || 0,
+      reviewCount: item.reviewCount || 0,
+    };
+  });
 }
 
 export async function POST(req: Request) {
