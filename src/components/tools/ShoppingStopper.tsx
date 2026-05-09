@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useRef, useEffect } from 'react'
-import { Camera, Ban, Timer, Activity, ShieldAlert, Power, Loader2 } from 'lucide-react'
+import { Camera, Ban, Timer, Activity, ShieldAlert, Power } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
 export default function ShoppingStopper() {
@@ -67,14 +67,14 @@ export default function ShoppingStopper() {
 
   return (
     <div
-      className="min-h-screen bg-[#0f172a] text-slate-100"
-      style={{ fontFamily: "'Inter', 'Noto Sans JP', sans-serif" }}
+      className="min-h-screen pb-24"
+      style={{ background: '#050507', fontFamily: "'Inter', 'Noto Sans JP', sans-serif" }}
     >
       {/* ヘッダー */}
-      <div className="border-b border-slate-800 bg-[#0f172a]/80 backdrop-blur-sm sticky top-0 z-10">
+      <div style={{ borderBottom: '1px solid #1e293b', background: 'rgba(5,5,7,0.85)', backdropFilter: 'blur(8px)', position: 'sticky', top: 0, zIndex: 10 }}>
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center gap-3">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-xs font-medium text-emerald-400 tracking-wide">衝動買い防止システム</span>
+          <span className="text-xs font-medium text-emerald-400">衝動買い防止システム</span>
           <span
             className="ml-auto text-xs font-medium px-3 py-1 rounded-full border"
             style={{ borderColor: 'rgba(16,185,129,0.3)', color: '#34d399', background: 'rgba(16,185,129,0.08)' }}
@@ -84,11 +84,18 @@ export default function ShoppingStopper() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-12 space-y-10">
+      <div className="max-w-5xl mx-auto px-6 pt-16 pb-10 space-y-10">
         {/* ヒーロー */}
         <div className="space-y-4">
+          <div
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-medium"
+            style={{ borderColor: 'rgba(16,185,129,0.3)', color: '#34d399', background: 'rgba(16,185,129,0.08)' }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            Shopping Stopper
+          </div>
           <h1 className="text-4xl font-semibold text-slate-100 tracking-tight leading-[1.15]">
-            AI <span className="text-emerald-400">衝動買い</span>ストッパー
+            AI <span style={{ color: '#10b981' }}>衝動買い</span>ストッパー
           </h1>
           <p className="text-slate-400 text-base leading-relaxed max-w-xl">
             カメラで表情の興奮度をリアルタイム解析。<br />
@@ -98,22 +105,25 @@ export default function ShoppingStopper() {
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* コントロールパネル */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* メインカード */}
+          <div className="lg:col-span-1 space-y-5">
+            {/* メインカード — 内側カードなのでエメラルドアクセントOK、外枠はslate */}
             <div
               className="rounded-xl p-6 space-y-6"
-              style={{
-                background: '#1e293b',
-                border: '2px solid #10b981',
-                boxShadow: '0 0 12px rgba(16,185,129,0.15)',
-              }}
+              style={{ background: '#0d1117', border: '1px solid #334155' }}
             >
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-emerald-400 text-xs font-medium">
+                <div className="flex items-center gap-2 text-xs font-medium" style={{ color: '#10b981' }}>
                   <Activity size={14} />
                   解析エンジン
                 </div>
-                <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${systemOnline ? 'border-emerald-500/30 text-emerald-400 bg-emerald-500/10' : 'border-slate-700 text-slate-600'}`}>
+                <span
+                  className="text-xs font-medium px-2 py-0.5 rounded-full border"
+                  style={
+                    systemOnline
+                      ? { borderColor: 'rgba(16,185,129,0.3)', color: '#34d399', background: 'rgba(16,185,129,0.08)' }
+                      : { borderColor: '#334155', color: '#475569', background: 'transparent' }
+                  }
+                >
                   {systemOnline ? 'オンライン' : 'オフライン'}
                 </span>
               </div>
@@ -121,7 +131,7 @@ export default function ShoppingStopper() {
               {!isCameraActive ? (
                 <button
                   onClick={startCamera}
-                  className="w-full h-14 rounded-lg text-sm font-semibold text-white flex items-center justify-center gap-2 transition-all"
+                  className="w-full h-12 rounded-lg text-sm font-semibold text-white flex items-center justify-center gap-2 transition-all"
                   style={{ background: '#10b981' }}
                   onMouseEnter={e => { e.currentTarget.style.background = '#059669'; e.currentTarget.style.transform = 'scale(1.02)' }}
                   onMouseLeave={e => { e.currentTarget.style.background = '#10b981'; e.currentTarget.style.transform = 'scale(1)' }}
@@ -134,12 +144,10 @@ export default function ShoppingStopper() {
                   className="rounded-lg p-4 text-center space-y-2"
                   style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)' }}
                 >
-                  <div className="flex justify-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" style={{ animationDelay: '0.15s' }} />
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" style={{ animationDelay: '0.3s' }} />
+                  <div className="flex justify-center">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                   </div>
-                  <p className="text-emerald-400 text-xs font-medium">解析中</p>
+                  <p className="text-xs font-medium" style={{ color: '#34d399' }}>解析中</p>
                 </div>
               )}
 
@@ -154,7 +162,7 @@ export default function ShoppingStopper() {
                     {excitementLevel}%
                   </span>
                 </div>
-                <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#1e293b' }}>
                   <div
                     className="h-full rounded-full transition-all duration-700"
                     style={{
@@ -167,24 +175,24 @@ export default function ShoppingStopper() {
             </div>
 
             {/* 操作ガイド */}
-            <div className="rounded-xl p-5 space-y-3" style={{ background: '#1e293b', border: '1px solid #334155' }}>
-              <div className="flex items-center gap-2 text-emerald-400 text-xs font-medium">
+            <div className="rounded-xl p-5 space-y-3" style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
+              <div className="flex items-center gap-2 text-xs font-medium" style={{ color: '#10b981' }}>
                 <ShieldAlert size={14} />
                 使い方
               </div>
-              <p className="text-slate-400 text-sm leading-relaxed">
+              <p className="text-sm text-slate-400 leading-relaxed">
                 カメラで表情をスキャンし、興奮度が
-                <span className="text-emerald-400 font-semibold"> 85% </span>
+                <span className="font-semibold" style={{ color: '#10b981' }}> 85% </span>
                 を超えた瞬間、3時間の強制冷却タイマーを起動します。
               </p>
             </div>
           </div>
 
           {/* ライブフィード */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-5">
             <div
-              className="relative aspect-video rounded-xl overflow-hidden bg-[#0f172a]"
-              style={{ border: '2px solid #1e293b' }}
+              className="relative aspect-video rounded-xl overflow-hidden"
+              style={{ background: '#0d1117', border: '1px solid #1e293b' }}
             >
               <video
                 ref={videoRef}
@@ -196,7 +204,7 @@ export default function ShoppingStopper() {
 
               {!isCameraActive && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-                  <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700">
+                  <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: '#13141f', border: '1px solid #334155' }}>
                     <Camera size={28} className="text-slate-600" />
                   </div>
                   <p className="text-slate-600 text-sm font-medium">カメラ待機中</p>
@@ -216,8 +224,8 @@ export default function ShoppingStopper() {
               )}
 
               <div className="absolute bottom-4 left-4 space-y-0.5 pointer-events-none">
-                <p className="text-[10px] font-mono text-emerald-500/40">POS: 35.4542, 139.3921</p>
-                <p className="text-[10px] font-mono text-emerald-500/40">SYS: VER-4.0.2</p>
+                <p className="text-[10px] font-mono" style={{ color: 'rgba(16,185,129,0.3)' }}>POS: 35.4542, 139.3921</p>
+                <p className="text-[10px] font-mono" style={{ color: 'rgba(16,185,129,0.3)' }}>SYS: VER-4.0.2</p>
               </div>
             </div>
 
@@ -225,14 +233,14 @@ export default function ShoppingStopper() {
             <div
               className={`rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-6 transition-all duration-700 ${isCooldown ? 'opacity-100' : 'opacity-40'}`}
               style={{
-                background: isCooldown ? 'rgba(248,113,113,0.08)' : '#1e293b',
-                border: isCooldown ? '2px solid rgba(248,113,113,0.4)' : '2px solid #334155',
+                background: isCooldown ? 'rgba(248,113,113,0.06)' : '#0d1117',
+                border: isCooldown ? '1px solid rgba(248,113,113,0.35)' : '1px solid #1e293b',
               }}
             >
               <div className="flex items-center gap-4">
                 <div
                   className="w-12 h-12 rounded-full flex items-center justify-center"
-                  style={{ background: isCooldown ? 'rgba(248,113,113,0.2)' : '#334155' }}
+                  style={{ background: isCooldown ? 'rgba(248,113,113,0.15)' : '#13141f', border: '1px solid #334155' }}
                 >
                   {isCooldown
                     ? <Ban size={20} className="text-red-400" />
@@ -266,6 +274,10 @@ export default function ShoppingStopper() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="text-center mt-8 opacity-20">
+        <p className="text-xs text-slate-600 tracking-tight">Shopping Stopper · NextraLabs 2026</p>
       </div>
 
       <DebugPanel data={{ excitementLevel, isCooldown, timer, isCameraActive }} toolId="shopping-stopper" />
