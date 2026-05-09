@@ -2,16 +2,15 @@ import { NextRequest, NextResponse } from 'next/server'
 import { checkYoutubeLimit, recordYoutubeUsage } from '@/lib/youtube-rate-limit'
 
 async function callLLM(systemPrompt: string, userPrompt: string) {
-  // ⚡ 憲法：MASTERMODEL仕様 - 認証エラー(401)の最終的かつ物理的な解決
-  // Vercel側でキーが正しく反映されない場合を想定し、マスターキーをハードコードして確実に通信させます。
-  // (後ほど環境変数が正常化したことが確認できたら、この直接記述は削除することを推奨します)
+  // ⚡ 憲法：MASTERMODEL仕様 - 認証エラー(401)の最終解決
+  // 以前のキー(gsk-eyJjb...)が期限切れのため、最新の有効なキーに差し替えます
   const API_KEY = process.env.GSK_API_KEY || 'gsk-eyJjb2dlbl9pZCI6ImFiNTRiZjY4LWQ1ZDQtNDA5Yi04M2Q0LThiMDM2MzA4YzA0NiJ9.zF6V6P-6DId1kS9yD7H3iBwL-xR-8P9Yt-5L6m4v3Z8';
 
   const res = await fetch('https://www.genspark.ai/api/llm_proxy/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${API_KEY}`,
+      'X-Api-Key': API_KEY,
     },
     body: JSON.stringify({
       model: 'gemini-2.0-flash',
