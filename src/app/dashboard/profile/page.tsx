@@ -2,50 +2,85 @@
 
 import React, { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { User, Shield, Zap, Camera, Loader2, CheckCircle2, MessageSquare } from 'lucide-react'
+import {
+  User, Shield, Zap, Camera, Loader2, CheckCircle2,
+  LogOut, Mail, Calendar, Clock, AlertCircle
+} from 'lucide-react'
+
+const PLAN_LABELS: Record<string, { label: string; color: string }> = {
+  free:     { label: '無料プラン',         color: 'bg-slate-700 text-slate-300' },
+  light:    { label: 'ライトプラン',       color: 'bg-blue-500/20 text-blue-300 border border-blue-500/30' },
+  standard: { label: 'スタンダードプラン', color: 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' },
+  premium:  { label: 'プレミアムプラン',   color: 'bg-amber-500/20 text-amber-300 border border-amber-500/30' },
+  admin:    { label: 'ADMIN',              color: 'bg-emerald-500 text-slate-950' },
+}
 
 export default function ProfilePage() {
   const supabase = createClient()
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
+  const [avatarUploading, setAvatarUploading] = useState(false)
+  const [avatarError, setAvatarError] = useState('')
   const [profile, setProfile] = useState<any>(null)
+  const [userEmail, setUserEmail] = useState('')
+  const [userId, setUserId] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [savings, setSavings] = useState(0)
+  const [usageCount, setUsageCount] = useState(0)
+  const [joinedAt, setJoinedAt] = useState('')
+  const [lastSignIn, setLastSignIn] = useState('')
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
-    const loadProfile = async () => {
+    const load = async () => {
       const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        const { data } = await supabase.from('profiles').select('*').eq('user_id', user.id).single()
-        if (data) {
-          setProfile(data)
-          setDisplayName(data.display_name || '')
-        }
-        const { count } = await supabase.from('api_usage').select('*', { count: 'exact', head: true }).eq('user_id', user.id)
-        setSavings((count || 0) * 5)
+      if (!user) { setLoading(false); return }
+
+      setUserId(user.id)
+      setUserEmail(user.email || '')
+      setJoinedAt(user.created_at ? new Date(user.created_at).toLocaleDateString('ja-JP') : '')
+      setLastSignIn(user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleDateString('ja-JP') : '')
+
+      const { data: prof } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .single()
+
+      if (prof) {
+        setProfile(prof)
+        setDisplayName(prof.display_name || '')
       }
+
+      const { count } = await supabase
+        .from('api_usage')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+
+      const c = count || 0
+      setUsageCount(c)
+      setSavings(c * 5)
       setLoading(false)
     }
-    loadProfile()
+    load()
   }, [])
 
   const handleUpdate = async () => {
+    if (!userId) return
     setUpdating(true)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        const { error } = await supabase.from('profiles').update({ display_name: displayName }).eq('user_id', user.id)
-        if (!error) {
-          setSaved(true)
-          setTimeout(() => setSaved(false), 3000)
-        }
+      const res = await fetch('/api/tools/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId, display_name: displayName }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setSaved(true)
+        setTimeout(() => setSaved(false), 3000)
       }
-    } catch (e) {
-      console.error(e)
     } finally {
       setUpdating(false)
     }
@@ -53,142 +88,244 @@ export default function ProfilePage() {
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file) return
-    setUpdating(true)
+    if (!file || !userId) return
+
+    // バリデーション
+    if (file.size > 5 * 1024 * 1024) {
+      setAvatarError('5MB以下の画像を選択してください')
+      return
+    }
+    if (!file.type.startsWith('image/')) {
+      setAvatarError('画像ファイルを選択してください')
+      return
+    }
+
+    setAvatarError('')
+    setAvatarUploading(true)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        const fileExt = file.name.split('.').pop()
-        const filePath = `${user.id}/avatar.${fileExt}`
-        const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file, { upsert: true })
-        
-        if (!uploadError) {
-          const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath)
-          await supabase.from('profiles').update({ avatar_url: publicUrl }).eq('user_id', user.id)
-          setProfile({ ...profile, avatar_url: publicUrl })
-        }
+      const form = new FormData()
+      form.append('file', file)
+      form.append('user_id', userId)
+
+      const res = await fetch('/api/tools/profile', { method: 'PUT', body: form })
+      const data = await res.json()
+
+      if (data.success && data.avatar_url) {
+        setProfile((prev: any) => ({ ...prev, avatar_url: data.avatar_url }))
+      } else {
+        setAvatarError(data.error || 'アップロードに失敗しました')
       }
-    } catch (e) {
-      console.error(e)
+    } catch (err) {
+      setAvatarError('通信エラーが発生しました')
     } finally {
-      setUpdating(false)
+      setAvatarUploading(false)
     }
   }
 
-  const openAI = (name: string) => {
-    const url = name === 'ChatGPT' ? 'https://chatgpt.com' : name === 'Gemini' ? 'https://gemini.google.com' : 'https://claude.ai'
-    window.open(url, '_blank')
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    window.location.href = '/login'
   }
+
+  const plan = profile?.role || 'free'
+  const planInfo = PLAN_LABELS[plan] || PLAN_LABELS.free
 
   if (loading) return (
     <div className="min-h-screen bg-[#050507] flex items-center justify-center">
-      <div className="text-emerald-500 font-black animate-pulse uppercase italic tracking-widest text-2xl">
-        AI IDENTITY CHECKING...
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-10 h-10 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin" />
+        <p className="text-slate-500 text-sm font-semibold">読み込み中...</p>
       </div>
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-emerald-500/30 text-left">
-      <div className="max-w-4xl mx-auto space-y-8">
-        {/* タイトルセクション */}
-        <div className="flex items-center gap-6 border-b border-emerald-500/20 pb-8">
-          <div className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-[1.5rem] flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.3)]">
-            <User className="h-10 w-10 text-slate-950" />
+    <div className="min-h-screen bg-[#050507] text-slate-200 font-sans p-5 md:p-10 text-left">
+      <div className="max-w-4xl mx-auto space-y-6">
+
+        {/* ヘッダー */}
+        <div className="flex items-center justify-between border-b border-white/5 pb-6">
+          <div className="space-y-1">
+            <h1 className="text-3xl font-black text-white tracking-tight">プロフィール設定</h1>
+            <p className="text-slate-500 text-sm">アカウント情報の確認・変更ができます</p>
           </div>
-          <div>
-            <h1 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter text-white leading-none">プロフィール設定</h1>
-            <p className="text-emerald-400 font-bold uppercase tracking-[0.3em] text-[10px] italic mt-2">Master Identity Console</p>
-          </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 text-slate-500 hover:text-red-400 text-sm font-semibold transition-colors"
+          >
+            <LogOut size={15} /> ログアウト
+          </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* 左：アバター・節約額 */}
-          <div className="space-y-6">
-            <Card className="bg-[#13141f] border-4 border-emerald-500 rounded-[2.5rem] p-8 flex flex-col items-center text-center space-y-6 shadow-[0_0_50px_rgba(16,185,129,0.15)] relative overflow-hidden">
-              <div className="relative group">
-                <div className="w-32 h-32 bg-white/5 rounded-full border-4 border-emerald-500/30 flex items-center justify-center overflow-hidden shadow-2xl relative">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+          {/* 左列：アバター + ステータス */}
+          <div className="space-y-4">
+
+            {/* アバターカード */}
+            <div className="bg-[#0d0f1a] border-2 border-emerald-500/30 rounded-2xl p-6 flex flex-col items-center gap-4 shadow-[0_0_30px_rgba(16,185,129,0.08)]">
+              <div className="relative">
+                <div className="w-28 h-28 bg-white/5 rounded-full border-2 border-emerald-500/20 flex items-center justify-center overflow-hidden">
                   {profile?.avatar_url ? (
-                    <img 
-                      src={profile.avatar_url} 
-                      className="w-full h-full object-cover" 
-                      alt="Avatar" 
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = '';
-                        setProfile({ ...profile, avatar_url: null });
-                      }}
-                    />
+                    <img src={profile.avatar_url} className="w-full h-full object-cover" alt="アバター" />
                   ) : (
-                    <User className="h-16 w-16 text-slate-600" />
+                    <User size={40} className="text-slate-600" />
                   )}
-                  {updating && <div className="absolute inset-0 bg-black/70 flex items-center justify-center"><Loader2 className="animate-spin text-emerald-500" /></div>}
+                  {avatarUploading && (
+                    <div className="absolute inset-0 bg-black/70 rounded-full flex items-center justify-center">
+                      <Loader2 size={20} className="animate-spin text-emerald-400" />
+                    </div>
+                  )}
                 </div>
-                <label className="absolute bottom-0 right-0 p-3 bg-emerald-500 rounded-full text-slate-950 shadow-xl hover:scale-110 transition-transform cursor-pointer border-2 border-[#13141f]">
-                  <Camera size={18} />
-                  <input type="file" className="hidden" accept="image/*" onChange={handleAvatarChange} disabled={updating} />
+                <label className="absolute bottom-0 right-0 w-9 h-9 bg-emerald-600 hover:bg-emerald-500 rounded-full flex items-center justify-center cursor-pointer shadow-lg transition-all border-2 border-[#0d0f1a]">
+                  <Camera size={15} className="text-white" />
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handleAvatarChange}
+                    disabled={avatarUploading}
+                  />
                 </label>
               </div>
-              <div className="space-y-2">
-                <Badge className="bg-emerald-500 text-slate-950 font-black italic uppercase text-[10px] px-4 py-1">
-                  {profile?.role === 'admin' ? 'Administrator' : 'Verified Member'}
-                </Badge>
-                <p className="text-[10px] text-slate-500 font-mono tracking-tighter">{profile?.user_id?.slice(0, 16)}...</p>
-              </div>
-            </Card>
 
-            <Card className="bg-emerald-500/10 border-2 border-emerald-500 rounded-[2rem] p-8 text-center shadow-[0_0_40px_rgba(16,185,129,0.25)] relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-2 opacity-10"><Zap size={80} className="text-emerald-500" /></div>
-              <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic mb-2 relative z-10">AI 活用節約総額</p>
-              <div className="text-4xl font-black text-white italic tracking-tighter relative z-10">¥{savings.toLocaleString()}</div>
-            </Card>
+              {avatarError && (
+                <div className="flex items-center gap-2 text-red-400 text-xs font-semibold bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 w-full">
+                  <AlertCircle size={13} /> {avatarError}
+                </div>
+              )}
+
+              <div className="text-center space-y-2">
+                <p className="font-black text-white text-base">{displayName || 'ユーザー'}</p>
+                <Badge className={`${planInfo.color} font-semibold text-xs px-3 py-0.5 rounded-full`}>
+                  {planInfo.label}
+                </Badge>
+                <p className="text-slate-600 text-[10px] font-mono">{userId.slice(0, 16)}...</p>
+              </div>
+            </div>
+
+            {/* AI節約額 */}
+            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5 text-center space-y-1">
+              <div className="flex items-center justify-center gap-2 text-emerald-400 text-xs font-semibold mb-2">
+                <Zap size={13} /> AI利用節約総額
+              </div>
+              <p className="text-3xl font-black text-white">¥{savings.toLocaleString()}</p>
+              <p className="text-slate-500 text-xs">{usageCount}回利用</p>
+            </div>
+
+            {/* アカウント情報 */}
+            <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">アカウント情報</p>
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-2.5 text-xs">
+                  <Mail size={13} className="text-slate-500 shrink-0" />
+                  <span className="text-slate-400 font-mono truncate">{userEmail}</span>
+                </div>
+                <div className="flex items-center gap-2.5 text-xs">
+                  <Calendar size={13} className="text-slate-500 shrink-0" />
+                  <span className="text-slate-400">加入日: {joinedAt}</span>
+                </div>
+                <div className="flex items-center gap-2.5 text-xs">
+                  <Clock size={13} className="text-slate-500 shrink-0" />
+                  <span className="text-slate-400">最終ログイン: {lastSignIn}</span>
+                </div>
+              </div>
+            </div>
+
           </div>
 
-          {/* 右：基本情報 */}
-          <div className="md:col-span-2 space-y-6">
-            <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl">
-              <CardHeader className="bg-white/5 p-8 border-b border-white/5">
-                <CardTitle className="text-xl font-black italic uppercase tracking-widest text-white flex items-center gap-3">
-                  <Shield className="h-6 w-6 text-emerald-400" /> アカウント・アイデンティティ
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-8 space-y-8">
-                <div className="space-y-3 text-left">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] ml-2 italic">表示名 (Identity Name)</label>
-                  <input 
-                    value={displayName} 
-                    onChange={e => setDisplayName(e.target.value)} 
-                    className="w-full h-16 bg-black border-2 border-white/10 rounded-2xl px-6 text-xl font-black text-white focus:border-emerald-500 outline-none transition-all shadow-inner" 
-                    placeholder="名前を入力してください"
-                  />
-                </div>
-                <Button 
-                  onClick={handleUpdate} 
-                  disabled={updating} 
-                  className="w-full h-20 bg-emerald-600 hover:bg-emerald-50 text-slate-950 font-black text-2xl rounded-2xl shadow-xl transition-all uppercase italic active:scale-95"
-                >
-                  {updating ? <Loader2 className="animate-spin mr-2" /> : saved ? <CheckCircle2 className="mr-2" /> : null}
-                  {saved ? '更新完了' : 'プロフィールを更新する'}
-                </Button>
-              </CardContent>
-            </Card>
+          {/* 右列：編集フォーム */}
+          <div className="md:col-span-2 space-y-4">
 
-            <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl p-8">
-              <div className="flex items-center gap-2 mb-6">
-                <MessageSquare className="h-5 w-5 text-blue-400" />
-                <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest italic">AI 外部脳リンク (Strategic Consultation)</h3>
+            {/* 表示名編集 */}
+            <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-6 space-y-5">
+              <div className="flex items-center gap-2">
+                <Shield size={16} className="text-emerald-400" />
+                <h2 className="font-black text-white text-sm">アカウント・アイデンティティ</h2>
               </div>
-              <div className="grid grid-cols-3 gap-4">
-                {['ChatGPT', 'Gemini', 'Claude'].map(ai => (
-                  <Button 
-                    key={ai} 
-                    onClick={() => openAI(ai)} 
-                    className="h-16 bg-white/5 border border-white/10 text-slate-400 font-black italic rounded-2xl hover:text-white hover:border-emerald-500 transition-all uppercase text-xs"
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">表示名</label>
+                <input
+                  value={displayName}
+                  onChange={e => setDisplayName(e.target.value)}
+                  className="w-full h-12 bg-black/40 border border-white/10 rounded-xl px-4 text-white font-semibold text-sm outline-none focus:border-emerald-500 transition-all"
+                  placeholder="名前を入力してください"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">メールアドレス</label>
+                <div className="w-full h-12 bg-black/20 border border-white/5 rounded-xl px-4 flex items-center text-slate-500 text-sm font-mono select-all">
+                  {userEmail}
+                </div>
+                <p className="text-[10px] text-slate-600 pl-1">メールアドレスの変更はサポートへお問い合わせください</p>
+              </div>
+
+              <Button
+                onClick={handleUpdate}
+                disabled={updating}
+                className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-black rounded-xl text-sm transition-all"
+              >
+                {updating ? (
+                  <><Loader2 size={15} className="animate-spin mr-2" /> 更新中...</>
+                ) : saved ? (
+                  <><CheckCircle2 size={15} className="mr-2" /> 更新しました</>
+                ) : (
+                  'プロフィールを更新する'
+                )}
+              </Button>
+            </div>
+
+            {/* プラン情報 */}
+            <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-6 space-y-4">
+              <div className="flex items-center gap-2">
+                <Zap size={16} className="text-emerald-400" />
+                <h2 className="font-black text-white text-sm">現在のプラン</h2>
+              </div>
+              <div className="flex items-center justify-between p-4 bg-black/30 border border-white/5 rounded-xl">
+                <div className="space-y-0.5">
+                  <Badge className={`${planInfo.color} font-semibold text-xs px-3 py-0.5 rounded-full`}>
+                    {planInfo.label}
+                  </Badge>
+                  <p className="text-slate-500 text-xs mt-1.5">
+                    {plan === 'free' ? '1日1回まで利用可能' :
+                     plan === 'light' ? '1日1回まで利用可能' :
+                     plan === 'standard' ? '1日2回まで利用可能' :
+                     plan === 'premium' ? '1日3回まで利用可能' : '制限なし'}
+                  </p>
+                </div>
+                {plan !== 'premium' && plan !== 'admin' && (
+                  <a
+                    href="/pricing"
+                    className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors"
                   >
-                    {ai} で深掘り
-                  </Button>
+                    アップグレード →
+                  </a>
+                )}
+              </div>
+            </div>
+
+            {/* AIで深掘り */}
+            <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-6 space-y-4">
+              <p className="text-xs font-semibold text-slate-500">AIで深掘り相談</p>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { name: 'ChatGPT', url: 'https://chatgpt.com' },
+                  { name: 'Gemini',  url: 'https://gemini.google.com' },
+                  { name: 'Claude',  url: 'https://claude.ai' },
+                ].map(ai => (
+                  <button
+                    key={ai.name}
+                    onClick={() => window.open(ai.url, '_blank')}
+                    className="h-11 bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:border-emerald-500/40 hover:bg-emerald-500/5 rounded-xl text-sm font-semibold transition-all"
+                  >
+                    {ai.name}
+                  </button>
                 ))}
               </div>
-            </Card>
+            </div>
+
           </div>
         </div>
       </div>
