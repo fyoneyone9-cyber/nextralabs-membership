@@ -1,9 +1,9 @@
 ﻿'use client'
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 import {
   Upload, CheckCircle2, Camera, ChefHat, Utensils,
   ClipboardPaste, RotateCcw, ArrowRight, Download,
-  Lightbulb, Sparkles, ExternalLink, Info
+  Lightbulb, Sparkles, ExternalLink, Info, X
 } from 'lucide-react'
 
 const TABS = [
@@ -21,8 +21,12 @@ export default function AiRecipeScope() {
   const [copied, setCopied]             = useState(false)
   const [image, setImage]               = useState<string | null>(null)
   const [recipeResult, setRecipeResult] = useState('')
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const cameraInputRef = useRef<HTMLInputElement>(null)
+  const [cameraOpen, setCameraOpen]     = useState(false)
+  const [cameraError, setCameraError]   = useState<string | null>(null)
+  const fileInputRef  = useRef<HTMLInputElement>(null)
+  const videoRef      = useRef<HTMLVideoElement>(null)
+  const canvasRef     = useRef<HTMLCanvasElement>(null)
+  const streamRef     = useRef<MediaStream | null>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -31,6 +35,40 @@ export default function AiRecipeScope() {
     reader.onload = ev => setImage(ev.target?.result as string)
     reader.readAsDataURL(file)
   }
+
+  const openCamera = useCallback(async () => {
+    setCameraError(null)
+    setCameraOpen(true)
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false })
+      streamRef.current = stream
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream
+        videoRef.current.play()
+      }
+    } catch {
+      setCameraError('カメラの起動に失敗しました。ブラウザの権限設定を確認してください。')
+    }
+  }, [])
+
+  const closeCamera = useCallback(() => {
+    streamRef.current?.getTracks().forEach(t => t.stop())
+    streamRef.current = null
+    setCameraOpen(false)
+    setCameraError(null)
+  }, [])
+
+  const capturePhoto = useCallback(() => {
+    const video  = videoRef.current
+    const canvas = canvasRef.current
+    if (!video || !canvas) return
+    canvas.width  = video.videoWidth
+    canvas.height = video.videoHeight
+    canvas.getContext('2d')?.drawImage(video, 0, 0)
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.85)
+    setImage(dataUrl)
+    closeCamera()
+  }, [closeCamera])
 
   const useSample = () => {
     const url = 'https://membership-site-nextralabos.vercel.app/samples/fridge-sample.jpg'
@@ -119,13 +157,41 @@ export default function AiRecipeScope() {
                     食材の写真
                   </p>
 
+                  {/* カメラモーダル */}
+                  {cameraOpen && (
+                    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center" style={{ background: 'rgba(0,0,0,0.92)' }}>
+                      <div className="relative w-full max-w-md mx-4">
+                        <button onClick={closeCamera} className="absolute top-2 right-2 z-10 w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.6)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)' }}>
+                          <X size={16} />
+                        </button>
+                        {cameraError ? (
+                          <div className="rounded-xl p-6 text-center space-y-3" style={{ background: '#0d1117', border: '1px solid #334155' }}>
+                            <p className="text-sm text-red-400">{cameraError}</p>
+                            <button onClick={closeCamera} className="px-4 py-2 rounded-lg text-xs font-semibold" style={{ background: '#1e293b', color: '#94a3b8' }}>閉じる</button>
+                          </div>
+                        ) : (
+                          <div className="space-y-3">
+                            <video ref={videoRef} autoPlay playsInline className="w-full rounded-xl" style={{ maxHeight: '60vh', background: '#000' }} />
+                            <canvas ref={canvasRef} className="hidden" />
+                            <button
+                              onClick={capturePhoto}
+                              className="w-full h-14 rounded-xl text-sm font-bold flex items-center justify-center gap-2"
+                              style={{ background: '#10b981', color: '#fff', boxShadow: '0 0 20px rgba(16,185,129,0.4)' }}
+                            >
+                              <Camera size={18} /> 撮影する
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
                   {!image ? (
                     <div className="space-y-3">
                       <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
-                      <input type="file" ref={cameraInputRef} onChange={handleFileChange} className="hidden" accept="image/*" capture="environment" />
-                      {/* カメラ撮影ボタン（メイン） */}
+                      {/* カメラ撮影ボタン（getUserMedia） */}
                       <button
-                        onClick={() => cameraInputRef.current?.click()}
+                        onClick={openCamera}
                         className="w-full h-14 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all"
                         style={{ background: '#10b981', color: '#fff', boxShadow: '0 0 16px rgba(16,185,129,0.25)' }}
                       >
