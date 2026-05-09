@@ -24,7 +24,7 @@ export async function checkYoutubeLimit(): Promise<{ error: string; status: numb
     .eq('id', user.id)
     .single();
   
-  if (profile?.role === 'admin' || profile?.role === 'Ninja') {
+  if (profile?.role === 'admin' || profile?.role === 'Ninja' || user.email === 'f.yoneyone9@gmail.com') {
     return null; // 無制限
   }
 
