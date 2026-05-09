@@ -2,11 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { checkYoutubeLimit, recordYoutubeUsage } from '@/lib/youtube-rate-limit'
 
 async function callLLM(systemPrompt: string, userPrompt: string) {
-  // ⚡ 憲法：MASTERMODEL仕様 - 認証エラー(401)の最終的かつ物理的な解決
-  // Google Gemini API 形式 (AIza...) に完全準拠。
-  // Genspark Proxyをバイパスし、Google公式エンドポイントへBearer認証で接続します。
+  // MASTERMODEL仕様のAPIキー
   const API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyCMbtu9IJIGbml2KOv1Yjit9QP7TkmIgiA';
 
+  // Google Gemini OpenAI 互換エンドポイントへ直接接続
   const res = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
     method: 'POST',
     headers: {
@@ -22,13 +21,6 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
       temperature: 0.8,
     }),
   })
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
-      temperature: 0.8,
-    }),
-  })
 
   if (!res.ok) {
     const err = await res.text()
@@ -37,13 +29,11 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
 
   const data = await res.json()
   const content = data.choices?.[0]?.message?.content || ''
-  return parseContent(content)
-}
 
-function parseContent(content: string) {
-  if (typeof content !== 'string') return content;
+  // Extract JSON from response
   const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/)
   const jsonStr = jsonMatch ? jsonMatch[1].trim() : content.trim()
+
   try {
     return JSON.parse(jsonStr)
   } catch {
