@@ -22,6 +22,7 @@ export default function AiRecipeScope() {
   const [image, setImage]               = useState<string | null>(null)
   const [recipeResult, setRecipeResult] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const cameraInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -120,16 +121,27 @@ export default function AiRecipeScope() {
 
                   {!image ? (
                     <div className="space-y-3">
+                      <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
+                      <input type="file" ref={cameraInputRef} onChange={handleFileChange} className="hidden" accept="image/*" capture="environment" />
+                      {/* カメラ撮影ボタン（メイン） */}
+                      <button
+                        onClick={() => cameraInputRef.current?.click()}
+                        className="w-full h-14 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all"
+                        style={{ background: '#10b981', color: '#fff', boxShadow: '0 0 16px rgba(16,185,129,0.25)' }}
+                      >
+                        <Camera size={18} />
+                        カメラで食材を撮影
+                      </button>
+                      {/* ドラッグ&ドロップ or ファイル選択 */}
                       <div
                         className="rounded-lg flex flex-col items-center justify-center gap-3 cursor-pointer transition-colors"
-                        style={{ height: '180px', border: '2px dashed #334155', background: '#13141f' }}
+                        style={{ height: '140px', border: '2px dashed #334155', background: '#13141f' }}
                         onClick={() => fileInputRef.current?.click()}
                         onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.5)')}
                         onMouseLeave={e => (e.currentTarget.style.borderColor = '#334155')}
                       >
-                        <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
-                        <Upload size={24} className="text-slate-600" />
-                        <p className="text-xs text-slate-600">クリックして画像をアップロード</p>
+                        <Upload size={20} className="text-slate-600" />
+                        <p className="text-xs text-slate-600">またはクリックして画像を選択</p>
                       </div>
                       <button
                         onClick={useSample}
