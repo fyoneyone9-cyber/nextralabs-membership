@@ -2,20 +2,21 @@ import { NextRequest, NextResponse } from 'next/server'
 import { checkYoutubeLimit, recordYoutubeUsage } from '@/lib/youtube-rate-limit'
 
 async function callLLM(systemPrompt: string, userPrompt: string) {
-  // ⚡ 憲法：MASTERMODEL仕様 - 認証の安定化
-  // 余計な空白をトリミングして確実にキーを読み込む
-  const API_KEY = (process.env.GSK_API_KEY || '').trim();
+  // ⚡ 憲法：MASTERMODEL仕様 - 認証エラー(401)の最終解決
+  // GSK_API_KEYを直接環境変数から取得
+  const API_KEY = process.env.GSK_API_KEY;
 
   if (!API_KEY) {
     throw new Error('APIキー(GSK_API_KEY)が設定されていません。VercelのEnvironment Variables設定を確認してください。');
   }
 
+  // Genspark Proxy へのリクエスト
+  // 401エラーを回避するため、公式ドキュメントに準拠した Authorization ヘッダーのみに絞ります。
   const res = await fetch('https://www.genspark.ai/api/llm_proxy/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${API_KEY}`,
-      'X-Api-Key': API_KEY, // 両方の形式を送る
     },
     body: JSON.stringify({
       model: 'gemini-2.0-flash',
