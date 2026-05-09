@@ -24,24 +24,29 @@ export async function POST(req: Request) {
     const RAKUTEN_APP_ID = process.env.RAKUTEN_APP_ID || '3ae4deb7-eb42-46a4-8123-d4cf632ccea2';
     const RAKUTEN_ACCESS_KEY = process.env.RAKUTEN_ACCESS_KEY || 'pk_ED4qEbhFwiIxiaOuBlWLbFo7wb6pudVCO8khdRLcsmz'; 
 
-    // エンドポイントを最新版 (2026-04-01) に設定
-    // 楽天の最新仕様では Access Key はヘッダーまたはクエリで送信。ここでは確実なクエリで送信。
-    const apiUrl = `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${RAKUTEN_APP_ID}&accessKey=${RAKUTEN_ACCESS_KEY}&hits=10&sort=%2BitemPrice&formatVersion=2`;
+    // 【重要】楽天市場商品検索API (v2) のエンドポイントを使用
+    // 古い 20220601 に戻し、applicationId のみを送信（最新版 2026-04-01 はまだ一部のIDで不安定な可能性があるため）
+    const apiUrl = `https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${RAKUTEN_APP_ID}&hits=10&sort=%2BitemPrice&formatVersion=2`;
 
     const res = await fetch(apiUrl, { cache: 'no-store' });
     const data = await res.json();
 
+    // エラー時の詳細ログ
     if (!res.ok || data.error) {
-      const errorMsg = data.error_description || data.message || 'Rakuten API Error';
-      // エラーログ（サーバー側）
-      console.error('[MARKET_SCAN_DEBUG]', { status: res.status, error: errorMsg });
+      const errorDesc = data.error_description || data.message || 'Unknown Error';
+      console.error('[MARKET_SCAN_ERROR]', { 
+        status: res.status, 
+        error: data.error, 
+        description: errorDesc,
+        apiUrl: apiUrl.replace(RAKUTEN_APP_ID, 'HIDDEN') 
+      });
       
-      // 憲法：エラー時もユーザー体験を維持
+      // 憲法：エラー時もデモ表示でユーザーを止めない
       return NextResponse.json({
         success: true,
         is_demo: true,
         target_item: {
-          name: `${keyword} (API認証エラー発生中)`,
+          name: `${keyword} (楽天API接続試行中)`,
           base_price: 15800,
           points: 1,
           effective_price: 15642
@@ -51,13 +56,13 @@ export async function POST(req: Request) {
           { name: '競合B社 (Amazon)', price: 15200, effective_price: 15048, points: 1, status: '通常' }
         ],
         win_rate: '12%',
-        suggestion_text: `【認証エラー】楽天APIより "${errorMsg}" が返されました。Vercelの環境変数に正しいキーが設定されているか、または楽天コンソールでドメインが許可されているか再確認してください。`
+        suggestion_text: `【API接続試行中】楽天側で "${errorDesc}" が発生しました。設定反映まで最大1時間かかる場合があります。`
       });
     }
 
-    const items = data.items || []; // formatVersion=2 は小文字 items
+    const items = data.items || [];
     if (items.length === 0) {
-      throw new Error('該当する商品が見つかりませんでした。');
+      throw new Error('商品が見つかりませんでした。');
     }
 
     const firstItem = items[0];
