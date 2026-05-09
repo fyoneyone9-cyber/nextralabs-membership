@@ -46,7 +46,7 @@ export default function UniversalConverterApp() {
 
   return (
     <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-emerald-500/30 text-left">
-      <div className="max-w-5xl mx-auto space-y-10 rounded-[3rem] p-6 md:p-12 text-white font-bold">
+      <div className="max-w-5xl mx-auto space-y-10 p-4 md:p-8 text-white font-bold">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-emerald-500/20 pb-10">
           <div className="flex items-center gap-4 text-left">
             <div className="p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/20"><Repeat className="h-10 w-10 text-emerald-400" /></div>
