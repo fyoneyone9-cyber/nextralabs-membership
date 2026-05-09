@@ -224,7 +224,7 @@ function YoutubeProducerApp() {
             <div className="grid md:grid-cols-2 gap-16">
               <div className="space-y-10"><div className="flex items-center justify-between border-b-4 border-emerald-500/20 pb-6"><h3 className="text-3xl font-black text-white italic uppercase flex items-center gap-4"><Users className="text-emerald-400 h-10 w-10" /> 登場人物プロンプト</h3><Button 
                 onClick={() => { 
-                  const preset = "必ず画像を制作して下さい\n主要人物を個別に画像生成して下さい（１枚づつ）\n全体画像もまとめて画像を作成して下さい（人数が多い場合はうまくまとめて下さい）\n\n【キャラクター設定】\n";
+                  const preset = "必ず画像を制作して下さい\n\n【キャラクター設定】\n";
                   const txt = characters?.map(c => `${c.name}: ${c.imagePrompt}`).join('\n\n'); 
                   navigator.clipboard.writeText(preset + (txt || '')); 
                   alert("指示文と全プロンプトを一括コピーしました！"); 
