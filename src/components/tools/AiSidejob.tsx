@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Card } from '@/components/ui/card'
@@ -55,7 +55,7 @@ const MasterEngine = () => {
 
   const checkCount = Object.values(checklist).filter(Boolean).length;
   const checkStatus = checkCount >= 12 ? { label: "副業適性バッチリ！", color: "text-emerald-500", desc: "すぐに準備を始めましょう。" } 
-                    : checkCount >= 8 ? { label: "準備中...", color: "text-amber-500", desc: "不足項目をクリアしてからスタート。" }
+                    : checkCount >= 8 ? { label: "準備中...", color: "text-emerald-500", desc: "不足項目をクリアしてからスタート。" }
                     : { label: "要注意", color: "text-red-500", desc: "まずは生活習慣の見直しから。" };
 
   const getAuditPrompt = () => {
