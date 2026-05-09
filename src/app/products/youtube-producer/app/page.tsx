@@ -265,11 +265,19 @@ function YoutubeProducerApp() {
                 <div className="grid grid-cols-3 gap-3">
                   {['Claude', 'ChatGPT', 'Gemini'].map((ai, i) => (
                     <div key={i} className="flex flex-col gap-2">
+                      <Button 
+                        onClick={() => { 
+                          navigator.clipboard.writeText("この動画を日本語で文字起こししてください。"); 
+                          alert(`コピーしました！${ai}に動画を添付して貼り付けてください。`); 
+                        }} 
+                        className="h-10 text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 font-black italic uppercase"
+                      >
+                        指示文をコピー 📋
+                      </Button>
                       <a href={ai === 'Claude' ? 'https://claude.ai' : ai === 'ChatGPT' ? 'https://chatgpt.com' : 'https://gemini.google.com'} target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all group h-full">
                         <p className="text-xs font-black text-slate-500 group-hover:text-emerald-400 mb-1">{ai === 'Claude' ? 'Anthropic' : ai === 'ChatGPT' ? 'OpenAI' : 'Google'}</p>
                         <p className="text-lg font-black text-white italic">{ai}</p>
                       </a>
-                      <Button onClick={() => { navigator.clipboard.writeText("この動画を日本語で文字起こししてください。"); alert(`コピーしました！${ai}に動画を添付して貼り付けてください。`); }} className="h-8 text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 font-black italic uppercase">指示文をコピー 📋</Button>
                     </div>
                   ))}
                 </div>
