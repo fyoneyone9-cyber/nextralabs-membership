@@ -163,28 +163,28 @@ export default function KdpGuideApp() {
                 <h2 className="text-2xl font-black italic uppercase tracking-tight">{step.title}</h2>
               </div>
               
-              <div className="grid gap-2">
+              <div className="grid gap-6">
                 {step.items.map((item) => (
                   <div 
                     key={item.id}
                     onClick={() => toggleCheck(item.id)}
-                    className={`group cursor-pointer p-4 rounded-xl border transition-all flex items-start gap-3 ${
+                    className={`group cursor-pointer p-8 rounded-[2rem] border-2 transition-all flex items-start gap-6 ${
                       checkedItems[item.id] 
-                        ? 'bg-orange-500/5 border-orange-500/30' 
-                        : 'bg-white/5 border-white/5 hover:border-white/10'
+                        ? 'bg-orange-500/10 border-orange-500/50 shadow-[0_0_50px_rgba(249,115,22,0.2)]' 
+                        : 'bg-white/5 border-white/5 hover:border-white/20'
                     }`}
                   >
-                    <div className={`mt-0.5 h-4 w-4 rounded border flex items-center justify-center transition-all ${
-                      checkedItems[item.id] ? 'bg-orange-500 border-orange-500' : 'border-white/20'
+                    <div className={`mt-2 h-8 w-8 rounded-lg border-2 flex items-center justify-center transition-all ${
+                      checkedItems[item.id] ? 'bg-orange-500 border-orange-500' : 'border-white/30'
                     }`}>
-                      {checkedItems[item.id] && <CheckCircle2 size={12} className="text-slate-950" />}
+                      {checkedItems[item.id] && <CheckCircle2 size={20} className="text-slate-950" />}
                     </div>
-                    <div className="flex-1 space-y-1">
-                      <p className={`font-black text-[11px] md:text-[12px] transition-all ${checkedItems[item.id] ? 'text-white' : 'text-slate-400'}`}>
+                    <div className="flex-1 space-y-4">
+                      <p className={`font-black text-2xl md:text-3xl transition-all ${checkedItems[item.id] ? 'text-white' : 'text-slate-400'}`}>
                         {item.text}
                       </p>
                       {item.expanded && (
-                        <div className="mt-1.5 p-2 bg-black/40 rounded border border-white/5 text-[9px] md:text-[10px] text-slate-400 font-bold leading-relaxed">
+                        <div className="mt-4 p-6 bg-black/60 rounded-2xl border-2 border-white/10 text-lg md:text-xl text-slate-200 font-black leading-relaxed shadow-2xl">
                           {item.expanded}
                         </div>
                       )}
