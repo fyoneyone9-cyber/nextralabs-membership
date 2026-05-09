@@ -14,40 +14,40 @@ import {
 } from 'lucide-react'
 
 const TOOLS = [
-  { id: 'universal-converter', cat: 'compress', title: '究極AIマルチコンバーター', sub: '動画・画像・PDFへの変換圧縮', icon: Repeat, plan: 'ライト' },
-  { id: 'staysee-ai-finder', cat: 'hotel', title: 'Staysee AI Finder', sub: '宿泊予約と鍵発行を完全同期', icon: Building2, plan: 'プレミアム' },
-  { id: 'hotel-affiliate', cat: 'hotel', title: 'アフィリエイト連携', sub: '宿泊紹介と楽天収益化OS', icon: Network, plan: 'スタンダード' },
-  { id: 'comp-price-monitor', cat: 'hotel', title: '競合価格監視', sub: '楽天API連携と価格最適化OS', icon: LineChart, plan: 'プレミアム' },
-  { id: 'moving-checker', cat: 'hotel', title: 'AI引越し安心チェッカー', sub: '治安と物件リスクを徹底解析', icon: Home, plan: '無料' },
-  { id: 'sns-auto-poster', cat: 'sns', title: 'AI SNSオートポスター', sub: 'バズを量産するマルチSNS生成', icon: Share2, plan: 'ライト' },
-  { id: 'ai-select-shop', cat: 'sns', title: 'AIセレクトショップ', sub: 'トレンド解析とShopify連携', icon: Store, plan: 'プレミアム' },
-  { id: 'youtube-producer', cat: 'sns', title: 'AI YouTubeプロデューサー', sub: '全自動台本・構成作成', icon: Clapperboard, plan: 'プレミアム' },
-  { id: 'trend-stock', cat: 'sns', title: 'Trend Stock', sub: 'バズ予測 × 楽天商品検索OS', icon: TrendingUp, plan: 'スタンダード' },
-  { id: 'youtube-coordinator', cat: 'sns', title: 'YouTube AI Sync', sub: '動画解析と楽天コーチ', icon: Play, plan: 'プレミアム' },
-  { id: 'kdp-guide', cat: 'edu', title: 'Kindle出版完全ナビ', sub: '執筆から出版までの一気通貫', icon: BookOpen, plan: '無料' },
-  { id: 'kindle-factory', cat: 'biz', title: 'Kindle AI ファクトリー', sub: 'AI解析でKDP入稿可能な原稿を自動生成', icon: Crown, plan: 'プレミアム' },
-  { id: 'prompt-master', cat: 'biz', title: 'AI画像プロンプトマスター', sub: '究極 of 究極の画像パーツ工房', icon: Wand2, plan: 'ライト' },
-  { id: 'scam-defender', cat: 'life', title: 'AI詐欺ディフェンダー', sub: '詐欺・悪意を即座に判定', icon: ShieldCheck, plan: 'プレミアム' },
-  { id: 'money-guard', cat: 'life', title: 'AI家計防衛シミュレーター', sub: '衝動買いの心理的阻止', icon: Wallet, plan: 'スタンダード' },
-  { id: 'loan-advisor', cat: 'life', title: 'AI借金完済・おまとめ診断', sub: '借金の一本化と完済への最短ルート', icon: CreditCard, plan: '無料' },
-  { id: 'disaster-guard', cat: 'life', title: 'AI防災パーソナルガイド', sub: '避難ルートと備蓄最適化', icon: Shield, plan: 'スタンダード' },
-  { id: 'shopping-stopper', cat: 'life', title: 'AI買い物依存ストッパー', sub: '散財の鎖を断ち切る', icon: ShieldAlert, plan: '無料' },
-  { id: 'buy-smart-nav', cat: 'life', title: '中古・新品AI比較ナビ', sub: '損得勘定とAI市場判定OS', icon: Scale, plan: '無料' },
-  { id: 'price-tracker', cat: 'life', title: '底値監視AI予測', sub: '価格変動とAI未来予測OS', icon: LineChart, plan: 'ライト' },
+  { id: 'universal-converter/app', cat: 'compress', title: '究極AIマルチコンバーター', sub: '動画・画像・PDFへの変換圧縮', icon: Repeat, plan: 'ライト' },
+  { id: 'staysee-ai-finder/app', cat: 'hotel', title: 'Staysee AI Finder', sub: '宿泊予約と鍵発行を完全同期', icon: Building2, plan: 'プレミアム' },
+  { id: 'hotel-affiliate/app', cat: 'hotel', title: 'アフィリエイト連携', sub: '宿泊紹介と楽天収益化OS', icon: Network, plan: 'スタンダード' },
+  { id: 'moving-checker/app', cat: 'hotel', title: 'AI引越し安心チェッカー', sub: '治安と物件リスクを徹底解析', icon: Home, plan: '無料' },
+  { id: 'sns-auto-poster/app', cat: 'sns', title: 'AI SNSオートポスター', sub: 'バズを量産するマルチSNS生成', icon: Share2, plan: 'ライト' },
+  { id: 'ai-select-shop/app', cat: 'sns', title: 'AIセレクトショップ', sub: 'トレンド解析とShopify連携', icon: Store, plan: 'プレミアム' },
+  { id: 'youtube-producer/app', cat: 'sns', title: 'AI YouTubeプロデューサー', sub: '全自動台本・構成作成', icon: Clapperboard, plan: 'プレミアム' },
+  { id: 'trend-stock/app', cat: 'sns', title: 'Trend Stock', sub: 'バズ予測 × 楽天商品検索OS', icon: TrendingUp, plan: 'スタンダード' },
+  { id: 'youtube-coordinator/app', cat: 'sns', title: 'YouTube AI Sync', sub: '動画解析と楽天コーチ', icon: Play, plan: 'プレミアム' },
+  { id: 'kdp-guide/app', cat: 'edu', title: 'Kindle出版完全ナビ', sub: '執筆から出版までの一気通貫', icon: BookOpen, plan: '無料' },
+  { id: 'kindle-factory/app', cat: 'biz', title: 'Kindle AI ファクトリー', sub: 'AI解析でKDP入稿可能な原稿を自動生成', icon: Crown, plan: 'プレミアム' },
+  { id: 'prompt-master/app', cat: 'biz', title: 'AI画像プロンプトマスター', sub: '究極 of 究極の画像パーツ工房', icon: Wand2, plan: 'ライト' },
+  { id: 'scam-defender/app', cat: 'life', title: 'AI詐欺ディフェンダー', sub: '詐欺・悪意を即座に判定', icon: ShieldCheck, plan: 'プレミアム' },
+  { id: 'money-guard/app', cat: 'life', title: 'AI家計防衛シミュレーター', sub: '衝動買いの心理的阻止', icon: Wallet, plan: 'スタンダード' },
+  { id: 'loan-advisor/app', cat: 'life', title: 'AI借金完済・おまとめ診断', sub: '借金の一本化と完済への最短ルート', icon: CreditCard, plan: '無料' },
+  { id: 'disaster-guard/app', cat: 'life', title: 'AI防災パーソナルガイド', sub: '避難ルートと備蓄最適化', icon: Shield, plan: 'スタンダード' },
+  { id: 'shopping-stopper/app', cat: 'life', title: 'AI買い物依存ストッパー', sub: '散財の鎖を断ち切る', icon: ShieldAlert, plan: '無料' },
+  { id: 'buy-smart-nav/app', cat: 'life', title: '中古・新品AI比較ナビ', sub: '損得勘定とAI市場判定OS', icon: Scale, plan: '無料' },
+  { id: 'price-tracker/app', cat: 'life', title: '底値監視AI予測', sub: '価格変動とAI未来予測OS', icon: LineChart, plan: 'ライト' },
   { id: 'inbox-organizer', cat: 'biz', title: 'Gmail AI Accelerator', sub: '未読ゼロを最速で実現', icon: Mail, plan: 'プレミアム' },
-  { id: 'contact-sync', cat: 'biz', title: 'Contact AI Sync', sub: '名刺の全自動登録OS', icon: UserPlus, plan: 'ライト' },
-  { id: 'expense-sync', cat: 'biz', title: 'Expense AI Sync', sub: '経費精算の全自動記帳OS', icon: Table, plan: 'ライト' },
-  { id: 'evidence-manager', cat: 'biz', title: 'エビデンスAIマネージャー', sub: 'サブスク実績の証拠管理', icon: Archive, plan: '無料' },
-  { id: 'ai-report-generator', cat: 'biz', title: 'AIレポートジェネレーター', sub: '箇条書きからプロ級文書生成', icon: FileText, plan: '無料' },
-  { id: 'ai-sidejob', cat: 'biz', title: 'AI副業スタートダッシュ', sub: '適性診断と収益ロードマップ', icon: Briefcase, plan: 'プレミアム' },
-  { id: 'office-politics-graph', cat: 'mind', title: '社内政治 AI相関図', sub: '人間関係の暗部を可視化', icon: Network, plan: '無料' },
-  { id: 'interior-coordinator', cat: 'mind', title: 'Interior AI Sync', sub: '空間解析と楽天一括購入OS', icon: Sofa, plan: 'プレミアム' },
-  { id: 'ai-recipe', cat: 'life', title: 'AIレシピ献立コーチ', sub: '冷蔵庫の残り物と栄養最適化', icon: Utensils, plan: '無料' },
-  { id: 'exam-scheduler', cat: 'edu', title: '資格試験AIスケジューラー', sub: '試験日から逆算して学習計画を自動生成', icon: ClipboardCheck, plan: 'スタンダード' },
-  { id: 'ai-exam-generator', cat: 'edu', title: 'AI問題生成 & 苦手分析', sub: '予想問題を無限生成と弱点ポイント可視化', icon: Brain, plan: 'プレミアム' },
-  { id: 'location-finder', cat: 'hotel', title: 'AIロケーションファインダー', sub: '出店・移住の最適地をデータ分析', icon: MapPin, plan: 'スタンダード' },
-  { id: 'smart-gardening', cat: 'life', title: 'AIスマートガーデニング', sub: '植物の声を聴く育成アドバイザー', icon: Sprout, plan: 'スタンダード' },
-  { id: 'ticket-scout', cat: 'life', title: 'AIチケットスカウト', sub: '争奪戦に勝つための先行情報収集', icon: Ticket, plan: 'スタンダード' }
+  { id: 'contact-sync/app', cat: 'biz', title: 'Contact AI Sync', sub: '名刺の全自動登録OS', icon: UserPlus, plan: 'ライト' },
+  { id: 'expense-sync/app', cat: 'biz', title: 'Expense AI Sync', sub: '経費精算の全自動記帳OS', icon: Table, plan: 'ライト' },
+  { id: 'evidence-manager/app', cat: 'biz', title: 'エビデンスAIマネージャー', sub: 'サブスク実績の証拠管理', icon: Archive, plan: '無料' },
+  { id: 'ai-report-generator/app', cat: 'biz', title: 'AIレポートジェネレーター', sub: '箇条書きからプロ級文書生成', icon: FileText, plan: '無料' },
+  { id: 'ai-sidejob/app', cat: 'biz', title: 'AI副業スタートダッシュ', sub: '適性診断と収益ロードマップ', icon: Briefcase, plan: 'プレミアム' },
+  { id: 'ai-konkatsu/app', cat: 'mind', title: 'AI婚活コーチ', sub: '戦略的結婚支援システム', icon: HeartHandshake, plan: 'スタンダード' },
+  { id: 'office-politics-graph/app', cat: 'mind', title: '社内政治 AI相関図', sub: '人間関係の暗部を可視化', icon: Network, plan: '無料' },
+  { id: 'interior-coordinator/app', cat: 'mind', title: 'Interior AI Sync', sub: '空間解析と楽天一括購入OS', icon: Sofa, plan: 'プレミアム' },
+  { id: 'ai-recipe/app', cat: 'life', title: 'AIレシピ献立コーチ', sub: '冷蔵庫の残り物と栄養最適化', icon: Utensils, plan: '無料' },
+  { id: 'exam-scheduler/app', cat: 'edu', title: '資格試験AIスケジューラー', sub: '試験日から逆算して学習計画を自動生成', icon: ClipboardCheck, plan: 'スタンダード' },
+  { id: 'ai-exam-generator/app', cat: 'edu', title: 'AI問題生成 & 苦手分析', sub: '予想問題を無限生成と弱点ポイント可視化', icon: Brain, plan: 'プレミアム' },
+  { id: 'location-finder/app', cat: 'hotel', title: 'AIロケーションファインダー', sub: '出店・移住の最適地をデータ分析', icon: MapPin, plan: 'スタンダード' },
+  { id: 'smart-gardening/app', cat: 'life', title: 'AIスマートガーデニング', sub: '植物の声を聴く育成アドバイザー', icon: Sprout, plan: 'スタンダード' },
+  { id: 'ticket-scout/app', cat: 'life', title: 'AIチケットスカウト', sub: '争奪戦に勝つための先行情報収集', icon: Ticket, plan: 'スタンダード' }
 ]
 
 const CATEGORIES = [
@@ -78,7 +78,7 @@ function ProductCard({ product, isFav, onToggleFav }: {
   return (
     <Card className="h-full bg-[#13141f] transition-all duration-300 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group shadow-xl relative border border-white/5 hover:border-white/20">
       {/* SECURITY LINE for Locked Mastermodels */}
-      {(product.id === 'trend-stock' || product.id === 'loan-advisor' || product.id === 'ai-sidejob' || product.id === 'staysee-ai-finder' || product.id === 'office-politics-graph') && (
+      {(product.id.startsWith('trend-stock') || product.id.startsWith('loan-advisor') || product.id.startsWith('ai-sidejob') || product.id.startsWith('staysee-ai-finder') || product.id.startsWith('office-politics-graph')) && (
         <div className="absolute top-0 left-0 w-full h-[3px] bg-emerald-500 z-30 shadow-[0_0_15px_rgba(16,185,129,0.8)]" />
       )}
       <button

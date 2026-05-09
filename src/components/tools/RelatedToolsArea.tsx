@@ -7,12 +7,12 @@ import { ArrowRight, Sparkles, Zap } from 'lucide-react'
 
 // ツールごとの関連マップ（独立化を想定した戦略的リンク）
 const RELATION_MAP: Record<string, string[]> = {
-  'money-guard': ['shopping-stopper', 'buy-smart-nav', 'price-tracker'],
+  'money-guard': ['shopping-stopper', 'buy-smart-nav'],
   'ai-recipe': ['smart-gardening', 'shopping-stopper'],
   'ai-exam-generator': ['exam-scheduler', 'ai-report-generator'],
   'kdp-guide': ['kindle-factory', 'prompt-master', 'buzz-writer'],
   'ai-sidejob': ['buzz-writer', 'prompt-master', 'inbox-organizer'],
-  'staysee-ai-finder': ['comp-price-monitor', 'location-finder'],
+  'staysee-ai-finder': ['location-finder'],
   // デフォルトはランダムまたは人気ツール
   'default': ['money-guard', 'ai-exam-generator', 'ai-report-generator']
 }
@@ -22,7 +22,6 @@ const TOOL_NAMES: Record<string, string> = {
   'money-guard': 'AI家計防衛シミュレーター',
   'shopping-stopper': 'AI買い物依存ストッパー',
   'buy-smart-nav': '中古・新品AI比較ナビ',
-  'price-tracker': '底値監視AI予測',
   'ai-recipe': 'AIレシピ献立コーチ',
   'smart-gardening': 'AIスマートガーデニング',
   'ai-exam-generator': 'AI問題生成 & 苦手分析',
@@ -35,7 +34,6 @@ const TOOL_NAMES: Record<string, string> = {
   'ai-sidejob': 'AI副業スタートダッシュ',
   'inbox-organizer': 'Gmail AI Accelerator',
   'staysee-ai-finder': 'Staysee AI Finder',
-  'comp-price-monitor': '競合AI価格監視',
   'location-finder': 'AIロケーションファインダー',
 }
 

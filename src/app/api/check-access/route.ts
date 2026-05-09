@@ -33,7 +33,6 @@ const STANDARD_IDS = [
 const LIGHT_IDS = [
   'expense-sync',
   'contact-sync',
-  'price-tracker',
 ]
 
 export async function POST(request: NextRequest) {

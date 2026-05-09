@@ -6,3 +6,5 @@
 .env.production.local
 *.log
 .vercel
+
+.next_backup/
