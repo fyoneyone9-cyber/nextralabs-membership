@@ -218,7 +218,7 @@ function YoutubeProducerApp() {
       {/* ⚡ 憲法：MASTERMODEL品質保証 - エメラルドグリーンの外枠（上部ロック） */}
       <div className="fixed top-0 left-0 right-0 h-1.5 bg-emerald-500 z-[100] shadow-[0_0_20px_rgba(16,185,129,0.8)]"></div>
       
-      <div className="max-w-6xl mx-auto space-y-12 border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.2)] rounded-[3rem] p-6 md:p-16 relative overflow-hidden bg-black/40 backdrop-blur-xl">
+      <div className="max-w-6xl mx-auto space-y-12 border-t-[12px] border-x-4 border-b-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.3)] rounded-[3rem] p-6 md:p-16 relative overflow-hidden bg-black/40 backdrop-blur-xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-emerald-500/20 pb-12">
           <div className="flex items-center gap-6">
             <div className="p-6 bg-emerald-500/10 rounded-3xl border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.1)]"><Clapperboard className="h-12 w-12 text-emerald-400" /></div>
