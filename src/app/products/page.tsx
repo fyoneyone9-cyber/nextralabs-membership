@@ -79,7 +79,7 @@ function ProductCard({ product, isFav, onToggleFav }: {
   return (
     <Card className="h-full bg-[#13141f] transition-all duration-300 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group shadow-xl relative border border-white/5 hover:border-white/20">
       {/* SECURITY LINE for Locked Mastermodels */}
-      {product.id === 'trend-stock' && (
+      {(product.id === 'trend-stock' || product.id === 'loan-advisor') && (
         <div className="absolute top-0 left-0 w-full h-[2px] bg-emerald-500 z-30 shadow-[0_0_10px_rgba(16,185,129,0.8)]" />
       )}
       <button
