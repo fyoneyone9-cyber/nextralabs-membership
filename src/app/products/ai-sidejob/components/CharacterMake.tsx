@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import React, { useState } from 'react';
-import { Zap, Diamond, Palette, Smartphone, Laptop, Briefcase, Clock, Calendar, Rocket, ShieldCheck } from 'lucide-react';
+import { Zap, Diamond, Palette, Smartphone, Laptop, Briefcase, Clock, Calendar, Rocket, ShieldCheck, ShoppingCart, Search, Video, Pen, MessageSquare, Sparkles, Image as ImageIcon, Scale, CheckCircle2, UserCircle, Download } from 'lucide-react';
 
 interface CharacterMakeProps {
   onComplete: (data: any) => void;

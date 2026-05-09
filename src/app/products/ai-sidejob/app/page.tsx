@@ -15,7 +15,7 @@ export default function AiSidejobApp() {
     try {
       // 実際の実装ではここで /api/products/ai-sidejob/generate を呼ぶ
       // 今回はプロトタイプとして、gsk searchの擬似的な結果を含むレスポンスを想定
-      const response = await fetch('/api/products/ai-sidejob/generate', {
+      const response = await fetch('/api/products/ai-sidejob', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
