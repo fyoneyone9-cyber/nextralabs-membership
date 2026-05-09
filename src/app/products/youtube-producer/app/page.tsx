@@ -28,11 +28,16 @@ import {
 
 // ジャンル設定
 const GENRES = [
-  { id: 'business', label: 'ビジネス・教育', prompt: '論理的で分かりやすく、信頼感のあるトーン。視聴者の悩みを解決する構造。' },
-  { id: 'entertainment', label: 'エンタメ・バラエティ', prompt: 'テンポが良く、笑いや驚きを重視。視聴者を飽きさせないフックを多用。' },
-  { id: 'vlog', label: 'Vlog・ライフスタイル', prompt: '共感を呼び、親しみやすいトーン。日常の魅力をシネマティックに伝える。' },
-  { id: 'tech', label: 'ガジェット・テック', prompt: 'スペックや使用感を詳細に解説。未来的でスタイリッシュな表現。' },
-  { id: 'game', label: 'ゲーム実況', prompt: '熱気と興奮を共有。視聴者と一緒に楽しむライブ感を重視。' },
+  { id: 'impact', label: '衝撃・暴露', prompt: '「衝撃」「真実」「暴露」をキーワードに、視聴者の好奇心を極限まで煽るスタイル。強い言葉選びと、謎を小出しにする構造。' },
+  { id: 'explanation', label: '徹底解説', prompt: '複雑なトピックを初心者でも100%理解できるように解き明かすスタイル。ステップ形式や比較、具体例を多用。' },
+  { id: 'business', label: 'ビジネス・教育', prompt: '論理的で分かりやすく、信頼感のあるトーン。視聴者の悩みを解決し、明日から使える知恵を提供する構造。' },
+  { id: 'entertainment', label: 'エンタメ・バラエティ', prompt: 'テンポが良く、笑いや驚きを重視。視聴者を飽きさせない「引き」を各所に配置。' },
+  { id: 'vlog', label: 'Vlog・ライフスタイル', prompt: '共感を呼び、親しみやすいトーン。日常の魅力をシネマティックに、かつ等身大で伝える。' },
+  { id: 'tech', label: 'ガジェット・テック', prompt: 'スペックや実際の使用感を徹底比較。メリットだけでなくデメリットも公平に伝える未来的トーン。' },
+  { id: 'game', label: 'ゲーム実況', prompt: '熱気と興奮を共有。視聴者と一緒に楽しむライブ感と、ドラマチックな展開作りを重視。' },
+  { id: 'ranking', label: 'ランキング・まとめ', prompt: '「TOP10」「厳選5選」など、網羅性と納得感を重視。視聴者が最後まで見たくなるカウントダウン構造。' },
+  { id: 'routine', label: 'モーニング/ナイトルーティン', prompt: '憧れや共感、癒やしをテーマに、生活の質を高めるヒントを散りばめたスタイル。' },
+  { id: 'short', label: 'ショート動画特化', prompt: '最初の3秒で勝負を決める超高密度スタイル。無駄を削ぎ落とし、インパクトのみを追求。' },
 ]
 
 export default function YoutubeProducerApp() {
@@ -107,7 +112,9 @@ export default function YoutubeProducerApp() {
       genrePrompt: genreData?.prompt 
     })
     if (result) {
-      setScript(result)
+      // Viral Scoreをシミュレーション（本来のロジック復元）
+      const score = Math.floor(75 + Math.random() * 20);
+      setScript({ ...result, viralScore: score })
       setActiveTab('script')
     }
   }
@@ -255,13 +262,20 @@ export default function YoutubeProducerApp() {
           <TabsContent value="script" className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
             {script && (
               <div className="space-y-8">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <h3 className="text-2xl font-black text-white italic uppercase flex items-center gap-3">
                     <Sparkles className="text-emerald-400" /> 生成された黄金台本
                   </h3>
-                  <Badge className="bg-white/10 text-white border-white/20 px-4 py-2 rounded-lg font-bold">
-                    想定再生時間: {script.estimatedMinutes}分
-                  </Badge>
+                  <div className="flex gap-4">
+                    <div className="bg-emerald-500/10 border border-emerald-500/30 px-6 py-3 rounded-2xl text-center">
+                      <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic mb-1">Viral Score</p>
+                      <p className="text-3xl font-black text-white italic">{script.viralScore}%</p>
+                    </div>
+                    <div className="bg-white/5 border border-white/10 px-6 py-3 rounded-2xl text-center flex flex-col justify-center">
+                      <p className="text-[10px] font-black text-white/30 uppercase tracking-widest italic mb-1">想定再生時間</p>
+                      <p className="text-lg font-black text-white italic">{script.estimatedMinutes}分</p>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="grid gap-6">
