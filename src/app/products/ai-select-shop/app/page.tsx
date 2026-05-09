@@ -134,10 +134,10 @@ const MasterEngine = () => {
                   <Card
                     key={t.id}
                     onClick={() => { setKeyword(t.name); setCurrentStep(2); window.scrollTo(0, 0); }}
-                    className="bg-[#13141f] border-4 border-white/5 p-12 rounded-[3.5rem] hover:border-emerald-500 cursor-pointer transition-all text-center group shadow-2xl active:scale-95"
+                    className="bg-[#13141f] border-4 border-white/5 p-8 rounded-[3rem] hover:border-emerald-500 cursor-pointer transition-all text-center group shadow-2xl active:scale-95 flex flex-col items-center justify-center min-h-[160px]"
                   >
-                    <Badge className="mb-6 bg-emerald-500/20 text-emerald-400 border-emerald-500/30 px-4 py-1 font-black italic">TREND SYNC</Badge>
-                    <p className="text-4xl font-black italic text-white uppercase group-hover:text-emerald-400 transition-colors leading-tight">{t.name}</p>
+                    <Badge className="mb-4 bg-emerald-500/20 text-emerald-400 border-emerald-500/30 px-3 py-1 font-black italic text-xs shrink-0">TREND SYNC</Badge>
+                    <p className="text-2xl md:text-3xl font-black italic text-white group-hover:text-emerald-400 transition-colors leading-tight break-all line-clamp-2">{t.name}</p>
                   </Card>
                 ))}
               </div>
