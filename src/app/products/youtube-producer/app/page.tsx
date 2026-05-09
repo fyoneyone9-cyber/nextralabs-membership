@@ -122,7 +122,7 @@ function YoutubeProducerApp() {
     let finalFile: File | Blob = file
 
     // 巨大な動画ファイルの場合、ブラウザ側で音声を抽出・圧縮してサーバー負荷を回避
-    if (file.type.startsWith('video/') || file.size > 5 * 1024 * 1024) {
+    if (file.type.startsWith('video/') || file.size > 2 * 1024 * 1024) {
       if (!isFFmpegReady) {
         setError('圧縮エンジンの準備ができていません。少々お待ちください。')
         setIsProcessing(prev => ({ ...prev, 'transcribe': false }))
@@ -136,18 +136,19 @@ function YoutubeProducerApp() {
 
         await ffmpeg.writeFile(inputName, await fetchFile(file))
         
-        // 音声のみを抽出し、低ビットレート(64k)で圧縮してサイズを劇的に減らす
-        await ffmpeg.exec(['-i', inputName, '-vn', '-ab', '64k', '-ar', '16000', outputName])
+        // より強力に圧縮 (32k / モノラル) してVercelの制限を確実に回避
+        await ffmpeg.exec(['-i', inputName, '-vn', '-ac', '1', '-ab', '32k', '-ar', '16000', outputName])
         
         const data = await ffmpeg.readFile(outputName)
         finalFile = new Blob([data], { type: 'audio/mp3' })
         
+        console.log(`Original: ${file.size} bytes, Compressed: ${finalFile.size} bytes`)
+
         // クリーンアップ
         await ffmpeg.deleteFile(inputName)
         await ffmpeg.deleteFile(outputName)
       } catch (e: any) {
         console.error('FFmpeg Error:', e)
-        // 圧縮に失敗した場合は元のファイルで続行を試みる（ただしサイズ制限に引っかかる可能性あり）
       }
     }
 
@@ -167,8 +168,8 @@ function YoutubeProducerApp() {
         setTranscript(data.text)
       } else {
         const text = await res.text()
-        if (text.includes('Payload Too Large') || res.status === 413) {
-          throw new Error('ファイルサイズが大きすぎます。より短い動画にするか、音声のみのファイルをご使用ください。')
+        if (text.includes('Payload Too Large') || res.status === 413 || res.status === 504) {
+          throw new Error('サーバー制限により、長すぎる動画は処理できません。10分以内の動画推奨、または音声(MP3)でのアップロードをお試しください。')
         }
         throw new Error(`サーバーエラーが発生しました (${res.status})`)
       }
