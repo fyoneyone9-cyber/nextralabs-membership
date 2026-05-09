@@ -142,39 +142,67 @@ const MasterEngine = () => {
     ctx.restore()
     ctx.save(); getTshirtPath(ctx, w, h); ctx.clip()
 
-    // プリント位置
-    let cx = w/2
-    let cy = printPosition === 'chest-left' ? h*0.3 : printPosition === 'back-center' ? h*0.55 : h*0.44
-    const pr = printPosition === 'chest-left' ? h*0.1 : h*0.2
+    // プリント領域（角丸四角形）
+    const isSmall = printPosition === 'chest-left'
+    const cx = w / 2
+    const cy = printPosition === 'chest-left' ? h * 0.3 : printPosition === 'back-center' ? h * 0.55 : h * 0.44
+    // 内側余白を確保した安全な幅・高さ
+    const boxW = isSmall ? w * 0.28 : w * 0.52
+    const boxH = isSmall ? h * 0.14 : h * 0.30
+    const rx = 10 // 角丸半径
+    const bx = cx - boxW / 2
+    const by = cy - boxH / 2
 
-    ctx.fillStyle = S.bg; ctx.globalAlpha = 0.85
-    ctx.beginPath(); ctx.arc(cx, cy, pr, 0, Math.PI*2); ctx.fill()
+    // 角丸四角形を描画
+    ctx.beginPath()
+    ctx.moveTo(bx + rx, by)
+    ctx.lineTo(bx + boxW - rx, by)
+    ctx.quadraticCurveTo(bx + boxW, by, bx + boxW, by + rx)
+    ctx.lineTo(bx + boxW, by + boxH - rx)
+    ctx.quadraticCurveTo(bx + boxW, by + boxH, bx + boxW - rx, by + boxH)
+    ctx.lineTo(bx + rx, by + boxH)
+    ctx.quadraticCurveTo(bx, by + boxH, bx, by + boxH - rx)
+    ctx.lineTo(bx, by + rx)
+    ctx.quadraticCurveTo(bx, by, bx + rx, by)
+    ctx.closePath()
+    ctx.fillStyle = S.bg; ctx.globalAlpha = 0.9; ctx.fill()
     ctx.globalAlpha = 1
 
-    const isSmall = printPosition === 'chest-left'
+    // テキスト描画用に角丸四角形でclip（はみ出し防止）
+    ctx.save()
+    ctx.beginPath()
+    ctx.moveTo(bx + rx, by)
+    ctx.lineTo(bx + boxW - rx, by)
+    ctx.quadraticCurveTo(bx + boxW, by, bx + boxW, by + rx)
+    ctx.lineTo(bx + boxW, by + boxH - rx)
+    ctx.quadraticCurveTo(bx + boxW, by + boxH, bx + boxW - rx, by + boxH)
+    ctx.lineTo(bx + rx, by + boxH)
+    ctx.quadraticCurveTo(bx, by + boxH, bx, by + boxH - rx)
+    ctx.lineTo(bx, by + rx)
+    ctx.quadraticCurveTo(bx, by, bx + rx, by)
+    ctx.closePath()
+    ctx.clip()
+
+    // テキスト用の安全な最大幅（内側パディング8px）
+    const pad = 8
+    const safeW = boxW - pad * 2
+
+    // フォントサイズ：1行に収まる最大サイズを探す
     const baseFontSize = isSmall ? 16 : 28
-    // キーワードの長さに応じてフォントサイズを自動調整
-    const maxWidth = pr * 1.6
     let fontSize = baseFontSize
-    const fontBase = S.font.replace(/[\d.]+px/, `${fontSize}px`)
-    ctx.font = fontBase
-    while (ctx.measureText(keyword).width > maxWidth && fontSize > 10) {
+    ctx.font = S.font.replace(/[\d.]+px/, `${fontSize}px`)
+    // 1行が safeW を超えるなら縮小（最小10px）
+    while (ctx.measureText(keyword).width > safeW && fontSize > 10) {
       fontSize -= 1
       ctx.font = S.font.replace(/[\d.]+px/, `${fontSize}px`)
     }
 
-    const resolvedColor = textColorId !== 'auto' ? (TEXT_COLORS.find(c => c.id === textColorId)?.hex || S.textColor) : S.textColor
-    ctx.fillStyle = resolvedColor!
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
-
-    // 長いテキストは複数行に分割して描画
-    const words = keyword.split('')
-    const maxLineWidth = pr * 1.7
-    let lines: string[] = []
+    // 行分割：safeW を超えたら改行（文字単位）
+    const lines: string[] = []
     let current = ''
     for (const ch of keyword) {
       const test = current + ch
-      if (ctx.measureText(test).width > maxLineWidth && current.length > 0) {
+      if (ctx.measureText(test).width > safeW && current.length > 0) {
         lines.push(current)
         current = ch
       } else {
@@ -183,13 +211,32 @@ const MasterEngine = () => {
     }
     if (current) lines.push(current)
 
-    const lineHeight = fontSize * 1.3
-    const totalH = lineHeight * lines.length
+    // 行数が多い場合はさらにフォント縮小して1行化を試みる
+    const lineHeight = fontSize * 1.35
+    const totalTextH = lineHeight * lines.length
+    // ボックスに収まらない場合フォントを縮小して再計算
+    if (totalTextH > boxH - pad * 2 && fontSize > 10) {
+      fontSize = Math.max(10, Math.floor(fontSize * ((boxH - pad * 2) / totalTextH)))
+      ctx.font = S.font.replace(/[\d.]+px/, `${fontSize}px`)
+    }
+
+    const resolvedColor = textColorId !== 'auto'
+      ? (TEXT_COLORS.find(c => c.id === textColorId)?.hex || S.textColor)
+      : S.textColor
+    ctx.fillStyle = resolvedColor!
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+
+    const lh = fontSize * 1.35
+    const totalH = lh * lines.length
     lines.forEach((line, i) => {
-      const y = cy - totalH / 2 + lineHeight * i + lineHeight / 2
-      ctx.fillText(line, cx, y)
+      const y = cy - totalH / 2 + lh * i + lh / 2
+      // fillText の maxWidth にも safeW を渡すことでブラウザが強制縮小（二重防護）
+      ctx.fillText(line, cx, y, safeW)
     })
-    ctx.restore()
+
+    ctx.restore() // clip解除
+    ctx.restore() // Tシャツclip解除
     setMockupDataUrl(canvas.toDataURL('image/png'))
   }, [keyword, style, tshirtColor, textColorId, printPosition])
 
