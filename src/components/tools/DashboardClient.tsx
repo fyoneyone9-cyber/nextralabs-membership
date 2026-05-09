@@ -18,25 +18,25 @@ import DashboardActivity from '@/components/dashboard/DashboardActivity'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const PLAN_META = {
-  premium:  { label: 'プレミアム', color: 'from-amber-500 to-orange-500', text: 'text-amber-400', border: 'border-amber-500/40', badge: 'bg-amber-500/20 text-amber-400 border-amber-500/30', icon: Crown },
+  premium:  { label: 'プレミアム', color: 'from-emerald-500 to-emerald-500', text: 'text-emerald-400', border: 'border-emerald-500/40', badge: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', icon: Crown },
   standard: { label: 'スタンダード', color: 'from-emerald-500 to-teal-500', text: 'text-emerald-400', border: 'border-emerald-500/40', badge: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', icon: Zap },
-  light:    { label: 'ライト', color: 'from-blue-500 to-indigo-500', text: 'text-blue-400', border: 'border-blue-500/40', badge: 'bg-blue-500/20 text-blue-400 border-blue-500/30', icon: Zap },
+  light:    { label: 'ライト', color: 'from-emerald-500 to-emerald-500', text: 'text-blue-400', border: 'border-emerald-500/40', badge: 'bg-emerald-500/20 text-blue-400 border-emerald-500/30', icon: Zap },
   free:     { label: '無料', color: 'from-slate-600 to-slate-700', text: 'text-slate-400', border: 'border-slate-500/40', badge: 'bg-slate-500/20 text-slate-400 border-slate-500/30', icon: User },
 }
 
 const TOOL_CATEGORIES = [
   {
     label: 'プレミアム・マスタ',
-    color: 'text-amber-400',
-    borderColor: 'border-amber-500/30',
+    color: 'text-emerald-400',
+    borderColor: 'border-emerald-500/30',
     tools: [
       { id: 'nextra-ai',            name: 'Nextra AI (総合ホテルDX)', icon: Building2,    color: 'text-emerald-500', plan: 'premium' },
       { id: 'inbox-organizer',      name: 'Gmail AI Accelerator',    icon: Mail,         color: 'text-blue-400',    plan: 'premium' },
       { id: 'youtube-producer',     name: 'AI YouTubeプロデューサー', icon: Youtube,      color: 'text-red-500',     plan: 'premium' },
-      { id: 'ai-sidejob',           name: 'AI副業スタートダッシュ',   icon: Briefcase,    color: 'text-indigo-400',  plan: 'premium' },
+      { id: 'ai-sidejob',           name: 'AI副業スタートダッシュ',   icon: Briefcase,    color: 'text-emerald-400',  plan: 'premium' },
       { id: 'ai-select-shop',       name: 'AIセレクトショップ',       icon: ShoppingCart, color: 'text-pink-400',    plan: 'premium' },
-      { id: 'ai-exam-generator',    name: 'AI問題生成 & 苦手分析',    icon: Brain,        color: 'text-purple-400',  plan: 'premium' },
-      { id: 'interior-coordinator', name: 'Interior Sync',           icon: Sofa,         color: 'text-amber-500',   plan: 'premium' },
+      { id: 'ai-exam-generator',    name: 'AI問題生成 & 苦手分析',    icon: Brain,        color: 'text-emerald-400',  plan: 'premium' },
+      { id: 'interior-coordinator', name: 'Interior Sync',           icon: Sofa,         color: 'text-emerald-500',   plan: 'premium' },
       { id: 'scam-defender',         name: 'AI詐欺ディフェンダー',       icon: ShieldCheck,   color: 'text-red-400',     plan: 'premium' },
     ]
   },
@@ -45,28 +45,28 @@ const TOOL_CATEGORIES = [
     color: 'text-emerald-400',
     borderColor: 'border-emerald-500/30',
     tools: [
-      { id: 'money-guard',           name: 'AI家計防衛シミュレーター',   icon: Wallet,         color: 'text-amber-500',   plan: 'standard' },
+      { id: 'money-guard',           name: 'AI家計防衛シミュレーター',   icon: Wallet,         color: 'text-emerald-500',   plan: 'standard' },
       { id: 'disaster-guard',        name: 'AI防災パーソナルガイド',     icon: Shield,         color: 'text-red-400',     plan: 'standard' },
-      { id: 'exam-scheduler',        name: 'AI試験スケジューラー',       icon: Calendar,       color: 'text-purple-400',  plan: 'standard' },
+      { id: 'exam-scheduler',        name: 'AI試験スケジューラー',       icon: Calendar,       color: 'text-emerald-400',  plan: 'standard' },
       { id: 'buzz-writer',           name: 'AIバズ文章コーチ',           icon: Pen,            color: 'text-emerald-400', plan: 'standard' },
       { id: 'comm-coach',            name: 'AIコミュニケーション改善',   icon: MessageCircle,  color: 'text-blue-400',    plan: 'standard' },
       { id: 'resignation-assistant', name: '退職あんしんAI',             icon: LogOut,         color: 'text-slate-400',   plan: 'standard' },
       { id: 'trend-stock',           name: 'SNSトレンド自動仕入れ',      icon: TrendingUp,     color: 'text-green-400',   plan: 'standard' },
-      { id: 'kdp-guide',             name: 'Kindle KDP 攻略ナビ',       icon: BookOpen,       color: 'text-amber-300',   plan: 'standard' },
+      { id: 'kdp-guide',             name: 'Kindle KDP 攻略ナビ',       icon: BookOpen,       color: 'text-emerald-300',   plan: 'standard' },
     ]
   },
   {
     label: 'ライト・無料',
     color: 'text-blue-400',
-    borderColor: 'border-blue-500/30',
+    borderColor: 'border-emerald-500/30',
     tools: [
       { id: 'universal-converter', name: '究極AIマルチコンバーター',  icon: Repeat,       color: 'text-emerald-400', plan: 'light' },
       { id: 'expense-sync',       name: 'Expense Sync',        icon: DollarSign,   color: 'text-green-400',  plan: 'light' },
-      { id: 'contact-sync',       name: 'Contact Sync',        icon: UserPlus,     color: 'text-indigo-400', plan: 'light' },
+      { id: 'contact-sync',       name: 'Contact Sync',        icon: UserPlus,     color: 'text-emerald-400', plan: 'light' },
       { id: 'price-tracker',      name: '底値監視AI予測',      icon: LineChart,    color: 'text-cyan-400',   plan: 'light' },
-      { id: 'office-politics-graph', name: '社内政治 AI相関図',      icon: Network,      color: 'text-violet-400',  plan: 'free' },
+      { id: 'office-politics-graph', name: '社内政治 AI相関図',      icon: Network,      color: 'text-emerald-400',  plan: 'free' },
       { id: 'moving-checker',        name: 'AI引越し安心チェッカー', icon: Home,         color: 'text-teal-400',    plan: 'free' },
-      { id: 'ai-recipe',            name: 'AIレシピ献立コーチ',       icon: Utensils,     color: 'text-orange-400',  plan: 'free' },
+      { id: 'ai-recipe',            name: 'AIレシピ献立コーチ',       icon: Utensils,     color: 'text-emerald-400',  plan: 'free' },
       { id: 'ai-report-generator',  name: 'AIレポートジェネレーター', icon: FileText,     color: 'text-blue-300',    plan: 'free' },
       { id: 'evidence-manager',      name: 'エビデンス・マネージャー', icon: Archive,      color: 'text-emerald-400', plan: 'free' },
     ]
@@ -129,18 +129,18 @@ export default function DashboardClient({ user, profile, subscription }: any) {
                 </div>
               </Link>
               <div className="text-left">
-                <p className="text-emerald-400 text-[11px] font-medium tracking-widest uppercase mb-2">Welcome</p>
+                <p className="text-emerald-400 text-[11px] font-medium tracking-tight uppercase mb-2">Welcome</p>
                 <h1 className="text-3xl md:text-4xl font-semibold text-white tracking-tight leading-[1.1]">{displayName} <span className="text-lg md:text-xl text-slate-500 font-normal">さん</span></h1>
                 <p className="text-slate-500 text-sm font-normal mt-2 font-mono">{user?.email}</p>
               </div>
             </div>
             <div className="flex flex-col items-center gap-2">
               <Badge className={`text-sm font-medium px-6 py-2 rounded-full border ${meta.badge} shadow-lg`}>{meta.label}プラン</Badge>
-              <p className="text-slate-600 text-[10px] font-medium tracking-widest uppercase">Plan</p>
+              <p className="text-slate-600 text-[10px] font-medium tracking-tight uppercase">Plan</p>
             </div>
             <div className="flex gap-10">
-              <div className="text-center"><p className="text-4xl font-semibold text-white">{accessibleCount}</p><p className="text-slate-500 text-[10px] font-medium tracking-widest uppercase mt-1">利用可能</p></div>
-              <div className="text-center"><p className="text-4xl font-semibold text-emerald-400">{favCount}</p><p className="text-slate-500 text-[10px] font-medium tracking-widest uppercase mt-1">お気に入り</p></div>
+              <div className="text-center"><p className="text-4xl font-semibold text-white">{accessibleCount}</p><p className="text-slate-500 text-[10px] font-medium tracking-tight uppercase mt-1">利用可能</p></div>
+              <div className="text-center"><p className="text-4xl font-semibold text-emerald-400">{favCount}</p><p className="text-slate-500 text-[10px] font-medium tracking-tight uppercase mt-1">お気に入り</p></div>
             </div>
           </div>
         </div>
