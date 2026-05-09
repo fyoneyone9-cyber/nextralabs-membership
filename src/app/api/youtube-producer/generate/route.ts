@@ -13,12 +13,12 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
   }
 
   // 🚀 憲法：Genspark 本物のAPIキー (gsk-...) 用の通信設定
-  // プロキシエンドポイントを使用し、Bearer形式で送信
+  // X-Api-Keyヘッダーを使用して送信（Genspark標準形式）
   const res = await fetch('https://www.genspark.ai/api/llm_proxy/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${API_KEY}`,
+      'X-Api-Key': API_KEY,
     },
     body: JSON.stringify({
       model: 'gemini-2.0-flash',
