@@ -15,7 +15,7 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
       'Authorization': `Bearer ${API_KEY}`,
     },
     body: JSON.stringify({
-      model: 'gemini-2.0-flash',
+      model: 'gpt-5-mini', // 許可されている最新モデルに切り替え
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
