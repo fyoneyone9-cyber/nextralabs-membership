@@ -124,7 +124,7 @@ export function LoanAdvisor() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-20 text-left border-4 border-emerald-500/50 rounded-[2rem] p-4 md:p-10 shadow-2xl bg-[#050507]">
+    <div className="max-w-4xl mx-auto space-y-6 pb-20 text-left rounded-[2rem] p-4 md:p-10 bg-[#050507]">
       
       {/* ヘッダー */}
       <div className="text-center space-y-3">
