@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import {
@@ -307,7 +307,7 @@ const MasterEngine = () => {
       </div>
 
       <div className="text-center mt-16 opacity-20">
-        <p className="text-xs text-slate-600 tracking-widest">NextraLabs 2026</p>
+        <p className="text-xs text-slate-600 tracking-tight">NextraLabs 2026</p>
       </div>
     </div>
   )
