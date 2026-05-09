@@ -1,3 +1,9 @@
+// ============================================================
+// 🔒 LOCKED — ExamScheduler API route
+// 完成済みツール。NextraLabs様の明示的な指示なしに
+// このファイルを編集・削除・移動することを禁止する。
+// Locked: 2026-05-10
+// ============================================================
 import { NextRequest, NextResponse } from 'next/server'
 
 interface ExamConfig {

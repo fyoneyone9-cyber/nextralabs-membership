@@ -10,6 +10,7 @@
 | ツール名 | ロック日 | 対象ファイル |
 |---|---|---|
 | **PromptMaster** | 2026-05-10 | `src/components/tools/PromptMaster.tsx`<br>`src/app/products/prompt-master/app/page.tsx`<br>`src/app/products/prompt-master/page.tsx` |
+| **ExamScheduler** | 2026-05-10 | `src/components/tools/ExamScheduler.tsx`<br>`src/app/products/exam-scheduler/app/page.tsx`<br>`src/app/products/exam-scheduler/page.tsx`<br>`src/app/api/exam-scheduler/route.ts` |
 
 ---
 
