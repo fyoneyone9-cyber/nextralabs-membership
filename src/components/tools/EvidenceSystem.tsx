@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -44,8 +44,8 @@ export default function EvidenceSystem() {
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-slate-950 text-left">
       <div className="text-center space-y-3">
-        <Badge className="bg-amber-600 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-lg">Nextra Evidence Guardian v1.0-MASTER</Badge>
-        <h1 className="text-5xl md:text-[8rem] font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">Evidence Manager</h1>
+        <Badge className="bg-emerald-600 text-white font-bold tracking-tight px-6 py-1 text-[10px] uppercase rounded-full shadow-lg">Nextra Evidence Guardian v1.0-MASTER</Badge>
+        <h1 className="text-5xl md:text-[8rem] font-bold text-white uppercase tracking-tighter leading-none drop-shadow-2xl">Evidence Manager</h1>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8 animate-in fade-in duration-700">
@@ -54,19 +54,19 @@ export default function EvidenceSystem() {
         <div className="lg:col-span-1 space-y-6">
           <Card className="bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] p-8 shadow-xl relative overflow-hidden">
              <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-2 text-amber-500 font-black italic tracking-widest text-xs uppercase">
+                <div className="flex items-center gap-2 text-emerald-500 font-bold tracking-tight text-xs uppercase">
                   <Activity size={16} className="animate-pulse" /> Surveillance AI
                 </div>
                 <Badge variant="outline" className="text-[10px] border-emerald-500/30 text-emerald-500 animate-pulse uppercase">Active</Badge>
              </div>
              
-             <Button onClick={runOrganization} disabled={isScanning} className="w-full h-24 bg-white text-black hover:bg-amber-500 hover:text-white font-black text-2xl rounded-2xl shadow-xl transition-all flex flex-col items-center justify-center gap-1 group italic active:scale-95">
+             <Button onClick={runOrganization} disabled={isScanning} className="w-full h-24 bg-white text-black hover:bg-emerald-500 hover:text-white font-bold text-2xl rounded-2xl shadow-xl transition-all flex flex-col items-center justify-center gap-1 group active:scale-95">
                 {isScanning ? <Loader2 className="animate-spin" /> : <ShieldCheck size={32} />}
                 <span>CLEAN & PRESERVE</span>
              </Button>
 
              <div className="mt-8 space-y-4">
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800 pb-2 italic">System Protocol</p>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-tight border-b border-slate-800 pb-2 ">System Protocol</p>
                 <p className="text-xs text-slate-400 font-bold leading-relaxed">
                   デスクトップ上の全ての画像をスキャンし、「成功の証拠」のみを選別。エラーや不要な残骸を自動消去し、サブスク実績として永久保存します。
                 </p>
@@ -77,26 +77,26 @@ export default function EvidenceSystem() {
         {/* 📝 CENTER: LIVE FEED */}
         <div className="lg:col-span-2 space-y-8">
           <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-10 md:p-12 shadow-2xl relative overflow-hidden flex flex-col min-h-[600px]">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent opacity-30" />
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-30" />
             
             <div className="flex items-center justify-between mb-8">
                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-amber-600/10 flex items-center justify-center border border-amber-500/20 shadow-inner">
-                    <Layers className="text-amber-500" />
+                  <div className="w-12 h-12 rounded-xl bg-emerald-600/10 flex items-center justify-center border border-emerald-500/20 shadow-inner">
+                    <Layers className="text-emerald-500" />
                   </div>
-                  <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">Filing Terminal</h3>
+                  <h3 className="text-3xl font-bold text-white uppercase tracking-tighter">Filing Terminal</h3>
                </div>
                <div className="flex gap-2">
-                 <Badge className="bg-emerald-500/20 text-emerald-500 border-emerald-500/30 font-black italic">{files.filter(f => f.status === 'MASTER_EVIDENCE').length} SAVED</Badge>
-                 <Badge className="bg-red-500/20 text-red-500 border-red-500/30 font-black italic">{files.filter(f => f.status === 'DELETE').length} PURGED</Badge>
+                 <Badge className="bg-emerald-500/20 text-emerald-500 border-emerald-500/30 font-bold ">{files.filter(f => f.status === 'MASTER_EVIDENCE').length} SAVED</Badge>
+                 <Badge className="bg-red-500/20 text-red-500 border-red-500/30 font-bold ">{files.filter(f => f.status === 'DELETE').length} PURGED</Badge>
                </div>
             </div>
 
             <div className="flex-1 space-y-3 font-mono text-[11px]">
                {isScanning ? (
                  <div className="h-full flex flex-col items-center justify-center space-y-4 opacity-50">
-                    <RefreshCw className="animate-spin text-amber-500" size={48} />
-                    <p className="font-black uppercase tracking-widest animate-pulse">Deep Scanning Desktop...</p>
+                    <RefreshCw className="animate-spin text-emerald-500" size={48} />
+                    <p className="font-bold uppercase tracking-tight animate-pulse">Deep Scanning Desktop...</p>
                  </div>
                ) : files.length > 0 ? (
                  files.map((file, i) => (
@@ -105,20 +105,20 @@ export default function EvidenceSystem() {
                          {file.status === 'MASTER_EVIDENCE' ? <ShieldCheck size={14}/> : <Trash2 size={14}/>}
                          <span className="font-bold truncate max-w-[300px]">{file.name}</span>
                       </div>
-                      <Badge className={`${file.status === 'MASTER_EVIDENCE' ? 'bg-emerald-600' : 'bg-red-600'} text-white text-[8px] font-black italic`}>{file.status}</Badge>
+                      <Badge className={`${file.status === 'MASTER_EVIDENCE' ? 'bg-emerald-600' : 'bg-red-600'} text-white text-[8px] font-bold `}>{file.status}</Badge>
                    </div>
                  ))
                ) : (
-                 <div className="h-full flex flex-col items-center justify-center space-y-6 opacity-20 italic">
+                 <div className="h-full flex flex-col items-center justify-center space-y-6 opacity-20 ">
                     <Archive size={80} />
-                    <p className="text-xl font-black uppercase tracking-widest">Awaiting Command...</p>
+                    <p className="text-xl font-bold uppercase tracking-tight">Awaiting Command...</p>
                  </div>
                )}
             </div>
 
             {status === 'COMPLETED' && (
               <div className="mt-8 pt-8 border-t border-slate-800 animate-in slide-in-from-bottom-4">
-                 <Button onClick={() => setStatus('IDLE')} className="w-full h-16 bg-white text-black hover:bg-amber-500 hover:text-white font-black rounded-2xl flex items-center justify-center gap-3 uppercase italic transition-all shadow-xl">
+                 <Button onClick={() => setStatus('IDLE')} className="w-full h-12 bg-white text-black hover:bg-emerald-500 hover:text-white font-bold rounded-2xl flex items-center justify-center gap-3 uppercase transition-all shadow-xl">
                     <CheckCircle2 size={20} /> Finish Organization
                  </Button>
               </div>
@@ -128,7 +128,7 @@ export default function EvidenceSystem() {
       </div>
       
       <DebugPanel data={{ status, fileCount: files.length }} toolId="evidence-manager" />
-      <div className="text-center opacity-20 mt-20 font-black uppercase tracking-[0.5em] italic text-[10px]">Subscriber Assets Engine • NextraLabs 2026</div>
+      <div className="text-center opacity-20 mt-20 font-bold uppercase tracking-[0.5em] text-[10px]">Subscriber Assets Engine • NextraLabs 2026</div>
     </div>
   )
 }
