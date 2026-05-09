@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import {
@@ -123,7 +123,7 @@ const MasterEngine = () => {
                 </button>
               ))}
             </div>
-            <p className="text-sm font-medium text-slate-400 tracking-widest">TOUCH START TO CHECK-IN</p>
+            <p className="text-sm font-medium text-slate-400 tracking-tight">TOUCH START TO CHECK-IN</p>
             {/* STARTボタン */}
             <button
               onClick={() => setActiveTab('search')}
@@ -266,7 +266,7 @@ const MasterEngine = () => {
                     className="flex items-center gap-3 p-3 rounded-lg"
                     style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)' }}
                   >
-                    <PenTool size={14} className="text-indigo-400 shrink-0" />
+                    <PenTool size={14} className="text-emerald-400 shrink-0" />
                     <span className="text-xs text-slate-400">署名を行ってください</span>
                   </div>
                   <button
@@ -435,7 +435,7 @@ const MasterEngine = () => {
       </div>
 
       <div className="text-center mt-16 opacity-20">
-        <p className="text-xs text-slate-600 tracking-widest">Nextra AI Autonomous Front System · NextraLabs 2026</p>
+        <p className="text-xs text-slate-600 tracking-tight">Nextra AI Autonomous Front System · NextraLabs 2026</p>
       </div>
     </div>
   )
