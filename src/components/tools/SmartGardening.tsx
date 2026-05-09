@@ -85,7 +85,7 @@ export default function SmartGardening() {
   return (
     <div className="min-h-screen bg-[#050507] text-slate-100 font-sans">
       {/* ヘッダー */}
-      <div className="border-2 border-emerald-500 shadow-[0_0_60px_rgba(16,185,129,0.15)] rounded-2xl mx-4 mt-6 mb-8 p-6 md:p-10 bg-[#0a0a0c] max-w-4xl md:mx-auto">
+      <div className="rounded-2xl mx-4 mt-6 mb-8 p-6 md:p-10 bg-[#0a0a0c] max-w-4xl md:mx-auto">
         <div className="flex items-center gap-4 mb-2">
           <div className="p-3 bg-emerald-500 rounded-xl shadow-[0_0_16px_rgba(16,185,129,0.4)]">
             <Sprout className="h-7 w-7 text-slate-950" />
