@@ -12,9 +12,9 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
     throw new Error('APIキー(GSK_API_KEY)が設定されていません。VercelのEnvironment Variables設定を確認してください。');
   }
 
-  // ⚡ 憲法：Google Gemini OpenAI 互換エンドポイントへ直接接続（401エラー回避の最終手段）
-  // GSK_API_KEYがGoogle形式(AIza...)である場合、直接Googleのエンドポイントを叩くのが最も確実です
-  const res = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
+  // 🚀 憲法：Genspark 本物のAPIキー (gsk-...) 用の通信設定
+  // プロキシエンドポイントを使用し、Bearer形式で送信
+  const res = await fetch('https://www.genspark.ai/api/llm_proxy/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
