@@ -336,14 +336,19 @@ function YoutubeProducerApp() {
                       <button
                         key={g.id}
                         onClick={() => setGenre(g.id)}
-                        className={`w-full p-4 rounded-xl font-black italic text-sm text-left border-2 transition-all flex items-center justify-between ${
+                        className={`w-full p-5 rounded-2xl font-black italic text-left border-2 transition-all relative overflow-hidden group/btn ${
                           genre === g.id 
                             ? 'bg-emerald-500 border-emerald-400 text-slate-950 shadow-[0_0_20px_rgba(16,185,129,0.3)] scale-[1.02]' 
                             : 'bg-white/5 border-white/5 text-slate-400 hover:border-white/20'
                         }`}
                       >
-                        {g.label}
-                        {genre === g.id && <CheckCircle2 size={16} />}
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-lg uppercase tracking-tighter">{g.label}</span>
+                          {genre === g.id && <CheckCircle2 size={20} />}
+                        </div>
+                        <p className={`text-[10px] font-bold leading-tight ${genre === g.id ? 'text-slate-900' : 'text-slate-500 group-hover/btn:text-slate-300'}`}>
+                          {g.prompt}
+                        </p>
                       </button>
                     ))}
                   </div>
