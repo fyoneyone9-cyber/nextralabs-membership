@@ -224,14 +224,22 @@ function YoutubeProducerApp() {
             <div className="grid md:grid-cols-2 gap-16">
               <div className="space-y-10"><div className="flex items-center justify-between border-b-4 border-emerald-500/20 pb-6"><h3 className="text-3xl font-black text-white italic uppercase flex items-center gap-4"><Users className="text-emerald-400 h-10 w-10" /> 登場人物プロンプト</h3><Button 
                 onClick={() => { 
-                  const preset = "必ず画像を制作して下さい\n\n【キャラクター設定】\n";
+                  const preset = "必ず画像を制作して下さい\n名前を出力して下さい\n\n【キャラクター設定】\n";
                   const txt = characters?.map(c => `${c.name}: ${c.imagePrompt}`).join('\n\n'); 
                   navigator.clipboard.writeText(preset + (txt || '')); 
-                  alert("指示文と全プロンプトを一括コピーしました！"); 
+                  alert("プリセット指示文と全プロンプトを一括コピーしました！"); 
                 }} 
                 className="h-16 px-10 bg-emerald-500 text-slate-950 font-black italic rounded-2xl text-lg shadow-[0_10px_30px_rgba(16,185,129,0.3)] hover:bg-emerald-400 transition-all active:scale-95"
-              >一括コピー 📋</Button></div><div className="space-y-8">{characters?.map((char, i) => (<Card key={i} className="bg-white/5 border-2 border-white/10 rounded-[2.5rem] p-10 space-y-6 shadow-xl relative overflow-hidden"><div className="flex justify-between items-center"><h4 className="font-black text-emerald-400 italic text-3xl">{char.name}</h4><Button onClick={() => { navigator.clipboard.writeText(char.imagePrompt); alert("コピーしました！"); }} className="h-12 bg-white/10 text-white border-2 border-white/10 hover:bg-white/20 font-black italic text-sm rounded-xl">個別コピー</Button></div><p className="text-sm text-emerald-500/60 font-mono break-all leading-relaxed bg-black/40 p-6 rounded-2xl border border-white/5 italic">{char.imagePrompt}</p></Card>))}</div></div>
-              <div className="space-y-10"><h3 className="text-3xl font-black text-white italic uppercase flex items-center gap-4 border-b-4 border-emerald-500/20 pb-6"><ImageIcon className="text-emerald-400 h-10 w-10" /> サムネイル構成案</h3><div className="space-y-8">{thumbnails?.map((thumb, i) => (<Card key={i} className="bg-white/5 border-2 border-white/10 rounded-[2.5rem] p-10 space-y-6 shadow-xl relative overflow-hidden"><div className="flex items-center justify-between gap-4"><Badge className="bg-red-600 text-white border-0 font-black italic text-lg px-6 py-2 rounded-lg">案 {i+1}</Badge><Button onClick={() => { navigator.clipboard.writeText(thumb.imagePrompt); alert("コピーしました！"); }} className="h-12 bg-white/10 text-white border-2 border-white/10 hover:bg-white/20 font-black italic text-sm rounded-xl shrink-0">コピー</Button></div><h4 className="text-xl font-black text-white italic border-l-4 border-red-500 pl-4">{thumb.title}</h4><p className="text-sm text-slate-400 font-mono italic leading-relaxed bg-black/40 p-6 rounded-2xl border border-white/5">{thumb.imagePrompt}</p></Card>))}</div></div>
+              >一括コピー 📋</Button></div><div className="space-y-8">{characters?.map((char, i) => (<Card key={i} className="bg-white/5 border-2 border-white/10 rounded-[2.5rem] p-10 space-y-6 shadow-xl relative overflow-hidden"><div className="flex justify-between items-center"><h4 className="font-black text-emerald-400 italic text-3xl">{char.name}</h4><Button onClick={() => { 
+                const preset = "必ず画像を制作して下さい\n名前を出力して下さい\n\n";
+                navigator.clipboard.writeText(preset + char.imagePrompt); 
+                alert("プリセット指示文とプロンプトをコピーしました！"); 
+              }} className="h-12 bg-white/10 text-white border-2 border-white/10 hover:bg-white/20 font-black italic text-sm rounded-xl">個別コピー</Button></div><p className="text-sm text-emerald-500/60 font-mono break-all leading-relaxed bg-black/40 p-6 rounded-2xl border border-white/5 italic">{char.imagePrompt}</p></Card>))}</div></div>
+              <div className="space-y-10"><h3 className="text-3xl font-black text-white italic uppercase flex items-center gap-4 border-b-4 border-emerald-500/20 pb-6"><ImageIcon className="text-emerald-400 h-10 w-10" /> サムネイル構成案</h3><div className="space-y-8">{thumbnails?.map((thumb, i) => (<Card key={i} className="bg-white/5 border-2 border-white/10 rounded-[2.5rem] p-10 space-y-6 shadow-xl relative overflow-hidden"><div className="flex items-center justify-between gap-4"><Badge className="bg-red-600 text-white border-0 font-black italic text-lg px-6 py-2 rounded-lg">案 {i+1}</Badge><Button onClick={() => { 
+                const preset = "YOUTUBEのサムネイル用なので映える構成にして下さい。 もちろん映えるロゴ付き\n\n";
+                navigator.clipboard.writeText(preset + thumb.imagePrompt); 
+                alert("プリセット指示文とサムネイルプロンプトをコピーしました！"); 
+              }} className="h-12 bg-white/10 text-white border-2 border-white/10 hover:bg-white/20 font-black italic text-sm rounded-xl shrink-0">コピー</Button></div><h4 className="text-xl font-black text-white italic border-l-4 border-red-500 pl-4">{thumb.title}</h4><p className="text-sm text-slate-400 font-mono italic leading-relaxed bg-black/40 p-6 rounded-2xl border border-white/5">{thumb.imagePrompt}</p></Card>))}</div></div>
             </div>
             <div className="flex justify-center pt-10"><Button onClick={() => { setActiveTab('music'); window.scrollTo(0,0); }} className="h-32 px-24 bg-white text-slate-950 font-black text-4xl rounded-[3rem] shadow-2xl hover:bg-slate-100 transition-all italic uppercase group active:scale-95"><span className="flex items-center gap-4">ステップ 5: 音楽生成へ進む <ChevronRight className="h-10 w-10 group-hover:translate-x-2 transition-transform" /></span></Button></div>
           </TabsContent>
@@ -241,7 +249,7 @@ function YoutubeProducerApp() {
               <h3 className="text-4xl font-black text-indigo-400 italic uppercase tracking-tighter">ステップ 5: サウンドプロデュース（Suno連携）</h3>
               <div className="flex flex-col items-center gap-8">
                 <p className="text-2xl text-slate-300 font-bold italic max-w-3xl leading-relaxed">動画のムードに合わせた音楽プロンプトを生成しました。Suno AIで最高品質のBGMを作成しましょう。</p>
-                <a href="https://suno.com/discover?campaign_id=japan&utm_source=google&utm_medium=cpc&utm_campaign=22504148374&utm_term=ai+%E4%BD%9C%E6%9B%B2+%E7%84%A1%E6%96%99&utm_content=749703257181" target="_blank" className="bg-indigo-600 text-white px-16 py-8 rounded-[2.5rem] font-black text-3xl shadow-[0_20px_60px_rgba(99,102,241,0.3)] hover:bg-indigo-500 transition-all flex items-center gap-6 italic uppercase scale-110 active:scale-95">
+                <a href="https://suno.com/discover?campaign_id=japan&utm_source=google&utm_medium=cpc&utm_campaign=22504148374&utm_term=ai+%E4%BD%9C%E6%9B%B2+%E7%84%A1%E6%96%99&utm_content=749703257181" target="_blank" className="bg-indigo-600 text-white px-16 py-8 rounded-[2.5rem] font-black text-3xl shadow-[0_20px_60px_rgba(99,102,241,0.3)] hover:bg-indigo-500 transition-all flex items-center gap-6 italic uppercase scale-110 active:scale-95 truncate max-w-full">
                   <Music size={48} /> Suno AI で作曲を開始する ➔
                 </a>
               </div>
