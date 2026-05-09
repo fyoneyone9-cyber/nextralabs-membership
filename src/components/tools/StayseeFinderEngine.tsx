@@ -35,6 +35,45 @@ const MasterEngine = () => {
   const [ledgerOccupation, setLedgerOccupation] = useState('')
   const [ledgerTravel, setLedgerTravel] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
+  
+  // カメラ関連
+  const [isCameraOpen, setIsCameraOpen] = useState(false)
+  const [cameraError, setCameraError] = useState<string | null>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const streamRef = useRef<MediaStream | null>(null)
+
+  const startCamera = async () => {
+    setCameraError(null)
+    setIsCameraOpen(true)
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false })
+      streamRef.current = stream
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream
+        videoRef.current.play()
+      }
+    } catch {
+      setCameraError('カメラへのアクセスが拒否されました')
+    }
+  }
+
+  const closeCamera = () => {
+    streamRef.current?.getTracks().forEach(t => t.stop())
+    setIsCameraOpen(false)
+    setCameraError(null)
+  }
+
+  const capturePhoto = () => {
+    if (videoRef.current && canvasRef.current) {
+      const ctx = canvasRef.current.getContext('2d')
+      canvasRef.current.width = videoRef.current.videoWidth
+      canvasRef.current.height = videoRef.current.videoHeight
+      ctx?.drawImage(videoRef.current, 0, 0)
+      runCheckin()
+      closeCamera()
+    }
+  }
 
   useEffect(() => {
     setIsMounted(true)
@@ -189,12 +228,25 @@ const MasterEngine = () => {
                 style={{ background: '#13141f', border: '1px solid #1e293b' }}
               >
                 <p className="text-xs font-semibold text-slate-500">Step 1 — ID Scan</p>
+                
+                {/* カメラモーダル */}
+                {isCameraOpen && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90">
+                    <div className="w-full max-w-sm space-y-4">
+                      <video ref={videoRef} autoPlay playsInline className="w-full rounded-xl" />
+                      <canvas ref={canvasRef} className="hidden" />
+                      <div className="flex gap-2">
+                        <button onClick={closeCamera} className="flex-1 py-3 rounded-lg bg-slate-800 text-sm font-bold text-white">キャンセル</button>
+                        <button onClick={capturePhoto} className="flex-1 py-3 rounded-lg bg-emerald-600 text-sm font-bold text-white">撮影する</button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div
                   className="rounded-lg aspect-video flex flex-col items-center justify-center gap-3 cursor-pointer transition-colors"
                   style={{ border: '2px dashed #334155', background: '#0a0b0f' }}
-                  onClick={() => fileInputRef.current?.click()}
-                  onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.4)')}
-                  onMouseLeave={e => (e.currentTarget.style.borderColor = '#334155')}
+                  onClick={startCamera}
                 >
                   <input type="file" ref={fileInputRef} onChange={runCheckin} className="hidden" accept="image/*" />
                   {checkinStatus === 'SCANNING' && <Loader2 size={36} className="text-emerald-400 animate-spin" />}
