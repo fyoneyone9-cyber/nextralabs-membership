@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -134,7 +134,7 @@ export function DebugPanel({ data }: { data?: any }) {
             <div className="py-10 space-y-10 text-center">
               <div className="space-y-4">
                 <Terminal className="text-emerald-500 mx-auto" size={60} />
-                <h3 className="text-xl font-black text-white italic uppercase tracking-tighter">System Authentication</h3>
+                <h3 className="text-xl font-bold text-white uppercase tracking-tighter">System Authentication</h3>
               </div>
               
               <div className="space-y-4 px-4">
@@ -143,40 +143,40 @@ export function DebugPanel({ data }: { data?: any }) {
                   value={password} 
                   onChange={(e) => setPassword(e.target.value)} 
                   placeholder="PW" 
-                  className="h-16 bg-slate-900/50 border-2 border-white/10 rounded-2xl text-white text-center text-3xl font-black outline-none focus:border-emerald-500 transition-all" 
+                  className="h-12 bg-slate-900/50 border-2 border-white/10 rounded-2xl text-white text-center text-3xl font-bold outline-none focus:border-emerald-500 transition-all" 
                   onKeyDown={(e) => e.key === 'Enter' && password === '2026' && setIsAuth(true)} 
                   autoFocus 
                 />
                 <Button 
                   onClick={() => password === '2026' ? setIsAuth(true) : alert('ERR')} 
-                  className="w-full h-20 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-2xl rounded-2xl shadow-xl transition-all active:scale-95 uppercase italic"
+                  className="w-full h-20 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-2xl rounded-2xl shadow-xl transition-all active:scale-95 uppercase "
                 >
                   Unlock <Unlock className="ml-2 h-6 w-6" />
                 </Button>
               </div>
               
-              <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest italic">Authorized Personnel Only</p>
+              <p className="text-[10px] text-slate-600 font-bold uppercase tracking-tight ">Authorized Personnel Only</p>
             </div>
           ) : (
             <div className="space-y-6 animate-in fade-in">
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                <div className="flex items-center gap-3"><ShieldCheck className="h-6 w-6 text-emerald-500" /><span className="text-xl font-black text-white italic">監視パネル v15.2 ABSOLUTE</span></div>
-                <Button onClick={runApiScan} disabled={isTesting} className="h-10 bg-amber-600 text-white text-[10px] font-black rounded-xl px-6 flex items-center gap-2 shadow-lg"><Zap size={14} /> スキャン開始</Button>
+                <div className="flex items-center gap-3"><ShieldCheck className="h-6 w-6 text-emerald-500" /><span className="text-xl font-bold text-white ">監視パネル v15.2 ABSOLUTE</span></div>
+                <Button onClick={runApiScan} disabled={isTesting} className="h-10 bg-emerald-600 text-white text-[10px] font-bold rounded-xl px-6 flex items-center gap-2 shadow-lg"><Zap size={14} /> スキャン開始</Button>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                  {apiHealth && Object.keys(apiHealth).map(id => (
                    <div key={id} className={`p-3 rounded-xl border transition-all flex flex-col gap-1 ${apiHealth[id].ok ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-red-500/5 border-red-500/10'}`}>
-                      <p className="text-[8px] font-black text-slate-500">{apiHealth[id].name}</p>
-                      <p className={`text-lg font-black italic ${apiHealth[id].ok ? 'text-white' : 'text-red-400'}`}>{apiHealth[id].status}</p>
+                      <p className="text-[8px] font-bold text-slate-500">{apiHealth[id].name}</p>
+                      <p className={`text-lg font-bold ${apiHealth[id].ok ? 'text-white' : 'text-red-400'}`}>{apiHealth[id].status}</p>
                    </div>
                  ))}
               </div>
 
               <div className="space-y-2">
                 <div className="flex justify-between items-center px-1">
-                   <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest italic border-l-2 border-emerald-500 pl-2">System Absolute Logs</p>
-                   <Button onClick={copyReport} className="h-7 bg-white/5 text-slate-400 text-[8px] font-black rounded-lg px-3 flex items-center gap-1 border border-white/5">
+                   <p className="text-[9px] font-bold text-slate-600 uppercase tracking-tight border-l-2 border-emerald-500 pl-2">System Absolute Logs</p>
+                   <Button onClick={copyReport} className="h-7 bg-white/5 text-slate-400 text-[8px] font-bold rounded-lg px-3 flex items-center gap-1 border border-white/5">
                       {copied ? <CheckCircle2 size={10} className="text-emerald-500" /> : <Copy size={10} />} {copied ? 'コピー成功' : 'レポートをコピー'}
                    </Button>
                 </div>
@@ -193,8 +193,8 @@ export function DebugPanel({ data }: { data?: any }) {
               </div>
 
               <div className="flex justify-between items-center pt-2">
-                 <button onClick={() => setIsOpen(false)} className="text-[10px] text-slate-700 hover:text-white font-black italic underline">終了</button>
-                 <button onClick={() => router.push('/port')} className="text-[10px] text-emerald-500 font-black flex items-center gap-1"><Globe size={10}/> PORTFOLIO</button>
+                 <button onClick={() => setIsOpen(false)} className="text-[10px] text-slate-700 hover:text-white font-bold underline">終了</button>
+                 <button onClick={() => router.push('/port')} className="text-[10px] text-emerald-500 font-bold flex items-center gap-1"><Globe size={10}/> PORTFOLIO</button>
               </div>
             </div>
           )}
