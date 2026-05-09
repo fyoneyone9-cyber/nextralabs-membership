@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React, { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -39,9 +39,9 @@ export default function ApiStatusBoard() {
       <div className="bg-emerald-500/5 p-6 border-b border-white/5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Activity className="h-5 w-5 text-emerald-400 animate-pulse" />
-          <h3 className="text-sm font-black text-white uppercase italic tracking-[0.2em]">Nextra API Neural Link</h3>
+          <h3 className="text-sm font-bold text-white uppercase tracking-[0.2em]">Nextra API Neural Link</h3>
         </div>
-        <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 text-[8px] font-black uppercase">Realtime Monitor</Badge>
+        <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 text-[8px] font-bold uppercase">Realtime Monitor</Badge>
       </div>
       <CardContent className="p-6 space-y-4">
         {Object.entries(status).map(([id, info]: [string, any]) => (
@@ -49,15 +49,15 @@ export default function ApiStatusBoard() {
             <div className="flex justify-between items-center mb-2">
               <div className="flex items-center gap-2">
                 <Wifi className={`h-3 w-3 ${info.status === 'online' ? 'text-emerald-400' : 'text-slate-600'}`} />
-                <span className="text-[10px] font-black text-slate-300 uppercase italic">{id} Engine</span>
+                <span className="text-[10px] font-bold text-slate-300 uppercase ">{id} Engine</span>
               </div>
-              <span className={`text-[10px] font-bold italic ${info.status === 'online' ? 'text-emerald-500' : 'text-slate-500'}`}>
+              <span className={`text-[10px] font-bold ${info.status === 'online' ? 'text-emerald-500' : 'text-slate-500'}`}>
                 {info.status === 'online' ? '● CONNECTED' : '○ DISCONNECTED'}
               </span>
             </div>
             <div className="flex justify-between items-end">
               <div className="text-[9px] font-bold text-slate-500 uppercase">{info.model || 'Verifying...'}</div>
-              <div className="text-xs font-black text-white italic">{info.latency} <span className="text-[8px] text-slate-600 not-italic">LATENCY</span></div>
+              <div className="text-xs font-bold text-white ">{info.latency} <span className="text-[8px] text-slate-600 not-">LATENCY</span></div>
             </div>
           </div>
         ))}
@@ -65,7 +65,7 @@ export default function ApiStatusBoard() {
         <div className="pt-4 border-t border-white/5">
            <div className="flex items-center gap-2 text-emerald-500/50">
              <ShieldCheck size={12} />
-             <p className="text-[8px] font-black uppercase tracking-widest">Nextra Intelligence Integrity Verified</p>
+             <p className="text-[8px] font-bold uppercase tracking-tight">Nextra Intelligence Integrity Verified</p>
            </div>
         </div>
       </CardContent>
