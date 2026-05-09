@@ -65,7 +65,7 @@ export default function UniversalConverterApp() {
 
         <div className="grid grid-cols-3 gap-2">
           {[{ id: 'video', label: '動画', icon: Video }, { id: 'image', label: '画像', icon: ImageIcon }, { id: 'pdf', label: 'PDF', icon: FileText }].map(m => (
-            <Button key={m.id} onClick={() => handleModeChange(m.id as any)} className={`h-20 rounded-2xl font-black text-lg border-2 ${mode === m.id ? 'bg-emerald-600 border-emerald-400 text-white shadow-lg' : 'bg-black/40 border-white/5 text-slate-500'}`}>
+            <Button key={m.id} variant="ghost" onClick={() => handleModeChange(m.id as any)} className={`h-20 rounded-2xl font-black text-lg border-2 ${mode === m.id ? 'bg-emerald-600 border-emerald-400 text-white shadow-lg' : 'bg-black/40 border-white/5 text-slate-500'}`}>
               <m.icon className="mr-2 h-6 w-6" /> {m.label}
             </Button>
           ))}
@@ -76,7 +76,7 @@ export default function UniversalConverterApp() {
             <>
               <div className="flex flex-wrap gap-2 justify-center">
                 {(mode === 'video' ? ['mp4', 'webm', 'gif', 'mp3'] : mode === 'image' ? ['webp', 'png', 'jpg', 'ico'] : ['pdf-min']).map(f => (
-                  <Button key={f} onClick={() => setTargetFormat(f)} className={`h-10 px-6 rounded-lg text-xs font-black uppercase border-2 ${targetFormat === f ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400' : 'border-white/5 text-slate-600'}`}>{f === 'mp3' ? '音声抽出' : f.toUpperCase()}</Button>
+                  <Button key={f} variant="ghost" onClick={() => setTargetFormat(f)} className={`h-10 px-6 rounded-lg text-xs font-black uppercase border-2 ${targetFormat === f ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400' : 'bg-black/40 border-white/5 text-slate-600'}`}>{f === 'mp3' ? '音声抽出' : f.toUpperCase()}</Button>
                 ))}
               </div>
               <div className="w-full h-48 bg-black/40 border-2 border-dashed border-white/10 rounded-2xl flex items-center justify-center cursor-pointer hover:border-emerald-500/50 transition-all relative text-center">
@@ -86,13 +86,13 @@ export default function UniversalConverterApp() {
                   <p className="text-xs text-slate-500 font-bold uppercase">{file ? `${(file.size/1024/1024).toFixed(1)}MB` : 'MAX 100MB'}</p>
                 </div>
               </div>
-              <Button onClick={handleProcess} disabled={isProcessing || !file} className="w-full h-24 bg-emerald-600 hover:bg-emerald-50 text-slate-950 font-black text-3xl rounded-[2rem] shadow-xl uppercase italic">{isProcessing ? <Loader2 className="animate-spin h-10 w-10 mx-auto" /> : 'AI変換を開始する 🚀'}</Button>
+              <Button variant="ghost" onClick={handleProcess} disabled={isProcessing || !file} className="w-full h-24 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-3xl rounded-[2rem] shadow-xl uppercase italic">{isProcessing ? <Loader2 className="animate-spin h-10 w-10 mx-auto" /> : 'AI変換を開始する 🚀'}</Button>
             </>
           ) : (
             <div className="space-y-8 text-center">
               <CheckCircle2 className="h-20 w-20 text-emerald-500 mx-auto" />
               <h2 className="text-4xl font-black text-white italic uppercase leading-none">完了しました</h2>
-              <Button onClick={handleDownload} className="h-20 px-12 bg-white text-emerald-950 font-black text-2xl rounded-2xl shadow-xl italic"><Download className="mr-3 h-6 w-6" /> ファイルを保存</Button>
+              <Button variant="ghost" onClick={handleDownload} className="h-20 px-12 bg-white text-emerald-950 font-black text-2xl rounded-2xl shadow-xl italic"><Download className="mr-3 h-6 w-6" /> ファイルを保存</Button>
               <br/><Button variant="ghost" onClick={() => { setResultUrl(null); setDownloadUrl(null); }} className="text-slate-500 font-bold italic underline">他のファイルを処理</Button>
             </div>
           )}

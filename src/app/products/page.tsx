@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useSearchParams } from 'next/navigation'
 import React, { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
@@ -77,10 +77,6 @@ function ProductCard({ product, isFav, onToggleFav }: {
 
   return (
     <Card className="h-full bg-[#13141f] transition-all duration-300 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group shadow-xl relative border border-white/5 hover:border-white/20">
-      {/* SECURITY LINE for Locked Mastermodels */}
-      {(product.id.startsWith('trend-stock') || product.id.startsWith('loan-advisor') || product.id.startsWith('ai-sidejob') || product.id.startsWith('staysee-ai-finder') || product.id.startsWith('office-politics-graph')) && (
-        <div className="absolute top-0 left-0 w-full h-[3px] bg-emerald-500 z-30 shadow-[0_0_15px_rgba(16,185,129,0.8)]" />
-      )}
       <button
         onClick={e => onToggleFav(e, product.id)}
         className={`absolute top-4 right-4 z-20 p-1.5 rounded-xl transition-all ${

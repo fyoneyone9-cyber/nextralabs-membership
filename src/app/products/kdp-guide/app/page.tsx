@@ -187,6 +187,7 @@ export default function KdpGuideApp() {
             </div>
           </div>
           <div className="flex flex-col items-end gap-2">
+            <Badge className="bg-emerald-500 text-white font-semibold px-4 py-1.5 text-sm rounded-full flex items-center gap-1.5">✅ 完成</Badge>
             <Badge className="bg-orange-600 text-white font-black italic px-6 py-2 text-sm rounded-full">FREE TOOL</Badge>
           </div>
         </div>

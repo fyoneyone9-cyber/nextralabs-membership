@@ -131,6 +131,7 @@ export function LoanAdvisor() {
         <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-black tracking-widest uppercase italic">
           <ShieldCheck size={14} /> AI Money Defense System
         </div>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500 text-white text-xs font-semibold">✅ 完成</div>
         <h1 className="text-4xl md:text-5xl font-black text-white uppercase italic tracking-tighter">
           借金完済・おまとめ診断
         </h1>
