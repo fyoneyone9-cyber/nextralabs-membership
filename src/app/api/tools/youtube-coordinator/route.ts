@@ -59,7 +59,7 @@ async function analyzeFashionWithGemini(
   mimeType: string,
   videoTitle: string
 ): Promise<string[]> {
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
   const prompt = `この画像はYouTube動画「${videoTitle}」のサムネイルです。
 画像に写っているファッションアイテム（服・靴・バッグ・アクセサリー等）を日本語で列挙してください。
