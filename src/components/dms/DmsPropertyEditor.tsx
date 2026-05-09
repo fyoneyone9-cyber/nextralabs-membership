@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { 
@@ -17,8 +17,8 @@ interface DmsPropertyEditorProps {
 
 const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose, isDarkMode }) => {
   const inputClass = "w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm font-bold focus:outline-none focus:border-emerald-500/50 text-white transition-all";
-  const labelClass = "text-[10px] font-black text-gray-500 mb-1.5 block uppercase tracking-[0.15em] ml-1";
-  const sectionTitleClass = "text-lg font-black tracking-tight border-l-4 border-emerald-500 pl-4 mb-8 flex items-center gap-2 text-white uppercase italic";
+  const labelClass = "text-[10px] font-bold text-gray-500 mb-1.5 block uppercase tracking-[0.15em] ml-1";
+  const sectionTitleClass = "text-lg font-bold tracking-tight border-l-4 border-emerald-500 pl-4 mb-8 flex items-center gap-2 text-white uppercase ";
 
   const Toggle = ({ enabled = false }) => (
     <div className={`w-12 h-6 rounded-full relative cursor-pointer transition-all duration-300 ${enabled ? 'bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'bg-white/10'}`}>
@@ -36,16 +36,16 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
             <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20">
                <Building size={20} className="text-emerald-500" />
             </div>
-            <h2 className="text-sm font-black text-gray-500 flex items-center gap-2">
+            <h2 className="text-sm font-bold text-gray-500 flex items-center gap-2">
               PROPERTY <ChevronRight size={14} className="text-gray-700" /> 
-              <span className="text-white text-lg tracking-tighter uppercase italic">{property?.name || 'ビジネスホテルアップル'}</span>
+              <span className="text-white text-lg tracking-tighter uppercase ">{property?.name || 'ビジネスホテルアップル'}</span>
             </h2>
           </div>
           <div className="flex items-center gap-4">
              {['プラン情報', '支払情報', 'アンケート'].map(t => (
-               <button key={t} className="px-6 py-2 bg-white/5 hover:bg-white/10 text-[10px] font-black text-gray-300 rounded-full border border-white/10 transition-all">{t}</button>
+               <button key={t} className="px-6 py-2 bg-white/5 hover:bg-white/10 text-[10px] font-bold text-gray-300 rounded-full border border-white/10 transition-all">{t}</button>
              ))}
-             <button className="px-6 py-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white text-[10px] font-black rounded-full border border-red-500/20 transition-all flex items-center gap-2">
+             <button className="px-6 py-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white text-[10px] font-bold rounded-full border border-red-500/20 transition-all flex items-center gap-2">
                <Trash2 size={14} /> DELETE
              </button>
              <button onClick={onClose} className="ml-4 p-2 hover:bg-white/10 rounded-full transition-colors text-gray-500">
@@ -58,7 +58,7 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
           
           {/* Section 1: Basic Information (Images 1 & 2) */}
           <section className="space-y-12">
-            <div className="bg-blue-500/5 border border-blue-500/20 p-6 rounded-2xl flex items-center gap-4 text-blue-400">
+            <div className="bg-emerald-500/5 border border-emerald-500/20 p-6 rounded-2xl flex items-center gap-4 text-blue-400">
                <Info size={20} />
                <p className="text-xs font-bold leading-relaxed">※ の項目は、PMSと連携している場合は自動で同期されます。DMS上での手動設定は不要です。</p>
             </div>
@@ -114,7 +114,7 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
             </div>
             
             <div className="bg-emerald-500/5 border border-emerald-500/20 p-8 rounded-3xl space-y-4">
-               <div className="flex gap-3 text-emerald-400 font-black text-xs uppercase tracking-[0.2em]">
+               <div className="flex gap-3 text-emerald-400 font-bold text-xs uppercase tracking-[0.2em]">
                   <HelpCircle size={18} /> 本人確認通話の条件
                </div>
                <p className="text-xs text-gray-500 leading-relaxed pl-8">
@@ -173,7 +173,7 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
                    <label className={labelClass}>{img.label}</label>
                    <div className="w-full h-48 border-2 border-dashed border-white/10 rounded-[32px] bg-white/5 hover:bg-white/10 transition-all flex flex-col items-center justify-center text-gray-600 group cursor-pointer">
                       <Image size={32} className="mb-2 opacity-20 group-hover:opacity-40" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">{img.sub}</span>
+                      <span className="text-[10px] font-bold uppercase tracking-tight">{img.sub}</span>
                    </div>
                  </div>
                ))}
@@ -203,10 +203,10 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
 
           {/* Footer - Image 6 Style */}
           <div className="sticky bottom-0 bg-[#050508] border-t border-white/5 p-10 flex justify-end gap-5 shadow-[0_-30px_60px_rgba(0,0,0,0.8)] z-40">
-            <button onClick={onClose} className="px-12 py-4 bg-white/5 hover:bg-white/10 text-gray-400 text-xs font-black rounded-2xl border border-white/10 transition-all uppercase tracking-widest">
+            <button onClick={onClose} className="px-12 py-4 bg-white/5 hover:bg-white/10 text-gray-400 text-xs font-bold rounded-2xl border border-white/10 transition-all uppercase tracking-tight">
               ✕ Cancel
             </button>
-            <button onClick={onClose} className="px-24 py-4 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-black rounded-2xl shadow-2xl shadow-emerald-500/20 transition-all uppercase tracking-[0.3em] flex items-center gap-3">
+            <button onClick={onClose} className="px-24 py-4 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold rounded-2xl shadow-2xl shadow-emerald-500/20 transition-all uppercase tracking-[0.3em] flex items-center gap-3">
               💾 UPDATE PROPERTY
             </button>
           </div>
