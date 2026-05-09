@@ -231,26 +231,37 @@ function YoutubeProducerApp() {
         {error && <div className="bg-red-500/10 border-2 border-red-500/50 rounded-2xl p-6 flex items-center gap-4 text-red-500 font-black text-xl italic"><AlertCircle size={32} />{error}</div>}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-12">
-          <TabsList className="grid grid-cols-6 h-28 bg-white/5 border border-white/10 rounded-[2.5rem] p-2 gap-4 shadow-2xl relative overflow-hidden backdrop-blur-md">
+          {/* ── カスタムタブナビ（TabsTriggerのデフォルトスタイル干渉を回避） ── */}
+          <div className="grid grid-cols-6 h-28 bg-white/5 border border-white/10 rounded-[2.5rem] p-2 gap-2 shadow-2xl relative overflow-hidden backdrop-blur-md">
             {[
-              { id: 'input', label: '入力', icon: Mic },
-              { id: 'genre', label: '戦略', icon: Zap },
-              { id: 'script', label: '台本', icon: FileText },
-              { id: 'visual', label: '画像', icon: ImageIcon },
-              { id: 'music', label: '音楽', icon: Music },
-              { id: 'strategy', label: 'SEO', icon: Search }
-            ].map((tab, i) => (
-              <TabsTrigger 
-                key={tab.id} 
-                value={tab.id} 
-                disabled={false} 
-                className="rounded-2xl data-[state=active]:bg-gradient-to-br data-[state=active]:from-emerald-400 data-[state=active]:to-emerald-600 data-[state=active]:text-slate-950 data-[state=active]:shadow-[0_0_30px_rgba(52,211,153,0.4)] data-[state=active]:scale-105 font-black italic uppercase transition-all duration-300 flex flex-col items-center justify-center gap-1 group py-4 z-10"
-              >
-                <tab.icon className={`h-8 w-8 ${activeTab === tab.id ? 'text-slate-950' : 'text-emerald-500'}`} />
-                <span className={`text-xs md:text-lg tracking-tighter ${activeTab === tab.id ? 'text-slate-950' : 'text-slate-400'}`}>{i+1}. {tab.label}</span>
-              </TabsTrigger>
-            ))}
-          </TabsList>
+              { id: 'input',    label: '入力', icon: Mic },
+              { id: 'genre',    label: '戦略', icon: Zap },
+              { id: 'script',   label: '台本', icon: FileText },
+              { id: 'visual',   label: '画像', icon: ImageIcon },
+              { id: 'music',    label: '音楽', icon: Music },
+              { id: 'strategy', label: 'SEO',  icon: Search }
+            ].map((tab, i) => {
+              const isActive = activeTab === tab.id
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`
+                    flex flex-col items-center justify-center gap-1 rounded-2xl font-black italic uppercase
+                    transition-all duration-300 py-4 z-10
+                    ${isActive
+                      ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-slate-950 shadow-[0_0_30px_rgba(52,211,153,0.4)] scale-105'
+                      : 'text-slate-500 hover:text-white hover:bg-white/5'}
+                  `}
+                >
+                  <tab.icon className={`h-8 w-8 ${isActive ? 'text-slate-950' : 'text-emerald-500'}`} />
+                  <span className={`text-xs md:text-sm tracking-tighter ${isActive ? 'text-slate-950' : 'text-slate-400'}`}>
+                    {i + 1}. {tab.label}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
 
           <TabsContent value="input" className="space-y-12 animate-in fade-in">
             <div className="bg-emerald-500/5 border-2 border-emerald-500/20 rounded-[3rem] p-10 space-y-8 shadow-inner">
