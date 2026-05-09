@@ -21,7 +21,7 @@ const KDP_STEPS = [
         text: 'KDPアカウント作成と居住地設定', 
         detail: 'Amazon.co.jp（日本）のアカウントでログインし、居住国を「日本」に設定。',
         subItems: [
-          { id: 'acc-1', text: 'KDP公式サイト(kdp.amazon.co.jp)へアクセス' },
+          { id: 'acc-1', text: 'KDP公式サイト(kdp.amazon.co.jp)へアクセス', url: 'https://kdp.amazon.co.jp/ja_JP/' },
           { id: 'acc-2', text: '既存のAmazonアカウントでサインイン' },
           { id: 'acc-3', text: '利用規約に同意' },
           { id: 'acc-4', text: '「マイアカウント」をクリック' },
@@ -34,7 +34,7 @@ const KDP_STEPS = [
         text: '米国源泉徴収 30% ➔ 0% 回避設定', 
         detail: '日本のマイナンバーを「TIN」として入力し、米国との租税条約を適用。',
         subItems: [
-          { id: 'tax-1', text: 'マイアカウント ➔ 税務情報の更新 をクリック' },
+          { id: 'tax-1', text: 'マイアカウント ➔ 税務情報の更新 をクリック', url: 'https://kdp.amazon.co.jp/dashboard?ref_=kdp_kdp_menu_acc' },
           { id: 'tax-2', text: '税務プロフィールの作成を開始' },
           { id: 'tax-3', text: '「個人」「米国市民ではない」「仲介代行ではない」を選択' },
           { id: 'tax-4', text: 'TIN（納税者番号）欄にマイナンバー(12桁)を入力' },
@@ -46,7 +46,7 @@ const KDP_STEPS = [
         text: '国内銀行口座の登録（SWIFT不要）', 
         detail: '売上を受け取る口座。日本の銀行名・店番・口座番号を入力。',
         subItems: [
-          { id: 'bank-1', text: 'マイアカウント ➔ 銀行口座 をクリック' },
+          { id: 'bank-1', text: 'マイアカウント ➔ 銀行口座 をクリック', url: 'https://kdp.amazon.co.jp/dashboard?ref_=kdp_kdp_menu_acc' },
           { id: 'bank-2', text: '銀行の所在地「日本」を選択' },
           { id: 'bank-3', text: '口座名義（カタカナ）を入力' },
           { id: 'bank-4', text: '銀行名・店番号・口座番号を入力して追加' },
@@ -67,6 +67,7 @@ const KDP_STEPS = [
           { id: 'file-1', text: '各章の終わりに「Ctrl + Enter」で改ページを挿入' },
           { id: 'file-2', text: 'Wordのスタイル機能で「見出し」を設定' },
           { id: 'file-3', text: '「自動目次」を挿入（Kindle移動機能に必須）' },
+          { id: 'file-4', text: 'Kindle Previewerで表示を確認する', url: 'https://www.amazon.co.jp/gp/feature.html?docId=3077699036' },
         ]
       },
       { 
@@ -74,7 +75,7 @@ const KDP_STEPS = [
         text: '表紙デザインの黄金比設定', 
         detail: '縦横比 1.6:1 (2560x1600px) がAmazonの推奨です。',
         subItems: [
-          { id: 'cover-1', text: 'Canva等で2560x1600pxのキャンバスを作成' },
+          { id: 'cover-1', text: 'Canva等で2560x1600pxのキャンバスを作成', url: 'https://www.canva.com/' },
           { id: 'cover-2', text: 'タイトル文字を全体の50%以上のサイズで配置' },
           { id: 'cover-3', text: '背景と文字のコントラストを最大化する' },
         ]
@@ -91,8 +92,10 @@ const KDP_STEPS = [
         text: 'タイトル・サブタイトルの戦略入力', 
         detail: 'メインタイトルは短く、サブタイトルにベネフィットを詰め込む。',
         subItems: [
-          { id: 'title-1', text: 'タイトルを入力（フリガナ・カタカナ必須）' },
-          { id: 'title-2', text: 'サブタイトルに「実績・ターゲット」を盛り込む' },
+          { id: 'title-1', text: 'KDP本棚から「作成」をクリック', url: 'https://kdp.amazon.co.jp/bookshelf' },
+          { id: 'title-2', text: '電子書籍の作成を選択' },
+          { id: 'title-3', text: 'タイトルを入力（フリガナ・カタカナ必須）' },
+          { id: 'title-4', text: 'サブタイトルに「実績・ターゲット」を盛り込む' },
         ]
       },
       { 
@@ -168,7 +171,9 @@ export default function KdpGuideApp() {
 
   return (
     <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-orange-500/30 text-left">
-      <div className="max-w-4xl mx-auto space-y-10 rounded-[3rem] p-6 md:p-12 text-white font-black">
+      <div className="max-w-4xl mx-auto space-y-10 border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.3)] rounded-[3rem] p-6 md:p-12 text-white font-black relative overflow-hidden">
+        {/* Security Line Accent */}
+        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-50"></div>
         
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-white/10 pb-10">
@@ -233,9 +238,20 @@ export default function KdpGuideApp() {
                           }`}>
                             {checkedItems[sub.id] && <CheckCircle2 size={12} className="text-slate-950 stroke-[3px]" />}
                           </div>
-                          <p className={`font-black text-[12px] md:text-sm transition-all ${checkedItems[sub.id] ? 'text-white' : 'text-slate-400'}`}>
+                          <p className={`font-black text-[12px] md:text-sm transition-all flex-1 ${checkedItems[sub.id] ? 'text-white' : 'text-slate-400'}`}>
                             {sub.text}
                           </p>
+                          {sub.url && (
+                            <a 
+                              href={sub.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              onClick={(e) => e.stopPropagation()}
+                              className="p-1.5 hover:bg-white/10 rounded-md text-emerald-400 transition-colors"
+                            >
+                              <ExternalLink size={14} />
+                            </a>
+                          )}
                         </div>
                       ))}
                     </div>
