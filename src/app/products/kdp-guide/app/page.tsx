@@ -212,9 +212,9 @@ export default function KdpGuideApp() {
               <div className="grid gap-4">
                 {step.items.map((item) => (
                   <Card key={item.id} className="bg-[#13141f] border-white/5 p-6 rounded-2xl space-y-4 shadow-xl">
-                    <div className="space-y-1">
-                      <h3 className="text-lg font-black text-white italic">{item.text}</h3>
-                      <p className="text-[10px] text-slate-500 font-bold italic">{item.detail}</p>
+                    <div className="space-y-1.5">
+                      <h3 className="text-xl md:text-2xl font-black text-white italic tracking-tight">{item.text}</h3>
+                      <p className="text-xs md:text-sm text-slate-400 font-bold leading-relaxed">{item.detail}</p>
                     </div>
                     
                     <div className="grid gap-2 border-t border-white/5 pt-4">
