@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Card, CardContent } from '@/components/ui/card'
@@ -62,9 +62,9 @@ const MasterEngine = () => {
   return (
     <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
       <div className="text-center space-y-1 md:space-y-3">
-        <Badge className="bg-teal-600 text-white font-black italic px-3 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full">Spatial AI Coordinator</Badge>
-        <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">Interior Sync</h1>
-        <div className="inline-block bg-emerald-600 text-white font-black px-4 py-0.5 rounded-full uppercase italic text-[8px] md:text-[10px] tracking-widest shadow-lg">v1.0-MASTER</div>
+        <Badge className="bg-teal-600 text-white font-bold px-3 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full">Spatial AI Coordinator</Badge>
+        <h1 className="text-4xl md:text-6xl font-bold text-white uppercase tracking-tighter leading-none drop-shadow-2xl">Interior Sync</h1>
+        <div className="inline-block bg-emerald-600 text-white font-bold px-4 py-0.5 rounded-full uppercase text-[8px] md:text-[10px] tracking-tight shadow-lg">v1.0-MASTER</div>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8 md:gap-12 animate-in fade-in duration-700">
@@ -79,9 +79,9 @@ const MasterEngine = () => {
               </>
             ) : (
               <div className="text-center p-10 space-y-6">
-                <Sofa className="w-16 h-16 text-slate-700 mx-auto" />
-                <p className="text-xl text-slate-500 font-black italic uppercase tracking-widest leading-relaxed">空間スキャン・オフライン</p>
-                <button onClick={startCamera} className="px-10 py-4 bg-white/5 border-2 border-white/10 rounded-2xl text-emerald-400 font-black italic uppercase hover:bg-white/10 transition-all">
+                <Sofa className="w-16 h-12 text-slate-700 mx-auto" />
+                <p className="text-xl text-slate-500 font-bold uppercase tracking-tight leading-relaxed">空間スキャン・オフライン</p>
+                <button onClick={startCamera} className="px-10 py-4 bg-white/5 border-2 border-white/10 rounded-2xl text-emerald-400 font-bold uppercase hover:bg-white/10 transition-all">
                   空間ARモードを起動
                 </button>
               </div>
@@ -89,8 +89,8 @@ const MasterEngine = () => {
 
             {isAnalyzing && (
               <div className="absolute inset-0 bg-emerald-950/40 backdrop-blur-sm flex flex-col items-center justify-center space-y-4 z-20">
-                <Loader2 className="w-16 h-16 text-emerald-500 animate-spin" />
-                <p className="text-2xl font-black text-white italic uppercase tracking-[0.2em] animate-pulse">Analyzing Space...</p>
+                <Loader2 className="w-16 h-12 text-emerald-500 animate-spin" />
+                <p className="text-2xl font-bold text-white uppercase tracking-[0.2em] animate-pulse">Analyzing Space...</p>
               </div>
             )}
           </div>
@@ -98,7 +98,7 @@ const MasterEngine = () => {
           <button 
             onClick={analyzeSpace}
             disabled={!cameraActive || isAnalyzing}
-            className={`w-full h-24 ${!cameraActive || isAnalyzing ? 'bg-slate-800 opacity-50' : 'bg-emerald-600 hover:bg-emerald-500'} text-white font-black rounded-[2rem] shadow-2xl flex items-center justify-center gap-6 text-3xl uppercase italic transition-all active:scale-95 border-b-8 border-emerald-900 active:border-b-0`}
+            className={`w-full h-24 ${!cameraActive || isAnalyzing ? 'bg-slate-800 opacity-50' : 'bg-emerald-600 hover:bg-emerald-500'} text-white font-bold rounded-[2rem] shadow-2xl flex items-center justify-center gap-6 text-3xl uppercase transition-all active:scale-95 border-b-8 border-emerald-900 active:border-b-0`}
           >
             <Eye className="w-10 h-10" />
             <span>空間をAI分析 ➔</span>
@@ -112,10 +112,10 @@ const MasterEngine = () => {
               
               <div className="flex items-center justify-between mb-10">
                 <div>
-                   <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.4em] italic">Coordinate Set</p>
-                   <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter">楽天一括コーディネート</h3>
+                   <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-[0.4em] ">Coordinate Set</p>
+                   <h3 className="text-3xl font-bold text-white uppercase tracking-tighter">楽天一括コーディネート</h3>
                 </div>
-                {suggestions.length > 0 && <Badge className="bg-red-600 text-white font-black italic shadow-lg">楽天API連動中</Badge>}
+                {suggestions.length > 0 && <Badge className="bg-red-600 text-white font-bold shadow-lg">楽天API連動中</Badge>}
               </div>
 
               <div className="flex-1 space-y-4 overflow-y-auto pr-2 custom-scrollbar">
@@ -127,25 +127,25 @@ const MasterEngine = () => {
                              <Box className="text-slate-500 group-hover:text-emerald-400" />
                           </div>
                           <div>
-                             <p className="text-xs font-black text-white uppercase italic">{item.name}</p>
+                             <p className="text-xs font-bold text-white uppercase ">{item.name}</p>
                              <p className="text-[10px] text-slate-500 font-bold uppercase">{item.shop} ➔ 適合率 {item.match}</p>
                           </div>
                        </div>
                        <div className="text-right">
-                          <p className="text-lg font-black text-emerald-400 italic">{item.price}</p>
+                          <p className="text-lg font-bold text-emerald-400 ">{item.price}</p>
                        </div>
                     </div>
                   ))
                 ) : (
                   <div className="h-full flex flex-col items-center justify-center space-y-6 opacity-20 py-20">
                     <Palette className="w-20 h-20" />
-                    <p className="text-lg font-black italic uppercase text-center leading-relaxed">空間をスキャンして<br/>調和する家具を提案します</p>
+                    <p className="text-lg font-bold uppercase text-center leading-relaxed">空間をスキャンして<br/>調和する家具を提案します</p>
                   </div>
                 )}
               </div>
 
               {suggestions.length > 0 && (
-                <button className="w-full h-20 mt-8 bg-red-600 hover:bg-red-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-4 text-xl uppercase italic transition-all active:scale-95 border-b-4 border-red-900 active:border-b-0">
+                <button className="w-full h-20 mt-8 bg-red-600 hover:bg-red-500 text-white font-bold rounded-2xl shadow-xl flex items-center justify-center gap-4 text-xl uppercase transition-all active:scale-95 border-b-4 border-red-900 active:border-b-0">
                   <ShoppingCart className="w-8 h-8" />
                   <span>楽天で丸ごと購入へ ➔</span>
                 </button>
@@ -154,7 +154,7 @@ const MasterEngine = () => {
 
            <div className="bg-[#0a0b14] border border-white/5 rounded-3xl p-8 flex items-start gap-5 shadow-inner">
              <div className="w-10 h-10 rounded-full bg-emerald-600/10 flex items-center justify-center shrink-0 border border-emerald-500/20"><Zap className="text-emerald-500 w-5 h-5" /></div>
-             <p className="text-sm text-slate-400 font-bold leading-relaxed italic text-left">
+             <p className="text-sm text-slate-400 font-bold leading-relaxed text-left">
                 今の部屋の「色・質感・サイズ」をAIが視覚的に把握。楽天の膨大な商品群から、あなたの空間に最も馴染むコーディネートを瞬時にセットアップします。
              </p>
            </div>
@@ -162,14 +162,14 @@ const MasterEngine = () => {
       </div>
 
       <DebugPanel data={{ cameraActive, isAnalyzing, suggestionCount: suggestions.length }} toolId="interior-sync-master" />
-      <div className="text-center opacity-10 mt-10 font-black uppercase tracking-[0.5em] italic text-[10px]">Spatial Commerce OS • NextraLabs 2026</div>
+      <div className="text-center opacity-10 mt-10 font-bold uppercase tracking-[0.5em] text-[10px]">Spatial Commerce OS • NextraLabs 2026</div>
     </div>
   )
 }
 
 const NoSSRWrapper = dynamic(() => Promise.resolve(MasterEngine), {
   ssr: false,
-  loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Initializing Spatial Node...</div>
+  loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-bold text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Initializing Spatial Node...</div>
 })
 
 export default function InteriorCoordinatorSystem() {
