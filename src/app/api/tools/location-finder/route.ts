@@ -1,9 +1,19 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
+﻿import { checkApiLimit } from '@/lib/api-limit';
+import { NextRequest, NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
 
 export async function POST(req: NextRequest) {
+  // 🛡️ レート制限（1日10回）
+  const limitCheck = await checkApiLimit('location-finder', 10);
+  if (!limitCheck.allowed) {
+    return NextResponse.json(
+      { error: '本日の利用上限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
+
   try {
     const formData = await req.formData()
     const file = formData.get('image') as File | null
