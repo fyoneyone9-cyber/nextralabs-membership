@@ -178,24 +178,19 @@ export default function KdpGuideApp() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-white/10 pb-10">
           <div className="flex items-center gap-4 text-left">
-            <div className="p-4 bg-orange-500/10 rounded-2xl border border-orange-500/20">
-              <BookOpen className="h-10 w-10 text-orange-400" />
+            <div className="p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/20">
+              <BookOpen className="h-10 w-10 text-emerald-400" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">Kindle出版実況ナビ</h1>
-              <p className="text-orange-500 text-xs font-bold tracking-[0.2em] mt-2">KDP OPERATION GUIDE</p>
+              <h1 className="text-2xl md:text-4xl font-black text-white tracking-tight">Kindle出版<span className="text-emerald-400">実況ナビ</span></h1>
             </div>
-          </div>
-          <div className="flex flex-col items-end gap-2">
-            <Badge className="bg-emerald-500 text-white font-semibold px-4 py-1.5 text-sm rounded-full flex items-center gap-1.5">✅ 完成</Badge>
-            <Badge className="bg-orange-600 text-white font-black italic px-6 py-2 text-sm rounded-full">FREE TOOL</Badge>
           </div>
         </div>
 
         {/* Progress Bar */}
         <div className="space-y-4">
           <div className="flex justify-between items-end">
-            <span className="text-sm font-black italic uppercase text-slate-400">Step Progress</span>
+            <span className="text-sm font-semibold text-slate-400">ステップ進捗</span>
             <span className="text-4xl font-black italic text-orange-500">{progress}%</span>
           </div>
           <div className="h-4 w-full bg-white/5 rounded-full overflow-hidden border border-white/10">
