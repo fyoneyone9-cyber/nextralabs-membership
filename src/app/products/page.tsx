@@ -39,7 +39,7 @@ const TOOLS = [
   { id: 'expense-sync', cat: 'biz', title: 'Expense AI Sync', sub: '経費精算の全自動記帳OS', icon: Table, plan: 'ライト' },
   { id: 'evidence-manager', cat: 'biz', title: 'エビデンスAIマネージャー', sub: 'サブスク実績の証拠管理', icon: Archive, plan: '無料' },
   { id: 'ai-report-generator', cat: 'biz', title: 'AIレポートジェネレーター', sub: '箇条書きからプロ級文書生成', icon: FileText, plan: '無料' },
-  { id: 'ai-sidejob', cat: 'biz', title: 'AI副業スタートダッシュ', sub: '適性診断と収益ロードマップ', icon: Briefcase, plan: 'ライト' },
+  { id: 'ai-sidejob', cat: 'biz', title: 'AI副業スタートダッシュ', sub: '適性診断と収益ロードマップ', icon: Briefcase, plan: 'プレミアム' },
   { id: 'ai-konkatsu', cat: 'mind', title: 'AI婚活コーチ', sub: '戦略的結婚支援システム', icon: Heart, plan: 'スタンダード' },
   { id: 'office-politics-graph', cat: 'mind', title: '社内政治 AI相関図', sub: '人間関係の暗部を可視化', icon: Network, plan: '無料' },
   { id: 'interior-coordinator', cat: 'mind', title: 'Interior AI Sync', sub: '空間解析と楽天一括購入OS', icon: Sofa, plan: 'プレミアム' },
@@ -79,8 +79,8 @@ function ProductCard({ product, isFav, onToggleFav }: {
   return (
     <Card className="h-full bg-[#13141f] transition-all duration-300 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group shadow-xl relative border border-white/5 hover:border-white/20">
       {/* SECURITY LINE for Locked Mastermodels */}
-      {(product.id === 'trend-stock' || product.id === 'loan-advisor') && (
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-emerald-500 z-30 shadow-[0_0_10px_rgba(16,185,129,0.8)]" />
+      {(product.id === 'trend-stock' || product.id === 'loan-advisor' || product.id === 'ai-sidejob' || product.id === 'staysee-ai-finder') && (
+        <div className="absolute top-0 left-0 w-full h-[3px] bg-emerald-500 z-30 shadow-[0_0_15px_rgba(16,185,129,0.8)]" />
       )}
       <button
         onClick={e => onToggleFav(e, product.id)}
