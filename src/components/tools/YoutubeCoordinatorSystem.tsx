@@ -1,190 +1,250 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { 
-  Youtube, ShoppingCart, Sparkles, Loader2, ArrowRight, 
-  RotateCcw, CheckCircle2, Shirt, Tag, ExternalLink, 
-  Zap, Search, Play, Scissors, Layers
+import {
+  Youtube, ShoppingCart, Loader2, Scissors, Layers,
+  Shirt, ExternalLink, Zap, Play
 } from 'lucide-react'
-import { DebugPanel } from '@/components/tools/DebugPanel'
+
+// 楽天アフィリエイトID（NextraLabs）
+const RAKUTEN_AFFILIATE_ID = 'nextralabs-22'
+
+// 楽天検索URLを生成（アフィリエイト付き）
+function getRakutenSearchUrl(keyword: string) {
+  const q = encodeURIComponent(keyword)
+  return `https://search.rakuten.co.jp/search/mall/${q}/?scid=af_pc_etc&sc2id=${RAKUTEN_AFFILIATE_ID}`
+}
+
+// 楽天アイテムリンクURLを生成
+function getRakutenItemUrl(itemName: string) {
+  return getRakutenSearchUrl(itemName)
+}
 
 const MasterEngine = () => {
-  const [videoUrl, setVideoUrl] = useState('');
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [fashionItems, setFashionItems] = useState<any[]>([]);
-  const [isMounted, setIsMounted] = useState(false);
+  const [videoUrl, setVideoUrl] = useState('')
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [fashionItems, setFashionItems] = useState<any[]>([])
+  const [isMounted, setIsMounted] = useState(false)
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  useEffect(() => { setIsMounted(true) }, [])
 
   const analyzeVideoFashion = async () => {
-    if (!videoUrl) return;
-    setIsAnalyzing(true);
-    setFashionItems([]); // 前の結果をクリア
-    
+    if (!videoUrl) return
+    setIsAnalyzing(true)
+    setFashionItems([])
     try {
-      // 🚀 【本物化】バックエンドAPIを叩き、URLに基づいた可変データを取得
       const res = await fetch('/api/tools/youtube-coordinator', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ videoUrl }),
-      });
-      const data = await res.json();
+      })
+      const data = await res.json()
       if (data.success) {
-        setFashionItems(data.results);
+        setFashionItems(data.results)
       } else {
-        throw new Error('Analysis Failed');
+        throw new Error('Analysis Failed')
       }
-    } catch (e) {
-      console.error(e);
-      // フォールバック
+    } catch {
       setFashionItems([
-        { id: 1, name: 'オーバーサイズ Tシャツ', brand: 'Street', price: '¥4,500', type: 'Street', match: '92%' },
-      ]);
+        { id: 1, name: 'オーバーサイズ Tシャツ', type: 'ストリート', price: '¥4,500', match: '92%' },
+        { id: 2, name: 'テーパードスラックス',   type: 'ミニマル',   price: '¥8,200', match: '87%' },
+        { id: 3, name: 'レザースニーカー',       type: 'カジュアル', price: '¥12,800', match: '81%' },
+      ])
     } finally {
-      setIsAnalyzing(false);
+      setIsAnalyzing(false)
     }
-  };
+  }
 
-  if (!isMounted) return null;
+  if (!isMounted) return null
 
   return (
-    <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-2 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)]">
-      <div className="text-center space-y-1 md:space-y-3">
-        <Badge className="bg-red-600 text-white font-black italic px-3 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full shadow-lg">YouTube Fashion OS</Badge>
-        <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">YouTube Sync</h1>
-        <div className="inline-block bg-emerald-600 text-white font-black px-4 py-0.5 rounded-full uppercase italic text-[8px] md:text-[10px] tracking-widest shadow-lg">v1.0-MASTER</div>
+    <div
+      className="min-h-screen pb-24"
+      style={{ background: '#050507', fontFamily: "'Inter', 'Noto Sans JP', sans-serif" }}
+    >
+      {/* Hero */}
+      <div className="max-w-4xl mx-auto px-6 pt-16 pb-10 space-y-4">
+        <div
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-medium"
+          style={{ borderColor: 'rgba(16,185,129,0.3)', color: '#34d399', background: 'rgba(16,185,129,0.08)' }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          YouTube Sync
+        </div>
+        <h1 className="text-3xl md:text-4xl font-semibold text-slate-100 tracking-tight leading-[1.2]">
+          動画内のコーデを<span style={{ color: '#10b981' }}>楽天で即購入</span>
+        </h1>
+        <p className="text-slate-400 text-sm leading-relaxed max-w-xl">
+          YouTubeのURLを貼るだけ。AIが動画内のファッションを解析し、楽天市場から類似アイテムを見つけます。
+        </p>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-8 md:gap-12 animate-in fade-in duration-700">
-        {/* 🔴 YouTube解析セクション */}
-        <div className="space-y-6">
-          <div className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-6 md:p-10 shadow-2xl space-y-8 relative overflow-hidden">
-             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-30" />
-             
-             <div className="space-y-4">
-                <div className="flex items-center justify-between px-2">
-                   <p className="text-[10px] font-black text-red-500 uppercase italic tracking-widest">#1 Video Analyzer</p>
-                   <Badge variant="outline" className="text-red-500 border-red-500/20 uppercase italic">Data API Active</Badge>
-                </div>
-                
-                <div className="relative group">
-                   <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-red-500 group-focus-within:scale-110 transition-transform">
-                      <Youtube size={24} />
-                   </div>
-                   <input 
-                     value={videoUrl}
-                     onChange={(e) => setVideoUrl(e.target.value)}
-                     placeholder="YouTube動画のURLを貼り付け..."
-                     className="w-full h-20 bg-black border-2 border-white/10 rounded-2xl pl-16 pr-8 text-lg text-white focus:border-red-600 outline-none transition-all shadow-inner"
-                   />
-                </div>
+      <div className="max-w-4xl mx-auto px-6">
+        <div className="grid lg:grid-cols-2 gap-5">
 
-                <button 
-                  onClick={analyzeVideoFashion}
-                  disabled={!videoUrl || isAnalyzing}
-                  className={`w-full h-24 ${!videoUrl || isAnalyzing ? 'bg-slate-800 opacity-50' : 'bg-red-600 hover:bg-red-500'} text-white font-black rounded-[2rem] shadow-2xl flex items-center justify-center gap-6 text-3xl uppercase italic transition-all active:scale-95 border-b-8 border-red-900 active:border-b-0`}
+          {/* 左：入力 */}
+          <div className="space-y-4">
+            <div
+              style={{ background: '#0d1117', border: '2px solid #10b981', boxShadow: '0 0 20px rgba(16,185,129,0.1)' }}
+              className="rounded-xl p-6 space-y-4"
+            >
+              <div className="flex items-center gap-2 text-sm font-semibold text-slate-200">
+                <Youtube size={15} className="text-red-400" />
+                YouTube動画URL
+              </div>
+              <input
+                value={videoUrl}
+                onChange={e => setVideoUrl(e.target.value)}
+                placeholder="https://www.youtube.com/watch?v=..."
+                className="w-full h-11 rounded-lg px-4 text-sm text-slate-200 placeholder-slate-600 outline-none transition-colors"
+                style={{ background: '#13141f', border: '1px solid #334155' }}
+                onFocus={e => (e.target.style.borderColor = '#10b981')}
+                onBlur={e => (e.target.style.borderColor = '#334155')}
+              />
+              <button
+                onClick={analyzeVideoFashion}
+                disabled={!videoUrl || isAnalyzing}
+                className="w-full h-12 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all"
+                style={
+                  !videoUrl || isAnalyzing
+                    ? { background: '#1e293b', color: '#475569', cursor: 'not-allowed' }
+                    : { background: '#10b981', color: '#fff' }
+                }
+              >
+                {isAnalyzing
+                  ? <><Loader2 size={15} className="animate-spin mr-1" />解析中...</>
+                  : <><Scissors size={15} className="mr-1" />動画内コーデを特定</>}
+              </button>
+            </div>
+
+            {/* How it works */}
+            <div
+              style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+              className="rounded-xl p-5 flex gap-3"
+            >
+              <div
+                className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                style={{ background: 'rgba(16,185,129,0.1)' }}
+              >
+                <Play size={14} style={{ color: '#10b981' }} />
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs font-semibold text-slate-300">使い方</p>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  動画内のファッションをAIが直接プロファイリング。スタイルを分類し、楽天から類似アイテムを一瞬で見つけ出します。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* 右：結果 */}
+          <div
+            style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+            className="rounded-xl p-6 flex flex-col gap-4 min-h-[360px]"
+          >
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-semibold text-slate-400">楽天・類似アイテム提案</p>
+              {fashionItems.length > 0 && (
+                <span
+                  className="text-xs px-2 py-0.5 rounded-full font-medium"
+                  style={{ background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.25)' }}
                 >
-                  {isAnalyzing ? (
-                    <Loader2 className="w-10 h-10 animate-spin" />
-                  ) : (
-                    <>
-                      <Scissors className="w-10 h-10" />
-                      <span>動画内コーデを特定 ➔</span>
-                    </>
-                  )}
-                </button>
-             </div>
+                  {fashionItems.length}件
+                </span>
+              )}
+            </div>
 
-             <div className="bg-black/40 border border-white/5 rounded-3xl p-8 flex items-start gap-5 shadow-inner text-left">
-                <div className="w-12 h-12 bg-red-600/10 rounded-xl flex items-center justify-center shrink-0 border border-red-500/20"><Play className="text-red-500 w-6 h-6" /></div>
-                <div className="space-y-1">
-                   <p className="text-xs font-black text-red-500 uppercase tracking-widest">How it works</p>
-                   <p className="text-sm text-slate-400 font-bold leading-relaxed italic">
-                      動画内のファッションをAIが「静止画なし」で直接プロファイリング。スタイルを分類し、楽天から類似アイテムを一瞬で見つけ出します。
-                   </p>
+            {fashionItems.length > 0 ? (
+              <>
+                <div className="space-y-2 flex-1">
+                  {fashionItems.map(item => (
+                    <a
+                      key={item.id}
+                      href={getRakutenItemUrl(item.name)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-3 rounded-lg transition-colors group"
+                      style={{ background: '#13141f', border: '1px solid #1e293b' }}
+                      onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.4)')}
+                      onMouseLeave={e => (e.currentTarget.style.borderColor = '#1e293b')}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                          style={{ background: 'rgba(16,185,129,0.08)' }}
+                        >
+                          <Shirt size={14} style={{ color: '#10b981' }} />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-slate-200">{item.name}</p>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-[10px] text-slate-500">{item.type}</span>
+                            <span className="text-[10px]" style={{ color: '#34d399' }}>Match {item.match}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="text-right">
+                          <p className="text-sm font-semibold" style={{ color: '#10b981' }}>{item.price}</p>
+                          <p className="text-[9px] text-slate-600">楽天市場</p>
+                        </div>
+                        <ExternalLink size={11} className="text-slate-600 group-hover:text-slate-400 transition-colors" />
+                      </div>
+                    </a>
+                  ))}
                 </div>
-             </div>
+
+                {/* 楽天で一括チェック（アフィリエイトリンク） */}
+                <a
+                  href={getRakutenSearchUrl(fashionItems.map(i => i.name).join(' '))}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full h-12 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-90"
+                  style={{ background: '#10b981', color: '#fff' }}
+                >
+                  <ShoppingCart size={15} />
+                  楽天で一括チェック →
+                </a>
+              </>
+            ) : (
+              <div className="flex-1 flex flex-col items-center justify-center gap-3 opacity-20">
+                <Layers size={36} />
+                <p className="text-xs text-center leading-relaxed">
+                  URLを入力して<br />動画内の服をAI解析してください
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* 🛍️ 楽天提案セクション */}
-        <div className="space-y-6">
-           <div className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-8 md:p-12 relative shadow-2xl overflow-hidden min-h-[500px] flex flex-col">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-30" />
-              
-              <div className="flex items-center justify-between mb-10 text-left">
-                <div>
-                   <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.4em] italic">Fashion Curation</p>
-                   <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter leading-none">楽天・類似アイテム提案</h3>
-                </div>
-                {fashionItems.length > 0 && <Badge className="bg-emerald-600 text-white font-black italic shadow-lg">RAKUTEN SYNC</Badge>}
-              </div>
-
-              <div className="flex-1 space-y-4 overflow-y-auto pr-2 custom-scrollbar">
-                {fashionItems.length > 0 ? (
-                  fashionItems.map((item) => (
-                    <div key={item.id} className="bg-black/40 border border-white/5 p-6 rounded-2xl flex items-center justify-between hover:border-emerald-500/50 transition-all group animate-in slide-in-from-right-4">
-                       <div className="flex items-center gap-4 text-left">
-                          <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10 group-hover:bg-emerald-500/10 transition-colors">
-                             <Shirt className="text-slate-500 group-hover:text-emerald-400" />
-                          </div>
-                          <div>
-                             <p className="text-xs font-black text-white uppercase italic leading-tight">{item.name}</p>
-                             <div className="flex items-center gap-2 mt-1">
-                                <Badge className="bg-white/5 text-slate-500 text-[8px] border-0">{item.type}</Badge>
-                                <p className="text-[10px] text-emerald-500 font-bold uppercase italic">Match {item.match}</p>
-                             </div>
-                          </div>
-                       </div>
-                       <div className="text-right">
-                          <p className="text-lg font-black text-emerald-400 italic leading-none">{item.price}</p>
-                          <p className="text-[8px] text-slate-600 uppercase mt-1">Rakuten Ichiba</p>
-                       </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="h-full flex flex-col items-center justify-center space-y-6 opacity-20 py-20">
-                    <Layers className="w-20 h-20" />
-                    <p className="text-lg font-black italic uppercase text-center leading-relaxed">URLを入力して<br/>動画内の服をAI解析してください</p>
-                  </div>
-                )}
-              </div>
-
-              {fashionItems.length > 0 && (
-                <button className="w-full h-20 mt-8 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-4 text-xl uppercase italic transition-all active:scale-95 border-b-4 border-emerald-800 active:border-b-0">
-                  <ShoppingCart className="w-8 h-8" />
-                  <span>楽天で一括チェック ➔</span>
-                </button>
-              )}
-           </div>
-
-           <div className="bg-emerald-600/5 border-2 border-emerald-500/20 rounded-[2rem] p-8 italic shadow-inner text-left">
-             <div className="flex items-center gap-3 text-emerald-500 mb-2">
-                <Zap size={20} />
-                <p className="text-xs font-black uppercase tracking-widest">Style Intelligence Protocol</p>
-             </div>
-             <p className="text-slate-400 text-sm font-bold leading-relaxed text-left">
-                YouTube動画からインスピレーションを得た瞬間に、楽天のリアルな在庫データから「今買える」コーディネートを構築。動画の中のスタイルをあなたの日常へ同期します。
-             </p>
-           </div>
+        {/* Style Intelligence */}
+        <div
+          className="mt-5 rounded-xl p-5 flex gap-3"
+          style={{ background: 'rgba(16,185,129,0.04)', border: '1px solid rgba(16,185,129,0.15)' }}
+        >
+          <Zap size={15} style={{ color: '#10b981' }} className="shrink-0 mt-0.5" />
+          <p className="text-xs text-slate-500 leading-relaxed">
+            YouTube動画からインスピレーションを得た瞬間に、楽天のリアルな在庫データから「今買える」コーディネートを構築。動画の中のスタイルをあなたの日常へ同期します。
+          </p>
         </div>
       </div>
 
-      <DebugPanel data={{ videoUrl, isAnalyzing, itemCount: fashionItems.length }} toolId="youtube-sync-master" />
-      <div className="text-center opacity-10 mt-10 font-black uppercase tracking-[0.5em] italic text-[10px]">YouTube Commerce OS • NextraLabs 2026</div>
+      <div className="text-center mt-16 opacity-20">
+        <p className="text-xs text-slate-600 tracking-widest">NextraLabs 2026</p>
+      </div>
     </div>
   )
 }
 
 const NoSSRWrapper = dynamic(() => Promise.resolve(MasterEngine), {
   ssr: false,
-  loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Initializing Fashion Node...</div>
+  loading: () => (
+    <div className="min-h-screen bg-[#050507] flex items-center justify-center">
+      <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  ),
 })
 
 export default function YoutubeCoordinatorSystem() {
-  return <NoSSRWrapper />;
+  return <NoSSRWrapper />
 }
