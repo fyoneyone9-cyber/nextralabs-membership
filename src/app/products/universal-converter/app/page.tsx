@@ -1,35 +1,34 @@
-﻿'use client'
+'use client'
 import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Zap, Loader2, CheckCircle2, TrendingUp, Search, Info, ShoppingCart, Repeat, Download, Video, ImageIcon, FileText } from 'lucide-react'
-import { ApiLinkIndicator } from '@/components/tools/ApiLinkIndicator'
+import { Loader2, CheckCircle2, Repeat, Download, Video, ImageIcon, FileText, Upload } from 'lucide-react'
 
 export default function UniversalConverterApp() {
   const [mode, setMode] = useState<'video' | 'image' | 'pdf'>('video')
   const [file, setFile] = useState<File | null>(null)
   const [targetFormat, setTargetFormat] = useState('mp4')
   const [isProcessing, setIsProcessing] = useState(false)
-  const [resultUrl, setResultUrl] = useState<string | null>(null)
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
 
+  const MODES = [
+    { id: 'video', label: '動画', icon: Video,      formats: ['mp4', 'webm', 'gif', 'mp3'] },
+    { id: 'image', label: '画像', icon: ImageIcon,  formats: ['webp', 'png', 'jpg', 'ico'] },
+    { id: 'pdf',   label: 'PDF',  icon: FileText,   formats: ['pdf-min'] },
+  ]
+
   const handleModeChange = (newMode: 'video' | 'image' | 'pdf') => {
-    setMode(newMode); setFile(null); setResultUrl(null); setDownloadUrl(null);
-    if (newMode === 'video') setTargetFormat('mp4')
-    else if (newMode === 'image') setTargetFormat('webp')
-    else setTargetFormat('pdf-min')
+    setMode(newMode); setFile(null); setDownloadUrl(null)
+    const m = MODES.find(m => m.id === newMode)!
+    setTargetFormat(m.formats[0])
   }
 
   const handleProcess = async () => {
     if (!file) return
-    setIsProcessing(true);
-    await new Promise(r => setTimeout(r, 3000));
-    // 実際の変換後はダウンロードURLをセット（現在はデモとしてObjectURLを生成）
-    const objectUrl = URL.createObjectURL(file)
-    setDownloadUrl(objectUrl)
-    setResultUrl(objectUrl);
-    setIsProcessing(false);
+    setIsProcessing(true)
+    await new Promise(r => setTimeout(r, 3000))
+    setDownloadUrl(URL.createObjectURL(file))
+    setIsProcessing(false)
   }
 
   const handleDownload = () => {
@@ -37,61 +36,128 @@ export default function UniversalConverterApp() {
     const a = document.createElement('a')
     a.href = downloadUrl
     const ext = targetFormat === 'mp3' ? 'mp3' : targetFormat === 'pdf-min' ? 'pdf' : targetFormat
-    const baseName = file.name.replace(/\.[^.]+$/, '')
-    a.download = `${baseName}_converted.${ext}`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
+    a.download = `${file.name.replace(/\.[^.]+$/, '')}_converted.${ext}`
+    document.body.appendChild(a); a.click(); document.body.removeChild(a)
   }
 
-  return (
-    <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-emerald-500/30 text-left">
-      <div className="max-w-5xl mx-auto space-y-10 p-4 md:p-8 text-white font-bold">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-emerald-500/20 pb-10">
-          <div className="flex items-center gap-4 text-left">
-            <div className="p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/20"><Repeat className="h-10 w-10 text-emerald-400" /></div>
-            <h1 className="text-2xl md:text-4xl font-bold text-white leading-tight">究極AI<span className="text-emerald-400">マルチコンバーター</span></h1>
-          </div>        </div>
+  const currentMode = MODES.find(m => m.id === mode)!
 
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4 text-left">
-          <div className="flex items-center gap-2 text-emerald-400"><Info size={20} /> <h3 className="font-semibold text-sm">使いかた・活用マニュアル</h3></div>
-          <p className="text-sm text-slate-300 leading-relaxed">動画・画像・PDFをこれ一台で。モードを選択し、ファイルをアップロードしてください。AIが画質を維持したまま最適処理します。</p>
+  return (
+    <div className="min-h-screen bg-[#050507] text-slate-100 font-sans">
+      <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
+
+        {/* ヘッダー */}
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
+            <Repeat className="h-6 w-6 text-emerald-400" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-white">究極AI<span className="text-emerald-400">マルチコンバーター</span></h1>
+            <p className="text-xs text-slate-500 mt-0.5">動画・画像・PDFをAIで最適変換</p>
+          </div>
         </div>
 
+        {/* モード選択 */}
         <div className="grid grid-cols-3 gap-2">
-          {[{ id: 'video', label: '動画', icon: Video }, { id: 'image', label: '画像', icon: ImageIcon }, { id: 'pdf', label: 'PDF', icon: FileText }].map(m => (
-            <Button key={m.id} variant="ghost" onClick={() => handleModeChange(m.id as any)} className={`h-20 rounded-2xl font-bold text-lg border-2 ${mode === m.id ? 'bg-emerald-600 border-emerald-400 text-white shadow-lg' : 'bg-black/40 border-white/5 text-slate-500'}`}>
-              <m.icon className="mr-2 h-6 w-6" /> {m.label}
-            </Button>
+          {MODES.map(m => (
+            <button
+              key={m.id}
+              onClick={() => handleModeChange(m.id as any)}
+              className={`h-14 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 border transition-all ${
+                mode === m.id
+                  ? 'bg-emerald-600 border-emerald-500 text-white'
+                  : 'bg-white/5 border-white/10 text-slate-400 hover:text-slate-200 hover:border-white/20'
+              }`}
+            >
+              <m.icon size={16} /> {m.label}
+            </button>
           ))}
         </div>
 
-        <Card className="bg-[#13141f] border border-white/10 rounded-[2.5rem] p-12 text-center space-y-8 shadow-2xl relative">
-          {!resultUrl ? (
+        {/* メインカード */}
+        <div className="bg-[#0d0f1a] border border-white/10 rounded-2xl p-6 space-y-6">
+
+          {!downloadUrl ? (
             <>
-              <div className="flex flex-wrap gap-2 justify-center">
-                {(mode === 'video' ? ['mp4', 'webm', 'gif', 'mp3'] : mode === 'image' ? ['webp', 'png', 'jpg', 'ico'] : ['pdf-min']).map(f => (
-                  <Button key={f} variant="ghost" onClick={() => setTargetFormat(f)} className={`h-10 px-6 rounded-lg text-xs font-bold uppercase border-2 ${targetFormat === f ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400' : 'bg-black/40 border-white/5 text-slate-600'}`}>{f === 'mp3' ? '音声抽出' : f.toUpperCase()}</Button>
-                ))}
-              </div>
-              <div className="w-full h-48 bg-black/40 border-2 border-dashed border-white/10 rounded-2xl flex items-center justify-center cursor-pointer hover:border-emerald-500/50 transition-all relative text-center">
-                <input type="file" onChange={e => setFile(e.target.files?.[0] || null)} className="absolute inset-0 opacity-0 cursor-pointer" />
-                <div className="space-y-2 pointer-events-none">
-                  <p className="text-xl font-bold text-white uppercase">{file ? file.name : 'ドロップ または クリック'}</p>
-                  <p className="text-xs text-slate-500 font-bold uppercase">{file ? `${(file.size/1024/1024).toFixed(1)}MB` : 'MAX 100MB'}</p>
+              {/* フォーマット選択 */}
+              <div className="space-y-2">
+                <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">変換形式</p>
+                <div className="flex flex-wrap gap-2">
+                  {currentMode.formats.map(f => (
+                    <button
+                      key={f}
+                      onClick={() => setTargetFormat(f)}
+                      className={`h-8 px-4 rounded-lg text-xs font-semibold uppercase border transition-all ${
+                        targetFormat === f
+                          ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
+                          : 'border-white/10 bg-black/30 text-slate-500 hover:text-slate-300'
+                      }`}
+                    >
+                      {f === 'mp3' ? '音声抽出' : f === 'pdf-min' ? 'PDF圧縮' : f.toUpperCase()}
+                    </button>
+                  ))}
                 </div>
               </div>
-              <Button variant="ghost" onClick={handleProcess} disabled={isProcessing || !file} className="w-full h-24 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-3xl rounded-[2rem] shadow-xl uppercase ">{isProcessing ? <Loader2 className="animate-spin h-10 w-10 mx-auto" /> : 'AI変換を開始する 🚀'}</Button>
+
+              {/* ファイルアップロード */}
+              <div className="space-y-2">
+                <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">ファイル</p>
+                <label className="block w-full h-36 bg-black/30 border-2 border-dashed border-white/10 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500/40 transition-all relative">
+                  <input
+                    type="file"
+                    onChange={e => setFile(e.target.files?.[0] || null)}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                  />
+                  <Upload size={24} className={file ? 'text-emerald-400' : 'text-slate-600'} />
+                  <p className="mt-2 text-sm font-medium text-slate-300 pointer-events-none">
+                    {file ? file.name : 'クリックまたはドロップ'}
+                  </p>
+                  <p className="text-xs text-slate-600 mt-1 pointer-events-none">
+                    {file ? `${(file.size / 1024 / 1024).toFixed(1)} MB` : 'MAX 100MB'}
+                  </p>
+                </label>
+              </div>
+
+              {/* 変換ボタン */}
+              <button
+                onClick={handleProcess}
+                disabled={isProcessing || !file}
+                className="w-full h-12 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-emerald-600 hover:bg-emerald-500 text-white"
+              >
+                {isProcessing
+                  ? <><Loader2 size={16} className="animate-spin" /> 変換中...</>
+                  : <><Repeat size={16} /> AI変換を開始する</>
+                }
+              </button>
             </>
           ) : (
-            <div className="space-y-8 text-center">
-              <CheckCircle2 className="h-20 w-20 text-emerald-500 mx-auto" />
-              <h2 className="text-4xl font-bold text-white uppercase leading-none">完了しました</h2>
-              <Button variant="ghost" onClick={handleDownload} className="h-12 px-12 bg-white text-emerald-950 font-bold text-2xl rounded-2xl shadow-xl "><Download className="mr-3 h-6 w-6" /> ファイルを保存</Button>
-              <br/><Button variant="ghost" onClick={() => { setResultUrl(null); setDownloadUrl(null); }} className="text-slate-500 font-bold underline">他のファイルを処理</Button>
+            /* 完了画面 */
+            <div className="text-center space-y-5 py-4">
+              <CheckCircle2 className="h-12 w-12 text-emerald-400 mx-auto" />
+              <div>
+                <p className="text-lg font-bold text-white">変換完了</p>
+                <p className="text-xs text-slate-500 mt-1">{file?.name} → {targetFormat.toUpperCase()}</p>
+              </div>
+              <button
+                onClick={handleDownload}
+                className="h-11 px-8 bg-white text-slate-900 font-semibold text-sm rounded-xl flex items-center gap-2 mx-auto hover:bg-slate-100 transition-all"
+              >
+                <Download size={16} /> ファイルをダウンロード
+              </button>
+              <button
+                onClick={() => { setDownloadUrl(null); setFile(null) }}
+                className="text-xs text-slate-500 hover:text-slate-300 transition-colors underline"
+              >
+                別のファイルを変換する
+              </button>
             </div>
           )}
-        </Card>
+        </div>
+
+        {/* 説明 */}
+        <p className="text-xs text-slate-600 text-center leading-relaxed">
+          動画・画像・PDFの形式変換に対応。AIが画質を維持したまま最適処理します。
+        </p>
       </div>
     </div>
   )
