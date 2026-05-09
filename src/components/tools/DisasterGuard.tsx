@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
@@ -90,10 +90,10 @@ const MasterEngine = () => {
         <Badge className="bg-emerald-600 text-white font-semibold px-3 py-0.5 text-[9px] md:text-[10px] uppercase rounded-full">
           Survival Intelligence Hub
         </Badge>
-        <h1 className="text-2xl md:text-5xl font-black text-white uppercase italic tracking-tighter leading-none">
+        <h1 className="text-2xl md:text-5xl font-bold text-white uppercase tracking-tighter leading-none">
           AI防災パーソナルガイド
         </h1>
-        <div className="inline-block bg-emerald-600 text-white font-semibold px-4 py-0.5 rounded-full text-[9px] md:text-[10px] tracking-widest">
+        <div className="inline-block bg-emerald-600 text-white font-semibold px-4 py-0.5 rounded-full text-[9px] md:text-[10px] tracking-tight">
           MASTERMODEL
         </div>
       </div>
@@ -103,7 +103,7 @@ const MasterEngine = () => {
         <div className="bg-[#13141f] border border-white/10 rounded-[2rem] p-6 md:p-8 space-y-6 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-emerald-500 to-transparent" />
 
-          <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">#1 Environment Scan</p>
+          <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-tight">#1 Environment Scan</p>
 
           {/* GPS */}
           <button
@@ -113,7 +113,7 @@ const MasterEngine = () => {
           >
             <MapPin className={`w-5 h-5 ${isLocating ? 'animate-ping text-emerald-400' : 'text-emerald-400'}`} />
             <span className="text-sm">{isLocating ? '定位中...' : 'GPSで現在地・天気を取得'}</span>
-            <div className={`ml-auto px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${location ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-500'}`}>
+            <div className={`ml-auto px-2 py-0.5 rounded-full text-[9px] font-bold uppercase ${location ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-500'}`}>
               {location ? 'GPS ON' : 'GPS OFF'}
             </div>
           </button>
@@ -121,11 +121,11 @@ const MasterEngine = () => {
           {location && (
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-black/40 border border-white/5 p-3 rounded-xl text-center">
-                <p className="text-[9px] font-black text-slate-500 uppercase mb-1">Coordinates</p>
+                <p className="text-[9px] font-bold text-slate-500 uppercase mb-1">Coordinates</p>
                 <p className="text-xs font-mono text-emerald-400">{location.lat.toFixed(4)}, {location.lng.toFixed(4)}</p>
               </div>
               <div className="bg-black/40 border border-white/5 p-3 rounded-xl text-center">
-                <p className="text-[9px] font-black text-slate-500 uppercase mb-1">Weather</p>
+                <p className="text-[9px] font-bold text-slate-500 uppercase mb-1">Weather</p>
                 <p className="text-xs font-bold text-white">{weather ? `${weather.temperature}℃ / ${weather.windspeed}km/h` : 'Syncing...'}</p>
               </div>
             </div>
@@ -135,23 +135,23 @@ const MasterEngine = () => {
           <div className="space-y-3">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-[10px] font-black text-slate-500 uppercase block mb-1 pl-1">都道府県</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1 pl-1">都道府県</label>
                 <input value={pref} onChange={(e) => setPref(e.target.value)} placeholder="神奈川県"
                   className="w-full h-11 bg-[#0a0b14] border border-white/10 rounded-xl px-4 text-sm text-white focus:border-emerald-500 outline-none transition-all" />
               </div>
               <div>
-                <label className="text-[10px] font-black text-slate-500 uppercase block mb-1 pl-1">市区町村</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1 pl-1">市区町村</label>
                 <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="海老名市"
                   className="w-full h-11 bg-[#0a0b14] border border-white/10 rounded-xl px-4 text-sm text-white focus:border-emerald-500 outline-none transition-all" />
               </div>
             </div>
             <div>
-              <label className="text-[10px] font-black text-slate-500 uppercase block mb-1 pl-1">備蓄状況（水・食料など）</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1 pl-1">備蓄状況（水・食料など）</label>
               <input value={stock} onChange={(e) => setStock(e.target.value)} placeholder="例: 水10L, 非常食3日分"
                 className="w-full h-11 bg-[#0a0b14] border border-white/10 rounded-xl px-4 text-sm text-white focus:border-emerald-500 outline-none transition-all" />
             </div>
             <div>
-              <label className="text-[10px] font-black text-slate-500 uppercase block mb-1 pl-1">住居形態</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1 pl-1">住居形態</label>
               <input value={housing} onChange={(e) => setHousing(e.target.value)} placeholder="例: 木造2階建て"
                 className="w-full h-11 bg-[#0a0b14] border border-white/10 rounded-xl px-4 text-sm text-white focus:border-emerald-500 outline-none transition-all" />
             </div>
@@ -161,7 +161,7 @@ const MasterEngine = () => {
           <div className="space-y-3">
             <button
               onClick={handleCopy}
-              className={`w-full h-14 text-base font-black rounded-xl transition-all shadow-lg ${
+              className={`w-full h-14 text-base font-bold rounded-xl transition-all shadow-lg ${
                 copied
                   ? 'bg-emerald-500 text-slate-950 scale-95'
                   : 'bg-emerald-600 hover:bg-emerald-500 text-white'
@@ -171,19 +171,19 @@ const MasterEngine = () => {
             </button>
             <div className="grid grid-cols-3 gap-2">
               <button
-                className="h-14 bg-white/5 border border-emerald-500/30 rounded-xl text-[10px] font-black uppercase text-emerald-400 hover:bg-emerald-600 hover:text-white transition-all flex flex-col items-center justify-center gap-1"
+                className="h-14 bg-white/5 border border-emerald-500/30 rounded-xl text-[10px] font-bold uppercase text-emerald-400 hover:bg-emerald-600 hover:text-white transition-all flex flex-col items-center justify-center gap-1"
                 onClick={() => window.open('https://chatgpt.com', '_blank')}
               >
                 <span className="text-lg">💬</span> ChatGPT
               </button>
               <button
-                className="h-14 bg-white/5 border border-emerald-500/30 rounded-xl text-[10px] font-black uppercase text-emerald-400 hover:bg-emerald-600 hover:text-white transition-all flex flex-col items-center justify-center gap-1"
+                className="h-14 bg-white/5 border border-emerald-500/30 rounded-xl text-[10px] font-bold uppercase text-emerald-400 hover:bg-emerald-600 hover:text-white transition-all flex flex-col items-center justify-center gap-1"
                 onClick={() => window.open('https://gemini.google.com', '_blank')}
               >
                 <span className="text-lg">✨</span> Gemini
               </button>
               <button
-                className="h-14 bg-white/5 border border-slate-500/30 rounded-xl text-[10px] font-black uppercase text-slate-400 hover:bg-slate-600 hover:text-white transition-all flex flex-col items-center justify-center gap-1"
+                className="h-14 bg-white/5 border border-slate-500/30 rounded-xl text-[10px] font-bold uppercase text-slate-400 hover:bg-slate-600 hover:text-white transition-all flex flex-col items-center justify-center gap-1"
                 onClick={() => window.open('https://claude.ai', '_blank')}
               >
                 <span className="text-lg">🤖</span> Claude
@@ -200,7 +200,7 @@ const MasterEngine = () => {
               <div className="w-10 h-10 rounded-xl bg-emerald-600/10 border border-emerald-500/30 flex items-center justify-center">
                 <ClipboardPaste className="text-emerald-400 w-5 h-5" />
               </div>
-              <h3 className="text-lg md:text-2xl font-black text-white uppercase italic tracking-tight">
+              <h3 className="text-lg md:text-2xl font-bold text-white uppercase tracking-tight">
                 ② 生存戦略レポート
               </h3>
             </div>
@@ -234,7 +234,7 @@ const MasterEngine = () => {
 const NoSSRWrapper = dynamic(() => Promise.resolve(MasterEngine), {
   ssr: false,
   loading: () => (
-    <div className="min-h-screen bg-[#050507] flex items-center justify-center text-emerald-500 font-black animate-pulse uppercase tracking-widest">
+    <div className="min-h-screen bg-[#050507] flex items-center justify-center text-emerald-500 font-bold animate-pulse uppercase tracking-tight">
       Initializing...
     </div>
   ),
