@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React, { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -146,7 +146,7 @@ export default function DashboardActivity() {
           <div className="bg-emerald-950/60 px-5 py-3 flex items-center justify-between border-b border-emerald-500/20">
             <div className="flex items-center gap-2">
               <Shield size={14} className="text-emerald-400" />
-              <span className="text-xs font-bold text-emerald-400 tracking-widest uppercase">Admin Console</span>
+              <span className="text-xs font-bold text-emerald-400 tracking-tight uppercase">Admin Console</span>
             </div>
             <Badge className="bg-emerald-500 text-slate-950 text-[9px] font-bold px-2 py-0.5">ADMIN</Badge>
           </div>
@@ -161,7 +161,7 @@ export default function DashboardActivity() {
               ].map(k => (
                 <div key={k.label} className="bg-black/40 border border-white/5 rounded-xl p-3 text-center">
                   <p className="text-[9px] font-semibold text-slate-500 mb-1">{k.label}</p>
-                  <p className={`text-2xl font-black ${k.color}`}>{k.value}</p>
+                  <p className={`text-2xl font-bold ${k.color}`}>{k.value}</p>
                   <p className="text-[9px] text-slate-600">{k.unit}</p>
                 </div>
               ))}
@@ -169,7 +169,7 @@ export default function DashboardActivity() {
 
             {/* プラン別内訳 */}
             <div className="space-y-2">
-              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">プラン別会員内訳</p>
+              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">プラン別会員内訳</p>
               <div className="grid grid-cols-2 gap-2">
                 {adminStats.planBreakdown.map(p => {
                   const meta = PLAN_LABELS[p.plan] || { label: p.plan, color: '#64748b' }
@@ -179,7 +179,7 @@ export default function DashboardActivity() {
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: meta.color }} />
                         <span className="text-xs text-slate-400 font-semibold">{meta.label}</span>
                       </div>
-                      <span className="text-sm font-black text-white">{p.count}<span className="text-[9px] text-slate-600 ml-0.5">人</span></span>
+                      <span className="text-sm font-bold text-white">{p.count}<span className="text-[9px] text-slate-600 ml-0.5">人</span></span>
                     </div>
                   )
                 })}
@@ -189,7 +189,7 @@ export default function DashboardActivity() {
             {/* ツール別利用Top5（全体） */}
             {adminStats.topTools.length > 0 && (
               <div className="space-y-2">
-                <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">人気ツール Top5（全会員）</p>
+                <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">人気ツール Top5（全会員）</p>
                 {adminStats.topTools.map((t, i) => {
                   const pct = Math.round((t.count / adminMaxCount) * 100)
                   const name = TOOL_NAMES[t.tool_id] || t.tool_id.replace(/-/g, ' ')
@@ -197,10 +197,10 @@ export default function DashboardActivity() {
                     <div key={t.tool_id} className="space-y-1">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="text-[9px] font-black text-slate-600 w-3">{i + 1}</span>
+                          <span className="text-[9px] font-bold text-slate-600 w-3">{i + 1}</span>
                           <span className="text-[10px] font-semibold text-slate-300 truncate max-w-[140px]">{name}</span>
                         </div>
-                        <span className="text-[10px] font-black text-emerald-400">{t.count}回</span>
+                        <span className="text-[10px] font-bold text-emerald-400">{t.count}回</span>
                       </div>
                       <div className="h-1 bg-white/5 rounded-full overflow-hidden">
                         <div className="h-full bg-emerald-500 rounded-full transition-all" style={{ width: `${pct}%` }} />
@@ -229,11 +229,11 @@ export default function DashboardActivity() {
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-black/30 rounded-xl p-3 text-center">
             <p className="text-[9px] font-semibold text-slate-500 mb-1">累計利用</p>
-            <p className="text-2xl font-black text-white">{totalUsage}<span className="text-xs text-slate-600 ml-0.5">回</span></p>
+            <p className="text-2xl font-bold text-white">{totalUsage}<span className="text-xs text-slate-600 ml-0.5">回</span></p>
           </div>
           <div className="bg-black/30 rounded-xl p-3 text-center">
             <p className="text-[9px] font-semibold text-slate-500 mb-1">今日</p>
-            <p className="text-2xl font-black text-emerald-400">{todayUsage}<span className="text-xs text-slate-600 ml-0.5">回</span></p>
+            <p className="text-2xl font-bold text-emerald-400">{todayUsage}<span className="text-xs text-slate-600 ml-0.5">回</span></p>
           </div>
         </div>
 
@@ -251,7 +251,7 @@ export default function DashboardActivity() {
                 <div key={t.tool_id} className="space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-semibold text-slate-400 truncate max-w-[160px]">{name}</span>
-                    <span className="text-[10px] font-black text-white">{t.count}回</span>
+                    <span className="text-[10px] font-bold text-white">{t.count}回</span>
                   </div>
                   <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                     <div className="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 rounded-full transition-all" style={{ width: `${pct}%` }} />
