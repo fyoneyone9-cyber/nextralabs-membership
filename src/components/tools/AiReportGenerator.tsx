@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -14,8 +14,8 @@ const WEAPONS = [
     label: '会議・議事録', 
     desc: '決定事項とTODOを即座に抽出', 
     icon: MessageSquare, 
-    color: 'text-blue-500', 
-    bg: 'bg-blue-500/10',
+    color: 'text-emerald-500', 
+    bg: 'bg-emerald-500/10',
     prompt: "あなたはプロの書記・議事録作成者です。以下の会議メモから「議題」「決定事項」「保留事項」「次回までのTODO」を整理し、ビジネス報告書形式で出力してください。",
     presets: [
       { label: "定例会議のまとめ", content: "【議題】今期の売上報告と来期の施策。【状況】A案は承認、B案は予算の都合で再検討。次回までに各担当が見積もりを出すこと。" },
@@ -41,8 +41,8 @@ const WEAPONS = [
     label: '営業・商談報告', 
     desc: '顧客の温度感と成約への一手を分析', 
     icon: Briefcase, 
-    color: 'text-indigo-500', 
-    bg: 'bg-indigo-500/10',
+    color: 'text-emerald-500', 
+    bg: 'bg-emerald-500/10',
     prompt: "あなたはトップセールスマンです。商談の内容から「顧客の課題」「競合状況」「懸念点」を分析し、成約率を最大化するための次の一手を提案する報告書を作成してください。",
     presets: [
       { label: "初回ヒアリング", content: "顧客は現在のシステムに不満。予算は100万。導入時期は3ヶ月以内。決裁権者は部長だが、現場の反対がある。" },
@@ -65,7 +65,7 @@ const WEAPONS = [
   },
   // 他の武器も同様に拡充（日報、企画、謝罪など）
   { id: 'daily', label: '日報・週報作成', desc: '成果と課題をスマートに言語化', icon: BarChart3, color: 'text-emerald-500', bg: 'bg-emerald-500/10', prompt: "あなたは管理職です。業務ログから成果と課題を整理した日報を作成してください。", presets: [{ label: "多忙な1日のログ", content: "午前：資料作成。午後：外回り3件。トラブル対応。残業2時間。収穫はあった。" }, { label: "トラブル・反省", content: "返信遅れでクレーム。タスク管理不足が原因。対策を徹底する。" }] },
-  { id: 'plan', label: '企画・提案書骨子', desc: '説得力のあるロジックを構成', icon: Target, color: 'text-orange-500', bg: 'bg-orange-500/10', prompt: "あなたは戦略プランナーです。企画の断片を論理的な構成案に仕上げてください。", presets: [{ label: "新規事業の種", content: "AI家事代行。共働きターゲット。サブスク検討中。" }, { label: "社内改善", content: "リモート効率化。無駄な会議を減らしたい。" }] },
+  { id: 'plan', label: '企画・提案書骨子', desc: '説得力のあるロジックを構成', icon: Target, color: 'text-emerald-500', bg: 'bg-emerald-500/10', prompt: "あなたは戦略プランナーです。企画の断片を論理的な構成案に仕上げてください。", presets: [{ label: "新規事業の種", content: "AI家事代行。共働きターゲット。サブスク検討中。" }, { label: "社内改善", content: "リモート効率化。無駄な会議を減らしたい。" }] },
   { id: 'apology', label: '謝罪・始末書案', desc: '誠意を伝え信頼を回復する', icon: ShieldAlert, color: 'text-rose-500', bg: 'bg-rose-500/10', prompt: "あなたは危機管理の専門家です。事実関係から誠意ある謝罪文を作成してください。", presets: [{ label: "納期遅延", content: "バグで3日遅れる。多大な損害。ダブルチェック徹底。" }, { label: "誤送信", content: "宛先間違い。即取り消し。信頼を損ねた。" }] }
 ];
 
@@ -113,8 +113,8 @@ export default function AiReportGenerator() {
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-slate-950">
       <div className="text-center space-y-3">
-        <Badge className="bg-slate-700 text-white font-black italic tracking-widest px-6 py-1 text-[10px] uppercase rounded-full shadow-[0_0_20px_rgba(255,255,255,0.1)]">Business Document Engine</Badge>
-        <h1 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl">AI レポート作成</h1>
+        <Badge className="bg-slate-700 text-white font-bold tracking-tight px-6 py-1 text-[10px] uppercase rounded-full shadow-[0_0_20px_rgba(255,255,255,0.1)]">Business Document Engine</Badge>
+        <h1 className="text-5xl md:text-8xl font-bold text-white uppercase tracking-tighter drop-shadow-2xl">AI レポート作成</h1>
       </div>
 
       {/* 憲法：全体工程プログレスバー */}
@@ -123,10 +123,10 @@ export default function AiReportGenerator() {
           <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-800 -translate-y-1/2 z-0" />
           {STEPS.map((s, i) => (
             <div key={i} className="relative z-10 flex flex-col items-center gap-2 group">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black italic text-sm transition-all duration-500 ${i <= activeStepIndex ? 'bg-slate-200 text-slate-950 shadow-[0_0_15px_rgba(255,255,255,0.3)] scale-110' : 'bg-slate-900 text-slate-600 border border-slate-800'}`}>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-500 ${i <= activeStepIndex ? 'bg-slate-200 text-slate-950 shadow-[0_0_15px_rgba(255,255,255,0.3)] scale-110' : 'bg-slate-900 text-slate-600 border border-slate-800'}`}>
                 {i < activeStepIndex ? <CheckCircle2 size={18} /> : i + 1}
               </div>
-              <span className={`text-[11px] font-black uppercase italic tracking-tighter transition-colors ${i <= activeStepIndex ? 'text-slate-200' : 'text-slate-700'}`}>{s}</span>
+              <span className={`text-[11px] font-bold uppercase tracking-tighter transition-colors ${i <= activeStepIndex ? 'text-slate-200' : 'text-slate-700'}`}>{s}</span>
             </div>
           ))}
         </div>
@@ -143,7 +143,7 @@ export default function AiReportGenerator() {
             >
               {React.createElement(w.icon, { size: 32 })}
               <div className="text-center">
-                <p className="text-[12px] font-black uppercase italic leading-none mb-1">{w.label}</p>
+                <p className="text-[12px] font-bold uppercase leading-none mb-1">{w.label}</p>
                 <p className={`text-[10px] font-bold opacity-60 ${activeWeapon === w.id ? 'text-slate-800' : ''}`}>{w.desc}</p>
               </div>
             </button>
@@ -156,8 +156,8 @@ export default function AiReportGenerator() {
            {WEAPONS.map((w) => (
              <Card key={w.id} onClick={() => setActiveWeapon(w.id)} className="bg-slate-900 border-2 border-slate-800 rounded-[2.5rem] p-8 hover:border-slate-500 transition-all cursor-pointer group shadow-2xl relative overflow-hidden h-64 flex flex-col justify-center items-center text-center">
                 <div className={`absolute top-0 right-0 w-32 h-32 ${w.bg} blur-3xl -mr-16 -mt-16 group-hover:opacity-100 opacity-30 transition-opacity`} />
-                <div className={`w-16 h-16 ${w.bg} ${w.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}>{React.createElement(w.icon, { size: 32 })}</div>
-                <h3 className="text-2xl font-black text-white italic uppercase mb-2">{w.label}</h3>
+                <div className={`w-16 h-12 ${w.bg} ${w.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}>{React.createElement(w.icon, { size: 32 })}</div>
+                <h3 className="text-2xl font-bold text-white uppercase mb-2">{w.label}</h3>
                 <p className="text-slate-500 font-bold text-sm">{w.desc}</p>
              </Card>
            ))}
@@ -169,9 +169,9 @@ export default function AiReportGenerator() {
             <div className="flex items-center justify-between px-6">
               <div className="flex items-center gap-2 text-slate-400 animate-pulse">
                 <Sparkles size={20} />
-                <p className="text-xs font-black uppercase italic tracking-widest">Random Business Scenarios</p>
+                <p className="text-xs font-bold uppercase tracking-tight">Random Business Scenarios</p>
               </div>
-              <p className="text-[10px] text-slate-500 font-bold italic">※リロードや用途切替のたびに、AIが新しい素材案を12個提案します</p>
+              <p className="text-[10px] text-slate-500 font-bold ">※リロードや用途切替のたびに、AIが新しい素材案を12個提案します</p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                {visiblePresets.map((p, i) => (
@@ -179,7 +179,7 @@ export default function AiReportGenerator() {
                   key={i} 
                   variant="outline" 
                   onClick={() => setInputData(p.content)} 
-                  className="h-28 border-2 border-slate-800 bg-slate-900 text-slate-200 font-black text-xs md:text-sm uppercase italic hover:bg-slate-200 hover:text-slate-950 hover:border-white rounded-2xl whitespace-normal p-4 leading-tight transition-all active:scale-95 shadow-lg flex items-center justify-center text-center tracking-tighter"
+                  className="h-28 border-2 border-slate-800 bg-slate-900 text-slate-200 font-bold text-xs md:text-sm uppercase hover:bg-slate-200 hover:text-slate-950 hover:border-white rounded-2xl whitespace-normal p-4 leading-tight transition-all active:scale-95 shadow-lg flex items-center justify-center text-center tracking-tighter"
                  >
                    {p.label}
                  </Button>
@@ -191,24 +191,24 @@ export default function AiReportGenerator() {
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-slate-500 via-slate-200 to-slate-500" />
             
             <div className="flex justify-between items-center mb-10 text-left">
-              <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase flex items-center gap-4">{React.createElement(currentWeapon!.icon, { size: 48, className: "text-slate-400" })} {currentWeapon?.label}</h3>
-              <Button onClick={() => setActiveWeapon(null)} variant="ghost" className="text-slate-500 font-black italic uppercase hover:text-white"><LayoutGrid size={20} className="mr-2" /> 用途を選び直す</Button>
+              <h3 className="text-2xl md:text-4xl font-bold text-white uppercase flex items-center gap-4">{React.createElement(currentWeapon!.icon, { size: 48, className: "text-slate-400" })} {currentWeapon?.label}</h3>
+              <Button onClick={() => setActiveWeapon(null)} variant="ghost" className="text-slate-500 font-bold uppercase hover:text-white"><LayoutGrid size={20} className="mr-2" /> 用途を選び直す</Button>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-12 text-left">
               <div className="space-y-8">
                 <div className="bg-slate-950 p-8 rounded-[2.5rem] border border-slate-800 shadow-inner">
-                  <p className="text-[10px] font-black text-slate-500 uppercase italic tracking-widest mb-4">Business Material Entry</p>
+                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-tight mb-4">Business Material Entry</p>
                   <textarea value={inputData} onChange={(e) => setInputData(e.target.value)} placeholder="会議メモや商談の事実関係を入力してください..." className="w-full h-80 bg-slate-900 border-2 border-slate-800 rounded-3xl p-8 text-xl text-white font-bold focus:border-white outline-none shadow-inner leading-relaxed" />
                 </div>
                 <div className="space-y-4">
-                  <Button onClick={() => handleCopy(`${currentWeapon?.prompt}\n\n【素材データ】：\n${inputData}`)} className={`w-full h-24 text-2xl font-black rounded-3xl transition-all shadow-xl ${copied ? 'bg-emerald-500 text-slate-950 scale-95' : 'bg-slate-200 text-slate-950 hover:bg-white'}`}>
+                  <Button onClick={() => handleCopy(`${currentWeapon?.prompt}\n\n【素材データ】：\n${inputData}`)} className={`w-full h-24 text-2xl font-bold rounded-3xl transition-all shadow-xl ${copied ? 'bg-emerald-500 text-slate-950 scale-95' : 'bg-slate-200 text-slate-950 hover:bg-white'}`}>
                     {copied ? '✅ 分析指示をコピー完了' : '最強AI解析指示をコピー'}
                   </Button>
                   <div className="grid grid-cols-3 gap-3">
-                    <Button variant="outline" className="h-16 border-2 border-slate-800 text-xs font-black uppercase italic hover:bg-slate-200 hover:text-slate-950 rounded-xl" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE</Button>
-                    <Button variant="outline" className="h-16 border-2 border-slate-800 text-xs font-black uppercase italic hover:bg-slate-200 hover:text-slate-950 rounded-xl" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</Button>
-                    <Button variant="outline" className="h-16 border-2 border-slate-800 text-xs font-black uppercase italic hover:bg-slate-200 hover:text-slate-950 rounded-xl" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</Button>
+                    <Button variant="outline" className="h-12 border-2 border-slate-800 text-xs font-bold uppercase hover:bg-slate-200 hover:text-slate-950 rounded-xl" onClick={() => window.open('https://claude.ai', '_blank')}>CLAUDE</Button>
+                    <Button variant="outline" className="h-12 border-2 border-slate-800 text-xs font-bold uppercase hover:bg-slate-200 hover:text-slate-950 rounded-xl" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI</Button>
+                    <Button variant="outline" className="h-12 border-2 border-slate-800 text-xs font-bold uppercase hover:bg-slate-200 hover:text-slate-950 rounded-xl" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT</Button>
                   </div>
                 </div>
               </div>
@@ -216,17 +216,17 @@ export default function AiReportGenerator() {
               <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 flex flex-col gap-6 shadow-inner min-h-[500px] relative overflow-hidden">
                 {score && <div className="absolute inset-0 bg-white/5 backdrop-blur-3xl animate-in fade-in duration-1000" />}
                 <div className="flex items-center justify-between relative z-10">
-                  <div className="flex items-center gap-3 text-slate-400"><ShieldCheck size={32} /><h4 className="text-sm font-black uppercase italic tracking-widest text-white">Master Report</h4></div>
-                  {score && <div className="text-right leading-none"><span className="text-[10px] font-black text-slate-400 uppercase italic">Document Quality</span><br/><span className="text-5xl font-black text-white italic animate-in zoom-in">{score}<span className="text-sm ml-1">%</span></span></div>}
+                  <div className="flex items-center gap-3 text-slate-400"><ShieldCheck size={32} /><h4 className="text-sm font-bold uppercase tracking-tight text-white">Master Report</h4></div>
+                  {score && <div className="text-right leading-none"><span className="text-[10px] font-bold text-slate-400 uppercase ">Document Quality</span><br/><span className="text-5xl font-bold text-white animate-in zoom-in">{score}<span className="text-sm ml-1">%</span></span></div>}
                 </div>
-                <textarea value={report} onChange={(e) => setReport(e.target.value)} placeholder="AIが生成した清書レポートをここに貼り付けると、品質スコアが算出されます..." className="flex-1 bg-slate-900 border-2 border-slate-800 rounded-3xl p-8 text-base text-slate-100 focus:border-white outline-none font-medium leading-relaxed italic relative z-10 shadow-inner" />
-                {isProcessing && <div className="absolute inset-0 bg-slate-950/80 flex flex-col items-center justify-center gap-6 z-20"><Loader2 className="w-12 h-12 text-white animate-spin" /><p className="text-sm font-black text-slate-400 uppercase italic tracking-widest animate-pulse">Evaluating Documentation...</p></div>}
+                <textarea value={report} onChange={(e) => setReport(e.target.value)} placeholder="AIが生成した清書レポートをここに貼り付けると、品質スコアが算出されます..." className="flex-1 bg-slate-900 border-2 border-slate-800 rounded-3xl p-8 text-base text-slate-100 focus:border-white outline-none font-medium leading-relaxed relative z-10 shadow-inner" />
+                {isProcessing && <div className="absolute inset-0 bg-slate-950/80 flex flex-col items-center justify-center gap-6 z-20"><Loader2 className="w-12 h-12 text-white animate-spin" /><p className="text-sm font-bold text-slate-400 uppercase tracking-tight animate-pulse">Evaluating Documentation...</p></div>}
               </div>
             </div>
           </Card>
         </div>
       )}
-      <div className="text-center opacity-20 mt-20"><p className="text-[10px] font-black uppercase tracking-[0.5em] italic">Business Intelligence Engine • NextraLabs 2026</p></div>
+      <div className="text-center opacity-20 mt-20"><p className="text-[10px] font-bold uppercase tracking-[0.5em] ">Business Intelligence Engine • NextraLabs 2026</p></div>
     </div>
   )
 }
