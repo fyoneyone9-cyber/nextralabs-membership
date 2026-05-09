@@ -44,6 +44,7 @@ const MasterEngine = () => {
   const [file, setFile] = useState<File | null>(null)
   const [filePreview, setFilePreview] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [areaInputs, setAreaInputs] = useState(['', '', '']) // 3つのエリア用
 
   // カメラ関連
   const [uploadMode, setUploadMode] = useState<'file' | 'camera'>('file')
@@ -222,21 +223,137 @@ const MasterEngine = () => {
               {/* hidden canvas */}
               <canvas ref={canvasRef} className="hidden" />
 
-              {/* アップロード / カメラ タブ（全モード共通） */}
-              <div className="flex gap-2 p-1 rounded-lg" style={{ background: '#0a0a0c' }}>
-                <button
-                  onClick={() => setUploadMode('file')}
-                  className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium transition-all ${uploadMode === 'file' ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}
-                >
-                  <Upload size={13} /> ファイル
-                </button>
-                <button
-                  onClick={() => setUploadMode('camera')}
-                  className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium transition-all ${uploadMode === 'camera' ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}
-                >
-                  <Camera size={13} /> カメラ撮影
-                </button>
-              </div>
+              {/* エリア解析用入力（エリアモードのみ） */}
+              {mode === 'area' ? (
+                <div className="space-y-3">
+                  {areaInputs.map((val, idx) => (
+                    <input
+                      key={idx}
+                      type="text"
+                      placeholder={`候補地 ${idx + 1} を入力（例：神奈川県海老名市）`}
+                      value={val}
+                      onChange={e => {
+                        const next = [...areaInputs]; next[idx] = e.target.value; setAreaInputs(next)
+                      }}
+                      className={inputCls}
+                      style={inputStyle}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <>
+                  {/* アップロード / カメラ タブ */}
+                  <div className="flex gap-2 p-1 rounded-lg" style={{ background: '#0a0a0c' }}>
+                    <button
+                      onClick={() => setUploadMode('file')}
+                      className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium transition-all ${uploadMode === 'file' ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                    >
+                      <Upload size={13} /> ファイル
+                    </button>
+                    <button
+                      onClick={() => setUploadMode('camera')}
+                      className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium transition-all ${uploadMode === 'camera' ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                    >
+                      <Camera size={13} /> カメラ撮影
+                    </button>
+                  </div>
+                  {/* カメラビュー */}
+                  {uploadMode === 'camera' && !filePreview && (
+                    <div className="space-y-3">
+                      {cameraError && (
+                        <div className="flex items-start gap-2 text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 text-xs">
+                          {cameraError}
+                        </div>
+                      )}
+                      <div className="relative rounded-lg overflow-hidden aspect-video" style={{ background: '#0a0a0c', border: '1px solid #1e293b' }}>
+                        <video
+                          ref={videoRef}
+                          autoPlay playsInline muted
+                          className={`w-full h-full object-cover transition-opacity duration-500 ${isCameraActive ? 'opacity-100' : 'opacity-0'} ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`}
+                        />
+                        {!isCameraActive && !cameraError && (
+                          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                            <Loader2 className="h-6 w-6 text-emerald-400 animate-spin" />
+                            <p className="text-xs text-slate-500">カメラを起動中...</p>
+                          </div>
+                        )}
+                        {isCameraActive && (
+                          <>
+                            <button onClick={flipCamera} className="absolute top-2 right-2 bg-black/50 hover:bg-black/80 text-white p-1.5 rounded-lg transition-all backdrop-blur-sm">
+                              <SwitchCamera size={15} />
+                            </button>
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                              <div className="w-40 h-40 rounded-xl" style={{ border: '2px solid rgba(16,185,129,0.5)' }} />
+                            </div>
+                          </>
+                        )}
+                      </div>
+                      <button
+                        onClick={capturePhoto}
+                        disabled={!isCameraActive}
+                        className="w-full h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                        style={{ background: '#10b981', color: '#fff' }}
+                        onMouseEnter={e => { if (isCameraActive) e.currentTarget.style.background = '#059669' }}
+                        onMouseLeave={e => { e.currentTarget.style.background = '#10b981' }}
+                      >
+                        <Camera size={15} />
+                        {mode === 'area' ? 'マップ・現場を撮影する' : mode === 'contract' ? '書類を撮影する' : '部屋を撮影する'}
+                      </button>
+                    </div>
+                  )}
+
+                  {/* 撮影プレビュー */}
+                  {filePreview && (
+                    <div className="relative rounded-lg overflow-hidden aspect-video" style={{ border: '1px solid #1e293b' }}>
+                      <img src={filePreview} alt="preview" className="w-full h-full object-cover" />
+                      <button
+                        onClick={() => { setFile(null); setFilePreview(null); if (uploadMode === 'camera') startCamera(facingMode) }}
+                        className="absolute top-2 right-2 bg-black/60 hover:bg-slate-700 text-white text-xs font-medium px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition-all"
+                      >
+                        <X size={11} /> 撮り直す
+                      </button>
+                    </div>
+                  )}
+
+                  {/* ファイルアップロード（ファイルモード時のみ） */}
+                  {uploadMode === 'file' && !filePreview && (
+                    <div
+                      className="relative rounded-lg flex flex-col items-center justify-center gap-3 cursor-pointer transition-colors"
+                      style={{ height: '160px', border: '2px dashed #334155', background: '#13141f' }}
+                      onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.5)')}
+                      onMouseLeave={e => (e.currentTarget.style.borderColor = '#334155')}
+                    >
+                      <input
+                        type="file"
+                        onChange={e => {
+                          const f = e.target.files?.[0] || null
+                          setFile(f)
+                          if (f && f.type.startsWith('image/')) {
+                            const reader = new FileReader()
+                            reader.onload = ev => setFilePreview(ev.target?.result as string)
+                            reader.readAsDataURL(f)
+                          } else { setFilePreview(null) }
+                        }}
+                        className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                        accept="image/*,.pdf"
+                      />
+                      <Upload size={24} style={{ color: file ? '#10b981' : '#475569' }} />
+                      <div className="text-center pointer-events-none">
+                        <p className="text-sm font-medium text-slate-400">
+                          {file ? file.name : 'ファイルをドロップ、またはクリック'}
+                        </p>
+                        <p className="text-xs text-slate-600 mt-1">
+                          {file
+                            ? `${(file.size / 1024 / 1024).toFixed(1)}MB — 準備完了`
+                            : mode === 'area' ? 'ハザードマップ・現場写真（画像）'
+                            : mode === 'contract' ? '契約書・重要事項説明書（PDF/画像）'
+                            : '物件写真（画像）'}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
 
               {/* カメラビュー */}
               {uploadMode === 'camera' && !filePreview && (
