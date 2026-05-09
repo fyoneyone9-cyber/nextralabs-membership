@@ -1,75 +1,63 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { 
-  Zap, 
-  Loader2, 
-  CheckCircle2, 
-  TrendingUp, 
-  Info, 
-  Share2, 
-  Clock, 
-  Copy, 
-  ChevronRight,
-  Sparkles,
-  AlertCircle,
-  Twitter,
-  Instagram,
-  Flame
+import {
+  Zap, Loader2, CheckCircle2, TrendingUp,
+  Share2, Clock, Copy, Sparkles, AlertCircle,
+  Twitter, Instagram, RefreshCw, Check
 } from 'lucide-react'
-import { ApiLinkIndicator } from '@/components/tools/ApiLinkIndicator'
+
+type Result = { content: string; strategy: string; bestTime: string }
 
 export default function SnsAutoPosterApp() {
   const [topic, setTopic] = useState('')
   const [targetSns, setTargetSns] = useState<'X' | 'Instagram'>('X')
   const [isGenerating, setIsGenerating] = useState(false)
+  const [isLoadingTrends, setIsLoadingTrends] = useState(false)
   const [trends, setTrends] = useState<string[]>([])
   const [selectedTrend, setSelectedTrend] = useState<string | null>(null)
-  const [result, setResult] = useState<{ content: string; strategy: string; bestTime: string } | null>(null)
+  const [result, setResult] = useState<Result | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
 
-  // トレンド取得
-  useEffect(() => {
-    const fetchTrends = async () => {
-      try {
-        const r = await fetch('/api/tools/trend-stock', { cache: 'no-store' })
-        const d = await r.json()
-        if (d.items) {
-          setTrends(d.items.map((item: any) => item.name))
-        }
-      } catch (e) {
-        setTrends(['AI活用', '時短術', '最新ガジェット'])
+  const fetchTrends = async () => {
+    setIsLoadingTrends(true)
+    try {
+      const r = await fetch('/api/tools/trend-stock', { cache: 'no-store' })
+      const d = await r.json()
+      if (d.items && d.items.length > 0) {
+        setTrends(d.items.slice(0, 6).map((item: any) => item.name))
+      } else {
+        setTrends(['AI活用', '時短術', '最新ガジェット', '副業術', '節約生活', 'ChatGPT'])
       }
+    } catch {
+      setTrends(['AI活用', '時短術', '最新ガジェット', '副業術', '節約生活', 'ChatGPT'])
+    } finally {
+      setIsLoadingTrends(false)
     }
-    fetchTrends()
-  }, [])
+  }
+
+  useEffect(() => { fetchTrends() }, [])
 
   const handleGenerate = async () => {
-    if (!topic && !selectedTrend) {
+    const finalTopic = topic.trim() || selectedTrend
+    if (!finalTopic) {
       setError('テーマを入力するか、トレンドを選択してください。')
       return
     }
-
     setIsGenerating(true)
     setError(null)
-
+    setResult(null)
     try {
       const res = await fetch('/api/tools/sns-auto-poster', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          topic: topic || selectedTrend,
-          sns: targetSns,
-          trend: selectedTrend
-        })
+        body: JSON.stringify({ topic: finalTopic, sns: targetSns, trend: selectedTrend }),
       })
       const data = await res.json()
-      if (!data.success) throw new Error(data.error)
+      if (!data.success) throw new Error(data.error || '生成に失敗しました')
       setResult(data)
     } catch (e: any) {
-      setError('生成に失敗しました: ' + e.message)
+      setError(e.message || '生成に失敗しました。しばらく待って再試行してください。')
     } finally {
       setIsGenerating(false)
     }
@@ -77,195 +65,251 @@ export default function SnsAutoPosterApp() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
-    alert('コピーしました！')
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  const reset = () => {
+    setResult(null)
+    setError(null)
+    setTopic('')
+    setSelectedTrend(null)
   }
 
   return (
-    <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-emerald-500/30 text-left">
-      {/* ⚡ 憲法：MASTERMODEL最上位ロック */}
-      <div className="fixed top-0 left-0 right-0 h-2 bg-emerald-500 z-[9999] shadow-[0_0_30px_rgba(16,185,129,1)]"></div>
+    <div
+      className="min-h-screen bg-[#0f172a] text-slate-100"
+      style={{ fontFamily: "'Inter','Noto Sans JP',sans-serif" }}
+    >
+      <div className="h-1 bg-emerald-500 w-full" />
 
-      <div className="max-w-6xl mx-auto space-y-12 border-t-[24px] border-x-8 border-b-8 border-emerald-500 shadow-[0_0_150px_rgba(16,185,129,0.5)] rounded-[4rem] p-6 md:p-16 relative overflow-hidden bg-black/40 backdrop-blur-xl">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-emerald-500/20 pb-12">
-          <div className="flex items-center gap-6">
-            <div className="p-6 bg-emerald-500/10 rounded-3xl border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
-              <Share2 className="h-12 w-12 text-emerald-400" />
-            </div>
-            <div>
-              <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-white">
-                AI SNS <span className="text-emerald-500">オートポスター</span>
-              </h1>
-              <p className="text-emerald-500 font-black text-sm uppercase italic tracking-[0.3em] mt-2">SOCIAL SYNC OS v1.0-MASTER</p>
-            </div>
+      <div className="max-w-3xl mx-auto px-4 py-12 space-y-8">
+
+        {/* ヘッダー */}
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <Share2 size={18} className="text-emerald-400" />
+            <span className="text-xs font-medium text-emerald-400 tracking-wide">SNS × AI コンテンツ生成</span>
           </div>
-          <div className="flex flex-col items-end gap-3">
-            <Badge className="bg-emerald-500 text-slate-950 font-black italic px-8 py-3 text-lg rounded-full shadow-[0_0_30px_rgba(16,185,129,0.5)]">PREMIUM MASTER</Badge>
-            <ApiLinkIndicator model="Gemini 1.5 Flash / Real-time Trend Engine" />
-          </div>
+          <h1 className="text-4xl font-semibold text-white tracking-tight leading-[1.15]">
+            AI SNSオートポスター
+          </h1>
+          <p className="text-slate-400 text-sm leading-relaxed max-w-lg">
+            トレンドキーワードをもとに、X・InstagramでバズるAI投稿文を即生成。コピーしてそのまま投稿できます。
+          </p>
         </div>
 
+        {/* エラー */}
         {error && (
-          <div className="bg-red-500/10 border-2 border-red-500/50 rounded-2xl p-6 flex items-center gap-4 text-red-500 font-black text-xl italic animate-in shake">
-            <AlertCircle size={32} />
-            {error}
+          <div className="flex items-start gap-3 bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-sm text-red-400">
+            <AlertCircle size={16} className="shrink-0 mt-0.5" />
+            <span>{error}</span>
           </div>
         )}
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Left Column: Input */}
-          <div className="space-y-10">
-            <div className="space-y-6">
-              <div className="flex items-center gap-4">
-                <div className="h-8 w-2 bg-emerald-500 rounded-full"></div>
-                <h3 className="text-2xl font-black text-white italic uppercase tracking-widest">1. トレンドを選択</h3>
+        {/* ── 入力フォーム ── */}
+        {!result && (
+          <div className="space-y-5">
+
+            {/* Step 1: トレンド */}
+            <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-slate-950 text-xs font-bold">1</span>
+                  <span className="text-sm font-semibold text-white">トレンドから選ぶ</span>
+                </div>
+                <button
+                  onClick={fetchTrends}
+                  disabled={isLoadingTrends}
+                  className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-emerald-400 transition-colors disabled:opacity-50"
+                >
+                  <RefreshCw size={12} className={isLoadingTrends ? 'animate-spin' : ''} />
+                  更新
+                </button>
               </div>
-              <div className="grid grid-cols-1 gap-3">
-                {trends.map((t, i) => (
-                  <button 
-                    key={i} 
-                    onClick={() => { setSelectedTrend(t); setTopic(t); }} 
-                    className={`p-6 rounded-2xl font-black italic text-left border-4 transition-all flex items-center justify-between group ${
-                      selectedTrend === t 
-                        ? 'bg-emerald-500 border-emerald-400 text-slate-950 scale-105 shadow-[0_0_30px_rgba(52,211,153,0.3)]' 
-                        : 'bg-white/5 border-white/5 text-slate-400 hover:border-white/20'
-                    }`}
-                  >
-                    <span className="text-xl truncate">{t}</span>
-                    {selectedTrend === t ? <CheckCircle2 size={24} /> : <Flame size={20} className="text-emerald-500/30 group-hover:text-emerald-500" />}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-6 pt-6 border-t-2 border-white/5">
-              <div className="flex items-center gap-4">
-                <div className="h-8 w-2 bg-emerald-500 rounded-full"></div>
-                <h3 className="text-2xl font-black text-white italic uppercase tracking-widest">2. ターゲットSNS</h3>
-              </div>
-              <div className="grid grid-cols-2 gap-6">
-                {[
-                  { id: 'X', label: 'X (Twitter)', icon: Twitter, color: 'bg-white text-black' },
-                  { id: 'Instagram', label: 'Instagram', icon: Instagram, color: 'bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 text-white' }
-                ].map((s: any) => (
-                  <button 
-                    key={s.id} 
-                    onClick={() => setTargetSns(s.id)}
-                    className={`p-6 rounded-3xl font-black italic text-xl border-4 transition-all flex items-center justify-center gap-3 ${
-                      targetSns === s.id ? `${s.color} scale-105 shadow-xl` : 'bg-white/5 border-white/5 text-slate-500 hover:text-slate-300'
-                    }`}
-                  >
-                    <s.icon size={28} /> {s.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-6 pt-6 border-t-2 border-white/5">
-              <div className="flex items-center gap-4">
-                <div className="h-8 w-2 bg-emerald-500 rounded-full"></div>
-                <h3 className="text-2xl font-black text-white italic uppercase tracking-widest">3. カスタムテーマ</h3>
-              </div>
-              <textarea 
-                value={topic}
-                onChange={(e) => { setTopic(e.target.value); setSelectedTrend(null); }}
-                className="w-full h-40 bg-black/60 border-4 border-white/10 rounded-[2rem] p-8 font-bold text-white outline-none focus:border-emerald-500 transition-all text-2xl" 
-                placeholder="独自のテーマを入力..." 
-              />
-              <Button 
-                onClick={handleGenerate} 
-                disabled={isGenerating} 
-                className="w-full h-32 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-4xl rounded-[3rem] shadow-[0_20px_50px_rgba(16,185,129,0.4)] uppercase italic group scale-105 active:scale-95 transition-all"
-              >
-                {isGenerating ? <Loader2 className="animate-spin h-16 w-16 mx-auto" /> : (
-                  <span className="flex items-center gap-4">バズ投稿を錬成 <Zap className="h-10 w-10 fill-current animate-pulse" /></span>
-                )}
-              </Button>
-            </div>
-          </div>
-
-          {/* Right Column: Result */}
-          <div className="relative">
-            {!result && !isGenerating && (
-              <div className="h-full flex flex-col items-center justify-center border-4 border-dashed border-white/5 rounded-[3rem] p-12 text-center opacity-30">
-                <Sparkles size={80} className="mb-6" />
-                <p className="text-2xl font-black italic">生成ボタンを押して<br/>バズの魔法をかけましょう</p>
-              </div>
-            )}
-
-            {isGenerating && (
-              <div className="h-full flex flex-col items-center justify-center bg-emerald-500/5 border-4 border-emerald-500/20 rounded-[3rem] p-12 text-center animate-pulse">
-                <Loader2 size={80} className="animate-spin text-emerald-500 mb-6" />
-                <p className="text-3xl text-emerald-400 font-black italic">トレンドを解析中...</p>
-              </div>
-            )}
-
-            {result && (
-              <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-700">
-                <Card className="bg-emerald-500/5 border-4 border-emerald-500/30 rounded-[3.5rem] p-12 shadow-2xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-8 opacity-5 rotate-12"><Zap size={200} /></div>
-                  
-                  <div className="flex items-center justify-between mb-8">
-                    <h3 className="text-3xl font-black text-white italic uppercase flex items-center gap-4">
-                      <TrendingUp className="text-emerald-400" /> 最適化済み投稿案
-                    </h3>
-                    <Button 
-                      onClick={() => copyToClipboard(result.content)} 
-                      className="h-14 px-8 bg-white text-slate-950 font-black rounded-2xl shadow-lg hover:bg-emerald-400 transition-all italic text-lg"
-                    >
-                      <Copy className="mr-2" /> コピー
-                    </Button>
-                  </div>
-
-                  <div className="bg-black/60 rounded-[2rem] p-10 text-2xl text-white font-bold italic leading-relaxed border-2 border-white/5 shadow-inner min-h-[300px] whitespace-pre-wrap">
-                    {result.content}
-                  </div>
-
-                  <div className="mt-10 grid md:grid-cols-2 gap-6">
-                    <div className="bg-white/5 p-8 rounded-3xl border border-white/10 space-y-4">
-                      <div className="flex items-center gap-2 text-emerald-400">
-                        <Zap size={20} />
-                        <span className="font-black italic text-sm uppercase">バズる理由</span>
-                      </div>
-                      <p className="text-sm font-bold text-slate-300 italic leading-relaxed">{result.strategy}</p>
-                    </div>
-                    <div className="bg-white/5 p-8 rounded-3xl border border-white/10 space-y-4 text-center flex flex-col justify-center">
-                      <div className="flex items-center justify-center gap-2 text-emerald-400">
-                        <Clock size={20} />
-                        <span className="font-black italic text-sm uppercase">推奨投稿時間</span>
-                      </div>
-                      <p className="text-3xl font-black text-white italic">{result.bestTime}</p>
-                    </div>
-                  </div>
-                </Card>
-
-                {/* Final Roadmap */}
-                <div className="pt-6 grid grid-cols-3 gap-4">
-                  {[
-                    { title: '即時投稿', icon: Share2 },
-                    { title: '反響分析', icon: TrendingUp },
-                    { title: '売上連動', icon: Zap }
-                  ].map((s, i) => (
-                    <div key={i} className="bg-[#13141f] border-2 border-white/10 p-6 rounded-[2rem] text-center space-y-3">
-                      <s.icon className="mx-auto text-emerald-500/50" />
-                      <p className="text-xs font-black text-white italic">{s.title}</p>
-                    </div>
+              {isLoadingTrends ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="h-10 bg-[#0f172a] rounded-lg animate-pulse border border-slate-700/50" />
                   ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {trends.map((t, i) => (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        setSelectedTrend(t)
+                        setTopic('')
+                      }}
+                      className={`h-10 px-3 rounded-lg text-sm font-medium transition-all text-left truncate border ${
+                        selectedTrend === t
+                          ? 'bg-emerald-500 text-slate-950 border-emerald-500'
+                          : 'bg-[#0f172a] text-slate-300 border-slate-700/50 hover:border-emerald-500/50 hover:text-emerald-400'
+                      }`}
+                    >
+                      {t}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Step 2: 自由入力 */}
+            <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-600 text-slate-300 text-xs font-bold">2</span>
+                <span className="text-sm font-semibold text-white">または自由にテーマを入力</span>
+              </div>
+              <textarea
+                value={topic}
+                onChange={e => { setTopic(e.target.value); setSelectedTrend(null) }}
+                rows={3}
+                placeholder="例：ChatGPTで副業を始める方法、朝活の習慣化..."
+                className="w-full bg-[#0f172a] border border-slate-700 rounded-lg px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-emerald-500 outline-none transition-colors resize-none"
+              />
+            </div>
+
+            {/* Step 3: SNS選択 */}
+            <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-600 text-slate-300 text-xs font-bold">3</span>
+                <span className="text-sm font-semibold text-white">ターゲットSNS</span>
+              </div>
+              <div className="flex gap-3">
+                {([
+                  { id: 'X', label: 'X (Twitter)', icon: Twitter },
+                  { id: 'Instagram', label: 'Instagram', icon: Instagram },
+                ] as { id: 'X' | 'Instagram'; label: string; icon: any }[]).map(s => (
+                  <button
+                    key={s.id}
+                    onClick={() => setTargetSns(s.id)}
+                    className={`flex-1 h-12 flex items-center justify-center gap-2 rounded-xl text-sm font-medium transition-all border ${
+                      targetSns === s.id
+                        ? 'bg-emerald-500 text-slate-950 border-emerald-500'
+                        : 'bg-[#0f172a] text-slate-400 border-slate-700/50 hover:border-slate-500 hover:text-slate-200'
+                    }`}
+                  >
+                    <s.icon size={16} />
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 生成ボタン */}
+            <button
+              onClick={handleGenerate}
+              disabled={isGenerating || (!topic.trim() && !selectedTrend)}
+              className="w-full h-12 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-base rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(16,185,129,0.25)]"
+            >
+              {isGenerating ? (
+                <><Loader2 size={18} className="animate-spin" /> 生成中...</>
+              ) : (
+                <><Zap size={18} /> 投稿文を生成する</>
+              )}
+            </button>
+
+            {/* 生成中インジケーター */}
+            {isGenerating && (
+              <div className="bg-[#1e293b] border border-emerald-500/20 rounded-xl p-5 flex items-center gap-4">
+                <div className="relative flex-shrink-0">
+                  <Loader2 size={28} className="animate-spin text-emerald-500" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-white">AIが投稿文を生成しています</p>
+                  <p className="text-xs text-slate-400 mt-0.5">トレンドを分析して最適な文章を作成中...</p>
                 </div>
               </div>
             )}
           </div>
-        </div>
+        )}
 
-        {/* Footer */}
-        <div className="mt-24 pt-12 border-t-2 border-white/5 flex flex-col md:flex-row items-center justify-between gap-8 text-[12px] font-black italic uppercase tracking-[0.4em] text-white/20">
-          <p>© 2026 NextraLabs Viral Content OS. ALL RIGHTS RESERVED.</p>
-          <div className="flex gap-12">
-            <a href="#" className="hover:text-emerald-500 transition-colors">利用規約</a>
-            <a href="#" className="hover:text-emerald-500 transition-colors">ステータス</a>
-            <a href="#" className="hover:text-emerald-500 transition-colors">サポート</a>
+        {/* ── 結果表示 ── */}
+        {result && (
+          <div className="space-y-5">
+            {/* 成功ヘッダー */}
+            <div className="flex items-center justify-between bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4">
+              <div className="flex items-center gap-3">
+                <CheckCircle2 size={20} className="text-emerald-500" />
+                <div>
+                  <p className="text-sm font-semibold text-white">投稿文を生成しました</p>
+                  <p className="text-xs text-slate-400 mt-0.5">{targetSns} 向け最適化済み</p>
+                </div>
+              </div>
+              <button
+                onClick={reset}
+                className="text-xs text-slate-400 hover:text-emerald-400 transition-colors border border-slate-700/50 rounded-lg px-3 py-1.5"
+              >
+                やり直す
+              </button>
+            </div>
+
+            {/* 投稿本文 */}
+            <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <TrendingUp size={16} className="text-emerald-400" />
+                  <span className="text-sm font-semibold text-white">投稿文</span>
+                </div>
+                <button
+                  onClick={() => copyToClipboard(result.content)}
+                  className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-all ${
+                    copied
+                      ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
+                      : 'bg-[#0f172a] text-slate-400 border-slate-700/50 hover:text-emerald-400 hover:border-emerald-500/40'
+                  }`}
+                >
+                  {copied ? <><Check size={12} /> コピー済み</> : <><Copy size={12} /> コピー</>}
+                </button>
+              </div>
+              <div className="bg-[#0f172a] border border-slate-700/30 rounded-lg p-4 text-sm text-slate-200 leading-relaxed whitespace-pre-wrap min-h-[120px]">
+                {result.content}
+              </div>
+            </div>
+
+            {/* バズる理由 + 投稿時間 */}
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-2">
+                <div className="flex items-center gap-2">
+                  <Zap size={15} className="text-emerald-400" />
+                  <span className="text-xs font-semibold text-slate-300 uppercase tracking-wide">バズる理由</span>
+                </div>
+                <p className="text-sm text-slate-400 leading-relaxed">{result.strategy}</p>
+              </div>
+              <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-2">
+                <div className="flex items-center gap-2">
+                  <Clock size={15} className="text-emerald-400" />
+                  <span className="text-xs font-semibold text-slate-300 uppercase tracking-wide">推奨投稿時間</span>
+                </div>
+                <p className="text-2xl font-semibold text-white">{result.bestTime}</p>
+              </div>
+            </div>
+
+            {/* 次のアクション */}
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { icon: Share2,    label: '即時投稿',  desc: 'コピーして投稿' },
+                { icon: TrendingUp, label: '反響分析', desc: 'インプ・エンゲージ' },
+                { icon: Zap,       label: '売上連動',  desc: 'アフィリ×SNS' },
+              ].map((s, i) => (
+                <div key={i} className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-4 text-center space-y-1">
+                  <s.icon size={16} className="text-emerald-400 mx-auto" />
+                  <p className="text-xs font-semibold text-white">{s.label}</p>
+                  <p className="text-[11px] text-slate-500">{s.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
+        )}
+
+        {/* フッター */}
+        <div className="pt-6 border-t border-slate-800 flex items-center justify-between text-xs text-slate-600">
+          <span>© 2026 NextraLabs</span>
+          <span className="flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            Gemini 1.5 Flash × Real-time Trends
+          </span>
         </div>
       </div>
     </div>
