@@ -20,7 +20,6 @@ const products = [
   'prompt-master',
   'youtube-producer',
   'location-finder',
-  'ticket-scout',
   'buzz-writer',
   'ai-report-generator',
   'ai-select-shop',
