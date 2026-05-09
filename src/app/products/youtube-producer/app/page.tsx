@@ -211,10 +211,23 @@ function YoutubeProducerApp() {
         {error && <div className="bg-red-500/10 border-2 border-red-500/50 rounded-2xl p-6 flex items-center gap-4 text-red-500 font-black text-xl italic"><AlertCircle size={32} />{error}</div>}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-12">
-          <TabsList className="grid grid-cols-6 h-24 bg-white/5 border border-white/10 rounded-[2rem] p-2 gap-3">
-            {['input', 'genre', 'script', 'visual', 'music', 'strategy'].map((v, i) => (
-              <TabsTrigger key={v} value={v} disabled={i > 0 && !transcript || i > 2 && !script} className="rounded-2xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-sm md:text-xl transition-all">
-                {i+1}. {v === 'input' ? '入力' : v === 'genre' ? '戦略' : v === 'script' ? '台本' : v === 'visual' ? '画像' : v === 'music' ? '音楽' : 'SEO'}
+          <TabsList className="grid grid-cols-6 h-28 bg-white/5 border border-white/10 rounded-[2.5rem] p-2 gap-4 shadow-2xl relative overflow-hidden backdrop-blur-md">
+            {[
+              { id: 'input', label: '入力', icon: Mic },
+              { id: 'genre', label: '戦略', icon: Zap },
+              { id: 'script', label: '台本', icon: FileText },
+              { id: 'visual', label: '画像', icon: ImageIcon },
+              { id: 'music', label: '音楽', icon: Music },
+              { id: 'strategy', label: 'SEO', icon: Search }
+            ].map((tab, i) => (
+              <TabsTrigger 
+                key={tab.id} 
+                value={tab.id} 
+                disabled={i > 0 && !transcript || i > 2 && !script} 
+                className="rounded-2xl data-[state=active]:bg-gradient-to-br data-[state=active]:from-emerald-400 data-[state=active]:to-emerald-600 data-[state=active]:text-slate-950 data-[state=active]:shadow-[0_0_30px_rgba(52,211,153,0.4)] data-[state=active]:scale-105 font-black italic uppercase transition-all duration-300 flex flex-col items-center justify-center gap-1 group"
+              >
+                <tab.icon className={`h-6 w-6 ${activeTab === tab.id ? 'text-slate-950' : 'text-emerald-500/50 group-hover:text-emerald-400'}`} />
+                <span className="text-xs md:text-sm tracking-tighter">{i+1}. {tab.label}</span>
               </TabsTrigger>
             ))}
           </TabsList>
