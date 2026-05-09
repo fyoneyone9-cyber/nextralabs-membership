@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Briefcase, Info, ShoppingCart, ShieldCheck } from 'lucide-react';
+import { Briefcase, Info, ShoppingCart, ShieldCheck, Lock, Ticket } from 'lucide-react';
 import { CharacterMake } from '../components/CharacterMake';
 import { ResultView } from '../components/ResultView';
 
