@@ -94,7 +94,7 @@ const MasterEngine = () => {
     stopCamera()
   }, [facingMode, stopCamera])
 
-  // カメラタブ切替時に自動起動
+  // カメラタブ切替時に自動起動（全モード共通）
   useEffect(() => {
     if (uploadMode === 'camera' && !filePreview && mode !== 'selection') startCamera(facingMode)
     if (uploadMode === 'file') stopCamera()
@@ -222,26 +222,24 @@ const MasterEngine = () => {
               {/* hidden canvas */}
               <canvas ref={canvasRef} className="hidden" />
 
-              {/* アップロード / カメラ タブ（内見モードのみカメラ表示） */}
-              {mode === 'room' && (
-                <div className="flex gap-2 p-1 rounded-lg" style={{ background: '#0a0a0c' }}>
-                  <button
-                    onClick={() => setUploadMode('file')}
-                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium transition-all ${uploadMode === 'file' ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}
-                  >
-                    <Upload size={13} /> ファイル
-                  </button>
-                  <button
-                    onClick={() => setUploadMode('camera')}
-                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium transition-all ${uploadMode === 'camera' ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}
-                  >
-                    <Camera size={13} /> カメラ撮影
-                  </button>
-                </div>
-              )}
+              {/* アップロード / カメラ タブ（全モード共通） */}
+              <div className="flex gap-2 p-1 rounded-lg" style={{ background: '#0a0a0c' }}>
+                <button
+                  onClick={() => setUploadMode('file')}
+                  className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium transition-all ${uploadMode === 'file' ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                >
+                  <Upload size={13} /> ファイル
+                </button>
+                <button
+                  onClick={() => setUploadMode('camera')}
+                  className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium transition-all ${uploadMode === 'camera' ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                >
+                  <Camera size={13} /> カメラ撮影
+                </button>
+              </div>
 
               {/* カメラビュー */}
-              {mode === 'room' && uploadMode === 'camera' && !filePreview && (
+              {uploadMode === 'camera' && !filePreview && (
                 <div className="space-y-3">
                   {cameraError && (
                     <div className="flex items-start gap-2 text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 text-xs">
@@ -279,7 +277,8 @@ const MasterEngine = () => {
                     onMouseEnter={e => { if (isCameraActive) e.currentTarget.style.background = '#059669' }}
                     onMouseLeave={e => { e.currentTarget.style.background = '#10b981' }}
                   >
-                    <Camera size={15} /> 部屋を撮影する
+                    <Camera size={15} />
+                    {mode === 'area' ? 'マップ・現場を撮影する' : mode === 'contract' ? '書類を撮影する' : '部屋を撮影する'}
                   </button>
                 </div>
               )}
@@ -297,8 +296,8 @@ const MasterEngine = () => {
                 </div>
               )}
 
-              {/* ファイルアップロード（ファイルモード or 内見以外） */}
-              {(uploadMode === 'file' || mode !== 'room') && !filePreview && (
+              {/* ファイルアップロード（ファイルモード時のみ） */}
+              {uploadMode === 'file' && !filePreview && (
                 <div
                   className="relative rounded-lg flex flex-col items-center justify-center gap-3 cursor-pointer transition-colors"
                   style={{ height: '160px', border: '2px dashed #334155', background: '#13141f' }}
@@ -325,7 +324,11 @@ const MasterEngine = () => {
                       {file ? file.name : 'ファイルをドロップ、またはクリック'}
                     </p>
                     <p className="text-xs text-slate-600 mt-1">
-                      {file ? `${(file.size / 1024 / 1024).toFixed(1)}MB — 準備完了` : '物件写真・契約書（PDF/画像）'}
+                      {file
+                        ? `${(file.size / 1024 / 1024).toFixed(1)}MB — 準備完了`
+                        : mode === 'area' ? 'ハザードマップ・現場写真（画像）'
+                        : mode === 'contract' ? '契約書・重要事項説明書（PDF/画像）'
+                        : '物件写真（画像）'}
                     </p>
                   </div>
                 </div>
