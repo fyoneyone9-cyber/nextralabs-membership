@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import DmsBookingEditor from './DmsBookingEditor'
 import DmsPropertyEditor from './DmsPropertyEditor'
-import LockListContent from './LockListEngine'
+import LockListContent, { LockListHeaderActions } from './LockListEngine'
 import { CloudPmsStorage } from '@/lib/cloud-pms-storage'
 import { useSearchParams } from 'next/navigation'
 
@@ -38,6 +38,9 @@ export default function DmsEngine() {
   const [editingBooking, setEditingBooking] = useState<any>(null)
   const [editingProperty, setEditingProperty] = useState<any>(null)
   const [propView, setPropView] = useState<'list' | 'create'>('list')
+  const [lockSearchQuery, setLockSearchQuery] = useState('')
+  const [lockDeleting, setLockDeleting] = useState(false)
+  const [lockUnusedCount, setLockUnusedCount] = useState(2)
   const [bookings, setBookings] = useState<any[]>([])
   const [loadingBookings, setLoadingBookings] = useState(false)
   const [pmsList, setPmsList] = useState<any[]>([])
@@ -213,6 +216,20 @@ export default function DmsEngine() {
                 <Plus size={12} className="mr-1" /> 新規作成
               </Button>
             )}
+            {activeTab === 'lock-list' && (
+              <LockListHeaderActions
+                searchQuery={lockSearchQuery}
+                setSearchQuery={setLockSearchQuery}
+                onDeleteUnused={() => {
+                  if (lockUnusedCount === 0) return
+                  if (!confirm(`未使用の鍵 ${lockUnusedCount}件 を全て削除しますか？`)) return
+                  setLockDeleting(true)
+                  setTimeout(() => { setLockUnusedCount(0); setLockDeleting(false) }, 800)
+                }}
+                deleting={lockDeleting}
+                unusedCount={lockUnusedCount}
+              />
+            )}
           </div>
         </header>
 
@@ -313,7 +330,9 @@ export default function DmsEngine() {
           )}
 
           {/* 錠デバイス一覧 */}
-          {activeTab === 'lock-list' && <LockListContent />}
+          {activeTab === 'lock-list' && (
+            <LockListContent searchQuery={lockSearchQuery} />
+          )}
 
           {/* 物件一覧 */}
           {activeTab === 'property' && propView === 'list' && (
