@@ -13,7 +13,7 @@ const MasterEngine = () => {
   const [copied, setCopied] = useState(false);
   const [weather, setWeather] = useState<any>(null);
 
-  // 分離フォーム用ステート
+  // 刁E�E��E�フォーム用スチE�E�EチE
   const [pref, setPref] = useState('');
   const [city, setCity] = useState('');
   const [stock, setStock] = useState('');
@@ -36,7 +36,7 @@ const MasterEngine = () => {
   const getMyLocation = () => {
     setIsLocating(true);
     if (typeof navigator === 'undefined' || !navigator.geolocation) {
-      alert("お使いのブラウザは位置情報に対応していません。");
+      alert("お使ぁE�E�Eブラウザは位置惁E�E��E�に対応してぁE�E��E�せん、E);
       setIsLocating(false);
       return;
     }
@@ -49,33 +49,33 @@ const MasterEngine = () => {
       },
       (err) => {
         console.error(err);
-        alert("位置情報の取得に失敗しました。手動で入力してください。");
+        alert("位置惁E�E��E�の取得に失敗しました。手動で入力してください、E);
         setIsLocating(false);
       }
     );
   };
 
-  const FINAL_PROMPT = `あなたはプロの災害対策コンサルタントです。
-以下の「公的機関推奨の共通防災知識」と【居住環境データ】に基づき、生存確率を最大化する「生存戦略レポート」を作成してください。
+  const FINAL_PROMPT = `あなた�Eプロの災害対策コンサルタントです、E
+以下�E「�E皁E�E��E�関推奨の共通防災知識」と【屁E�E��E�環墁E�E��E�ータ】に基づき、生存確玁E�E��E�最大化する「生存戦略レポ�Eト」を作�Eしてください、E
 
-【共通防災知識の鉄則】
-1. 生存優先順位「3・3・3の法則」: 3分(呼吸)、3時間(体温)、3日(水)を死守せよ。
-2. 家庭内備蓄: 最低3日分、推奨1週間分の水(1人1日3L)と食料。
-3. 発災時行動: シェイクアウト(まず低く、頭を守り、動かない)の徹底。
-4. 防御策: ブレーカー遮断、ハザードマップ確認、家族間連絡手段(171)の確立。
+【�E通防災知識�E鉁E�E��E�、E
+1. 生存優先頁E�E��E�、E・3・3の法則、E 3刁E呼吸)、E時間(体温)、E日(水)を死守せよ、E
+2. 家庭冁E�E��E�蓁E 最佁E日刁E�E��E�推奨1週間�Eの水(1人1日3L)と食料、E
+3. 発災時行動: シェイクアウチEまず低く、E�E��E�を守り、動かなぁEの徹底、E
+4. 防御筁E ブレーカー遮断、ハザード�EチE�E�E確認、家族間連絡手段(171)の確立、E
 
-【居住環境データ】
-現在位置（座標）: ${location ? `${location.lat}, ${location.lng}` : "未特定"}
-現在の気象: ${weather ? `気温:${weather.temperature}℃, 風速:${weather.windspeed}km/h` : "不明"}
-都道府県: ${pref || "未入力"}
-市区町村: ${city || "未入力"}
-備蓄状況: ${stock || "未入力"}
-住居形態: ${housing || "未入力"}
+【屁E�E��E�環墁E�E��E�ータ、E
+現在位置�E�E�E�座標！E ${location ? `${location.lat}, ${location.lng}` : "未特宁E}
+現在の気象: ${weather ? `気温:${weather.temperature}℁E 風送E${weather.windspeed}km/h` : "不�E"}
+都道府県: ${pref || "未入劁E}
+市区町杁E ${city || "未入劁E}
+備蓄状況E ${stock || "未入劁E}
+住屁E�E��E�慁E ${housing || "未入劁E}
 
-1. 【地域リスク診断】: 地震、洪水、土砂災害などのリスク分析。現在の気象条件が避難に与える影響も考慮。
-2. 【備蓄最適化】: 現状の不足物資と優先順位
-3. 【生存戦略】: 発災後72時間の具体的な行動計画
-4. 【避難所選定】: 近隣の安全な避難エリアの提案`;
+1. 【地域リスク診断、E 地霁E�E��E�洪水、土砂災害などのリスク刁E�E��E�。現在の気象条件が避難に与える影響も老E�E�E、E
+2. 【備蓁E�E��E�適化、E 現状の不足物賁E�E��E�優先頁E�E��E�E
+3. 【生存戦略、E 発災征E2時間の具体的な行動計画
+4. 【避難所選定、E 近隣の安�Eな避難エリアの提桁E;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(FINAL_PROMPT);
@@ -88,8 +88,8 @@ const MasterEngine = () => {
   return (
     <div className="max-w-4xl mx-auto p-2 md:p-10 space-y-4 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left border-4 md:border-8 border-emerald-500/50 rounded-[2rem] md:rounded-[4rem] my-1 md:my-4 shadow-[0_0_100px_rgba(16,185,129,0.2)] print:border-0 print:shadow-none print:my-0 print:p-0">
         <div className="text-center space-y-1">
-          <Badge className="bg-sky-600 text-white font-black italic px-3 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full">Survival Intelligence Hub</Badge>
-          <h1 className="text-2xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">AI防災パーソナルガイド</h1>
+          <Badge className="bg-emerald-600 text-white font-semibold px-3 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full">Survival Intelligence Hub</Badge>
+          <h1 className="text-2xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">AI防災パ�EソナルガイチE/h1>
           <div className="inline-block bg-emerald-600 text-white font-black px-4 py-0.5 rounded-full uppercase italic text-[8px] md:text-[10px] tracking-widest shadow-lg">MASTERMODEL</div>
         </div>
 
@@ -97,11 +97,11 @@ const MasterEngine = () => {
         {/* LEFT: MISSION PARAMETERS */}
         <div className="space-y-6">
           <div className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-6 md:p-10 shadow-2xl space-y-8 relative overflow-hidden">
-             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-sky-500 to-transparent opacity-30" />
+             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-30" />
              
              <div className="space-y-4">
                 <div className="flex items-center justify-between px-2">
-                   <p className="text-[10px] font-black text-sky-500 uppercase italic tracking-widest">#1 Environment Scan</p>
+                   <p className="text-[10px] font-black text-emerald-500 uppercase italic tracking-widest">#1 Environment Scan</p>
                    <div className={`px-3 py-1 rounded-full text-[8px] font-black uppercase ${location ? 'bg-emerald-500/20 text-emerald-500' : 'bg-slate-800 text-slate-500'}`}>
                      {location ? "GPS_LOCKED" : "GPS_IDLE"}
                    </div>
@@ -111,19 +111,19 @@ const MasterEngine = () => {
                   disabled={isLocating}
                   className="w-full h-16 bg-white/5 hover:bg-white/10 border-2 border-white/10 text-white font-black rounded-2xl flex items-center justify-center gap-4 transition-all active:scale-95 group relative overflow-hidden"
                 >
-                  <MapPin className={`w-6 h-6 ${isLocating ? 'animate-ping' : 'group-hover:text-sky-400'}`} />
-                  <span className="text-sm md:text-base uppercase italic">{isLocating ? "定位中..." : "GPSで現在地・天気を特定"}</span>
+                  <MapPin className={`w-6 h-6 ${isLocating ? 'animate-ping' : 'group-hover:text-emerald-400'}`} />
+                  <span className="text-sm md:text-base uppercase italic">{isLocating ? "定位中..." : "GPSで現在地・天気を特宁E}</span>
                 </button>
 
                 {location && (
                   <div className="grid grid-cols-2 gap-3 animate-in slide-in-from-top-2">
                      <div className="bg-black/50 border border-white/5 p-4 rounded-xl text-center">
                         <p className="text-[8px] font-black text-slate-500 uppercase mb-1 italic">Coordinates</p>
-                        <p className="text-xs font-mono text-sky-400">{location.lat.toFixed(4)}, {location.lng.toFixed(4)}</p>
+                        <p className="text-xs font-mono text-emerald-400">{location.lat.toFixed(4)}, {location.lng.toFixed(4)}</p>
                      </div>
                      <div className="bg-black/50 border border-white/5 p-4 rounded-xl text-center">
                         <p className="text-[8px] font-black text-slate-500 uppercase mb-1 italic">Realtime Weather</p>
-                        <p className="text-xs font-bold text-white uppercase italic">{weather ? `${weather.temperature}℃ / ${weather.windspeed}km/h` : "Syncing..."}</p>
+                        <p className="text-xs font-bold text-white uppercase italic">{weather ? `${weather.temperature}℁E/ ${weather.windspeed}km/h` : "Syncing..."}</p>
                      </div>
                   </div>
                 )}
@@ -133,39 +133,39 @@ const MasterEngine = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                      <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">都道府県</label>
-                     <input value={pref} onChange={(e) => setPref(e.target.value)} placeholder="神奈川県" className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-sky-500 outline-none transition-all" />
+                     <input value={pref} onChange={(e) => setPref(e.target.value)} placeholder="神奈川県" className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-emerald-500 outline-none transition-all" />
                   </div>
                   <div className="space-y-1.5">
-                     <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">市区町村</label>
-                     <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="海老名市" className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-sky-500 outline-none transition-all" />
+                     <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">市区町杁E/label>
+                     <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="海老名币E className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-emerald-500 outline-none transition-all" />
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                   <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">備蓄状況（水・食料など）</label>
-                   <input value={stock} onChange={(e) => setStock(e.target.value)} placeholder="例: 水10L, 非常食3日分あり" className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-sky-500 outline-none transition-all" />
+                   <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">備蓄状況E�E��E�水・食料など�E�E�E�E/label>
+                   <input value={stock} onChange={(e) => setStock(e.target.value)} placeholder="侁E 水10L, 非常飁E日刁E�E��E�めE className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-emerald-500 outline-none transition-all" />
                 </div>
                 <div className="space-y-1.5">
-                   <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">住居形態（木造・マンション等）</label>
-                   <input value={housing} onChange={(e) => setHousing(e.target.value)} placeholder="例: 木造2階建て" className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-sky-500 outline-none transition-all" />
+                   <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">住屁E�E��E�態（木造・マンション等！E/label>
+                   <input value={housing} onChange={(e) => setHousing(e.target.value)} placeholder="侁E 木造2階建て" className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-emerald-500 outline-none transition-all" />
                 </div>
              </div>
 
              <div className="space-y-4">
                <button 
                  onClick={handleCopy} 
-                 className={`w-full h-20 text-xl font-black rounded-2xl transition-all shadow-2xl border-b-8 ${copied ? 'bg-emerald-500 border-emerald-800 text-slate-950 scale-95' : 'bg-sky-600 border-sky-800 text-white hover:bg-sky-500'}`}
+                 className={`w-full h-20 text-xl font-black rounded-2xl transition-all shadow-2xl border-b-4 ${copied ? 'bg-emerald-500 border-emerald-700 text-slate-950 scale-95' : 'bg-emerald-600 border-emerald-800 text-white hover:bg-emerald-500'}`}
                >
-                 {copied ? '✅ COPY COMPLETE' : '① 診断指示をコピー'}
+                 {copied ? '✁ECOPY COMPLETE' : '① 診断持E�E��E�をコピ�E'}
                </button>
                <div className="grid grid-cols-3 gap-3">
                   <button className="h-16 bg-white/5 border-2 border-emerald-500/30 rounded-2xl text-[10px] font-black uppercase italic text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://chatgpt.com', '_blank')}>
                     <span className="text-xl">💬</span> CHATGPT
                   </button>
-                  <button className="h-16 bg-white/5 border-2 border-blue-500/30 rounded-2xl text-[10px] font-black uppercase italic text-blue-400 hover:bg-blue-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://gemini.google.com', '_blank')}>
+                  <button className="h-16 bg-white/5 border-2 border-emerald-500/30 rounded-2xl text-[10px] font-black uppercase italic text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://gemini.google.com', '_blank')}>
                     <span className="text-xl">✨</span> GEMINI
                   </button>
-                  <button className="h-16 bg-white/5 border-2 border-orange-500/30 rounded-2xl text-[10px] font-black uppercase italic text-orange-400 hover:bg-orange-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://claude.ai', '_blank')}>
-                    <span className="text-xl">❄️</span> CLAUDE
+                  <button className="h-16 bg-white/5 border-2 border-slate-500/30 rounded-2xl text-[10px] font-black uppercase italic text-slate-400 hover:bg-slate-600 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://claude.ai', '_blank')}>
+                    <span className="text-xl">🤁E/span> CLAUDE
                   </button>
                </div>
              </div>
@@ -177,17 +177,17 @@ const MasterEngine = () => {
           <div className="bg-[#13141f] rounded-[3.5rem] p-10 border-2 border-white/5 shadow-2xl flex flex-col gap-6 relative overflow-hidden flex-1">
              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-30" />
              <div className="flex items-center gap-4 mb-2">
-                <div className="w-12 h-12 rounded-xl bg-sky-600/10 flex items-center justify-center border-2 border-sky-500/30">
-                  <ClipboardPaste className="text-sky-400" />
+                <div className="w-12 h-12 rounded-xl bg-emerald-600/10 flex items-center justify-center border-2 border-emerald-500/30">
+                  <ClipboardPaste className="text-emerald-400" />
                 </div>
-                <h3 className="text-xl md:text-3xl font-black text-white italic uppercase tracking-tighter">② 生存戦略レポート</h3>
+                <h3 className="text-xl md:text-3xl font-black text-white italic uppercase tracking-tighter">② 生存戦略レポ�EチE/h3>
              </div>
              
              <textarea 
                value={report} 
                onChange={(e) => setReport(e.target.value)} 
-               placeholder="AIからの戦略レポートをここにペースト..." 
-               className="flex-1 bg-black border-2 border-white/5 rounded-[2.5rem] p-8 text-sm text-slate-300 focus:border-sky-500 outline-none font-mono italic shadow-inner leading-relaxed min-h-[400px]" 
+               placeholder="AIからの戦略レポ�Eトをここにペ�EスチE.." 
+               className="flex-1 bg-[#0d0f1a] border-2 border-white/10 rounded-[2rem] p-6 text-sm text-slate-300 focus:border-emerald-500 outline-none font-mono leading-relaxed min-h-[400px] resize-none" 
              />
              
              {report && (
@@ -197,7 +197,7 @@ const MasterEngine = () => {
                 </div>
              )}
           </div>
-          <button onClick={() => window.print()} className="h-16 bg-white text-slate-950 font-black italic rounded-2xl shadow-xl hover:bg-sky-500 hover:text-white transition-all active:scale-95 uppercase tracking-widest flex items-center justify-center gap-3">
+          <button onClick={() => window.print()} className="h-16 bg-white text-slate-950 font-semibold rounded-2xl shadow-xl hover:bg-emerald-500 hover:text-white transition-all active:scale-95 uppercase tracking-widest flex items-center justify-center gap-3">
              <ArrowRight size={20} /> Export Strategy (Print)
           </button>
         </div>
