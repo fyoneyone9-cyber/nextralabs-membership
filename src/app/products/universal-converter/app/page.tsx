@@ -1,26 +1,27 @@
 'use client'
 import React, { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Loader2, CheckCircle2, Repeat, Download, Video, ImageIcon, FileText, Upload } from 'lucide-react'
 
+const MODES = [
+  { id: 'video', label: '動画', icon: Video,     formats: ['mp4', 'webm', 'gif', 'mp3'] },
+  { id: 'image', label: '画像', icon: ImageIcon,  formats: ['webp', 'png', 'jpg', 'ico'] },
+  { id: 'pdf',   label: 'PDF',  icon: FileText,   formats: ['pdf-min'] },
+] as const
+
+type Mode = typeof MODES[number]['id']
+
 export default function UniversalConverterApp() {
-  const [mode, setMode] = useState<'video' | 'image' | 'pdf'>('video')
-  const [file, setFile] = useState<File | null>(null)
+  const [mode, setMode]               = useState<Mode>('video')
+  const [file, setFile]               = useState<File | null>(null)
   const [targetFormat, setTargetFormat] = useState('mp4')
   const [isProcessing, setIsProcessing] = useState(false)
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
 
-  const MODES = [
-    { id: 'video', label: '動画', icon: Video,      formats: ['mp4', 'webm', 'gif', 'mp3'] },
-    { id: 'image', label: '画像', icon: ImageIcon,  formats: ['webp', 'png', 'jpg', 'ico'] },
-    { id: 'pdf',   label: 'PDF',  icon: FileText,   formats: ['pdf-min'] },
-  ]
+  const currentMode = MODES.find(m => m.id === mode)!
 
-  const handleModeChange = (newMode: 'video' | 'image' | 'pdf') => {
-    setMode(newMode); setFile(null); setDownloadUrl(null)
-    const m = MODES.find(m => m.id === newMode)!
-    setTargetFormat(m.formats[0])
+  const handleModeChange = (m: Mode) => {
+    setMode(m); setFile(null); setDownloadUrl(null)
+    setTargetFormat(MODES.find(x => x.id === m)!.formats[0])
   }
 
   const handleProcess = async () => {
@@ -40,54 +41,51 @@ export default function UniversalConverterApp() {
     document.body.appendChild(a); a.click(); document.body.removeChild(a)
   }
 
-  const currentMode = MODES.find(m => m.id === mode)!
-
   return (
     <div className="min-h-screen bg-[#050507] text-slate-100 font-sans">
-      <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
+      <div className="max-w-lg mx-auto px-4 py-10 space-y-6">
 
         {/* ヘッダー */}
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
-            <Repeat className="h-6 w-6 text-emerald-400" />
-          </div>
+        <div className="flex items-center gap-2.5">
+          <Repeat size={18} className="text-emerald-400 shrink-0" />
           <div>
-            <h1 className="text-xl font-bold text-white">究極AI<span className="text-emerald-400">マルチコンバーター</span></h1>
-            <p className="text-xs text-slate-500 mt-0.5">動画・画像・PDFをAIで最適変換</p>
+            <h1 className="text-base font-semibold text-white leading-tight">
+              究極AI<span className="text-emerald-400">マルチコンバーター</span>
+            </h1>
+            <p className="text-[11px] text-slate-500">動画・画像・PDFを変換</p>
           </div>
         </div>
 
-        {/* モード選択 */}
-        <div className="grid grid-cols-3 gap-2">
+        {/* モードタブ */}
+        <div className="flex gap-1.5">
           {MODES.map(m => (
             <button
               key={m.id}
-              onClick={() => handleModeChange(m.id as any)}
-              className={`h-14 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 border transition-all ${
+              onClick={() => handleModeChange(m.id)}
+              className={`flex-1 h-9 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 border transition-all ${
                 mode === m.id
                   ? 'bg-emerald-600 border-emerald-500 text-white'
-                  : 'bg-white/5 border-white/10 text-slate-400 hover:text-slate-200 hover:border-white/20'
+                  : 'bg-white/5 border-white/10 text-slate-400 hover:text-slate-200'
               }`}
             >
-              <m.icon size={16} /> {m.label}
+              <m.icon size={13} />{m.label}
             </button>
           ))}
         </div>
 
-        {/* メインカード */}
-        <div className="bg-[#0d0f1a] border border-white/10 rounded-2xl p-6 space-y-6">
-
+        {/* カード */}
+        <div className="bg-[#0d0f1a] border border-white/10 rounded-xl p-5 space-y-5">
           {!downloadUrl ? (
             <>
-              {/* フォーマット選択 */}
+              {/* フォーマット */}
               <div className="space-y-2">
-                <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">変換形式</p>
-                <div className="flex flex-wrap gap-2">
+                <p className="text-[10px] text-slate-500 uppercase tracking-wider">変換形式</p>
+                <div className="flex flex-wrap gap-1.5">
                   {currentMode.formats.map(f => (
                     <button
                       key={f}
                       onClick={() => setTargetFormat(f)}
-                      className={`h-8 px-4 rounded-lg text-xs font-semibold uppercase border transition-all ${
+                      className={`h-7 px-3 rounded-md text-[11px] font-semibold uppercase border transition-all ${
                         targetFormat === f
                           ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
                           : 'border-white/10 bg-black/30 text-slate-500 hover:text-slate-300'
@@ -99,20 +97,16 @@ export default function UniversalConverterApp() {
                 </div>
               </div>
 
-              {/* ファイルアップロード */}
+              {/* アップロード */}
               <div className="space-y-2">
-                <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">ファイル</p>
-                <label className="block w-full h-36 bg-black/30 border-2 border-dashed border-white/10 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500/40 transition-all relative">
-                  <input
-                    type="file"
-                    onChange={e => setFile(e.target.files?.[0] || null)}
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                  />
-                  <Upload size={24} className={file ? 'text-emerald-400' : 'text-slate-600'} />
-                  <p className="mt-2 text-sm font-medium text-slate-300 pointer-events-none">
+                <p className="text-[10px] text-slate-500 uppercase tracking-wider">ファイル</p>
+                <label className="relative block w-full h-28 bg-black/30 border-2 border-dashed border-white/10 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500/40 transition-all">
+                  <input type="file" onChange={e => setFile(e.target.files?.[0] || null)} className="absolute inset-0 opacity-0 cursor-pointer" />
+                  <Upload size={20} className={file ? 'text-emerald-400' : 'text-slate-600'} />
+                  <p className="mt-1.5 text-sm text-slate-300 pointer-events-none">
                     {file ? file.name : 'クリックまたはドロップ'}
                   </p>
-                  <p className="text-xs text-slate-600 mt-1 pointer-events-none">
+                  <p className="text-[11px] text-slate-600 mt-0.5 pointer-events-none">
                     {file ? `${(file.size / 1024 / 1024).toFixed(1)} MB` : 'MAX 100MB'}
                   </p>
                 </label>
@@ -122,31 +116,29 @@ export default function UniversalConverterApp() {
               <button
                 onClick={handleProcess}
                 disabled={isProcessing || !file}
-                className="w-full h-12 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-emerald-600 hover:bg-emerald-500 text-white"
+                className="w-full h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-emerald-600 hover:bg-emerald-500 text-white"
               >
                 {isProcessing
-                  ? <><Loader2 size={16} className="animate-spin" /> 変換中...</>
-                  : <><Repeat size={16} /> AI変換を開始する</>
-                }
+                  ? <><Loader2 size={15} className="animate-spin" />変換中...</>
+                  : <><Repeat size={15} />AI変換を開始する</>}
               </button>
             </>
           ) : (
-            /* 完了画面 */
-            <div className="text-center space-y-5 py-4">
-              <CheckCircle2 className="h-12 w-12 text-emerald-400 mx-auto" />
+            <div className="text-center space-y-4 py-2">
+              <CheckCircle2 size={40} className="text-emerald-400 mx-auto" />
               <div>
-                <p className="text-lg font-bold text-white">変換完了</p>
-                <p className="text-xs text-slate-500 mt-1">{file?.name} → {targetFormat.toUpperCase()}</p>
+                <p className="text-base font-semibold text-white">変換完了</p>
+                <p className="text-xs text-slate-500 mt-0.5">{targetFormat === 'pdf-min' ? 'PDF圧縮' : targetFormat.toUpperCase()} で出力済み</p>
               </div>
               <button
                 onClick={handleDownload}
-                className="h-11 px-8 bg-white text-slate-900 font-semibold text-sm rounded-xl flex items-center gap-2 mx-auto hover:bg-slate-100 transition-all"
+                className="h-10 px-6 bg-white text-slate-900 font-semibold text-sm rounded-lg flex items-center gap-2 mx-auto hover:bg-slate-100 transition-all"
               >
-                <Download size={16} /> ファイルをダウンロード
+                <Download size={15} />ダウンロード
               </button>
               <button
                 onClick={() => { setDownloadUrl(null); setFile(null) }}
-                className="text-xs text-slate-500 hover:text-slate-300 transition-colors underline"
+                className="text-xs text-slate-600 hover:text-slate-300 transition-colors underline block mx-auto"
               >
                 別のファイルを変換する
               </button>
@@ -154,10 +146,6 @@ export default function UniversalConverterApp() {
           )}
         </div>
 
-        {/* 説明 */}
-        <p className="text-xs text-slate-600 text-center leading-relaxed">
-          動画・画像・PDFの形式変換に対応。AIが画質を維持したまま最適処理します。
-        </p>
       </div>
     </div>
   )
