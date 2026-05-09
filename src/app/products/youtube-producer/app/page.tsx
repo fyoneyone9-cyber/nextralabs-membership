@@ -263,7 +263,7 @@ function YoutubeProducerApp() {
               <div className="space-y-4">
                 <p className="text-lg text-slate-100 font-black leading-relaxed italic">
                   動画の内容を入力してください。巨大なファイルや長時間の動画は、以下の外部AIに動画を添付して実行し、その結果（文字起こし文章）をここに貼り付けてください。<br/><br/>
-                  指示書をコピーしてAIに読みお越しします。AIの回答を下記に貼り付けて下さい。
+                  指示書をコピーしてAIに読み起こしを実施して下さい。AIの回答をフォームに貼り付けてください。
                 </p>
                 <div className="grid grid-cols-3 gap-3">
                   {['Claude', 'ChatGPT', 'Gemini'].map((ai, i) => (
