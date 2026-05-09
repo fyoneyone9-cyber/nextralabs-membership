@@ -1,122 +1,262 @@
 'use client'
-import React, { useState, useRef } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { 
-  ArrowRight, Upload, CheckCircle2, Zap, ChevronRight, Copy, ExternalLink, RotateCcw, Lightbulb, ClipboardPaste, Flower2, Droplets, Sun, ThermometerSun, Camera, Loader2, Download
-} from 'lucide-react'
+import React, { useState, useRef, useCallback } from 'react'
+import { Sprout, Upload, Droplets, Sun, Zap, RotateCcw, CheckCircle2, AlertTriangle, Loader2, ImageIcon, Heart } from 'lucide-react'
 
-const TABS = [
-  { id: 'scan', label: '① 植物スキャン', icon: Flower2 },
-  { id: 'advice', label: '② 水やり診断', icon: Droplets },
-];
+interface DiagnosisResult {
+  plantName: string
+  healthScore: number
+  healthLabel: string
+  waterStatus: string
+  waterComment: string
+  sunStatus: string
+  diagnosis: string
+  actions: string[]
+  tip: string
+}
 
 export default function SmartGardening() {
-  const [activeTab, setActiveTab] = useState('scan');
-  const [copied, setCopied] = useState(false);
-  const [image, setImage] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [gardenAdvice, setGardenAdvice] = useState('');
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [image, setImage] = useState<string | null>(null)
+  const [preview, setPreview] = useState<string | null>(null)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [result, setResult] = useState<DiagnosisResult | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setIsProcessing(true);
-      const reader = new FileReader();
-      reader.onload = (event) => setImage(event.target?.result as string);
-      reader.readAsDataURL(file);
-      setTimeout(() => setIsProcessing(false), 1200);
+  const handleFile = (file: File) => {
+    if (!file.type.startsWith('image/')) return
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string
+      setImage(dataUrl)
+      setPreview(dataUrl)
+      setResult(null)
+      setError(null)
     }
-  };
+    reader.readAsDataURL(file)
+  }
 
-  const FINAL_PROMPT = `あなたは植物学と園芸に精通したボタニカルアドバイザーです。
-添付された【植物の写真】を分析し、以下の3点を出力してください。
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+    const file = e.dataTransfer.files[0]
+    if (file) handleFile(file)
+  }, [])
 
-1. 【植物名と健康スコア】: 種類を特定し、健康状態を100点満点で評価。
-2. 【水やり・日照判定】: 今すぐ水が必要か、あるいは水のやりすぎか判定。
-3. 【守護神の処方箋】: 枯れや病気の兆候に対する具体的アクション。`;
+  const handleAnalyze = async () => {
+    if (!image) return
+    setIsAnalyzing(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/tools/smart-gardening', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image }),
+      })
+      const data = await res.json()
+      if (!res.ok || data.error) throw new Error(data.error || '解析失敗')
+      setResult(data)
+    } catch (e: any) {
+      setError(e.message || '解析に失敗しました。もう一度お試しください。')
+    } finally {
+      setIsAnalyzing(false)
+    }
+  }
 
-  const renderGuide = (steps: string[]) => (
-    <div className="bg-slate-900 border-2 border-green-600/50 rounded-2xl p-6 mb-8 flex items-start gap-4 shadow-xl">
-      <div className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg"><Lightbulb className="text-white" /></div>
-      <div className="space-y-1 text-left">
-        <p className="text-sm font-black text-green-500 uppercase italic tracking-widest">Gardener Guide</p>
-        <div className="space-y-1">
-          {steps.map((s, i) => (
-            <p key={i} className="text-xs md:text-base text-slate-300 font-bold flex items-center gap-2 leading-tight"><span className="text-green-500 italic">#{i+1}</span> {s}</p>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+  const handleReset = () => {
+    setImage(null)
+    setPreview(null)
+    setResult(null)
+    setError(null)
+  }
+
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return 'text-emerald-400'
+    if (score >= 60) return 'text-yellow-400'
+    return 'text-red-400'
+  }
+
+  const getScoreBg = (score: number) => {
+    if (score >= 80) return 'bg-emerald-500'
+    if (score >= 60) return 'bg-yellow-500'
+    return 'bg-red-500'
+  }
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-slate-950">
-      <div className="text-center space-y-2">
-        <Badge className="bg-green-600 text-white font-black italic tracking-widest px-4 py-1 text-[10px] uppercase rounded-full shadow-lg">BOTANICAL ENGINE v2.0</Badge>
-        <h1 className="text-5xl md:text-7xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl">Smart Gardening</h1>
-      </div>
-
-      <div className="overflow-x-auto pb-4 scrollbar-hide">
-        <div className="bg-slate-900 border border-slate-800 p-2 flex min-w-[500px] md:min-w-full rounded-2xl">
-          {TABS.map((tab) => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex-1 py-5 px-2 rounded-xl font-black text-sm uppercase italic transition-all flex items-center justify-center gap-2 relative ${activeTab === tab.id ? 'bg-green-600 text-white shadow-xl scale-[1.03] z-10' : 'text-slate-500 hover:text-white hover:bg-slate-800'}`}>
-              <tab.icon className="w-5 h-5" /> <span>{tab.label}</span>
-            </button>
-          ))}
+    <div className="min-h-screen bg-[#050507] text-slate-100 font-sans">
+      {/* ヘッダー */}
+      <div className="border-2 border-emerald-500 shadow-[0_0_60px_rgba(16,185,129,0.15)] rounded-2xl mx-4 mt-6 mb-8 p-6 md:p-10 bg-[#0a0a0c] max-w-4xl md:mx-auto">
+        <div className="flex items-center gap-4 mb-2">
+          <div className="p-3 bg-emerald-500 rounded-xl shadow-[0_0_16px_rgba(16,185,129,0.4)]">
+            <Sprout className="h-7 w-7 text-slate-950" />
+          </div>
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">AIスマートガーデニング</h1>
+            <p className="text-sm text-slate-400 font-normal mt-0.5">植物の写真を撮るだけで、AIが健康診断します</p>
+          </div>
         </div>
       </div>
 
-      <div className="mt-4">
-        {activeTab === 'scan' && (
-          <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-16 shadow-2xl animate-in fade-in slide-in-from-bottom-4 text-center">
-            <h3 className="text-2xl md:text-5xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 text-green-500"><Flower2 /> ① 植物スキャン</h3>
-            {renderGuide(['植物を撮影・アップロード（土も映してください）', '診断指示をコピーしてAIへ投げ、画像をドロップ', 'AIが鑑定した詳細レポートを右側に戻す'])}
-            <div className="grid lg:grid-cols-2 gap-12 text-left">
-              <div className="space-y-6 text-center">
-                {!image ? (
-                  <div className="border-4 border-dashed border-slate-800 rounded-[2rem] p-16 hover:bg-slate-950 transition-all cursor-pointer bg-slate-900/50 shadow-inner" onClick={() => fileInputRef.current?.click()}>
-                    <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" /><Upload className="h-14 w-14 text-slate-700 group-hover:text-green-500 mx-auto mb-6" /><p className="text-2xl text-slate-500 font-black italic uppercase">Drop Plant Image</p>
-                  </div>
-                ) : (
-                  <div className="space-y-6">
-                    <div className="relative aspect-square max-w-[400px] mx-auto rounded-3xl overflow-hidden border-4 border-green-600/30 shadow-2xl bg-black">
-                       <img src={image} alt="Plant" className="object-cover w-full h-full" />
-                       <Button onClick={() => setImage(null)} className="absolute top-4 right-4 bg-black/50 hover:bg-red-600 p-2 rounded-full h-10 w-10">✕</Button>
-                    </div>
-                    <Button onClick={() => { navigator.clipboard.writeText(FINAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className={`w-full h-20 font-black text-2xl rounded-2xl shadow-2xl transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-green-600 text-white hover:bg-green-500'}`}>診断指示をコピー</Button>
-                    <div className="grid grid-cols-2 gap-4">
-                       <Button variant="outline" className="h-12 border-slate-800 font-black uppercase italic" onClick={() => window.open('https://chatgpt.com', '_blank')}>CHATGPT ↗</Button>
-                       <Button variant="outline" className="h-12 border-slate-800 font-black uppercase italic" onClick={() => window.open('https://gemini.google.com', '_blank')}>GEMINI ↗</Button>
-                    </div>
+      <div className="max-w-4xl mx-auto px-4 pb-16 space-y-6">
+
+        {/* 画像アップロードエリア */}
+        {!result && (
+          <div className="bg-[#13141f] rounded-xl border border-white/5 p-6 md:p-8 space-y-5">
+            <h2 className="text-base font-semibold text-white">① 植物の写真をアップロード</h2>
+
+            {!preview ? (
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                onDrop={handleDrop}
+                onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
+                onDragLeave={() => setIsDragging(false)}
+                className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all ${
+                  isDragging
+                    ? 'border-emerald-400 bg-emerald-500/5'
+                    : 'border-white/10 hover:border-emerald-500/50 hover:bg-white/5'
+                }`}
+              >
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
+                  className="hidden"
+                  accept="image/*"
+                />
+                <ImageIcon className="h-10 w-10 text-slate-600 mx-auto mb-3" />
+                <p className="text-sm font-medium text-slate-400">
+                  クリックまたはドラッグ＆ドロップで画像をアップロード
+                </p>
+                <p className="text-xs text-slate-600 mt-1">JPG / PNG / HEIC 対応</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="relative rounded-xl overflow-hidden aspect-video max-h-72 bg-black/30 flex items-center justify-center">
+                  <img src={preview} alt="plant" className="object-contain w-full h-full max-h-72" />
+                  <button
+                    onClick={handleReset}
+                    className="absolute top-3 right-3 bg-black/60 hover:bg-red-600 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-all"
+                  >
+                    変更
+                  </button>
+                </div>
+
+                {error && (
+                  <div className="flex items-center gap-2 text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3 text-sm">
+                    <AlertTriangle className="h-4 w-4 shrink-0" />
+                    {error}
                   </div>
                 )}
+
+                <button
+                  onClick={handleAnalyze}
+                  disabled={isAnalyzing}
+                  className="w-full h-12 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 font-semibold text-sm rounded-lg shadow-[0_0_16px_rgba(16,185,129,0.15)] hover:shadow-[0_0_24px_rgba(16,185,129,0.3)] transition-all flex items-center justify-center gap-2"
+                >
+                  {isAnalyzing ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      AIが解析中...
+                    </>
+                  ) : (
+                    <>
+                      <Zap className="h-4 w-4" />
+                      植物を診断する →
+                    </>
+                  )}
+                </button>
               </div>
-              <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 space-y-6 shadow-2xl flex flex-col justify-center">
-                 <div className="flex items-center gap-4"><ClipboardPaste className="h-8 w-8 text-green-500" /><h3 className="text-xl font-black text-white italic uppercase tracking-tighter">診断結果を戻す</h3></div>
-                 <textarea value={gardenAdvice} onChange={(e) => setGardenAdvice(e.target.value)} placeholder="AIからのアドバイスをここにペースト..." className="w-full h-80 bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 text-sm text-slate-200 focus:border-green-500 outline-none font-medium italic font-mono" />
-              </div>
-            </div>
-            {gardenAdvice && (
-               <Button onClick={() => setActiveTab('advice')} className="w-full h-20 mt-10 bg-green-600 hover:bg-green-500 text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-4 uppercase italic text-xl group">
-                  ② 守護神の助言を確認 <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition-transform" />
-               </Button>
             )}
-          </Card>
+          </div>
         )}
 
-        {activeTab === 'advice' && (
-          <div className="animate-in fade-in zoom-in space-y-8 text-center pb-20">
-            <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-10 md:p-20 shadow-2xl border-l-8 border-l-green-600 relative overflow-hidden text-left">
-               <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white"><Sun className="w-80 h-80 fill-yellow-500 opacity-20" /></div>
-               <h3 className="text-4xl font-black text-white italic uppercase mb-10 flex items-center justify-center gap-4 relative z-10"><Droplets className="text-blue-500 animate-pulse w-12 h-12" /> ボタニカル・レポート</h3>
-               <div className="bg-slate-950 rounded-[2.5rem] p-12 border border-slate-800 text-lg text-slate-200 leading-relaxed text-left whitespace-pre-wrap shadow-inner relative z-10">
-                  {gardenAdvice || "データがありません。"}
-               </div>
-            </Card>
-            <Button onClick={() => { setImage(null); setGardenAdvice(''); setActiveTab('scan'); }} variant="outline" className="w-full h-16 border-2 border-slate-800 text-slate-500 hover:bg-slate-800 font-black rounded-2xl uppercase italic"><RotateCcw className="mr-2 h-5 w-5" /> 最初からやり直す</Button>
+        {/* 解析結果 */}
+        {result && (
+          <div className="space-y-4">
+            {/* 植物名 + スコア */}
+            <div className="bg-[#13141f] rounded-xl border border-white/5 p-6">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs text-slate-500 font-medium mb-1">診断結果</p>
+                  <h2 className="text-2xl font-bold text-white tracking-tight">{result.plantName}</h2>
+                  <p className="text-sm text-slate-400 mt-1">{result.diagnosis}</p>
+                </div>
+                <div className="text-right shrink-0">
+                  <p className="text-xs text-slate-500 mb-1">健康スコア</p>
+                  <p className={`text-4xl font-bold ${getScoreColor(result.healthScore)}`}>{result.healthScore}</p>
+                  <p className="text-xs text-slate-500 mt-0.5">{result.healthLabel}</p>
+                </div>
+              </div>
+              {/* スコアバー */}
+              <div className="mt-4 h-1.5 bg-white/5 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-700 ${getScoreBg(result.healthScore)}`}
+                  style={{ width: `${result.healthScore}%` }}
+                />
+              </div>
+            </div>
+
+            {/* 水やり・日照 */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-[#13141f] rounded-xl border border-white/5 p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Droplets className="h-4 w-4 text-blue-400" />
+                  <span className="text-xs font-medium text-slate-400">水やり</span>
+                </div>
+                <p className="text-base font-semibold text-white">{result.waterStatus}</p>
+                <p className="text-xs text-slate-500 mt-1 leading-relaxed">{result.waterComment}</p>
+              </div>
+              <div className="bg-[#13141f] rounded-xl border border-white/5 p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sun className="h-4 w-4 text-yellow-400" />
+                  <span className="text-xs font-medium text-slate-400">日当たり</span>
+                </div>
+                <p className="text-base font-semibold text-white">{result.sunStatus}</p>
+              </div>
+            </div>
+
+            {/* アクション */}
+            <div className="bg-[#13141f] rounded-xl border border-white/5 p-6">
+              <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                今すぐできるケア
+              </h3>
+              <ul className="space-y-3">
+                {result.actions.map((action, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm">
+                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-medium flex items-center justify-center mt-0.5">{i + 1}</span>
+                    <span className="text-slate-300 leading-relaxed">{action}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* プロのヒント */}
+            <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-5">
+              <div className="flex items-center gap-2 mb-2">
+                <Heart className="h-4 w-4 text-emerald-400" />
+                <span className="text-xs font-medium text-emerald-400">プロのワンポイント</span>
+              </div>
+              <p className="text-sm text-slate-300 leading-relaxed">{result.tip}</p>
+            </div>
+
+            {/* 再診断ボタン */}
+            <button
+              onClick={handleReset}
+              className="w-full h-12 border border-white/10 hover:border-emerald-500/40 text-slate-400 hover:text-white font-medium text-sm rounded-lg transition-all flex items-center justify-center gap-2"
+            >
+              <RotateCcw className="h-4 w-4" />
+              別の植物を診断する
+            </button>
+          </div>
+        )}
+
+        {/* ローディング中オーバーレイ的表示 */}
+        {isAnalyzing && !result && (
+          <div className="bg-[#13141f] rounded-xl border border-emerald-500/20 p-10 text-center">
+            <Loader2 className="h-8 w-8 text-emerald-400 animate-spin mx-auto mb-4" />
+            <p className="text-sm font-medium text-white">AIが植物を解析しています...</p>
+            <p className="text-xs text-slate-500 mt-2">Gemini 2.5 Flash で高精度診断中</p>
           </div>
         )}
       </div>
