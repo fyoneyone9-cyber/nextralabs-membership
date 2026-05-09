@@ -1,26 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { checkYoutubeLimit, recordYoutubeUsage } from '@/lib/youtube-rate-limit'
 
-// ⚡ 憲法：Google Gemini OpenAI 互換エンドポイントへ直接接続（認証エラー回避）
-const LLM_BASE = 'https://generativelanguage.googleapis.com/v1beta/openai'
-
 async function callLLM(systemPrompt: string, userPrompt: string) {
-  // 環境変数優先
-  const API_KEY = process.env.GSK_API_KEY;
-
-  if (!API_KEY) {
-    throw new Error('APIキー(GSK_API_KEY)が設定されていません。VercelのEnvironment Variables設定を確認してください。');
-  }
-
-  // ⚡ 憲法：MASTERMODEL仕様 - 認証エラーの最終解決
-  // 401エラー（Invalid or expired token）は、GSK_API_KEYの反映遅延か
-  // もしくはキー自体の形式エラーの可能性があります。
-  // ここではBearer形式を標準の OpenAI 互換（Authorization）に固定し
-  // 万が一のために環境変数から余計な空白をトリミングします。
+  // ⚡ 憲法：MASTERMODEL仕様 - 認証の安定化
+  // 余計な空白をトリミングして確実にキーを読み込む
   const API_KEY = (process.env.GSK_API_KEY || '').trim();
 
   if (!API_KEY) {
-    throw new Error('APIキー(GSK_API_KEY)が設定されていません。Vercelの管理画面で設定を確認してください。');
+    throw new Error('APIキー(GSK_API_KEY)が設定されていません。VercelのEnvironment Variables設定を確認してください。');
   }
 
   const res = await fetch('https://www.genspark.ai/api/llm_proxy/v1/chat/completions', {
@@ -28,6 +15,7 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${API_KEY}`,
+      'X-Api-Key': API_KEY, // 両方の形式を送る
     },
     body: JSON.stringify({
       model: 'gemini-2.0-flash',
@@ -47,7 +35,6 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
   const data = await res.json()
   const content = data.choices?.[0]?.message?.content || ''
 
-  // Extract JSON from response
   const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/)
   const jsonStr = jsonMatch ? jsonMatch[1].trim() : content.trim()
 
