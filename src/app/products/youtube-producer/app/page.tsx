@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -25,6 +25,8 @@ import {
   Video,
   FileAudio
 } from 'lucide-react'
+import { FFmpeg } from '@ffmpeg/ffmpeg'
+import { fetchFile, toBlobURL } from '@ffmpeg/util'
 
 // ジャンル設定
 const GENRES = [
@@ -44,8 +46,13 @@ export default function YoutubeProducerApp() {
   const [activeTab, setActiveTab] = useState('input')
   const [isProcessing, setIsProcessing] = useState<Record<string, boolean>>({})
   const [error, setError] = useState<string | null>(null)
+  const [compressProgress, setCompressProgress] = useState(0)
   const fileInputRef = useRef<HTMLInputElement>(null)
   
+  // FFmpeg関連
+  const ffmpegRef = useRef(new FFmpeg())
+  const [isFFmpegReady, setIsFFmpegReady] = useState(false)
+
   // 状態保持
   const [transcript, setTranscript] = useState('')
   const [genre, setGenre] = useState(GENRES[0].id)
@@ -54,6 +61,26 @@ export default function YoutubeProducerApp() {
   const [thumbnails, setThumbnails] = useState<any[] | null>(null)
   const [seo, setSeo] = useState<any>(null)
   const [bgm, setBgm] = useState<any>(null)
+
+  // FFmpegのロード
+  useEffect(() => {
+    const load = async () => {
+      const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd'
+      const ffmpeg = ffmpegRef.current
+      ffmpeg.on('log', ({ message }) => {
+        console.log(message)
+      })
+      ffmpeg.on('progress', ({ progress }) => {
+        setCompressProgress(Math.round(progress * 100))
+      })
+      await ffmpeg.load({
+        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+      })
+      setIsFFmpegReady(true)
+    }
+    load()
+  }, [])
 
   const callApi = async (type: string, data: any) => {
     setIsProcessing(prev => ({ ...prev, [type]: true }))
@@ -75,24 +102,49 @@ export default function YoutubeProducerApp() {
     }
   }
 
-  // 文字起こし機能
+  // 文字起こし機能（ブラウザ側での音声抽出・圧縮ロジック復元）
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
     setIsProcessing(prev => ({ ...prev, 'transcribe': true }))
     setError(null)
+    setCompressProgress(0)
 
-    // ブラウザ側での簡易圧縮（本来のロジック復元：巨大ファイルを軽量化して送る）
-    // 動画ファイルの場合は、フロントエンドで音声抽出を行うか、サイズ警告を出す
-    if (file.size > 10 * 1024 * 1024) { // 10MB超え
-      setError('ファイルサイズが大きすぎます。10MB以下の動画・音声ファイルを選択してください。')
-      setIsProcessing(prev => ({ ...prev, 'transcribe': false }))
-      return
+    let finalFile: File | Blob = file
+
+    // 巨大な動画ファイルの場合、ブラウザ側で音声を抽出・圧縮してサーバー負荷を回避
+    if (file.type.startsWith('video/') || file.size > 5 * 1024 * 1024) {
+      if (!isFFmpegReady) {
+        setError('圧縮エンジンの準備ができていません。少々お待ちください。')
+        setIsProcessing(prev => ({ ...prev, 'transcribe': false }))
+        return
+      }
+
+      try {
+        const ffmpeg = ffmpegRef.current
+        const inputName = 'input' + file.name.substring(file.name.lastIndexOf('.'))
+        const outputName = 'output.mp3'
+
+        await ffmpeg.writeFile(inputName, await fetchFile(file))
+        
+        // 音声のみを抽出し、低ビットレート(64k)で圧縮してサイズを劇的に減らす
+        await ffmpeg.exec(['-i', inputName, '-vn', '-ab', '64k', '-ar', '16000', outputName])
+        
+        const data = await ffmpeg.readFile(outputName)
+        finalFile = new Blob([data], { type: 'audio/mp3' })
+        
+        // クリーンアップ
+        await ffmpeg.deleteFile(inputName)
+        await ffmpeg.deleteFile(outputName)
+      } catch (e: any) {
+        console.error('FFmpeg Error:', e)
+        // 圧縮に失敗した場合は元のファイルで続行を試みる（ただしサイズ制限に引っかかる可能性あり）
+      }
     }
 
     const formData = new FormData()
-    formData.append('file', file)
+    formData.append('file', finalFile, 'audio.mp3')
 
     try {
       const res = await fetch('/api/youtube-producer/transcribe', {
@@ -108,7 +160,7 @@ export default function YoutubeProducerApp() {
       } else {
         const text = await res.text()
         if (text.includes('Payload Too Large') || res.status === 413) {
-          throw new Error('ファイルサイズが大きすぎます。Vercelの制限により、数MB程度のファイルをご使用ください。')
+          throw new Error('ファイルサイズが大きすぎます。より短い動画にするか、音声のみのファイルをご使用ください。')
         }
         throw new Error(`サーバーエラーが発生しました (${res.status})`)
       }
@@ -116,6 +168,7 @@ export default function YoutubeProducerApp() {
       setError('文字起こしに失敗しました: ' + e.message)
     } finally {
       setIsProcessing(prev => ({ ...prev, 'transcribe': false }))
+      setCompressProgress(0)
       if (fileInputRef.current) fileInputRef.current.value = ''
     }
   }
@@ -219,15 +272,27 @@ export default function YoutubeProducerApp() {
                   <Button 
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isProcessing['transcribe']}
-                    className="h-10 px-4 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-xs rounded-xl hover:bg-emerald-500/20 transition-all flex items-center gap-2"
+                    className="h-10 px-4 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-xs rounded-xl hover:bg-emerald-500/20 transition-all flex items-center gap-2 relative overflow-hidden"
                   >
-                    {isProcessing['transcribe'] ? <Loader2 className="animate-spin h-4 w-4" /> : <Upload size={14} />}
-                    動画・音声から読み起こし
+                    {isProcessing['transcribe'] ? (
+                      <>
+                        <Loader2 className="animate-spin h-4 w-4" />
+                        {compressProgress > 0 ? `圧縮中 ${compressProgress}%` : '読み起こし中...'}
+                        {compressProgress > 0 && (
+                          <div className="absolute bottom-0 left-0 h-1 bg-emerald-500 transition-all duration-300" style={{ width: `${compressProgress}%` }} />
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <Upload size={14} />
+                        動画・音声から読み起こし
+                      </>
+                    )}
                   </Button>
                 </div>
               </div>
               <p className="text-sm text-slate-300 font-bold leading-relaxed italic">
-                動画にしたい内容を入力してください。または、上のボタンから**動画ファイルや音声ファイル**をアップロードすれば、AIが自動で内容を読み起こします。
+                動画にしたい内容を入力してください。または、上のボタンから**動画ファイルや音声ファイル**をアップロードすれば、AIがブラウザ上で音声を自動圧縮して読み起こします。
               </p>
             </div>
 
