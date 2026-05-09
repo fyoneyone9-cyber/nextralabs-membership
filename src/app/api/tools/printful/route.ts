@@ -1,3 +1,4 @@
+﻿import { checkApiLimit } from '@/lib/api-limit';
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
@@ -36,6 +37,15 @@ async function getShopifyToken(): Promise<string | null> {
 }
 
 export async function POST(request: NextRequest) {
+  // 🛡️ レート制限（1日10回）
+  const limitCheck = await checkApiLimit('printful', 10);
+  if (!limitCheck.allowed) {
+    return NextResponse.json(
+      { error: '本日の利用上限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
+
   try {
     const body = await request.json();
     const { action, keyword, style, mockupUrl, tshirtColor, sizes } = body;
