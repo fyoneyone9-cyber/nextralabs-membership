@@ -124,11 +124,16 @@ export default function KdpGuideApp() {
                     }`}>
                       {checkedItems[item.id] && <CheckCircle2 size={16} className="text-slate-950" />}
                     </div>
-                    <div className="flex-1 space-y-1">
+                    <div className="flex-1 space-y-2">
                       <p className={`font-black text-lg transition-all ${checkedItems[item.id] ? 'text-white' : 'text-slate-400'}`}>
                         {item.text}
                       </p>
                       <p className="text-xs text-slate-500 font-bold italic">{item.detail}</p>
+                      {item.expanded && (
+                        <div className="mt-4 p-4 bg-black/40 rounded-xl border border-white/5 text-[11px] text-slate-300 font-bold leading-relaxed animate-in fade-in duration-500">
+                          {item.expanded}
+                        </div>
+                      )}
                     </div>
                     <ChevronRight className={`text-slate-700 transition-transform ${checkedItems[item.id] ? 'rotate-90' : ''}`} />
                   </div>
