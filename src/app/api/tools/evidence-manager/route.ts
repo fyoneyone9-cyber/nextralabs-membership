@@ -1,3 +1,4 @@
+﻿import { checkApiLimit } from '@/lib/api-limit';
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
@@ -12,6 +13,15 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 export async function POST(req: Request) {
+  // 🛡️ レート制限（1日10回）
+  const limitCheck = await checkApiLimit('evidence-manager', 10);
+  if (!limitCheck.allowed) {
+    return NextResponse.json(
+      { error: '本日の利用上限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
+
   try {
     const { action, screenshots } = await req.json();
 
