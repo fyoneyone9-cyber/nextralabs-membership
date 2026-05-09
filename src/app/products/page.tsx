@@ -49,10 +49,10 @@ const TOOLS = [
 const CATEGORIES = [
   { id: 'compress', title: 'AI圧縮・変換ツール', icon: Zap, color: 'border-emerald-500' },
   { id: 'hotel', title: '宿泊・不動産DX', icon: Hotel, color: 'border-emerald-500' },
-  { id: 'sns', title: 'SNS・コンテンツ戦略', icon: Share2, color: 'border-orange-500' },
+  { id: 'sns', title: 'SNS・コンテンツ戦略', icon: Share2, color: 'border-emerald-500' },
   { id: 'life', title: '防犯・資産・ライフ', icon: ShieldCheck, color: 'border-red-500' },
-  { id: 'edu', title: '学習・自己研鑽', icon: BookOpen, color: 'border-purple-500' },
-  { id: 'biz', title: 'ビジネス・自動化', icon: Briefcase, color: 'border-blue-500' },
+  { id: 'edu', title: '学習・自己研鑽', icon: BookOpen, color: 'border-emerald-500' },
+  { id: 'biz', title: 'ビジネス・自動化', icon: Briefcase, color: 'border-emerald-500' },
   { id: 'mind', title: '人間心理・対人戦略', icon: HeartHandshake, color: 'border-pink-500' }
 ]
 
@@ -65,9 +65,9 @@ function ProductCard({ product, isFav, onToggleFav }: {
   const displayBadge = planLabelMap[product.plan] || 'BASIC'
   const planBadgeColors: Record<string, string> = {
     '無料': 'bg-slate-500/20 text-slate-300 border-slate-500/40',
-    'ライト': 'bg-blue-500/20 text-blue-300 border-blue-500/40',
+    'ライト': 'bg-emerald-500/20 text-blue-300 border-emerald-500/40',
     'スタンダード': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
-    'プレミアム': 'bg-orange-500/20 text-orange-300 border-orange-500/40'
+    'プレミアム': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
   }
   const badgeClass = "text-[9px] font-medium tracking-wide px-2 py-0.5 rounded-full border " + (planBadgeColors[product.plan] || planBadgeColors['無料'])
 
@@ -76,7 +76,7 @@ function ProductCard({ product, isFav, onToggleFav }: {
       <button
         onClick={e => onToggleFav(e, product.id)}
         className={`absolute top-4 right-4 z-20 p-1.5 rounded-xl transition-all ${
-          isFav ? 'text-amber-400' : 'text-slate-700 opacity-0 group-hover:opacity-100 hover:text-amber-400'
+          isFav ? 'text-emerald-400' : 'text-slate-700 opacity-0 group-hover:opacity-100 hover:text-emerald-400'
         }`}
       >
         <Star size={16} fill={isFav ? 'currentColor' : 'none'} />
@@ -85,7 +85,7 @@ function ProductCard({ product, isFav, onToggleFav }: {
       <CardContent className="p-5 md:p-6 flex flex-col h-full text-left relative z-10">
         <div className="flex items-start justify-between mb-4">
           <div className="p-2.5 rounded-xl bg-white/5 border border-white/10"><product.icon className="h-5 w-5 md:h-6 md:w-6 text-emerald-400" /></div>
-          <Badge className="bg-slate-950/50 text-slate-500 border border-white/10 px-2 py-0.5 font-bold text-[8px] md:text-[9px] uppercase tracking-widest mr-7">{displayBadge}</Badge>
+          <Badge className="bg-slate-950/50 text-slate-500 border border-white/10 px-2 py-0.5 font-bold text-[8px] md:text-[9px] uppercase tracking-tight mr-7">{displayBadge}</Badge>
         </div>
         <div className="flex-1 space-y-2">
           <h3 className="text-base md:text-lg font-semibold text-white tracking-tight leading-snug">
@@ -108,7 +108,7 @@ function ProductCard({ product, isFav, onToggleFav }: {
           </Link>
           <div className="flex justify-between items-center px-2 py-1 bg-black/40 rounded-lg border border-white/5">
             <span className={badgeClass}>{product.plan} プラン</span>
-            {product.plan !== '無料' ? <Lock className="h-2.5 w-2.5 text-amber-500/30" /> : <Sparkles className="h-2.5 w-2.5 text-emerald-400/50" />}
+            {product.plan !== '無料' ? <Lock className="h-2.5 w-2.5 text-emerald-500/30" /> : <Sparkles className="h-2.5 w-2.5 text-emerald-400/50" />}
           </div>
         </div>
       </CardContent>
@@ -150,14 +150,14 @@ function ProductsList() {
       <div className="max-w-6xl mx-auto px-4 pt-10 md:pt-20 text-center mb-10 md:mb-16 space-y-4">
         <div className="inline-flex items-center gap-2 border border-emerald-500/30 rounded-full px-4 py-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-[11px] font-medium text-emerald-400 tracking-widest uppercase">Master Catalogue</span>
+          <span className="text-[11px] font-medium text-emerald-400 tracking-tight uppercase">Master Catalogue</span>
         </div>
         <h1 className="text-3xl md:text-5xl font-semibold text-white tracking-tight leading-[1.1]">AI ツールストア</h1>
       </div>
       <div className="max-w-6xl mx-auto px-4 space-y-8 md:space-y-16">
         <section>
-          <div className="flex items-center gap-3 mb-4 border-l-4 border-orange-500 pl-4 md:pl-6 py-0.5">
-            <Sparkles className="w-5 h-5 text-orange-400" />
+          <div className="flex items-center gap-3 mb-4 border-l-4 border-emerald-500 pl-4 md:pl-6 py-0.5">
+            <Sparkles className="w-5 h-5 text-emerald-400" />
             <h2 className="text-lg md:text-xl font-semibold text-white tracking-tight">ピックアップ</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{pickupTools.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={() => {}} />)}</div>
@@ -179,7 +179,7 @@ function ProductsList() {
           </section>
         ))}
       </div>
-      <div className="text-center opacity-20 mt-10 font-medium tracking-widest text-[10px] text-slate-500">Nextra Labs · 2026</div>
+      <div className="text-center opacity-20 mt-10 font-medium tracking-tight text-[10px] text-slate-500">Nextra Labs · 2026</div>
     </div>
   )
 }

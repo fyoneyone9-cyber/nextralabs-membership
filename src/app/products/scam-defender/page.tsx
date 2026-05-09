@@ -36,8 +36,8 @@ const features = [
     title: '詐欺パターン検知クイズ',
     description:
       '実際に報告された詐欺事例をベースに「これは詐欺？安全？」を判定するトレーニング。正解率でスコアを表示。家族で一緒にやれば防犯意識がグッと上がる。',
-    color: 'text-amber-500',
-    bg: 'bg-amber-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: Phone,
@@ -60,8 +60,8 @@ const features = [
     title: '最新詐欺手口データベース',
     description:
       '警察庁・国民生活センターの公開情報をもとに、最新の詐欺パターンを分類して一覧表示。「今この手口が流行っている」がひと目でわかる。',
-    color: 'text-blue-500',
-    bg: 'bg-blue-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: Siren,
@@ -76,8 +76,8 @@ const features = [
     title: '闇バイト判定チェッカー',
     description:
       'SNSやメッセージで見かけた「高額バイト」の募集文を貼り付けるだけ。AIが「闇バイトの可能性あり」「安全」を判定し、危険なキーワードをハイライト表示。',
-    color: 'text-purple-500',
-    bg: 'bg-purple-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: Shield,
@@ -168,7 +168,7 @@ export default function ScamDefenderPage() {
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden py-16 md:py-24">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-red-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-red-500/5" />
         <div className="container mx-auto px-4 relative">
           <Link
             href="/products"
@@ -180,7 +180,7 @@ export default function ScamDefenderPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <Badge className="mb-4 bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">
+              <Badge className="mb-4 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20">
                 🛡️ 新商品
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
@@ -234,7 +234,7 @@ export default function ScamDefenderPage() {
             </div>
 
             <div className="relative">
-              <div className="bg-gradient-to-br from-amber-500/20 to-red-500/20 rounded-2xl p-8 border border-amber-500/10">
+              <div className="bg-gradient-to-br from-emerald-500/20 to-red-500/20 rounded-2xl p-8 border border-emerald-500/10">
                 <div className="bg-background/95 backdrop-blur rounded-xl p-6 shadow-2xl">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-3 h-3 rounded-full bg-red-500" />
@@ -253,8 +253,8 @@ export default function ScamDefenderPage() {
                         <p className="text-green-400 font-medium">🛡️ → 「名前と所属を教えてください。折り返します」</p>
                       </div>
                     </div>
-                    <div className="bg-purple-500/10 rounded-lg p-3">
-                      <div className="text-xs text-purple-400 mb-1">⚠️ 闇バイト判定</div>
+                    <div className="bg-emerald-500/10 rounded-lg p-3">
+                      <div className="text-xs text-emerald-400 mb-1">⚠️ 闇バイト判定</div>
                       <div className="text-sm">
                         <p className="text-muted-foreground">「<span className="text-red-400 font-bold">即日現金</span>」「<span className="text-red-400 font-bold">簡単作業</span>」「<span className="text-red-400 font-bold">身分証不要</span>」</p>
                         <p className="text-red-400 font-bold mt-1">🚨 危険度: 95% — 闇バイトの可能性が極めて高い</p>
@@ -285,15 +285,15 @@ export default function ScamDefenderPage() {
               <div className="text-sm text-muted-foreground">特殊詐欺被害額(2024年)</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-amber-500">19,033件</div>
+              <div className="text-3xl font-bold text-emerald-500">19,033件</div>
               <div className="text-sm text-muted-foreground">年間認知件数</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-orange-500">78%</div>
+              <div className="text-3xl font-bold text-emerald-500">78%</div>
               <div className="text-sm text-muted-foreground">被害者の65歳以上率</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-purple-500">増加中</div>
+              <div className="text-3xl font-bold text-emerald-500">増加中</div>
               <div className="text-sm text-muted-foreground">SNS型闇バイト勧誘</div>
             </div>
           </div>
@@ -339,8 +339,8 @@ export default function ScamDefenderPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {setupSteps.map((s, i) => (
               <div key={i} className="text-center">
-                <div className="w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold text-amber-500">
+                <div className="w-16 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl font-bold text-emerald-500">
                     {s.step}
                   </span>
                 </div>
@@ -365,8 +365,8 @@ export default function ScamDefenderPage() {
             {targets.map((t, i) => (
               <Card key={i} className="hover:shadow-lg transition-shadow">
                 <CardContent className="pt-6 text-center">
-                  <div className="w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center mx-auto mb-4">
-                    <t.icon className="h-8 w-8 text-amber-500" />
+                  <div className="w-16 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
+                    <t.icon className="h-8 w-8 text-emerald-500" />
                   </div>
                   <h3 className="font-semibold text-lg mb-2">{t.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
@@ -410,7 +410,7 @@ export default function ScamDefenderPage() {
           <div className="max-w-md mx-auto">
             <Card>
               <CardContent className="pt-8 pb-8 text-center">
-                <Badge className="mb-4 bg-violet-600">プレミアムプラン限定</Badge>
+                <Badge className="mb-4 bg-emerald-600">プレミアムプラン限定</Badge>
                 <div className="text-3xl font-bold mb-2">¥1,980<span className="text-base font-normal text-muted-foreground">/月</span></div>
                 <p className="text-muted-foreground mb-6">プレミアム全ツール使い放題</p>
                 <Link href="/pricing">
@@ -434,7 +434,7 @@ export default function ScamDefenderPage() {
               <Card key={i}>
                 <CardContent className="pt-6">
                   <h3 className="font-semibold mb-2 flex items-start gap-2">
-                    <ChevronRight className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <ChevronRight className="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                     {f.q}
                   </h3>
                   <p className="text-sm text-muted-foreground pl-7">{f.a}</p>
@@ -446,13 +446,13 @@ export default function ScamDefenderPage() {
       </section>
 
       {/* Amazon アソシエイト */}
-      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+      <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 mb-12 text-center">
         <p className="text-sm text-muted-foreground mb-3">🛒 セキュリティグッズをAmazonでチェック</p>
         <a
           href="https://www.amazon.co.jp/s?k=%E3%82%BB%E3%82%AD%E3%83%A5%E3%83%AA%E3%83%86%E3%82%A3%20%E8%A9%90%E6%AC%BA%E5%AF%BE%E7%AD%96&tag=nextralabs-22"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+          className="inline-block bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
         >
           Amazonで見る →
         </a>

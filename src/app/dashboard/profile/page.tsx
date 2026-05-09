@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React, { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -11,9 +11,9 @@ import {
 
 const PLAN_LABELS: Record<string, { label: string; color: string }> = {
   free:     { label: '無料プラン',         color: 'bg-slate-700 text-slate-300' },
-  light:    { label: 'ライトプラン',       color: 'bg-blue-500/20 text-blue-300 border border-blue-500/30' },
+  light:    { label: 'ライトプラン',       color: 'bg-emerald-500/20 text-blue-300 border border-emerald-500/30' },
   standard: { label: 'スタンダードプラン', color: 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' },
-  premium:  { label: 'プレミアムプラン',   color: 'bg-amber-500/20 text-amber-300 border border-amber-500/30' },
+  premium:  { label: 'プレミアムプラン',   color: 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' },
   admin:    { label: 'ADMIN',              color: 'bg-emerald-500 text-slate-950' },
 }
 
@@ -146,7 +146,7 @@ export default function ProfilePage() {
         {/* ヘッダー */}
         <div className="flex items-center justify-between border-b border-white/5 pb-6">
           <div className="space-y-1">
-            <h1 className="text-3xl font-black text-white tracking-tight">プロフィール設定</h1>
+            <h1 className="text-3xl font-bold text-white tracking-tight">プロフィール設定</h1>
             <p className="text-slate-500 text-sm">アカウント情報の確認・変更ができます</p>
           </div>
           <button
@@ -196,7 +196,7 @@ export default function ProfilePage() {
               )}
 
               <div className="text-center space-y-2">
-                <p className="font-black text-white text-base">{displayName || 'ユーザー'}</p>
+                <p className="font-bold text-white text-base">{displayName || 'ユーザー'}</p>
                 <Badge className={`${planInfo.color} font-semibold text-xs px-3 py-0.5 rounded-full`}>
                   {planInfo.label}
                 </Badge>
@@ -209,13 +209,13 @@ export default function ProfilePage() {
               <div className="flex items-center justify-center gap-2 text-emerald-400 text-xs font-semibold mb-2">
                 <Zap size={13} /> AI利用節約総額
               </div>
-              <p className="text-3xl font-black text-white">¥{savings.toLocaleString()}</p>
+              <p className="text-3xl font-bold text-white">¥{savings.toLocaleString()}</p>
               <p className="text-slate-500 text-xs">{usageCount}回利用</p>
             </div>
 
             {/* アカウント情報 */}
             <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">アカウント情報</p>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-tight">アカウント情報</p>
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2.5 text-xs">
                   <Mail size={13} className="text-slate-500 shrink-0" />
@@ -241,11 +241,11 @@ export default function ProfilePage() {
             <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-6 space-y-5">
               <div className="flex items-center gap-2">
                 <Shield size={16} className="text-emerald-400" />
-                <h2 className="font-black text-white text-sm">アカウント・アイデンティティ</h2>
+                <h2 className="font-bold text-white text-sm">アカウント・アイデンティティ</h2>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">表示名</label>
+                <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">表示名</label>
                 <input
                   value={displayName}
                   onChange={e => setDisplayName(e.target.value)}
@@ -255,7 +255,7 @@ export default function ProfilePage() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">メールアドレス</label>
+                <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">メールアドレス</label>
                 <div className="w-full h-12 bg-black/20 border border-white/5 rounded-xl px-4 flex items-center text-slate-500 text-sm font-mono select-all">
                   {userEmail}
                 </div>
@@ -265,7 +265,7 @@ export default function ProfilePage() {
               <Button
                 onClick={handleUpdate}
                 disabled={updating}
-                className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-black rounded-xl text-sm transition-all"
+                className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold rounded-xl text-sm transition-all"
               >
                 {updating ? (
                   <><Loader2 size={15} className="animate-spin mr-2" /> 更新中...</>
@@ -281,7 +281,7 @@ export default function ProfilePage() {
             <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-6 space-y-4">
               <div className="flex items-center gap-2">
                 <Zap size={16} className="text-emerald-400" />
-                <h2 className="font-black text-white text-sm">現在のプラン</h2>
+                <h2 className="font-bold text-white text-sm">現在のプラン</h2>
               </div>
               <div className="flex items-center justify-between p-4 bg-black/30 border border-white/5 rounded-xl">
                 <div className="space-y-0.5">

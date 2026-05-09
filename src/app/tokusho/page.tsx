@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
 export const metadata = {
@@ -18,7 +18,7 @@ export default function TokushoPage() {
           トップに戻る
         </Link>
 
-        <h1 className="text-3xl font-black text-white mb-2">📋 特定商取引法に基づく表記</h1>
+        <h1 className="text-3xl font-bold text-white mb-2">📋 特定商取引法に基づく表記</h1>
         <p className="text-sm text-slate-400 mb-10">最終更新日: 2026年4月30日</p>
 
         <div className="space-y-0 border border-white/10 rounded-xl overflow-hidden">

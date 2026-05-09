@@ -22,7 +22,7 @@ export default function CommCoachPage() {
       </Link>
 
       {/* Hero */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-500 via-rose-500 to-purple-600 p-8 md:p-12 text-white mb-12">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-500 via-rose-500 to-emerald-600 p-8 md:p-12 text-white mb-12">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZyIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IGZpbGw9InVybCgjZykiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIi8+PC9zdmc+')] opacity-30" />
         <div className="relative z-10">
           <div className="text-sm font-medium bg-white/20 backdrop-blur-sm rounded-full px-4 py-1 inline-block mb-4">
@@ -53,7 +53,7 @@ export default function CommCoachPage() {
           { value: '50+', label: '場面別テンプレート' },
         ].map((s, i) => (
           <div key={i} className="bg-muted/50 rounded-2xl p-4 text-center">
-            <div className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">{s.value}</div>
+            <div className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-emerald-500 bg-clip-text text-transparent">{s.value}</div>
             <div className="text-xs text-muted-foreground mt-1">{s.label}</div>
           </div>
         ))}
@@ -125,7 +125,7 @@ export default function CommCoachPage() {
           { step: '3', title: '実践＆添削', desc: 'メッセージを添削AIに入力し、会話プランナーで本番に備える' },
         ].map((s, i) => (
           <div key={i} className="text-center">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold flex items-center justify-center mx-auto mb-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-emerald-500 text-white font-bold flex items-center justify-center mx-auto mb-3">
               {s.step}
             </div>
             <h3 className="font-bold mb-1">{s.title}</h3>
@@ -193,13 +193,13 @@ export default function CommCoachPage() {
       </div>
 
       {/* Amazon アソシエイト */}
-      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+      <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 mb-12 text-center">
         <p className="text-sm text-muted-foreground mb-3">🛒 コミュニケーション本をAmazonでチェック</p>
         <a
           href="https://www.amazon.co.jp/s?k=%E3%82%B3%E3%83%9F%E3%83%A5%E3%83%8B%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%20%E8%A9%B1%E3%81%97%E6%96%B9&tag=nextralabs-22"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+          className="inline-block bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
         >
           Amazonで見る →
         </a>

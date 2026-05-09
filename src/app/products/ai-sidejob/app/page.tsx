@@ -55,7 +55,7 @@ export default function AiSidejobApp() {
               <Briefcase className="h-10 w-10 text-slate-950" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">
+              <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-tighter text-white">
                 AI副業スタートダッシュ
               </h1>
               <div className="flex items-center gap-2 mt-2">
@@ -67,11 +67,11 @@ export default function AiSidejobApp() {
             </div>
           </div>
           <div className="flex flex-col items-end gap-3">
-            <div className="flex items-center gap-2 bg-emerald-500 text-slate-950 font-black italic px-8 py-3 text-lg rounded-full shadow-[0_10px_30px_rgba(16,185,129,0.3)]">
+            <div className="flex items-center gap-2 bg-emerald-500 text-slate-950 font-bold px-8 py-3 text-lg rounded-full shadow-[0_10px_30px_rgba(16,185,129,0.3)]">
               <Lock size={20} />
               PREMIUM UNLOCKED
             </div>
-            <div className="flex items-center gap-2 text-emerald-500 font-bold text-xs uppercase tracking-widest">
+            <div className="flex items-center gap-2 text-emerald-500 font-bold text-xs uppercase tracking-tight">
               <Ticket size={14} />
               Remaining: 3 Credits Today
             </div>
@@ -82,9 +82,9 @@ export default function AiSidejobApp() {
         <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4">
           <div className="flex items-center gap-2 text-emerald-400">
             <Info size={20} /> 
-            <h3 className="font-black italic uppercase text-sm">使いかた・活用マニュアル</h3>
+            <h3 className="font-bold uppercase text-sm">使いかた・活用マニュアル</h3>
           </div>
-          <p className="text-sm text-slate-300 font-bold leading-relaxed italic">
+          <p className="text-sm text-slate-300 font-bold leading-relaxed ">
             「キャラメイク診断」を通じてあなたの武器を明確にします。AIが最新の市場動向（gsk search）を解析し、あなた専用の最短収益化ルートを構築します。
           </p>
         </div>
@@ -102,7 +102,7 @@ export default function AiSidejobApp() {
                 <Briefcase className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-400 h-8 w-8" />
               </div>
               <div className="space-y-2">
-                <h2 className="text-2xl font-black text-white italic">市場トレンドを解析中...</h2>
+                <h2 className="text-2xl font-bold text-white ">市場トレンドを解析中...</h2>
                 <p className="text-emerald-400 font-bold text-sm animate-bounce">
                   gsk search 連携：2026年5月の最新案件をスキャンしています
                 </p>
@@ -120,7 +120,7 @@ export default function AiSidejobApp() {
           <div className="bg-gradient-to-r from-emerald-600 to-teal-800 p-10 rounded-[3rem] flex items-center justify-between shadow-2xl transition-all hover:scale-[1.02] active:scale-95">
             <div>
               <p className="text-emerald-200 text-xs font-bold mb-1">RECOMMENDED RESOURCE</p>
-              <h3 className="text-2xl font-black text-white italic">不敗の稼ぐ力：副業・独立のバイブル ➔</h3>
+              <h3 className="text-2xl font-bold text-white ">不敗の稼ぐ力：副業・独立のバイブル ➔</h3>
             </div>
             <ShoppingCart size={40} className="text-white group-hover:rotate-12 transition-transform" />
           </div>

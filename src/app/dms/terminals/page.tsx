@@ -22,15 +22,15 @@ export default function TerminalsPage() {
       <div className="max-w-[1600px] mx-auto space-y-8 text-left">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-slate-500 text-xs font-black uppercase tracking-widest">
+            <div className="flex items-center gap-2 text-slate-500 text-xs font-bold uppercase tracking-tight">
               <Monitor size={14} className="text-emerald-500" />
               <span>DMS Monitoring</span>
               <ChevronRight size={12} />
               <span className="text-white">チェックイン端末</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter text-white">Terminal <span className="text-emerald-500">Status</span></h1>
+            <h1 className="text-4xl md:text-5xl font-bold uppercase tracking-tighter text-white">Terminal <span className="text-emerald-500">Status</span></h1>
           </div>
-          <Button variant="outline" className="border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/10 h-12 rounded-full font-black italic px-8"><RefreshCw size={18} className="mr-2" /> 全端末一斉再起動指令</Button>
+          <Button variant="outline" className="border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/10 h-12 rounded-full font-bold px-8"><RefreshCw size={18} className="mr-2" /> 全端末一斉再起動指令</Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -40,25 +40,25 @@ export default function TerminalsPage() {
                 
                 <div className="flex justify-between items-start relative z-10">
                    <div className="space-y-1">
-                      <h3 className="text-2xl font-black text-white italic uppercase tracking-tight">{t.name}</h3>
+                      <h3 className="text-2xl font-bold text-white uppercase tracking-tight">{t.name}</h3>
                       <p className="text-[10px] text-slate-600 font-bold uppercase tracking-[0.2em]">{t.id}</p>
                    </div>
-                   <Badge className={t.status === 'Online' ? 'bg-emerald-500 text-slate-950 font-black italic animate-pulse' : 'bg-red-600 text-white font-black italic'}>
+                   <Badge className={t.status === 'Online' ? 'bg-emerald-500 text-slate-950 font-bold animate-pulse' : 'bg-red-600 text-white font-bold '}>
                       {t.status}
                    </Badge>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 relative z-10">
                    <div className="p-4 bg-black/40 rounded-2xl border border-white/5 space-y-1">
-                      <p className="text-[8px] font-black text-slate-600 uppercase">Connection</p>
+                      <p className="text-[8px] font-bold text-slate-600 uppercase">Connection</p>
                       <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
                          <Wifi size={14}/> Stable
                       </div>
                    </div>
                    <div className="p-4 bg-black/40 rounded-2xl border border-white/5 space-y-1">
-                      <p className="text-[8px] font-black text-slate-600 uppercase">Battery</p>
+                      <p className="text-[8px] font-bold text-slate-600 uppercase">Battery</p>
                       <div className="flex items-center gap-2 text-white font-bold text-sm">
-                         <Zap size={14} className="text-amber-400"/> {t.battery}
+                         <Zap size={14} className="text-emerald-400"/> {t.battery}
                       </div>
                    </div>
                 </div>
@@ -75,7 +75,7 @@ export default function TerminalsPage() {
                 </div>
 
                 <div className="flex gap-2 pt-4 relative z-10">
-                   <Button variant="outline" className="flex-1 border-white/10 hover:bg-white/5 text-[10px] font-black uppercase italic tracking-widest text-slate-400">Settings</Button>
+                   <Button variant="outline" className="flex-1 border-white/10 hover:bg-white/5 text-[10px] font-bold uppercase tracking-tight text-slate-400">Settings</Button>
                    <Button variant="outline" className="w-12 border-red-500/20 text-red-500 hover:bg-red-500/10"><Power size={18}/></Button>
                 </div>
              </Card>

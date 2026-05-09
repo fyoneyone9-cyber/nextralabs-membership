@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
@@ -169,7 +169,7 @@ export default function NextraMasterLockedApp() {
             <Button 
               onClick={(e) => { e.stopPropagation(); setIsLinking(!isLinking); }}
               disabled={!selectedMemberId}
-              className={`flex-[4] h-12 rounded-lg font-semibold text-base transition-all border-b-4 ${isLinking ? 'bg-blue-600 border-blue-900 text-white' : 'bg-emerald-500 border-emerald-800 text-black shadow-lg shadow-emerald-500/20'}`}
+              className={`flex-[4] h-12 rounded-lg font-semibold text-base transition-all border-b-4 ${isLinking ? 'bg-emerald-600 border-blue-900 text-white' : 'bg-emerald-500 border-emerald-800 text-black shadow-lg shadow-emerald-500/20'}`}
             >
               <Link size={20} className="mr-3" /> {isLinking ? '相手を選ぶ' : '関係線を引く'}
             </Button>
@@ -180,7 +180,7 @@ export default function NextraMasterLockedApp() {
           </div>
           
           <div className="flex justify-around bg-white/5 py-4 rounded-3xl border border-white/10">
-            <div className="flex items-center gap-4 text-left"><div className="w-5 h-5 bg-blue-500 rounded-full shadow-lg" /><span className="text-xs font-medium text-white/60">味方</span></div>
+            <div className="flex items-center gap-4 text-left"><div className="w-5 h-5 bg-emerald-500 rounded-full shadow-lg" /><span className="text-xs font-medium text-white/60">味方</span></div>
             <div className="flex items-center gap-4 text-left"><div className="w-5 h-5 bg-red-600 rounded-full shadow-lg" /><span className="text-xs font-medium text-white/60">敵対</span></div>
             <div className="flex items-center gap-4 text-left"><div className="w-5 h-5 bg-emerald-500 rounded-full shadow-lg" /><span className="text-xs font-medium text-white/60">中立</span></div>
           </div>
@@ -202,8 +202,8 @@ export default function NextraMasterLockedApp() {
                 const blob = new Blob([data], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a'); a.href = url; a.download = `politics_map.json`; a.click();
-              }} className="justify-start font-semibold h-12 bg-white/5 border-2 border-emerald-500/40 rounded-xl text-blue-500 hover:bg-blue-500/20 px-6 text-sm"><Download size={18} className="mr-4" /> ファイル書出</Button>
-              <label className="flex items-center gap-4 px-6 font-semibold h-12 bg-white/5 border-2 border-emerald-500/40 rounded-xl cursor-pointer text-amber-500 hover:bg-amber-500/20 text-sm">
+              }} className="justify-start font-semibold h-12 bg-white/5 border-2 border-emerald-500/40 rounded-xl text-emerald-500 hover:bg-emerald-500/20 px-6 text-sm"><Download size={18} className="mr-4" /> ファイル書出</Button>
+              <label className="flex items-center gap-4 px-6 font-semibold h-12 bg-white/5 border-2 border-emerald-500/40 rounded-xl cursor-pointer text-emerald-500 hover:bg-emerald-500/20 text-sm">
                 <Upload size={18} /> 読込・復元
                 <input type="file" className="hidden" accept=".json" onChange={(e) => {
                   const f = e.target.files?.[0]; if (!f) return;
@@ -215,7 +215,7 @@ export default function NextraMasterLockedApp() {
             </div>
             <div className="mt-auto p-6 bg-emerald-500/10 rounded-[2.5rem] border-2 border-emerald-500/30">
               <p className="text-xs font-semibold text-emerald-500 mb-3">Locked Status</p>
-              <p className="text-[10px] font-bold text-white/40 italic leading-relaxed">
+              <p className="text-[10px] font-bold text-white/40 leading-relaxed">
                 このツールはNextraLabs MASTERMODELとして完全にロックされています。全ての機能はローカルで完結し、最高級のプライバシーを提供します。
               </p>
             </div>

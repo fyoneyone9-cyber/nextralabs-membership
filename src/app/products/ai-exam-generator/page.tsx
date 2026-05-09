@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -55,8 +55,8 @@ const examFeatures = [
     icon: BrainCircuit,
     title: '過去問ベースの無限生成',
     description: 'ITパスポートやCompTIAなどのシラバスに基づき、AIが類似の過去問や予想問題を無限に生成。',
-    color: 'text-purple-400',
-    bg: 'bg-purple-400/10',
+    color: 'text-emerald-400',
+    bg: 'bg-emerald-400/10',
   },
   {
     icon: Target,
@@ -82,17 +82,17 @@ export default function ExamGeneratorPage() {
         <div className="container mx-auto px-4 relative z-10">
           <Link
             href="/products"
-            className="inline-flex items-center text-xs font-bold text-slate-500 hover:text-emerald-400 mb-8 transition-colors uppercase tracking-widest"
+            className="inline-flex items-center text-xs font-bold text-slate-500 hover:text-emerald-400 mb-8 transition-colors uppercase tracking-tight"
           >
             <ArrowLeft className="h-3 w-3 mr-2" />
             Back to Tools
           </Link>
 
           <div className="max-w-4xl mx-auto text-center mb-16">
-            <Badge className="mb-4 bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1 text-xs font-black uppercase tracking-tighter">
+            <Badge className="mb-4 bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1 text-xs font-bold uppercase tracking-tighter">
               Knowledge Output Engine
             </Badge>
-            <h1 className="text-4xl md:text-7xl font-black text-white mb-6 tracking-tighter italic uppercase leading-none">
+            <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 tracking-tighter uppercase leading-none">
               AI問題生成 <br className="hidden md:block" />
               <span className="text-emerald-500">& 過去問分析</span>
             </h1>
@@ -105,10 +105,10 @@ export default function ExamGeneratorPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <ToolLaunchButton 
                 productId="ai-exam-generator" 
-                className="w-full sm:w-auto h-16 px-10 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xl rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all uppercase italic"
+                className="w-full sm:w-auto h-12 px-10 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xl rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all uppercase "
               />
               <Link href="/products/exam-scheduler" className="w-full sm:w-auto">
-                <Button variant="outline" className="w-full sm:w-auto h-16 px-10 border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-400 font-bold text-lg rounded-2xl uppercase italic">
+                <Button variant="outline" className="w-full sm:w-auto h-12 px-10 border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-400 font-bold text-lg rounded-2xl uppercase ">
                   Build Schedule
                 </Button>
               </Link>
@@ -124,9 +124,9 @@ export default function ExamGeneratorPage() {
                   <div className="space-y-8">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                       <Zap className="w-4 h-4 text-emerald-400" />
-                      <span className="text-emerald-400 text-xs font-black uppercase tracking-widest">Master System Integrated</span>
+                      <span className="text-emerald-400 text-xs font-bold uppercase tracking-tight">Master System Integrated</span>
                     </div>
-                    <h2 className="text-3xl font-black text-white tracking-tight italic uppercase">
+                    <h2 className="text-3xl font-bold text-white tracking-tight uppercase">
                       脳に知識を焼き付ける <br />
                       究極のアウトプット
                     </h2>
@@ -150,34 +150,34 @@ export default function ExamGeneratorPage() {
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center gap-2">
                         <Brain className="w-5 h-5 text-emerald-400" />
-                        <span className="text-white font-black text-xs uppercase tracking-widest">Analysis Engine</span>
+                        <span className="text-white font-bold text-xs uppercase tracking-tight">Analysis Engine</span>
                       </div>
                       <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px]">Mock Exam #12</Badge>
                     </div>
                     
                     <div className="space-y-4">
                       <div className="p-4 bg-black/40 rounded-2xl border border-white/5">
-                        <div className="text-[10px] text-slate-500 font-black mb-2 uppercase">Your Weak Point</div>
+                        <div className="text-[10px] text-slate-500 font-bold mb-2 uppercase">Your Weak Point</div>
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-xs text-white font-bold">ストラテジ系 / 法務</span>
-                          <span className="text-xs text-red-500 font-black tracking-widest">ACCURACY: 42%</span>
+                          <span className="text-xs text-red-500 font-bold tracking-tight">ACCURACY: 42%</span>
                         </div>
                         <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
                           <div className="w-[42%] h-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]"></div>
                         </div>
-                        <div className="mt-3 text-[10px] text-slate-400 font-medium italic">
+                        <div className="mt-3 text-[10px] text-slate-400 font-medium ">
                           AI Advice: 著作権法とライセンス契約の問題で失点が多い傾向にあります。重点的な復習が必要です。
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-2">
                         <div className="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-xl text-center">
-                          <div className="text-[9px] text-slate-500 font-black uppercase">Correct</div>
-                          <div className="text-xl font-black text-emerald-500 italic">84<span className="text-xs">/100</span></div>
+                          <div className="text-[9px] text-slate-500 font-bold uppercase">Correct</div>
+                          <div className="text-xl font-bold text-emerald-500 ">84<span className="text-xs">/100</span></div>
                         </div>
-                        <div className="p-3 bg-blue-500/5 border border-blue-500/20 rounded-xl text-center">
-                          <div className="text-[9px] text-slate-500 font-black uppercase">Study Time</div>
-                          <div className="text-xl font-black text-blue-400 italic">12.5<span className="text-xs">h</span></div>
+                        <div className="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-xl text-center">
+                          <div className="text-[9px] text-slate-500 font-bold uppercase">Study Time</div>
+                          <div className="text-xl font-bold text-blue-400 ">12.5<span className="text-xs">h</span></div>
                         </div>
                       </div>
                     </div>
@@ -193,12 +193,12 @@ export default function ExamGeneratorPage() {
       <section className="py-20 bg-emerald-500/5">
         <div className="container mx-auto px-4 text-center">
           <Sparkles className="w-12 h-12 text-emerald-500 mx-auto mb-6" />
-          <h2 className="text-3xl md:text-5xl font-black text-white mb-6 italic uppercase">「解けない」を、AIが解決する。</h2>
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 uppercase">「解けない」を、AIが解決する。</h2>
           <p className="text-slate-400 mb-10 max-w-xl mx-auto font-medium">
             過去問をただ解く時代は終わりました。AIによる分析と無限生成で、最短ルートの「合格力」を手に入れましょう。
           </p>
-          <ToolLaunchButton productId="ai-exam-generator" className="h-16 px-12 bg-white text-slate-950 font-black text-xl rounded-2xl hover:bg-slate-200 transition-all" />
-          <p className="mt-6 text-xs font-black text-emerald-500 uppercase tracking-widest italic">Premium Plan Master Model</p>
+          <ToolLaunchButton productId="ai-exam-generator" className="h-12 px-12 bg-white text-slate-950 font-bold text-xl rounded-2xl hover:bg-slate-200 transition-all" />
+          <p className="mt-6 text-xs font-bold text-emerald-500 uppercase tracking-tight ">Premium Plan Master Model</p>
         </div>
       </section>
     </div>

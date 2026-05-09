@@ -12,8 +12,8 @@ export const metadata = {
 export default function SmartGardeningLandingPage() {
   const features = [
     { icon: <Camera className="w-6 h-6 text-green-500" />, title: 'カメラ解析', desc: '写真を撮るだけで植物の状態をAIが読み取ります' },
-    { icon: <CloudSun className="w-6 h-6 text-orange-500" />, title: '天気連動', desc: 'Google天気を参照し、雨の日は水やり不要と通知' },
-    { icon: <Droplets className="w-6 h-6 text-blue-500" />, title: '最適化アドバイス', desc: '土の乾き具合に合わせた具体的な水分量を提示' }
+    { icon: <CloudSun className="w-6 h-6 text-emerald-500" />, title: '天気連動', desc: 'Google天気を参照し、雨の日は水やり不要と通知' },
+    { icon: <Droplets className="w-6 h-6 text-emerald-500" />, title: '最適化アドバイス', desc: '土の乾き具合に合わせた具体的な水分量を提示' }
   ];
 
   return (
@@ -29,7 +29,7 @@ export default function SmartGardeningLandingPage() {
         </p>
         <div className="pt-8">
           <Link href="/products/smart-gardening/app">
-            <Button size="lg" className="bg-green-600 hover:bg-green-700 h-16 px-10 text-xl font-bold rounded-2xl shadow-lg">
+            <Button size="lg" className="bg-green-600 hover:bg-green-700 h-12 px-10 text-xl font-bold rounded-2xl shadow-lg">
               <Rocket className="mr-2" /> ツールを使う
             </Button>
           </Link>

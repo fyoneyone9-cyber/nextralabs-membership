@@ -45,24 +45,24 @@ const features = [
     title: '4つのテンプレート',
     description:
       '週次報告・月次報告・プロジェクト報告・調査レポートの4種類から選択。目的に合わせた構成で自動生成。',
-    color: 'text-purple-500',
-    bg: 'bg-purple-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: BookOpen,
     title: '自動セクション構成',
     description:
       '背景・現状分析・提案・まとめなど、レポートに必要なセクションを自動構成。論理的な流れのドキュメントを生成。',
-    color: 'text-blue-500',
-    bg: 'bg-blue-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: BarChart3,
     title: 'Markdownプレビュー',
     description:
       '生成されたレポートをリアルタイムでMarkdownプレビュー。見出し・箇条書き・太字が整形された状態で確認可能。',
-    color: 'text-amber-500',
-    bg: 'bg-amber-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: Copy,
@@ -214,7 +214,7 @@ export default function AiReportGeneratorPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {setupSteps.map((s, i) => (
               <div key={i} className="text-center">
-                <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4"><span className="text-2xl font-bold text-green-500">{s.step}</span></div>
+                <div className="w-16 h-12 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4"><span className="text-2xl font-bold text-green-500">{s.step}</span></div>
                 <h3 className="font-semibold text-lg mb-2">{s.title}</h3>
                 <p className="text-sm text-muted-foreground">{s.desc}</p>
                 <Badge variant="outline" className="mt-3">{s.time}</Badge>
@@ -232,7 +232,7 @@ export default function AiReportGeneratorPage() {
             {targets.map((t, i) => (
               <Card key={i} className="hover:shadow-lg transition-shadow">
                 <CardContent className="pt-6 text-center">
-                  <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4"><t.icon className="h-8 w-8 text-green-500" /></div>
+                  <div className="w-16 h-12 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4"><t.icon className="h-8 w-8 text-green-500" /></div>
                   <h3 className="font-semibold text-lg mb-2">{t.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{t.description}</p>
                 </CardContent>
@@ -283,13 +283,13 @@ export default function AiReportGeneratorPage() {
       </section>
 
       {/* Amazon アソシエイト */}
-      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+      <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 mb-12 text-center">
         <p className="text-sm text-muted-foreground mb-3">🛒 ビジネス・レポート本をAmazonでチェック</p>
         <a
           href="https://www.amazon.co.jp/s?k=%E3%83%93%E3%82%B8%E3%83%8D%E3%82%B9%20%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88&tag=nextralabs-22"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+          className="inline-block bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
         >
           Amazonで見る →
         </a>

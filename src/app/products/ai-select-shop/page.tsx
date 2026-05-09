@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { TrendingUp, Palette, Rocket, Package, ArrowRight, AlertTriangle } from 'lucide-react'
@@ -47,7 +47,7 @@ const LPContent = () => {
                 '仕入れや発送作業で時間がとられる',
               ].map((item, i) => (
                 <li key={i} className="flex items-start gap-3">
-                  <AlertTriangle size={16} className="text-amber-500 mt-0.5 shrink-0" />
+                  <AlertTriangle size={16} className="text-emerald-500 mt-0.5 shrink-0" />
                   <span className="text-sm leading-relaxed">{item}</span>
                 </li>
               ))}

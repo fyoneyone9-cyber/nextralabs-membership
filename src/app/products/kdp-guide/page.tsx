@@ -36,15 +36,15 @@ const features = [
     icon: CheckSquare,
     title: 'ステップ式チェックリスト',
     description: '全4ステップ（アカウント設定→原稿作成→本の登録→出版申請）をチェックリスト形式でガイド。全項目を確認してから次へ進めるので抜け漏れゼロ。',
-    color: 'text-orange-500',
-    bg: 'bg-orange-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: BookOpen,
     title: '原稿・表紙の作り方ガイド',
     description: 'Word/EPUB形式の原稿作成方法、推奨解像度の表紙画像、Kindle Previewerでのプレビュー確認まで丁寧に解説。',
-    color: 'text-amber-500',
-    bg: 'bg-amber-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: DollarSign,
@@ -57,15 +57,15 @@ const features = [
     icon: UserCheck,
     title: 'マイナンバー税務設定サポート',
     description: '米国源泉徴収を30%→0%にするマイナンバー入力の重要性を強調表示。初心者が見落としがちな税務設定も確実にカバー。',
-    color: 'text-blue-500',
-    bg: 'bg-blue-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: PenLine,
     title: '本の詳細・コンテンツ登録ガイド',
     description: 'タイトル・著者名・内容紹介・キーワード（最大7つ）、ファイルアップロード、プレビュー確認まで、KDPの管理画面に沿った順番で解説。',
-    color: 'text-purple-500',
-    bg: 'bg-purple-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: Zap,
@@ -134,7 +134,7 @@ export default function KdpGuidePage() {
       
       {/* Hero */}
       <section className="relative overflow-hidden py-16 md:py-24">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-emerald-500/5" />
         <div className="container mx-auto px-4 relative">
           <Link
             href="/products"
@@ -145,7 +145,7 @@ export default function KdpGuidePage() {
           </Link>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <Badge className="mb-4 bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20">
+              <Badge className="mb-4 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20">
                 📗 無料ツール
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Kindle出版手順ナビ</h1>
@@ -163,7 +163,7 @@ export default function KdpGuidePage() {
               </div>
               <div className="flex flex-wrap gap-4">
                 <Link href="/products/kdp-guide/app">
-                  <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-white text-lg px-8">
+                  <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white text-lg px-8">
                     🆓 無料で使う
                   </Button>
                 </Link>
@@ -174,7 +174,7 @@ export default function KdpGuidePage() {
               </div>
             </div>
             <div className="relative">
-              <div className="bg-gradient-to-br from-orange-500/20 to-amber-500/20 rounded-2xl p-8 border border-orange-500/10">
+              <div className="bg-gradient-to-br from-emerald-500/20 to-emerald-500/20 rounded-2xl p-8 border border-emerald-500/10">
                 <div className="bg-background/95 backdrop-blur rounded-xl p-6 shadow-2xl">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-3 h-3 rounded-full bg-red-500" />
@@ -188,13 +188,13 @@ export default function KdpGuidePage() {
                         key={i}
                         className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm ${
                           i === 0
-                            ? 'bg-orange-500/20 text-orange-300 font-semibold'
+                            ? 'bg-emerald-500/20 text-emerald-300 font-semibold'
                             : 'bg-muted/50 text-muted-foreground'
                         }`}
                       >
                         <span
                           className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
-                            i === 0 ? 'bg-orange-600 text-white' : 'bg-muted text-muted-foreground'
+                            i === 0 ? 'bg-emerald-600 text-white' : 'bg-muted text-muted-foreground'
                           }`}
                         >
                           {i + 1}
@@ -246,8 +246,8 @@ export default function KdpGuidePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {setupSteps.map((s, i) => (
               <div key={i} className="text-center">
-                <div className="w-16 h-16 rounded-full bg-orange-500/10 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold text-orange-500">{s.step}</span>
+                <div className="w-16 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl font-bold text-emerald-500">{s.step}</span>
                 </div>
                 <h3 className="font-semibold text-lg mb-2">{s.title}</h3>
                 <p className="text-sm text-muted-foreground">{s.desc}</p>
@@ -266,8 +266,8 @@ export default function KdpGuidePage() {
             {targets.map((t, i) => (
               <Card key={i} className="hover:shadow-lg transition-shadow">
                 <CardContent className="pt-6 text-center">
-                  <div className="w-16 h-16 rounded-full bg-orange-500/10 flex items-center justify-center mx-auto mb-4">
-                    <t.icon className="h-8 w-8 text-orange-500" />
+                  <div className="w-16 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
+                    <t.icon className="h-8 w-8 text-emerald-500" />
                   </div>
                   <h3 className="font-semibold text-lg mb-2">{t.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{t.description}</p>
@@ -314,7 +314,7 @@ export default function KdpGuidePage() {
                 <div className="text-5xl font-bold mb-2">¥0</div>
                 <p className="text-muted-foreground mb-6">登録不要で今すぐ使えます</p>
                 <Link href="/products/kdp-guide/app">
-                  <Button size="lg" className="w-full bg-orange-600 hover:bg-orange-700 text-white">
+                  <Button size="lg" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
                     🆓 無料で使う
                   </Button>
                 </Link>
@@ -338,7 +338,7 @@ export default function KdpGuidePage() {
               <Card key={i}>
                 <CardContent className="pt-6">
                   <h3 className="font-semibold mb-2 flex items-start gap-2">
-                    <ChevronRight className="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />
+                    <ChevronRight className="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                     {f.q}
                   </h3>
                   <p className="text-sm text-muted-foreground pl-7">{f.a}</p>
@@ -350,13 +350,13 @@ export default function KdpGuidePage() {
       </section>
 
       {/* Amazon アソシエイト */}
-      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+      <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 mb-12 text-center">
         <p className="text-sm text-muted-foreground mb-3">🛒 電子書籍・出版本をAmazonでチェック</p>
         <a
           href="https://www.amazon.co.jp/s?k=Kindle%20%E9%9B%BB%E5%AD%90%E6%9B%B8%E7%B1%8D%20%E5%87%BA%E7%89%88&tag=nextralabs-22"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+          className="inline-block bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
         >
           Amazonで見る →
         </a>

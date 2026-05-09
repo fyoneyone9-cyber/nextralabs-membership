@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -39,8 +39,8 @@ export default function PortAuthPage() {
           </div>
 
           <div className="space-y-2">
-            <h1 className="text-3xl font-black text-white italic uppercase tracking-tighter">Identity Gate</h1>
-            <p className="text-slate-500 font-bold text-sm uppercase tracking-widest">Master Identity Sync Required</p>
+            <h1 className="text-3xl font-bold text-white uppercase tracking-tighter">Identity Gate</h1>
+            <p className="text-slate-500 font-bold text-sm uppercase tracking-tight">Master Identity Sync Required</p>
           </div>
 
           <form onSubmit={handleVerify} className="space-y-4">
@@ -50,13 +50,13 @@ export default function PortAuthPage() {
                 placeholder="Enter Access Key"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`bg-black border-2 h-14 rounded-2xl text-center text-xl font-black tracking-[0.5em] transition-all ${
+                className={`bg-black border-2 h-14 rounded-2xl text-center text-xl font-bold tracking-[0.5em] transition-all ${
                   error ? 'border-red-500 animate-shake' : 'border-white/5 focus:border-emerald-500'
                 }`}
                 autoFocus
               />
               {error && (
-                <div className="absolute -bottom-6 left-0 right-0 flex items-center justify-center gap-1 text-red-500 text-[10px] font-black uppercase italic">
+                <div className="absolute -bottom-6 left-0 right-0 flex items-center justify-center gap-1 text-red-500 text-[10px] font-bold uppercase ">
                   <AlertCircle size={10} /> Access Denied
                 </div>
               )}
@@ -64,13 +64,13 @@ export default function PortAuthPage() {
 
             <Button 
               type="submit"
-              className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl text-lg shadow-xl transition-all active:scale-95 uppercase italic gap-2"
+              className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-2xl text-lg shadow-xl transition-all active:scale-95 uppercase gap-2"
             >
               <ShieldCheck size={20} /> Verify Access ➔
             </Button>
           </form>
 
-          <p className="text-[10px] text-slate-600 font-bold uppercase tracking-[0.2em] italic">
+          <p className="text-[10px] text-slate-600 font-bold uppercase tracking-[0.2em] ">
             Authorized Personnel Only • NextraLabs 2026
           </p>
         </div>

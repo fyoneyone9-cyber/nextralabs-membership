@@ -28,7 +28,7 @@ export default function ShioTaiouPage() {
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden py-16 md:py-24">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-orange-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-emerald-500/5" />
         <div className="container mx-auto px-4 relative">
           <Link href="/products" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6">
             <ArrowLeft className="h-4 w-4 mr-1" />
@@ -36,7 +36,7 @@ export default function ShioTaiouPage() {
           </Link>
 
           <div className="flex items-center gap-3 mb-4">
-            <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20">🧂 スタンダードプラン</Badge>
+            <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">🧂 スタンダードプラン</Badge>
           </div>
 
           <h1 className="text-4xl md:text-5xl font-bold mb-4">塩対応代行AI</h1>
@@ -67,7 +67,7 @@ export default function ShioTaiouPage() {
             {features.map((f) => (
               <Card key={f.title}>
                 <CardContent className="p-6">
-                  <f.icon className="h-8 w-8 text-amber-500 mb-3" />
+                  <f.icon className="h-8 w-8 text-emerald-500 mb-3" />
                   <h3 className="font-bold mb-2">{f.title}</h3>
                   <p className="text-sm text-muted-foreground">{f.description}</p>
                 </CardContent>
@@ -91,7 +91,7 @@ export default function ShioTaiouPage() {
               '「町内会の役員、今年はお宅の番よ」',
             ].map((text) => (
               <div key={text} className="flex items-start gap-3 p-4 rounded-lg bg-background border">
-                <CheckCircle2 className="h-5 w-5 text-amber-500 mt-0.5 flex-shrink-0" />
+                <CheckCircle2 className="h-5 w-5 text-emerald-500 mt-0.5 flex-shrink-0" />
                 <p className="text-muted-foreground">{text}</p>
               </div>
             ))}
@@ -117,13 +117,13 @@ export default function ShioTaiouPage() {
       </section>
 
       {/* Amazon アソシエイト */}
-      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+      <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 mb-12 text-center">
         <p className="text-sm text-muted-foreground mb-3">🛒 コミュニケーション本をAmazonでチェック</p>
         <a
           href="https://www.amazon.co.jp/s?k=%E3%82%B3%E3%83%9F%E3%83%A5%E3%83%8B%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%20%E8%A9%B1%E3%81%97%E6%96%B9&tag=nextralabs-22"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+          className="inline-block bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
         >
           Amazonで見る →
         </a>

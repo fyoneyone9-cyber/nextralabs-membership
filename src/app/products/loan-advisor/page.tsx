@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { ShieldCheck, TrendingDown, Zap, ArrowRight, CheckCircle2 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
@@ -7,10 +7,10 @@ export default function LoanAdvisorPromo() {
     <div className="min-h-screen bg-[#050507] text-white font-sans">
       <div className="max-w-4xl mx-auto px-4 py-20">
         <div className="text-center space-y-6">
-          <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1 text-xs font-black tracking-widest uppercase italic">
+          <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1 text-xs font-bold tracking-tight uppercase ">
             Debt Recovery AI
           </Badge>
-          <h1 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none uppercase">
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tighter leading-none uppercase">
             借金を<span className="text-emerald-500">一本化</span>して<br />人生を再起動する。
           </h1>
           <p className="text-slate-400 text-lg md:text-xl font-bold max-w-2xl mx-auto">
@@ -19,7 +19,7 @@ export default function LoanAdvisorPromo() {
           
           <div className="pt-8">
             <Link href="/products/loan-advisor/app">
-              <button className="bg-emerald-600 hover:bg-emerald-500 text-white h-20 px-12 rounded-[2rem] font-black text-2xl italic uppercase tracking-widest transition-all shadow-[0_0_50px_rgba(16,185,129,0.4)] active:scale-95 flex items-center justify-center gap-4 mx-auto">
+              <button className="bg-emerald-600 hover:bg-emerald-500 text-white h-20 px-12 rounded-[2rem] font-bold text-2xl uppercase tracking-tight transition-all shadow-[0_0_50px_rgba(16,185,129,0.4)] active:scale-95 flex items-center justify-center gap-4 mx-auto">
                 無料診断を開始する <ArrowRight size={28} />
               </button>
             </Link>
@@ -36,14 +36,14 @@ export default function LoanAdvisorPromo() {
               <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center">
                 {feature.icon}
               </div>
-              <h3 className="text-xl font-black italic uppercase tracking-tight">{feature.title}</h3>
+              <h3 className="text-xl font-bold uppercase tracking-tight">{feature.title}</h3>
               <p className="text-slate-400 font-bold text-sm leading-relaxed">{feature.desc}</p>
             </div>
           ))}
         </div>
 
         <div className="mt-24 p-10 bg-gradient-to-br from-emerald-600/20 to-transparent border border-emerald-500/20 rounded-[3rem] space-y-6">
-          <h2 className="text-3xl font-black italic uppercase tracking-tighter">AIがおまとめのメリットを可視化</h2>
+          <h2 className="text-3xl font-bold uppercase tracking-tighter">AIがおまとめのメリットを可視化</h2>
           <ul className="space-y-4">
             {[
               '現在の平均金利と総返済額の算出',

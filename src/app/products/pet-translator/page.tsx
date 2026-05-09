@@ -36,16 +36,16 @@ const features = [
     title: 'カメラ映像からリアルタイム動き検出',
     description:
       'Webカメラの映像をフレーム差分解析でリアルタイム処理。ペットの動きレベルを0〜100%で常時計測。寝てるか、走り回ってるか、じっとしてるかを正確に把握。',
-    color: 'text-blue-500',
-    bg: 'bg-blue-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: Volume2,
     title: '鳴き声・音声のAI周波数解析',
     description:
       'マイクから拾った音声を周波数帯域ごとに解析。低音の唸り、中音のゴロゴロ、高音の鳴き声を分離し、感情推定の精度を大幅に向上。',
-    color: 'text-purple-500',
-    bg: 'bg-purple-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: MessageCircle,
@@ -173,7 +173,7 @@ export default function PetTranslatorPage() {
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden py-16 md:py-24">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-pink-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-pink-500/5" />
         <div className="container mx-auto px-4 relative">
           <Link
             href="/products"
@@ -185,7 +185,7 @@ export default function PetTranslatorPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <Badge className="mb-4 bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20">
+              <Badge className="mb-4 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20">
                 🐾 ソースコード販売
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
@@ -240,7 +240,7 @@ export default function PetTranslatorPage() {
                     <span className="text-gray-400">⚡ 動き</span>
                     <div className="text-white font-bold">8%</div>
                     <div className="h-1 bg-[#2a2a3a] rounded mt-1">
-                      <div className="h-full bg-amber-400 rounded" style={{ width: '8%' }}></div>
+                      <div className="h-full bg-emerald-400 rounded" style={{ width: '8%' }}></div>
                     </div>
                   </div>
                   <div className="bg-[#1a1a25] rounded-lg p-2 border border-[#2a2a3a]">
@@ -255,7 +255,7 @@ export default function PetTranslatorPage() {
                   🧠 AI信頼度: 87% ┃ 🕐 14:32:05
                 </div>
               </div>
-              <div className="absolute -bottom-2 -right-2 bg-violet-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+              <div className="absolute -bottom-2 -right-2 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
                 🔔 LINE通知を送信
               </div>
             </div>
@@ -329,7 +329,7 @@ export default function PetTranslatorPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {setupSteps.map((s) => (
               <div key={s.step} className="text-center">
-                <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary text-2xl font-bold mb-4">
+                <div className="inline-flex h-12 w-16 items-center justify-center rounded-full bg-primary/10 text-primary text-2xl font-bold mb-4">
                   {s.step}
                 </div>
                 <h3 className="font-bold mb-2">{s.title}</h3>
@@ -555,7 +555,7 @@ export default function PetTranslatorPage() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             留守中のペットの気持ちが
             <br />
-            <span className="bg-gradient-to-r from-violet-500 to-pink-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-emerald-500 to-pink-500 bg-clip-text text-transparent">
               わかるようになる
             </span>
           </h2>
@@ -568,7 +568,7 @@ export default function PetTranslatorPage() {
           <div className="flex flex-col items-center gap-4">
             <ToolLaunchButton productId="pet-translator" className="text-xl px-12 py-6 shadow-lg" />
             <Link href="/pricing">
-              <Button className="text-xl px-12 py-6 bg-violet-500 hover:bg-violet-600 text-white">プレミアムプラン（¥1,980/月）→</Button>
+              <Button className="text-xl px-12 py-6 bg-emerald-500 hover:bg-emerald-600 text-white">プレミアムプラン（¥1,980/月）→</Button>
             </Link>
             <p className="text-xs text-muted-foreground">
               プレミアムプラン限定ツール
@@ -578,13 +578,13 @@ export default function PetTranslatorPage() {
       </section>
 
       {/* Amazon アソシエイト */}
-      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+      <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 mb-12 text-center">
         <p className="text-sm text-muted-foreground mb-3">🛒 ペットグッズをAmazonでチェック</p>
         <a
           href="https://www.amazon.co.jp/s?k=%E3%83%9A%E3%83%83%E3%83%88%20%E7%8C%AB%20%E7%8A%AC&tag=nextralabs-22"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+          className="inline-block bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
         >
           Amazonで見る →
         </a>

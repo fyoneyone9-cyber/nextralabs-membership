@@ -34,8 +34,8 @@ const features = [
     title: '退職届テンプレート自動生成',
     description:
       'あなたの状況（正社員/契約/パート、退職理由、退職希望日）を入力するだけで、法的に正しい退職届・退職願をAIが自動作成。内容証明郵便用のフォーマットにも対応。',
-    color: 'text-blue-500',
-    bg: 'bg-blue-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: Calculator,
@@ -50,16 +50,16 @@ const features = [
     title: '退職完全チェックリスト',
     description:
       '有給消化、社保切替（国保/任意継続）、年金手続き、退職金確認、離職票取得、失業保険申請まで。やるべきことを時系列で完全ガイド。進捗管理もできる。',
-    color: 'text-purple-500',
-    bg: 'bg-purple-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: Scale,
     title: '退職代行サービス比較',
     description:
       '弁護士型・労働組合型・民間型の3タイプを徹底比較。料金・対応範囲・リスクを一覧表示。あなたの状況に最適なサービスをAIがレコメンド。',
-    color: 'text-amber-500',
-    bg: 'bg-amber-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: Shield,
@@ -158,7 +158,7 @@ export default function ResignationAssistantPage() {
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden py-16 md:py-24">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-emerald-500/5" />
         <div className="container mx-auto px-4 relative">
           <Link
             href="/products"
@@ -170,7 +170,7 @@ export default function ResignationAssistantPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <Badge className="mb-4 bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20">
+              <Badge className="mb-4 bg-emerald-500/10 text-emerald-600 dark:text-blue-400 border-emerald-500/20">
                 📝 新商品
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
@@ -224,7 +224,7 @@ export default function ResignationAssistantPage() {
             </div>
 
             <div className="relative">
-              <div className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl p-8 border border-blue-500/10">
+              <div className="bg-gradient-to-br from-emerald-500/20 to-emerald-500/20 rounded-2xl p-8 border border-emerald-500/10">
                 <div className="bg-background/95 backdrop-blur rounded-xl p-6 shadow-2xl">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-3 h-3 rounded-full bg-red-500" />
@@ -235,7 +235,7 @@ export default function ResignationAssistantPage() {
                     </span>
                   </div>
                   <div className="space-y-3">
-                    <div className="bg-blue-500/10 rounded-lg p-3">
+                    <div className="bg-emerald-500/10 rounded-lg p-3">
                       <div className="text-xs text-blue-400 mb-1">📝 退職届プレビュー</div>
                       <div className="text-sm font-mono">
                         <p className="text-right text-muted-foreground">令和8年5月1日</p>
@@ -251,8 +251,8 @@ export default function ResignationAssistantPage() {
                         <span className="text-xl font-bold text-green-400">¥487,500</span>
                       </div>
                     </div>
-                    <div className="bg-purple-500/10 rounded-lg p-3">
-                      <div className="text-xs text-purple-400 mb-1">✅ 退職チェックリスト</div>
+                    <div className="bg-emerald-500/10 rounded-lg p-3">
+                      <div className="text-xs text-emerald-400 mb-1">✅ 退職チェックリスト</div>
                       <div className="space-y-1 text-xs">
                         <div className="flex items-center gap-2"><span className="text-green-400">✓</span> <span className="text-muted-foreground">退職届の作成</span></div>
                         <div className="flex items-center gap-2"><span className="text-green-400">✓</span> <span className="text-muted-foreground">有給残日数の確認</span></div>
@@ -299,11 +299,11 @@ export default function ResignationAssistantPage() {
       </section>
 
       {/* Important Notice */}
-      <section className="py-12 bg-amber-500/5 border-t border-b">
+      <section className="py-12 bg-emerald-500/5 border-t border-b">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <div className="flex items-start gap-4">
-              <AlertTriangle className="h-8 w-8 text-amber-500 flex-shrink-0 mt-1" />
+              <AlertTriangle className="h-8 w-8 text-emerald-500 flex-shrink-0 mt-1" />
               <div>
                 <h3 className="text-lg font-bold mb-2">⚠️ 重要なお知らせ</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -327,8 +327,8 @@ export default function ResignationAssistantPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {setupSteps.map((s, i) => (
               <div key={i} className="text-center">
-                <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold text-blue-500">
+                <div className="w-16 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl font-bold text-emerald-500">
                     {s.step}
                   </span>
                 </div>
@@ -353,8 +353,8 @@ export default function ResignationAssistantPage() {
             {targets.map((t, i) => (
               <Card key={i} className="hover:shadow-lg transition-shadow">
                 <CardContent className="pt-6 text-center">
-                  <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto mb-4">
-                    <t.icon className="h-8 w-8 text-blue-500" />
+                  <div className="w-16 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
+                    <t.icon className="h-8 w-8 text-emerald-500" />
                   </div>
                   <h3 className="font-semibold text-lg mb-2">{t.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
@@ -430,7 +430,7 @@ export default function ResignationAssistantPage() {
               <Card key={i}>
                 <CardContent className="pt-6">
                   <h3 className="font-semibold mb-2 flex items-start gap-2">
-                    <ChevronRight className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <ChevronRight className="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                     {f.q}
                   </h3>
                   <p className="text-sm text-muted-foreground pl-7">{f.a}</p>
@@ -442,13 +442,13 @@ export default function ResignationAssistantPage() {
       </section>
 
       {/* Amazon アソシエイト */}
-      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+      <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 mb-12 text-center">
         <p className="text-sm text-muted-foreground mb-3">🛒 退職・転職本をAmazonでチェック</p>
         <a
           href="https://www.amazon.co.jp/s?k=%E9%80%80%E8%81%B7%20%E8%BB%A2%E8%81%B7&tag=nextralabs-22"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+          className="inline-block bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
         >
           Amazonで見る →
         </a>

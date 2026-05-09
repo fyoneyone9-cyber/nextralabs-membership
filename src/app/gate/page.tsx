@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
@@ -161,7 +161,7 @@ function GatePageContent() {
               </p>
             )}
             {isTruncated && (
-              <p className="text-xs text-amber-400 mt-1">
+              <p className="text-xs text-emerald-400 mt-1">
                 ⚠️ 本文が長いため先頭2,000文字のみ取得しています
               </p>
             )}
@@ -179,7 +179,7 @@ function GatePageContent() {
             onChange={e => setEmailBody(e.target.value)}
             placeholder="Gmailからメール本文が自動入力されます。\n手動で貼り付けることも可能です。"
             rows={8}
-            className="w-full bg-[#13131e] border border-gray-700 rounded-xl px-4 py-3 text-sm text-gray-300 focus:border-orange-500 focus:outline-none resize-y"
+            className="w-full bg-[#13131e] border border-gray-700 rounded-xl px-4 py-3 text-sm text-gray-300 focus:border-emerald-500 focus:outline-none resize-y"
           />
           <p className="text-xs text-gray-600 mt-1">{emailBody.length}文字</p>
         </div>
@@ -194,7 +194,7 @@ function GatePageContent() {
                 onClick={() => setSelectedTemplate(t.id)}
                 className={`px-3 py-2.5 rounded-xl border text-sm text-left transition-all ${
                   selectedTemplate === t.id
-                    ? 'bg-orange-500/15 border-orange-500 text-orange-300'
+                    ? 'bg-emerald-500/15 border-emerald-500 text-emerald-300'
                     : 'bg-[#13131e] border-gray-700 hover:border-gray-500 text-gray-300'
                 }`}
               >
@@ -210,7 +210,7 @@ function GatePageContent() {
               onChange={e => setCustomInstruction(e.target.value)}
               placeholder="例: このメールの問題点を指摘し、改善案を3つ提案してください"
               rows={3}
-              className="mt-2 w-full bg-[#13131e] border border-gray-700 rounded-xl px-4 py-3 text-sm text-gray-300 focus:border-orange-500 focus:outline-none resize-none"
+              className="mt-2 w-full bg-[#13131e] border border-gray-700 rounded-xl px-4 py-3 text-sm text-gray-300 focus:border-emerald-500 focus:outline-none resize-none"
             />
           )}
         </div>
@@ -231,7 +231,7 @@ function GatePageContent() {
               />
               <button
                 onClick={handleCopy}
-                className="w-full py-3 bg-orange-600 hover:bg-orange-700 rounded-lg text-sm font-bold transition-colors flex items-center justify-center gap-2"
+                className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 rounded-lg text-sm font-bold transition-colors flex items-center justify-center gap-2"
               >
                 {copied ? '✅ コピーしました！' : '📋 プロンプトをコピー'}
               </button>

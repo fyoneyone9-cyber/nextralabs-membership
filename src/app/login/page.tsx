@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -41,7 +41,7 @@ export default function LoginPage() {
         <CardHeader className="text-center pb-2">
           <div className="inline-flex items-center gap-2 border border-emerald-500/30 rounded-full px-4 py-1.5 mb-4 mx-auto">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] font-medium text-emerald-400 tracking-widest uppercase">Nextra Labs</span>
+            <span className="text-[11px] font-medium text-emerald-400 tracking-tight uppercase">Nextra Labs</span>
           </div>
           <CardTitle className="text-2xl font-semibold tracking-tight text-white">ログイン</CardTitle>
           <CardDescription className="text-slate-400 text-sm leading-relaxed">アカウントにログインしてください</CardDescription>

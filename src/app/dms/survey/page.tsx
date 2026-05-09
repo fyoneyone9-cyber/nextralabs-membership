@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -19,13 +19,13 @@ export default function SurveyPage() {
         {/* ヘッダー */}
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold uppercase tracking-widest">
+            <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold uppercase tracking-tight">
               <MessageSquare size={13} className="text-emerald-500" />
               <span>DMS</span>
               <span>/</span>
               <span className="text-white">アンケート回収</span>
             </div>
-            <h1 className="text-3xl font-black text-white tracking-tight">
+            <h1 className="text-3xl font-bold text-white tracking-tight">
               アンケート <span className="text-emerald-400">回収</span>
             </h1>
           </div>
@@ -80,7 +80,7 @@ export default function SurveyPage() {
 
         {/* 空状態 */}
         <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl py-24 flex flex-col items-center justify-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center">
+          <div className="w-16 h-12 rounded-2xl bg-white/5 flex items-center justify-center">
             <MessageSquare size={28} className="text-slate-600" />
           </div>
           <p className="text-slate-500 text-sm font-semibold">アンケートが登録されていません</p>

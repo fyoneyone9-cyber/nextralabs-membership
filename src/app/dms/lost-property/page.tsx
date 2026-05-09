@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -30,13 +30,13 @@ export default function LostPropertyPage() {
         {/* ヘッダー */}
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold uppercase tracking-widest">
+            <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold uppercase tracking-tight">
               <Package size={13} className="text-emerald-500" />
               <span>DMS</span>
               <span>/</span>
               <span className="text-white">忘れ物管理</span>
             </div>
-            <h1 className="text-3xl font-black text-white tracking-tight">
+            <h1 className="text-3xl font-bold text-white tracking-tight">
               忘れ物 <span className="text-emerald-400">管理</span>
             </h1>
           </div>
@@ -98,7 +98,7 @@ export default function LostPropertyPage() {
                     <td className="px-5 py-4 text-slate-400 font-semibold">{item.date}</td>
                     <td className="px-5 py-4">
                       <p className="text-slate-500 text-[9px] font-medium">{item.property}</p>
-                      <p className="text-white font-black">Room {item.room}</p>
+                      <p className="text-white font-bold">Room {item.room}</p>
                     </td>
                     <td className="px-5 py-4 text-slate-200 font-semibold">{item.name}</td>
                     <td className="px-5 py-4 text-slate-500 font-medium">{item.finder}</td>

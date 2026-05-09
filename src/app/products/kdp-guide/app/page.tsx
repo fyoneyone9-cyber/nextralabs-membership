@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React, { useState } from 'react'
 import { Card } from '@/components/ui/card'
@@ -170,8 +170,8 @@ export default function KdpGuideApp() {
   )
 
   return (
-    <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-orange-500/30 text-left">
-      <div className="max-w-4xl mx-auto space-y-10 border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.3)] rounded-[3rem] p-6 md:p-12 text-white font-black relative overflow-hidden">
+    <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-emerald-500/30 text-left">
+      <div className="max-w-4xl mx-auto space-y-10 border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.3)] rounded-[3rem] p-6 md:p-12 text-white font-bold relative overflow-hidden">
         {/* Security Line Accent */}
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-50"></div>
         
@@ -182,7 +182,7 @@ export default function KdpGuideApp() {
               <BookOpen className="h-10 w-10 text-emerald-400" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-4xl font-black text-white tracking-tight">Kindle出版<span className="text-emerald-400">実況ナビ</span></h1>
+              <h1 className="text-2xl md:text-4xl font-bold text-white tracking-tight">Kindle出版<span className="text-emerald-400">実況ナビ</span></h1>
             </div>
           </div>
         </div>
@@ -191,11 +191,11 @@ export default function KdpGuideApp() {
         <div className="space-y-4">
           <div className="flex justify-between items-end">
             <span className="text-sm font-semibold text-slate-400">ステップ進捗</span>
-            <span className="text-4xl font-black italic text-orange-500">{progress}%</span>
+            <span className="text-4xl font-bold text-emerald-500">{progress}%</span>
           </div>
           <div className="h-4 w-full bg-white/5 rounded-full overflow-hidden border border-white/10">
             <div 
-              className="h-full bg-gradient-to-r from-orange-600 to-amber-400 transition-all duration-500"
+              className="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -206,15 +206,15 @@ export default function KdpGuideApp() {
           {KDP_STEPS.map((step) => (
             <div key={step.id} className="space-y-6">
               <div className="flex items-center gap-3">
-                <step.icon className="text-orange-500" size={28} />
-                <h2 className="text-2xl font-black italic uppercase tracking-tight">{step.title}</h2>
+                <step.icon className="text-emerald-500" size={28} />
+                <h2 className="text-2xl font-bold uppercase tracking-tight">{step.title}</h2>
               </div>
               
               <div className="grid gap-4">
                 {step.items.map((item) => (
                   <Card key={item.id} className="bg-[#13141f] border-white/5 p-6 rounded-2xl space-y-4 shadow-xl">
                     <div className="space-y-1.5">
-                      <h3 className="text-xl md:text-2xl font-black text-white italic tracking-tight">{item.text}</h3>
+                      <h3 className="text-xl md:text-2xl font-bold text-white tracking-tight">{item.text}</h3>
                       <p className="text-xs md:text-sm text-slate-400 font-bold leading-relaxed">{item.detail}</p>
                     </div>
                     
@@ -225,17 +225,17 @@ export default function KdpGuideApp() {
                           onClick={() => toggleCheck(sub.id)}
                           className={`group cursor-pointer p-4 rounded-xl border-2 transition-all flex flex-col gap-3 ${
                             checkedItems[sub.id] 
-                              ? 'bg-orange-500/10 border-orange-500/40' 
+                              ? 'bg-emerald-500/10 border-emerald-500/40' 
                               : 'bg-black/40 border-white/10 hover:border-white/20'
                           }`}
                         >
                           <div className="flex items-center gap-3">
                             <div className={`shrink-0 h-6 w-6 rounded border-2 flex items-center justify-center transition-all ${
-                              checkedItems[sub.id] ? 'bg-orange-500 border-orange-500' : 'border-white/30'
+                              checkedItems[sub.id] ? 'bg-emerald-500 border-emerald-500' : 'border-white/30'
                             }`}>
                               {checkedItems[sub.id] && <CheckCircle2 size={16} className="text-slate-950 stroke-[3px]" />}
                             </div>
-                            <p className={`font-black text-sm md:text-base transition-all flex-1 ${checkedItems[sub.id] ? 'text-white' : 'text-slate-400'}`}>
+                            <p className={`font-bold text-sm md:text-base transition-all flex-1 ${checkedItems[sub.id] ? 'text-white' : 'text-slate-400'}`}>
                               {sub.text}
                             </p>
                           </div>
@@ -246,7 +246,7 @@ export default function KdpGuideApp() {
                               target="_blank" 
                               rel="noopener noreferrer" 
                               onClick={(e) => e.stopPropagation()}
-                              className="w-full h-12 bg-emerald-600/20 hover:bg-emerald-600 border border-emerald-500/50 rounded-xl flex items-center justify-center gap-2 text-emerald-400 hover:text-slate-950 font-black italic transition-all shadow-lg"
+                              className="w-full h-12 bg-emerald-600/20 hover:bg-emerald-600 border border-emerald-500/50 rounded-xl flex items-center justify-center gap-2 text-emerald-400 hover:text-slate-950 font-bold transition-all shadow-lg"
                             >
                               この手順の公式ページを開く <ExternalLink size={18} />
                             </a>
@@ -268,10 +268,10 @@ export default function KdpGuideApp() {
           rel="noopener noreferrer"
           className="block group"
         >
-          <div className="bg-gradient-to-r from-orange-600 to-amber-600 p-10 rounded-[3rem] flex items-center justify-between shadow-2xl transition-all group-hover:scale-[1.02]">
+          <div className="bg-gradient-to-r from-emerald-600 to-emerald-600 p-10 rounded-[3rem] flex items-center justify-between shadow-2xl transition-all group-hover:scale-[1.02]">
             <div className="space-y-2 text-left">
-              <h3 className="text-2xl font-black text-white italic">Amazon KDP攻略本をチェック ➔</h3>
-              <p className="text-orange-100 text-sm font-bold italic">ベストセラー作家が教える「印税生活」への近道</p>
+              <h3 className="text-2xl font-bold text-white ">Amazon KDP攻略本をチェック ➔</h3>
+              <p className="text-emerald-100 text-sm font-bold ">ベストセラー作家が教える「印税生活」への近道</p>
             </div>
             <ExternalLink size={40} className="text-white" />
           </div>

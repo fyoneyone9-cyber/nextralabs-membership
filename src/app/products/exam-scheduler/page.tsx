@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -32,15 +32,15 @@ const features = [
     icon: Rss,
     title: 'RSS試験日自動取得',
     description: 'IPAやCompTIAの最新試験日程を自動取得。手動で調べる手間をゼロに。',
-    color: 'text-orange-400',
-    bg: 'bg-orange-400/10',
+    color: 'text-emerald-400',
+    bg: 'bg-emerald-400/10',
   },
   {
     icon: BrainCircuit,
     title: 'AI学習フェーズ生成',
     description: 'Claude AIが難易度に応じた4フェーズ（基礎・応用・まとめ・直前）の計画を立案。',
-    color: 'text-purple-400',
-    bg: 'bg-purple-400/10',
+    color: 'text-emerald-400',
+    bg: 'bg-emerald-400/10',
   },
   {
     icon: Calendar,
@@ -59,17 +59,17 @@ export default function ExamSchedulerPage() {
         <div className="container mx-auto px-4 relative z-10">
           <Link
             href="/products"
-            className="inline-flex items-center text-xs font-bold text-slate-500 hover:text-emerald-400 mb-8 transition-colors uppercase tracking-widest"
+            className="inline-flex items-center text-xs font-bold text-slate-500 hover:text-emerald-400 mb-8 transition-colors uppercase tracking-tight"
           >
             <ArrowLeft className="h-3 w-3 mr-2" />
             Back to Tools
           </Link>
 
           <div className="max-w-4xl mx-auto text-center mb-16">
-            <Badge className="mb-4 bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1 text-xs font-black uppercase tracking-tighter">
+            <Badge className="mb-4 bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1 text-xs font-bold uppercase tracking-tighter">
               Education DX / Study Sync
             </Badge>
-            <h1 className="text-4xl md:text-7xl font-black text-white mb-6 tracking-tighter italic uppercase leading-none">
+            <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 tracking-tighter uppercase leading-none">
               資格試験 AI <br className="hidden md:block" />
               <span className="text-emerald-500">スケジューラー</span>
             </h1>
@@ -82,10 +82,10 @@ export default function ExamSchedulerPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <ToolLaunchButton 
                 productId="exam-scheduler" 
-                className="w-full sm:w-auto h-16 px-10 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xl rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all"
+                className="w-full sm:w-auto h-12 px-10 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xl rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all"
               />
               <Link href="/products/ai-exam-generator" className="w-full sm:w-auto">
-                <Button variant="outline" className="w-full sm:w-auto h-16 px-10 border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-400 font-bold text-lg rounded-2xl">
+                <Button variant="outline" className="w-full sm:w-auto h-12 px-10 border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-400 font-bold text-lg rounded-2xl">
                   問題生成モードを起動
                 </Button>
               </Link>
@@ -101,9 +101,9 @@ export default function ExamSchedulerPage() {
                   <div className="space-y-8">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                       <Zap className="w-4 h-4 text-emerald-400" />
-                      <span className="text-emerald-400 text-xs font-black uppercase tracking-widest">Master System Integrated</span>
+                      <span className="text-emerald-400 text-xs font-bold uppercase tracking-tight">Master System Integrated</span>
                     </div>
-                    <h2 className="text-3xl font-black text-white tracking-tight italic uppercase">
+                    <h2 className="text-3xl font-bold text-white tracking-tight uppercase">
                       計画倒れを防ぐ <br />
                       逆算思考の自動化
                     </h2>
@@ -127,9 +127,9 @@ export default function ExamSchedulerPage() {
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center gap-2">
                         <Calendar className="w-5 h-5 text-emerald-400" />
-                        <span className="text-white font-black text-xs uppercase tracking-widest">Calendar Preview</span>
+                        <span className="text-white font-bold text-xs uppercase tracking-tight">Calendar Preview</span>
                       </div>
-                      <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-[10px]">Google Sync ON</Badge>
+                      <Badge className="bg-emerald-500/20 text-blue-400 border-emerald-500/30 text-[10px]">Google Sync ON</Badge>
                     </div>
                     
                     <div className="space-y-3">
@@ -140,7 +140,7 @@ export default function ExamSchedulerPage() {
                       ].map((item, i) => (
                         <div key={i} className="p-3 bg-black/40 rounded-xl border border-white/5 flex items-center justify-between">
                           <div>
-                            <div className="text-[9px] text-emerald-500 font-black">{item.date}</div>
+                            <div className="text-[9px] text-emerald-500 font-bold">{item.date}</div>
                             <div className="text-xs text-slate-200 font-bold">{item.task}</div>
                           </div>
                           <div className="text-[10px] text-slate-500 font-mono">{item.time}</div>
@@ -149,7 +149,7 @@ export default function ExamSchedulerPage() {
                       <div className="pt-4 mt-2 border-t border-white/5 flex justify-center">
                         <div className="bg-green-500/10 border border-green-500/30 rounded-full px-4 py-1 flex items-center gap-2">
                           <CheckCircle2 className="w-3 h-3 text-green-400" />
-                          <span className="text-[10px] text-green-400 font-black uppercase">48 events registered</span>
+                          <span className="text-[10px] text-green-400 font-bold uppercase">48 events registered</span>
                         </div>
                       </div>
                     </div>
@@ -164,7 +164,7 @@ export default function ExamSchedulerPage() {
       {/* Target Section */}
       <section className="py-20 border-t border-white/5 bg-white/[0.02]">
         <div className="container mx-auto px-4">
-          <h2 className="text-center text-sm font-black text-emerald-500 uppercase tracking-[0.4em] mb-12">Recommended For</h2>
+          <h2 className="text-center text-sm font-bold text-emerald-500 uppercase tracking-[0.4em] mb-12">Recommended For</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {[
               { icon: TrendingUp, title: '忙しい社会人', desc: '限られた時間の中でITパスポートやCompTIAを目指す方に。' },
@@ -187,12 +187,12 @@ export default function ExamSchedulerPage() {
       <section className="py-20">
         <div className="container mx-auto px-4 text-center">
           <Sparkles className="w-12 h-12 text-emerald-500 mx-auto mb-6" />
-          <h2 className="text-3xl md:text-5xl font-black text-white mb-6 italic uppercase">計画を、AIで「絶対」に変える。</h2>
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 uppercase">計画を、AIで「絶対」に変える。</h2>
           <p className="text-slate-400 mb-10 max-w-xl mx-auto font-medium leading-relaxed">
             挫折の原因は「計画不足」でした。AIが引いたレールに乗るだけで、合格への最短距離を駆け抜けられます。
           </p>
-          <ToolLaunchButton productId="exam-scheduler" className="h-16 px-12 bg-white text-slate-950 font-black text-xl rounded-2xl hover:bg-slate-200 transition-all" />
-          <p className="mt-6 text-xs font-black text-emerald-500 uppercase tracking-widest italic">Standard Plan Access</p>
+          <ToolLaunchButton productId="exam-scheduler" className="h-12 px-12 bg-white text-slate-950 font-bold text-xl rounded-2xl hover:bg-slate-200 transition-all" />
+          <p className="mt-6 text-xs font-bold text-emerald-500 uppercase tracking-tight ">Standard Plan Access</p>
         </div>
       </section>
     </div>

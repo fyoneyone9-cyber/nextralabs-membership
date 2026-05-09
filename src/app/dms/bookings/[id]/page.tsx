@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -114,7 +114,7 @@ export default function BookingDetailPage() {
               <div className="w-24"><label className="text-[10px] font-bold text-slate-400 mb-1 block text-left">予定時刻</label><div className="bg-slate-50 border border-slate-200 h-10 px-3 flex items-center rounded-md font-bold text-sm">{b.check_in_time}</div></div>
               <div className="flex-1 pb-1 text-left">
                 <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">ステータス (PMS連動)</p>
-                <p className="text-sm font-bold text-indigo-600 uppercase">
+                <p className="text-sm font-bold text-emerald-600 uppercase">
                   {b.paid ? '滞在中 (CHECKED-IN)' : '未チェックイン'}
                 </p>
               </div>
@@ -133,7 +133,7 @@ export default function BookingDetailPage() {
               </div>
               <div className="flex-1 pb-1 text-left">
                 <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">ステータス</p>
-                <p className="text-sm font-bold text-indigo-600 uppercase">未チェックアウト</p>
+                <p className="text-sm font-bold text-emerald-600 uppercase">未チェックアウト</p>
               </div>
               <Button className="bg-emerald-600 hover:bg-emerald-700 h-10 px-6 font-bold text-xs rounded-xl shadow-lg shadow-emerald-500/20 text-white">
                 DMSで実効チェックアウトを実行
@@ -142,7 +142,7 @@ export default function BookingDetailPage() {
           </div>
           <div className="space-y-6 border-l border-slate-100 pl-8">
             <div className="flex items-center justify-between">
-              <Button className="bg-indigo-600 hover:bg-indigo-700 h-12 px-8 font-black italic uppercase text-xs shadow-lg rounded-xl text-white"><Send size={16} className="mr-2" /> 事前チェックインメールを手動送信</Button>
+              <Button className="bg-emerald-600 hover:bg-emerald-700 h-12 px-8 font-bold  uppercase text-xs shadow-lg rounded-xl text-white"><Send size={16} className="mr-2" /> 事前チェックインメールを手動送信</Button>
               <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-2"><div className="w-8 h-4 bg-slate-200 rounded-full relative"><div className="absolute left-1 top-1 w-2 h-2 bg-white rounded-full" /></div><span className="text-[10px] font-bold text-slate-500">フロントへ誘導: 無効</span></div>
                 <div className="flex items-center gap-2"><div className="w-8 h-4 bg-slate-200 rounded-full relative"><div className="absolute left-1 top-1 w-2 h-2 bg-white rounded-full" /></div><span className="text-[10px] font-bold text-slate-500">アウト時フロントへ誘導: 無効</span></div>
@@ -153,7 +153,7 @@ export default function BookingDetailPage() {
 
         {/* 👥 宿泊者情報テーブル */}
         <div className="space-y-4">
-          <h3 className="text-lg font-black text-slate-800 uppercase tracking-tighter italic text-left">宿泊者情報</h3>
+          <h3 className="text-lg font-bold text-slate-800 uppercase tracking-tighter  text-left">宿泊者情報</h3>
           <Card className="border-slate-200 shadow-sm overflow-hidden bg-white">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-[11px] whitespace-nowrap">
@@ -164,7 +164,7 @@ export default function BookingDetailPage() {
                   <tr>
                     <td className="p-4 font-bold">光来 吉田<br/><span className="text-slate-400">(未入力)</span></td>
                     <td className="p-4 text-slate-400 font-medium">(未入力)<br/>(未入力)<br/>(未入力)</td>
-                    <td className="p-4 text-indigo-600 font-bold">(未チェックイン)<br/>(未チェックアウト)</td>
+                    <td className="p-4 text-emerald-600 font-bold">(未チェックイン)<br/>(未チェックアウト)</td>
                     <td className="p-4 text-slate-300">-</td><td className="p-4 text-slate-300">-</td><td className="p-4 text-slate-300">-</td><td className="p-4 text-slate-300">-</td>
                     <td className="p-4 text-center"><button className="p-2 hover:bg-slate-100 rounded text-slate-400"><PenLine size={14} /></button></td>
                   </tr>
@@ -179,14 +179,14 @@ export default function BookingDetailPage() {
               </table>
             </div>
             <div className="p-4 bg-slate-50 border-t border-slate-100 text-left">
-               <Button size="sm" className="bg-indigo-600 text-white hover:bg-indigo-700 font-bold px-6 h-10 rounded-lg"><Plus size={16} className="mr-2" /> 宿泊者を追加</Button>
+               <Button size="sm" className="bg-emerald-600 text-white hover:bg-emerald-700 font-bold px-6 h-10 rounded-lg"><Plus size={16} className="mr-2" /> 宿泊者を追加</Button>
             </div>
           </Card>
         </div>
 
         {/* 🔐 PIN情報 */}
         <div className="space-y-2 text-left">
-           <h3 className="text-lg font-black text-slate-800 uppercase tracking-tighter italic">PIN情報</h3>
+           <h3 className="text-lg font-bold text-slate-800 uppercase tracking-tighter ">PIN情報</h3>
            <p className="text-[10px] text-slate-400 font-bold leading-relaxed">
              PIN情報の自動同期(DMSで発行→スマートロック側システムへ送信)は、チェックイン日の2日前より、毎時10分ごろに行われます。
            </p>
@@ -195,7 +195,7 @@ export default function BookingDetailPage() {
         {/* 🛠️ アクションフッター */}
         <footer className="pt-10 border-t border-slate-200 flex justify-center gap-4">
            <Button variant="outline" className="h-12 px-12 border-slate-300 font-bold rounded-xl text-slate-600" onClick={() => router.back()}>✕ キャンセル</Button>
-           <Button className="h-12 px-12 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-200"><Save size={18} className="mr-2" /> 更新</Button>
+           <Button className="h-12 px-12 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-200"><Save size={18} className="mr-2" /> 更新</Button>
         </footer>
       </main>
     </div>

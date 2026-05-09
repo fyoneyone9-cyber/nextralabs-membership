@@ -20,7 +20,7 @@ export default function PromptMasterPage() {
       </Link>
 
       {/* Hero */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-600 via-fuchsia-600 to-pink-600 p-8 md:p-12 text-white mb-12">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 via-fuchsia-600 to-pink-600 p-8 md:p-12 text-white mb-12">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZyIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IGZpbGw9InVybCgjZykiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIi8+PC9zdmc+')] opacity-30" />
         <div className="relative z-10">
           <div className="text-sm font-medium bg-white/20 backdrop-blur-sm rounded-full px-4 py-1 inline-block mb-4">
@@ -51,7 +51,7 @@ export default function PromptMasterPage() {
           { value: '6タブ', label: '搭載機能' },
         ].map((s, i) => (
           <div key={i} className="bg-muted/50 rounded-2xl p-4 text-center">
-            <div className="text-2xl font-bold bg-gradient-to-r from-purple-500 to-fuchsia-500 bg-clip-text text-transparent">{s.value}</div>
+            <div className="text-2xl font-bold bg-gradient-to-r from-emerald-500 to-fuchsia-500 bg-clip-text text-transparent">{s.value}</div>
             <div className="text-xs text-muted-foreground mt-1">{s.label}</div>
           </div>
         ))}
@@ -61,7 +61,7 @@ export default function PromptMasterPage() {
       <h2 className="text-2xl font-bold mb-4">対応カテゴリ</h2>
       <div className="grid md:grid-cols-2 gap-6 mb-12">
         <div className="bg-muted/30 rounded-2xl p-5">
-          <h3 className="font-bold text-sm text-purple-500 mb-3">💼 ビジネス向け（13カテゴリ）</h3>
+          <h3 className="font-bold text-sm text-emerald-500 mb-3">💼 ビジネス向け（13カテゴリ）</h3>
           <div className="space-y-1.5 text-sm text-muted-foreground">
             {[
               '01 商品イメージの仮作成',
@@ -113,9 +113,9 @@ export default function PromptMasterPage() {
           { icon: <ClipboardList className="h-6 w-6" />, title: '📋 履歴＆お気に入り', desc: '生成したプロンプトの保存・コピー・再利用。お気に入り登録で頻繁に使うプロンプトにすぐアクセス。' },
           { icon: <GraduationCap className="h-6 w-6" />, title: '📖 学習ガイド', desc: 'プロンプトの基本構造、効果的な修飾語、NG表現、モデル別Tips。初心者でもプロ品質のプロンプトが書けるように。' },
         ].map((f, i) => (
-          <Link key={i} href="/products/prompt-master/app" className="border rounded-2xl p-5 hover:border-purple-300 hover:bg-purple-500/5 transition-all group block">
+          <Link key={i} href="/products/prompt-master/app" className="border rounded-2xl p-5 hover:border-emerald-300 hover:bg-emerald-500/5 transition-all group block">
             <div className="flex items-start justify-between">
-              <div className="text-purple-500 mb-2">{f.icon}</div>
+              <div className="text-emerald-500 mb-2">{f.icon}</div>
               <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             <h3 className="font-bold mb-1">{f.title}</h3>
@@ -125,11 +125,11 @@ export default function PromptMasterPage() {
       </div>
 
       {/* Supported Models */}
-      <div className="bg-purple-500/10 border border-purple-500/30 rounded-2xl p-6 mb-12">
-        <h3 className="font-bold text-purple-600 dark:text-purple-400 mb-3">🤖 対応モデル</h3>
+      <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-6 mb-12">
+        <h3 className="font-bold text-emerald-600 dark:text-emerald-400 mb-3">🤖 対応モデル</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
           {['Midjourney', 'DALL-E 3', 'Stable Diffusion', 'Flux', 'Adobe Firefly', 'Leonardo AI', 'Bing Image Creator', 'その他汎用'].map(m => (
-            <div key={m} className="flex items-center gap-1.5"><span className="text-purple-500">✓</span> {m}</div>
+            <div key={m} className="flex items-center gap-1.5"><span className="text-emerald-500">✓</span> {m}</div>
           ))}
         </div>
       </div>
@@ -143,7 +143,7 @@ export default function PromptMasterPage() {
           { step: '3', title: 'コピー＆生成', desc: 'プロンプトをコピーしてAIに貼り付けるだけ' },
         ].map((s, i) => (
           <div key={i} className="text-center">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white font-bold flex items-center justify-center mx-auto mb-3">{s.step}</div>
+            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-500 to-fuchsia-500 text-white font-bold flex items-center justify-center mx-auto mb-3">{s.step}</div>
             <h3 className="font-bold mb-1">{s.title}</h3>
             <p className="text-sm text-muted-foreground">{s.desc}</p>
           </div>
@@ -155,19 +155,19 @@ export default function PromptMasterPage() {
         <h3 className="font-bold mb-3">技術仕様</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
           {['ブラウザ完結', 'サーバー送信なし', 'localStorage保存', 'ワンクリックコピー', 'スマホ対応', 'ダークモード', '英語プロンプト出力', '日本語UI'].map(t => (
-            <div key={t} className="flex items-center gap-1.5"><span className="text-purple-500">✓</span> {t}</div>
+            <div key={t} className="flex items-center gap-1.5"><span className="text-emerald-500">✓</span> {t}</div>
           ))}
         </div>
       </div>
 
       {/* Pricing */}
-      <div className="border-2 border-violet-500/30 rounded-3xl p-8 text-center mb-12">
+      <div className="border-2 border-emerald-500/30 rounded-3xl p-8 text-center mb-12">
         <h2 className="text-2xl font-bold mb-2">AI画像プロンプトマスター</h2>
-        <Badge className="mb-4 bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20">プレミアムプラン限定</Badge>
+        <Badge className="mb-4 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20">プレミアムプラン限定</Badge>
         <div className="text-3xl font-bold mb-2">¥1,980<span className="text-base font-normal text-muted-foreground">/月</span></div>
         <p className="text-muted-foreground mb-6">Gmail AI Accelerator を含む上位プラン</p>
         <Link href="/pricing">
-          <Button className="w-full max-w-xs mx-auto bg-violet-500 hover:bg-violet-600 text-white">プレミアムプランを見る →</Button>
+          <Button className="w-full max-w-xs mx-auto bg-emerald-500 hover:bg-emerald-600 text-white">プレミアムプランを見る →</Button>
         </Link>
       </div>
 
@@ -189,13 +189,13 @@ export default function PromptMasterPage() {
       </div>
 
       {/* Amazon アソシエイト */}
-      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+      <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 mb-12 text-center">
         <p className="text-sm text-muted-foreground mb-3">🛒 AI・画像生成本をAmazonでチェック</p>
         <a
           href="https://www.amazon.co.jp/s?k=AI%20%E7%94%BB%E5%83%8F%E7%94%9F%E6%88%90&tag=nextralabs-22"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+          className="inline-block bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
         >
           Amazonで見る →
         </a>

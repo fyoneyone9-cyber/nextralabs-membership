@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
@@ -74,17 +74,17 @@ const MasterEngine = () => {
       <section className="relative pt-32 pb-20 px-4 text-center">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#10b98115,transparent_50%)]" />
         <div className="max-w-5xl mx-auto space-y-8 relative z-10">
-          <Badge className="bg-emerald-600 text-white font-black px-6 py-1.5 rounded-full uppercase text-xs tracking-widest shadow-lg">Master Portfolio v5.1</Badge>
+          <Badge className="bg-emerald-600 text-white font-bold px-6 py-1.5 rounded-full uppercase text-xs tracking-tight shadow-lg">Master Portfolio v5.1</Badge>
           <div className="space-y-4">
-             <h1 className="text-6xl md:text-8xl font-black text-white leading-tight">{IDENTITY.name}</h1>
-             <p className="text-2xl md:text-4xl font-bold text-emerald-400 italic">{IDENTITY.motto}</p>
+             <h1 className="text-6xl md:text-8xl font-bold text-white leading-tight">{IDENTITY.name}</h1>
+             <p className="text-2xl md:text-4xl font-bold text-emerald-400 ">{IDENTITY.motto}</p>
           </div>
           <p className="text-lg md:text-xl text-slate-400 font-medium max-w-3xl mx-auto leading-relaxed">
             リサーチ・開発・コンテンツ制作・自動化まで、アイデアを実行まで完結させます。
           </p>
           <div className="flex flex-wrap justify-center gap-4 pt-4">
-            <Link href="#skills" className="h-14 px-8 bg-emerald-600 text-white font-black rounded-xl flex items-center gap-2 hover:bg-emerald-500 transition-all shadow-xl">スキルを見る <ArrowRight size={20}/></Link>
-            <Link href="/contact" className="h-14 px-8 bg-white/5 border border-white/10 text-white font-black rounded-xl flex items-center gap-2 hover:bg-white/10 transition-all">連絡する</Link>
+            <Link href="#skills" className="h-14 px-8 bg-emerald-600 text-white font-bold rounded-xl flex items-center gap-2 hover:bg-emerald-500 transition-all shadow-xl">スキルを見る <ArrowRight size={20}/></Link>
+            <Link href="/contact" className="h-14 px-8 bg-white/5 border border-white/10 text-white font-bold rounded-xl flex items-center gap-2 hover:bg-white/10 transition-all">連絡する</Link>
           </div>
         </div>
       </section>
@@ -93,8 +93,8 @@ const MasterEngine = () => {
       <section className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6 mb-32">
         {STATS.map(s => (
           <div key={s.label} className="bg-[#13141f] border border-white/5 p-10 rounded-[2.5rem] text-center shadow-2xl">
-            <p className="text-6xl font-black text-white mb-2">{s.value}</p>
-            <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">{s.label}</p>
+            <p className="text-6xl font-bold text-white mb-2">{s.value}</p>
+            <p className="text-sm font-bold text-slate-500 uppercase tracking-tight">{s.label}</p>
           </div>
         ))}
       </section>
@@ -110,7 +110,7 @@ const MasterEngine = () => {
           <div key={i} className="bg-[#13141f] p-8 rounded-[2.5rem] border border-white/5 flex gap-6 items-start">
             <div className="w-12 h-12 bg-emerald-600/10 rounded-xl flex items-center justify-center text-emerald-500 shrink-0"><item.icon size={24} /></div>
             <div className="space-y-2 text-left">
-              <h3 className="text-xl font-black text-white">{item.title}</h3>
+              <h3 className="text-xl font-bold text-white">{item.title}</h3>
               <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
             </div>
           </div>
@@ -119,7 +119,7 @@ const MasterEngine = () => {
 
       {/* About Me */}
       <section className="max-w-4xl mx-auto px-4 mb-40 space-y-8 text-left">
-        <h2 className="text-3xl font-black border-l-4 border-emerald-500 pl-6">自己紹介</h2>
+        <h2 className="text-3xl font-bold border-l-4 border-emerald-500 pl-6">自己紹介</h2>
         <div className="bg-[#13141f] p-10 rounded-[3rem] border border-white/5 space-y-6 text-slate-300 leading-relaxed text-lg">
           <p>{IDENTITY.description}</p>
           <p>「これって自動化できない？」「こんなの作れる？」という相談から始まるプロジェクトが得意です。要件が曖昧な段階から一緒に整理し、動くものを作って納品します。</p>
@@ -135,12 +135,12 @@ const MasterEngine = () => {
 
       {/* Skills Section */}
       <section id="skills" className="max-w-7xl mx-auto px-4 space-y-16 mb-48 text-left">
-        <h2 className="text-4xl font-black text-white text-center">できること</h2>
+        <h2 className="text-4xl font-bold text-white text-center">できること</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {SKILLS.map(s => (
             <Card key={s.title} className="bg-[#13141f] border border-white/5 p-8 rounded-[2.5rem] shadow-2xl hover:border-emerald-500/30 transition-all flex flex-col h-full group">
               <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center mb-6 text-emerald-500 group-hover:scale-110 transition-transform"><s.icon size={28} /></div>
-              <h3 className="text-xl font-black text-white mb-4 leading-tight text-left">{s.title}</h3>
+              <h3 className="text-xl font-bold text-white mb-4 leading-tight text-left">{s.title}</h3>
               <p className="text-slate-500 text-sm leading-relaxed mb-6 flex-1 text-left">{s.desc}</p>
               <div className="flex flex-wrap gap-1.5 justify-start">
                 {s.tags.map(t => <Badge key={t} variant="secondary" className="bg-black/50 text-[10px] text-slate-400 border-0">{t}</Badge>)}
@@ -152,17 +152,17 @@ const MasterEngine = () => {
 
       {/* Projects Section */}
       <section className="max-w-7xl mx-auto px-4 space-y-16 mb-48 text-left">
-        <h2 className="text-4xl font-black text-white text-center">こんな仕事ができます</h2>
+        <h2 className="text-4xl font-bold text-white text-center">こんな仕事ができます</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
            {PROJECTS.map(p => (
              <div key={p.title} className="bg-[#13141f] p-10 rounded-[3rem] border border-white/5 shadow-2xl hover:bg-white/5 transition-all group flex flex-col h-full text-left">
                 <Badge className="bg-emerald-600/10 text-emerald-500 border-0 mb-6 w-fit">{p.category}</Badge>
-                <h3 className="text-2xl font-black text-white mb-4 leading-tight text-left">{p.title}</h3>
+                <h3 className="text-2xl font-bold text-white mb-4 leading-tight text-left">{p.title}</h3>
                 <p className="text-slate-400 text-sm leading-relaxed mb-8 flex-1 text-left">{p.desc}</p>
                 {p.link.startsWith('http') ? (
-                  <a href={p.link} target="_blank" rel="noopener noreferrer" className="text-emerald-500 font-black text-sm hover:underline text-left">{p.label}</a>
+                  <a href={p.link} target="_blank" rel="noopener noreferrer" className="text-emerald-500 font-bold text-sm hover:underline text-left">{p.label}</a>
                 ) : (
-                  <Link href={p.link} className="text-emerald-500 font-black text-sm hover:underline text-left">{p.label}</Link>
+                  <Link href={p.link} className="text-emerald-500 font-bold text-sm hover:underline text-left">{p.label}</Link>
                 )}
              </div>
            ))}
@@ -172,16 +172,16 @@ const MasterEngine = () => {
       {/* Contact Section */}
       <section className="max-w-4xl mx-auto px-4">
         <div className="bg-gradient-to-br from-emerald-600 to-teal-800 rounded-[4rem] p-12 md:p-20 text-center space-y-8 shadow-2xl">
-          <h3 className="text-4xl md:text-6xl font-black text-white italic">お気軽にご連絡ください</h3>
+          <h3 className="text-4xl md:text-6xl font-bold text-white ">お気軽にご連絡ください</h3>
           <p className="text-emerald-100 text-lg md:text-xl font-bold max-w-2xl mx-auto text-center">お仕事のご依頼・ご相談など、どんなことでもお声がけください。初回の壁打ちは無料です。</p>
           <div className="flex flex-wrap justify-center gap-4 pt-6">
-             <a href={`mailto:${IDENTITY.email}`} className="h-16 px-10 bg-white text-emerald-700 font-black rounded-2xl flex items-center gap-3 hover:bg-emerald-50 transition-all shadow-xl">メールを送る</a>
-             <a href={IDENTITY.twitter} target="_blank" className="h-16 px-10 bg-black/30 text-white font-black rounded-2xl flex items-center gap-3 hover:bg-black/50 border border-white/10 transition-all shadow-xl italic">Twitter / X</a>
+             <a href={`mailto:${IDENTITY.email}`} className="h-12 px-10 bg-white text-emerald-700 font-bold rounded-2xl flex items-center gap-3 hover:bg-emerald-50 transition-all shadow-xl">メールを送る</a>
+             <a href={IDENTITY.twitter} target="_blank" className="h-12 px-10 bg-black/30 text-white font-bold rounded-2xl flex items-center gap-3 hover:bg-black/50 border border-white/10 transition-all shadow-xl ">Twitter / X</a>
           </div>
         </div>
       </section>
 
-      <div className="text-center opacity-10 mt-24 font-black uppercase tracking-widest text-[10px]">
+      <div className="text-center opacity-10 mt-24 font-bold uppercase tracking-tight text-[10px]">
         © {new Date().getFullYear()} {IDENTITY.name} | NextraLabs
       </div>
     </div>

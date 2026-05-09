@@ -19,7 +19,7 @@ export default function ClosetCoachPage() {
       </Link>
 
       {/* Hero */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-pink-500 p-8 md:p-12 text-white mb-12">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500 via-fuchsia-500 to-pink-500 p-8 md:p-12 text-white mb-12">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZyIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IGZpbGw9InVybCgjZykiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIi8+PC9zdmc+')] opacity-30" />
         <div className="relative z-10">
           <div className="text-sm font-medium bg-white/20 backdrop-blur-sm rounded-full px-4 py-1 inline-block mb-4">
@@ -50,7 +50,7 @@ export default function ClosetCoachPage() {
           { value: '6カテゴリ', label: 'アイテム分類' },
         ].map((s, i) => (
           <div key={i} className="bg-muted/50 rounded-2xl p-4 text-center">
-            <div className="text-2xl font-bold bg-gradient-to-r from-violet-500 to-pink-500 bg-clip-text text-transparent">{s.value}</div>
+            <div className="text-2xl font-bold bg-gradient-to-r from-emerald-500 to-pink-500 bg-clip-text text-transparent">{s.value}</div>
             <div className="text-xs text-muted-foreground mt-1">{s.label}</div>
           </div>
         ))}
@@ -67,9 +67,9 @@ export default function ClosetCoachPage() {
           { icon: <Palette className="h-6 w-6" />, title: '👗 コーデ提案', desc: '登録アイテムから色×カテゴリで着回しパターンを自動生成。「持ってるもので着回す」提案。' },
           { icon: <TrendingUp className="h-6 w-6" />, title: '📈 ワードローブ統計', desc: 'カテゴリ別保有数・総投資額・月間追加/断捨離数のダッシュボード。衣服消費の見える化。' },
         ].map((f, i) => (
-          <Link key={i} href="/products/closet-coach/app" className="border rounded-2xl p-5 hover:border-violet-300 hover:bg-violet-500/5 transition-all group block">
+          <Link key={i} href="/products/closet-coach/app" className="border rounded-2xl p-5 hover:border-emerald-300 hover:bg-emerald-500/5 transition-all group block">
             <div className="flex items-start justify-between">
-              <div className="text-violet-500 mb-2">{f.icon}</div>
+              <div className="text-emerald-500 mb-2">{f.icon}</div>
               <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             <h3 className="font-bold mb-1">{f.title}</h3>
@@ -79,8 +79,8 @@ export default function ClosetCoachPage() {
       </div>
 
       {/* Synergy */}
-      <div className="bg-violet-500/10 border border-violet-500/30 rounded-2xl p-6 mb-12">
-        <h3 className="font-bold text-violet-600 dark:text-violet-400 mb-2">🔗 他ツールとの連携コンセプト</h3>
+      <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-6 mb-12">
+        <h3 className="font-bold text-emerald-600 dark:text-emerald-400 mb-2">🔗 他ツールとの連携コンセプト</h3>
         <ul className="text-sm space-y-1 text-muted-foreground">
           <li>👕 <strong>古着ハンター</strong>（Tool #1）で買った服 → クローゼットに登録して管理</li>
           <li>🛍️ <strong>AI買い物依存ストッパー</strong>（Tool #4）と併用 → 衝動買い防止＋既存服の活用</li>
@@ -96,7 +96,7 @@ export default function ClosetCoachPage() {
           { step: '3', title: '断捨離＆売却', desc: 'AI判定で手放し候補を確認。売却ガイドを見て賢くリセール' },
         ].map((s, i) => (
           <div key={i} className="text-center">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-violet-500 to-pink-500 text-white font-bold flex items-center justify-center mx-auto mb-3">{s.step}</div>
+            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-500 to-pink-500 text-white font-bold flex items-center justify-center mx-auto mb-3">{s.step}</div>
             <h3 className="font-bold mb-1">{s.title}</h3>
             <p className="text-sm text-muted-foreground">{s.desc}</p>
           </div>
@@ -108,7 +108,7 @@ export default function ClosetCoachPage() {
         <h3 className="font-bold mb-3">技術仕様</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
           {['ブラウザ完結', 'データ外部送信なし', 'localStorage保存', 'スマホ対応', 'CSV出力対応', 'リアルタイム計算', 'ダークモード', '無制限登録'].map(t => (
-            <div key={t} className="flex items-center gap-1.5"><span className="text-violet-500">✓</span> {t}</div>
+            <div key={t} className="flex items-center gap-1.5"><span className="text-emerald-500">✓</span> {t}</div>
           ))}
         </div>
       </div>
@@ -144,13 +144,13 @@ export default function ClosetCoachPage() {
       </div>
 
       {/* Amazon アソシエイト */}
-      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+      <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 mb-12 text-center">
         <p className="text-sm text-muted-foreground mb-3">🛒 断捨離・収納グッズをAmazonでチェック</p>
         <a
           href="https://www.amazon.co.jp/s?k=%E6%96%AD%E6%8D%A8%E9%9B%A2%20%E5%8F%8E%E7%B4%8D&tag=nextralabs-22"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+          className="inline-block bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
         >
           Amazonで見る →
         </a>

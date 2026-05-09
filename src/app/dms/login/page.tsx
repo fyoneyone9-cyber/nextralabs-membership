@@ -41,25 +41,25 @@ export default function DmsLoginPage() {
           <div className="flex flex-col items-center gap-4">
             <div className="w-20 h-20 bg-emerald-500/10 rounded-[2rem] flex items-center justify-center border-2 border-emerald-500/20 shadow-inner"><Building2 className="text-emerald-500" size={40} /></div>
             <div className="space-y-2">
-              <Badge className="bg-emerald-600 text-white font-black italic px-4 py-1 rounded-full uppercase text-[10px] tracking-widest shadow-lg">DMS Portal</Badge>
-              <h1 className="text-4xl font-black text-white italic uppercase tracking-tighter leading-none">Nextra <span className="text-emerald-500">DMS</span></h1>
+              <Badge className="bg-emerald-600 text-white font-bold px-4 py-1 rounded-full uppercase text-[10px] tracking-tight shadow-lg">DMS Portal</Badge>
+              <h1 className="text-4xl font-bold text-white uppercase tracking-tighter leading-none">Nextra <span className="text-emerald-500">DMS</span></h1>
             </div>
           </div>
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-4 text-left">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4 italic">Operator ID</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-tight px-4 ">Operator ID</label>
                 <Input value={id} onChange={(e) => setId(e.target.value)} placeholder="IDを入力" className="bg-black border-2 border-white/10 h-14 rounded-2xl px-6 text-white font-bold focus:border-emerald-500 transition-all" />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4 italic">Access Key</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-tight px-4 ">Access Key</label>
                 <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Passwordを入力" className="bg-black border-2 border-white/10 h-14 rounded-2xl px-6 text-white font-bold focus:border-emerald-500 transition-all" />
               </div>
             </div>
-            {error && <div className="flex items-center justify-center gap-2 text-red-500 text-xs font-black uppercase italic animate-pulse"><AlertCircle size={14} /> IDまたはパスワードが正しくありません</div>}
-            <Button type="submit" className="w-full h-16 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl text-xl shadow-xl transition-all active:scale-95 uppercase italic gap-3"><ShieldCheck size={24} /> 司令塔へ入室 ➔</Button>
+            {error && <div className="flex items-center justify-center gap-2 text-red-500 text-xs font-bold uppercase animate-pulse"><AlertCircle size={14} /> IDまたはパスワードが正しくありません</div>}
+            <Button type="submit" className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-2xl text-xl shadow-xl transition-all active:scale-95 uppercase gap-3"><ShieldCheck size={24} /> 司令塔へ入室 ➔</Button>
           </form>
-          <p className="text-[9px] text-slate-600 font-bold uppercase tracking-[0.2em] italic leading-relaxed">Authorized Operators Only<br/>Nextra AI Autonomous OS • 2026</p>
+          <p className="text-[9px] text-slate-600 font-bold uppercase tracking-[0.2em] leading-relaxed">Authorized Operators Only<br/>Nextra AI Autonomous OS • 2026</p>
         </div>
       </Card>
     </div>

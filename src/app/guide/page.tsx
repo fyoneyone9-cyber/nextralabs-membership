@@ -1,4 +1,4 @@
-import { Card, CardContent } from '@/components/ui/card'
+﻿import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
 import { ArrowLeft, ExternalLink, ShoppingBag, Palette, Truck, Settings, CreditCard, CheckCircle, AlertTriangle, Store, Printer, Globe, Zap, Shield, Briefcase, Mail } from 'lucide-react'
@@ -28,7 +28,7 @@ export default function GuidePage() {
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
             NextraLabs
             <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent"> MASTERMODEL</span>
-            <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent"> 完全ガイド</span>
+            <span className="bg-gradient-to-r from-emerald-500 to-emerald-500 bg-clip-text text-transparent"> 完全ガイド</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             アカウント登録から「本物」のデータで動くAIマスタツールの使い方まで。<br />
@@ -101,7 +101,7 @@ export default function GuidePage() {
           <div className="space-y-6">
             <StepCard step={1} title="サイトにアクセス">
               <p>
-                <a href="https://membership-site-nextralabos.vercel.app" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:underline font-medium">
+                <a href="https://membership-site-nextralabos.vercel.app" target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:underline font-medium">
                   https://membership-site-nextralabos.vercel.app
                 </a>
                 {' '}にアクセスします。
@@ -144,10 +144,10 @@ export default function GuidePage() {
               </CardContent>
             </Card>
 
-            <Card className="border-amber-500 ring-2 ring-amber-500/20">
+            <Card className="border-emerald-500 ring-2 ring-emerald-500/20">
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 mb-3">
-                  <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">プレミアムプラン ✨</Badge>
+                  <Badge className="bg-gradient-to-r from-emerald-500 to-emerald-500 text-white">プレミアムプラン ✨</Badge>
                 </div>
                 <p className="text-3xl font-bold mb-2">¥1,980<span className="text-base font-normal text-muted-foreground">/月</span></p>
                 <ul className="space-y-2 text-sm text-muted-foreground">
@@ -172,9 +172,9 @@ export default function GuidePage() {
             <Card className="hover:shadow-lg transition-all border-l-4 border-l-blue-500">
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
-                  <div className="p-3 bg-blue-500/10 rounded-xl text-blue-500"><Mail className="w-8 h-8" /></div>
+                  <div className="p-3 bg-emerald-500/10 rounded-xl text-emerald-500"><Mail className="w-8 h-8" /></div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold mb-2 italic">Inbox Zero (Gmail AI Accelerator)</h3>
+                    <h3 className="text-xl font-bold mb-2 ">Inbox Zero (Gmail AI Accelerator)</h3>
                     <p className="text-sm text-muted-foreground mb-4">最新10件のメールを爆速解析。AIが返信ドラフトを作成し、Gmailの下書きへ1クリック保存。不要なメールは即座にTrashへ移動可能。</p>
                     <div className="bg-muted/50 p-4 rounded-lg text-xs space-y-1">
                       <p>✅ **使い方のコツ:** 「READ FULL CONTENT」で内容を確認後、「AI返信ドラフトを自動生成」をタップ。生成された「緑のボタン」で保存します。</p>
@@ -187,9 +187,9 @@ export default function GuidePage() {
             <Card className="hover:shadow-lg transition-all border-l-4 border-l-purple-500">
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
-                  <div className="p-3 bg-purple-500/10 rounded-xl text-purple-500"><Briefcase className="w-8 h-8" /></div>
+                  <div className="p-3 bg-emerald-500/10 rounded-xl text-emerald-500"><Briefcase className="w-8 h-8" /></div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold mb-2 italic">AI Sidejob (AI副業スタートダッシュ)</h3>
+                    <h3 className="text-xl font-bold mb-2 ">AI Sidejob (AI副業スタートダッシュ)</h3>
                     <p className="text-sm text-muted-foreground mb-4">個人の適性を診断し、AIを活用した最適な副業を3つ提案。選んだ副業に対する具体的な「0→1ロードマップ」もAIが作成します。</p>
                     <div className="bg-muted/50 p-4 rounded-lg text-xs space-y-1">
                       <p>✅ **使い方のコツ:** 診断でチェックを入れたら「診断指示をコピー」して、下のChatGPT等のリンクからAIに貼り付けてください。</p>
@@ -204,7 +204,7 @@ export default function GuidePage() {
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-red-500/10 rounded-xl text-red-500"><Shield className="w-8 h-8" /></div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold mb-2 italic">Money Guard (AI家計防衛シミュレーター)</h3>
+                    <h3 className="text-xl font-bold mb-2 ">Money Guard (AI家計防衛シミュレーター)</h3>
                     <p className="text-sm text-muted-foreground mb-4">購入前の迷いやレシートをカメラでスキャン。最強の警告 UI がドーパミンを抑止し、AIによる厳しいアドバイスで無駄遣いを未然に防ぎます。</p>
                     <div className="bg-muted/50 p-4 rounded-lg text-xs space-y-1">
                       <p>✅ **使い方のコツ:** 「TAP TO SCAN」で画像を保存したら、AIに「画像を添付」して指示を投げるのがポイントです。</p>
@@ -219,7 +219,7 @@ export default function GuidePage() {
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-sky-500/10 rounded-xl text-sky-500"><Globe className="w-8 h-8" /></div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold mb-2 italic">Disaster Guard (AI防災パーソナルガイド)</h3>
+                    <h3 className="text-xl font-bold mb-2 ">Disaster Guard (AI防災パーソナルガイド)</h3>
                     <p className="text-sm text-muted-foreground mb-4">GPSと連動し、現在の座標・天気を自動特定。その瞬間の気象条件に基づいた、命を守るための72時間生存戦略をAIが立案します。</p>
                     <div className="bg-muted/50 p-4 rounded-lg text-xs space-y-1">
                       <p>✅ **使い方のコツ:** 📍ボタンでGPS特定を行うだけで、AIへの指示文に位置情報と気象情報が自動的に組み込まれます。</p>
@@ -235,9 +235,9 @@ export default function GuidePage() {
         <section id="usage-limit" className="mb-16 scroll-mt-20">
           <SectionHeader icon={<Shield className="w-6 h-6" />} number={5} title="利用制限とクレジット保護" />
           
-          <Card className="bg-amber-50/50 dark:bg-amber-950/10 border-amber-200">
+          <Card className="bg-emerald-50/50 dark:bg-emerald-950/10 border-emerald-200">
             <CardContent className="p-8">
-              <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-amber-700 dark:text-amber-400">
+              <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
                 <AlertTriangle className="w-5 h-5" /> 運営とユーザーを守るための「憲法」
               </h3>
               <p className="text-sm text-muted-foreground mb-6">
@@ -250,10 +250,10 @@ export default function GuidePage() {
                 </div>
                 <div className="flex items-center justify-between p-4 bg-background rounded-xl border border-border/50">
                   <span className="font-bold text-sm">大量データ処理（Gmail解析等）</span>
-                  <Badge variant="outline" className="border-amber-500 text-amber-600">最新10件まで</Badge>
+                  <Badge variant="outline" className="border-emerald-500 text-emerald-600">最新10件まで</Badge>
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground mt-6 italic">
+              <p className="text-xs text-muted-foreground mt-6 ">
                 ※ 管理者によるメンテナンスや、特定プランの特典として制限が緩和される場合があります。
               </p>
             </CardContent>
@@ -307,11 +307,11 @@ export default function GuidePage() {
               <Card key={i}>
                 <CardContent className="p-5">
                   <h3 className="font-bold mb-2 flex items-start gap-2">
-                    <span className="text-amber-500">Q.</span>
+                    <span className="text-emerald-500">Q.</span>
                     {faq.q}
                   </h3>
                   <p className="text-sm text-muted-foreground pl-6">
-                    <span className="text-blue-500 font-bold">A.</span> {faq.a}
+                    <span className="text-emerald-500 font-bold">A.</span> {faq.a}
                   </p>
                 </CardContent>
               </Card>
@@ -322,15 +322,15 @@ export default function GuidePage() {
         {/* CTA */}
         <Card className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0 shadow-2xl">
           <CardContent className="p-10 text-center">
-            <h2 className="text-3xl font-bold mb-4 italic uppercase tracking-tighter">Enter the MASTERMODEL Era</h2>
+            <h2 className="text-3xl font-bold mb-4 uppercase tracking-tighter">Enter the MASTERMODEL Era</h2>
             <p className="text-white/80 mb-8 font-medium">
               最新のAIテクノロジーと、洗練されたユーザー体験を、あなたの手に。
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/signup" className="inline-flex items-center gap-2 bg-white text-emerald-600 font-black px-10 py-4 rounded-2xl hover:bg-emerald-50 transition-all shadow-xl active:scale-95 uppercase italic">
+              <Link href="/signup" className="inline-flex items-center gap-2 bg-white text-emerald-600 font-bold px-10 py-4 rounded-2xl hover:bg-emerald-50 transition-all shadow-xl active:scale-95 uppercase ">
                 無料で参加する
               </Link>
-              <Link href="/products" className="inline-flex items-center gap-2 bg-emerald-700/30 text-white font-black px-10 py-4 rounded-2xl hover:bg-emerald-700/50 transition-all border-2 border-emerald-400/30 uppercase italic">
+              <Link href="/products" className="inline-flex items-center gap-2 bg-emerald-700/30 text-white font-bold px-10 py-4 rounded-2xl hover:bg-emerald-700/50 transition-all border-2 border-emerald-400/30 uppercase ">
                 ツール一覧を見る
               </Link>
             </div>
@@ -349,7 +349,7 @@ function SectionHeader({ icon, number, title }: { icon: React.ReactNode; number:
       <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600">
         {icon}
       </div>
-      <h2 className="text-2xl font-black italic uppercase tracking-tight">
+      <h2 className="text-2xl font-bold uppercase tracking-tight">
         <span className="text-emerald-500/50">0{number}.</span> {title}
       </h2>
     </div>
@@ -361,10 +361,10 @@ function StepCard({ step, title, emoji, children }: { step: number; title: strin
     <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
       <CardContent className="p-6">
         <div className="flex items-center gap-4 mb-4">
-          <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-amber-500 text-white text-sm font-black italic">
+          <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-500 text-white text-sm font-bold ">
             {emoji || step}
           </span>
-          <h3 className="font-black text-xl italic uppercase tracking-tight">{title}</h3>
+          <h3 className="font-bold text-xl uppercase tracking-tight">{title}</h3>
         </div>
         <div className="pl-14">
           {children}

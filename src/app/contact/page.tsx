@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -43,13 +43,13 @@ export default function ContactPage() {
       <div className="max-w-xl mx-auto">
         <Link
           href="/"
-          className="inline-flex items-center text-emerald-400 hover:text-emerald-300 text-sm font-black mb-8"
+          className="inline-flex items-center text-emerald-400 hover:text-emerald-300 text-sm font-bold mb-8"
         >
           <ArrowLeft className="h-4 w-4 mr-1" />
           トップに戻る
         </Link>
 
-        <h1 className="text-2xl md:text-3xl font-black italic uppercase tracking-tight text-white mb-2">📩 お問い合わせ</h1>
+        <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-tight text-white mb-2">📩 お問い合わせ</h1>
         <p className="text-slate-400 text-sm font-bold mb-8">
           ご質問・ご要望・不具合報告など、お気軽にお問い合わせください。
           <br />
@@ -58,15 +58,15 @@ export default function ContactPage() {
 
         {status === 'sent' ? (
           <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-8 text-center">
-            <CheckCircle className="h-16 w-16 text-emerald-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-black italic uppercase tracking-tight text-white mb-2">送信完了！</h2>
+            <CheckCircle className="h-12 w-16 text-emerald-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold uppercase tracking-tight text-white mb-2">送信完了！</h2>
             <p className="text-slate-400 text-sm mb-6">
               お問い合わせありがとうございます。<br />
               内容を確認し、1〜2営業日以内にご連絡いたします。
             </p>
             <button
               onClick={() => setStatus('idle')}
-              className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-base rounded-2xl uppercase tracking-wide transition-all shadow-lg shadow-emerald-500/20"
+              className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-base rounded-2xl uppercase tracking-wide transition-all shadow-lg shadow-emerald-500/20"
             >
               別の問い合わせをする
             </button>
@@ -75,7 +75,7 @@ export default function ContactPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name */}
             <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-emerald-400 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-tight text-emerald-400 mb-2">
                 お名前 <span className="text-red-400">*</span>
               </label>
               <input
@@ -90,7 +90,7 @@ export default function ContactPage() {
 
             {/* Email */}
             <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-emerald-400 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-tight text-emerald-400 mb-2">
                 メールアドレス <span className="text-red-400">*</span>
               </label>
               <input
@@ -105,7 +105,7 @@ export default function ContactPage() {
 
             {/* Category */}
             <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-emerald-400 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-tight text-emerald-400 mb-2">
                 お問い合わせ種別
               </label>
               <select
@@ -125,7 +125,7 @@ export default function ContactPage() {
 
             {/* Message */}
             <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-emerald-400 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-tight text-emerald-400 mb-2">
                 お問い合わせ内容 <span className="text-red-400">*</span>
               </label>
               <textarea
@@ -149,7 +149,7 @@ export default function ContactPage() {
             <button
               type="submit"
               disabled={status === 'sending'}
-              className="w-full h-14 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-base rounded-2xl uppercase tracking-wide transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50"
+              className="w-full h-14 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-base rounded-2xl uppercase tracking-wide transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50"
             >
               {status === 'sending' ? (
                 <>

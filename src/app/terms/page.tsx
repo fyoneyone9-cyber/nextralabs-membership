@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
 export const metadata = {
@@ -18,7 +18,7 @@ export default function TermsPage() {
           トップに戻る
         </Link>
 
-        <h1 className="text-3xl font-black text-white mb-2">📜 利用規約</h1>
+        <h1 className="text-3xl font-bold text-white mb-2">📜 利用規約</h1>
         <p className="text-sm text-slate-400 mb-8">最終更新日: 2026年4月29日</p>
 
         <div className="prose prose-sm dark:prose-invert max-w-none space-y-8">

@@ -30,7 +30,7 @@ export const CharacterMake: React.FC<CharacterMakeProps> = ({ onComplete, isSubm
   return (
     <div className="max-w-2xl mx-auto border-4 border-emerald-500 rounded-[3rem] p-8 md:p-12 bg-slate-900/80 backdrop-blur-xl shadow-[0_0_50px_rgba(16,185,129,0.2)] relative overflow-hidden">
       {/* MASTER品質の証 */}
-      <div className="absolute top-6 right-8 flex items-center gap-2 text-xs font-black text-emerald-400 bg-emerald-500/10 px-4 py-2 rounded-full uppercase tracking-[0.2em] border border-emerald-500/20">
+      <div className="absolute top-6 right-8 flex items-center gap-2 text-xs font-bold text-emerald-400 bg-emerald-500/10 px-4 py-2 rounded-full uppercase tracking-[0.2em] border border-emerald-500/20">
         <ShieldCheck size={16} />
         MASTERMODEL
       </div>
@@ -44,8 +44,8 @@ export const CharacterMake: React.FC<CharacterMakeProps> = ({ onComplete, isSubm
       {step === 1 && (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-500">
           <div className="text-center">
-            <h2 className="text-4xl font-black text-white italic tracking-tighter uppercase">副業スタイルを選択</h2>
-            <p className="text-lg text-emerald-400/80 font-bold mt-3 italic">理想の「稼ぎ方」を直感で選べ ➔</p>
+            <h2 className="text-4xl font-bold text-white tracking-tighter uppercase">副業スタイルを選択</h2>
+            <p className="text-lg text-emerald-400/80 font-bold mt-3 ">理想の「稼ぎ方」を直感で選べ ➔</p>
           </div>
           <div className="grid gap-5">
             <StyleButton 
@@ -69,8 +69,8 @@ export const CharacterMake: React.FC<CharacterMakeProps> = ({ onComplete, isSubm
       {step === 2 && (
         <div className="space-y-8 animate-in fade-in slide-in-from-right-6 duration-500">
           <div className="text-center">
-            <h2 className="text-4xl font-black text-white italic tracking-tighter uppercase">現在の「装備」を選択</h2>
-            <p className="text-lg text-emerald-400/80 font-bold mt-3 italic">あなたの武器を全て選べ（複数可） ➔</p>
+            <h2 className="text-4xl font-bold text-white tracking-tighter uppercase">現在の「装備」を選択</h2>
+            <p className="text-lg text-emerald-400/80 font-bold mt-3 ">あなたの武器を全て選べ（複数可） ➔</p>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
@@ -102,7 +102,7 @@ export const CharacterMake: React.FC<CharacterMakeProps> = ({ onComplete, isSubm
           <button 
             disabled={data.skills.length === 0}
             onClick={nextStep}
-            className="w-full py-6 bg-emerald-600 text-slate-950 text-2xl font-black rounded-[2rem] hover:bg-emerald-400 disabled:opacity-50 transition-all shadow-[0_10px_30px_rgba(16,185,129,0.3)] italic uppercase"
+            className="w-full py-6 bg-emerald-600 text-slate-950 text-2xl font-bold rounded-[2rem] hover:bg-emerald-400 disabled:opacity-50 transition-all shadow-[0_10px_30px_rgba(16,185,129,0.3)] uppercase"
           >
             次へ進む ➔
           </button>
@@ -112,8 +112,8 @@ export const CharacterMake: React.FC<CharacterMakeProps> = ({ onComplete, isSubm
       {step === 3 && (
         <div className="space-y-8 animate-in fade-in slide-in-from-right-6 duration-500">
           <div className="text-center">
-            <h2 className="text-4xl font-black text-white italic tracking-tighter uppercase">活動可能な「時間」</h2>
-            <p className="text-lg text-emerald-400/80 font-bold mt-3 italic">あなたのペースを決定せよ ➔</p>
+            <h2 className="text-4xl font-bold text-white tracking-tighter uppercase">活動可能な「時間」</h2>
+            <p className="text-lg text-emerald-400/80 font-bold mt-3 ">あなたのペースを決定せよ ➔</p>
           </div>
           <div className="grid gap-5">
             <StyleButton 
@@ -134,7 +134,7 @@ export const CharacterMake: React.FC<CharacterMakeProps> = ({ onComplete, isSubm
           <button 
             disabled={!data.time || isSubmitting}
             onClick={() => onComplete(data)}
-            className="w-full py-8 bg-emerald-600 text-slate-950 text-3xl font-black rounded-[2.5rem] hover:bg-emerald-400 disabled:opacity-50 flex items-center justify-center gap-4 transition-all shadow-[0_20px_50px_rgba(16,185,129,0.4)] italic uppercase group"
+            className="w-full py-8 bg-emerald-600 text-slate-950 text-3xl font-bold rounded-[2.5rem] hover:bg-emerald-400 disabled:opacity-50 flex items-center justify-center gap-4 transition-all shadow-[0_20px_50px_rgba(16,185,129,0.4)] uppercase group"
           >
             {isSubmitting ? (
               <div className="animate-spin h-8 w-8 border-4 border-slate-950 border-t-transparent rounded-full" />
@@ -149,7 +149,7 @@ export const CharacterMake: React.FC<CharacterMakeProps> = ({ onComplete, isSubm
       )}
 
       <div className="mt-8 text-center">
-        <p className="text-[10px] text-gray-400 uppercase tracking-widest">Powered by NextraLabs AI Engine</p>
+        <p className="text-[10px] text-gray-400 uppercase tracking-tight">Powered by NextraLabs AI Engine</p>
       </div>
     </div>
   );
@@ -164,8 +164,8 @@ const StyleButton = ({ icon, title, desc, onClick, active }: any) => (
       {icon}
     </div>
     <div className="ml-6">
-      <div className={`text-2xl font-black italic uppercase tracking-tighter ${active ? 'text-slate-950' : 'text-white'}`}>{title}</div>
-      <div className={`text-sm font-bold mt-1 italic ${active ? 'text-slate-800' : 'text-slate-400'}`}>{desc}</div>
+      <div className={`text-2xl font-bold uppercase tracking-tighter ${active ? 'text-slate-950' : 'text-white'}`}>{title}</div>
+      <div className={`text-sm font-bold mt-1 ${active ? 'text-slate-800' : 'text-slate-400'}`}>{desc}</div>
     </div>
   </button>
 );
@@ -176,6 +176,6 @@ const SkillTag = ({ label, icon, active, onClick }: any) => (
     className={`flex flex-col items-center gap-4 p-6 rounded-[2rem] border-2 transition-all shadow-lg ${active ? 'bg-emerald-500 border-emerald-400 text-slate-950 scale-[1.05]' : 'bg-white/5 border-white/10 text-slate-300 hover:border-emerald-500/50'}`}
   >
     <div className={active ? 'text-slate-950' : 'text-emerald-400'}>{icon}</div>
-    <span className="text-lg font-black italic uppercase tracking-tighter">{label}</span>
+    <span className="text-lg font-bold uppercase tracking-tighter">{label}</span>
   </button>
 );

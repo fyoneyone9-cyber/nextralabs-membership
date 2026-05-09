@@ -36,16 +36,16 @@ const features = [
     title: 'エリア安全度スコア',
     description:
       '市区町村の公開犯罪統計（警察庁オープンデータ準拠）をもとに、地域の治安傾向を5段階で表示。犯罪種別ごとの発生率も確認できる。',
-    color: 'text-blue-500',
-    bg: 'bg-blue-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: Volume2,
     title: '騒音リスクチェッカー',
     description:
       '物件の構造（RC/鉄骨/木造）・階数・築年数・幹線道路距離・飲食店密度から騒音リスクを推定。内見時に確認すべきポイント20項目付き。',
-    color: 'text-amber-500',
-    bg: 'bg-amber-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: ClipboardList,
@@ -60,8 +60,8 @@ const features = [
     title: 'トラブル対処テンプレート',
     description:
       '騒音・ゴミ出し・駐車場・ペット・タバコなど典型トラブルごとに段階的な対処法（①記録→②管理会社→③内容証明→④調停）をテンプレ化。',
-    color: 'text-purple-500',
-    bg: 'bg-purple-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: Home,
@@ -127,14 +127,14 @@ export default function MovingCheckerPage() {
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden py-16 md:py-24">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-green-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-green-500/5" />
         <div className="container mx-auto px-4 relative">
           <Link href="/products" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-8 transition-colors">
             <ArrowLeft className="h-4 w-4 mr-1" />ツール一覧に戻る
           </Link>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <Badge className="mb-4 bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20">🏠 新商品</Badge>
+              <Badge className="mb-4 bg-emerald-500/10 text-emerald-600 dark:text-blue-400 border-emerald-500/20">🏠 新商品</Badge>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">AI引っ越し安心チェッカー</h1>
               <p className="text-xl text-muted-foreground mb-2">エリア安全度 × 騒音リスク × トラブル予防</p>
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
@@ -149,7 +149,7 @@ export default function MovingCheckerPage() {
               </div>
               <div className="flex flex-wrap gap-4">
                 <Link href="/products/moving-checker/app">
-                  <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8">🆓 無料で体験する</Button>
+                  <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white text-lg px-8">🆓 無料で体験する</Button>
                 </Link>
               </div>
               <div className="flex items-center gap-6 mt-6 text-sm text-muted-foreground">
@@ -158,7 +158,7 @@ export default function MovingCheckerPage() {
               </div>
             </div>
             <div className="relative">
-              <div className="bg-gradient-to-br from-blue-500/20 to-green-500/20 rounded-2xl p-8 border border-blue-500/10">
+              <div className="bg-gradient-to-br from-emerald-500/20 to-green-500/20 rounded-2xl p-8 border border-emerald-500/10">
                 <div className="bg-background/95 backdrop-blur rounded-xl p-6 shadow-2xl">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-3 h-3 rounded-full bg-red-500" />
@@ -167,7 +167,7 @@ export default function MovingCheckerPage() {
                     <span className="text-xs text-muted-foreground ml-2">AI引っ越し安心チェッカー</span>
                   </div>
                   <div className="space-y-3">
-                    <div className="bg-blue-500/10 rounded-lg p-3">
+                    <div className="bg-emerald-500/10 rounded-lg p-3">
                       <div className="text-xs text-blue-400 mb-1">📍 エリア安全度</div>
                       <div className="flex items-center gap-2">
                         <span className="text-2xl font-bold text-blue-400">★★★★☆</span>
@@ -181,8 +181,8 @@ export default function MovingCheckerPage() {
                         ))}
                       </div>
                     </div>
-                    <div className="bg-amber-500/10 rounded-lg p-3">
-                      <div className="text-xs text-amber-400 mb-1">🔊 騒音リスク</div>
+                    <div className="bg-emerald-500/10 rounded-lg p-3">
+                      <div className="text-xs text-emerald-400 mb-1">🔊 騒音リスク</div>
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-muted-foreground">RC造 / 5階 / 築8年</span>
                         <span className="text-lg font-bold text-green-400">低リスク</span>
@@ -232,7 +232,7 @@ export default function MovingCheckerPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {setupSteps.map((s, i) => (
               <div key={i} className="text-center">
-                <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto mb-4"><span className="text-2xl font-bold text-blue-500">{s.step}</span></div>
+                <div className="w-16 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4"><span className="text-2xl font-bold text-emerald-500">{s.step}</span></div>
                 <h3 className="font-semibold text-lg mb-2">{s.title}</h3>
                 <p className="text-sm text-muted-foreground">{s.desc}</p>
                 <Badge variant="outline" className="mt-3">{s.time}</Badge>
@@ -250,7 +250,7 @@ export default function MovingCheckerPage() {
             {targets.map((t, i) => (
               <Card key={i} className="hover:shadow-lg transition-shadow">
                 <CardContent className="pt-6 text-center">
-                  <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto mb-4"><t.icon className="h-8 w-8 text-blue-500" /></div>
+                  <div className="w-16 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4"><t.icon className="h-8 w-8 text-emerald-500" /></div>
                   <h3 className="font-semibold text-lg mb-2">{t.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{t.description}</p>
                 </CardContent>
@@ -295,19 +295,19 @@ export default function MovingCheckerPage() {
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-4"><HelpCircle className="inline h-8 w-8 mr-2" />よくある質問</h2>
           <div className="max-w-3xl mx-auto space-y-4 mt-8">
-            {faqs.map((f, i) => (<Card key={i}><CardContent className="pt-6"><h3 className="font-semibold mb-2 flex items-start gap-2"><ChevronRight className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />{f.q}</h3><p className="text-sm text-muted-foreground pl-7">{f.a}</p></CardContent></Card>))}
+            {faqs.map((f, i) => (<Card key={i}><CardContent className="pt-6"><h3 className="font-semibold mb-2 flex items-start gap-2"><ChevronRight className="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" />{f.q}</h3><p className="text-sm text-muted-foreground pl-7">{f.a}</p></CardContent></Card>))}
           </div>
         </div>
       </section>
 
       {/* Amazon アソシエイト */}
-      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+      <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 mb-12 text-center">
         <p className="text-sm text-muted-foreground mb-3">🛒 引っ越しグッズをAmazonでチェック</p>
         <a
           href="https://www.amazon.co.jp/s?k=%E5%BC%95%E3%81%A3%E8%B6%8A%E3%81%97&tag=nextralabs-22"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+          className="inline-block bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
         >
           Amazonで見る →
         </a>

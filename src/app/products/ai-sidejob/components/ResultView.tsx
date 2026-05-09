@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { Map, Zap, ExternalLink, ShieldCheck, CheckCircle2, Trophy, ArrowRight, Share2 } from 'lucide-react';
@@ -27,7 +27,7 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onReset }) => {
           <Trophy size={120} />
         </div>
         <p className="text-emerald-200 text-xs font-bold tracking-[0.2em] uppercase mb-2">Special Title Acquired</p>
-        <h1 className="text-4xl font-black tracking-tight mb-4">
+        <h1 className="text-4xl font-bold tracking-tight mb-4">
           {result.title}
         </h1>
         <p className="text-emerald-50 text-sm leading-relaxed max-w-md mx-auto opacity-90">
@@ -37,7 +37,7 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onReset }) => {
 
       {/* ロードマップエリア */}
       <div className="space-y-6">
-        <h3 className="flex items-center gap-2 font-black text-gray-800 text-lg ml-2">
+        <h3 className="flex items-center gap-2 font-bold text-gray-800 text-lg ml-2">
           <Map className="text-emerald-500" size={20} />
           最速収益化ロードマップ
         </h3>
@@ -46,15 +46,15 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onReset }) => {
           {result.roadmap.map((step, index) => (
             <div key={index} className="relative">
               {/* ステップ番号バッジ */}
-              <div className={`absolute -left-[58px] top-0 w-10 h-10 rounded-2xl flex items-center justify-center font-black text-lg shadow-lg border-2 border-white ${step.urgent ? 'bg-orange-500 text-white animate-bounce' : 'bg-emerald-500 text-white'}`}>
+              <div className={`absolute -left-[58px] top-0 w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-lg shadow-lg border-2 border-white ${step.urgent ? 'bg-emerald-500 text-white animate-bounce' : 'bg-emerald-500 text-white'}`}>
                 {index + 1}
               </div>
               
               <div className="bg-white p-6 rounded-3xl shadow-sm border border-emerald-50 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-black text-gray-800 text-lg">{step.title}</h4>
+                  <h4 className="font-bold text-gray-800 text-lg">{step.title}</h4>
                   {step.urgent && (
-                    <span className="text-[10px] font-bold bg-orange-100 text-orange-600 px-3 py-1 rounded-full animate-pulse">
+                    <span className="text-[10px] font-bold bg-emerald-100 text-emerald-600 px-3 py-1 rounded-full animate-pulse">
                       IMMEDIATE
                     </span>
                   )}
@@ -71,24 +71,24 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onReset }) => {
         <div className="absolute -right-4 -top-4 opacity-5 text-emerald-600">
           <Zap size={100} />
         </div>
-        <div className="flex items-center gap-2 text-emerald-700 font-black mb-4">
+        <div className="flex items-center gap-2 text-emerald-700 font-bold mb-4">
           <Zap size={20} fill="currentColor" />
           <span>MASTER&apos;S AI HACK</span>
         </div>
-        <p className="text-emerald-900 text-sm font-medium leading-relaxed italic">
+        <p className="text-emerald-900 text-sm font-medium leading-relaxed ">
           「{result.ai_hack}」
         </p>
       </div>
 
       {/* アクションボタン */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <button className="flex items-center justify-center gap-2 py-5 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 transition-all shadow-lg hover:-translate-y-1 active:translate-y-0">
+        <button className="flex items-center justify-center gap-2 py-5 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-700 transition-all shadow-lg hover:-translate-y-1 active:translate-y-0">
           <ExternalLink size={20} />
           推奨サイトを開く
         </button>
         <button 
           onClick={onReset}
-          className="flex items-center justify-center gap-2 py-5 bg-white border-2 border-emerald-500 text-emerald-600 font-black rounded-2xl hover:bg-emerald-50 transition-all"
+          className="flex items-center justify-center gap-2 py-5 bg-white border-2 border-emerald-500 text-emerald-600 font-bold rounded-2xl hover:bg-emerald-50 transition-all"
         >
           再診断する
         </button>
@@ -96,7 +96,7 @@ export const ResultView: React.FC<ResultViewProps> = ({ result, onReset }) => {
 
       {/* 品質保証フッター */}
       <div className="flex flex-col items-center gap-3 pt-6 pb-12 opacity-60">
-        <div className="flex items-center gap-2 text-emerald-700 font-bold text-xs tracking-widest uppercase">
+        <div className="flex items-center gap-2 text-emerald-700 font-bold text-xs tracking-tight uppercase">
           <ShieldCheck size={16} />
           MASTERMODEL QUALITY GUARANTEED
         </div>

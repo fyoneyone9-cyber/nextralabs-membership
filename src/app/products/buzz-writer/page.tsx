@@ -44,32 +44,32 @@ const features = [
     title: 'バズ投稿テンプレート',
     description:
       '「共感型」「問題提起型」「体験談型」「データ提示型」「逆張り型」など10パターン。ニュースや自分のネタを穴埋めで入れるだけでプロ級の投稿文に。',
-    color: 'text-orange-500',
-    bg: 'bg-orange-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: Flame,
     title: 'バズ度診断',
     description:
       '下書きを入力すると、文字数・ハッシュタグ数・感情スコア・フック度・読みやすさを分析。改善提案付きで投稿前にブラッシュアップ。',
-    color: 'text-amber-500',
-    bg: 'bg-amber-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: Hash,
     title: 'ハッシュタグ辞典',
     description:
       'ジャンル別（ビジネス/副業/AI/ライフハック/育児/健康/料理/旅行）の定番＆トレンドハッシュタグ集。コピーボタンで一発挿入。',
-    color: 'text-blue-500',
-    bg: 'bg-blue-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: Image,
     title: '投稿画像ジェネレーター',
     description:
       '「名言風カード」「データ図解」「比較表」をブラウザ内で生成。自分の文章を入れてPNG/JPEGでダウンロード。画像付き投稿はエンゲージメント2〜3倍。',
-    color: 'text-purple-500',
-    bg: 'bg-purple-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: BarChart3,
@@ -121,14 +121,14 @@ export default function BuzzWriterPage() {
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden py-16 md:py-24">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-red-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-red-500/5" />
         <div className="container mx-auto px-4 relative">
           <Link href="/products" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-8 transition-colors">
             <ArrowLeft className="h-4 w-4 mr-1" />ツール一覧に戻る
           </Link>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <Badge className="mb-4 bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20">🔥 新商品</Badge>
+              <Badge className="mb-4 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20">🔥 新商品</Badge>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">AIバズ文章コーチ</h1>
               <p className="text-xl text-muted-foreground mb-2">トレンドニュース × テンプレート × 画像生成</p>
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
@@ -150,7 +150,7 @@ export default function BuzzWriterPage() {
               </div>
             </div>
             <div className="relative">
-              <div className="bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl p-8 border border-orange-500/10">
+              <div className="bg-gradient-to-br from-emerald-500/20 to-red-500/20 rounded-2xl p-8 border border-emerald-500/10">
                 <div className="bg-background/95 backdrop-blur rounded-xl p-6 shadow-2xl">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-3 h-3 rounded-full bg-red-500" />
@@ -164,18 +164,18 @@ export default function BuzzWriterPage() {
                       <div className="text-sm font-medium">AI規制法案が国会通過</div>
                       <div className="text-xs text-muted-foreground mt-1">→ テンプレ「問題提起型」で自分の意見を…</div>
                     </div>
-                    <div className="bg-orange-500/10 rounded-lg p-3">
-                      <div className="text-xs text-orange-400 mb-1">📝 生成した投稿文</div>
+                    <div className="bg-emerald-500/10 rounded-lg p-3">
+                      <div className="text-xs text-emerald-400 mb-1">📝 生成した投稿文</div>
                       <div className="text-sm">「AI規制法案が通過。でもちょっと待って。本当に規制すべきは…」</div>
                       <div className="flex gap-1 mt-2">
-                        <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded">#AI規制</span>
-                        <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded">#テクノロジー</span>
+                        <span className="text-xs bg-emerald-500/20 text-blue-400 px-2 py-0.5 rounded">#AI規制</span>
+                        <span className="text-xs bg-emerald-500/20 text-blue-400 px-2 py-0.5 rounded">#テクノロジー</span>
                       </div>
                     </div>
-                    <div className="bg-amber-500/10 rounded-lg p-3">
-                      <div className="text-xs text-amber-400 mb-1">🔥 バズ度スコア</div>
+                    <div className="bg-emerald-500/10 rounded-lg p-3">
+                      <div className="text-xs text-emerald-400 mb-1">🔥 バズ度スコア</div>
                       <div className="flex items-center gap-2">
-                        <span className="text-2xl font-bold text-amber-400">87点</span>
+                        <span className="text-2xl font-bold text-emerald-400">87点</span>
                         <span className="text-xs text-muted-foreground">フック度◎ / 文字数◎ / 感情◎</span>
                       </div>
                     </div>
@@ -214,7 +214,7 @@ export default function BuzzWriterPage() {
             {targets.map((t, i) => (
               <Card key={i} className="hover:shadow-lg transition-shadow">
                 <CardContent className="pt-6 text-center">
-                  <div className="w-16 h-16 rounded-full bg-orange-500/10 flex items-center justify-center mx-auto mb-4"><t.icon className="h-8 w-8 text-orange-500" /></div>
+                  <div className="w-16 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4"><t.icon className="h-8 w-8 text-emerald-500" /></div>
                   <h3 className="font-semibold text-lg mb-2">{t.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{t.description}</p>
                 </CardContent>
@@ -258,19 +258,19 @@ export default function BuzzWriterPage() {
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-4"><HelpCircle className="inline h-8 w-8 mr-2" />よくある質問</h2>
           <div className="max-w-3xl mx-auto space-y-4 mt-8">
-            {faqs.map((f, i) => (<Card key={i}><CardContent className="pt-6"><h3 className="font-semibold mb-2 flex items-start gap-2"><ChevronRight className="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />{f.q}</h3><p className="text-sm text-muted-foreground pl-7">{f.a}</p></CardContent></Card>))}
+            {faqs.map((f, i) => (<Card key={i}><CardContent className="pt-6"><h3 className="font-semibold mb-2 flex items-start gap-2"><ChevronRight className="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" />{f.q}</h3><p className="text-sm text-muted-foreground pl-7">{f.a}</p></CardContent></Card>))}
           </div>
         </div>
       </section>
 
       {/* Amazon アソシエイト */}
-      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+      <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 mb-12 text-center">
         <p className="text-sm text-muted-foreground mb-3">🛒 文章術本をAmazonでチェック</p>
         <a
           href="https://www.amazon.co.jp/s?k=%E6%96%87%E7%AB%A0%E8%A1%93%20%E3%83%A9%E3%82%A4%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0&tag=nextralabs-22"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+          className="inline-block bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
         >
           Amazonで見る →
         </a>

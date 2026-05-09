@@ -19,12 +19,12 @@ export default function LocationFinderPage() {
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/50">
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-violet-500/10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-emerald-500/10" />
         <div className="relative max-w-4xl mx-auto px-4 py-16 text-center">
-          <Badge className="mb-4 bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20">
+          <Badge className="mb-4 bg-emerald-500/10 text-emerald-600 dark:text-blue-400 border-emerald-500/20">
             <MapPin className="w-3 h-3 mr-1" /> ロケーション解析シリーズ
           </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-emerald-500 to-emerald-500 bg-clip-text text-transparent">
             AI Location Scout
           </h1>
           <p className="text-lg text-muted-foreground mb-2">
@@ -35,7 +35,7 @@ export default function LocationFinderPage() {
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href="/products/location-finder/app">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">今すぐ使う →</Button>
+              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">今すぐ使う →</Button>
             </Link>
             <Link href="/pricing">
               <Button variant="outline">プレミアムプラン（¥1,980/月）</Button>
@@ -112,13 +112,13 @@ export default function LocationFinderPage() {
       <section className="bg-muted/30 py-16">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold mb-4">料金</h2>
-          <Card className="border-violet-500/30 inline-block">
+          <Card className="border-emerald-500/30 inline-block">
             <CardContent className="pt-8 pb-8 text-center">
-              <Badge className="mb-4 bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20">プレミアムプラン限定</Badge>
+              <Badge className="mb-4 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20">プレミアムプラン限定</Badge>
               <div className="text-3xl font-bold mb-2">¥1,980<span className="text-base font-normal text-muted-foreground">/月</span></div>
               <p className="text-muted-foreground mb-6">プレミアム全ツールが使い放題</p>
               <Link href="/pricing">
-                <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white">プレミアムプランを見る →</Button>
+                <Button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white">プレミアムプランを見る →</Button>
               </Link>
             </CardContent>
           </Card>
@@ -144,13 +144,13 @@ export default function LocationFinderPage() {
       </section>
 
       {/* Amazon アソシエイト */}
-      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+      <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 mb-12 text-center">
         <p className="text-sm text-muted-foreground mb-3">🛒 旅行・地図グッズをAmazonでチェック</p>
         <a
           href="https://www.amazon.co.jp/s?k=%E5%9C%B0%E5%9B%B3%20%E6%97%85%E8%A1%8C&tag=nextralabs-22"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+          className="inline-block bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
         >
           Amazonで見る →
         </a>

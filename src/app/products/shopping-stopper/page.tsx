@@ -43,8 +43,8 @@ const features = [
     title: '衝動買いロックタイマー',
     description:
       '高揚感スコアが閾値を超えると3時間の冷却タイマーが発動。カウントダウン中は「本当に必要？」を自問自答。深呼吸エクササイズで冷静さを取り戻す。',
-    color: 'text-orange-500',
-    bg: 'bg-orange-500/10',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
   },
   {
     icon: TrendingDown,
@@ -208,9 +208,9 @@ export default function ShoppingStopperPage() {
                   </div>
                   <div className="bg-[#1a1a25] rounded-lg p-2 border border-[#2a2a3a]">
                     <span className="text-gray-400">⏱️ 冷却</span>
-                    <div className="text-orange-400 font-bold">2:59:41</div>
+                    <div className="text-emerald-400 font-bold">2:59:41</div>
                     <div className="h-1 bg-[#2a2a3a] rounded mt-1">
-                      <div className="h-full bg-orange-400 rounded" style={{ width: '99%' }}></div>
+                      <div className="h-full bg-emerald-400 rounded" style={{ width: '99%' }}></div>
                     </div>
                   </div>
                 </div>
@@ -299,7 +299,7 @@ export default function ShoppingStopperPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {setupSteps.map((s) => (
               <div key={s.step} className="text-center">
-                <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 text-red-500 text-2xl font-bold mb-4">
+                <div className="inline-flex h-12 w-16 items-center justify-center rounded-full bg-red-500/10 text-red-500 text-2xl font-bold mb-4">
                   {s.step}
                 </div>
                 <h3 className="font-bold mb-2">{s.title}</h3>
@@ -449,13 +449,13 @@ export default function ShoppingStopperPage() {
       </section>
 
       {/* Amazon アソシエイト */}
-      <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-6 mb-12 text-center">
+      <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 mb-12 text-center">
         <p className="text-sm text-muted-foreground mb-3">🛒 節約・ミニマリスト本をAmazonでチェック</p>
         <a
           href="https://www.amazon.co.jp/s?k=%E7%AF%80%E7%B4%84%20%E3%83%9F%E3%83%8B%E3%83%9E%E3%83%AA%E3%82%B9%E3%83%88&tag=nextralabs-22"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+          className="inline-block bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
         >
           Amazonで見る →
         </a>

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -58,7 +58,7 @@ export default function SignupPage() {
       <div className="min-h-screen bg-[#050507] flex items-center justify-center px-4 py-10 font-sans">
         <Card className="w-full max-w-md bg-[#13141f] border border-emerald-500/20 rounded-3xl shadow-[0_0_60px_rgba(16,185,129,0.08)]">
           <CardContent className="p-8 text-center">
-            <CheckCircle className="h-16 w-16 text-emerald-400 mx-auto mb-4" />
+            <CheckCircle className="h-12 w-16 text-emerald-400 mx-auto mb-4" />
             <h2 className="text-2xl font-semibold tracking-tight text-white mb-3">登録ありがとうございます！</h2>
             <p className="text-slate-400 text-sm mb-6 leading-relaxed">
               確認メールを送信しました。メール内のリンクをクリックして、アカウントを有効化してください。
@@ -78,7 +78,7 @@ export default function SignupPage() {
         <CardHeader className="text-center pb-2">
           <div className="inline-flex items-center gap-2 border border-emerald-500/30 rounded-full px-4 py-1.5 mb-4 mx-auto">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] font-medium text-emerald-400 tracking-widest uppercase">Nextra Labs</span>
+            <span className="text-[11px] font-medium text-emerald-400 tracking-tight uppercase">Nextra Labs</span>
           </div>
           <CardTitle className="text-2xl font-semibold tracking-tight text-white">新規登録</CardTitle>
           <CardDescription className="text-slate-400 text-sm leading-relaxed">無料アカウントを作成しましょう</CardDescription>

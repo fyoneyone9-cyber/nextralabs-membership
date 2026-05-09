@@ -87,7 +87,7 @@ const STYLES: StyleDef[] = [
       ctx.font=`bold ${Math.floor(r*0.4)}px Georgia,serif`
       ctx.fillStyle='#f5e6c8'; ctx.textAlign='center'; ctx.textBaseline='middle'
       ctx.fillText(text, cx, cy-r*0.1)
-      ctx.font=`italic ${Math.floor(r*0.16)}px Georgia,serif`
+      ctx.font=`${Math.floor(r*0.16)}px Georgia,serif`
       ctx.fillStyle='rgba(245,230,200,0.7)'; ctx.fillText('VINTAGE', cx, cy+r*0.52)
     },
   },
@@ -368,7 +368,7 @@ const STYLES: StyleDef[] = [
       ctx.font=`bold ${Math.floor(r*0.42)}px Georgia,serif`
       ctx.fillStyle='#3d2610'; ctx.textAlign='center'; ctx.textBaseline='middle'
       ctx.fillText(text, cx, cy-r*0.08)
-      ctx.font=`italic ${Math.floor(r*0.17)}px Georgia,serif`
+      ctx.font=`${Math.floor(r*0.17)}px Georgia,serif`
       ctx.fillStyle='#7a5230'; ctx.fillText('EST. 2026', cx, cy+r*0.5)
     },
   },
@@ -572,7 +572,7 @@ const STYLES: StyleDef[] = [
       ctx.font=`600 ${Math.floor(r*0.42)}px Georgia,serif`
       ctx.fillStyle='#1a3d2b'; ctx.textAlign='center'; ctx.textBaseline='middle'
       ctx.fillText(text, cx, cy)
-      ctx.font=`italic ${Math.floor(r*0.16)}px Georgia,serif`
+      ctx.font=`${Math.floor(r*0.16)}px Georgia,serif`
       ctx.fillStyle='#4a7c59'; ctx.fillText('EST. MCMXXI', cx, cy+r*0.54)
     },
   },
