@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useEffect, useState } from 'react'
 import { Download } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -36,10 +36,10 @@ export function InstallPWA() {
     <div className="fixed bottom-24 right-6 z-[9998] animate-in slide-in-from-right-4">
       <Button 
         onClick={handleInstall}
-        className="bg-[#5845e0] hover:bg-[#4736b8] text-white font-black px-6 h-14 rounded-2xl shadow-[0_10px_40px_rgba(88,69,224,0.4)] flex items-center gap-3 border-2 border-white/10"
+        className="bg-[#5845e0] hover:bg-[#4736b8] text-white font-bold px-6 h-14 rounded-2xl shadow-[0_10px_40px_rgba(88,69,224,0.4)] flex items-center gap-3 border-2 border-white/10"
       >
         <Download className="w-5 h-5 animate-bounce" />
-        <span className="italic uppercase text-xs tracking-widest">Install App</span>
+        <span className="uppercase text-xs tracking-tight">Install App</span>
       </Button>
     </div>
   )
