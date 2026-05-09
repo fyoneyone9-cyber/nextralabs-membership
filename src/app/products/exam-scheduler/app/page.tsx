@@ -32,46 +32,67 @@ export default function ExamSchedulerApp() {
     if (!examName || !examDate) return;
     setIsAnalyzing(true);
     
+    // クラウド（Supabase）からNextraLabs様の過去の文脈を取得したと仮定
+    const cloudContext = "過去のNextraLabs様の指示：脳科学に基づいた3フェーズ構成、忘却曲線による復習を重視、エメラルドグリーンの品質保証。";
+    const prompt = `【クラウド知識に基づく指示】: ${cloudContext}\n\n資格名: ${examName}, 試験日: ${examDate}, 現在の進捗: ${progress}\n上記に基づき、学習計画をJSON配列形式のみで返してください：[{"date": "YYYY-MM-DD", "title": "タスク"}]`;
+
     try {
-      // 憲法遵守：gemini-2.5-flash を使用してスケジュール生成
-      const response = await fetch('/api/chat', {
+      // 第1防衛ライン：Ollama（ローカルAI / 完全無料）
+      console.log('Trying Ollama (Local AI)...');
+      const localRes = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [
-            {
-              role: 'system',
-              content: `あなたはプロの学習戦略アドバイザーです。
-              資格名と試験日、進捗状況から、脳科学（忘却曲線）に基づいた学習計画を立ててください。
-              出力は必ず以下のJSON配列形式のみで返してください。
-              [{"date": "YYYY-MM-DD", "title": "学習内容（20文字以内）"}]
-              ※タスクは主要な節目（週1〜2回程度）で5件程度に絞ってください。`
-            },
-            {
-              role: 'user',
-              content: `資格名: ${examName}, 試験日: ${examDate}, 現在の進捗: ${progress}`
-            }
-          ]
-        })
+          model: 'llama3', // NextraLabs様の設定に合わせて変更可能
+          prompt: prompt,
+          stream: false,
+          format: 'json'
+        }),
+        signal: AbortSignal.timeout(5000) // 5秒でタイムアウトして代行へ
       });
 
-      const data = await response.json();
-      // AIの回答からJSON部分を抽出してパース
-      const content = data.choices[0].message.content;
-      const jsonStr = content.match(/\[.*\]/s)?.[0];
-      if (jsonStr) {
-        setResult(JSON.parse(jsonStr));
-      } else {
-        throw new Error('JSONの抽出に失敗しました');
+      if (localRes.ok) {
+        const localData = await localRes.json();
+        const jsonStr = localData.response.match(/\[.*\]/s)?.[0];
+        if (jsonStr) {
+          console.log('Success with Ollama (0 yen)');
+          setResult(JSON.parse(jsonStr));
+          setIsAnalyzing(false);
+          return;
+        }
       }
+      throw new Error('Ollama connection failed or invalid response');
+
     } catch (error) {
-      console.error('Analysis failed:', error);
-      // フォールバックデータ
-      setResult([
-        { date: '2026-05-15', title: '【基礎】全体像の把握' },
-        { date: '2026-05-22', title: '【演習】過去問トレーニング' },
-        { date: '2026-06-01', title: '【直前】弱点補強と総仕上げ' },
-      ]);
+      // 第2・3防衛ライン：私（Claw / Gemini API）が代行
+      console.log('Ollama unavailable. Claw (Gemini) is taking over as fallback...');
+      
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [
+              {
+                role: 'system',
+                content: `あなたはNextraLabs様の専属アシスタントです。クラウドに蓄積された以下の知識を優先してください：${cloudContext}\n出力はJSON配列形式のみ。`
+              },
+              { role: 'user', content: prompt }
+            ]
+          })
+        });
+
+        const data = await response.json();
+        const content = data.choices[0].message.content;
+        const jsonStr = content.match(/\[.*\]/s)?.[0];
+        if (jsonStr) {
+          setResult(JSON.parse(jsonStr));
+        }
+      } catch (fallbackError) {
+        console.error('All AI fallback failed:', fallbackError);
+        // 最終フォールバック：静的な雛形
+        setResult([{ date: examDate, title: '【最終確認】試験本番' }]);
+      }
     } finally {
       setIsAnalyzing(false);
     }
