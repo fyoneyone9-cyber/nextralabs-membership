@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     const base64 = Buffer.from(bytes).toString('base64')
     const mimeType = file.type || 'image/jpeg'
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
 
     const prompt = `この写真を分析して、撮影場所を特定してください。
 建物、看板、地形、植生、道路標識、言語、建築様式、ランドマークなどあらゆる手がかりを使ってください。
@@ -49,6 +49,11 @@ export async function POST(req: NextRequest) {
     })
   } catch (e: any) {
     console.error('location-finder error:', e)
-    return NextResponse.json({ error: e.message || '解析に失敗しました' }, { status: 500 })
+    // APIキー関連エラーはユーザーフレンドリーなメッセージに変換
+    const msg = e.message || ''
+    if (msg.includes('API key') || msg.includes('API_KEY') || msg.includes('expired') || msg.includes('invalid')) {
+      return NextResponse.json({ error: 'AI解析サービスに接続できませんでした。しばらく経ってから再度お試しください。' }, { status: 503 })
+    }
+    return NextResponse.json({ error: '解析に失敗しました。別の写真でお試しください。' }, { status: 500 })
   }
 }
