@@ -23,7 +23,7 @@ const TOOLS = [
   { id: 'youtube-coordinator/app', cat: 'sns', title: 'YouTube AI Sync', sub: '動画解析と楽天コーチ', icon: Play, plan: 'プレミアム' , done: true },
   { id: 'kdp-guide/app', cat: 'edu', title: 'Kindle出版完全ナビ', sub: '執筆から出版までの一気通貫', icon: BookOpen, plan: '無料' , done: true },
   { id: 'kindle-factory/app', cat: 'biz', title: 'Kindle AI ファクトリー', sub: 'AI解析でKDP入稿可能な原稿を自動生成', icon: Crown, plan: 'プレミアム', done: true },
-  { id: 'prompt-master/app', cat: 'biz', title: 'AI画像プロンプトマスター', sub: '究極 of 究極の画像パーツ工房', icon: Wand2, plan: 'ライト' },
+  { id: 'prompt-master/app', cat: 'biz', title: 'AI画像プロンプトマスター', sub: '究極 of 究極の画像パーツ工房', icon: Wand2, plan: 'ライト', done: true },
   { id: 'scam-defender/app', cat: 'life', title: 'AI詐欺ディフェンダー', sub: '詐欺・悪意を即座に判定', icon: ShieldCheck, plan: 'プレミアム' },
   { id: 'money-guard/app', cat: 'life', title: 'AI家計防衛シミュレーター', sub: '衝動買いの心理的阻止', icon: Wallet, plan: 'スタンダード' , done: true },
   { id: 'loan-advisor/app', cat: 'life', title: 'AI借金完済・おまとめ診断', sub: '借金の一本化と完済への最短ルート', icon: CreditCard, plan: '無料' , done: true },
