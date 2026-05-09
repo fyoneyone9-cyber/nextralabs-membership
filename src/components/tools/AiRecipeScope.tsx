@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useRef } from 'react'
 import {
   Upload, CheckCircle2, Camera, ChefHat, Utensils,
@@ -247,7 +247,7 @@ export default function AiRecipeScope() {
       </div>
 
       <div className="text-center mt-16 opacity-20">
-        <p className="text-xs text-slate-600 tracking-widest">NextraLabs 2026</p>
+        <p className="text-xs text-slate-600 tracking-tight">NextraLabs 2026</p>
       </div>
     </div>
   )
