@@ -183,43 +183,42 @@ const MasterEngine = () => {
     ctx.closePath()
     ctx.clip()
 
-    // テキスト用の安全な最大幅（内側パディング8px）
-    const pad = 8
+    // テキスト用の安全な最大幅
+    const pad = 12
     const safeW = boxW - pad * 2
+    const safeH = boxH - pad * 2
 
-    // フォントサイズ：1行に収まる最大サイズを探す
-    const baseFontSize = isSmall ? 16 : 28
-    let fontSize = baseFontSize
-    ctx.font = S.font.replace(/[\d.]+px/, `${fontSize}px`)
-    // 1行が safeW を超えるなら縮小（最小10px）
-    while (ctx.measureText(keyword).width > safeW && fontSize > 10) {
-      fontSize -= 1
-      ctx.font = S.font.replace(/[\d.]+px/, `${fontSize}px`)
-    }
-
-    // 行分割：safeW を超えたら改行（文字単位）
-    const lines: string[] = []
-    let current = ''
-    for (const ch of keyword) {
-      const test = current + ch
-      if (ctx.measureText(test).width > safeW && current.length > 0) {
-        lines.push(current)
-        current = ch
-      } else {
-        current = test
+    // 1. まず適当なフォントサイズで改行を試みる
+    let fontSize = isSmall ? 16 : 24
+    let lines: string[] = []
+    
+    // 文字幅に応じて改行する関数
+    const generateLines = (size: number) => {
+      ctx.font = S.font.replace(/[\d.]+px/, `${size}px`)
+      const tempLines: string[] = []
+      let current = ''
+      for (const ch of keyword) {
+        if (ctx.measureText(current + ch).width > safeW && current.length > 0) {
+          tempLines.push(current)
+          current = ch
+        } else {
+          current += ch
+        }
       }
-    }
-    if (current) lines.push(current)
-
-    // 行数が多い場合はさらにフォント縮小して1行化を試みる
-    const lineHeight = fontSize * 1.35
-    const totalTextH = lineHeight * lines.length
-    // ボックスに収まらない場合フォントを縮小して再計算
-    if (totalTextH > boxH - pad * 2 && fontSize > 10) {
-      fontSize = Math.max(10, Math.floor(fontSize * ((boxH - pad * 2) / totalTextH)))
-      ctx.font = S.font.replace(/[\d.]+px/, `${fontSize}px`)
+      if (current) tempLines.push(current)
+      return tempLines
     }
 
+    // 2. 高さに収まるまでフォントサイズを縮小して再計算
+    lines = generateLines(fontSize)
+    let lineHeight = fontSize * 1.4
+    while (lines.length * lineHeight > safeH && fontSize > 10) {
+      fontSize -= 1
+      lineHeight = fontSize * 1.4
+      lines = generateLines(fontSize)
+    }
+
+    // 3. 描画
     const resolvedColor = textColorId !== 'auto'
       ? (TEXT_COLORS.find(c => c.id === textColorId)?.hex || S.textColor)
       : S.textColor
@@ -227,12 +226,9 @@ const MasterEngine = () => {
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
 
-    const lh = fontSize * 1.35
-    const totalH = lh * lines.length
+    const startY = cy - (lines.length * lineHeight) / 2 + lineHeight / 2
     lines.forEach((line, i) => {
-      const y = cy - totalH / 2 + lh * i + lh / 2
-      // fillText の maxWidth にも safeW を渡すことでブラウザが強制縮小（二重防護）
-      ctx.fillText(line, cx, y, safeW)
+      ctx.fillText(line, cx, startY + i * lineHeight, safeW)
     })
 
     ctx.restore() // clip解除
