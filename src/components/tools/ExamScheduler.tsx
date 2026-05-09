@@ -5,19 +5,16 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
-  BookOpen, Plus, Trash2, Calendar, CheckCircle2, Loader2, RefreshCw,
+  BookOpen, Plus, Trash2, Calendar, CheckCircle2, Loader2,
 } from 'lucide-react'
 
 interface ExamConfig {
   id: string
   name: string
-  rss: string
   studyWeeks: number
   sessionsPerWeek: number
   sessionHours: number
   examDate: string
-  rssStatus: 'idle' | 'checking' | 'found' | 'notfound' | 'error'
-  rssFoundDate: string
 }
 
 interface ResultItem {
@@ -30,19 +27,19 @@ interface ResultItem {
   reason?: string
 }
 
-const PRESET_EXAMS: Omit<ExamConfig, 'id' | 'rssStatus' | 'rssFoundDate'>[] = [
-  { name: 'ITパスポート', rss: 'https://www.ipa.go.jp/about/press/rss.rdf', studyWeeks: 6, sessionsPerWeek: 4, sessionHours: 1, examDate: '' },
-  { name: '基本情報技術者', rss: 'https://www.ipa.go.jp/about/press/rss.rdf', studyWeeks: 12, sessionsPerWeek: 4, sessionHours: 2, examDate: '' },
-  { name: '応用情報技術者', rss: 'https://www.ipa.go.jp/about/press/rss.rdf', studyWeeks: 16, sessionsPerWeek: 4, sessionHours: 2.5, examDate: '' },
-  { name: 'CompTIA Security+', rss: 'https://www.comptia.org/rss/news', studyWeeks: 12, sessionsPerWeek: 3, sessionHours: 2, examDate: '' },
-  { name: 'AWS ソリューションアーキテクト', rss: 'https://aws.amazon.com/blogs/aws/feed/', studyWeeks: 10, sessionsPerWeek: 3, sessionHours: 2, examDate: '' },
+const PRESET_EXAMS: Omit<ExamConfig, 'id'>[] = [
+  { name: 'ITパスポート', studyWeeks: 6, sessionsPerWeek: 4, sessionHours: 1, examDate: '' },
+  { name: '基本情報技術者', studyWeeks: 12, sessionsPerWeek: 4, sessionHours: 2, examDate: '' },
+  { name: '応用情報技術者', studyWeeks: 16, sessionsPerWeek: 4, sessionHours: 2.5, examDate: '' },
+  { name: 'CompTIA Security+', studyWeeks: 12, sessionsPerWeek: 3, sessionHours: 2, examDate: '' },
+  { name: 'AWS ソリューションアーキテクト', studyWeeks: 10, sessionsPerWeek: 3, sessionHours: 2, examDate: '' },
 ]
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''
 const GOOGLE_SCOPES = 'https://www.googleapis.com/auth/calendar.events'
 
 function newExam(preset = PRESET_EXAMS[0]): ExamConfig {
-  return { ...preset, id: crypto.randomUUID(), rssStatus: 'idle', rssFoundDate: '' }
+  return { ...preset, id: crypto.randomUUID() }
 }
 
 export default function ExamScheduler() {
@@ -74,25 +71,8 @@ export default function ExamScheduler() {
     window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`
   }, [])
 
-  const checkRss = async (examId: string) => {
-    const exam = exams.find(e => e.id === examId)
-    if (!exam || !exam.rss) return
-    setExams(prev => prev.map(e => e.id === examId ? { ...e, rssStatus: 'checking', rssFoundDate: '' } : e))
-    try {
-      const res = await fetch(`/api/exam-scheduler/check-rss?url=${encodeURIComponent(exam.rss)}`)
-      const data = await res.json()
-      if (data.date) {
-        setExams(prev => prev.map(e => e.id === examId ? { ...e, rssStatus: 'found', rssFoundDate: data.date } : e))
-      } else {
-        setExams(prev => prev.map(e => e.id === examId ? { ...e, rssStatus: 'notfound' } : e))
-      }
-    } catch {
-      setExams(prev => prev.map(e => e.id === examId ? { ...e, rssStatus: 'error' } : e))
-    }
-  }
-
   const updateExam = (id: string, field: keyof ExamConfig, value: string | number) => {
-    setExams(prev => prev.map(e => (e.id === id ? { ...e, [field]: value, rssStatus: field === 'rss' ? 'idle' : e.rssStatus } : e)))
+    setExams(prev => prev.map(e => (e.id === id ? { ...e, [field]: value } : e)))
   }
 
   const handleSubmit = async () => {
@@ -105,9 +85,9 @@ export default function ExamScheduler() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           exams: exams.map(e => ({
-            name: e.name, rss: e.rss,
+            name: e.name,
             studyWeeks: e.studyWeeks, sessionsPerWeek: e.sessionsPerWeek, sessionHours: e.sessionHours,
-            examDate: e.examDate || e.rssFoundDate || undefined,
+            examDate: e.examDate || undefined,
           })),
           googleAccessToken: googleToken,
         }),
@@ -122,14 +102,6 @@ export default function ExamScheduler() {
     }
   }
 
-  const rssStatusLabel = (status: ExamConfig['rssStatus'], date: string) => {
-    if (status === 'checking') return <span className="text-slate-400 text-xs">確認中...</span>
-    if (status === 'found') return <span className="text-emerald-400 text-xs font-semibold">✓ 試験日: {date}</span>
-    if (status === 'notfound') return <span className="text-emerald-400 text-xs">試験日が見つかりません</span>
-    if (status === 'error') return <span className="text-red-400 text-xs">取得エラー</span>
-    return null
-  }
-
   return (
     <div className="min-h-screen bg-[#050507] text-slate-200 font-sans p-5 md:p-10">
       <div className="max-w-3xl mx-auto space-y-8 pb-32">
@@ -142,7 +114,7 @@ export default function ExamScheduler() {
           <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
             試験<span className="text-emerald-400">スケジューラー</span>
           </h1>
-          <p className="text-slate-400 text-sm">試験日RSS自動取得 × AI学習計画 × Googleカレンダー一括登録</p>
+          <p className="text-slate-400 text-sm">AI学習計画 × Googleカレンダー一括登録</p>
         </div>
 
         {/* STEP 1: Googleログイン */}
@@ -212,30 +184,6 @@ export default function ExamScheduler() {
                       onChange={e => updateExam(exam.id, 'examDate', e.target.value)}
                       className="w-full h-11 bg-black/40 border border-white/10 rounded-lg px-4 text-white text-sm font-semibold outline-none focus:border-emerald-500 transition-all"
                     />
-                  </div>
-
-                  {/* RSS URL */}
-                  <div className="space-y-1.5 text-left sm:col-span-2">
-                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">試験日RSSで自動取得</label>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={exam.rss}
-                        onChange={e => updateExam(exam.id, 'rss', e.target.value)}
-                        className="flex-1 h-11 bg-black/40 border border-white/10 rounded-lg px-4 text-xs font-mono text-slate-300 outline-none focus:border-emerald-500 transition-all"
-                      />
-                      <Button
-                        onClick={() => checkRss(exam.id)}
-                        variant="ghost"
-                        className="h-11 border border-white/10 text-slate-400 hover:bg-white/5 rounded-lg px-4 text-xs font-semibold shrink-0"
-                      >
-                        <RefreshCw size={13} className={`mr-1.5 ${exam.rssStatus === 'checking' ? 'animate-spin' : ''}`} />
-                        確認
-                      </Button>
-                    </div>
-                    {rssStatusLabel(exam.rssStatus, exam.rssFoundDate) && (
-                      <div className="mt-1">{rssStatusLabel(exam.rssStatus, exam.rssFoundDate)}</div>
-                    )}
                   </div>
 
                   {/* 学習期間・時間 */}
