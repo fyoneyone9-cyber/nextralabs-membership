@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React from 'react'
 import Link from 'next/link'
 import { Card } from '@/components/ui/card'
@@ -43,10 +43,10 @@ export const RelatedToolsArea = ({ currentId }: { currentId: string }) => {
   return (
     <div className="space-y-8 mt-20 mb-20 border-t border-white/5 pt-16">
       <div className="flex flex-col items-center gap-2">
-        <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 px-4 py-1 font-black text-[10px] uppercase tracking-[0.3em]">
+        <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 px-4 py-1 font-bold text-[10px] uppercase tracking-[0.3em]">
           Ecosystem Synergy
         </Badge>
-        <h4 className="text-2xl md:text-4xl font-black text-white italic uppercase tracking-tighter text-center">
+        <h4 className="text-2xl md:text-4xl font-bold text-white uppercase tracking-tighter text-center">
           こちらのAIツールも<span className="text-emerald-500">おすすめ</span>です
         </h4>
       </div>
@@ -60,10 +60,10 @@ export const RelatedToolsArea = ({ currentId }: { currentId: string }) => {
                   <Zap className="text-emerald-500 w-6 h-6" />
                 </div>
                 <div>
-                  <h5 className="text-white font-black text-lg leading-tight group-hover:text-emerald-400 transition-colors">
+                  <h5 className="text-white font-bold text-lg leading-tight group-hover:text-emerald-400 transition-colors">
                     {TOOL_NAMES[id] || id}
                   </h5>
-                  <p className="text-slate-500 text-xs mt-2 font-bold italic line-clamp-2">
+                  <p className="text-slate-500 text-xs mt-2 font-bold line-clamp-2">
                     独立したプロフェッショナルAIとして、あなたの課題をピンポイントで解決。
                   </p>
                 </div>
