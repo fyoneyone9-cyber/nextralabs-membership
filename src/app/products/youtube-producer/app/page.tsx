@@ -215,6 +215,9 @@ function YoutubeProducerApp() {
 
   return (
     <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans text-left selection:bg-emerald-500/30">
+      {/* ⚡ 憲法：MASTERMODEL品質保証 - エメラルドグリーンの外枠（上部ロック） */}
+      <div className="fixed top-0 left-0 right-0 h-1.5 bg-emerald-500 z-[100] shadow-[0_0_20px_rgba(16,185,129,0.8)]"></div>
+      
       <div className="max-w-6xl mx-auto space-y-12 border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.2)] rounded-[3rem] p-6 md:p-16 relative overflow-hidden bg-black/40 backdrop-blur-xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-emerald-500/20 pb-12">
           <div className="flex items-center gap-6">
