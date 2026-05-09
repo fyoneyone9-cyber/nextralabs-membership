@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import dynamic from 'next/dynamic'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Loader2, Settings, CheckCircle2, Zap, ShoppingCart, TrendingUp, RefreshCw } from 'lucide-react'
@@ -215,7 +215,7 @@ const MasterEngine = () => {
       {/* タイトル */}
       <div className="text-center space-y-2">
         <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold px-4 py-1 text-xs rounded-full">在庫ゼロ販売</Badge>
-        <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight">AIセレクト<span className="text-emerald-400">ショップ</span></h1>
+        <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight">AIセレクト<span className="text-emerald-400">ショップ</span></h1>
         <p className="text-slate-400 text-sm">トレンドを選んでデザインを生成。Shopifyへ自動出品して在庫ゼロで販売をはじめましょう。</p>
         <button onClick={() => setShowSettings(!showSettings)} className="flex items-center gap-2 mx-auto mt-2 text-slate-500 hover:text-slate-300 text-xs font-semibold transition-colors">
           <Settings size={12} /> API設定
@@ -232,7 +232,7 @@ const MasterEngine = () => {
             { label: 'Client Secret', val: shopifyClientSecret, set: setShopifyClientSecret, placeholder: 'Client Secret' },
           ].map(f => (
             <div key={f.label} className="space-y-1">
-              <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">{f.label}</label>
+              <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">{f.label}</label>
               <input value={f.val} onChange={e => f.set(e.target.value)} placeholder={f.placeholder}
                 className="w-full h-10 bg-black/40 border border-white/10 rounded-lg px-4 text-sm text-white outline-none focus:border-emerald-500 transition-all" />
             </div>
@@ -256,7 +256,7 @@ const MasterEngine = () => {
       {currentStep === 1 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="font-black text-white text-base">今日のトレンドから選ぶ</h2>
+            <h2 className="font-bold text-white text-base">今日のトレンドから選ぶ</h2>
             <button onClick={fetchTrends} className="flex items-center gap-1.5 text-slate-500 hover:text-emerald-400 text-xs font-semibold transition-colors">
               <RefreshCw size={12} className={isLoading ? 'animate-spin' : ''} /> 更新
             </button>
@@ -269,7 +269,7 @@ const MasterEngine = () => {
                 onClick={() => { setKeyword(t.name); setCurrentStep(2) }}
                 className="group bg-[#0d0f1a] border border-white/5 hover:border-emerald-500/40 hover:bg-emerald-500/5 rounded-xl p-5 text-left transition-all">
                 <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[9px] font-semibold mb-2">TREND</Badge>
-                <p className="font-black text-white text-lg group-hover:text-emerald-400 transition-colors">{t.name}</p>
+                <p className="font-bold text-white text-lg group-hover:text-emerald-400 transition-colors">{t.name}</p>
               </button>
             ))}
           </div>
@@ -293,14 +293,14 @@ const MasterEngine = () => {
 
             {/* キーワード */}
             <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
-              <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">キーワード</label>
+              <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">キーワード</label>
               <input value={keyword} onChange={e => setKeyword(e.target.value)}
-                className="w-full h-12 bg-black/40 border border-white/10 rounded-xl px-4 text-base font-black text-white outline-none focus:border-emerald-500 transition-all" />
+                className="w-full h-12 bg-black/40 border border-white/10 rounded-xl px-4 text-base font-bold text-white outline-none focus:border-emerald-500 transition-all" />
             </div>
 
             {/* デザインスタイル */}
             <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
-              <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">デザインスタイル</label>
+              <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">デザインスタイル</label>
               <div className="grid grid-cols-3 gap-2">
                 {STYLES.map(s => (
                   <button key={s.id} onClick={() => setStyle(s.id)}
@@ -314,7 +314,7 @@ const MasterEngine = () => {
 
             {/* Tシャツカラー */}
             <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
-              <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Tシャツカラー</label>
+              <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">Tシャツカラー</label>
               <div className="flex flex-wrap gap-2">
                 {TSHIRT_COLORS.map(c => (
                   <button key={c.id} onClick={() => setTshirtColor(c.id)} title={c.name}
@@ -326,7 +326,7 @@ const MasterEngine = () => {
 
             {/* テキストカラー */}
             <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
-              <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">文字カラー</label>
+              <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">文字カラー</label>
               <div className="flex flex-wrap gap-2">
                 {TEXT_COLORS.map(c => (
                   <button key={c.id} onClick={() => setTextColorId(c.id)}
@@ -341,11 +341,11 @@ const MasterEngine = () => {
 
             {/* サイズ選択 */}
             <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
-              <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">販売サイズ（複数選択可）</label>
+              <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">販売サイズ（複数選択可）</label>
               <div className="flex gap-2">
                 {SIZES.map(s => (
                   <button key={s} onClick={() => toggleSize(s)}
-                    className={'h-10 w-12 rounded-lg text-sm font-black border-2 transition-all ' +
+                    className={'h-10 w-12 rounded-lg text-sm font-bold border-2 transition-all ' +
                       (selectedSizes.includes(s) ? 'bg-emerald-600 border-emerald-500 text-white' : 'border-white/10 text-slate-500 hover:text-white')}>
                     {s}
                   </button>
@@ -355,7 +355,7 @@ const MasterEngine = () => {
 
             {/* プリント位置 */}
             <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
-              <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">プリント位置</label>
+              <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">プリント位置</label>
               <div className="flex gap-2">
                 {PRINT_POSITIONS.map(p => (
                   <button key={p.id} onClick={() => setPrintPosition(p.id)}
@@ -369,7 +369,7 @@ const MasterEngine = () => {
 
             {/* 出品ボタン */}
             <Button onClick={handlePublish} disabled={isPublishing || !keyword || selectedSizes.length === 0}
-              className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white font-black text-lg rounded-2xl shadow-xl transition-all">
+              className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white font-bold text-lg rounded-2xl shadow-xl transition-all">
               {isPublishing
                 ? <><Loader2 className="animate-spin mr-2" size={18} /> 出品中...</>
                 : <><ShoppingCart size={18} className="mr-2" /> Shopifyへ自動出品</>}
@@ -379,7 +379,7 @@ const MasterEngine = () => {
           {/* 右：プレビュー */}
           <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-6 flex flex-col gap-4">
             <div className="flex items-center justify-between">
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">プレビュー</p>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-tight">プレビュー</p>
               <button onClick={() => setCurrentStep(1)} className="text-xs text-slate-500 hover:text-slate-300 font-semibold transition-colors">← 戻る</button>
             </div>
             <div className="flex-1 flex items-center justify-center">
@@ -405,11 +405,11 @@ const MasterEngine = () => {
             <CheckCircle2 size={40} className="text-slate-950" />
           </div>
           <div>
-            <h2 className="text-4xl font-black text-white tracking-tight">出品完了！</h2>
+            <h2 className="text-4xl font-bold text-white tracking-tight">出品完了！</h2>
             <p className="text-slate-400 text-sm mt-2">Shopifyストアに商品が登録されました</p>
           </div>
           <Button onClick={() => window.open(publishResult?.url)}
-            className="h-12 px-10 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl shadow-xl text-sm">
+            className="h-12 px-10 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-xl text-sm">
             Shopifyで確認 →
           </Button>
 
@@ -421,7 +421,7 @@ const MasterEngine = () => {
             ].map((s, i) => (
               <div key={i} className="bg-[#0d0f1a] border border-white/5 p-5 rounded-2xl space-y-2 text-left">
                 <s.icon size={18} className="text-emerald-400" />
-                <p className="font-black text-white text-sm">{s.title}</p>
+                <p className="font-bold text-white text-sm">{s.title}</p>
                 <p className="text-xs text-slate-500 leading-relaxed">{s.desc}</p>
               </div>
             ))}
