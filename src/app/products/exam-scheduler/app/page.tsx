@@ -38,17 +38,17 @@ export default function ExamSchedulerApp() {
 
     try {
       // 第1防衛ライン：Ollama（ローカルAI / 完全無料）
-      console.log('Trying Ollama (Local AI)...');
+      console.log('Trying Ollama (Local AI - qwen3.6)...');
       const localRes = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'llama3', // NextraLabs様の設定に合わせて変更可能
+          model: 'qwen3.6', // 有料クラウドを回避し、ローカルの qwen3.6 を強制使用
           prompt: prompt,
           stream: false,
           format: 'json'
         }),
-        signal: AbortSignal.timeout(5000) // 5秒でタイムアウトして代行へ
+        signal: AbortSignal.timeout(10000) // Ollamaの起動時間を考慮し10秒に緩和
       });
 
       if (localRes.ok) {
@@ -61,7 +61,11 @@ export default function ExamSchedulerApp() {
           return;
         }
       }
-      throw new Error('Ollama connection failed or invalid response');
+      
+      // 403 Forbidden などのエラーが出た場合、ここを通過して catch ブロック（Claw代行）へ飛ばす
+      const errText = await localRes.text();
+      console.warn('Ollama returned an error status:', localRes.status, errText);
+      throw new Error(`Ollama error: ${localRes.status}`);
 
     } catch (error) {
       // 第2・3防衛ライン：私（Claw / Gemini API）が代行
