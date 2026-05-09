@@ -16,7 +16,6 @@ import {
 const TOOLS = [
   { id: 'universal-converter/app', cat: 'compress', title: '究極AIマルチコンバーター', sub: '動画・画像・PDFへの変換圧縮', icon: Repeat, plan: 'ライト' },
     { id: 'nextra-ai/app', cat: 'hotel', title: 'Nextra AI', sub: 'ホテルDX チェックインOS', icon: Building2, plan: 'プレミアム' },
-  { id: 'dms/app', cat: 'hotel', title: 'Nextra DMS', sub: '予約・宿泊管理システム', icon: Database, plan: 'プレミアム' },
 { id: 'staysee-ai-finder/app', cat: 'hotel', title: 'Staysee AI Finder', sub: '宿泊予約と鍵発行を完全同期', icon: Building2, plan: 'プレミアム' },
   { id: 'hotel-affiliate/app', cat: 'hotel', title: 'アフィリエイト連携', sub: '宿泊紹介と楽天収益化OS', icon: Network, plan: 'スタンダード' },
   { id: 'moving-checker/app', cat: 'hotel', title: 'AI引越し安心チェッカー', sub: '治安と物件リスクを徹底解析', icon: Home, plan: '無料' },
