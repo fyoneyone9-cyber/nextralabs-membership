@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 
     // 【重要】楽天市場商品検索API (v2) のエンドポイントを使用
     // 古い 20220601 に戻し、applicationId のみを送信（最新版 2026-04-01 はまだ一部のIDで不安定な可能性があるため）
-    const apiUrl = `https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${RAKUTEN_APP_ID}&hits=10&sort=%2BitemPrice&formatVersion=2`;
+    const apiUrl = `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${RAKUTEN_APP_ID}&hits=10&sort=%2BitemPrice&formatVersion=2`;
 
     const res = await fetch(apiUrl, { cache: 'no-store' });
     const data = await res.json();
