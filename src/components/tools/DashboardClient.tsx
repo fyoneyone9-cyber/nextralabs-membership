@@ -198,7 +198,7 @@ export default function DashboardClient({ user, profile, subscription }: any) {
       </div>
       
       {/* 復活：デバッグパネル */}
-      <DebugPanel data={{ status: "✓ 完成", user_id: user?.id }} toolId="dashboard-core" />
+      <DebugPanel data={{ status: "MASTERMODEL", user_id: user?.id }} toolId="dashboard-core" />
     </div>
   )
 }

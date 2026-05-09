@@ -61,7 +61,7 @@ export default function AiSidejobApp() {
               <div className="flex items-center gap-2 mt-2">
                 <ShieldCheck size={16} className="text-emerald-400" />
                 <p className="text-xs font-bold text-emerald-400 tracking-[0.3em] uppercase">
-                  ✓ 完成-MASTER
+                  MASTERMODEL-MASTER
                 </p>
               </div>
             </div>

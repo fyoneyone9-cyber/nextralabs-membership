@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -51,11 +51,7 @@ export default function UniversalConverterApp() {
           <div className="flex items-center gap-4 text-left">
             <div className="p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/20"><Repeat className="h-10 w-10 text-emerald-400" /></div>
             <h1 className="text-2xl md:text-4xl font-black text-white leading-tight">究極AI<span className="text-emerald-400">マルチコンバーター</span></h1>
-          </div>
-          <div className="flex flex-col items-end gap-2">
-            <Badge className="bg-emerald-500 text-slate-950 font-semibold px-4 py-1 text-xs rounded-full">✓ 完成</Badge>
-          </div>
-        </div>
+          </div>        </div>
 
         <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4 text-left">
           <div className="flex items-center gap-2 text-emerald-400"><Info size={20} /> <h3 className="font-semibold text-sm">使いかた・活用マニュアル</h3></div>
