@@ -55,7 +55,7 @@ export default function HomePage() {
       <section className="py-12 bg-[#050507]">
         <div className="container mx-auto px-6">
           <div className="flex items-center gap-3 mb-6 text-white border-l-8 border-emerald-500 pl-4 py-1"><Hotel className="h-6 w-6 text-emerald-500" /><h2 className="text-xl md:text-4xl font-black italic uppercase">ホテルDX</h2></div>
-          <Link href="/products/staysee-ai-finder">
+          <Link href="/products/nextra-ai">
             <Card className="border-2 border-emerald-500/30 bg-[#13141f] text-white rounded-[2rem] shadow-2xl">
               <CardContent className="p-8 space-y-6">
                 <div className="flex justify-between items-center"><Badge className="bg-emerald-500 text-slate-950 font-black">マスタ</Badge><span className="text-[10px] font-black text-amber-500 animate-pulse">NEW</span></div>
@@ -70,7 +70,7 @@ export default function HomePage() {
 
       <section className="py-12 bg-[#050507] mt-auto border-b border-white/5">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-2xl md:text-5xl font-black text-white italic mb-8 uppercase">全ての知能を解放せよ</h2>
+          <h2 className="text-2xl md:text-5xl font-black text-white mb-8">全ての知能を解放せよ</h2>
           <Link href="/products"><Button size="lg" className="text-2xl md:text-3xl h-20 md:h-24 bg-emerald-500 text-slate-950 font-black rounded-2xl">全ツールを見る ➔</Button></Link>
         </div>
       </section>
