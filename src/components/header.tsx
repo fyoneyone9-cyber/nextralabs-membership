@@ -60,7 +60,7 @@ export function Header() {
         {/* ロゴとXアイコン */}
         <div className="flex items-center">
           <Link href="/" className="mr-6">
-            <span className="text-xl font-bold bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">NextraLabs</span>
+            <span className="text-xl font-bold text-emerald-400">NextraLabs</span>
           </Link>
           <a 
             href="https://x.com/0022_sougo" 
@@ -74,7 +74,7 @@ export function Header() {
         </div>
 
         {/* 🔍 検索バー */}
-                <form onSubmit={handleSearch} className="hidden lg:flex flex-1 max-w-md mx-8 relative group">
+                <form onSubmit={handleSearch} className="hidden lg:flex flex-1 max-w-xs mx-6 relative group">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-emerald-500 transition-colors" size={18} />
           <input 
             type="text" 
@@ -105,10 +105,6 @@ export function Header() {
                   </div>
                   <div className="flex flex-col leading-none mr-1">
                     <span className="text-[10px] font-black text-white italic tracking-tighter uppercase mb-0.5">{profile?.display_name || user.email?.split("@")[0]}</span>
-                    <div className="flex items-center gap-1">
-                      <div className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse" />
-                      <span className="text-[8px] font-bold text-emerald-500/70 tracking-widest uppercase">Identity Verified</span>
-                    </div>
                   </div>
                   {profile?.role === 'admin' ? (
                     <Badge className="bg-blue-600 text-white text-[9px] font-black italic px-2 py-0.5 rounded-lg border-b-2 border-blue-800 shadow-lg">ADMIN</Badge>
