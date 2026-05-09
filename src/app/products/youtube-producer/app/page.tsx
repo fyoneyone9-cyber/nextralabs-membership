@@ -170,41 +170,41 @@ function YoutubeProducerApp() {
 
   return (
     <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans text-left selection:bg-emerald-500/30">
-      <div className="max-w-6xl mx-auto space-y-8 border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.2)] rounded-[3rem] p-6 md:p-12 relative overflow-hidden bg-black/40 backdrop-blur-xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-emerald-500/20 pb-10">
-          <div className="flex items-center gap-4">
-            <div className="p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.1)]"><Clapperboard className="h-10 w-10 text-emerald-400" /></div>
-            <div><h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">AI YouTube <span className="text-emerald-500">プロデューサー</span></h1><p className="text-emerald-500/60 font-black text-[10px] uppercase italic tracking-widest mt-1">動画制作 OS v2.1</p></div>
+      <div className="max-w-6xl mx-auto space-y-12 border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.2)] rounded-[3rem] p-6 md:p-16 relative overflow-hidden bg-black/40 backdrop-blur-xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-emerald-500/20 pb-12">
+          <div className="flex items-center gap-6">
+            <div className="p-6 bg-emerald-500/10 rounded-3xl border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.1)]"><Clapperboard className="h-12 w-12 text-emerald-400" /></div>
+            <div><h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-white">AI YouTube <span className="text-emerald-500">プロデューサー</span></h1><p className="text-emerald-500 font-black text-sm uppercase italic tracking-[0.3em] mt-2">動画制作 OS v2.1-MASTER</p></div>
           </div>
-          <Badge className="bg-emerald-500 text-slate-950 font-black italic px-6 py-2 text-sm rounded-full shadow-[0_0_20px_rgba(16,185,129,0.4)]">プレミアム・マスターモデル</Badge>
+          <Badge className="bg-emerald-500 text-slate-950 font-black italic px-8 py-3 text-lg rounded-full shadow-[0_0_30px_rgba(16,185,129,0.5)]">PREMIUM MASTER</Badge>
         </div>
 
-        {loadingStep && <div className="bg-emerald-500/10 border-2 border-emerald-500/50 rounded-3xl p-8 animate-pulse flex flex-col items-center gap-4 text-center"><Loader2 className="h-10 w-10 text-emerald-400 animate-spin" /><p className="text-lg text-emerald-400 font-black italic">{loadingStep}</p></div>}
-        {error && <div className="bg-red-500/10 border border-red-500/50 rounded-2xl p-4 flex items-center gap-3 text-red-500 font-bold italic"><AlertCircle size={20} />{error}</div>}
+        {loadingStep && <div className="bg-emerald-500/10 border-4 border-emerald-500/50 rounded-[3rem] p-16 animate-pulse flex flex-col items-center gap-8 text-center"><Loader2 className="h-20 w-20 text-emerald-400 animate-spin" /><p className="text-3xl text-emerald-400 font-black italic leading-relaxed">{loadingStep}</p></div>}
+        {error && <div className="bg-red-500/10 border-2 border-red-500/50 rounded-2xl p-6 flex items-center gap-4 text-red-500 font-black text-xl italic"><AlertCircle size={32} />{error}</div>}
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="grid grid-cols-6 h-20 bg-white/5 border border-white/10 rounded-2xl p-2 gap-2">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-12">
+          <TabsList className="grid grid-cols-6 h-24 bg-white/5 border border-white/10 rounded-[2rem] p-2 gap-3">
             {['input', 'genre', 'script', 'visual', 'music', 'strategy'].map((v, i) => (
-              <TabsTrigger key={v} value={v} disabled={i > 0 && !transcript || i > 2 && !script} className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-xs md:text-lg">
+              <TabsTrigger key={v} value={v} disabled={i > 0 && !transcript || i > 2 && !script} className="rounded-2xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-sm md:text-xl transition-all">
                 {i+1}. {v === 'input' ? '入力' : v === 'genre' ? '戦略' : v === 'script' ? '台本' : v === 'visual' ? '画像' : v === 'music' ? '音楽' : 'SEO'}
               </TabsTrigger>
             ))}
           </TabsList>
 
-          <TabsContent value="input" className="space-y-8 animate-in fade-in">
-            <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-3xl p-8 space-y-4">
-              <div className="flex items-center justify-between"><div className="flex items-center gap-2 text-emerald-400"><Info size={20} /><h3 className="font-black italic uppercase text-sm tracking-widest">ステップ 1: 核となる情報を入力</h3></div><div className="flex gap-2"><input type="file" ref={fileInputRef} onChange={handleFileUpload} accept="audio/*,video/*" className="hidden" /><Button onClick={() => fileInputRef.current?.click()} disabled={isProcessing['transcribe']} className="h-10 px-4 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-xs rounded-xl hover:bg-emerald-500/20 flex items-center gap-2"> {isProcessing['transcribe'] ? <><Loader2 className="animate-spin h-4 w-4" />{compressProgress > 0 ? `圧縮中 ${compressProgress}%` : '処理中'}</> : <><Upload size={14} />直接読み起こし</>}</Button></div></div>
-              <p className="text-lg text-slate-100 font-black leading-relaxed italic">指示書をコピーしてAIに読み起こしを実施して下さい。AIの回答をフォームに貼り付けてください。</p>
-              <div className="grid grid-cols-3 gap-3">
+          <TabsContent value="input" className="space-y-12 animate-in fade-in">
+            <div className="bg-emerald-500/5 border-2 border-emerald-500/20 rounded-[3rem] p-10 space-y-8 shadow-inner">
+              <div className="flex items-center justify-between border-b border-white/5 pb-6"><div className="flex items-center gap-4 text-emerald-400"><Info size={32} /><h3 className="font-black italic uppercase text-2xl tracking-widest">ステップ 1: 核となる情報を入力</h3></div><div className="flex gap-4"><input type="file" ref={fileInputRef} onChange={handleFileUpload} accept="audio/*,video/*" className="hidden" /><Button onClick={() => fileInputRef.current?.click()} disabled={isProcessing['transcribe']} className="h-16 px-8 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-black text-lg rounded-2xl hover:bg-emerald-500/20 flex items-center gap-3 shadow-lg"> {isProcessing['transcribe'] ? <><Loader2 className="animate-spin h-6 w-6" />{compressProgress > 0 ? `圧縮中 ${compressProgress}%` : '読込中'}</> : <><Upload size={20} />直接読み起こし</>}</Button></div></div>
+              <p className="text-2xl text-white font-black leading-relaxed italic border-l-8 border-emerald-500 pl-6 py-2">指示書をコピーしてAIに読み起こしを実施して下さい。<br/>AIの回答をフォームに貼り付けてください。</p>
+              <div className="grid grid-cols-3 gap-6">
                 {['Claude', 'ChatGPT', 'Gemini'].map((ai) => (
-                  <div key={ai} className="flex flex-col gap-2">
-                    <Button onClick={() => { navigator.clipboard.writeText("この動画を日本語で文字起こししてください。"); alert(`コピーしました！${ai}に動画を添付して貼り付けてください。`); }} className="h-10 text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-black italic uppercase">指示書をコピー 📋</Button>
-                    <a href={ai === 'Claude' ? 'https://claude.ai' : ai === 'ChatGPT' ? 'https://chatgpt.com' : 'https://gemini.google.com'} target="_blank" className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-all group h-full"><p className="text-xs font-black text-slate-500 group-hover:text-emerald-400 mb-1">{ai === 'Claude' ? 'Anthropic' : ai === 'ChatGPT' ? 'OpenAI' : 'Google'}</p><p className="text-lg font-black text-white italic">{ai}</p></a>
+                  <div key={ai} className="flex flex-col gap-4 p-2 bg-white/5 rounded-[2rem] border border-white/5">
+                    <Button onClick={() => { navigator.clipboard.writeText("この動画を日本語で文字起こししてください。"); alert(`コピーしました！${ai}に動画を添付して貼り付けてください。`); }} className="h-14 text-sm bg-emerald-500/20 text-emerald-400 border-2 border-emerald-500/20 font-black italic uppercase hover:bg-emerald-500/40 rounded-xl shadow-lg">指示書をコピー 📋</Button>
+                    <a href={ai === 'Claude' ? 'https://claude.ai' : ai === 'ChatGPT' ? 'https://chatgpt.com' : 'https://gemini.google.com'} target="_blank" className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center hover:bg-white/10 transition-all group h-full"><p className="text-sm font-black text-slate-400 group-hover:text-emerald-400 mb-2">{ai === 'Claude' ? 'Anthropic' : ai === 'ChatGPT' ? 'OpenAI' : 'Google'}</p><p className="text-3xl font-black text-white italic tracking-tighter">{ai}</p></a>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="space-y-4"><label className="text-sm font-black text-emerald-500 uppercase tracking-widest italic ml-2">ソース内容</label><textarea value={transcript} onChange={(e) => setTranscript(e.target.value)} className="w-full h-80 bg-black/60 border-2 border-white/10 rounded-[2rem] p-8 font-bold text-white outline-none focus:border-emerald-500 transition-all text-xl" placeholder="ここに内容を貼り付け..." /><div className="flex justify-center pt-6"><Button onClick={() => setActiveTab('genre')} disabled={!transcript} className="h-24 px-20 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-2xl rounded-[2rem] shadow-xl uppercase italic group"><span className="flex items-center gap-2">ステップ 2: 戦略選択へ <ChevronRight className="group-hover:translate-x-1 transition-transform" /></span></Button></div></div>
+            <div className="space-y-6"><label className="text-xl font-black text-emerald-500 uppercase tracking-widest italic ml-4">ソース内容 (文字起こし文章を貼り付け)</label><textarea value={transcript} onChange={(e) => setTranscript(e.target.value)} className="w-full h-[500px] bg-black/60 border-4 border-white/10 rounded-[3rem] p-10 font-bold text-white outline-none focus:border-emerald-500 transition-all text-2xl leading-relaxed shadow-2xl" placeholder="ここにAIの回答を貼り付けてください..." /><div className="flex justify-center pt-8"><Button onClick={() => { setActiveTab('genre'); window.scrollTo(0,0); }} disabled={!transcript} className="h-32 px-24 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-4xl rounded-[3rem] shadow-[0_20px_50px_rgba(16,185,129,0.4)] uppercase italic group scale-105 active:scale-95 transition-all"><span className="flex items-center gap-4">ステップ 2: 戦略選択へ <ChevronRight className="h-10 w-10 group-hover:translate-x-2 transition-transform" /></span></Button></div></div>
           </TabsContent>
 
           <TabsContent value="genre" className="space-y-8 animate-in fade-in">
