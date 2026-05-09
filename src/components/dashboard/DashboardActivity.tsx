@@ -2,120 +2,206 @@
 
 import React, { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Zap, 
-  Activity, 
-  Clock, 
-  History, 
-  Cpu, 
-  FileText, 
-  Clapperboard, 
-  Repeat,
-  ChevronRight
+import {
+  Activity, Clock, History, Cpu, Repeat, Zap, ChevronRight, Users, Crown, TrendingUp
 } from 'lucide-react'
 import Link from 'next/link'
 
 export default function DashboardActivity() {
   const supabase = createClient()
   const [activities, setActivities] = useState<any[]>([])
+  const [totalUsage, setTotalUsage] = useState(0)
+  const [todayUsage, setTodayUsage] = useState(0)
+  const [totalSavings, setTotalSavings] = useState(0)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [adminStats, setAdminStats] = useState<{ totalUsers: number; premiumUsers: number; totalCalls: number } | null>(null)
   const [loading, setLoading] = useState(true)
 
   const toolIcons: Record<string, any> = {
     'universal-converter': Repeat,
-    'staysee-ai-finder': Clapperboard,
-    'default': Cpu
+    'staysee-ai-finder': Activity,
+    'youtube-producer': TrendingUp,
+    'default': Cpu,
+  }
+
+  const toolNames: Record<string, string> = {
+    'universal-converter': '究極AIマルチコンバーター',
+    'staysee-ai-finder': 'Nextra AI（ホテルDX）',
+    'youtube-producer': 'AI YouTubeプロデューサー',
+    'inbox-organizer': 'Gmail AI Accelerator',
+    'disaster-guard': 'AI防災パーソナルガイド',
+    'money-guard': 'AI家計防衛シミュレーター',
+    'kdp-guide': 'Kindle出版実況ナビ',
+    'office-politics-graph': '社内政治 相関図',
+    'loan-advisor': '借金完済・おまとめ診断',
   }
 
   useEffect(() => {
-    const fetchActivity = async () => {
+    const fetch = async () => {
       const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        const { data } = await supabase
+      if (!user) { setLoading(false); return }
+
+      // プロフィール・管理者確認
+      const { data: prof } = await supabase.from('profiles').select('role').eq('user_id', user.id).single()
+      const admin = prof?.role === 'admin'
+      setIsAdmin(admin)
+
+      // 利用履歴（最新5件）
+      const { data: acts } = await supabase
+        .from('api_usage')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(5)
+      setActivities(acts || [])
+
+      // 累計利用数
+      const { count: total } = await supabase
+        .from('api_usage')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+      setTotalUsage(total || 0)
+      setTotalSavings((total || 0) * 5)
+
+      // 今日の利用数
+      const today = new Date().toISOString().slice(0, 10)
+      const { count: todayCount } = await supabase
+        .from('api_usage')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .gte('created_at', today)
+      setTodayUsage(todayCount || 0)
+
+      // 管理者のみ：全体統計
+      if (admin) {
+        const { count: allUsers } = await supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true })
+        const { count: premiumUsers } = await supabase
+          .from('subscriptions')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'active')
+          .neq('plan', 'free')
+        const { count: allCalls } = await supabase
           .from('api_usage')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .limit(5)
-        setActivities(data || [])
+          .select('*', { count: 'exact', head: true })
+        setAdminStats({
+          totalUsers: allUsers || 0,
+          premiumUsers: premiumUsers || 0,
+          totalCalls: allCalls || 0,
+        })
       }
+
       setLoading(false)
     }
-    fetchActivity()
+    fetch()
   }, [])
 
-  if (loading) return null
+  if (loading) return (
+    <div className="space-y-3">
+      {[1,2,3].map(i => <div key={i} className="h-20 bg-white/5 rounded-xl animate-pulse" />)}
+    </div>
+  )
 
   return (
-    <div className="space-y-6">
-      {/* 🚀 Nextra Intelligence Live Status */}
-      <Card className="bg-[#13141f] border-2 border-emerald-500/20 rounded-[2.5rem] overflow-hidden shadow-2xl relative">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 animate-pulse" />
-        <CardContent className="p-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <Activity className="h-5 w-5 text-emerald-500 animate-bounce" />
-              <span className="text-xs font-black text-white uppercase italic tracking-[0.2em]">Nextra Intelligence Live</span>
-            </div>
-            <Badge variant="outline" className="border-emerald-500/30 text-emerald-500 text-[8px] font-black uppercase tracking-widest">System Online</Badge>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-black/40 rounded-2xl p-4 border border-white/5">
-              <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">Global Processing</p>
-              <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-black text-white italic">2,482</span>
-                <span className="text-[10px] text-emerald-500 font-bold uppercase">Calls</span>
-              </div>
-            </div>
-            <div className="bg-black/40 rounded-2xl p-4 border border-white/5">
-              <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">Total Edge Efficiency</p>
-              <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-black text-emerald-400 italic">98.2</span>
-                <span className="text-[10px] text-emerald-500 font-bold uppercase">%</span>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="space-y-5">
 
-      {/* 📜 AI Activity Log */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between px-2">
-          <div className="flex items-center gap-2">
-            <History className="h-4 w-4 text-slate-500" />
-            <h3 className="text-xs font-black text-slate-500 uppercase italic tracking-widest">Recent Activity Log</h3>
+      {/* 管理者ステータス */}
+      {isAdmin && adminStats && (
+        <div className="bg-[#0d0f1a] border border-emerald-500/20 rounded-2xl p-5 space-y-4">
+          <div className="flex items-center gap-2 mb-1">
+            <Crown size={14} className="text-emerald-400" />
+            <p className="text-xs font-semibold text-emerald-400 uppercase tracking-widest">管理者パネル</p>
           </div>
-          <Link href="/dashboard/history" className="text-[8px] font-black text-emerald-500 uppercase tracking-widest hover:underline">View All History</Link>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-black/30 rounded-xl p-3 text-center">
+              <p className="text-[9px] font-semibold text-slate-500 mb-1">総会員数</p>
+              <p className="text-xl font-black text-white">{adminStats.totalUsers.toLocaleString()}</p>
+            </div>
+            <div className="bg-black/30 rounded-xl p-3 text-center">
+              <p className="text-[9px] font-semibold text-slate-500 mb-1">有料会員</p>
+              <p className="text-xl font-black text-emerald-400">{adminStats.premiumUsers.toLocaleString()}</p>
+            </div>
+            <div className="bg-black/30 rounded-xl p-3 text-center">
+              <p className="text-[9px] font-semibold text-slate-500 mb-1">総API呼出</p>
+              <p className="text-xl font-black text-white">{adminStats.totalCalls.toLocaleString()}</p>
+            </div>
+          </div>
+          <Link href="/dms/admin" className="block text-center text-xs text-emerald-400 hover:text-emerald-300 font-semibold transition-colors">
+            管理者画面へ →
+          </Link>
         </div>
+      )}
 
-        <div className="space-y-3">
-          {activities.length === 0 ? (
-            <div className="bg-white/5 border border-dashed border-white/10 rounded-2xl p-8 text-center">
-              <p className="text-[10px] font-bold text-slate-600 uppercase italic">No recent activities found</p>
-            </div>
-          ) : (
-            activities.map((act, i) => {
-              const Icon = toolIcons[act.tool_id] || toolIcons.default
-              return (
-                <div key={i} className="flex items-center gap-4 bg-[#13141f] border border-white/5 p-4 rounded-2xl hover:border-emerald-500/30 transition-all group shadow-lg">
-                  <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-slate-400 group-hover:text-emerald-400 transition-colors border border-white/5">
-                    <Icon size={18} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-black text-white italic truncate uppercase">{act.tool_id.replace(/-/g, ' ')}</p>
-                    <p className="text-[8px] font-bold text-slate-600 uppercase tracking-widest flex items-center gap-1 mt-0.5">
-                      <Clock size={8} /> {new Date(act.created_at).toLocaleString('ja-JP')}
-                    </p>
-                  </div>
-                  <ChevronRight size={14} className="text-slate-700 group-hover:text-emerald-500 transition-colors" />
-                </div>
-              )
-            })
-          )}
+      {/* 自分の利用状況 */}
+      <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-4">
+        <div className="flex items-center gap-2">
+          <Activity size={14} className="text-emerald-400" />
+          <p className="text-xs font-semibold text-white">AI利用状況</p>
+          <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[9px] ml-auto">稼働中</Badge>
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-black/30 rounded-xl p-3 text-center">
+            <p className="text-[9px] font-semibold text-slate-500 mb-1">累計利用</p>
+            <p className="text-xl font-black text-white">{totalUsage}</p>
+            <p className="text-[9px] text-slate-600">回</p>
+          </div>
+          <div className="bg-black/30 rounded-xl p-3 text-center">
+            <p className="text-[9px] font-semibold text-slate-500 mb-1">今日</p>
+            <p className="text-xl font-black text-emerald-400">{todayUsage}</p>
+            <p className="text-[9px] text-slate-600">回</p>
+          </div>
+          <div className="bg-black/30 rounded-xl p-3 text-center">
+            <p className="text-[9px] font-semibold text-slate-500 mb-1">節約総額</p>
+            <p className="text-lg font-black text-white">¥{totalSavings.toLocaleString()}</p>
+          </div>
         </div>
       </div>
+
+      {/* 最近の利用履歴 */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <History size={13} className="text-slate-500" />
+            <p className="text-xs font-semibold text-slate-500">最近の利用履歴</p>
+          </div>
+          <Link href="/dashboard/history" className="text-[10px] text-emerald-400 hover:text-emerald-300 font-semibold transition-colors">
+            すべて見る →
+          </Link>
+        </div>
+
+        {activities.length === 0 ? (
+          <div className="bg-[#0d0f1a] border border-dashed border-white/10 rounded-xl p-8 text-center">
+            <Zap size={20} className="text-slate-700 mx-auto mb-2" />
+            <p className="text-xs text-slate-600 font-semibold">まだ利用履歴がありません</p>
+            <p className="text-[10px] text-slate-700 mt-1">ツールを使うと記録されます</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {activities.map((act, i) => {
+              const Icon = toolIcons[act.tool_id] || toolIcons.default
+              const name = toolNames[act.tool_id] || act.tool_id?.replace(/-/g, ' ')
+              return (
+                <div key={i} className="flex items-center gap-3 bg-[#0d0f1a] border border-white/5 hover:border-emerald-500/20 rounded-xl p-3 transition-all group">
+                  <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center text-slate-500 group-hover:text-emerald-400 transition-colors shrink-0">
+                    <Icon size={15} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold text-white truncate">{name}</p>
+                    <p className="text-[9px] text-slate-600 flex items-center gap-1 mt-0.5">
+                      <Clock size={8} />
+                      {new Date(act.created_at).toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                  </div>
+                  <ChevronRight size={12} className="text-slate-700 group-hover:text-emerald-500 transition-colors shrink-0" />
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </div>
+
     </div>
   )
 }
