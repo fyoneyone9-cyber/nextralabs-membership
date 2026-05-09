@@ -1,146 +1,169 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-// Vercel Hobby plan max duration
-export const maxDuration = 10
-export const dynamic = 'force-dynamic'
-
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyCMbtu9IJIGbml2KOv1Yjit9QP7TkmIgiA'
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`
-
-// DOCX生成（簡易HTML→DOCX変換）
-function generateSimpleDocx(title: string, content: string): string {
-  // Word XML形式の簡易DOCX
-  const paragraphs = content.split('\n').filter(l => l.trim()).map(line => {
-    const isHeading = line.startsWith('#')
-    const text = line.replace(/^#+\s*/, '').replace(/\*\*/g, '')
-    if (isHeading) {
-      return `<w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr><w:r><w:t>${escapeXml(text)}</w:t></w:r></w:p>`
-    }
-    return `<w:p><w:r><w:t xml:space="preserve">${escapeXml(text)}</w:t></w:r></w:p>`
-  }).join('\n')
-
-  const xml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas"
-  xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-  <w:body>
-    <w:p><w:pPr><w:pStyle w:val="Title"/></w:pPr><w:r><w:t>${escapeXml(title)}</w:t></w:r></w:p>
-    ${paragraphs}
-    <w:sectPr/>
-  </w:body>
-</w:document>`
-
-  return Buffer.from(xml).toString('base64')
-}
-
-function escapeXml(text: string): string {
-  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-}
+import { GoogleGenerativeAI } from '@google/generative-ai'
+import {
+  Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType
+} from 'docx'
 
 export async function POST(req: NextRequest) {
   try {
     const { theme, genre, maxChars = 5000, includeCoverPrompt = false, isAdmin = false } = await req.json()
 
     if (!theme || !genre) {
-      return NextResponse.json({ success: false, error: 'テーマとジャンルは必須です。' }, { status: 400 })
+      return NextResponse.json({ success: false, error: 'テーマとジャンルは必須です' }, { status: 400 })
     }
 
-    // 管理者は制限なし。それ以外はVercel Hobby plan 10秒タイムアウト対策
-    const charLimit = isAdmin ? Math.min(maxChars, 10000) : Math.min(maxChars, 3000)
-    const maxTokens = isAdmin ? 8192 : 2048
+    const geminiKey = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY
+    if (!geminiKey) {
+      return NextResponse.json({ success: false, error: 'AI APIキーが設定されていません' }, { status: 500 })
+    }
 
-    const prompt = isAdmin
-      ? `あなたはKindle電子書籍の専門ライターです。以下の条件でKindle本の原稿を日本語で執筆してください。
+    // ========================
+    // Gemini 2.5 Flash で原稿生成
+    // ========================
+    const genAI = new GoogleGenerativeAI(geminiKey)
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
+
+    const manuscriptPrompt = `
+あなたはKindle電子書籍の専門ライターです。以下の条件で電子書籍の原稿を執筆してください。
 
 【テーマ】${theme}
 【ジャンル】${genre}
-【文字数目標】約${charLimit}字
+【文字数】${maxChars}字程度（最低${Math.floor(maxChars * 0.8)}字以上）
+【対象読者】日本人の一般読者
+【出力形式】以下の構成で出力してください：
 
-以下の構成で書いてください：
-## はじめに
-## 第1章：基礎知識
-## 第2章：具体的な方法・ステップ
-## 第3章：実践例・ケーススタディ
-## 第4章：よくある失敗と対策
-## おわりに
+---TITLE---
+（魅力的なタイトルを1行で）
 
-各章を充実させ、Kindleで販売できる品質で書いてください。${includeCoverPrompt ? '\n最後に【表紙プロンプト】として英語でMidjourney/DALL-E用プロンプトを書いてください。' : ''}`
-      : `Kindle電子書籍の原稿を日本語で書いてください。
+---BODY---
+（本文。章立てして、読みやすく実践的な内容を書いてください。
+見出しは「## 第○章：タイトル」形式で。
+各章は500〜800字程度。合計${maxChars}字程度。）
+${includeCoverPrompt ? `
+---COVER_PROMPT---
+（この本の表紙をAI画像生成ツール（Midjourney/DALL-E）で作るための英語プロンプトを1文で）
+` : ''}
+---END---
 
-テーマ：${theme}
-ジャンル：${genre}
-文字数：約${charLimit}字
+日本語で執筆してください。読者が実際に役立つ具体的な内容にしてください。
+`
 
-構成：
-## はじめに
-## 第1章：基礎知識
-## 第2章：具体的な方法
-## 第3章：実践・まとめ
+    const result = await model.generateContent(manuscriptPrompt)
+    const raw = result.response.text()
 
-各章300〜500字で簡潔に。${includeCoverPrompt ? '\n最後に【表紙プロンプト】として英語で画像生成プロンプトを1行書いてください。' : ''}`
+    // ========================
+    // パース
+    // ========================
+    const titleMatch = raw.match(/---TITLE---\s*([\s\S]*?)(?=---BODY---)/)
+    const bodyMatch = raw.match(/---BODY---\s*([\s\S]*?)(?=---COVER_PROMPT---|---END---)/)
+    const coverMatch = raw.match(/---COVER_PROMPT---\s*([\s\S]*?)(?=---END---)/)
 
-    const res = await fetch(GEMINI_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { maxOutputTokens: maxTokens, temperature: 0.7 }
-      })
-    })
+    const title = (titleMatch?.[1] || theme).trim().replace(/\n/g, '')
+    const body = (bodyMatch?.[1] || raw).trim()
+    const coverPrompt = coverMatch?.[1]?.trim() || undefined
+    const charCount = body.length
+    const preview = body.slice(0, 1000)
 
-    if (!res.ok) {
-      const errText = await res.text()
-      console.error('[GENERATE_API_ERROR]', errText)
-      return NextResponse.json({ success: false, error: 'AI生成に失敗しました。しばらく後に再試行してください。' }, { status: 500 })
-    }
+    // ========================
+    // KDPメタデータ生成
+    // ========================
+    const kdpMetaPrompt = `
+以下の電子書籍のKDP（Kindle Direct Publishing）入稿用メタデータをJSON形式で生成してください。
 
-    const data = await res.json()
-    const fullText = data?.candidates?.[0]?.content?.parts?.[0]?.text || ''
+タイトル: ${title}
+テーマ: ${theme}
+ジャンル: ${genre}
 
-    if (!fullText) {
-      return NextResponse.json({ success: false, error: 'AIからの応答が空でした。' }, { status: 500 })
-    }
+以下のJSON形式で出力してください（日本語で）：
+{
+  "title": "本のタイトル",
+  "subtitle": "サブタイトル（40字以内）",
+  "description": "本の説明文（400字程度。読者の悩みから始め、ベネフィットを伝える）",
+  "keywords": ["キーワード1", "キーワード2", "キーワード3", "キーワード4", "キーワード5", "キーワード6", "キーワード7"],
+  "categories": ["カテゴリ1", "カテゴリ2"],
+  "language": "Japanese",
+  "price_jpy": 250,
+  "royalty_plan": "70%",
+  "kdp_select": true
+}
+JSONのみ出力してください。`
 
-    // 表紙プロンプト抽出
-    let mainText = fullText
-    let coverPrompt: string | undefined
-    if (includeCoverPrompt) {
-      const coverMatch = fullText.match(/【表紙プロンプト】\s*([\s\S]+)$/)
-      if (coverMatch) {
-        coverPrompt = coverMatch[1].trim()
-        mainText = fullText.replace(/【表紙プロンプト】[\s\S]+$/, '').trim()
+    let kdpMetadata: Record<string, unknown> = {}
+    try {
+      const metaResult = await model.generateContent(kdpMetaPrompt)
+      const metaRaw = metaResult.response.text()
+      const jsonMatch = metaRaw.match(/\{[\s\S]*\}/)
+      if (jsonMatch) kdpMetadata = JSON.parse(jsonMatch[0])
+    } catch {
+      kdpMetadata = {
+        title,
+        subtitle: `${genre}の完全ガイド`,
+        description: `${theme}について詳しく解説した実践的な電子書籍です。`,
+        keywords: [theme, genre, 'Kindle', '電子書籍', '実践', 'ガイド', '入門'],
+        categories: [genre],
+        language: 'Japanese',
+        price_jpy: 250,
+        royalty_plan: '70%',
+        kdp_select: true,
       }
     }
 
-    // タイトル抽出（最初の行 or テーマから生成）
-    const firstLine = mainText.split('\n').find(l => l.trim())?.replace(/^#+\s*/, '') || theme
-    const title = firstLine.length > 40 ? theme : firstLine
+    // ========================
+    // DOCX 生成
+    // ========================
+    const lines = body.split('\n')
+    const docChildren: Paragraph[] = []
 
-    // KDPメタデータ生成
-    const kdpMetadata = {
-      title,
-      subtitle: `${genre}で成果を出すための完全ガイド`,
-      author: 'NextraLabs著',
-      genre,
-      keywords: [theme, genre, 'AI', '副業', 'ガイド'].slice(0, 7),
-      description: `${theme}について、具体的な方法と実践例を交えて解説します。${genre}に興味がある方必読の一冊。`,
-      language: '日本語',
-      category: genre,
-      price_jp: 250,
-      kdp_select: true,
-      publishing_tips: [
-        'カバー画像は2560×1600pxで作成してください',
-        'タイトルは検索キーワードを含めると効果的です',
-        '内容紹介文は400字程度が理想的です',
-        '価格は¥250〜¥350が売れやすい価格帯です',
-      ]
+    // タイトルページ
+    docChildren.push(
+      new Paragraph({
+        text: title,
+        heading: HeadingLevel.TITLE,
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 400 },
+      }),
+      new Paragraph({
+        text: `ジャンル: ${genre}`,
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 800 },
+        children: [new TextRun({ text: `ジャンル: ${genre}`, color: '888888', size: 20 })],
+      }),
+      new Paragraph({ text: '', pageBreakBefore: true })
+    )
+
+    // 本文パース
+    for (const line of lines) {
+      const trimmed = line.trim()
+      if (!trimmed) {
+        docChildren.push(new Paragraph({ text: '' }))
+      } else if (trimmed.startsWith('## ')) {
+        docChildren.push(new Paragraph({
+          text: trimmed.replace(/^## /, ''),
+          heading: HeadingLevel.HEADING_1,
+          spacing: { before: 400, after: 200 },
+        }))
+      } else if (trimmed.startsWith('### ')) {
+        docChildren.push(new Paragraph({
+          text: trimmed.replace(/^### /, ''),
+          heading: HeadingLevel.HEADING_2,
+          spacing: { before: 200, after: 100 },
+        }))
+      } else {
+        docChildren.push(new Paragraph({
+          children: [new TextRun({ text: trimmed, size: 24 })],
+          spacing: { after: 100, line: 360 },
+        }))
+      }
     }
 
-    // プレビュー（最初の1000字）
-    const preview = mainText.slice(0, 1000)
-    const charCount = mainText.length
+    const doc = new Document({
+      sections: [{ children: docChildren }],
+      creator: 'NextraLabs Kindle Factory',
+      title,
+    })
 
-    // DOCX生成
-    const docxBase64 = generateSimpleDocx(title, mainText)
+    const docxBuffer = await Packer.toBuffer(doc)
+    const docxBase64 = Buffer.from(docxBuffer).toString('base64')
 
     return NextResponse.json({
       success: true,
@@ -149,11 +172,12 @@ export async function POST(req: NextRequest) {
       docxBase64,
       kdpMetadata,
       charCount,
-      coverPrompt,
+      ...(includeCoverPrompt && coverPrompt ? { coverPrompt } : {}),
     })
 
-  } catch (err) {
-    console.error('[GENERATE_ROUTE_ERROR]', err)
-    return NextResponse.json({ success: false, error: '予期しないエラーが発生しました。' }, { status: 500 })
+  } catch (error: unknown) {
+    console.error('Generate API Error:', error)
+    const message = error instanceof Error ? error.message : '原稿生成中にエラーが発生しました'
+    return NextResponse.json({ success: false, error: message }, { status: 500 })
   }
 }
