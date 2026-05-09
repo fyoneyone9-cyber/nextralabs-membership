@@ -114,9 +114,9 @@ export default function CompPriceMonitorApp() {
           
           <div className="grid md:grid-cols-2 gap-6">
             <Button onClick={handleAnalyze} disabled={isAnalyzing || !targetUrl} className="h-24 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-3xl rounded-[2rem] shadow-xl uppercase italic active:scale-95 transition-all">
-               監視・解析を開始 🚀
+               {isAnalyzing ? <Loader2 className="animate-spin" /> : "監視・解析を開始 🚀"}
             </Button>
-            <Button onClick={() => setTargetUrl('')} className="h-24 bg-white/5 hover:bg-white/10 text-white border-2 border-white/10 font-black text-2xl rounded-[2rem] shadow-xl uppercase italic transition-all flex items-center justify-center gap-4">
+            <Button onClick={() => {setTargetUrl(''); setResult(null); setMonitorData(null);}} className="h-24 bg-white/5 hover:bg-white/10 text-white border-2 border-white/10 font-black text-2xl rounded-[2rem] shadow-xl uppercase italic transition-all flex items-center justify-center gap-4">
                <RefreshCw size={32} /> リセット
             </Button>
           </div>
@@ -129,29 +129,57 @@ export default function CompPriceMonitorApp() {
               <h3 className="text-3xl font-black text-white italic uppercase mb-10 flex items-center gap-5"><Zap className="text-emerald-400" /> AI 価格戦略レポート</h3>
               <div className="text-2xl md:text-3xl text-white font-black italic leading-loose whitespace-pre-wrap mb-12">{result}</div>
               
-              {/* 競合動向・API連携データ (完全復旧) */}
+              {/* 競合動向・API連携データ (完全復旧 & 高度化) */}
               {monitorData && (
-                <div className="grid md:grid-cols-2 gap-8 border-t border-emerald-500/20 pt-10">
-                   <div className="bg-black/40 p-8 rounded-3xl border border-white/5">
-                      <p className="text-xs font-black text-emerald-500 uppercase italic mb-6 tracking-widest">ライバルのリアルタイム動向</p>
-                      <div className="space-y-4">
-                         {monitorData.rival_prices.map((r:any, i:number) => (
-                           <div key={i} className="flex justify-between items-center border-b border-white/5 pb-4">
-                             <span className="text-lg font-black text-slate-300">{r.name}</span>
-                             <div className="text-right">
-                               <p className="text-xl font-black text-white italic">{r.price}</p>
-                               <div className="flex gap-2 justify-end mt-1">
-                                  <Badge className="bg-red-600/20 text-red-500 border-red-500/30 text-[8px] font-black">{r.status}</Badge>
-                                  <Badge variant="outline" className="text-[8px] border-amber-500/50 text-amber-500 font-black">PT {r.points}</Badge>
-                               </div>
-                             </div>
-                           </div>
-                         ))}
+                <div className="space-y-8 border-t border-emerald-500/20 pt-10">
+                   {/* ターゲット商品（自社）の現状 */}
+                   <div className="bg-emerald-500/10 border border-emerald-500/30 p-6 rounded-3xl flex justify-between items-center">
+                      <div>
+                        <p className="text-[10px] font-black text-emerald-400 uppercase italic mb-1">Your Shop Status</p>
+                        <h4 className="text-xl font-black text-white">{monitorData.target_item?.name || '解析対象商品'}</h4>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] font-black text-slate-400 uppercase italic">実質価格</p>
+                        <p className="text-2xl font-black text-white">¥{monitorData.target_item?.effective_price?.toLocaleString()}</p>
                       </div>
                    </div>
-                   <div className="bg-emerald-500/10 p-8 rounded-3xl border-2 border-emerald-500/30 flex flex-col justify-center items-center text-center shadow-lg">
-                      <p className="text-xs font-black text-emerald-400 uppercase italic mb-4 tracking-widest">現在のカート獲得率予測</p>
-                      <div className="text-8xl font-black text-white italic drop-shadow-2xl">{monitorData.win_rate}</div>
+
+                   <div className="grid md:grid-cols-2 gap-8">
+                      <div className="bg-black/40 p-8 rounded-3xl border border-white/5">
+                          <p className="text-xs font-black text-emerald-500 uppercase italic mb-6 tracking-widest">ライバルの実質価格ランキング</p>
+                          <div className="space-y-4">
+                            {monitorData.rival_prices.map((r:any, i:number) => {
+                               const isCheaper = r.effective_price < (monitorData.target_item?.effective_price || 0);
+                               return (
+                                <div key={i} className="flex justify-between items-center border-b border-white/5 pb-4">
+                                  <div className="flex flex-col">
+                                    <span className="text-lg font-black text-slate-300">{r.name}</span>
+                                    <span className="text-[10px] font-bold text-slate-500">販売: ¥{r.price.toLocaleString()}</span>
+                                  </div>
+                                  <div className="text-right">
+                                    <p className={`text-xl font-black italic ${isCheaper ? 'text-red-400' : 'text-white'}`}>
+                                      ¥{r.effective_price.toLocaleString()}
+                                    </p>
+                                    <div className="flex gap-2 justify-end mt-1">
+                                      <Badge className={`${isCheaper ? 'bg-red-600/20 text-red-500 border-red-500/30' : 'bg-emerald-600/20 text-emerald-500 border-emerald-500/30'} text-[8px] font-black`}>
+                                        {isCheaper ? '警告: 安値' : '優位'}
+                                      </Badge>
+                                      <Badge variant="outline" className="text-[8px] border-amber-500/50 text-amber-500 font-black">PT {r.points}倍</Badge>
+                                    </div>
+                                  </div>
+                                </div>
+                               )
+                            })}
+                          </div>
+                      </div>
+                      <div className="bg-[#13141f] p-8 rounded-3xl border-2 border-emerald-500/30 flex flex-col justify-center items-center text-center shadow-lg relative overflow-hidden">
+                          <div className={`absolute inset-0 opacity-10 ${parseInt(monitorData.win_rate) < 30 ? 'bg-red-500' : 'bg-emerald-500'}`}></div>
+                          <p className="text-xs font-black text-emerald-400 uppercase italic mb-4 tracking-widest relative z-10">現在の推定成約率 (CR)</p>
+                          <div className={`text-8xl font-black italic drop-shadow-2xl relative z-10 ${parseInt(monitorData.win_rate) < 30 ? 'text-red-500' : 'text-white'}`}>
+                            {monitorData.win_rate}
+                          </div>
+                          <p className="text-[10px] font-black text-slate-500 mt-4 uppercase italic relative z-10">※実質価格差に基づくAI予測値</p>
+                      </div>
                    </div>
                 </div>
               )}
@@ -186,22 +214,6 @@ export default function CompPriceMonitorApp() {
 
             {/* Amazon収益化 */}
             <a href="https://www.amazon.co.jp/s?k=ネットショップ+経営+戦略&tag=nextralabs-22" target="_blank" className="block group">
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-900 p-16 rounded-[4rem] flex items-center justify-between shadow-2xl transition-all hover:scale-[1.01] relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-10"><LineChart size={300} className="text-white" /></div>
-                <div className="space-y-4 text-left relative z-10">
-                  <p className="text-white/60 text-xs font-black uppercase tracking-[0.4em]">Essential E-commerce Library</p>
-                  <h3 className="text-3xl md:text-5xl font-black text-white italic leading-tight">不敗のEC運営：AI時代の価格戦略と心理術。 ➔</h3>
-                </div>
-                <ShoppingCart size={60} className="text-white animate-pulse shrink-0 relative z-10" />
-              </div>
-            </a>
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-��&tag=nextralabs-22" target="_blank" className="block group">
               <div className="bg-gradient-to-r from-blue-600 to-indigo-900 p-16 rounded-[4rem] flex items-center justify-between shadow-2xl transition-all hover:scale-[1.01] relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-10"><LineChart size={300} className="text-white" /></div>
                 <div className="space-y-4 text-left relative z-10">
