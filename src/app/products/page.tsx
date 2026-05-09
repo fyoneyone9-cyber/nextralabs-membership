@@ -22,7 +22,6 @@ const TOOLS = [
   { id: 'sns-auto-poster/app', cat: 'sns', title: 'AI SNSオートポスター', sub: 'バズを量産するマルチSNS生成', icon: Share2, plan: 'ライト' },
   { id: 'ai-select-shop/app', cat: 'sns', title: 'AIセレクトショップ', sub: 'トレンド解析とShopify連携', icon: Store, plan: 'プレミアム' },
   { id: 'youtube-producer/app', cat: 'sns', title: 'AI YouTubeプロデューサー', sub: '全自動台本・構成作成', icon: Clapperboard, plan: 'プレミアム' },
-  { id: 'trend-stock/app', cat: 'sns', title: 'Trend Stock', sub: 'バズ予測 × 楽天商品検索OS', icon: TrendingUp, plan: 'スタンダード' },
   { id: 'youtube-coordinator/app', cat: 'sns', title: 'YouTube AI Sync', sub: '動画解析と楽天コーチ', icon: Play, plan: 'プレミアム' },
   { id: 'kdp-guide/app', cat: 'edu', title: 'Kindle出版完全ナビ', sub: '執筆から出版までの一気通貫', icon: BookOpen, plan: '無料' },
   { id: 'kindle-factory/app', cat: 'biz', title: 'Kindle AI ファクトリー', sub: 'AI解析でKDP入稿可能な原稿を自動生成', icon: Crown, plan: 'プレミアム' },
