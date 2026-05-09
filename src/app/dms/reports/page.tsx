@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -30,7 +30,7 @@ export default function ReportsPage() {
           </div>
           <div className="flex gap-4">
              <Button variant="outline" className="border-white/5 text-slate-500 h-12 rounded-full text-sm font-black italic px-8 uppercase"><Download size={18} className="mr-2" /> Export PDF</Button>
-             <Button className="bg-[#5c59cc] text-white h-12 px-8 rounded-full font-black italic shadow-lg uppercase"><Download size={18} className="mr-2" /> Export CSV</Button>
+             <Button className="bg-emerald-600 text-white h-12 px-8 rounded-full font-black italic shadow-lg uppercase"><Download size={18} className="mr-2" /> Export CSV</Button>
           </div>
         </div>
 
