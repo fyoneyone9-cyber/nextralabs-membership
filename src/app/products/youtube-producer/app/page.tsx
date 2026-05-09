@@ -20,7 +20,10 @@ import {
   Info,
   CheckCircle2,
   Sparkles,
-  AlertCircle
+  AlertCircle,
+  Upload,
+  Video,
+  FileAudio
 } from 'lucide-react'
 
 // ジャンル設定
@@ -36,6 +39,7 @@ export default function YoutubeProducerApp() {
   const [activeTab, setActiveTab] = useState('input')
   const [isProcessing, setIsProcessing] = useState<Record<string, boolean>>({})
   const [error, setError] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   
   // 状態保持
   const [transcript, setTranscript] = useState('')
@@ -63,6 +67,33 @@ export default function YoutubeProducerApp() {
       return null
     } finally {
       setIsProcessing(prev => ({ ...prev, [type]: false }))
+    }
+  }
+
+  // 文字起こし機能
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setIsProcessing(prev => ({ ...prev, 'transcribe': true }))
+    setError(null)
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    try {
+      const res = await fetch('/api/youtube-producer/transcribe', {
+        method: 'POST',
+        body: formData,
+      })
+      const data = await res.json()
+      if (data.error) throw new Error(data.error)
+      setTranscript(data.text)
+    } catch (e: any) {
+      setError('文字起こしに失敗しました: ' + e.message)
+    } finally {
+      setIsProcessing(prev => ({ ...prev, 'transcribe': false }))
+      if (fileInputRef.current) fileInputRef.current.value = ''
     }
   }
 
@@ -147,13 +178,31 @@ export default function YoutubeProducerApp() {
           {/* 1. INPUT TAB */}
           <TabsContent value="input" className="space-y-8 animate-in fade-in duration-500">
             <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-3xl p-8 space-y-4">
-              <div className="flex items-center gap-2 text-emerald-400">
-                <Info size={20} />
-                <h3 className="font-black italic uppercase text-sm tracking-widest">STEP 1: 動画の核となる情報を入力</h3>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-emerald-400">
+                  <Info size={20} />
+                  <h3 className="font-black italic uppercase text-sm tracking-widest">STEP 1: 動画の核となる情報を入力</h3>
+                </div>
+                <div className="flex gap-2">
+                  <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    onChange={handleFileUpload} 
+                    accept="audio/*,video/*,.mp3,.wav,.mp4,.mov" 
+                    className="hidden" 
+                  />
+                  <Button 
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isProcessing['transcribe']}
+                    className="h-10 px-4 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-xs rounded-xl hover:bg-emerald-500/20 transition-all flex items-center gap-2"
+                  >
+                    {isProcessing['transcribe'] ? <Loader2 className="animate-spin h-4 w-4" /> : <Upload size={14} />}
+                    動画・音声から文字起こし
+                  </Button>
+                </div>
               </div>
               <p className="text-sm text-slate-300 font-bold leading-relaxed italic">
-                動画にしたい内容（箇条書き、メモ、あるいは既存の動画の文字起こしなど）を入力してください。<br/>
-                AIがそれをYouTube専用の「勝てる台本」へ変換します。
+                動画にしたい内容を入力してください。または、上のボタンから**動画ファイル(MP4/MOV)や音声ファイル(MP3/WAV)**をアップロードすれば、AIが自動で内容を読み起こします。
               </p>
             </div>
 
