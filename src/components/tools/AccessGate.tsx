@@ -31,7 +31,6 @@ const STANDARD_IDS = [
   'buzz-writer',
   'comm-coach',
   'resignation-assistant',
-  'ai-konkatsu',
   'money-guard',
   'shio-taiou',
   'trend-stock',

@@ -12,7 +12,6 @@ const products = [
   'money-guard',
   'disaster-guard',
   'shopping-stopper',
-  'ai-konkatsu',
   'comm-coach',
   'closet-coach',
   'sns-auto-poster',

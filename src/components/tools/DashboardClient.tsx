@@ -44,7 +44,6 @@ const TOOL_CATEGORIES = [
     color: 'text-emerald-400',
     borderColor: 'border-emerald-500/30',
     tools: [
-      { id: 'ai-konkatsu',           name: 'AI婚活コーチ',               icon: HeartHandshake, color: 'text-rose-400',    plan: 'standard' },
       { id: 'money-guard',           name: 'AI家計防衛シミュレーター',   icon: Wallet,         color: 'text-amber-500',   plan: 'standard' },
       { id: 'disaster-guard',        name: 'AI防災パーソナルガイド',     icon: Shield,         color: 'text-red-400',     plan: 'standard' },
       { id: 'exam-scheduler',        name: 'AI試験スケジューラー',       icon: Calendar,       color: 'text-purple-400',  plan: 'standard' },

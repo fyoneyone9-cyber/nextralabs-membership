@@ -14,7 +14,7 @@ const RELATION_MAP: Record<string, string[]> = {
   'ai-sidejob': ['buzz-writer', 'prompt-master', 'inbox-organizer'],
   'staysee-ai-finder': ['comp-price-monitor', 'location-finder'],
   // デフォルトはランダムまたは人気ツール
-  'default': ['money-guard', 'ai-exam-generator', 'ai-konkatsu']
+  'default': ['money-guard', 'ai-exam-generator', 'ai-report-generator']
 }
 
 // 簡易的なツール名引き辞書（実際は共通定数から引くのが理想）
@@ -37,7 +37,6 @@ const TOOL_NAMES: Record<string, string> = {
   'staysee-ai-finder': 'Staysee AI Finder',
   'comp-price-monitor': '競合AI価格監視',
   'location-finder': 'AIロケーションファインダー',
-  'ai-konkatsu': 'AI婚活コーチ'
 }
 
 export const RelatedToolsArea = ({ currentId }: { currentId: string }) => {
