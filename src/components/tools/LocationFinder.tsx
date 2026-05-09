@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useRef } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { MapPin, Camera, Loader2, RotateCcw, ExternalLink, Search, Upload } from 'lucide-react'
@@ -82,7 +82,7 @@ export default function LocationFinder() {
       {/* ヘッダー */}
       <div className="text-center space-y-2 pt-4">
         <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold px-4 py-1 rounded-full">AI位置情報解析</Badge>
-        <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight">
+        <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight">
           ロケーション<span className="text-emerald-400">ファインダー</span>
         </h1>
         <p className="text-slate-400 text-sm">写真をアップロードするだけで、AIが撮影場所を特定します</p>
@@ -129,7 +129,7 @@ export default function LocationFinder() {
             <button
               onClick={analyze}
               disabled={!imageFile || isAnalyzing}
-              className="flex-1 flex items-center justify-center gap-2 h-11 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl text-sm font-black text-white transition-all shadow-lg"
+              className="flex-1 flex items-center justify-center gap-2 h-11 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl text-sm font-bold text-white transition-all shadow-lg"
             >
               {isAnalyzing ? <><Loader2 size={15} className="animate-spin" /> 解析中</> : <><Search size={15} /> 場所を特定</>}
             </button>
@@ -153,11 +153,11 @@ export default function LocationFinder() {
                     <MapPin size={15} className="text-emerald-400" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-1">特定された場所</p>
-                    <p className="font-black text-white text-base leading-tight">{result.locationName}</p>
+                    <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight mb-1">特定された場所</p>
+                    <p className="font-bold text-white text-base leading-tight">{result.locationName}</p>
                     <Badge className={`mt-1 text-[9px] font-semibold border ${
                       result.confidence === '高' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
-                      result.confidence === '中' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
+                      result.confidence === '中' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
                       'bg-slate-500/10 text-slate-400 border-slate-500/20'
                     }`}>確信度：{result.confidence}</Badge>
                   </div>
@@ -209,11 +209,11 @@ export default function LocationFinder() {
         <div className="bg-[#0d0f1a] border border-white/5 rounded-xl p-4 grid grid-cols-2 gap-4">
           <div>
             <p className="text-[10px] font-semibold text-slate-500 mb-1">緯度</p>
-            <p className="text-sm font-black text-white">{result.lat.toFixed(6)}</p>
+            <p className="text-sm font-bold text-white">{result.lat.toFixed(6)}</p>
           </div>
           <div>
             <p className="text-[10px] font-semibold text-slate-500 mb-1">経度</p>
-            <p className="text-sm font-black text-white">{result.lng.toFixed(6)}</p>
+            <p className="text-sm font-bold text-white">{result.lng.toFixed(6)}</p>
           </div>
         </div>
       )}
