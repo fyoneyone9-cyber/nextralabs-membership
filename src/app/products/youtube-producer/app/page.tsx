@@ -91,9 +91,19 @@ export default function YoutubeProducerApp() {
         method: 'POST',
         body: formData,
       })
-      const data = await res.json()
-      if (data.error) throw new Error(data.error)
-      setTranscript(data.text)
+      
+      const contentType = res.headers.get('content-type')
+      if (contentType && contentType.includes('application/json')) {
+        const data = await res.json()
+        if (data.error) throw new Error(data.error)
+        setTranscript(data.text)
+      } else {
+        const text = await res.text()
+        if (text.includes('Payload Too Large') || res.status === 413) {
+          throw new Error('ファイルサイズが大きすぎます。Vercelの制限により、数MB程度のファイルをご使用ください。')
+        }
+        throw new Error(`サーバーエラーが発生しました (${res.status})`)
+      }
     } catch (e: any) {
       setError('文字起こしに失敗しました: ' + e.message)
     } finally {

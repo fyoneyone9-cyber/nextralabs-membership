@@ -87,6 +87,8 @@ export async function POST(req: NextRequest) {
 
     // Step 2: Upload file to Azure blob storage
     const fileBuffer = await file.arrayBuffer()
+    // 巨大なバイナリデータはfetchで直接送ると環境によってRequest Entity Too Largeやタイムアウトが発生する可能性がある
+    // ただしSAS URLへのPUT自体はAzure側の仕様。ここではエラーハンドリングを強化。
     const uploadRes = await fetch(sasUrl, {
       method: 'PUT',
       headers: {
@@ -99,8 +101,9 @@ export async function POST(req: NextRequest) {
     if (!uploadRes.ok) {
       const err = await uploadRes.text()
       console.error('File upload error:', uploadRes.status, err.slice(0, 200))
+      // エラーがHTML（Request Entity Too Large等）の場合があるため、パースエラーを防ぐ
       return NextResponse.json({
-        text: `ファイルアップロードに失敗しました（${uploadRes.status}）\n\n「テキスト直接入力」モードをお試しください。`
+        text: `アップロードに失敗しました (${uploadRes.status}: ${err.includes('Request Entity Too Large') ? 'ファイルが大きすぎます' : '通信エラー'})。\n\n数MB程度の小さなファイルでお試しいただくか、「テキスト直接入力」モードをご利用ください。`
       })
     }
 
