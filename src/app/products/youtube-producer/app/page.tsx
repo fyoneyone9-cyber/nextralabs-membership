@@ -249,9 +249,23 @@ function YoutubeProducerApp() {
           </TabsContent>
 
           <TabsContent value="genre" className="space-y-8 animate-in fade-in">
-             <div className="space-y-10">
-               <div className="grid md:grid-cols-3 gap-6">{SCRIPT_TYPES.map((t) => (<button key={t.id} onClick={() => setScriptType(t.id)} className={`p-8 rounded-3xl font-black italic text-left border-4 transition-all relative overflow-hidden ${scriptType === t.id ? 'bg-emerald-500 border-emerald-400 text-slate-950 scale-105 shadow-xl' : 'bg-white/5 border-white/5 text-slate-400 hover:border-white/20'}`}><div className="flex items-center justify-between mb-4"><span className="text-2xl uppercase tracking-tighter">{t.label}</span>{scriptType === t.id && <CheckCircle2 size={32} />}</div><p className="text-xs leading-relaxed font-bold opacity-80">{t.desc}</p></button>))}</div>
-               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">{GENRES.map((g) => (<button key={g.id} onClick={() => setGenre(g.id)} className={`p-8 rounded-3xl font-black italic text-left border-4 transition-all relative overflow-hidden group/btn ${genre === g.id ? 'bg-emerald-500 border-emerald-400 text-slate-950 scale-105 shadow-xl' : 'bg-white/5 border-white/5 text-slate-400 hover:border-white/20'}`}><div className="flex items-center justify-between mb-4"><span className="text-2xl uppercase tracking-tighter">{g.label}</span>{genre === g.id && <CheckCircle2 size={32} />}</div><p className={`text-xs font-bold leading-relaxed ${genre === g.id ? 'text-slate-900' : 'text-slate-500 group-hover/btn:text-slate-300'}`}>{g.prompt}</p></button>))}</div>
+             <div className="space-y-12">
+               <div className="space-y-6">
+                 <div className="flex items-center gap-4 mb-4">
+                   <div className="h-8 w-2 bg-emerald-500 rounded-full"></div>
+                   <h4 className="text-2xl font-black text-white italic uppercase tracking-widest">1. 台本タイプを選択</h4>
+                 </div>
+                 <div className="grid md:grid-cols-3 gap-6">{SCRIPT_TYPES.map((t) => (<button key={t.id} onClick={() => setScriptType(t.id)} className={`p-8 rounded-3xl font-black italic text-left border-4 transition-all relative overflow-hidden ${scriptType === t.id ? 'bg-emerald-500 border-emerald-400 text-slate-950 scale-105 shadow-[0_0_30px_rgba(52,211,153,0.3)]' : 'bg-white/5 border-white/5 text-slate-400 hover:border-white/20'}`}><div className="flex items-center justify-between mb-4"><span className="text-2xl uppercase tracking-tighter">{t.label}</span>{scriptType === t.id && <CheckCircle2 size={32} />}</div><p className="text-xs leading-relaxed font-bold opacity-80">{t.desc}</p></button>))}</div>
+               </div>
+
+               <div className="border-t-4 border-white/5 pt-12 space-y-6">
+                 <div className="flex items-center gap-4 mb-4">
+                   <div className="h-8 w-2 bg-emerald-500 rounded-full"></div>
+                   <h4 className="text-2xl font-black text-white italic uppercase tracking-widest">2. 戦略パレットを選択</h4>
+                 </div>
+                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">{GENRES.map((g) => (<button key={g.id} onClick={() => setGenre(g.id)} className={`p-8 rounded-3xl font-black italic text-left border-4 transition-all relative overflow-hidden group/btn ${genre === g.id ? 'bg-emerald-500 border-emerald-400 text-slate-950 scale-105 shadow-[0_0_30px_rgba(52,211,153,0.3)]' : 'bg-white/5 border-white/5 text-slate-400 hover:border-white/20'}`}><div className="flex items-center justify-between mb-4"><span className="text-2xl uppercase tracking-tighter">{g.label}</span>{genre === g.id && <CheckCircle2 size={32} />}</div><p className={`text-xs font-bold leading-relaxed ${genre === g.id ? 'text-slate-900' : 'text-slate-500 group-hover/btn:text-slate-300'}`}>{g.prompt}</p></button>))}</div>
+               </div>
+               
                <div className="flex justify-center pt-10"><Button onClick={generateScript} disabled={isProcessing['script'] || !transcript} className="h-32 px-24 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-4xl rounded-[3rem] shadow-[0_20px_50px_rgba(16,185,129,0.4)] uppercase italic group scale-105 active:scale-95 transition-all">{isProcessing['script'] ? <Loader2 className="animate-spin h-16 w-16" /> : <span className="flex items-center gap-4">ステップ 3: 台本を錬成する <ChevronRight className="h-10 w-10 group-hover:translate-x-2 transition-transform" /></span>}</Button></div>
              </div>
           </TabsContent>
