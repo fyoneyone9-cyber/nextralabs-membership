@@ -34,6 +34,15 @@ export default function YoutubeProducerAppPage() {
   return <YoutubeProducerAppInner />
 }
 
+// 画像スタイル設定
+const IMAGE_STYLES = [
+  { id: 'realistic', label: 'リアル・実写', prompt: 'Photorealistic, cinematic lighting, high-end camera, detailed texture' },
+  { id: 'anime', label: 'アニメ調', prompt: 'Anime style, high quality digital illustration, vibrant colors, expressive characters' },
+  { id: 'ghibli', label: 'ジブリ風', prompt: 'Studio Ghibli style, hand-drawn aesthetic, watercolor-like textures, nostalgic mood' },
+  { id: 'cyberpunk', label: '近未来・ネオン', prompt: 'Cyberpunk aesthetic, neon lights, futuristic city background, tech-wear' },
+  { id: 'comic', label: 'アメコミ風', prompt: 'Marvel/DC comic book style, bold ink lines, dynamic shading, high action' },
+]
+
 // 台本タイプ設定
 const SCRIPT_TYPES = [
   { id: 'short', label: 'ショート用台本', desc: '1分以内の超高密度構成。最初の3秒で視聴者を釘付けにします。', minutes: 1 },
@@ -69,6 +78,7 @@ function YoutubeProducerApp() {
   const [transcript, setTranscript] = useState('')
   const [genre, setGenre] = useState('entertainment')
   const [scriptType, setScriptType] = useState('standard')
+  const [imageStyle, setImageStyle] = useState('anime') // 画像スタイルの初期値
   const [script, setScript] = useState<any>(null)
   const [characters, setCharacters] = useState<any[] | null>(null)
   const [thumbnails, setThumbnails] = useState<any[] | null>(null)
@@ -85,6 +95,7 @@ function YoutubeProducerApp() {
         setTranscript(state.transcript || '')
         setGenre(state.genre || 'entertainment')
         setScriptType(state.scriptType || 'standard')
+        setImageStyle(state.imageStyle || 'anime')
         setScript(state.script || null)
         setCharacters(state.characters || null)
         setThumbnails(state.thumbnails || null)
@@ -99,9 +110,9 @@ function YoutubeProducerApp() {
 
   // 状態が変化するたびに保存
   useEffect(() => {
-    const state = { transcript, genre, scriptType, script, characters, thumbnails, seo, bgm, activeTab }
+    const state = { transcript, genre, scriptType, imageStyle, script, characters, thumbnails, seo, bgm, activeTab }
     localStorage.setItem('yt_producer_state', JSON.stringify(state))
-  }, [transcript, genre, scriptType, script, characters, thumbnails, seo, bgm, activeTab])
+  }, [transcript, genre, scriptType, imageStyle, script, characters, thumbnails, seo, bgm, activeTab])
 
   useEffect(() => {
     const load = async () => {
@@ -177,7 +188,12 @@ function YoutubeProducerApp() {
   const generateScript = async () => {
     const genreData = GENRES.find(g => g.id === genre)
     const typeData = SCRIPT_TYPES.find(t => t.id === scriptType)
-    const result = await callApi('script', { transcript, genre: genreData?.label, genrePrompt: `${genreData?.prompt} 長さ: ${typeData?.label}` })
+    const styleData = IMAGE_STYLES.find(s => s.id === imageStyle)
+    const result = await callApi('script', { 
+      transcript, 
+      genre: genreData?.label, 
+      genrePrompt: `${genreData?.prompt} 長さ: ${typeData?.label} 画像のスタイル指定: ${styleData?.label} (${styleData?.prompt})` 
+    })
     if (result) {
       setScript({ ...result, viralScore: Math.floor(75 + Math.random() * 20), estimatedMinutes: typeData?.minutes })
       setActiveTab('script')
@@ -261,7 +277,27 @@ function YoutubeProducerApp() {
                <div className="border-t-4 border-white/5 pt-12 space-y-6">
                  <div className="flex items-center gap-4 mb-4">
                    <div className="h-8 w-2 bg-emerald-500 rounded-full"></div>
-                   <h4 className="text-2xl font-black text-white italic uppercase tracking-widest">2. 戦略パレットを選択</h4>
+                   <h4 className="text-2xl font-black text-white italic uppercase tracking-widest">2. 画像スタイルを選択</h4>
+                 </div>
+                 <div className="grid md:grid-cols-5 gap-4">
+                   {IMAGE_STYLES.map((s) => (
+                     <button
+                       key={s.id}
+                       onClick={() => setImageStyle(s.id)}
+                       className={`p-4 rounded-2xl font-black italic text-center border-4 transition-all ${
+                         imageStyle === s.id ? 'bg-emerald-500 border-emerald-400 text-slate-950 scale-105 shadow-lg' : 'bg-white/5 border-white/5 text-slate-400 hover:border-white/20'
+                       }`}
+                     >
+                       <span className="text-sm uppercase">{s.label}</span>
+                     </button>
+                   ))}
+                 </div>
+               </div>
+
+               <div className="border-t-4 border-white/5 pt-12 space-y-6">
+                 <div className="flex items-center gap-4 mb-4">
+                   <div className="h-8 w-2 bg-emerald-500 rounded-full"></div>
+                   <h4 className="text-2xl font-black text-white italic uppercase tracking-widest">3. 戦略パレットを選択</h4>
                  </div>
                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">{GENRES.map((g) => (<button key={g.id} onClick={() => setGenre(g.id)} className={`p-8 rounded-3xl font-black italic text-left border-4 transition-all relative overflow-hidden group/btn ${genre === g.id ? 'bg-emerald-500 border-emerald-400 text-slate-950 scale-105 shadow-[0_0_30px_rgba(52,211,153,0.3)]' : 'bg-white/5 border-white/5 text-slate-400 hover:border-white/20'}`}><div className="flex items-center justify-between mb-4"><span className="text-2xl uppercase tracking-tighter">{g.label}</span>{genre === g.id && <CheckCircle2 size={32} />}</div><p className={`text-xs font-bold leading-relaxed ${genre === g.id ? 'text-slate-900' : 'text-slate-500 group-hover/btn:text-slate-300'}`}>{g.prompt}</p></button>))}</div>
                </div>
