@@ -70,7 +70,7 @@ export default function HomePage() {
 
       <section className="py-12 bg-[#050507] mt-auto border-b border-white/5">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-2xl md:text-5xl font-black text-white mb-8">全ての知能を解放せよ</h2>
+          <h2 className="text-2xl md:text-5xl font-black text-white mb-8">あなたのAIを、今すぐ。</h2>
           <Link href="/products"><Button size="lg" className="text-2xl md:text-3xl h-20 md:h-24 bg-emerald-500 text-slate-950 font-black rounded-2xl">全ツールを見る ➔</Button></Link>
         </div>
       </section>
