@@ -63,7 +63,14 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Genspark Claw と同じフォントスタック */
+    font-family: var(--font-inter), var(--font-noto-sans-jp),
+      "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+      "Noto Sans CJK JP", "Yu Gothic", "Meiryo",
+      -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 

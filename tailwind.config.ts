@@ -9,6 +9,22 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        // Genspark Claw フォントスタック
+        sans: [
+          'var(--font-inter)',
+          'var(--font-noto-sans-jp)',
+          'Hiragino Sans',
+          'Hiragino Kaku Gothic ProN',
+          'Noto Sans CJK JP',
+          'Yu Gothic',
+          'Meiryo',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'sans-serif',
+        ],
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

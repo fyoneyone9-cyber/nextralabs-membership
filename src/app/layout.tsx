@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Noto_Sans_JP } from 'next/font/google'
 import './globals.css'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
@@ -8,7 +8,19 @@ import { DebugPanel } from '@/components/tools/DebugPanel'
 import { HeaderWrapper, FooterWrapper } from '@/components/layout-wrappers'
 import { ApiMonitorOverlay } from '@/components/tools/ApiMonitorOverlay'
 
-const inter = Inter({ subsets: ['latin'] })
+// Genspark Claw と同じフォントスタック: Inter (英字) + Noto Sans JP (日本語)
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+})
+
+const notoSansJP = Noto_Sans_JP({
+  subsets: ['latin'],
+  weight: ['400', '500', '700', '900'],
+  variable: '--font-noto-sans-jp',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   verification: {
@@ -47,7 +59,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja" className="dark" style={{ backgroundColor: '#050507', colorScheme: 'dark' }} suppressHydrationWarning>
-      <body className={inter.className + " min-h-screen bg-[#050507] text-slate-200 dark antialiased"}>
+      <body className={`${inter.variable} ${notoSansJP.variable} font-sans min-h-screen bg-[#050507] text-slate-200 dark antialiased`}>
         <Providers>
           <div className="relative flex min-h-screen flex-col bg-[#050507]">
             <HeaderWrapper />
