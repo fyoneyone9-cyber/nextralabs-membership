@@ -1,5 +1,6 @@
-﻿import { checkApiLimit } from '@/lib/api-limit';
+import { checkApiLimit } from '@/lib/api-limit';
 import { NextResponse } from 'next/server'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
 interface TrendItem {
   title: string
@@ -46,9 +47,37 @@ async function fetchRss(url: string, sourceName: string): Promise<TrendItem[]> {
   } catch { return []; }
 }
 
+// Geminiを使ったフォールバック：日本の最新トレンドをAIで生成
+async function fetchTrendsFromGemini(): Promise<TrendItem[]> {
+  const apiKey = process.env.GEMINI_API_KEY
+  if (!apiKey) return []
+  try {
+    const genAI = new GoogleGenerativeAI(apiKey)
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
+    const prompt = `現在の日本でSNS（X/Twitter・Instagram・TikTok）でトレンドになっているトピックを8個挙げてください。
+JSONのみで返答してください（説明文不要）:
+[
+  {"title": "トレンド名"},
+  ...
+]`
+    const result = await model.generateContent(prompt)
+    const text = result.response.text().replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+    const jsonMatch = text.match(/\[[\s\S]*\]/)
+    if (!jsonMatch) return []
+    const parsed = JSON.parse(jsonMatch[0])
+    return parsed.map((t: any) => ({
+      title: t.title || t,
+      description: '',
+      source: 'Gemini AI Trends',
+      link: '',
+      pubDate: new Date().toISOString(),
+    }))
+  } catch { return [] }
+}
+
 export async function GET() {
-  // 🛡️ レート制限（1日10回）
-  const limitCheck = await checkApiLimit('trends', 10);
+  // 🛡️ レート制限（1日30回）
+  const limitCheck = await checkApiLimit('trends', 30);
   if (!limitCheck.allowed) {
     return NextResponse.json(
       { error: '本日の利用上限に達しました。明日またご利用ください。' },
@@ -57,21 +86,43 @@ export async function GET() {
   }
 
   try {
-    // 【三段構え】GNews API(内部呼び出し) + RSS 2種
+    // RSS取得を試みる
     const [newsItems, trendItems] = await Promise.all([
-      fetchRss(GOOGLE_NEWS_SEARCH_RSS, 'Google News (Speed)'),
-      fetchRss(GOOGLE_TRENDS_RSS, 'Google Trends (Volume)')
+      fetchRss(GOOGLE_NEWS_SEARCH_RSS, 'Google News'),
+      fetchRss(GOOGLE_TRENDS_RSS, 'Google Trends')
     ]);
 
-    // GNews API側のデータも補完的に混ぜるために構造を合わせる
-    // (フロントエンドが/api/tools/trendsを直接呼んだ場合でも最強の状態にする)
+    const rssItems = [...newsItems, ...trendItems].slice(0, 20)
+
+    // RSSが0件 → Geminiフォールバック
+    if (rssItems.length === 0) {
+      const geminiItems = await fetchTrendsFromGemini()
+      return NextResponse.json({
+        source: 'gemini_fallback',
+        updated: new Date().toISOString(),
+        count: geminiItems.length,
+        trends: geminiItems,
+      })
+    }
+
     return NextResponse.json({
-      source: 'triple_hybrid_node',
+      source: 'rss_hybrid',
       updated: new Date().toISOString(),
-      count: newsItems.length + trendItems.length,
-      trends: [...newsItems, ...trendItems].slice(0, 20),
+      count: rssItems.length,
+      trends: rssItems,
     })
   } catch (e: any) {
-    return NextResponse.json({ error: 'Hybrid Fetch Failed' }, { status: 500 })
+    // 最終フォールバック：Gemini
+    try {
+      const geminiItems = await fetchTrendsFromGemini()
+      return NextResponse.json({
+        source: 'gemini_fallback',
+        updated: new Date().toISOString(),
+        count: geminiItems.length,
+        trends: geminiItems,
+      })
+    } catch {
+      return NextResponse.json({ error: 'Trend fetch failed' }, { status: 500 })
+    }
   }
 }
