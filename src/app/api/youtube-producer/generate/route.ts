@@ -4,11 +4,14 @@ import { checkYoutubeLimit, recordYoutubeUsage } from '@/lib/youtube-rate-limit'
 const LLM_BASE = 'https://www.genspark.ai/api/llm_proxy/v1'
 
 async function callLLM(systemPrompt: string, userPrompt: string) {
-  // 環境変数からAPIキーを取得。Vercel設定ミスや反映遅延を考慮し、ハードコードされた予備キー（Nextra Labs専用）をフォールバックとして使用
-  const GSK_API_KEY = process.env.GSK_API_KEY || 'AIzaSyCMbtu9IJIGbml2KOv1Yjit9QP7TkmIgiA'
+  // 環境変数優先
+  const GSK_API_KEY = process.env.GSK_API_KEY;
+  
+  // 401エラー（ Invalid token）を回避するため、最新のGenspark Proxy仕様に合わせたキー形式を確認
+  // 以前使用していたハードコードされたキーが期限切れの可能性があるため、環境変数からの注入を最優先
   
   if (!GSK_API_KEY) {
-    throw new Error('APIキーが設定されていません')
+    throw new Error('APIキーが設定されていません。VercelのEnvironment Variables設定を確認してください。')
   }
 
   // Use Genspark LLM Proxy (OpenAI-compatible)
@@ -16,7 +19,7 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${GSK_API_KEY}`,
+      'Authorization': `Bearer ${GSK_API_KEY}`, // Bearer形式を維持
     },
     body: JSON.stringify({
       model: 'gemini-2.0-flash',
