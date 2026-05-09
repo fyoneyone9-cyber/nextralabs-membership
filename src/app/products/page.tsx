@@ -36,7 +36,6 @@ const TOOLS = [
   { id: 'expense-sync/app', cat: 'biz', title: 'Expense AI Sync', sub: '経費精算の全自動記帳OS', icon: Table, plan: 'ライト' , done: true },
 
   { id: 'ai-sidejob/app', cat: 'biz', title: 'AI副業スタートダッシュ', sub: '適性診断と収益ロードマップ', icon: Briefcase, plan: 'プレミアム' , done: true },
-  { id: 'office-politics-graph/app', cat: 'mind', title: '社内政治 AI相関図', sub: '人間関係の暗部を可視化', icon: Network, plan: '無料' , done: true },
   { id: 'interior-coordinator/app', cat: 'mind', title: 'Interior AI Sync', sub: '空間解析と楽天一括購入OS', icon: Sofa, plan: 'プレミアム' , done: true },
   { id: 'ai-recipe/app', cat: 'life', title: 'AIレシピ献立コーチ', sub: '冷蔵庫の残り物と栄養最適化', icon: Utensils, plan: '無料', done: true },
   { id: 'exam-scheduler/app', cat: 'edu', title: '資格試験AIスケジューラー', sub: '試験日から逆算して学習計画を自動生成', icon: ClipboardCheck, plan: 'スタンダード', done: true }, // ✅ LOCK 2026-05-10
