@@ -1,3 +1,4 @@
+﻿import { checkApiLimit } from '@/lib/api-limit';
 import { NextResponse } from 'next/server'
 
 interface TrendItem {
@@ -46,6 +47,15 @@ async function fetchRss(url: string, sourceName: string): Promise<TrendItem[]> {
 }
 
 export async function GET() {
+  // 🛡️ レート制限（1日10回）
+  const limitCheck = await checkApiLimit('trends', 10);
+  if (!limitCheck.allowed) {
+    return NextResponse.json(
+      { error: '本日の利用上限に達しました。明日またご利用ください。' },
+      { status: 429 }
+    );
+  }
+
   try {
     // 【三段構え】GNews API(内部呼び出し) + RSS 2種
     const [newsItems, trendItems] = await Promise.all([
