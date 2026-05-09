@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 
 const ADMIN_EMAIL = "f.yoneyone9@gmail.com";
 
-// チE�Eル別1日制陁E
+// ツール別1日制限
 const TOOL_DAILY_LIMITS: Record<string, Record<string, number>> = {
   "staysee-ai-finder": { free: 0, light: 0, standard: 0, premium: 10 },
   "gmail-reply":        { free: 0, light: 0, standard: 0, premium: 10 },
@@ -23,10 +23,10 @@ export async function checkRateLimit(
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    // ── ユーザー取得：Bearerト�EクンとCookieセチE��ョンの両方に対忁E──
+    // ユーザー取得：BearerトークンとCookieセッションの両方に対応
     let user: any = null
 
-    // 1. Authorizationヘッダーから試みめE
+    // 1. Authorizationヘッダーから試みる
     const authHeader = req.headers.get("authorization") || "";
     const token = authHeader.replace("Bearer ", "").trim();
     if (token) {
@@ -34,7 +34,7 @@ export async function checkRateLimit(
       user = data?.user ?? null;
     }
 
-    // 2. ヘッダーになければCookieセチE��ョンから取征E
+    // 2. ヘッダーになければCookieセッションから取得
     if (!user) {
       try {
         const cookieStore = cookies();
@@ -58,16 +58,16 @@ export async function checkRateLimit(
       return {
         allowed: false,
         response: NextResponse.json(
-          { error: "認証が忁E��です。ログインしてください、E },
+          { error: "認証が必要です。ログインしてください。" },
           { status: 401 }
         ),
       };
     }
 
-    // 管琁E��E�E無制陁E
+    // 管理者は無制限
     if (user.email === ADMIN_EMAIL) return { allowed: true };
 
-    // プラン取征E
+    // プラン取得
     const { data: sub } = await supabaseAdmin
       .from("subscriptions")
       .select("plan")
@@ -76,7 +76,7 @@ export async function checkRateLimit(
       .maybeSingle();
     const plan = sub?.plan ?? "free";
 
-    // 制限値取征E
+    // 制限値取得
     const limits = TOOL_DAILY_LIMITS[toolId] ?? TOOL_DAILY_LIMITS["default"];
     const dailyLimit = limits[plan] ?? limits["free"] ?? 0;
 
@@ -84,7 +84,7 @@ export async function checkRateLimit(
       return {
         allowed: false,
         response: NextResponse.json(
-          { error: "こ�EチE�Eルをご利用ぁE��だくには上位�Eランが忁E��です、E },
+          { error: "このツールをご利用いただくには上位プランが必要です。" },
           { status: 403 }
         ),
       };
@@ -92,7 +92,7 @@ export async function checkRateLimit(
 
     if (dailyLimit >= 999) return { allowed: true };
 
-    // 使用回数チェチE��
+    // 使用回数チェック
     const today = new Date().toISOString().slice(0, 10);
     const { data: usage } = await supabaseAdmin
       .from("api_usage")
@@ -107,13 +107,13 @@ export async function checkRateLimit(
       return {
         allowed: false,
         response: NextResponse.json(
-          { error: `本日の利用制限！E{dailyLimit}回）に達しました。�E日また利用できます。` },
+          { error: `本日の利用制限（${dailyLimit}回）に達しました。明日また利用できます。` },
           { status: 429 }
         ),
       };
     }
 
-    // カウントアチE�E
+    // カウントアップ
     await supabaseAdmin.from("api_usage").upsert(
       { user_id: user.id, tool_id: toolId, date: today, count: currentCount + 1 },
       { onConflict: "user_id,tool_id,date" }
@@ -122,7 +122,7 @@ export async function checkRateLimit(
     return { allowed: true };
   } catch (err) {
     console.error("[RATE_LIMIT_ERROR]", err);
-    // DBエラー時�Eサービス継続優先で通す
+    // DBエラー時はサービス継続優先で通す
     return { allowed: true };
   }
 }
