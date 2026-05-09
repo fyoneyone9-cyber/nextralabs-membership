@@ -1,0 +1,24 @@
+# ============================================================
+# LOCKED TOOLS - DO NOT MODIFY WITHOUT EXPLICIT INSTRUCTION
+# from 米山文貴（Ninja3）
+# ============================================================
+# These files are merge=ours — on any conflict, local version wins automatically.
+
+# KDP Guide (kdp-guide) ✅ LOCK 2026-05-09
+src/app/products/kdp-guide/app/page.tsx merge=ours
+src/app/products/kdp-guide/page.tsx merge=ours
+
+# Loan Advisor (loan-advisor) ✅ LOCK 2026-05-09
+src/app/products/loan-advisor/app/page.tsx merge=ours
+src/app/products/loan-advisor/page.tsx merge=ours
+src/app/api/tools/loan-advisor/route.ts merge=ours
+
+# Universal Converter (universal-converter) ✅ LOCK 2026-05-10
+src/app/products/universal-converter/app/page.tsx merge=ours
+src/app/products/universal-converter/page.tsx merge=ours
+
+# Office Politics Graph (office-politics-graph) 💎 LOCK
+src/app/products/office-politics-graph/app/page.tsx merge=ours
+src/app/products/office-politics-graph/page.tsx merge=ours
+src/app/products/office-politics-graph/layout.tsx merge=ours
+src/app/api/tools/office-politics/route.ts merge=ours
