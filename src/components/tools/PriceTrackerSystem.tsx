@@ -41,9 +41,9 @@ const MasterEngine = () => {
         <div className="text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
             <TrendingDown className="w-4 h-4 text-emerald-400" />
-            <span className="text-emerald-400 text-[10px] font-black uppercase tracking-widest">Price Forecasting Engine v2.0</span>
+            <span className="text-emerald-400 text-[10px] font-bold uppercase tracking-tight">Price Forecasting Engine v2.0</span>
           </div>
-          <h1 className="text-4xl md:text-8xl font-black text-white italic tracking-tighter uppercase leading-none drop-shadow-2xl">
+          <h1 className="text-4xl md:text-8xl font-bold text-white tracking-tighter uppercase leading-none drop-shadow-2xl">
             底値監視<span className="text-emerald-500">AI予測</span>
           </h1>
         </div>
@@ -56,7 +56,7 @@ const MasterEngine = () => {
 
           <div className="relative z-10 space-y-10">
             <div className="space-y-4">
-              <label className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em] ml-2">Input Product URL</label>
+              <label className="text-[10px] font-bold text-emerald-500 uppercase tracking-[0.3em] ml-2">Input Product URL</label>
               <div className="relative">
                 <input 
                   value={productUrl} 
@@ -71,7 +71,7 @@ const MasterEngine = () => {
             <button 
               onClick={runPricePrediction} 
               disabled={isAnalyzing || !productUrl} 
-              className={`w-full h-24 rounded-3xl font-black text-2xl uppercase italic tracking-tighter transition-all flex items-center justify-center gap-4 ${
+              className={`w-full h-24 rounded-3xl font-bold text-2xl uppercase tracking-tighter transition-all flex items-center justify-center gap-4 ${
                 productUrl 
                   ? 'bg-emerald-600 hover:bg-emerald-500 text-slate-950 shadow-[0_20px_60px_rgba(16,185,129,0.4)] active:scale-95' 
                   : 'bg-slate-800 text-slate-500 cursor-not-allowed opacity-50'
@@ -88,19 +88,19 @@ const MasterEngine = () => {
               <div className="space-y-8 animate-in fade-in slide-in-from-top-4 duration-500">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-black/40 border border-white/5 p-6 rounded-2xl">
-                    <p className="text-[10px] text-slate-500 font-black uppercase mb-1">Current Price</p>
-                    <p className="text-3xl font-black text-white italic">¥{predictionData.currentPrice.toLocaleString()}</p>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase mb-1">Current Price</p>
+                    <p className="text-3xl font-bold text-white ">¥{predictionData.currentPrice.toLocaleString()}</p>
                   </div>
                   <div className="bg-emerald-500/10 border border-emerald-500/20 p-6 rounded-2xl">
-                    <p className="text-[10px] text-emerald-500 font-black uppercase mb-1">AI Target Price</p>
-                    <p className="text-3xl font-black text-emerald-500 italic">¥{predictionData.lowestPrice.toLocaleString()}</p>
+                    <p className="text-[10px] text-emerald-500 font-bold uppercase mb-1">AI Target Price</p>
+                    <p className="text-3xl font-bold text-emerald-500 ">¥{predictionData.lowestPrice.toLocaleString()}</p>
                   </div>
                 </div>
 
                 <div className="bg-black/60 border border-white/10 p-6 rounded-2xl space-y-3">
                   <div className="flex items-center gap-2 mb-2">
-                    <Zap className="w-3 h-3 text-amber-500" />
-                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Deep Learning Logs</span>
+                    <Zap className="w-3 h-3 text-emerald-500" />
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">Deep Learning Logs</span>
                   </div>
                   <div className="space-y-1 text-[10px] font-mono text-emerald-500/60 leading-relaxed">
                     {predictionData.analysisLog.map((log, i) => (
@@ -113,7 +113,7 @@ const MasterEngine = () => {
                 </div>
 
                 <div className="p-8 bg-emerald-500/5 border-l-8 border-emerald-500 rounded-2xl">
-                   <p className="text-lg md:text-xl font-black text-white leading-relaxed italic">
+                   <p className="text-lg md:text-xl font-bold text-white leading-relaxed ">
                      「 {predictionData.advice} 」
                    </p>
                 </div>
