@@ -60,10 +60,10 @@ export default function AiSidejobApp() {
 
   return (
     <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-emerald-500/30 text-left">
-      <div className="max-w-5xl mx-auto space-y-10 rounded-[3rem] p-6 md:p-12 bg-[#0a0a0c]">
+      <div className="max-w-5xl mx-auto space-y-10 p-4 md:p-8">
         
-        {/* Header: Nextra Standard 'Upper Green' & Lock Status */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b-4 border-emerald-500 pb-10 mb-10">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-white/10 pb-8 mb-8">
           <div className="flex items-center gap-6">
             <div className="p-5 bg-emerald-500 rounded-3xl shadow-[0_0_20px_rgba(16,185,129,0.4)]">
               <Briefcase className="h-10 w-10 text-slate-950" />

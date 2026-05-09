@@ -18,7 +18,7 @@ const MasterEngine = () => {
   useEffect(() => { setIsMounted(true); }, []);
   if (!isMounted) return null;
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 bg-[#050507] border-4 border-emerald-500/50 rounded-[4rem]">
+    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 bg-[#050507]">
       <div className="text-center space-y-2">
         <Badge className="bg-orange-600 text-white font-black italic px-4 py-1 text-[10px] uppercase rounded-full">Publishing OS</Badge>
         <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic text-center">Kindle出版AI完全ナビ</h1>

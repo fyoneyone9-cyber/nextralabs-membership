@@ -35,7 +35,7 @@ const MasterEngine = () => {
   return (
     <div className="relative min-h-screen bg-[#050507] text-slate-200 font-sans p-4 md:p-8 overflow-hidden">
       {/* 🚨 憲法遵守：エメラルドグリーンの発光外枠 */}
-      <div className="fixed inset-4 border-2 border-emerald-500/30 rounded-[2.5rem] pointer-events-none z-50 shadow-[0_0_50px_rgba(16,185,129,0.1)_inset,0_0_20px_rgba(16,185,129,0.1)]"></div>
+      <div className="fixed inset-4 rounded-[2.5rem] pointer-events-none z-50"></div>
       
       <div className="max-w-4xl mx-auto space-y-10 relative z-10 pt-10">
         <div className="text-center space-y-4">

@@ -210,7 +210,7 @@ const MasterEngine = () => {
   const STEP_LABELS = ['トレンド選択', 'デザイン生成', '出品完了']
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-32 text-left border-2 border-emerald-500/40 shadow-[0_0_60px_rgba(16,185,129,0.1)] rounded-2xl p-5 md:p-10 bg-[#050507]">
+    <div className="max-w-7xl mx-auto space-y-8 pb-32 text-left p-5 md:p-10 bg-[#050507]">
 
       {/* タイトル */}
       <div className="text-center space-y-2">
