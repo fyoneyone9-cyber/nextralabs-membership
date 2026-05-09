@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useCallback, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
@@ -125,7 +125,7 @@ export default function ExamScheduler() {
   const rssStatusLabel = (status: ExamConfig['rssStatus'], date: string) => {
     if (status === 'checking') return <span className="text-slate-400 text-xs">確認中...</span>
     if (status === 'found') return <span className="text-emerald-400 text-xs font-semibold">✓ 試験日: {date}</span>
-    if (status === 'notfound') return <span className="text-amber-400 text-xs">試験日が見つかりません</span>
+    if (status === 'notfound') return <span className="text-emerald-400 text-xs">試験日が見つかりません</span>
     if (status === 'error') return <span className="text-red-400 text-xs">取得エラー</span>
     return null
   }
@@ -139,7 +139,7 @@ export default function ExamScheduler() {
           <Badge className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold px-4 py-1 text-xs rounded-full">
             学習スケジューラー
           </Badge>
-          <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
             試験<span className="text-emerald-400">スケジューラー</span>
           </h1>
           <p className="text-slate-400 text-sm">試験日RSS自動取得 × AI学習計画 × Googleカレンダー一括登録</p>
@@ -153,7 +153,7 @@ export default function ExamScheduler() {
                 <Calendar size={22} />
               </div>
               <div className="text-left">
-                <p className="font-black text-white text-sm">
+                <p className="font-bold text-white text-sm">
                   {googleToken ? 'Googleアカウント連携済み' : 'STEP 1：カレンダーを連携'}
                 </p>
                 <p className="text-slate-500 text-xs mt-0.5">
@@ -165,7 +165,7 @@ export default function ExamScheduler() {
               <Button
                 onClick={handleGoogleAuth}
                 disabled={authLoading}
-                className="h-11 bg-white text-slate-950 hover:bg-slate-100 font-black px-8 rounded-xl text-sm shrink-0"
+                className="h-11 bg-white text-slate-950 hover:bg-slate-100 font-bold px-8 rounded-xl text-sm shrink-0"
               >
                 {authLoading ? <Loader2 size={16} className="animate-spin mr-2" /> : null}
                 Googleログイン →
@@ -180,7 +180,7 @@ export default function ExamScheduler() {
             <Card key={exam.id} className="bg-[#0d0f1a] border border-white/5 rounded-2xl shadow-xl">
               <CardContent className="p-6 space-y-5">
                 <div className="flex justify-between items-center">
-                  <h3 className="font-black text-white flex items-center gap-2 text-base">
+                  <h3 className="font-bold text-white flex items-center gap-2 text-base">
                     <BookOpen size={16} className="text-emerald-400" />
                     試験 #{idx + 1}
                   </h3>
@@ -194,7 +194,7 @@ export default function ExamScheduler() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   {/* 試験名 */}
                   <div className="space-y-1.5 text-left">
-                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">試験名</label>
+                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">試験名</label>
                     <input
                       type="text"
                       value={exam.name}
@@ -205,7 +205,7 @@ export default function ExamScheduler() {
 
                   {/* 試験日（手動） */}
                   <div className="space-y-1.5 text-left">
-                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">試験日（手動入力）</label>
+                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">試験日（手動入力）</label>
                     <input
                       type="date"
                       value={exam.examDate}
@@ -216,7 +216,7 @@ export default function ExamScheduler() {
 
                   {/* RSS URL */}
                   <div className="space-y-1.5 text-left sm:col-span-2">
-                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">試験日RSSで自動取得</label>
+                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">試験日RSSで自動取得</label>
                     <div className="flex gap-2">
                       <input
                         type="text"
@@ -240,7 +240,7 @@ export default function ExamScheduler() {
 
                   {/* 学習期間・時間 */}
                   <div className="space-y-1.5 text-left">
-                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">学習期間（週）</label>
+                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">学習期間（週）</label>
                     <input
                       type="number"
                       value={exam.studyWeeks}
@@ -249,7 +249,7 @@ export default function ExamScheduler() {
                     />
                   </div>
                   <div className="space-y-1.5 text-left">
-                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">1日あたりの時間（h）</label>
+                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">1日あたりの時間（h）</label>
                     <input
                       type="number"
                       value={exam.sessionHours}
@@ -275,7 +275,7 @@ export default function ExamScheduler() {
         <Button
           onClick={handleSubmit}
           disabled={!googleToken || loading}
-          className="w-full h-16 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white font-black rounded-2xl shadow-xl text-lg transition-all"
+          className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white font-bold rounded-2xl shadow-xl text-lg transition-all"
         >
           {loading ? (
             <div className="flex items-center gap-3">
@@ -293,7 +293,7 @@ export default function ExamScheduler() {
         {/* 結果表示 */}
         {results && (
           <div className="space-y-4">
-            <h2 className="text-xl font-black text-white flex items-center gap-2">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
               <CheckCircle2 size={20} className="text-emerald-400" /> 登録完了
             </h2>
             {results.map(r => (
@@ -304,12 +304,12 @@ export default function ExamScheduler() {
                       <Calendar size={18} className="text-emerald-400" />
                     </div>
                     <div className="text-left">
-                      <p className="font-black text-white text-sm">{r.name}</p>
+                      <p className="font-bold text-white text-sm">{r.name}</p>
                       <p className="text-slate-500 text-xs mt-0.5">{r.examDate}（残り {r.daysUntil} 日）</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-xl font-black text-emerald-400">{r.registered}件</p>
+                    <p className="text-xl font-bold text-emerald-400">{r.registered}件</p>
                     <p className="text-slate-600 text-[9px] font-semibold uppercase">カレンダー登録済</p>
                   </div>
                 </CardContent>
