@@ -149,13 +149,13 @@ export default function YoutubeProducerApp() {
             </div>
             <div>
               <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white">
-                AI YouTube <span className="text-emerald-500">PRODUCER</span>
+                AI YouTube <span className="text-emerald-500">プロデューサー</span>
               </h1>
-              <p className="text-emerald-500/60 font-black text-xs uppercase italic tracking-widest mt-1">Master Production OS v2.1</p>
+              <p className="text-emerald-500/60 font-black text-[10px] uppercase italic tracking-widest mt-1">動画制作 OS v2.1</p>
             </div>
           </div>
           <Badge className="bg-emerald-500 text-slate-950 font-black italic px-6 py-2 text-sm rounded-full shadow-[0_0_20px_rgba(16,185,129,0.4)]">
-            PREMIUM MASTER MODEL
+            プレミアム・マスターモデル
           </Badge>
         </div>
 
@@ -168,17 +168,17 @@ export default function YoutubeProducerApp() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
           <TabsList className="grid grid-cols-4 h-16 bg-white/5 border border-white/10 rounded-2xl p-1 gap-2">
-            <TabsTrigger value="input" className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-xs">
-              <Mic size={16} className="mr-2" /> 1. INPUT
+            <TabsTrigger value="input" className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-[10px]">
+              <Mic size={14} className="mr-2" /> 1. 入力
             </TabsTrigger>
-            <TabsTrigger value="script" disabled={!script} className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-xs">
-              <FileText size={16} className="mr-2" /> 2. SCRIPT
+            <TabsTrigger value="script" disabled={!script} className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-[10px]">
+              <FileText size={14} className="mr-2" /> 2. 台本
             </TabsTrigger>
-            <TabsTrigger value="visual" disabled={!script} className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-xs">
-              <ImageIcon size={16} className="mr-2" /> 3. VISUAL
+            <TabsTrigger value="visual" disabled={!script} className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-[10px]">
+              <ImageIcon size={14} className="mr-2" /> 3. 視覚
             </TabsTrigger>
-            <TabsTrigger value="strategy" disabled={!script} className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-xs">
-              <Search size={16} className="mr-2" /> 4. STRATEGY
+            <TabsTrigger value="strategy" disabled={!script} className="rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-slate-950 font-black italic uppercase text-[10px]">
+              <Search size={14} className="mr-2" /> 4. 戦略
             </TabsTrigger>
           </TabsList>
 
@@ -188,7 +188,7 @@ export default function YoutubeProducerApp() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-emerald-400">
                   <Info size={20} />
-                  <h3 className="font-black italic uppercase text-sm tracking-widest">STEP 1: 動画の核となる情報を入力</h3>
+                  <h3 className="font-black italic uppercase text-sm tracking-widest">ステップ 1: 動画の核となる情報を入力</h3>
                 </div>
                 <div className="flex gap-2">
                   <input 
@@ -204,18 +204,18 @@ export default function YoutubeProducerApp() {
                     className="h-10 px-4 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-xs rounded-xl hover:bg-emerald-500/20 transition-all flex items-center gap-2"
                   >
                     {isProcessing['transcribe'] ? <Loader2 className="animate-spin h-4 w-4" /> : <Upload size={14} />}
-                    動画・音声から文字起こし
+                    動画・音声から読み起こし
                   </Button>
                 </div>
               </div>
               <p className="text-sm text-slate-300 font-bold leading-relaxed italic">
-                動画にしたい内容を入力してください。または、上のボタンから**動画ファイル(MP4/MOV)や音声ファイル(MP3/WAV)**をアップロードすれば、AIが自動で内容を読み起こします。
+                動画にしたい内容を入力してください。または、上のボタンから**動画ファイルや音声ファイル**をアップロードすれば、AIが自動で内容を読み起こします。
               </p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
               <div className="md:col-span-2 space-y-4">
-                <label className="text-xs font-black text-emerald-500 uppercase tracking-widest italic ml-2">Source Content (ソース内容)</label>
+                <label className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic ml-2">ソース内容</label>
                 <textarea 
                   value={transcript}
                   onChange={(e) => setTranscript(e.target.value)}
@@ -225,7 +225,7 @@ export default function YoutubeProducerApp() {
               </div>
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <label className="text-xs font-black text-emerald-500 uppercase tracking-widest italic ml-2">Select Genre (ジャンル)</label>
+                  <label className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic ml-2">ジャンル選択</label>
                   <div className="space-y-2">
                     {GENRES.map((g) => (
                       <button
@@ -268,7 +268,7 @@ export default function YoutubeProducerApp() {
                   </h3>
                   <div className="flex gap-4">
                     <div className="bg-emerald-500/10 border border-emerald-500/30 px-6 py-3 rounded-2xl text-center">
-                      <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic mb-1">Viral Score</p>
+                      <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic mb-1">バズ予測スコア</p>
                       <p className="text-3xl font-black text-white italic">{script.viralScore}%</p>
                     </div>
                     <div className="bg-white/5 border border-white/10 px-6 py-3 rounded-2xl text-center flex flex-col justify-center">
@@ -280,9 +280,9 @@ export default function YoutubeProducerApp() {
 
                 <div className="grid gap-6">
                   {[
-                    { title: 'OPENING (導入)', content: script.opening, color: 'from-emerald-500/20' },
-                    { title: 'BODY (本編)', content: script.body, color: 'from-blue-500/10' },
-                    { title: 'CLOSING (結末)', content: script.closing, color: 'from-purple-500/10' }
+                    { title: '導入 (オープニング)', content: script.opening, color: 'from-emerald-500/20' },
+                    { title: '本編 (ボディー)', content: script.body, color: 'from-blue-500/10' },
+                    { title: '結末 (エンディング)', content: script.closing, color: 'from-purple-500/10' }
                   ].map((section, idx) => (
                     <Card key={idx} className={`bg-gradient-to-br ${section.color} to-transparent border-white/10 rounded-3xl p-8`}>
                       <h4 className="text-sm font-black text-emerald-400 uppercase tracking-widest italic mb-4">{section.title}</h4>
@@ -299,7 +299,7 @@ export default function YoutubeProducerApp() {
                   >
                     {isProcessing['characters'] ? <Loader2 className="animate-spin" /> : (
                       <span className="flex items-center gap-2">
-                        STEP 3: 視覚設計へ進む <ChevronRight className="group-hover:translate-x-1 transition-transform" />
+                        ステップ 3: 視覚設計へ進む <ChevronRight className="group-hover:translate-x-1 transition-transform" />
                       </span>
                     )}
                   </Button>
@@ -324,7 +324,7 @@ export default function YoutubeProducerApp() {
                       </div>
                       <p className="text-xs text-slate-400 font-bold italic">{char.description}</p>
                       <div className="bg-black/40 rounded-xl p-4 border border-white/5">
-                        <p className="text-[10px] text-white/40 uppercase mb-2 font-black tracking-widest">AI Image Prompt</p>
+                        <p className="text-[10px] text-white/40 uppercase mb-2 font-black tracking-widest">画像生成用プロンプト</p>
                         <p className="text-xs text-emerald-500/80 font-mono break-all leading-relaxed">{char.imagePrompt}</p>
                       </div>
                     </Card>
@@ -344,7 +344,7 @@ export default function YoutubeProducerApp() {
                         <h4 className="font-black text-white italic">{thumb.title}</h4>
                       </div>
                       <div className="bg-black/40 rounded-xl p-4 border border-white/5">
-                        <p className="text-[10px] text-white/40 uppercase mb-2 font-black tracking-widest">Thumb Prompt</p>
+                        <p className="text-[10px] text-white/40 uppercase mb-2 font-black tracking-widest">サムネイル指示文</p>
                         <p className="text-xs text-slate-400 font-mono italic leading-relaxed">{thumb.imagePrompt}</p>
                       </div>
                     </Card>
@@ -361,7 +361,7 @@ export default function YoutubeProducerApp() {
               >
                 {isProcessing['title'] ? <Loader2 className="animate-spin" /> : (
                   <span className="flex items-center gap-2">
-                    STEP 4: SEO・戦略設計へ進む <ChevronRight className="group-hover:translate-x-1 transition-transform" />
+                    ステップ 4: 戦略設計へ進む <ChevronRight className="group-hover:translate-x-1 transition-transform" />
                   </span>
                 )}
               </Button>
@@ -379,12 +379,12 @@ export default function YoutubeProducerApp() {
                     </h3>
                     <Card className="bg-[#13141f] border-2 border-emerald-500/20 rounded-[2.5rem] p-10 space-y-8">
                       <div>
-                        <label className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em] italic block mb-3">Main Title (推奨タイトル)</label>
+                        <label className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em] italic block mb-3">推奨タイトル</label>
                         <p className="text-2xl text-white font-black italic leading-tight">{seo.main}</p>
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] italic block mb-2">Tags (タグ)</label>
+                          <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] italic block mb-2">検索タグ</label>
                           <div className="flex flex-wrap gap-2">
                             {seo.tags.slice(0, 6).map((t: string, i: number) => (
                               <Badge key={i} className="bg-white/5 text-slate-400 border-white/10 font-bold italic text-[10px]">#{t}</Badge>
@@ -392,14 +392,14 @@ export default function YoutubeProducerApp() {
                           </div>
                         </div>
                         <div>
-                          <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] italic block mb-2">Alternatives</label>
+                          <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] italic block mb-2">タイトル候補</label>
                           <ul className="text-[10px] text-slate-500 font-bold italic space-y-1">
                             {seo.alternatives.slice(0, 3).map((a: string, i: number) => <li key={i}>・{a}</li>)}
                           </ul>
                         </div>
                       </div>
                       <div className="pt-4 border-t border-white/5">
-                        <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] italic block mb-3">Description (概要欄コピー用)</label>
+                        <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] italic block mb-3">概要欄 (説明文)</label>
                         <div className="bg-black/60 rounded-2xl p-6 text-xs text-slate-300 font-bold italic leading-relaxed h-32 overflow-y-auto border border-white/5">
                           {seo.description}
                         </div>
@@ -414,14 +414,14 @@ export default function YoutubeProducerApp() {
                     <Card className="bg-gradient-to-br from-indigo-500/10 to-transparent border border-white/10 rounded-[2.5rem] p-10 space-y-6">
                       <div className="flex items-center justify-between">
                         <Badge className="bg-indigo-500 text-white font-black italic px-4 py-1">{bgm?.genre}</Badge>
-                        <span className="text-xs font-black text-white/20 italic tracking-widest uppercase">Mood: {bgm?.mood}</span>
+                        <span className="text-xs font-black text-white/20 italic tracking-widest uppercase">雰囲気: {bgm?.mood}</span>
                       </div>
                       <div className="bg-black/40 rounded-2xl p-6 border border-white/5">
-                        <p className="text-[10px] text-white/40 uppercase mb-3 font-black tracking-widest italic">AI Music Prompt (Suno/Udio/ElevenLabs用)</p>
+                        <p className="text-[10px] text-white/40 uppercase mb-3 font-black tracking-widest italic">音楽生成プロンプト (Suno/ElevenLabs用)</p>
                         <p className="text-sm text-indigo-400 font-mono italic leading-relaxed">{bgm?.prompt}</p>
                       </div>
                       <Button className="w-full h-16 bg-white/5 hover:bg-white/10 text-white font-black text-xs rounded-xl border border-white/10 italic uppercase">
-                        <Download size={14} className="mr-2" /> 全てのデータをエクスポート (JSON/TXT)
+                        <Download size={14} className="mr-2" /> データをエクスポート
                       </Button>
                     </Card>
                   </div>
@@ -431,7 +431,7 @@ export default function YoutubeProducerApp() {
                 <div className="pt-10">
                    <Card className="bg-emerald-500 p-1 rounded-[3rem] shadow-[0_0_50px_rgba(16,185,129,0.3)]">
                       <div className="bg-[#050507] rounded-[2.9rem] p-10 text-center space-y-6">
-                        <h4 className="text-3xl font-black text-white italic uppercase tracking-tighter italic">Ready to Upload?</h4>
+                        <h4 className="text-3xl font-black text-white italic uppercase tracking-tighter italic">制作の準備は整いました</h4>
                         <p className="text-slate-400 font-bold italic max-w-2xl mx-auto">
                           プロフェッショナルなYouTube戦略が完成しました。この台本を元に撮影を開始するか、
                           AI動画生成ツールにプロンプトを投入して動画を完成させてください。
@@ -441,7 +441,7 @@ export default function YoutubeProducerApp() {
                             新しい動画を作る
                           </Button>
                           <Button className="h-16 px-10 bg-emerald-500 text-slate-950 font-black rounded-2xl shadow-lg italic uppercase hover:bg-emerald-400">
-                             制作管理ダッシュボードへ
+                             ダッシュボードへ
                           </Button>
                         </div>
                       </div>
@@ -456,9 +456,9 @@ export default function YoutubeProducerApp() {
         <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] font-black italic uppercase tracking-[0.2em] text-white/20">
           <p>© 2026 NextraLabs Viral Content OS. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-8">
-            <a href="#" className="hover:text-emerald-500 transition-colors">Documentation</a>
-            <a href="#" className="hover:text-emerald-500 transition-colors">API Status</a>
-            <a href="#" className="hover:text-emerald-500 transition-colors">Support</a>
+            <a href="#" className="hover:text-emerald-500 transition-colors">利用規約</a>
+            <a href="#" className="hover:text-emerald-500 transition-colors">ステータス</a>
+            <a href="#" className="hover:text-emerald-500 transition-colors">サポート</a>
           </div>
         </div>
       </div>
