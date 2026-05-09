@@ -56,6 +56,12 @@ export default function UniversalConverterApp() {
           </div>
         </div>
 
+        {/* 使いかた */}
+        <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 space-y-1">
+          <p className="text-xs font-semibold text-slate-400 flex items-center gap-1.5">📖 使いかた・活用マニュアル</p>
+          <p className="text-xs text-slate-500 leading-relaxed">動画・画像・PDFをこれ一台で。モードを選択し、ファイルをアップロードしてください。AIが画質を維持したまま最適処理します。</p>
+        </div>
+
         {/* モードタブ */}
         <div className="flex gap-1.5">
           {MODES.map(m => (
