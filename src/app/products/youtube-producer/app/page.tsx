@@ -237,7 +237,12 @@ function YoutubeProducerApp() {
               { id: 'music', label: '音楽', icon: Music },
               { id: 'strategy', label: 'SEO', icon: Search }
             ].map((tab, i) => (
-              <TabsTrigger key={tab.id} value={tab.id} disabled={false} className="rounded-2xl data-[state=active]:bg-gradient-to-br data-[state=active]:from-emerald-400 data-[state=active]:to-emerald-600 data-[state=active]:text-slate-950 data-[state=active]:shadow-[0_0_30px_rgba(52,211,153,0.4)] data-[state=active]:scale-105 font-black italic uppercase transition-all duration-300 flex flex-col items-center justify-center gap-1 group py-4">
+              <TabsTrigger 
+                key={tab.id} 
+                value={tab.id} 
+                disabled={false} 
+                className="rounded-2xl data-[state=active]:bg-gradient-to-br data-[state=active]:from-emerald-400 data-[state=active]:to-emerald-600 data-[state=active]:text-slate-950 data-[state=active]:shadow-[0_0_30px_rgba(52,211,153,0.4)] data-[state=active]:scale-105 font-black italic uppercase transition-all duration-300 flex flex-col items-center justify-center gap-1 group py-4 z-10"
+              >
                 <tab.icon className={`h-8 w-8 ${activeTab === tab.id ? 'text-slate-950' : 'text-emerald-500'}`} />
                 <span className={`text-xs md:text-lg tracking-tighter ${activeTab === tab.id ? 'text-slate-950' : 'text-slate-400'}`}>{i+1}. {tab.label}</span>
               </TabsTrigger>
