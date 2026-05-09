@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
@@ -11,7 +11,8 @@ import {
   User, Sofa, Briefcase, Shield, HeartHandshake, BookOpen, Mail, Search, AlertTriangle,
   ShoppingCart, Scissors, MessageCircle, LogOut, Camera, Pen, BarChart2,
   Home, TreePine, Ticket, DollarSign, Map, FileText, Brain,
-  Crown, Zap, Lock, ChevronRight, Settings, Activity, History, Clock, Repeat, MousePointer2
+  Crown, Zap, Lock, ChevronRight, Settings, Activity, History, Clock, Repeat, MousePointer2,
+  Network, Calendar, UserPlus, LineChart, Archive, Utensils, Wallet
 } from 'lucide-react'
 import DashboardActivity from '@/components/dashboard/DashboardActivity'
 import { DebugPanel } from '@/components/tools/DebugPanel'
@@ -79,7 +80,6 @@ function hasAccess(userPlan: string, toolPlan: string): boolean {
   return PLAN_ORDER[userPlan as keyof typeof PLAN_ORDER] <= PLAN_ORDER[toolPlan as keyof typeof PLAN_ORDER]
 }
 
-import { Utensils } from 'lucide-react';
 
 export default function DashboardClient({ user, profile, subscription }: any) {
   const [favorites, setFavorites] = useState<string[]>([])
