@@ -11,7 +11,7 @@ import {
 } from 'lucide-react'
 
 const GOOGLE_CLIENT_ID = '239583936801-ev71grs66ehp0kn3kahr2bdrl0v9iidj.apps.googleusercontent.com'
-const GOOGLE_SCOPES = 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.compose'
+const GOOGLE_SCOPES = 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.compose https://www.googleapis.com/auth/gmail.send'
 
 const quadrantConfig = [
   { id: 'urgent_important',     label: '今すぐ対応',  color: 'text-red-400',      border: 'border-red-500/30',      icon: Zap },
