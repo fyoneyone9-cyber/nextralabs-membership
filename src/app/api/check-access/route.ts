@@ -5,12 +5,17 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 // プラン別ツールアクセス管理
 // 更新: 2026-05-10 新プラン構成
 //
-// 🆓 FREE   : ローカル完結・面白系（ログイン不要）
-// 🔵 LIGHT  : ¥480/月 — 軽めAPIツール
-// ⚡ STANDARD: ¥980/月 — GeminiテキストAI系
-// 👑 PREMIUM : ¥1,980/月 — YouTube/SNS/Gmail等重量級
-// 🏨 別見積  : Nextra AI (staysee-ai-finder) — 法人向けPMS/スマートロック
+// 🆓 FREE        : ローカル完結・面白系（ログイン不要）
+// 🔵 LIGHT       : ¥480/月 — 軽めAPIツール
+// ⚡ STANDARD    : ¥980/月 — GeminiテキストAI系
+// 👑 PREMIUM     : ¥1,980/月 — YouTube/SNS/Gmail等重量級
+// 🏨 ENTERPRISE  : 別見積もり専用 — Nextra AI（法人契約のみ・プレミアムでもアクセス不可）
 // =============================================
+
+// 🏨 エンタープライズ専用（別見積もり・直接契約のみ）
+const ENTERPRISE_IDS = [
+  'staysee-ai-finder',  // Nextra AI — PMS/スマートロック 法人向け
+]
 
 // 👑 プレミアム専用（重量級API: YouTube・SNS・Gmail・画像生成等）
 const PREMIUM_IDS = [
@@ -19,7 +24,6 @@ const PREMIUM_IDS = [
   'youtube-coordinator',    // YouTube AI Sync — YouTube + 楽天
   'sns-auto-poster',        // AI SNSオートポスター — 複数SNS API + Gemini
   'ai-select-shop',         // AIセレクトショップ — Shopify/Printful + Gemini
-  'staysee-ai-finder',      // Nextra AI — PMS/スマートロック（別見積もり扱いだがプレミアム以上）
   'trend-stock',            // SNSトレンドAI分析 — 楽天 + Gemini
   'prompt-master',          // AI画像プロンプトマスター — Gemini + 画像生成
 ]
@@ -52,7 +56,7 @@ const LIGHT_IDS = [
 ]
 
 // 🆓 FREE（ログイン不要・ローカル完結）
-// 上記3リストに含まれないツールは全てfree扱い
+// 上記リストに含まれないツールは全てfree扱い
 // 該当: kdp-guide, shopping-stopper, resignation-assistant, shio-taiou,
 //       pet-translator, universal-converter, loan-advisor, etc.
 
@@ -65,6 +69,27 @@ export async function POST(request: NextRequest) {
     // 管理者は常に全アクセス
     if (user?.email === 'f.yoneyone9@gmail.com') {
       return NextResponse.json({ hasAccess: true, reason: 'admin' })
+    }
+
+    // 🏨 エンタープライズ専用 — プレミアムを含むいかなるプランでもアクセス不可
+    if (ENTERPRISE_IDS.includes(productId)) {
+      const hasEnterprise = user
+        ? await (async () => {
+            const { data: sub } = await supabase
+              .from('subscriptions')
+              .select('plan')
+              .eq('user_id', user.id)
+              .eq('status', 'active')
+              .maybeSingle()
+            return sub?.plan === 'enterprise'
+          })()
+        : false
+      return NextResponse.json({
+        hasAccess: hasEnterprise,
+        reason: hasEnterprise ? 'authorized' : 'enterprise_required',
+        plan: 'enterprise',
+        requiredPlan: 'enterprise',
+      })
     }
 
     // FREEツールはログイン不要で即通過

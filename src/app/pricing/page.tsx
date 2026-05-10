@@ -257,7 +257,6 @@ export default function PricingPage() {
                   'AIセレクトショップ',
                   'SNSトレンドAI分析',
                   'AI画像プロンプトマスター',
-                  'Nextra AI（ホテルDX）',
                   '最優先サポート',
                 ].map((f) => (
                   <li key={f} className="flex items-center gap-2 text-sm text-slate-100">
@@ -285,8 +284,8 @@ export default function PricingPage() {
               </Badge>
             </div>
             <CardContent className="p-8 flex flex-col flex-1">
-              <h3 className="text-xl font-bold mb-2 text-slate-100">カスタマイズ<br />ツール開発</h3>
-              <p className="text-slate-400 mb-4">業務専用AIツールを開発</p>
+              <h3 className="text-xl font-bold mb-2 text-slate-100">Nextra AI<br />& カスタム開発</h3>
+              <p className="text-slate-400 mb-4">ホテルDX・法人向けシステム開発</p>
               <div className="text-2xl font-bold mb-1 text-emerald-400">要見積もり</div>
               <p className="text-sm text-slate-400 mb-6">要件に応じて個別にご提案</p>
               <ul className="space-y-3 flex-1 mb-8">
