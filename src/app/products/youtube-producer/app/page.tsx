@@ -130,8 +130,6 @@ function YoutubeProducerApp() {
         setScriptType(state.scriptType || 'standard')
         setImageStyle(state.imageStyle || 'anime')
         setWithLogo(state.withLogo !== undefined ? state.withLogo : true)
-        // 生成結果は台本が一致する場合のみ復元
-        const savedTranscript = state.transcript || ''
         setScript(state.script || null)
         setCharacters(state.characters || null)
         setThumbnails(state.thumbnails || null)
@@ -163,14 +161,19 @@ function YoutubeProducerApp() {
 
   useEffect(() => {
     const load = async () => {
-      const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd'
-      const ffmpeg = ffmpegRef.current
-      ffmpeg.on('progress', ({ progress }) => setCompressProgress(Math.round(progress * 100)))
-      await ffmpeg.load({
-        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
-        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
-      })
-      setIsFFmpegReady(true)
+      try {
+        const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd'
+        const ffmpeg = ffmpegRef.current
+        ffmpeg.on('progress', ({ progress }) => setCompressProgress(Math.round(progress * 100)))
+        await ffmpeg.load({
+          coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+          wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+        })
+        setIsFFmpegReady(true)
+      } catch (e) {
+        console.warn('FFmpeg load failed (non-critical):', e)
+        // FFmpegが使えなくてもツールは動作する
+      }
     }
     load()
   }, [])
