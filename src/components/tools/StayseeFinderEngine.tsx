@@ -345,24 +345,6 @@ const MasterEngine = () => {
           </div>
         )}
 
-      </div>
-
-      <div className="text-center mt-16 opacity-20">
-        <p className="text-xs text-slate-600 tracking-tight">Nextra AI Autonomous Front System · NextraLabs 2026</p>
-      </div>
-    </div>
-  )
-}
-
-const NoSSR = dynamic(() => Promise.resolve(MasterEngine), {
-  ssr: false,
-  loading: () => (
-    <div className="min-h-screen bg-[#050507] flex items-center justify-center">
-      <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-    </div>
-  ),
-})
-
         {/* --- チェックアウト --- */}
         {activeTab === 'checkout' && (
           <div
@@ -421,7 +403,7 @@ const NoSSR = dynamic(() => Promise.resolve(MasterEngine), {
                   </div>
                 ) : (
                   <button
-                    onClick={() => { setCheckoutStep('processing') }}
+                    onClick={() => setCheckoutStep('processing')}
                     className="w-full h-12 rounded-xl text-sm font-semibold transition-all"
                     style={{ background: '#10b981', color: '#fff' }}
                   >
@@ -438,13 +420,7 @@ const NoSSR = dynamic(() => Promise.resolve(MasterEngine), {
             )}
 
             {checkoutStep === 'processing' && (
-              <div className="flex flex-col items-center gap-6 py-8">
-                <div className="w-12 h-12 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-                <p className="text-slate-300 font-medium text-sm">精算処理中...</p>
-                <p className="text-slate-500 text-xs">PMSと同期しています</p>
-                {/* 実際はAPIコール完了後にdoneへ遷移 */}
-                {typeof window !== 'undefined' && setTimeout(() => setCheckoutStep('done'), 2000) && null}
-              </div>
+              <CheckoutProcessing onDone={() => setCheckoutStep('done')} />
             )}
 
             {checkoutStep === 'done' && (
@@ -473,5 +449,38 @@ const NoSSR = dynamic(() => Promise.resolve(MasterEngine), {
             )}
           </div>
         )}
+
+      </div>
+
+      <div className="text-center mt-16 opacity-20">
+        <p className="text-xs text-slate-600 tracking-tight">Nextra AI Autonomous Front System · NextraLabs 2026</p>
+      </div>
+    </div>
+  )
+}
+
+// setTimeout を useEffect で安全に処理するサブコンポーネント
+function CheckoutProcessing({ onDone }: { onDone: () => void }) {
+  React.useEffect(() => {
+    const t = setTimeout(onDone, 2000)
+    return () => clearTimeout(t)
+  }, [onDone])
+  return (
+    <div className="flex flex-col items-center gap-6 py-8">
+      <div className="w-12 h-12 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+      <p className="text-slate-300 font-medium text-sm">精算処理中...</p>
+      <p className="text-slate-500 text-xs">PMSと同期しています</p>
+    </div>
+  )
+}
+
+const NoSSR = dynamic(() => Promise.resolve(MasterEngine), {
+  ssr: false,
+  loading: () => (
+    <div className="min-h-screen bg-[#050507] flex items-center justify-center">
+      <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  ),
+})
 
 export default function HotelPage() { return <NoSSR /> }
