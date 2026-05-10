@@ -33,11 +33,11 @@ const NextraAiLP = () => {
         </p>
 
         <div className="flex flex-wrap justify-center gap-4 pt-4">
-          <Link href="/products/nextra-ai/app">
+          <a href="mailto:f.yoneyone9@gmail.com?subject=Nextra AI お見積もり依頼">
             <button className="h-12 px-8 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-base rounded-lg shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all flex items-center gap-2">
-              無料で体験する <ChevronRight size={18} />
+              お見積もりを依頼する <ChevronRight size={18} />
             </button>
-          </Link>
+          </a>
           <a href="#features">
             <button className="h-12 px-8 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 font-semibold text-base rounded-lg transition-all">
               機能を見る
@@ -50,7 +50,7 @@ const NextraAiLP = () => {
           <span className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-400" /> 4言語対応</span>
           <span className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-400" /> PMS完全連携</span>
           <span className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-400" /> 24時間無人運営</span>
-          <span className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-400" /> NextraLabs プレミアムプラン</span>
+          <span className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-400" /> ¥9,800〜/月</span>
         </div>
       </section>
 
@@ -198,11 +198,11 @@ const NextraAiLP = () => {
               導入コンサルもご相談ください。
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Link href="/products/nextra-ai/app">
+              <a href="mailto:f.yoneyone9@gmail.com?subject=Nextra AI お見積もり依頼">
                 <button className="h-12 px-10 bg-white text-emerald-700 font-semibold text-base rounded-lg shadow-lg hover:bg-emerald-50 transition-all flex items-center gap-2">
-                  無料でチェックインを体験 <ChevronRight size={18} />
+                  お見積もりを依頼する <ChevronRight size={18} />
                 </button>
-              </Link>
+              </a>
             </div>
           </div>
         </Card>
@@ -211,4 +211,118 @@ const NextraAiLP = () => {
   )
 }
 
-export default NextraAiLP
+const NexraPricingSection = () => (
+  <section className="max-w-5xl mx-auto px-4 py-24 space-y-12" id="pricing">
+    <div className="text-center space-y-3">
+      <h2 className="text-3xl md:text-4xl font-semibold text-white tracking-tight">
+        料金プラン
+      </h2>
+      <p className="text-slate-400 text-base">室数に合わせて選べる3プラン。初期費用0円。</p>
+    </div>
+    <div className="grid md:grid-cols-3 gap-6">
+      {[
+        { name: 'スモールプラン', price: '¥9,800', period: '/月', rooms: '〜10室', features: ['無人チェックイン', 'AI身分証確認', '4言語対応', 'メールサポート'] },
+        { name: 'スタンダードプラン', price: '¥19,800', period: '/月', rooms: '〜30室', features: ['無人チェックイン', 'AI身分証確認', '4言語対応', 'PMS連携', 'スマートロック連携', 'オンボーディングサポート'], highlight: true },
+        { name: 'エンタープライズ', price: '¥29,800', period: '/月', rooms: '無制限', features: ['無人チェックイン', 'AI身分証確認', '4言語対応', 'PMS連携', 'スマートロック連携', '専任サポート', 'カスタマイズ対応'] },
+      ].map((plan) => (
+        <div
+          key={plan.name}
+          className={`rounded-2xl p-8 space-y-6 flex flex-col ${
+            plan.highlight
+              ? 'bg-emerald-500/10 border-2 border-emerald-500/50'
+              : 'bg-[#0d1117] border border-white/5'
+          }`}
+        >
+          {plan.highlight && (
+            <span className="inline-block self-start px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              おすすめ
+            </span>
+          )}
+          <div>
+            <p className="text-sm text-slate-400 font-medium">{plan.name}</p>
+            <p className="text-4xl font-bold text-white mt-1">
+              {plan.price}<span className="text-base font-normal text-slate-400">{plan.period}</span>
+            </p>
+            <p className="text-emerald-400 text-sm font-medium mt-1">{plan.rooms}</p>
+          </div>
+          <ul className="space-y-2 flex-1">
+            {plan.features.map((f) => (
+              <li key={f} className="flex items-center gap-2 text-sm text-slate-300">
+                <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+                {f}
+              </li>
+            ))}
+          </ul>
+          <a href="mailto:f.yoneyone9@gmail.com?subject=Nextra AI お見積もり依頼">
+            <button
+              className={`w-full h-12 rounded-lg font-semibold text-sm transition-all ${
+                plan.highlight
+                  ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                  : 'bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300'
+              }`}
+            >
+              お見積もりを依頼する
+            </button>
+          </a>
+        </div>
+      ))}
+    </div>
+  </section>
+)
+
+const NextraFaqSection = () => {
+  const faqs = [
+    {
+      q: '初期費用はかかりますか？',
+      a: '初期費用は0円です。月額料金のみで導入でき、¥9,800/月（〜10室プラン）からご利用いただけます。導入サポートも月額料金に含まれています。',
+    },
+    {
+      q: '対応PMSを教えてください。',
+      a: '主要なクラウド型PMSとのAPI連携に対応しています。スクレイピング不要のAPI連携で予約・客室ステータスをリアルタイム同期します。具体的な対応PMS一覧はお問い合わせください。',
+    },
+    {
+      q: '対応しているスマートロックの種類は？',
+      a: 'Bluetooth・NFC・PIN対応の主要スマートロックブランドに対応しています。既存設備がある場合は事前にご確認ください。新規導入の場合は推奨機器をご案内します。',
+    },
+    {
+      q: '旅館業法に準拠していますか？',
+      a: 'はい。旅館業法が定める宿泊者名簿の記録要件をデジタルで完全充足します。身分証スキャン・電子署名・宿泊記録の自動保存により、行政提出用データをワンクリックで出力可能です。',
+    },
+    {
+      q: 'サポート体制はどうなっていますか？',
+      a: 'メールサポートは平日10〜18時対応。スタンダードプラン以上ではオンボーディングサポートが付きます。エンタープライズプランでは専任担当者が継続的にサポートします。',
+    },
+  ]
+
+  return (
+    <section className="max-w-3xl mx-auto px-4 py-24 space-y-10">
+      <h2 className="text-3xl md:text-4xl font-semibold text-white tracking-tight text-center">
+        よくある質問
+      </h2>
+      <div className="space-y-4">
+        {faqs.map((faq) => (
+          <div
+            key={faq.q}
+            className="bg-[#0d1117] border border-white/5 rounded-xl p-6 space-y-3"
+          >
+            <h3 className="text-white font-semibold text-base flex items-start gap-2">
+              <ChevronRight size={18} className="text-emerald-400 shrink-0 mt-0.5" />
+              {faq.q}
+            </h3>
+            <p className="text-slate-400 text-sm leading-relaxed pl-6">{faq.a}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+const NextraAiLPFull = () => (
+  <>
+    <NextraAiLP />
+    <NexraPricingSection />
+    <NextraFaqSection />
+  </>
+)
+
+export default NextraAiLPFull

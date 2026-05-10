@@ -9,16 +9,27 @@ import { Utensils, Camera, Zap, Video, Rocket, ArrowLeft, Sparkles, ChefHat } fr
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'AIレシピ | 冷蔵庫スキャンで残り物からプロの味を - NextraLabs',
-  description: '「今日、何作ろう？」をAIが解決。冷蔵庫の余り物を撮影するだけでGemini 2.5 Flashが最適レシピを提案。調理動画連動で誰でも天才シェフに。食材ロスゼロを目指す究極のキッチン・アシスト。',
-  keywords: ['AIレシピ', '冷蔵庫スキャン', '残り物 料理', '時短レシピ AI', '献立作成 自動', '食材ロス削減', 'NextraLabs', 'Ninja3'],
+  title: 'AIレシピ献立コーチ | 冷蔵庫の残り物からAIが最適献立を自動生成 | NextraLabs',
+  description: '冷蔵庫の食材を入力するだけ。AIが栄養バランス・カロリー・予算を考慮した1週間の献立と詳細レシピを自動生成。食費削減・ダイエット・時短料理に。完全無料。',
+  keywords: ['AIレシピ','献立自動生成','冷蔵庫レシピAI','栄養バランスAI','時短料理AI','食費節約AI','料理AI','ダイエットレシピAI','一週間献立AI','NextraLabsレシピ'],
   openGraph: {
-    title: 'AIレシピ | 写真1枚でプロの献立をプロデュース',
-    description: 'もう献立に迷わない。あなたの冷蔵庫が、今日から三ツ星レストランに。',
+    title: 'AIレシピ献立コーチ | 冷蔵庫の残り物からAIが最適献立を自動生成 | NextraLabs',
+    description: '冷蔵庫の食材を入力するだけ。AIが栄養バランス・カロリー・予算を考慮した1週間の献立と詳細レシピを自動生成。食費削減・ダイエット・時短料理に。完全無料。',
   }
 };
 
 export default function AiRecipeLandingPage() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'AIレシピ献立コーチ',
+    description: '冷蔵庫の食材を入力するだけ。AIが栄養バランス・カロリー・予算を考慮した1週間の献立と詳細レシピを自動生成。',
+    applicationCategory: 'LifestyleApplication',
+    operatingSystem: 'Web',
+    url: 'https://membership-site-nextralabos.vercel.app/products/ai-recipe',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+    publisher: { '@type': 'Organization', name: 'NextraLabs' },
+  }
   const features = [
     { 
       icon: Camera, 
@@ -45,6 +56,7 @@ export default function AiRecipeLandingPage() {
 
   return (
     <div className="min-h-screen bg-[#050507] text-slate-200 font-sans pb-20">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <section className="relative pt-10 md:pt-20 pb-16 overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
           <Link
@@ -156,6 +168,35 @@ export default function AiRecipeLandingPage() {
             </Button>
           </Link>
           <p className="mt-6 text-xs font-bold text-emerald-500 uppercase tracking-tight ">FREE ACCESS FOR ALL USERS</p>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-16 bg-[#0d1117]">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <h2 className="text-2xl font-bold text-white mb-8 text-center">よくある質問</h2>
+          <div className="space-y-6">
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 完全無料で使えますか？</p>
+              <p className="text-slate-400 text-sm">A. はい、AIレシピ献立コーチは完全無料でご利用いただけます。会員登録不要でお使いいただけます。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 冷蔵庫の食材をどのように入力しますか？</p>
+              <p className="text-slate-400 text-sm">A. テキストで食材名を入力するだけです。「卵・豚肉・ほうれん草」のようにカンマ区切りで入力すれば、AIが瞬時に最適な献立を提案します。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. ダイエット中でも使えますか？</p>
+              <p className="text-slate-400 text-sm">A. はい。カロリー制限・栄養バランスの目標を設定すると、AIがダイエットに適したレシピと1週間の献立プランを自動生成します。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 食費の節約に役立ちますか？</p>
+              <p className="text-slate-400 text-sm">A. 冷蔵庫の食材を使い切るレシピを優先提案するため、食材の無駄ロスを大幅に削減できます。食費を月5,000円〜1万円削減できたという声も寄せられています。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. アレルギー食材を除外することはできますか？</p>
+              <p className="text-slate-400 text-sm">A. はい。アレルギー食材や苦手な食材を指定するとAIがそれを除外した献立を生成します。卵・乳製品・小麦粉など主要アレルゲンに対応しています。</p>
+            </div>
+          </div>
         </div>
       </section>
     </div>

@@ -1,30 +1,31 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Kindle AIファクトリー | AI原稿自動生成でKDP出版を最速完成',
-  description: 'テーマを入力するだけでAIが目次・章立て・本文を自動生成。KDP（Kindle Direct Publishing）入稿可能なdocx形式で出力。最短1日で電子書籍を完成。',
-  keywords: ['Kindle出版AI', 'KDP自動生成', '電子書籍AI', 'Kindleファクトリー', 'AI原稿生成'],
+  title: 'Kindle AI ファクトリー | AIが電子書籍の原稿を自動生成・KDP入稿まで完結 | NextraLabs',
+  description: 'テーマを入力するだけでAIが目次設計から本文執筆まで自動生成。KDP（Kindle Direct Publishing）入稿に必要なフォーマットで書き出し。副業・起業・情報発信に。月額¥1,980。',
+  keywords: ['Kindle出版AI','KDP自動生成','電子書籍AI','本の書き方AI','Kindle副業','Kindleセルフ出版','電子書籍作成','KDP原稿生成','AI執筆ツール','NextraLabs Kindle'],
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/kindle-factory',
   },
   openGraph: {
-    title: 'Kindle AIファクトリー | AI原稿自動生成でKDP出版を最速完成 | NextraLabs',
-    description: 'テーマを入力するだけでAIが目次・章立て・本文を自動生成。KDP（Kindle Direct Publishing）入稿可能なdocx形式で出力。最短1日で電子書籍を完成。',
+    title: 'Kindle AI ファクトリー | AIが電子書籍の原稿を自動生成・KDP入稿まで完結 | NextraLabs',
+    description: 'テーマを入力するだけでAIが目次設計から本文執筆まで自動生成。KDP（Kindle Direct Publishing）入稿に必要なフォーマットで書き出し。副業・起業・情報発信に。月額¥1,980。',
     url: 'https://membership-site-nextralabos.vercel.app/products/kindle-factory',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'Kindle AIファクトリー | AI原稿自動生成でKDP出版を最速完成' }],
+    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'Kindle AI ファクトリー | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Kindle AIファクトリー | AI原稿自動生成でKDP出版を最速完成',
-    description: 'テーマを入力するだけでAIが目次・章立て・本文を自動生成。KDP（Kindle Direct Publishing）入稿可能なdocx形式で出力。最短1日で電子書籍を完成。',
+    title: 'Kindle AI ファクトリー | AIが電子書籍の原稿を自動生成・KDP入稿まで完結 | NextraLabs',
+    description: 'テーマを入力するだけでAIが目次設計から本文執筆まで自動生成。KDP入稿に必要なフォーマットで書き出し。月額¥1,980。',
     images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
   },
 }
 
-﻿// ============================================================
+// ============================================================
 // 🔒 LOCKED — KindleFactory product page
 // 完成済みツール。NextraLabs様の明示的な指示なしに
 // このファイルを編集・削除・移動することを禁止する。
@@ -34,9 +35,65 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { BookOpen, FileText, Sparkles, Download, Crown } from 'lucide-react'
 
+const faqItems = [
+  {
+    q: 'AIが生成する原稿のクオリティはどの程度ですか？',
+    a: 'Gemini 2.5 Flash搭載により、最大10,000字の構成力のある原稿を高速生成します。専門知識がなくても読み応えのある内容に仕上がりますが、出版前に内容確認・加筆修正を推奨しています。',
+  },
+  {
+    q: 'AIが生成した原稿の著作権はどうなりますか？',
+    a: '生成された原稿の著作権はご利用者様に帰属します。商業出版・KDP販売にも自由にご利用いただけます。ただし第三者の著作物を模倣したプロンプト使用はお控えください。',
+  },
+  {
+    q: '原稿生成から出版まで何日かかりますか？',
+    a: '原稿生成自体は30〜60秒で完了します。その後のWordでの確認・加筆、Canvaでの表紙作成、KDP登録・審査（24〜72時間）を含めると、最短2〜3日で出版できます。',
+  },
+  {
+    q: 'どのフォーマットで出力されますか？',
+    a: 'KDP（Kindle Direct Publishing）への入稿に対応したDOCX形式で出力します。Microsoft WordやGoogleドキュメントでそのまま開いて編集・確認が可能です。',
+  },
+  {
+    q: '対応ジャンルはどれくらいありますか？',
+    a: '副業・AI活用・自己啓発・ビジネス・健康・趣味など幅広いジャンルに対応しています。ジャンル選択後に自由入力もできるため、ニッチなテーマでも高品質な原稿生成が可能です。',
+  },
+]
+
 export default function KindleFactoryLp() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'SoftwareApplication',
+        name: 'Kindle AI ファクトリー',
+        applicationCategory: 'BusinessApplication',
+        operatingSystem: 'Web',
+        url: 'https://membership-site-nextralabos.vercel.app/products/kindle-factory',
+        description: 'テーマを入力するだけでAIが目次設計から本文執筆まで自動生成。KDP入稿に必要なフォーマットで書き出し。副業・起業・情報発信に。',
+        offers: {
+          '@type': 'Offer',
+          price: '1980',
+          priceCurrency: 'JPY',
+          priceSpecification: { '@type': 'UnitPriceSpecification', price: '1980', priceCurrency: 'JPY', unitText: '月' },
+        },
+        provider: { '@type': 'Organization', name: 'NextraLabs', url: 'https://membership-site-nextralabos.vercel.app' },
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: faqItems.map((item) => ({
+          '@type': 'Question',
+          name: item.q,
+          acceptedAnswer: { '@type': 'Answer', text: item.a },
+        })),
+      },
+    ],
+  }
+
   return (
     <div className="min-h-screen bg-[#050507] text-slate-200 font-sans pb-32">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* ヒーロー */}
       <section className="max-w-4xl mx-auto px-4 pt-24 pb-20 text-center space-y-8">
         <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-6 py-1 rounded-full font-bold uppercase text-xs">KDP出版 完全自動化</Badge>
@@ -50,7 +107,7 @@ export default function KindleFactoryLp() {
         <div className="flex flex-wrap justify-center gap-4 pt-4">
           <Link href="/products/kindle-factory/app">
             <button className="h-12 px-10 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-lg rounded-2xl shadow-[0_20px_50px_rgba(16,185,129,0.3)] transition-all active:scale-95 uppercase ">
-              今すぐ原稿を生成する ➔
+              今すぐ原稿を生成する
             </button>
           </Link>
         </div>
@@ -121,12 +178,26 @@ export default function KindleFactoryLp() {
         </p>
       </section>
 
+      {/* FAQ Section */}
+      <section className="max-w-3xl mx-auto px-4 py-16 border-t border-white/5">
+        <h2 className="text-center text-sm font-bold text-emerald-500 uppercase tracking-[0.4em] mb-4">FAQ</h2>
+        <h3 className="text-center text-2xl md:text-3xl font-bold text-white mb-12 uppercase">よくある質問</h3>
+        <dl className="space-y-6">
+          {faqItems.map((item, i) => (
+            <div key={i} className="bg-[#0d1117] rounded-2xl p-6 border border-white/5">
+              <dt className="text-white font-bold mb-3 text-sm leading-relaxed">Q. {item.q}</dt>
+              <dd className="text-slate-400 text-sm leading-relaxed">A. {item.a}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
       {/* CTA */}
       <section className="max-w-3xl mx-auto px-4 pt-8 text-center space-y-6">
         <h3 className="text-3xl font-bold text-white uppercase">今日から出版できる。</h3>
         <Link href="/products/kindle-factory/app">
           <button className="h-12 px-12 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-lg rounded-2xl shadow-xl transition-all active:scale-95 uppercase ">
-            原稿生成をはじめる ➔
+            原稿生成をはじめる
           </button>
         </Link>
       </section>

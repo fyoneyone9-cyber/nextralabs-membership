@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 // 🔒 LOCKED — ExamScheduler product page
 // 完成済みツール。NextraLabs様の明示的な指示なしに
 // このファイルを編集・削除・移動することを禁止する。
@@ -28,9 +28,26 @@ import {
 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: '資格試験 AIスケジューラー',
-  description: 'ITパスポート・基本情報・CompTIA対応。試験日から学習計画を自動生成しGoogleカレンダーに一括登録。',
+  title: '資格試験AIスケジューラー | 試験日から逆算して学習計画を自動生成 | NextraLabs',
+  description: '受験日と今の実力を入力するだけ。AIが合格までの最短学習ルートを自動設計。毎日の勉強量・優先科目・模試スケジュールを一括管理。月額¥980のスタンダードプラン。',
+  keywords: ['資格試験AI','学習計画自動生成','試験スケジューラー','合格計画','勉強計画アプリ','逆算学習','資格取得AI','試験対策AI','学習管理ツール','NextraLabs資格'],
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/exam-scheduler' },
+  openGraph: {
+    title: '資格試験AIスケジューラー | 試験日から逆算して学習計画を自動生成 | NextraLabs',
+    description: '受験日と今の実力を入力するだけ。AIが合格までの最短学習ルートを自動設計。毎日の勉強量・優先科目・模試スケジュールを一括管理。月額¥980のスタンダードプラン。',
+    url: 'https://membership-site-nextralabos.vercel.app/products/exam-scheduler',
+    type: 'website',
+    locale: 'ja_JP',
+    siteName: 'NextraLabs',
+    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: '資格試験AIスケジューラー | NextraLabs' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '資格試験AIスケジューラー | 試験日から逆算して学習計画を自動生成 | NextraLabs',
+    description: '受験日と今の実力を入力するだけ。AIが合格までの最短学習ルートを自動設計。毎日の勉強量・優先科目・模試スケジュールを一括管理。月額¥980。',
+    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+  },
 }
 
 const features = [
@@ -57,9 +74,65 @@ const features = [
   },
 ]
 
+const faqItems = [
+  {
+    q: 'どの資格試験に対応していますか？',
+    a: 'ITパスポート、基本情報技術者、応用情報技術者、CompTIA A+/Network+/Security+、TOEIC、宅建、FP技能士など主要な国家資格・IT資格に対応しています。対応試験は順次拡大中です。',
+  },
+  {
+    q: 'AIの学習計画はどのくらい精度が高いですか？',
+    a: '受験日・現在の実力レベル・1日の勉強可能時間を入力することで、AIが合格に必要な学習量を逆算し、最適な4フェーズ計画を自動生成します。実際の合格者データをもとにした設計です。',
+  },
+  {
+    q: '無料トライアル期間はありますか？',
+    a: 'はい、FREEプランでは基本的なスケジュール生成機能を無料でお試しいただけます。月額¥980のスタンダードプランにアップグレードすると、Googleカレンダー同期・複数資格管理・模試スケジュールなどフル機能が利用可能です。',
+  },
+  {
+    q: '複数の資格を同時に管理できますか？',
+    a: 'スタンダードプラン以上で複数資格の並行管理が可能です。各資格の優先度設定・学習時間配分もAIが自動最適化するため、掛け持ち受験の方にも対応しています。',
+  },
+  {
+    q: 'スマートフォンからも利用できますか？',
+    a: 'はい、スマートフォン・タブレット・PCすべてに対応したレスポンシブデザインです。Googleカレンダーのリマインダー機能と連携することで、外出先でも毎日の学習を管理できます。',
+  },
+]
+
 export default function ExamSchedulerPage() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'SoftwareApplication',
+        name: '資格試験AIスケジューラー',
+        applicationCategory: 'EducationalApplication',
+        operatingSystem: 'Web',
+        url: 'https://membership-site-nextralabos.vercel.app/products/exam-scheduler',
+        description: '受験日と今の実力を入力するだけ。AIが合格までの最短学習ルートを自動設計。毎日の勉強量・優先科目・模試スケジュールを一括管理。',
+        offers: {
+          '@type': 'Offer',
+          price: '980',
+          priceCurrency: 'JPY',
+          priceSpecification: { '@type': 'UnitPriceSpecification', price: '980', priceCurrency: 'JPY', unitText: '月' },
+        },
+        provider: { '@type': 'Organization', name: 'NextraLabs', url: 'https://membership-site-nextralabos.vercel.app' },
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: faqItems.map((item) => ({
+          '@type': 'Question',
+          name: item.q,
+          acceptedAnswer: { '@type': 'Answer', text: item.a },
+        })),
+      },
+    ],
+  }
+
   return (
     <div className="min-h-screen bg-[#050507] text-slate-200 font-sans pb-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero Section */}
       <section className="relative pt-10 md:pt-20 pb-16 overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
@@ -186,6 +259,22 @@ export default function ExamSchedulerPage() {
               </Card>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-20 border-t border-white/5">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <h2 className="text-center text-sm font-bold text-emerald-500 uppercase tracking-[0.4em] mb-4">FAQ</h2>
+          <h3 className="text-center text-2xl md:text-3xl font-bold text-white mb-12 uppercase">よくある質問</h3>
+          <dl className="space-y-6">
+            {faqItems.map((item, i) => (
+              <div key={i} className="bg-[#0d1117] rounded-2xl p-6 border border-white/5">
+                <dt className="text-white font-bold mb-3 text-sm leading-relaxed">Q. {item.q}</dt>
+                <dd className="text-slate-400 text-sm leading-relaxed">A. {item.a}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
 

@@ -1,25 +1,25 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'AI副業スタートダッシュ | 初月から収益化できる副業ロードマップ',
-  description: '副業未経験でもAIが最適な副業を診断・サポート。ブログ・ハンドメイド・Kindle出版など30種の副業を月収目標に合わせて提案。NextraLabs会員限定。',
-  keywords: ['AI副業', '副業スタート', '副業ロードマップ', '在宅副業AI', '月収副業'],
+  title: 'AI副業スタートダッシュ | 適性診断と収益ロードマップをAIが設計 | NextraLabs',
+  description: 'スキル・時間・目標収入を入力するだけ。AIが最適な副業を提案し、収益化までのロードマップを自動設計。月1万円〜月50万円まで。副業初心者に最適。月額¥1,980。',
+  keywords: ['副業AI','副業診断','副業ロードマップ','在宅副業AI','副業おすすめAI','副業収益AI','副業プランAI','サイドビジネスAI','フリーランスAI','NextraLabs副業'],
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/ai-sidejob',
   },
   openGraph: {
-    title: 'AI副業スタートダッシュ | 初月から収益化できる副業ロードマップ | NextraLabs',
-    description: '副業未経験でもAIが最適な副業を診断・サポート。ブログ・ハンドメイド・Kindle出版など30種の副業を月収目標に合わせて提案。NextraLabs会員限定。',
+    title: 'AI副業スタートダッシュ | 適性診断と収益ロードマップをAIが設計 | NextraLabs',
+    description: 'スキル・時間・目標収入を入力するだけ。AIが最適な副業を提案し、収益化までのロードマップを自動設計。月1万円〜月50万円まで。副業初心者に最適。月額¥1,980。',
     url: 'https://membership-site-nextralabos.vercel.app/products/ai-sidejob',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI副業スタートダッシュ | 初月から収益化できる副業ロードマップ' }],
+    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI副業スタートダッシュ | 適性診断と収益ロードマップをAIが設計 | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AI副業スタートダッシュ | 初月から収益化できる副業ロードマップ',
-    description: '副業未経験でもAIが最適な副業を診断・サポート。ブログ・ハンドメイド・Kindle出版など30種の副業を月収目標に合わせて提案。NextraLabs会員限定。',
+    title: 'AI副業スタートダッシュ | 適性診断と収益ロードマップをAIが設計 | NextraLabs',
+    description: 'スキル・時間・目標収入を入力するだけ。AIが最適な副業を提案し、収益化までのロードマップを自動設計。月1万円〜月50万円まで。副業初心者に最適。月額¥1,980。',
     images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
   },
 }
@@ -134,5 +134,48 @@ const NoSSRWrapper = dynamic(() => Promise.resolve(SidejobLpContent), {
 })
 
 export default function SidejobLp() {
-  return <NoSSRWrapper />
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'AI副業スタートダッシュ',
+    description: 'スキル・時間・目標収入を入力するだけ。AIが最適な副業を提案し、収益化までのロードマップを自動設計。',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web',
+    url: 'https://membership-site-nextralabos.vercel.app/products/ai-sidejob',
+    offers: { '@type': 'Offer', price: '1980', priceCurrency: 'JPY' },
+    publisher: { '@type': 'Organization', name: 'NextraLabs' },
+  }
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <NoSSRWrapper />
+      <section className="py-16 bg-[#0d1117]">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <h2 className="text-2xl font-bold text-white mb-8 text-center">よくある質問</h2>
+          <div className="space-y-6">
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 副業未経験でも使えますか？</p>
+              <p className="text-slate-400 text-sm">A. はい、副業初心者向けに設計されています。現在のスキル・使える時間・目標収入を入力するだけで、AIが最適な副業と始め方ロードマップを提示します。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. どのくらいの収入が見込めますか？</p>
+              <p className="text-slate-400 text-sm">A. 副業の種類や時間投資によって異なりますが、月1万円〜月50万円の幅でAIが現実的な目標設定をサポートします。会社員の副収入から独立準備まで対応しています。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 副業の種類はどのくらいありますか？</p>
+              <p className="text-slate-400 text-sm">A. Kindle出版・ブログ・ハンドメイド・動画編集・プログラミング・Webライティングなど30種類以上の副業から、あなたの適性に合ったものをAIが選定します。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 会社にバレる心配はありませんか？</p>
+              <p className="text-slate-400 text-sm">A. 確定申告の20万円ルールや住民税の注意点など、会社員が副業を始める際の法的・税務的な注意点もAIが丁寧に解説します。安心して副業を始められます。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 月額¥1,980で他のツールも使えますか？</p>
+              <p className="text-slate-400 text-sm">A. はい。NextraLabsプレミアムプラン（¥1,980/月）では、AI副業スタートダッシュを含む全ツールが使い放題になります。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  )
 }

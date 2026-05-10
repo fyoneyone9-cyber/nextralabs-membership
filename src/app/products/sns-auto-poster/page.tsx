@@ -1,25 +1,25 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'AI SNSオートポスター | X・Instagram・TikTokを完全自動投稿',
-  description: 'AIがバズるコンテンツを生成し、最適な時間帯に自動投稿。フォロワー増加・エンゲージメント向上を自動化。NextraLabsライトプラン以上。',
-  keywords: ['SNS自動投稿', 'AIインスタ投稿', 'TwitterAI自動', 'TikTokAI', 'SNSマーケティングAI'],
+  title: 'AI SNSオートポスター | バズる投稿をAIが量産・全SNS一括生成 | NextraLabs',
+  description: 'テーマを入力するだけでAIがX(Twitter)・Instagram・Facebook・TikTok向けに最適化されたバズる投稿文を一括生成。ハッシュタグ・投稿時間帯も自動提案。月額¥480。',
+  keywords: ['SNS投稿AI','Twitter自動投稿','Instagram投稿AI','バズる投稿','SNSマーケティングAI','ハッシュタグAI','SNS運用AI','コンテンツ自動生成','投稿文AI','NextraLabsSNS'],
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/sns-auto-poster',
   },
   openGraph: {
-    title: 'AI SNSオートポスター | X・Instagram・TikTokを完全自動投稿 | NextraLabs',
-    description: 'AIがバズるコンテンツを生成し、最適な時間帯に自動投稿。フォロワー増加・エンゲージメント向上を自動化。NextraLabsライトプラン以上。',
+    title: 'AI SNSオートポスター | バズる投稿をAIが量産・全SNS一括生成 | NextraLabs',
+    description: 'テーマを入力するだけでAIがX(Twitter)・Instagram・Facebook・TikTok向けに最適化されたバズる投稿文を一括生成。ハッシュタグ・投稿時間帯も自動提案。月額¥480。',
     url: 'https://membership-site-nextralabos.vercel.app/products/sns-auto-poster',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI SNSオートポスター | X・Instagram・TikTokを完全自動投稿' }],
+    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI SNSオートポスター | バズる投稿をAIが量産・全SNS一括生成 | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AI SNSオートポスター | X・Instagram・TikTokを完全自動投稿',
-    description: 'AIがバズるコンテンツを生成し、最適な時間帯に自動投稿。フォロワー増加・エンゲージメント向上を自動化。NextraLabsライトプラン以上。',
+    title: 'AI SNSオートポスター | バズる投稿をAIが量産・全SNS一括生成 | NextraLabs',
+    description: 'テーマを入力するだけでAIがX(Twitter)・Instagram・Facebook・TikTok向けに最適化されたバズる投稿文を一括生成。ハッシュタグ・投稿時間帯も自動提案。月額¥480。',
     images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
   },
 }
@@ -138,5 +138,48 @@ const NoSSRWrapper = dynamic(() => Promise.resolve(SnsPosterLpContent), {
 })
 
 export default function SnsAutoPosterLp() {
-  return <NoSSRWrapper />
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'AI SNSオートポスター',
+    description: 'テーマを入力するだけでAIがX(Twitter)・Instagram・Facebook・TikTok向けに最適化されたバズる投稿文を一括生成。',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web',
+    url: 'https://membership-site-nextralabos.vercel.app/products/sns-auto-poster',
+    offers: { '@type': 'Offer', price: '480', priceCurrency: 'JPY' },
+    publisher: { '@type': 'Organization', name: 'NextraLabs' },
+  }
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <NoSSRWrapper />
+      <section className="py-16 bg-[#0d1117]">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <h2 className="text-2xl font-bold text-white mb-8 text-center">よくある質問</h2>
+          <div className="space-y-6">
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 月額¥480で何件の投稿を生成できますか？</p>
+              <p className="text-slate-400 text-sm">A. ライトプラン（¥480/月）では月間50件の投稿生成が可能です。スタンダードプラン以上にアップグレードすると使い放題になります。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. X(Twitter)・Instagram・TikTokすべてに対応していますか？</p>
+              <p className="text-slate-400 text-sm">A. はい。X・Instagram・Facebook・TikTokの4媒体に最適化された投稿文を1つのテーマから一括生成します。各プラットフォームの文字数制限・ハッシュタグ文化にも対応しています。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. ハッシュタグはAIが自動で提案してくれますか？</p>
+              <p className="text-slate-400 text-sm">A. はい。投稿内容に最適なハッシュタグをAIが自動提案します。トレンドハッシュタグと固定ハッシュタグを組み合わせて、最大のリーチを実現します。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 投稿時間帯の最適化とはどういう意味ですか？</p>
+              <p className="text-slate-400 text-sm">A. ターゲットとするフォロワー層が最もアクティブな時間帯をAIが分析し、投稿スケジュールを提案します。エンゲージメント率の向上に直結します。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 結婚相談所やサービス業にも使えますか？</p>
+              <p className="text-slate-400 text-sm">A. はい。業種・ターゲット層・トーンを指定することで、あらゆる業種に最適化された投稿を生成します。結婚相談所・飲食店・美容院・EC事業者など多くの業種で活用されています。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  )
 }

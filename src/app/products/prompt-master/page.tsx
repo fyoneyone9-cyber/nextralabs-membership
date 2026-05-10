@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 // 🔒 LOCKED — PromptMaster product page
 // 完成済みツール。NextraLabs様の明示的な指示なしに
 // このファイルを編集・削除・移動することを禁止する。
@@ -11,15 +11,87 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
 export const metadata: Metadata = {
-  title: 'AI画像プロンプトマスター',
-  description: '26カテゴリ対応。日本語入力→画像生成AI用の最適プロンプトを自動生成。Midjourney/DALL-E/Stable Diffusion対応。200+テンプレート搭載。月額¥1,980。',
+  title: 'AI画像プロンプトマスター | Midjourney・DALL-E・Stable Diffusion用プロンプトを瞬時生成 | NextraLabs',
+  description: '「こんな画像が欲しい」をテキストで入力するだけ。AIがMidjourney・DALL-E・Stable Diffusionに最適化されたプロンプトを自動生成。クオリティ10倍向上。月額¥480。',
+  keywords: ['プロンプト生成AI','Midjourneyプロンプト','DALL-Eプロンプト','Stable Diffusionプロンプト','画像生成AI','AIアート','プロンプトエンジニアリング','画像プロンプト自動生成','NextraLabsプロンプト','AI画像生成'],
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/prompt-master' },
-  openGraph: { title: 'AI画像プロンプトマスター | NextraLabs', description: '26カテゴリ対応。日本語入力→画像生成AI用の最適プロンプトを自動生成。Midjourney/DALL-E/Stable Diffusion対応。', url: 'https://membership-site-nextralabos.vercel.app/products/prompt-master', type: 'website' },
+  openGraph: {
+    title: 'AI画像プロンプトマスター | Midjourney・DALL-E・Stable Diffusion用プロンプトを瞬時生成 | NextraLabs',
+    description: '「こんな画像が欲しい」をテキストで入力するだけ。AIがMidjourney・DALL-E・Stable Diffusionに最適化されたプロンプトを自動生成。クオリティ10倍向上。月額¥480。',
+    url: 'https://membership-site-nextralabos.vercel.app/products/prompt-master',
+    type: 'website',
+    locale: 'ja_JP',
+    siteName: 'NextraLabs',
+    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI画像プロンプトマスター | NextraLabs' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI画像プロンプトマスター | Midjourney・DALL-E・Stable Diffusion用プロンプトを瞬時生成 | NextraLabs',
+    description: '日本語で入力するだけで最適な画像生成AIプロンプトを自動生成。26カテゴリ対応。月額¥480。',
+    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+  },
 }
 
+const faqItems = [
+  {
+    q: 'どの画像生成AIツールに対応していますか？',
+    a: 'Midjourney、DALL-E 3、Stable Diffusion、Flux、Adobe Firefly、Leonardo AI、Bing Image Creator、その他汎用モデルに対応しています。各ツールの特性に合わせてプロンプトを最適化します。',
+  },
+  {
+    q: '生成されるプロンプトのクオリティはどの程度ですか？',
+    a: '26カテゴリ・200以上のテンプレートと50以上のスタイルプリセットを組み合わせ、プロのプロンプトエンジニア水準のプロンプトを自動生成します。既存プロンプトの改善AI機能も搭載しており、さらなる品質向上が可能です。',
+  },
+  {
+    q: '生成されたプロンプトの著作権はどうなりますか？',
+    a: '生成されたプロンプト自体は自由にご利用いただけます。商用利用も可能です。ただし、生成された画像の権利は各AIサービスの利用規約に従います。Midjourneyは有料プランが商用利用可、DALL-Eは商用利用可能です。',
+  },
+  {
+    q: 'プロンプトをそのままコピペして使えますか？',
+    a: 'はい、ワンクリックコピー機能を搭載しています。生成されたプロンプトをコピーして各画像生成AIのチャット・入力欄に貼り付けるだけで使用できます。Midjourneyの/imagineコマンドにも対応したフォーマットで出力します。',
+  },
+  {
+    q: 'プロンプトは英語で入力しなければいけませんか？',
+    a: 'いいえ、日本語で入力するだけでOKです。AIが日本語の意図を解釈し、画像生成AIに最適化された英語プロンプトに自動変換します。英語の知識は一切不要です。',
+  },
+]
+
 export default function PromptMasterPage() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'SoftwareApplication',
+        name: 'AI画像プロンプトマスター',
+        applicationCategory: 'MultimediaApplication',
+        operatingSystem: 'Web',
+        url: 'https://membership-site-nextralabos.vercel.app/products/prompt-master',
+        description: '日本語で入力するだけで、Midjourney・DALL-E・Stable Diffusion向けの高品質プロンプトを自動生成。26カテゴリ対応。',
+        offers: {
+          '@type': 'Offer',
+          price: '480',
+          priceCurrency: 'JPY',
+          priceSpecification: { '@type': 'UnitPriceSpecification', price: '480', priceCurrency: 'JPY', unitText: '月' },
+        },
+        provider: { '@type': 'Organization', name: 'NextraLabs', url: 'https://membership-site-nextralabos.vercel.app' },
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: faqItems.map((item) => ({
+          '@type': 'Question',
+          name: item.q,
+          acceptedAnswer: { '@type': 'Answer', text: item.a },
+        })),
+      },
+    ],
+  }
+
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Link href="/products" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-8 transition-colors">
         <ArrowLeft className="h-4 w-4 mr-1" />
         ツール一覧に戻る
@@ -30,7 +102,7 @@ export default function PromptMasterPage() {
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZyIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IGZpbGw9InVybCgjZykiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIi8+PC9zdmc+')] opacity-30" />
         <div className="relative z-10">
           <div className="text-sm font-medium bg-white/20 backdrop-blur-sm rounded-full px-4 py-1 inline-block mb-4">
-            🎨 クリエイティブシリーズ
+            クリエイティブシリーズ
           </div>
           <h1 className="text-3xl md:text-5xl font-bold mb-4">
             AI画像プロンプト<br />マスター
@@ -67,7 +139,7 @@ export default function PromptMasterPage() {
       <h2 className="text-2xl font-bold mb-4">対応カテゴリ</h2>
       <div className="grid md:grid-cols-2 gap-6 mb-12">
         <div className="bg-muted/30 rounded-2xl p-5">
-          <h3 className="font-bold text-sm text-emerald-500 mb-3">💼 ビジネス向け（13カテゴリ）</h3>
+          <h3 className="font-bold text-sm text-emerald-500 mb-3">ビジネス向け（13カテゴリ）</h3>
           <div className="space-y-1.5 text-sm text-muted-foreground">
             {[
               '01 商品イメージの仮作成',
@@ -87,7 +159,7 @@ export default function PromptMasterPage() {
           </div>
         </div>
         <div className="bg-muted/30 rounded-2xl p-5">
-          <h3 className="font-bold text-sm text-fuchsia-500 mb-3">🎨 クリエイティブ向け（13カテゴリ）</h3>
+          <h3 className="font-bold text-sm text-fuchsia-500 mb-3">クリエイティブ向け（13カテゴリ）</h3>
           <div className="space-y-1.5 text-sm text-muted-foreground">
             {[
               '14 英会話の「場面」を視覚化',
@@ -112,12 +184,12 @@ export default function PromptMasterPage() {
       <h2 className="text-2xl font-bold mb-6">搭載機能</h2>
       <div className="grid md:grid-cols-2 gap-4 mb-12">
         {[
-          { icon: <Wand2 className="h-6 w-6" />, title: '🎨 プロンプト生成', desc: '26カテゴリから選択→日本語で内容入力→最適な英語プロンプトを自動生成。スタイル・画角・照明・品質のパラメータも調整可能。' },
-          { icon: <BookOpen className="h-6 w-6" />, title: '📚 カテゴリ別テンプレート', desc: 'ビジネス系13種＋クリエイティブ系13種、合計200以上のプリセットテンプレート。用途に合わせてワンクリック適用。' },
-          { icon: <SlidersHorizontal className="h-6 w-6" />, title: '🔧 パラメータ辞典', desc: 'スタイル（写真/イラスト/水彩/3D等）、カメラアングル、照明、アスペクト比の組み合わせリファレンス。50+のプリセット。' },
-          { icon: <Sparkles className="h-6 w-6" />, title: '✨ プロンプト改善AI', desc: '既存のプロンプトを貼り付けるだけで、より高品質な画像が生成できるよう自動修正・強化。弱点を診断してアドバイス。' },
-          { icon: <ClipboardList className="h-6 w-6" />, title: '📋 履歴＆お気に入り', desc: '生成したプロンプトの保存・コピー・再利用。お気に入り登録で頻繁に使うプロンプトにすぐアクセス。' },
-          { icon: <GraduationCap className="h-6 w-6" />, title: '📖 学習ガイド', desc: 'プロンプトの基本構造、効果的な修飾語、NG表現、モデル別Tips。初心者でもプロ品質のプロンプトが書けるように。' },
+          { icon: <Wand2 className="h-6 w-6" />, title: 'プロンプト生成', desc: '26カテゴリから選択→日本語で内容入力→最適な英語プロンプトを自動生成。スタイル・画角・照明・品質のパラメータも調整可能。' },
+          { icon: <BookOpen className="h-6 w-6" />, title: 'カテゴリ別テンプレート', desc: 'ビジネス系13種＋クリエイティブ系13種、合計200以上のプリセットテンプレート。用途に合わせてワンクリック適用。' },
+          { icon: <SlidersHorizontal className="h-6 w-6" />, title: 'パラメータ辞典', desc: 'スタイル（写真/イラスト/水彩/3D等）、カメラアングル、照明、アスペクト比の組み合わせリファレンス。50+のプリセット。' },
+          { icon: <Sparkles className="h-6 w-6" />, title: 'プロンプト改善AI', desc: '既存のプロンプトを貼り付けるだけで、より高品質な画像が生成できるよう自動修正・強化。弱点を診断してアドバイス。' },
+          { icon: <ClipboardList className="h-6 w-6" />, title: '履歴＆お気に入り', desc: '生成したプロンプトの保存・コピー・再利用。お気に入り登録で頻繁に使うプロンプトにすぐアクセス。' },
+          { icon: <GraduationCap className="h-6 w-6" />, title: '学習ガイド', desc: 'プロンプトの基本構造、効果的な修飾語、NG表現、モデル別Tips。初心者でもプロ品質のプロンプトが書けるように。' },
         ].map((f, i) => (
           <Link key={i} href="/products/prompt-master/app" className="border rounded-2xl p-5 hover:border-emerald-300 hover:bg-emerald-500/5 transition-all group block">
             <div className="flex items-start justify-between">
@@ -132,7 +204,7 @@ export default function PromptMasterPage() {
 
       {/* Supported Models */}
       <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-6 mb-12">
-        <h3 className="font-bold text-emerald-600 dark:text-emerald-400 mb-3">🤖 対応モデル</h3>
+        <h3 className="font-bold text-emerald-600 dark:text-emerald-400 mb-3">対応モデル</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
           {['Midjourney', 'DALL-E 3', 'Stable Diffusion', 'Flux', 'Adobe Firefly', 'Leonardo AI', 'Bing Image Creator', 'その他汎用'].map(m => (
             <div key={m} className="flex items-center gap-1.5"><span className="text-emerald-500">✓</span> {m}</div>
@@ -169,24 +241,18 @@ export default function PromptMasterPage() {
       {/* Pricing */}
       <div className="border-2 border-emerald-500/30 rounded-3xl p-8 text-center mb-12">
         <h2 className="text-2xl font-bold mb-2">AI画像プロンプトマスター</h2>
-        <Badge className="mb-4 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20">プレミアムプラン限定</Badge>
-        <div className="text-3xl font-bold mb-2">¥1,980<span className="text-base font-normal text-muted-foreground">/月</span></div>
-        <p className="text-muted-foreground mb-6">Gmail AI Accelerator を含む上位プラン</p>
+        <Badge className="mb-4 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20">スタンダードプラン</Badge>
+        <div className="text-3xl font-bold mb-2">¥480<span className="text-base font-normal text-muted-foreground">/月</span></div>
+        <p className="text-muted-foreground mb-6">AI画像プロンプトマスター単体プラン</p>
         <Link href="/pricing">
-          <Button className="w-full max-w-xs mx-auto bg-emerald-500 hover:bg-emerald-600 text-white">プレミアムプランを見る →</Button>
+          <Button className="w-full max-w-xs mx-auto bg-emerald-500 hover:bg-emerald-600 text-white">プランを見る →</Button>
         </Link>
       </div>
 
       {/* FAQ */}
       <h2 className="text-2xl font-bold mb-6">よくある質問</h2>
       <div className="space-y-4 mb-12">
-        {[
-          { q: '画像生成AIの知識がなくても使えますか？', a: 'はい。日本語でイメージを入力するだけで、最適なプロンプトが生成されます。学習ガイドタブで基本から学べます。' },
-          { q: 'どの画像生成AIに対応していますか？', a: 'Midjourney、DALL-E 3、Stable Diffusion、Flux、Adobe Firefly、Leonardo AIなど主要なモデルすべてに対応しています。' },
-          { q: 'プロンプトは英語で出力されますか？', a: 'はい。画像生成AIは英語プロンプトが最も高品質な結果を返すため、日本語入力→英語プロンプト変換が基本です。日本語のままのオプションもあります。' },
-          { q: '生成されたプロンプトの著作権は？', a: 'プロンプト自体は自由にご利用いただけます。生成された画像の権利は各AIサービスの利用規約に従います。' },
-          { q: 'オフラインでも使えますか？', a: 'テンプレートとパラメータ辞典はオフラインでも閲覧可能です。プロンプト生成のコア機能もブラウザ内で動作します。' },
-        ].map((faq, i) => (
+        {faqItems.map((faq, i) => (
           <div key={i} className="border rounded-xl p-5">
             <h3 className="font-bold mb-2">Q. {faq.q}</h3>
             <p className="text-sm text-muted-foreground">{faq.a}</p>
@@ -196,14 +262,14 @@ export default function PromptMasterPage() {
 
       {/* Amazon アソシエイト */}
       <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 mb-12 text-center">
-        <p className="text-sm text-muted-foreground mb-3">🛒 AI・画像生成本をAmazonでチェック</p>
+        <p className="text-sm text-muted-foreground mb-3">AI・画像生成本をAmazonでチェック</p>
         <a
           href="https://www.amazon.co.jp/s?k=AI%20%E7%94%BB%E5%83%8F%E7%94%9F%E6%88%90&tag=nextralabs-22"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
         >
-          Amazonで見る →
+          Amazonで見る
         </a>
       </div>
     </div>

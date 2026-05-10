@@ -6,10 +6,11 @@ import { Badge } from '@/components/ui/badge'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 
 export const metadata: Metadata = {
-  title: 'AI買い物依存ストッパー',
-  description: '購買衝動を分析し「本当に必要か」をAIが判定。衝動買いを止めて家計を守るAIツール。月額¥980。',
+  title: 'AI買い物依存ストッパー | 衝動買いを止めるAI心理カウンセラー | NextraLabs',
+  description: '「これ買っていい？」をAIに相談するだけ。衝動買いリスクスコア・心理的購買動機分析・クールダウン提案で無駄遣いを撲滅。借金体質改善にも。完全無料。',
+  keywords: ['衝動買い防止','買い物依存AI','節約AI','浪費防止アプリ','買い物心理AI','無駄遣い防止','家計節約AI','購買判定AI','節約アドバイスAI','NextraLabs節約'],
   alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/shopping-stopper' },
-  openGraph: { title: 'AI買い物依存ストッパー | NextraLabs', description: '購買衝動を分析し「本当に必要か」をAIが判定。衝動買いを止めて家計を守るAIツール。', url: 'https://membership-site-nextralabos.vercel.app/products/shopping-stopper', type: 'website' },
+  openGraph: { title: 'AI買い物依存ストッパー | 衝動買いを止めるAI心理カウンセラー | NextraLabs', description: '「これ買っていい？」をAIに相談するだけ。衝動買いリスクスコア・心理的購買動機分析・クールダウン提案で無駄遣いを撲滅。借金体質改善にも。完全無料。', url: 'https://membership-site-nextralabos.vercel.app/products/shopping-stopper', type: 'website' },
 }
 import {
   Camera,
@@ -132,8 +133,20 @@ const faqs = [
 ]
 
 export default function ShoppingStopperPage() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'AI買い物依存ストッパー',
+    description: '「これ買っていい？」をAIに相談するだけ。衝動買いリスクスコア・心理的購買動機分析・クールダウン提案で無駄遣いを撲滅。',
+    applicationCategory: 'LifestyleApplication',
+    operatingSystem: 'Web',
+    url: 'https://membership-site-nextralabos.vercel.app/products/shopping-stopper',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+    publisher: { '@type': 'Organization', name: 'NextraLabs' },
+  }
   return (
     <div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* Hero */}
       <section className="relative overflow-hidden py-16 md:py-24">
         <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 via-transparent to-rose-500/5" />
@@ -444,6 +457,35 @@ export default function ShoppingStopperPage() {
             <p className="text-xs text-muted-foreground">
               スタンダードプラン（¥980/月）で全ツール使い放題
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-16 bg-[#0d1117]">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <h2 className="text-2xl font-bold text-white mb-8 text-center">よくある質問</h2>
+          <div className="space-y-6">
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 完全無料で使えますか？</p>
+              <p className="text-slate-400 text-sm">A. はい、AI買い物依存ストッパーは完全無料でご利用いただけます。NextraLabsへの登録も不要です。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 衝動買いリスクスコアはどのように計算されますか？</p>
+              <p className="text-slate-400 text-sm">A. 購入しようとしている商品の必要性・価格・購入頻度・感情状態などをAIが分析し、0〜100のスコアで衝動買いリスクを数値化します。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 借金体質の改善にも使えますか？</p>
+              <p className="text-slate-400 text-sm">A. はい。衝動買いを繰り返すことで借金が増えるパターンを分析し、クールダウン提案や代替行動を提示することで、無駄遣いの根本改善をサポートします。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 個人情報やクレジットカード情報は必要ですか？</p>
+              <p className="text-slate-400 text-sm">A. 不要です。「何を買おうとしているか」だけをAIに伝えるだけで診断できます。個人を特定する情報は一切必要ありません。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 家族や子どもの衝動買い防止にも使えますか？</p>
+              <p className="text-slate-400 text-sm">A. はい。家族全員で活用いただけます。子どものゲーム課金や衝動的なネットショッピングを防ぐ家計管理ツールとしても効果的です。</p>
+            </div>
           </div>
         </div>
       </section>

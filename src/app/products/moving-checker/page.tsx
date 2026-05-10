@@ -5,10 +5,11 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 
 export const metadata: Metadata = {
-  title: 'AI引っ越し安心チェッカー',
-  description: '物件の治安・騒音・トラブルリスクを30項目でスコア化。引っ越しコスト計算まで。無料。',
+  title: 'AI引越し安心チェッカー | 治安・物件リスク・引越し費用をAIが徹底診断 | NextraLabs',
+  description: '引越し先の住所を入力するだけ。AIが治安スコア・ハザードマップリスク・物件の問題点・引越し費用相場を自動診断。失敗しない引越しをAIがサポート。スタンダードプラン¥980。',
+  keywords: ['引越しAI','治安診断AI','物件リスク診断','引越し費用AI','住みやすさ診断','引越し安心','ハザードマップAI','物件診断AI','引越し失敗防止','NextraLabs引越し'],
   alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/moving-checker' },
-  openGraph: { title: 'AI引っ越し安心チェッカー | NextraLabs', description: '物件の治安・騒音・トラブルリスクを30項目でスコア化。引っ越しコスト計算まで。無料。', url: 'https://membership-site-nextralabos.vercel.app/products/moving-checker', type: 'website' },
+  openGraph: { title: 'AI引越し安心チェッカー | 治安・物件リスク・引越し費用をAIが徹底診断 | NextraLabs', description: '引越し先の住所を入力するだけ。AIが治安スコア・ハザードマップリスク・物件の問題点・引越し費用相場を自動診断。失敗しない引越しをAIがサポート。スタンダードプラン¥980。', url: 'https://membership-site-nextralabos.vercel.app/products/moving-checker', type: 'website' },
 }
 
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
@@ -115,16 +116,28 @@ const targets = [
 ]
 
 const faqs = [
-  { q: '実際の犯罪データを使っていますか？', a: '警察庁が公開している犯罪統計データの傾向をもとにスコアリングしています。リアルタイムのデータではなく、一般的な都市部・住宅街・郊外の傾向を参考にしています。' },
-  { q: '特定の住所を入力する必要がありますか？', a: 'いいえ。物件の構造や周辺環境の特徴を選択式で入力するだけです。個人情報や具体的な住所は不要です。' },
-  { q: 'トラブル対処テンプレートは法的に有効ですか？', a: '一般的な対処手順をまとめたものです。法的な書面（内容証明など）は、実際に送付する前に弁護士や法テラスに相談されることをおすすめします。' },
-  { q: '管理会社への相談文面も作れますか？', a: 'はい。トラブルの種類を選ぶと、管理会社への連絡テンプレート（メール文面）が生成されます。日時・状況を具体的に記録することがポイントです。' },
-  { q: 'データはどこに保存されますか？', a: 'すべてブラウザのlocalStorageに保存されます。サーバーには一切送信されません。' },
+  { q: '利用するにはどのプランが必要ですか？', a: 'スタンダードプラン（月額¥980）以上でご利用いただけます。引越し先の治安診断や費用相場など全機能をフル活用できます。' },
+  { q: '治安スコアはどのような基準で計算されますか？', a: '公開犯罪統計・ハザードマップデータ・地域特性をAIが総合分析し、治安スコアを算出します。引越し前の比較検討にご活用ください。' },
+  { q: '引越し費用の相場診断はどれくらい正確ですか？', a: '家族構成・移動距離・荷物量・時期（繁忙期/閑散期）を入力することで、実際の業者相場に近い費用レンジをAIが提示します。複数業者との交渉にも使えます。' },
+  { q: 'ハザードマップリスクとは何を指しますか？', a: '洪水・土砂災害・地震・高潮などのリスクエリアをAIが解析し、引越し先の自然災害リスクを5段階で評価します。防災面での物件選びに役立ちます。' },
+  { q: '物件の問題点チェックはどのように使いますか？', a: '内見前・内見中・契約前の3つのフェーズで確認すべき30項目以上をチェックリスト形式で提供。見落としがちな欠陥や契約上のリスクを事前に発見できます。' },
 ]
 
 export default function MovingCheckerPage() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'AI引越し安心チェッカー',
+    description: '引越し先の住所を入力するだけ。AIが治安スコア・ハザードマップリスク・物件の問題点・引越し費用相場を自動診断。',
+    applicationCategory: 'LifestyleApplication',
+    operatingSystem: 'Web',
+    url: 'https://membership-site-nextralabos.vercel.app/products/moving-checker',
+    offers: { '@type': 'Offer', price: '980', priceCurrency: 'JPY' },
+    publisher: { '@type': 'Organization', name: 'NextraLabs' },
+  }
   return (
     <div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* Hero */}
       <section className="relative overflow-hidden py-16 md:py-24">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-green-500/5" />

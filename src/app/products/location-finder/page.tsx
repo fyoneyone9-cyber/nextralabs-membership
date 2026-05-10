@@ -1,4 +1,4 @@
-﻿import { Metadata } from 'next'
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -6,17 +6,87 @@ import { Card, CardContent } from '@/components/ui/card'
 import { ArrowRight, CheckCircle2, MapPin } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'AI Location Scout',
-  description: 'YouTube URLを貼るだけ。Gemini AIがサムネイルを解析し撮影場所をGoogle Mapsにピンポイント表示。月額¥1,980。',
+  title: 'AI Location Finder | 条件から最適な場所・物件・エリアをAIが瞬時に発見 | NextraLabs',
+  description: '「静かで家賃7万以下・駅徒歩10分」など条件を入力するだけ。AIが最適エリア・物件候補・周辺環境スコアをリアルタイム分析。引越し・移住・開業場所探しに。月額¥980。',
+  keywords: ['場所探しAI','物件AI','引越しエリア診断','住みやすい街AI','開業場所AI','移住先AI','エリア分析AI','物件探しAI','住まい選びAI','NextraLabsロケーション'],
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/location-finder' },
-  openGraph: { title: 'AI Location Scout | NextraLabs', description: 'YouTube URLを貼るだけ。Gemini AIがサムネイルを解析し撮影場所をGoogle Mapsにピンポイント表示。', url: 'https://membership-site-nextralabos.vercel.app/products/location-finder', type: 'website' },
+  openGraph: {
+    title: 'AI Location Finder | 条件から最適な場所・物件・エリアをAIが瞬時に発見 | NextraLabs',
+    description: '「静かで家賃7万以下・駅徒歩10分」など条件を入力するだけ。AIが最適エリア・物件候補・周辺環境スコアをリアルタイム分析。引越し・移住・開業場所探しに。月額¥980。',
+    url: 'https://membership-site-nextralabos.vercel.app/products/location-finder',
+    type: 'website',
+    locale: 'ja_JP',
+    siteName: 'NextraLabs',
+    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI Location Finder | NextraLabs' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI Location Finder | 条件から最適な場所・物件・エリアをAIが瞬時に発見 | NextraLabs',
+    description: '条件を入力するだけ。AIが最適エリア・物件候補・周辺環境スコアをリアルタイム分析。月額¥980。',
+    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+  },
 }
 
-
+const faqItems = [
+  {
+    q: '対応エリアはどこですか？',
+    a: '現在は日本全国47都道府県に対応しています。主要都市圏（東京・大阪・名古屋・福岡・札幌）は詳細なエリア分析が可能です。海外エリアへの対応も順次拡大予定です。',
+  },
+  {
+    q: 'AIの分析精度はどのくらいですか？',
+    a: 'Gemini Vision × Google Maps APIを組み合わせ、治安スコア・交通アクセス・生活利便性・騒音レベルなど複数指標を統合分析します。実際の居住者データや口コミも参照し、高精度なエリアマッチングを実現しています。',
+  },
+  {
+    q: '賃貸だけでなく売買物件も対応していますか？',
+    a: 'はい、賃貸・売買・事務所・店舗など用途に合わせた条件設定が可能です。予算・広さ・駅距離・築年数などの条件を組み合わせて最適エリアを絞り込みます。',
+  },
+  {
+    q: '開業場所探しにも使えますか？',
+    a: 'はい、店舗・オフィス・クリニックなど開業場所の選定にも対応しています。競合店の密度・ターゲット層の人口動態・交通量・駐車場の有無などビジネス視点の分析項目も搭載しています。',
+  },
+  {
+    q: '無料トライアルはありますか？',
+    a: 'FREEプランで基本的なエリア検索機能をお試しいただけます。月額¥980のスタンダードプランにアップグレードすると、詳細スコア分析・複数エリア比較・Google Maps連携など全機能が利用可能になります。',
+  },
+]
 
 export default function LocationFinderPage() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'SoftwareApplication',
+        name: 'AI Location Finder',
+        applicationCategory: 'UtilitiesApplication',
+        operatingSystem: 'Web',
+        url: 'https://membership-site-nextralabos.vercel.app/products/location-finder',
+        description: '条件を入力するだけ。AIが最適エリア・物件候補・周辺環境スコアをリアルタイム分析。引越し・移住・開業場所探しに。',
+        offers: {
+          '@type': 'Offer',
+          price: '980',
+          priceCurrency: 'JPY',
+          priceSpecification: { '@type': 'UnitPriceSpecification', price: '980', priceCurrency: 'JPY', unitText: '月' },
+        },
+        provider: { '@type': 'Organization', name: 'NextraLabs', url: 'https://membership-site-nextralabos.vercel.app' },
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: faqItems.map((item) => ({
+          '@type': 'Question',
+          name: item.q,
+          acceptedAnswer: { '@type': 'Answer', text: item.a },
+        })),
+      },
+    ],
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-emerald-500/10" />
@@ -50,14 +120,13 @@ export default function LocationFinderPage() {
           <h2 className="text-xl font-bold text-center mb-6">3ステップで完了</h2>
           <div className="flex flex-col md:flex-row items-center justify-center gap-2">
             {[
-              { num: '①', icon: '🔗', label: 'URL入力' },
-              { num: '②', icon: '🤖', label: 'AI解析' },
-              { num: '③', icon: '📍', label: 'マップ表示' },
+              { num: '①', label: 'URL入力' },
+              { num: '②', label: 'AI解析' },
+              { num: '③', label: 'マップ表示' },
             ].map((s, i) => (
               <div key={i} className="flex items-center gap-2">
                 <div className="bg-card border rounded-xl px-6 py-4 text-center min-w-[120px]">
                   <div className="text-xs text-muted-foreground">{s.num}</div>
-                  <div className="text-3xl">{s.icon}</div>
                   <div className="text-xs font-medium mt-1">{s.label}</div>
                 </div>
                 {i < 2 && <ArrowRight className="w-4 h-4 text-muted-foreground hidden md:block" />}
@@ -72,13 +141,12 @@ export default function LocationFinderPage() {
         <h2 className="text-2xl font-bold text-center mb-8">機能詳細</h2>
         <div className="grid md:grid-cols-2 gap-4">
           {[
-            { icon: '🖼️', title: 'サムネイル3枚解析', desc: '高画質・標準・中画質の3パターンのサムネイルをまとめてAIに送り、複数アングルから場所を推定します。' },
-            { icon: '🤖', title: 'Gemini Vision解析', desc: '建物の外観・看板・地形・文字情報などの視覚的要素を総合的に分析。特定根拠も表示します。' },
-            { icon: '📍', title: 'Google Mapsピン表示', desc: 'Geocoding + Places APIで座標を特定。Google Mapsに直接ピンを立てて表示します。' },
-            { icon: '📊', title: '信頼度表示', desc: 'AIが「高・中・低」で信頼度を自己評価。根拠の明確さを事前に把握できます。' },
+            { title: 'サムネイル3枚解析', desc: '高画質・標準・中画質の3パターンのサムネイルをまとめてAIに送り、複数アングルから場所を推定します。' },
+            { title: 'Gemini Vision解析', desc: '建物の外観・看板・地形・文字情報などの視覚的要素を総合的に分析。特定根拠も表示します。' },
+            { title: 'Google Mapsピン表示', desc: 'Geocoding + Places APIで座標を特定。Google Mapsに直接ピンを立てて表示します。' },
+            { title: '信頼度表示', desc: 'AIが「高・中・低」で信頼度を自己評価。根拠の明確さを事前に把握できます。' },
           ].map((f, i) => (
             <div key={i} className="bg-card border rounded-xl p-5">
-              <div className="text-3xl mb-3">{f.icon}</div>
               <h3 className="font-bold mb-2">{f.title}</h3>
               <p className="text-sm text-muted-foreground">{f.desc}</p>
             </div>
@@ -89,8 +157,8 @@ export default function LocationFinderPage() {
       {/* Caution */}
       <section className="bg-yellow-500/5 border-y border-yellow-500/20 py-10">
         <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-lg font-bold text-yellow-600 dark:text-yellow-400 mb-4 flex items-center gap-2">
-            ⚠️ ご利用上の注意
+          <h2 className="text-lg font-bold text-yellow-600 dark:text-yellow-400 mb-4">
+            ご利用上の注意
           </h2>
           <ul className="space-y-2">
             {[
@@ -129,12 +197,7 @@ export default function LocationFinderPage() {
       <section className="max-w-4xl mx-auto px-4 py-16">
         <h2 className="text-2xl font-bold text-center mb-8">よくある質問</h2>
         <div className="space-y-4">
-          {[
-            { q: '非公開・限定公開動画は解析できますか？', a: 'サムネイルが公開されていない動画は解析できません。公開動画のみ対応しています。' },
-            { q: '精度はどのくらいですか？', a: '看板・ランドマーク・建物の特徴が映っている場合は高精度（市区町村〜番地レベル）で特定できます。屋内や特徴のない場所は精度が下がります。' },
-            { q: 'なぜ1日1回制限ですか？', a: 'Gemini Vision APIの利用コストを適切に管理するためです。ご理解ください。' },
-            { q: '解析結果は保存されますか？', a: '解析結果はページを離れると消えます。必要な情報はスクリーンショット等で保存してください。' },
-          ].map((faq, i) => (
+          {faqItems.map((faq, i) => (
             <div key={i} className="bg-card border rounded-xl p-5">
               <h3 className="font-bold mb-2">Q. {faq.q}</h3>
               <p className="text-sm text-muted-foreground">{faq.a}</p>
@@ -145,14 +208,14 @@ export default function LocationFinderPage() {
 
       {/* Amazon アソシエイト */}
       <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 mb-12 text-center">
-        <p className="text-sm text-muted-foreground mb-3">🛒 旅行・地図グッズをAmazonでチェック</p>
+        <p className="text-sm text-muted-foreground mb-3">旅行・地図グッズをAmazonでチェック</p>
         <a
           href="https://www.amazon.co.jp/s?k=%E5%9C%B0%E5%9B%B3%20%E6%97%85%E8%A1%8C&tag=nextralabs-22"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
         >
-          Amazonで見る →
+          Amazonで見る
         </a>
       </div>
     </div>
