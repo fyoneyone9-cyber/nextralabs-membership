@@ -38,6 +38,38 @@ const SUSPICIOUS_URL_PATTERNS = [
 ]
 
 export default function ScamDefender() {
+  const router = useRouter()
+
+  // ブラウザバック・マウスサイドボタン対応
+  useEffect(() => {
+    window.history.pushState(null, '', window.location.href)
+    const handlePopState = () => {
+      const ok = window.confirm('ツールを終了しますか？')
+      if (ok) {
+        router.push('/dashboard')
+      } else {
+        window.history.pushState(null, '', window.location.href)
+      }
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [router])
+
+  // タブ閉じ・URL直打ち対応
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [])
+
+  const handleBack = useCallback(() => {
+    const ok = window.confirm('ツールを終了しますか？')
+    if (ok) router.push('/dashboard')
+  }, [router])
+
   const [inputText, setInputText]   = useState('')
   const [senderInfo, setSenderInfo] = useState('')
   const [subjectInfo, setSubjectInfo] = useState('')

@@ -1,6 +1,8 @@
 ﻿'use client'
+import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
-import React, { useState } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -158,6 +160,38 @@ const KDP_STEPS = [
 ]
 
 export default function KdpGuideApp() {
+  const router = useRouter()
+
+  // ブラウザバック・マウスサイドボタン対応
+  useEffect(() => {
+    window.history.pushState(null, '', window.location.href)
+    const handlePopState = () => {
+      const ok = window.confirm('ツールを終了しますか？')
+      if (ok) {
+        router.push('/dashboard')
+      } else {
+        window.history.pushState(null, '', window.location.href)
+      }
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [router])
+
+  // タブ閉じ・URL直打ち対応
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [])
+
+  const handleBack = useCallback(() => {
+    const ok = window.confirm('ツールを終了しますか？')
+    if (ok) router.push('/dashboard')
+  }, [router])
+
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})
 
   const toggleCheck = (id: string) => {

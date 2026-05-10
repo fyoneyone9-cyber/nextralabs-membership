@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { AlertTriangle, Copy, CheckCircle2, ExternalLink, Camera, X, ShoppingBag, Smartphone, Coffee, Shirt, Gamepad2, UtensilsCrossed, Wine, Zap } from 'lucide-react'
 
@@ -280,6 +280,38 @@ const MasterEngine = () => {
 const NoSSRWrapper = dynamic(() => Promise.resolve(MasterEngine), { ssr: false });
 
 export default function MoneyGuard() {
+  const router = useRouter()
+
+  // ブラウザバック・マウスサイドボタン対応
+  useEffect(() => {
+    window.history.pushState(null, '', window.location.href)
+    const handlePopState = () => {
+      const ok = window.confirm('ツールを終了しますか？')
+      if (ok) {
+        router.push('/dashboard')
+      } else {
+        window.history.pushState(null, '', window.location.href)
+      }
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [router])
+
+  // タブ閉じ・URL直打ち対応
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [])
+
+  const handleBack = useCallback(() => {
+    const ok = window.confirm('ツールを終了しますか？')
+    if (ok) router.push('/dashboard')
+  }, [router])
+
   return (
     <div className="min-h-screen bg-[#050507] text-gray-100 font-sans p-4 md:p-10 overflow-x-hidden text-left">
       <NoSSRWrapper />

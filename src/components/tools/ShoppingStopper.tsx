@@ -1,9 +1,42 @@
 'use client'
-import React, { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { Camera, Ban, Timer, Activity, ShieldAlert, Power } from 'lucide-react'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
 export default function ShoppingStopper() {
+  const router = useRouter()
+
+  // ブラウザバック・マウスサイドボタン対応
+  useEffect(() => {
+    window.history.pushState(null, '', window.location.href)
+    const handlePopState = () => {
+      const ok = window.confirm('ツールを終了しますか？')
+      if (ok) {
+        router.push('/dashboard')
+      } else {
+        window.history.pushState(null, '', window.location.href)
+      }
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [router])
+
+  // タブ閉じ・URL直打ち対応
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [])
+
+  const handleBack = useCallback(() => {
+    const ok = window.confirm('ツールを終了しますか？')
+    if (ok) router.push('/dashboard')
+  }, [router])
+
   const [isCameraActive, setIsCameraActive] = useState(false)
   const [excitementLevel, setExcitementLevel] = useState(0)
   const [timer, setTimer] = useState(0)

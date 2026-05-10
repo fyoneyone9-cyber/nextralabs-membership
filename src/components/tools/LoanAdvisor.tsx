@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { Loader2, Calculator, TrendingDown, Calendar, ShieldCheck, ArrowRight, Wallet, CheckCircle2, AlertCircle, Sparkles, BookOpen, CreditCard, Car, GraduationCap, Home, Smartphone, ShoppingBag, Zap } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
@@ -80,6 +80,38 @@ const LOAN_OFFERS = [
 // メインコンポーネント
 // ========================
 export function LoanAdvisor() {
+  const router = useRouter()
+
+  // ブラウザバック・マウスサイドボタン対応
+  useEffect(() => {
+    window.history.pushState(null, '', window.location.href)
+    const handlePopState = () => {
+      const ok = window.confirm('ツールを終了しますか？')
+      if (ok) {
+        router.push('/dashboard')
+      } else {
+        window.history.pushState(null, '', window.location.href)
+      }
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [router])
+
+  // タブ閉じ・URL直打ち対応
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [])
+
+  const handleBack = useCallback(() => {
+    const ok = window.confirm('ツールを終了しますか？')
+    if (ok) router.push('/dashboard')
+  }, [router])
+
   const [debts, setDebts] = useState<Debt[]>([
     { id: '1', name: '借入先A', amount: 50, rate: 18.0 },
     { id: '2', name: '借入先B', amount: 30, rate: 15.0 },

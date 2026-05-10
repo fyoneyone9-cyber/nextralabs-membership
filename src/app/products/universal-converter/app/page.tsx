@@ -1,5 +1,6 @@
 'use client'
-import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import React, { useState, useCallback, useEffect } from 'react'
 import { Loader2, CheckCircle2, Repeat, Download, Video, ImageIcon, FileText, Upload } from 'lucide-react'
 
 const MODES = [
@@ -11,6 +12,38 @@ const MODES = [
 type Mode = typeof MODES[number]['id']
 
 export default function UniversalConverterApp() {
+  const router = useRouter()
+
+  // ブラウザバック・マウスサイドボタン対応
+  useEffect(() => {
+    window.history.pushState(null, '', window.location.href)
+    const handlePopState = () => {
+      const ok = window.confirm('ツールを終了しますか？')
+      if (ok) {
+        router.push('/dashboard')
+      } else {
+        window.history.pushState(null, '', window.location.href)
+      }
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [router])
+
+  // タブ閉じ・URL直打ち対応
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [])
+
+  const handleBack = useCallback(() => {
+    const ok = window.confirm('ツールを終了しますか？')
+    if (ok) router.push('/dashboard')
+  }, [router])
+
   const [mode, setMode]                 = useState<Mode>('video')
   const [file, setFile]                 = useState<File | null>(null)
   const [targetFormat, setTargetFormat] = useState('mp4')
