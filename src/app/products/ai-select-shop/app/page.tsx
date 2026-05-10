@@ -15,6 +15,27 @@ type StyleDef = {
   draw: (ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, text: string, pw: number, ph: number) => void
 }
 
+// テキストが maxWidth に収まるようフォントサイズを自動縮小してから描画するヘルパー
+function drawFitText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  stroke = false
+) {
+  let measured = ctx.measureText(text).width
+  if (measured > maxWidth) {
+    const currentSize = parseFloat(ctx.font)
+    if (!isNaN(currentSize) && currentSize > 0) {
+      const newSize = Math.max(10, Math.floor(currentSize * (maxWidth / measured)))
+      ctx.font = ctx.font.replace(/[\d.]+px/, `${newSize}px`)
+    }
+  }
+  if (stroke) ctx.strokeText(text, x, y)
+  ctx.fillText(text, x, y)
+}
+
 const STYLES: StyleDef[] = [
   // ── 1. 和風・日の丸 ──────────────────────────────
   {
@@ -37,7 +58,7 @@ const STYLES: StyleDef[] = [
       ctx.beginPath(); ctx.arc(cx, cy - r*0.15, r*0.62, 0, Math.PI*2); ctx.fill()
       ctx.font = `bold ${Math.floor(r*0.44)}px serif`
       ctx.fillStyle = '#ffffff'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy - r*0.15)
+      drawFitText(ctx, text, cx, cy - r*0.15, pw * 0.88)
     },
   },
   // ── 2. ストリート ──────────────────────────────
@@ -60,7 +81,7 @@ const STYLES: StyleDef[] = [
       ctx.font=`900 ${Math.floor(r*0.52)}px Impact,sans-serif`
       ctx.fillStyle='#ffdd00'; ctx.textAlign='center'; ctx.textBaseline='middle'
       ctx.strokeStyle='#000'; ctx.lineWidth=4
-      ctx.strokeText(text, cx, cy); ctx.fillText(text, cx, cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88, true)
       ctx.shadowBlur=0
       ctx.font=`700 ${Math.floor(r*0.17)}px Helvetica,sans-serif`
       ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.fillText('STREET WEAR', cx, cy+r*0.6)
@@ -86,7 +107,7 @@ const STYLES: StyleDef[] = [
       ctx.beginPath(); ctx.arc(cx, cy-r*0.1, r*0.58, 0, Math.PI*2); ctx.stroke()
       ctx.font=`bold ${Math.floor(r*0.4)}px Georgia,serif`
       ctx.fillStyle='#f5e6c8'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy-r*0.1)
+      drawFitText(ctx, text, cx, cy - r*0.1, pw * 0.88)
       ctx.font=`${Math.floor(r*0.16)}px Georgia,serif`
       ctx.fillStyle='rgba(245,230,200,0.7)'; ctx.fillText('VINTAGE', cx, cy+r*0.52)
     },
@@ -116,7 +137,7 @@ const STYLES: StyleDef[] = [
       ctx.shadowColor='#00ffff'; ctx.shadowBlur=20
       ctx.font=`bold ${Math.floor(r*0.48)}px monospace`
       ctx.fillStyle='#00ffff'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88)
       ctx.shadowBlur=0
       ctx.strokeStyle='#ff00ff'; ctx.lineWidth=2
       ctx.beginPath(); ctx.moveTo(cx-r*0.7,cy+r*0.42); ctx.lineTo(cx+r*0.7,cy+r*0.42); ctx.stroke()
@@ -147,7 +168,7 @@ const STYLES: StyleDef[] = [
       })
       ctx.font=`bold ${Math.floor(r*0.44)}px "Noto Sans JP",sans-serif`
       ctx.fillStyle='#c2185b'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88)
     },
   },
   // ── 6. ミニマル ──────────────────────────────
@@ -162,7 +183,7 @@ const STYLES: StyleDef[] = [
       for (let y=cy-ph/2; y<cy+ph/2; y+=g){ctx.beginPath();ctx.moveTo(cx-pw/2,y);ctx.lineTo(cx+pw/2,y);ctx.stroke()}
       ctx.font=`200 ${Math.floor(r*0.42)}px Helvetica,sans-serif`
       ctx.fillStyle='#111'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88)
       ctx.strokeStyle='#111'; ctx.lineWidth=1.5
       ctx.beginPath(); ctx.moveTo(cx-r*0.45,cy+r*0.38); ctx.lineTo(cx+r*0.45,cy+r*0.38); ctx.stroke()
     },
@@ -189,7 +210,7 @@ const STYLES: StyleDef[] = [
       ctx.shadowColor='rgba(212,175,55,0.6)'; ctx.shadowBlur=14
       ctx.font=`bold ${Math.floor(r*0.44)}px Georgia,serif`
       ctx.fillStyle=tg; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88)
       ctx.shadowBlur=0
       // ゴールドボーダー
       const bg2=ctx.createLinearGradient(cx-r,cy,cx+r,cy)
@@ -215,7 +236,7 @@ const STYLES: StyleDef[] = [
       ctx.shadowColor='#39ff14'; ctx.shadowBlur=22
       ctx.font=`bold ${Math.floor(r*0.5)}px monospace`
       ctx.fillStyle='#39ff14'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88)
       ctx.shadowBlur=0
       // 外枠
       ctx.strokeStyle='#39ff14'; ctx.lineWidth=2; ctx.shadowColor='#39ff14'; ctx.shadowBlur=10
@@ -247,7 +268,7 @@ const STYLES: StyleDef[] = [
       ctx.beginPath(); ctx.arc(cx,cy,r*0.62,0,Math.PI*2); ctx.stroke()
       ctx.font=`bold ${Math.floor(r*0.4)}px Georgia,serif`
       ctx.fillStyle='#1a6b3a'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88)
     },
   },
   // ── 10. グラデーション ──────────────────────────────
@@ -268,7 +289,7 @@ const STYLES: StyleDef[] = [
       ctx.shadowColor='rgba(255,255,255,0.7)'; ctx.shadowBlur=16
       ctx.font=`700 ${Math.floor(r*0.46)}px sans-serif`
       ctx.fillStyle='#ffffff'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88)
       ctx.shadowBlur=0
     },
   },
@@ -300,7 +321,7 @@ const STYLES: StyleDef[] = [
       ctx.beginPath(); ctx.arc(cx,cy,r*0.68,0,Math.PI*2); ctx.stroke()
       ctx.font=`bold ${Math.floor(r*0.44)}px serif`
       ctx.fillStyle='#ffffff'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88)
     },
   },
   // ── 12. ポップアート ──────────────────────────────
@@ -321,7 +342,7 @@ const STYLES: StyleDef[] = [
       ctx.strokeStyle='#000'; ctx.lineWidth=5
       ctx.fillStyle='#e91e63'
       ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.strokeText(text,cx,cy); ctx.fillText(text,cx,cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88, true)
     },
   },
   // ── 13. アニメ ──────────────────────────────
@@ -346,7 +367,7 @@ const STYLES: StyleDef[] = [
       ctx.shadowColor='#ff6ec7'; ctx.shadowBlur=14
       ctx.font=`bold ${Math.floor(r*0.45)}px "Noto Sans JP",sans-serif`
       ctx.fillStyle='#ff6ec7'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88)
       ctx.shadowBlur=0
     },
   },
@@ -367,7 +388,7 @@ const STYLES: StyleDef[] = [
       ctx.strokeRect(cx-pw/2+12,cy-ph/2+12,pw-24,ph-24)
       ctx.font=`bold ${Math.floor(r*0.42)}px Georgia,serif`
       ctx.fillStyle='#3d2610'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy-r*0.08)
+      drawFitText(ctx, text, cx, cy - r*0.08, pw * 0.88)
       ctx.font=`${Math.floor(r*0.17)}px Georgia,serif`
       ctx.fillStyle='#7a5230'; ctx.fillText('EST. 2026', cx, cy+r*0.5)
     },
@@ -384,7 +405,7 @@ const STYLES: StyleDef[] = [
       // メイン
       ctx.font=`900 ${Math.floor(r*0.5)}px Helvetica,sans-serif`
       ctx.fillStyle='#000000'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88)
       ctx.strokeStyle='#ff3300'; ctx.lineWidth=5
       ctx.beginPath(); ctx.moveTo(cx-r*0.75,cy+r*0.42); ctx.lineTo(cx+r*0.75,cy+r*0.42); ctx.stroke()
     },
@@ -407,7 +428,7 @@ const STYLES: StyleDef[] = [
       ctx.beginPath(); ctx.arc(cx,cy,r*0.6,0,Math.PI*2); ctx.stroke()
       ctx.font=`300 ${Math.floor(r*0.42)}px Helvetica,sans-serif`
       ctx.fillStyle='#ffffff'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88)
     },
   },
   // ── 17. モチベ ──────────────────────────────
@@ -426,7 +447,7 @@ const STYLES: StyleDef[] = [
       ctx.font=`900 ${Math.floor(r*0.54)}px Impact,sans-serif`
       ctx.fillStyle='#ffffff'; ctx.strokeStyle='#000'; ctx.lineWidth=2
       ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.strokeText(text,cx,cy+r*0.1); ctx.fillText(text,cx,cy+r*0.1)
+      drawFitText(ctx, text, cx, cy+r*0.1, pw * 0.88, true)
       ctx.font=`700 ${Math.floor(r*0.17)}px Helvetica,sans-serif`
       ctx.fillStyle='#ef4444'; ctx.fillText('NEVER GIVE UP', cx, cy+r*0.68)
     },
@@ -450,7 +471,7 @@ const STYLES: StyleDef[] = [
       ctx.shadowColor='#a78bfa'; ctx.shadowBlur=12
       ctx.font=`600 ${Math.floor(r*0.42)}px "Noto Sans JP",sans-serif`
       ctx.fillStyle='#e9d5ff'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy+r*0.1)
+      drawFitText(ctx, text, cx, cy + r*0.1, pw * 0.88)
       ctx.shadowBlur=0
     },
   },
@@ -475,7 +496,7 @@ const STYLES: StyleDef[] = [
       ctx.fillStyle='#fbbf24'; ctx.beginPath(); ctx.arc(cx+r*0.65,cy-r*0.52,r*0.2,0,Math.PI*2); ctx.fill()
       ctx.font=`900 ${Math.floor(r*0.48)}px Impact,sans-serif`
       ctx.fillStyle='#ffffff'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy-r*0.1)
+      drawFitText(ctx, text, cx, cy - r*0.1, pw * 0.88)
       ctx.font=`600 ${Math.floor(r*0.17)}px Helvetica,sans-serif`
       ctx.fillStyle='rgba(255,255,255,0.75)'; ctx.fillText('SURF VIBES', cx, cy+r*0.52)
     },
@@ -499,8 +520,8 @@ const STYLES: StyleDef[] = [
       ctx.shadowColor='#fbbf24'; ctx.shadowBlur=18
       ctx.font=`900 ${Math.floor(r*0.5)}px Impact,sans-serif`
       ctx.fillStyle='#1a1a1a'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text,cx+2,cy+2)
-      ctx.fillStyle='#ffffff'; ctx.fillText(text,cx,cy)
+      drawFitText(ctx, text, cx+2, cy+2, pw * 0.88)
+      ctx.fillStyle='#ffffff'; drawFitText(ctx, text, cx, cy, pw * 0.88)
       ctx.shadowBlur=0
     },
   },
@@ -526,7 +547,7 @@ const STYLES: StyleDef[] = [
       ctx.beginPath(); ctx.moveTo(cx+pw*0.1,cy-ph*0.18); ctx.lineTo(cx+pw*0.22,cy-ph*0.02); ctx.lineTo(cx-pw*0.02,cy-ph*0.02); ctx.closePath(); ctx.fill()
       ctx.font=`bold ${Math.floor(r*0.42)}px "Noto Sans JP",serif`
       ctx.fillStyle='#ffffff'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy+ph*0.35)
+      drawFitText(ctx, text, cx, cy + ph*0.35, pw * 0.88)
     },
   },
   // ── 22. 猫・動物 ──────────────────────────────
@@ -550,7 +571,7 @@ const STYLES: StyleDef[] = [
       ctx.beginPath(); ctx.arc(cx+r*0.15,cy-r*0.12,r*0.06,0,Math.PI*2); ctx.fill()
       ctx.font=`bold ${Math.floor(r*0.36)}px "Noto Sans JP",sans-serif`
       ctx.fillStyle='#92400e'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy+r*0.68)
+      drawFitText(ctx, text, cx, cy + r*0.68, pw * 0.88)
     },
   },
   // ── 23. オールドマネー ──────────────────────────────
@@ -571,7 +592,7 @@ const STYLES: StyleDef[] = [
       ctx.strokeRect(cx-pw/2+11,cy-ph/2+11,pw-22,ph-22)
       ctx.font=`600 ${Math.floor(r*0.42)}px Georgia,serif`
       ctx.fillStyle='#1a3d2b'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text, cx, cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88)
       ctx.font=`${Math.floor(r*0.16)}px Georgia,serif`
       ctx.fillStyle='#4a7c59'; ctx.fillText('EST. MCMXXI', cx, cy+r*0.54)
     },
@@ -595,7 +616,7 @@ const STYLES: StyleDef[] = [
       ctx.font=`900 ${Math.floor(r*0.5)}px Impact,sans-serif`
       ctx.fillStyle='#0f172a'; ctx.strokeStyle='#fff'; ctx.lineWidth=4
       ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.strokeText(text,cx,cy); ctx.fillText(text,cx,cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88, true)
     },
   },
   // ── 25. 幾何学 ──────────────────────────────
@@ -622,7 +643,7 @@ const STYLES: StyleDef[] = [
       ctx.shadowColor='#a855f7'; ctx.shadowBlur=10
       ctx.font=`700 ${Math.floor(r*0.44)}px sans-serif`
       ctx.fillStyle='#ffffff'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text,cx,cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88)
       ctx.shadowBlur=0
     },
   },
@@ -640,7 +661,7 @@ const STYLES: StyleDef[] = [
       ctx.font=`900 ${Math.floor(r*0.42)}px Impact,sans-serif`
       ctx.fillStyle='#1a1a2e'; ctx.strokeStyle='#ffffff'; ctx.lineWidth=3
       ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.strokeText(text,cx,cy); ctx.fillText(text,cx,cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88, true)
     },
   },
   // ── 27. 禅・墨 ──────────────────────────────
@@ -658,8 +679,8 @@ const STYLES: StyleDef[] = [
       ctx.setLineDash([])
       ctx.font=`bold ${Math.floor(r*0.55)}px serif`
       ctx.fillStyle='rgba(20,20,20,0.88)'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text,cx+r*0.03,cy+r*0.03)
-      ctx.fillStyle='rgba(20,20,20,0.08)'; ctx.fillText(text,cx,cy)
+      drawFitText(ctx, text, cx+r*0.03, cy+r*0.03, pw * 0.88)
+      ctx.fillStyle='rgba(20,20,20,0.08)'; drawFitText(ctx, text, cx, cy, pw * 0.88)
     },
   },
   // ── 28. ストリート系 ──────────────────────────────
@@ -679,7 +700,7 @@ const STYLES: StyleDef[] = [
       ctx.shadowBlur=12; ctx.shadowColor='#4ade80'
       ctx.font=`900 ${Math.floor(r*0.5)}px monospace`
       ctx.fillStyle='#4ade80'; ctx.textAlign='center'; ctx.textBaseline='middle'
-      ctx.fillText(text,cx,cy)
+      drawFitText(ctx, text, cx, cy, pw * 0.88)
       ctx.shadowBlur=0
     },
   },
@@ -868,7 +889,7 @@ const AISelectShopApp = () => {
     ctx.closePath()
     ctx.clip()
 
-    const shortText = keyword.length > 6 ? keyword.slice(0, 6) + '…' : keyword
+    const shortText = keyword.length > 8 ? keyword.slice(0, 8) + '…' : keyword
     S.draw(ctx, cx, cy, r, shortText, pw, ph)
     ctx.restore()
 
