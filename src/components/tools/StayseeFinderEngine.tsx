@@ -19,19 +19,93 @@ const TABS = [
 const LANGS = ['日本語', 'English', '中文', '한국어']
 
 // PMS設定
-const PMS_OPTIONS = [
-  { id: 'staysee',   label: 'Staysee',        color: '#10b981' },
-  { id: 'easyaccounting', label: 'イージー会計', color: '#6366f1' },
-  { id: 'bets24',    label: 'BETS24',         color: '#f59e0b' },
-  { id: 'airhost',   label: 'エアホスト',      color: '#3b82f6' },
-  { id: 'none',      label: 'PMS未接続',       color: '#64748b' },
+// local: true → APIキー不要・ローカルのみで完結
+const PMS_OPTIONS: {
+  id: string; label: string; color: string
+  local?: boolean       // ローカルモード（API不要）
+  pending?: boolean     // 連携開発中
+  region?: string       // 'JP' | 'Global'
+  note?: string         // 補足
+}[] = [
+  // ── 日本向け ──
+  { id: 'staysee',        label: 'Staysee',         color: '#10b981', region: 'JP', note: '民泊・旅館向け' },
+  { id: 'easyaccounting', label: 'イージー会計',     color: '#6366f1', region: 'JP', note: '宿泊会計特化', pending: true },
+  { id: 'bets24',         label: 'BETS24',           color: '#f59e0b', region: 'JP', note: 'ホテル向け', pending: true },
+  { id: 'airhost',        label: 'エアホスト',       color: '#3b82f6', region: 'JP', note: 'Airbnb系' },
+  { id: 'neppan',         label: 'ねっぱん！',       color: '#ec4899', region: 'JP', note: '旅館・温泉宿向け', pending: true },
+  // ── グローバル ──
+  { id: 'cloudbeds',      label: 'Cloudbeds',        color: '#8b5cf6', region: 'Global', note: '中規模ホテル向け' },
+  { id: 'beds24',         label: 'Beds24',           color: '#14b8a6', region: 'Global', note: '民泊・ゲストハウス' },
+  { id: 'apaleo',         label: 'apaleo',           color: '#f97316', region: 'Global', note: 'ヨーロッパ系REST API', pending: true },
+  { id: 'hostaway',       label: 'Hostaway',         color: '#06b6d4', region: 'Global', note: '民泊チャンネル管理', pending: true },
+  { id: 'little_hotelier',label: 'Little Hotelier',  color: '#84cc16', region: 'Global', note: '小規模ホテル向け', pending: true },
+  { id: 'opera',          label: 'Oracle Opera',     color: '#ef4444', region: 'Global', note: '大手ホテルチェーン向け', pending: true },
+  // ── ローカル（オフライン） ──
+  { id: 'none',           label: 'PMS未接続',        color: '#64748b', local: true, note: 'ローカルで完全動作' },
 ]
 
 // 錠デバイス設定
-const LOCK_OPTIONS = [
-  { id: 'switchbot', label: 'SwitchBot',      color: '#10b981' },
-  { id: 'ttlock',    label: 'TT Lock',        color: '#6366f1' },
-  { id: 'fixed',     label: '固定パスワード',  color: '#f59e0b' },
+// local: true → APIキー不要
+const LOCK_OPTIONS: {
+  id: string; label: string; color: string
+  local?: boolean
+  pending?: boolean
+  note?: string
+  keyLabel?: string     // APIキーの呼び名
+  keyHint?: string      // 取得場所のヒント
+}[] = [
+  // ── API連携型 ──
+  {
+    id: 'switchbot',   label: 'SwitchBot',      color: '#10b981',
+    keyLabel: 'APIトークン',
+    keyHint: 'SwitchBotアプリ → プロフィール → 設定 → APIキー',
+  },
+  {
+    id: 'ttlock',      label: 'TT Lock',         color: '#6366f1',
+    keyLabel: 'アクセストークン',
+    keyHint: 'TT Lockアプリ → プロフィール → APIアクセス',
+  },
+  {
+    id: 'sesame',      label: 'SESAME',          color: '#f59e0b',
+    keyLabel: 'APIキー',
+    keyHint: 'my.sesame.team → API Keys',
+  },
+  {
+    id: 'igloohome',   label: 'igloohome',       color: '#3b82f6',
+    keyLabel: 'Bridge APIトークン',
+    keyHint: 'igloohome Bridge API → Access Token',
+  },
+  {
+    id: 'remotelock',  label: 'RemoteLOCK',      color: '#ec4899',
+    keyLabel: 'APIキー',
+    keyHint: 'RemoteLOCK管理画面 → 設定 → API連携',
+    pending: true,
+  },
+  {
+    id: 'nuki',        label: 'Nuki',            color: '#84cc16',
+    keyLabel: 'APIトークン',
+    keyHint: 'Nuki Web API → https://api.nuki.io',
+    pending: true,
+  },
+  {
+    id: 'salto',       label: 'Salto KS',        color: '#8b5cf6',
+    keyLabel: 'クライアントID / シークレット',
+    keyHint: 'Saltoパートナーポータルで取得',
+    pending: true,
+  },
+  // ── ローカル型（API不要） ──
+  {
+    id: 'fixed',       label: '固定パスワード',  color: '#f97316',
+    local: true,
+    keyLabel: 'パスワード（4〜8桁）',
+    keyHint: 'チェックイン時に毎回この番号を案内します',
+  },
+  {
+    id: 'offline',     label: 'オフライン（手渡し）', color: '#64748b',
+    local: true,
+    keyLabel: '—',
+    keyHint: 'スタッフが手動で鍵を渡す運用です',
+  },
 ]
 
 type Reservation = {
@@ -362,35 +436,90 @@ function SettingsPanel({
           <div className="flex items-center gap-2">
             <Wifi size={13} style={{ color: pmsInfo.color }} />
             <span className="text-xs font-semibold text-slate-300">PMS連携設定</span>
+            <span className="text-[10px] text-slate-600 ml-auto">{PMS_OPTIONS.length - 1}種類対応</span>
           </div>
 
-          {/* PMS選択 */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {PMS_OPTIONS.map(opt => (
-              <button key={opt.id} onClick={() => { setPms(opt.id); setPmsStatus(null) }}
-                className="h-9 rounded-lg text-xs font-semibold transition-all"
-                style={{
-                  background: pms === opt.id ? `${opt.color}18` : '#0d1117',
-                  border: `1px solid ${pms === opt.id ? opt.color + '70' : '#334155'}`,
-                  color: pms === opt.id ? opt.color : '#64748b',
-                }}>
-                {opt.label}
-              </button>
-            ))}
+          {/* 日本向けPMS */}
+          <div>
+            <p className="text-[10px] font-medium text-slate-600 mb-1.5">🇯🇵 日本向け</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+              {PMS_OPTIONS.filter(o => o.region === 'JP').map(opt => (
+                <button key={opt.id} onClick={() => { setPms(opt.id); setPmsStatus(null) }}
+                  className="h-auto py-1.5 px-2 rounded-lg text-left transition-all relative"
+                  style={{
+                    background: pms === opt.id ? `${opt.color}18` : '#0d1117',
+                    border: `1px solid ${pms === opt.id ? opt.color + '70' : '#334155'}`,
+                  }}>
+                  <span className="text-xs font-semibold block" style={{ color: pms === opt.id ? opt.color : '#94a3b8' }}>
+                    {opt.label}
+                  </span>
+                  <span className="text-[9px] text-slate-600">{opt.note}</span>
+                  {opt.pending && (
+                    <span className="absolute top-1 right-1 text-[8px] px-1 rounded"
+                      style={{ background: '#1e293b', color: '#64748b' }}>開発中</span>
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* APIキー入力（PMS未接続以外） */}
-          {pms !== 'none' && (
+          {/* グローバルPMS */}
+          <div>
+            <p className="text-[10px] font-medium text-slate-600 mb-1.5">🌐 グローバル</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+              {PMS_OPTIONS.filter(o => o.region === 'Global').map(opt => (
+                <button key={opt.id} onClick={() => { setPms(opt.id); setPmsStatus(null) }}
+                  className="h-auto py-1.5 px-2 rounded-lg text-left transition-all relative"
+                  style={{
+                    background: pms === opt.id ? `${opt.color}18` : '#0d1117',
+                    border: `1px solid ${pms === opt.id ? opt.color + '70' : '#334155'}`,
+                  }}>
+                  <span className="text-xs font-semibold block" style={{ color: pms === opt.id ? opt.color : '#94a3b8' }}>
+                    {opt.label}
+                  </span>
+                  <span className="text-[9px] text-slate-600">{opt.note}</span>
+                  {opt.pending && (
+                    <span className="absolute top-1 right-1 text-[8px] px-1 rounded"
+                      style={{ background: '#1e293b', color: '#64748b' }}>開発中</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* ローカルモード */}
+          <div>
+            <p className="text-[10px] font-medium text-slate-600 mb-1.5">📴 オフライン</p>
+            <div className="grid grid-cols-1 gap-1.5">
+              {PMS_OPTIONS.filter(o => o.local).map(opt => (
+                <button key={opt.id} onClick={() => { setPms(opt.id); setPmsStatus(null) }}
+                  className="h-auto py-1.5 px-3 rounded-lg text-left transition-all"
+                  style={{
+                    background: pms === opt.id ? `${opt.color}18` : '#0d1117',
+                    border: `1px solid ${pms === opt.id ? opt.color + '70' : '#334155'}`,
+                  }}>
+                  <span className="text-xs font-semibold" style={{ color: pms === opt.id ? opt.color : '#94a3b8' }}>
+                    {opt.label}
+                  </span>
+                  <span className="text-[9px] text-slate-600 ml-2">{opt.note}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* APIキー入力（ローカル以外） */}
+          {!pmsInfo.local && (
             <div className="space-y-2">
               <label className="text-[10px] font-medium text-slate-500">
-                {pms === 'staysee' ? 'Staysee APIキー' : pms === 'easyaccounting' ? 'イージー会計 APIキー' : pms === 'bets24' ? 'BETS24 APIキー' : 'エアホスト APIキー'}
+                {pmsInfo.label} APIキー
+                {pmsInfo.pending && <span className="ml-2 text-amber-500">（連携開発中 — 先行保存可）</span>}
               </label>
               <div className="flex gap-2">
                 <input
                   type={showPmsKey ? 'text' : 'password'}
                   value={pmsApiKey}
                   onChange={e => setPmsApiKey(e.target.value)}
-                  placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx"
+                  placeholder="APIキーを入力..."
                   className={inputCls} style={inputStyle}
                   onFocus={e => (e.target.style.borderColor = pmsInfo.color)}
                   onBlur={e => (e.target.style.borderColor = '#334155')}
@@ -413,9 +542,9 @@ function SettingsPanel({
             </button>
             <button onClick={testPms} disabled={pmsTesting}
               className="flex-1 h-9 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all"
-              style={{ background: pmsInfo.color, color: '#fff', opacity: pmsTesting ? 0.7 : 1 }}>
+              style={{ background: pmsInfo.local ? '#334155' : pmsInfo.color, color: '#fff', opacity: pmsTesting ? 0.7 : 1 }}>
               {pmsTesting ? <Loader2 size={12} className="animate-spin" /> : <Wifi size={12} />}
-              DMS接続テスト
+              {pmsInfo.local ? 'ローカルモードで確認' : 'DMS接続テスト'}
             </button>
           </div>
 
@@ -438,24 +567,54 @@ function SettingsPanel({
           <div className="flex items-center gap-2">
             <Lock size={13} style={{ color: lockInfo.color }} />
             <span className="text-xs font-semibold text-slate-300">錠デバイス設定</span>
+            <span className="text-[10px] text-slate-600 ml-auto">{LOCK_OPTIONS.length}種類対応</span>
           </div>
 
-          {/* 錠デバイス選択 */}
-          <div className="grid grid-cols-3 gap-2">
-            {LOCK_OPTIONS.map(opt => (
-              <button key={opt.id} onClick={() => { setLockType(opt.id); setLockStatus(null) }}
-                className="h-9 rounded-lg text-xs font-semibold transition-all"
-                style={{
-                  background: lockType === opt.id ? `${opt.color}18` : '#0d1117',
-                  border: `1px solid ${lockType === opt.id ? opt.color + '70' : '#334155'}`,
-                  color: lockType === opt.id ? opt.color : '#64748b',
-                }}>
-                {opt.label}
-              </button>
-            ))}
+          {/* API連携型 */}
+          <div>
+            <p className="text-[10px] font-medium text-slate-600 mb-1.5">🔌 API連携型スマートロック</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+              {LOCK_OPTIONS.filter(o => !o.local).map(opt => (
+                <button key={opt.id} onClick={() => { setLockType(opt.id); setLockStatus(null) }}
+                  className="h-auto py-1.5 px-2 rounded-lg text-left transition-all relative"
+                  style={{
+                    background: lockType === opt.id ? `${opt.color}18` : '#0d1117',
+                    border: `1px solid ${lockType === opt.id ? opt.color + '70' : '#334155'}`,
+                  }}>
+                  <span className="text-xs font-semibold block" style={{ color: lockType === opt.id ? opt.color : '#94a3b8' }}>
+                    {opt.label}
+                  </span>
+                  <span className="text-[9px] text-slate-600">{opt.keyLabel}</span>
+                  {opt.pending && (
+                    <span className="absolute top-1 right-1 text-[8px] px-1 rounded"
+                      style={{ background: '#1e293b', color: '#64748b' }}>開発中</span>
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* 錠デバイス: 固定パスワード */}
+          {/* ローカル型 */}
+          <div>
+            <p className="text-[10px] font-medium text-slate-600 mb-1.5">📴 ローカル／手動</p>
+            <div className="grid grid-cols-2 gap-1.5">
+              {LOCK_OPTIONS.filter(o => o.local).map(opt => (
+                <button key={opt.id} onClick={() => { setLockType(opt.id); setLockStatus(null) }}
+                  className="h-auto py-1.5 px-2 rounded-lg text-left transition-all"
+                  style={{
+                    background: lockType === opt.id ? `${opt.color}18` : '#0d1117',
+                    border: `1px solid ${lockType === opt.id ? opt.color + '70' : '#334155'}`,
+                  }}>
+                  <span className="text-xs font-semibold block" style={{ color: lockType === opt.id ? opt.color : '#94a3b8' }}>
+                    {opt.label}
+                  </span>
+                  <span className="text-[9px] text-slate-600">{opt.keyHint}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 固定パスワード入力 */}
           {lockType === 'fixed' && (
             <div className="space-y-1">
               <label className="text-[10px] font-medium text-slate-500">固定パスワード（4〜8桁の数字）</label>
@@ -465,24 +624,28 @@ function SettingsPanel({
                 placeholder="例：8421"
                 className={inputCls} style={inputStyle}
                 maxLength={8}
-                onFocus={e => (e.target.style.borderColor = '#f59e0b')}
+                onFocus={e => (e.target.style.borderColor = '#f97316')}
                 onBlur={e => (e.target.style.borderColor = '#334155')}
               />
             </div>
           )}
 
-          {/* 錠デバイス: API/トークン入力 */}
-          {(lockType === 'switchbot' || lockType === 'ttlock') && (
+          {/* API型: トークン入力（メタデータから動的生成） */}
+          {!lockInfo.local && (
             <div className="space-y-2">
               <label className="text-[10px] font-medium text-slate-500">
-                {lockType === 'switchbot' ? 'SwitchBot APIトークン' : 'TT Lock アクセストークン'}
+                {lockInfo.keyLabel}
+                {lockInfo.pending && <span className="ml-2 text-amber-500">（開発中 — 先行保存可）</span>}
               </label>
+              {lockInfo.keyHint && (
+                <p className="text-[10px] text-slate-600">📍 {lockInfo.keyHint}</p>
+              )}
               <div className="flex gap-2">
                 <input
                   type={showLockKey ? 'text' : 'password'}
                   value={lockApiKey}
                   onChange={e => setLockApiKey(e.target.value)}
-                  placeholder={lockType === 'switchbot' ? 'SwitchBot APIトークンを入力' : 'TT Lock アクセストークンを入力'}
+                  placeholder={`${lockInfo.label} ${lockInfo.keyLabel}を入力...`}
                   className={inputCls} style={inputStyle}
                   onFocus={e => (e.target.style.borderColor = lockInfo.color)}
                   onBlur={e => (e.target.style.borderColor = '#334155')}
@@ -493,11 +656,6 @@ function SettingsPanel({
                   {showLockKey ? '🙈' : '👁'}
                 </button>
               </div>
-              <p className="text-[10px] text-slate-600">
-                {lockType === 'switchbot'
-                  ? 'SwitchBot App → プロフィール → 設定 → アプリ・SwitchBotウェブサービスAPIキー'
-                  : 'TT Lock App → プロフィール → APIアクセス → アクセストークン'}
-              </p>
             </div>
           )}
 
@@ -510,9 +668,13 @@ function SettingsPanel({
             </button>
             <button onClick={testLock} disabled={lockTesting}
               className="flex-1 h-9 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all"
-              style={{ background: lockInfo.color, color: lockType === 'fixed' ? '#000' : '#fff', opacity: lockTesting ? 0.7 : 1 }}>
+              style={{
+                background: lockInfo.local ? '#334155' : lockInfo.color,
+                color: '#fff',
+                opacity: lockTesting ? 0.7 : 1,
+              }}>
               {lockTesting ? <Loader2 size={12} className="animate-spin" /> : <Lock size={12} />}
-              錠接続テスト
+              {lockInfo.local ? 'ローカルで確認' : '錠接続テスト'}
             </button>
           </div>
 

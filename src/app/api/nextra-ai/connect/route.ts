@@ -16,6 +16,9 @@ export async function POST(req: NextRequest) {
       if (pms === 'none') {
         return NextResponse.json({ ok: true, mode: 'local', message: 'ローカルモードで動作します（PMS未接続）' })
       }
+      if (pms === 'offline') {
+        return NextResponse.json({ ok: true, mode: 'local', message: 'オフラインモードで動作します' })
+      }
 
       if (!pmsApiKey) {
         return NextResponse.json({ ok: false, message: 'APIキーを入力してください' }, { status: 400 })
@@ -58,6 +61,37 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ ok: true, mode: 'pending', message: 'BETS24: APIキーを保存しました。本番連携は開発中です。' })
       }
 
+      // Beds24
+      if (pms === 'beds24') {
+        try {
+          const res = await fetch('https://beds24.com/api/v2/authentication/setup', {
+            headers: { 'token': pmsApiKey, 'Content-Type': 'application/json' },
+            signal: AbortSignal.timeout(8000),
+          })
+          if (res.ok) return NextResponse.json({ ok: true, mode: 'live', message: 'Beds24 APIに接続しました' })
+          else if (res.status === 401) return NextResponse.json({ ok: false, message: 'Beds24 APIキーが無効です' })
+          else return NextResponse.json({ ok: false, message: `Beds24 接続エラー (HTTP ${res.status})` })
+        } catch { return NextResponse.json({ ok: false, message: 'Beds24 APIへの接続に失敗しました' }) }
+      }
+
+      // Cloudbeds
+      if (pms === 'cloudbeds') {
+        try {
+          const res = await fetch('https://hotels.cloudbeds.com/api/v1.1/getPropertyList', {
+            headers: { 'Authorization': `Bearer ${pmsApiKey}` },
+            signal: AbortSignal.timeout(8000),
+          })
+          if (res.ok) return NextResponse.json({ ok: true, mode: 'live', message: 'Cloudbeds APIに接続しました' })
+          else if (res.status === 401) return NextResponse.json({ ok: false, message: 'Cloudbeds APIキーが無効です' })
+          else return NextResponse.json({ ok: false, message: `Cloudbeds 接続エラー (HTTP ${res.status})` })
+        } catch { return NextResponse.json({ ok: false, message: 'Cloudbeds APIへの接続に失敗しました' }) }
+      }
+
+      // 開発中PMS（APIキーを先行保存）
+      if (['easyaccounting','bets24','neppan','apaleo','hostaway','little_hotelier','opera'].includes(pms)) {
+        return NextResponse.json({ ok: true, mode: 'pending', message: `${pms} APIキーを保存しました。本番連携は開発中です（先行保存OK）。` })
+      }
+
       if (pms === 'airhost') {
         try {
           const res = await fetch('https://api.airhost.co.jp/api/v1/reservations', {
@@ -86,6 +120,9 @@ export async function POST(req: NextRequest) {
     if (type === 'lock') {
       if (lockType === 'fixed') {
         return NextResponse.json({ ok: true, mode: 'local', message: '固定パスワードモードで動作します（API不要）' })
+      }
+      if (lockType === 'offline') {
+        return NextResponse.json({ ok: true, mode: 'local', message: 'オフライン（手渡し）モードで動作します（API不要）' })
       }
 
       if (!lockApiKey) {
@@ -139,6 +176,37 @@ export async function POST(req: NextRequest) {
         } catch {
           return NextResponse.json({ ok: false, message: 'TT Lock APIへの接続に失敗しました' })
         }
+      }
+
+      // SESAME
+      if (lockType === 'sesame') {
+        try {
+          const res = await fetch('https://app.candyhouse.co/api/sesame2', {
+            headers: { 'x-api-key': lockApiKey },
+            signal: AbortSignal.timeout(8000),
+          })
+          if (res.ok) return NextResponse.json({ ok: true, mode: 'live', message: 'SESAME APIに接続しました' })
+          else if (res.status === 401 || res.status === 403) return NextResponse.json({ ok: false, message: 'SESAME APIキーが無効です' })
+          else return NextResponse.json({ ok: false, message: `SESAME 接続エラー (HTTP ${res.status})` })
+        } catch { return NextResponse.json({ ok: false, message: 'SESAME APIへの接続に失敗しました' }) }
+      }
+
+      // igloohome Bridge API
+      if (lockType === 'igloohome') {
+        try {
+          const res = await fetch('https://api.igloohome.co/v1/devices', {
+            headers: { 'Authorization': `Bearer ${lockApiKey}` },
+            signal: AbortSignal.timeout(8000),
+          })
+          if (res.ok) return NextResponse.json({ ok: true, mode: 'live', message: 'igloohome APIに接続しました' })
+          else if (res.status === 401) return NextResponse.json({ ok: false, message: 'igloohome APIトークンが無効です' })
+          else return NextResponse.json({ ok: false, message: `igloohome 接続エラー (HTTP ${res.status})` })
+        } catch { return NextResponse.json({ ok: false, message: 'igloohome APIへの接続に失敗しました' }) }
+      }
+
+      // 開発中錠デバイス（APIキーを先行保存）
+      if (['remotelock', 'nuki', 'salto'].includes(lockType)) {
+        return NextResponse.json({ ok: true, mode: 'pending', message: `${lockType} のAPIキーを保存しました。本番連携は開発中です（先行保存OK）。` })
       }
 
       return NextResponse.json({ ok: false, message: '未対応の錠デバイスです' })
