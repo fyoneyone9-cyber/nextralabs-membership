@@ -1,8 +1,21 @@
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { checkApiLimit } from '@/lib/api-limit';
 
 const DEFAULT_RAKUTEN_ID = '534e3725.64346793.534e3726.d5412af4';
+
+// ── サーバーサイドキャッシュ（5分）──
+let cachedTrends: { items: any[]; insight: string; cachedAt: number } | null = null;
+const CACHE_TTL_MS = 5 * 60 * 1000;
+
+const FALLBACK_ITEMS = [
+  { name: 'AI活用', catchcopy: 'いま日本で最も検索されているキーワード' },
+  { name: '時短術', catchcopy: '忙しい現代人に刺さるライフハック系' },
+  { name: '最新ガジェット', catchcopy: '春のデバイス需要が急上昇中' },
+  { name: '副業術', catchcopy: '物価高で副業ニーズが爆増' },
+  { name: '節約生活', catchcopy: '光熱費・食費の節約情報が拡散中' },
+  { name: 'ChatGPT活用', catchcopy: 'ビジネス×AI活用が今最もバズるテーマ' },
+];
 
 export async function GET() {
   // クレジット保護：1日15回制限
@@ -20,44 +33,54 @@ export async function GET() {
     );
   }
 
+  // ── キャッシュヒット → 即返却（LLM呼び出しゼロ）──
+  const now = Date.now();
+  if (cachedTrends && now - cachedTrends.cachedAt < CACHE_TTL_MS) {
+    return NextResponse.json({ ...cachedTrends, mode: 'CACHED' });
+  }
+
   const apiKey = process.env.GEMINI_API_KEY;
-  
+  if (!apiKey) {
+    return NextResponse.json({
+      items: FALLBACK_ITEMS,
+      insight: 'AIトレンド解析中です。現在の注目キーワードを表示しています。',
+      mode: 'SAFE_MODE',
+    });
+  }
+
   try {
-    // 5月のトレンド商品（APIが死んでも表示されるバックアップ）
-    const fallbackItems = [
-      { name: "EcoFlow ポータブル電源 DELTA 2", catchcopy: "防災・キャンプ需要で注文殺到中", imageUrl: "https://tshop.r10s.jp/ecoflow/cabinet/delta2/delta2_1.jpg", url: `https://hb.afl.rakuten.co.jp/hgc/${DEFAULT_RAKUTEN_ID}/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecoflow%2Fdelta2%2F` },
-      { name: "CICIBELLA 5Dマスク 20枚", catchcopy: "行楽シーズンの必需品。小顔効果で爆売れ", imageUrl: "https://tshop.r10s.jp/cicibella/cabinet/08323608/08436109/5d-01.jpg", url: `https://hb.afl.rakuten.co.jp/hgc/${DEFAULT_RAKUTEN_ID}/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fcicibella%2Fmsk5d20%2F` }
-    ];
-
-    if (!apiKey) {
-      return NextResponse.json({ items: fallbackItems, insight: "AI解析にはAPIキーが必要ですが、現在重要トレンドを表示中です。", mode: 'SAFE_MODE' });
-    }
-
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-2.0-flash',
+      generationConfig: { maxOutputTokens: 300, temperature: 0.7 },
+    });
 
-    // AIに生データ級のリアルタイムトレンドを生成させる
-    const prompt = `2026年5月の日本の楽天市場での最新トレンド商品を5つ選び、JSONのみで出力。format: [{"name": "","catchcopy": "","imageUrl": "https://tshop.r10s.jp/sample.jpg","url": "https://hb.afl.rakuten.co.jp/hgc/${DEFAULT_RAKUTEN_ID}/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F商品名%2F"}]`;
-    
-    const result = await model.generateContent(prompt);
+    const month = new Date().toLocaleDateString('ja-JP', { month: 'long' });
+    const prompt = `${month}の日本でSNS投稿テーマとして今バズっているキーワードを6つ、JSONのみで出力。余分なテキスト不要。
+[{"name":"キーワード","catchcopy":"説明20字以内"}]`;
+
+    // タイムアウト8秒
+    const timeoutMs = 8000;
+    const result = await Promise.race([
+      model.generateContent(prompt),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('TIMEOUT')), timeoutMs)
+      ),
+    ]);
+
     const text = result.response.text().replace(/```json|```/g, '').trim();
     const items = JSON.parse(text);
 
-    return NextResponse.json({
-      items,
-      insight: "【AI自律スキャン中】最新のSNSトレンドと季節需要から、今最も成約率の高い商品をAIが特定しました。",
-      mode: 'AI_AUTONOMOUS'
-    });
+    cachedTrends = { items, insight: '【AIリアルタイム解析】今SNSで最もバズるテーマをAIが特定しました。', cachedAt: now };
+    return NextResponse.json({ items, insight: cachedTrends.insight, mode: 'AI_LIVE' });
 
-  } catch (error) {
-    // エラーが起きても絶対に落とさない
+  } catch (error: any) {
     return NextResponse.json({
-      items: [
-        { name: "EcoFlow ポータブル電源 DELTA 2", catchcopy: "防災・キャンプ需要で注文殺到中", imageUrl: "https://tshop.r10s.jp/ecoflow/cabinet/delta2/delta2_1.jpg", url: `https://hb.afl.rakuten.co.jp/hgc/${DEFAULT_RAKUTEN_ID}/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecoflow%2Fdelta2%2F` },
-        { name: "クールリング ネッククーラー", catchcopy: "5月からの気温上昇で爆売れ開始", imageUrl: "https://tshop.r10s.jp/l-and-l/cabinet/08906967/compass1652345037.jpg", url: `https://hb.afl.rakuten.co.jp/hgc/${DEFAULT_RAKUTEN_ID}/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2Fネッククーラー%2F` }
-      ],
-      insight: "トレンドデータをAIが解析し、5月の重要仕入れリストを作成しました。",
-      mode: 'AI_AUTONOMOUS'
+      items: FALLBACK_ITEMS,
+      insight: error?.message === 'TIMEOUT'
+        ? 'AIが分析中です。定番バズキーワードを先に表示しています。'
+        : 'トレンドデータを表示中です。',
+      mode: 'FALLBACK',
     });
   }
 }
