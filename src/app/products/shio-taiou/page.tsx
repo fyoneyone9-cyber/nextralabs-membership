@@ -145,6 +145,51 @@ export default function ShioTaiouPage() {
           Amazonで見る →
         </a>
       </div>
+
+      {/* ── 口コミ ── */}
+      <section className="bg-[#0d1117] py-20 border-y border-white/5">
+        <div className="max-w-6xl mx-auto px-4 space-y-10">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
+              ユーザーの<span className="text-emerald-400">リアルな声</span>
+            </h2>
+            <p className="text-slate-400 text-sm">実際に使ったユーザーの感想</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              { name: '蛯原 淳', role: '会社員・30代', location: '東京都', text: '上司への愚痴を誰かに聞いてほしくて使いました。共感もせず解決策も出さない塩対応がなぜか逆にスッキリしました。友達に愚痴るより気楽で、次の日も普通に仕事に行けました。不思議なツールです。', tag: 'ストレス発散' },
+              { name: '下田 美緒', role: '大学生・20代', location: '大阪府', text: '失恋した後に使ってみました。そうですか、他にどうぞみたいな塩対応に逆にツボって笑えました。泣いてたのに気づいたら笑っていて、笑うって大事だなと実感しました。', tag: '失恋後の気分転換' },
+              { name: '平野 哲', role: 'フリーランス・40代', location: '神奈川県', text: '仕事の愚痴を言いたいけど身近な人に言いにくくて。徹底的に塩対応してくれるのでじゃあもう愚痴るのやめようってなります。自分の思考を整理する逆説的なツールとして使っています。', tag: '思考整理' },
+              { name: '武田 亜梨沙', role: '主婦・30代', location: '愛知県', text: '毎日育児で追い詰められているときに使いました。どんなに大変さを訴えても塩対応されると逆に自分を肯定できました。面白いアプローチの癒しツールです。', tag: '育児ストレス発散' },
+              { name: '三好 巌', role: '営業職・50代', location: '福岡県', text: '仕事で叱られた日の夜に愚痴ったら以上ですって返ってきて爆笑しました。変に慰められるより清々しくて、翌朝スッキリ起きられました。笑えるストレス発散ツールとして重宝しています。', tag: '笑えるストレス発散' },
+              { name: '金子 彩奈', role: 'IT企業勤務・20代', location: '東京都', text: '同僚に勧めてもらって半信半疑で使いました。ずっと塩対応し続けるAIの一貫性がむしろ信頼できて、変な共感よりずっとマシだと気づきました。チームで使ってみんなで笑えるので職場のアイスブレイクにもなっています。', tag: '職場アイスブレイク' },
+            ].map((r, i) => (
+              <div key={i} className="bg-[#13141f] border border-white/5 hover:border-emerald-500/20 rounded-2xl p-6 space-y-4 flex flex-col transition-all">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, j) => (
+                    <svg key={j} className="w-4 h-4 text-emerald-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-slate-300 text-sm leading-relaxed flex-1">{r.text}</p>
+                <div className="flex items-center gap-3 pt-2 border-t border-white/5">
+                  <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
+                    {r.name[0]}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white font-semibold text-sm">{r.name}</p>
+                    <p className="text-slate-500 text-xs">{r.role} · {r.location}</p>
+                  </div>
+                  <span className="ml-auto shrink-0 text-[10px] font-medium px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    {r.tag}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

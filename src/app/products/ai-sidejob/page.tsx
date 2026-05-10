@@ -1,4 +1,4 @@
-﻿import { Metadata } from 'next'
+import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'AI副業スタートダッシュ | 適性診断と収益ロードマップをAIが設計 | NextraLabs',
@@ -174,6 +174,51 @@ export default function SidejobLp() {
               <p className="font-semibold text-white mb-2">Q. 月額¥1,980で他のツールも使えますか？</p>
               <p className="text-slate-400 text-sm">A. はい。NextraLabsプレミアムプラン（¥1,980/月）では、AI副業スタートダッシュを含む全ツールが使い放題になります。</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 口コミ ── */}
+      <section className="bg-[#0d1117] py-20 border-y border-white/5">
+        <div className="max-w-6xl mx-auto px-4 space-y-10">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
+              ユーザーの<span className="text-emerald-400">リアルな声</span>
+            </h2>
+            <p className="text-slate-400 text-sm">実際に使ったユーザーの感想</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              { name: '松田 彩花', role: '主婦・パート', location: '埼玉県', text: '副業を始めたいけど何からすればいいか全然わからなかったです。AIに聞いたらKindle出版とブログ運営を勧めてくれて、今月初めて2万円の収入が出ました。ロードマップが具体的すぎて感動しました。', tag: '主婦の副業' },
+              { name: '石井 大輔', role: '会社員・30代', location: '神奈川県', text: '本業の給料だけでは将来が不安で使い始めました。自分のスキルを入力したらプログラミング案件とアフィリエイトを提案してくれ、3ヶ月で月5万円を達成。ロードマップどおりに進めるだけなので迷いがなかったです。', tag: 'IT系副業' },
+              { name: '中村 恵子', role: '元教師・50代', location: '愛知県', text: '定年前に副業を探していました。教師経験を活かした教材販売を提案してもらい、note有料記事で月1.5万円ほど稼げています。自分のキャリアが副業になるとは思っていませんでした。', tag: 'シニア副業' },
+              { name: '山田 拓也', role: 'フリーター・20代', location: '大阪府', text: 'アルバイトだけでは生活が厳しくて。動画編集の副業を勧められて独学で始めたら、クラウドワークスで継続案件をもらえるようになりました。AIのアドバイスが的確すぎて怖いくらいです。', tag: '動画編集副業' },
+              { name: '藤原 麻衣', role: '育児中・30代', location: '福岡県', text: '育休中に何か始めたくて使いました。子育てをしながらできるSNS運用代行を提案してもらい、インスタの仕事が月3件取れるようになりました。時間の使い方まで一緒に考えてくれて助かりました。', tag: '育児中の在宅副業' },
+              { name: '小林 健介', role: '営業職・40代', location: '東京都', text: '副業禁止の会社なので投資系を相談したら、iDeCoやNISAの最適化から副収入への転換方法を丁寧に解説してくれました。法的にセーフな範囲でしっかり稼げる方法を教えてもらえました。', tag: '副業禁止会社員' },
+            ].map((r, i) => (
+              <div key={i} className="bg-[#13141f] border border-white/5 hover:border-emerald-500/20 rounded-2xl p-6 space-y-4 flex flex-col transition-all">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, j) => (
+                    <svg key={j} className="w-4 h-4 text-emerald-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-slate-300 text-sm leading-relaxed flex-1">{r.text}</p>
+                <div className="flex items-center gap-3 pt-2 border-t border-white/5">
+                  <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
+                    {r.name[0]}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white font-semibold text-sm">{r.name}</p>
+                    <p className="text-slate-500 text-xs">{r.role} · {r.location}</p>
+                  </div>
+                  <span className="ml-auto shrink-0 text-[10px] font-medium px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    {r.tag}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

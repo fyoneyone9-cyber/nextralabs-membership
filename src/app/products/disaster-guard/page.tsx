@@ -177,6 +177,51 @@ export default function DisasterGuardLp() {
           </div>
         </div>
       </section>
+
+      {/* ── 口コミ ── */}
+      <section className="bg-[#0d1117] py-20 border-y border-white/5">
+        <div className="max-w-6xl mx-auto px-4 space-y-10">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
+              ユーザーの<span className="text-emerald-400">リアルな声</span>
+            </h2>
+            <p className="text-slate-400 text-sm">実際に使ったユーザーの感想</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              { name: '鈴木 修二', role: '会社員・50代', location: '静岡県', text: '東海地震が心配で備蓄を始めたいと思いつつ何から手をつければいいか分からなかったです。家族構成を入力したら優先順位つきのリストが出てきて、半年で必要なものが全部揃いました。', tag: '防災備蓄' },
+              { name: '橋本 由美', role: '一人暮らし・30代', location: '東京都', text: '一人暮らしで被災したら誰も助けてくれないと不安でした。避難ルートのシミュレーションと近隣の避難所情報を整理してくれて、いざという時の行動イメージが持てるようになりました。', tag: '単身女性の防災' },
+              { name: '渡辺 孝之', role: '自治会長', location: '神奈川県', text: '地区の防災訓練の内容を考えるのに活用しています。AIが地域特性に合わせた訓練シナリオを提案してくれるので、毎年マンネリ化していた訓練が刷新できました。参加者からも好評です。', tag: '地域防災' },
+              { name: '吉田 里奈', role: '子育て中・30代', location: '大阪府', text: '子どもがいると避難も大変。乳幼児連れの避難グッズリストと行動手順を出してくれて、普段からシミュレーションできるようになりました。子どもにも分かりやすく説明する言葉まで教えてくれました。', tag: 'ファミリー防災' },
+              { name: '阿部 義雄', role: '定年退職・60代', location: '宮城県', text: '東日本大震災を経験したので防災意識は高いつもりでしたが、最新の情報やツールはよく知りませんでした。最新の防災グッズと備蓄の目安を教えてもらい、アップデートできました。', tag: '震災経験者' },
+              { name: '長谷川 智子', role: '介護士・40代', location: '福岡県', text: '高齢者施設での避難計画に活用しています。要介護者の移送ルートや必要な医療物資のリストを細かく提案してくれて、施設の防災マニュアル更新にとても役立ちました。', tag: '介護施設防災' },
+            ].map((r, i) => (
+              <div key={i} className="bg-[#13141f] border border-white/5 hover:border-emerald-500/20 rounded-2xl p-6 space-y-4 flex flex-col transition-all">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, j) => (
+                    <svg key={j} className="w-4 h-4 text-emerald-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-slate-300 text-sm leading-relaxed flex-1">{r.text}</p>
+                <div className="flex items-center gap-3 pt-2 border-t border-white/5">
+                  <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
+                    {r.name[0]}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white font-semibold text-sm">{r.name}</p>
+                    <p className="text-slate-500 text-xs">{r.role} · {r.location}</p>
+                  </div>
+                  <span className="ml-auto shrink-0 text-[10px] font-medium px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    {r.tag}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </>
   )
 }

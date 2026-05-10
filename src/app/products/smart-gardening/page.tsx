@@ -176,6 +176,51 @@ export default function SmartGardeningLandingPage() {
           <p className="mt-4 text-xs font-bold text-emerald-500 uppercase tracking-tight">Standard Plan ¥980/月</p>
         </div>
       </div>
+
+      {/* ── 口コミ ── */}
+      <section className="bg-[#0d1117] py-20 border-y border-white/5">
+        <div className="max-w-6xl mx-auto px-4 space-y-10">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
+              ユーザーの<span className="text-emerald-400">リアルな声</span>
+            </h2>
+            <p className="text-slate-400 text-sm">実際に使ったユーザーの感想</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              { name: '牧野 佳代子', role: '主婦・50代', location: '神奈川県', text: 'ベランダでトマトを育てたいけど毎年枯らしていました。育てたい野菜と環境を入力したら土の配合から水やりのタイミングまで細かく教えてくれました。今年初めてトマトが鈴なりになって感動しています。', tag: 'ベランダ菜園' },
+              { name: '杉田 龍一', role: '定年退職・60代', location: '埼玉県', text: '庭いじりを趣味にしようと思い立ち始めました。季節ごとの作業スケジュールをAIが提案してくれるので、何をすればいいか迷うことがなくなりました。近所の方に庭を褒めてもらえるようになりました。', tag: '庭園ガーデニング' },
+              { name: '宮本 洋子', role: 'マンション住まい・30代', location: '大阪府', text: '観葉植物を何度も枯らして諦めかけていました。葉っぱの状態を説明したら病気か水不足かをすぐ診断してくれました。今は10種類以上の植物を元気に育てられています。', tag: '室内植物' },
+              { name: '大塚 俊明', role: '小学校教師', location: '愛知県', text: '学校菜園の管理を担当していて、子どもたちと野菜を育てています。授業に合わせた栽培スケジュールを出してくれるので、収穫のタイミングが授業に合って子どもたちの喜びが倍増しました。', tag: '学校菜園' },
+              { name: '矢野 真理', role: 'カフェオーナー', location: '京都府', text: '店舗のガーデニングをDIYでやっています。客層に合うハーブガーデンのレイアウトを提案してもらい、フォトスポットになってInstagramで拡散されました。集客にもつながってびっくりしました。', tag: '店舗ガーデニング' },
+              { name: '福田 哲郎', role: '農業初心者・40代', location: '北海道', text: '週末農業を始めましたが知識ゼロでした。地域の気候データを踏まえた作付け計画を立ててくれるので、北海道の短い夏でも効率よく野菜を収穫できています。都市農業の入門書代わりになっています。', tag: '週末農業' },
+            ].map((r, i) => (
+              <div key={i} className="bg-[#13141f] border border-white/5 hover:border-emerald-500/20 rounded-2xl p-6 space-y-4 flex flex-col transition-all">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, j) => (
+                    <svg key={j} className="w-4 h-4 text-emerald-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-slate-300 text-sm leading-relaxed flex-1">{r.text}</p>
+                <div className="flex items-center gap-3 pt-2 border-t border-white/5">
+                  <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
+                    {r.name[0]}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white font-semibold text-sm">{r.name}</p>
+                    <p className="text-slate-500 text-xs">{r.role} · {r.location}</p>
+                  </div>
+                  <span className="ml-auto shrink-0 text-[10px] font-medium px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    {r.tag}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

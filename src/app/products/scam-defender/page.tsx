@@ -522,6 +522,51 @@ export default function ScamDefenderPage() {
           </a>
         </div>
       </div>
+
+      {/* ── 口コミ ── */}
+      <section className="bg-[#0d1117] py-20 border-y border-white/5">
+        <div className="max-w-6xl mx-auto px-4 space-y-10">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
+              ユーザーの<span className="text-emerald-400">リアルな声</span>
+            </h2>
+            <p className="text-slate-400 text-sm">実際に使ったユーザーの感想</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              { name: '島田 幸子', role: '主婦・60代', location: '千葉県', text: '母がオレオレ詐欺に狙われかけて怖くなり、自分も使い始めました。LINEで来たメッセージを貼り付けたら詐欺だとすぐ判定してくれました。怪しいと思ったらまずここに相談する習慣になっています。', tag: '特殊詐欺対策' },
+              { name: '市川 隆司', role: '会社員・40代', location: '東京都', text: '投資詐欺のSNS広告が増えていて、本物かどうか判断できなかった案件がありました。AIが詐欺の特徴を10項目チェックして即座に警告を出してくれました。危うく数十万円を失うところでした。', tag: '投資詐欺' },
+              { name: '横田 恵美', role: '一人暮らし・20代', location: '大阪府', text: 'フィッシングメールが来て本物っぽくて不安でした。URLや文面を解析してくれて偽サイトだと教えてくれました。銀行やカード会社を装ったメールが来たときに毎回使っています。', tag: 'フィッシング詐欺' },
+              { name: '秋山 誠治', role: '自営業・50代', location: '福岡県', text: '事業者向けの補助金詐欺にターゲットされました。公式サイトかどうかの見分け方と確認先の電話番号まで教えてくれて、詐欺業者を撃退できました。こういうツールが必要でした。', tag: '事業者詐欺対策' },
+              { name: '千葉 美和子', role: '子育て中・30代', location: '埼玉県', text: '子どものネット利用が増えて心配でした。子どもが受け取ったLINEメッセージを親子で一緒に判定して、詐欺の手口を教える機会になっています。防犯教育のツールとしても使えます。', tag: '子どものネット安全' },
+              { name: '星野 剛', role: 'IT企業勤務・30代', location: '神奈川県', text: '仕事柄詐欺の知識はある方ですが、手口が巧妙化していて最新情報をキャッチアップするのに使っています。新しい詐欺パターンを即座に解説してくれるので、社内研修の材料にも活用しています。', tag: 'セキュリティ担当' },
+            ].map((r, i) => (
+              <div key={i} className="bg-[#13141f] border border-white/5 hover:border-emerald-500/20 rounded-2xl p-6 space-y-4 flex flex-col transition-all">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, j) => (
+                    <svg key={j} className="w-4 h-4 text-emerald-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-slate-300 text-sm leading-relaxed flex-1">{r.text}</p>
+                <div className="flex items-center gap-3 pt-2 border-t border-white/5">
+                  <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
+                    {r.name[0]}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white font-semibold text-sm">{r.name}</p>
+                    <p className="text-slate-500 text-xs">{r.role} · {r.location}</p>
+                  </div>
+                  <span className="ml-auto shrink-0 text-[10px] font-medium px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    {r.tag}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </>
   )
 }

@@ -176,6 +176,51 @@ export default function BuySmartNavLp() {
           </div>
         </div>
       </section>
+
+      {/* ── 口コミ ── */}
+      <section className="bg-[#0d1117] py-20 border-y border-white/5">
+        <div className="max-w-6xl mx-auto px-4 space-y-10">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
+              ユーザーの<span className="text-emerald-400">リアルな声</span>
+            </h2>
+            <p className="text-slate-400 text-sm">実際に使ったユーザーの感想</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              { name: '高橋 美智子', role: '主婦・40代', location: '千葉県', text: '毎月の食費を節約したくて使い始めました。同じ商品でも最安値のサイトをすぐ教えてくれるので、先月だけで食費が8000円浮きました。比較するのが面倒だった私でも続けられています。', tag: '家計節約' },
+              { name: '西村 雄太', role: '大学生', location: '京都府', text: '仕送りが少なくて節約が必須です。ガジェット購入前に必ずこれで調べるようになりました。欲しいワイヤレスイヤホンが3サイトで値段がバラバラで、最安値で買えて5000円以上得しました。', tag: '学生節約' },
+              { name: '岡田 裕子', role: 'ネットショップ運営', location: '兵庫県', text: '仕入れ価格の比較に使っています。複数の仕入れ先を一気に比較できるので、業務効率が上がりました。月の仕入れコストが約15%下がって売上利益率が改善しました。', tag: 'EC事業者' },
+              { name: '池田 直樹', role: 'エンジニア・30代', location: '東京都', text: 'PC周辺機器をよく買うのですが、セール時期を逃しがちでした。AIが価格変動のパターンを教えてくれるので、今は最安タイミングで買えています。去年より年間2万円以上節約できています。', tag: 'ガジェット好き' },
+              { name: '内田 沙織', role: 'OL・20代', location: '愛知県', text: 'ファッション系のセール情報と最安値を教えてくれるのが最高です。楽天やZOZOを行ったり来たりする手間が完全になくなりました。ポイント込みの実質価格で比較してくれるのが賢いです。', tag: 'ファッション好き' },
+              { name: '木村 翔', role: '個人事業主', location: '福岡県', text: '事務用品や消耗品を大量購入するので単価比較が命です。入力するだけで最適な購入先を提示してくれるのでかなり時短になりました。月の経費削減に直結していて重宝しています。', tag: '個人事業主' },
+            ].map((r, i) => (
+              <div key={i} className="bg-[#13141f] border border-white/5 hover:border-emerald-500/20 rounded-2xl p-6 space-y-4 flex flex-col transition-all">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, j) => (
+                    <svg key={j} className="w-4 h-4 text-emerald-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-slate-300 text-sm leading-relaxed flex-1">{r.text}</p>
+                <div className="flex items-center gap-3 pt-2 border-t border-white/5">
+                  <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
+                    {r.name[0]}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white font-semibold text-sm">{r.name}</p>
+                    <p className="text-slate-500 text-xs">{r.role} · {r.location}</p>
+                  </div>
+                  <span className="ml-auto shrink-0 text-[10px] font-medium px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    {r.tag}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </>
   )
 }

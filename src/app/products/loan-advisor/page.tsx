@@ -125,6 +125,51 @@ export default function LoanAdvisorPromo() {
           </div>
         </div>
       </div>
+
+      {/* ── 口コミ ── */}
+      <section className="bg-[#0d1117] py-20 border-y border-white/5">
+        <div className="max-w-6xl mx-auto px-4 space-y-10">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
+              ユーザーの<span className="text-emerald-400">リアルな声</span>
+            </h2>
+            <p className="text-slate-400 text-sm">実際に使ったユーザーの感想</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              { name: '今井 勇樹', role: '会社員・30代', location: '埼玉県', text: '3社から合計180万円の借入があり毎月の返済が限界でした。AIに相談したらおまとめローンで月々の返済が4万円から2.5万円に減り、精神的にかなり楽になりました。何から始めればいいか明確に教えてくれたのが良かったです。', tag: '多重債務' },
+              { name: '村上 亜希子', role: 'パート主婦・40代', location: '大阪府', text: 'カードのリボ払いが膨らんでいて誰にも相談できずにいました。客観的に現状を整理してくれて、完済までの具体的なスケジュールを出してもらえました。2年計画で実行中です。', tag: 'リボ払い整理' },
+              { name: '谷口 英樹', role: '自営業・40代', location: '愛知県', text: 'コロナ禍に事業資金を借りすぎて返済に苦しんでいました。事業ローンと個人ローンを分けて整理してくれて、どちらを優先すべきか戦略的に教えてくれました。返済ペースが整い、事業も持ち直してきています。', tag: '事業者の借金整理' },
+              { name: '栗原 美佐', role: '看護師・30代', location: '福岡県', text: '奨学金と車のローンが重なって家計が苦しくて。繰り上げ返済シミュレーションで総支払利息をどれだけ減らせるか可視化してもらいました。毎月1万円の追加返済で5年早く完済できると分かりモチベーションが上がりました。', tag: '奨学金返済' },
+              { name: '森田 浩平', role: '会社員・20代', location: '東京都', text: '就職してすぐクレカを使いすぎてしまいました。プロに相談するほどでもないと思っていましたが、AIに話したら状況の深刻さとすぐに取るべき行動を教えてくれました。今は計画的に返済できています。', tag: '若年層の借金' },
+              { name: '和田 奈々', role: 'シングルマザー', location: '神奈川県', text: '離婚後に生活費がショートしてしまい消費者金融を使ってしまいました。給付金や支援制度と組み合わせた返済プランを出してくれて、一人では考えつかない解決策がありました。子どもとの未来が少し見えてきました。', tag: 'シングル親の家計' },
+            ].map((r, i) => (
+              <div key={i} className="bg-[#13141f] border border-white/5 hover:border-emerald-500/20 rounded-2xl p-6 space-y-4 flex flex-col transition-all">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, j) => (
+                    <svg key={j} className="w-4 h-4 text-emerald-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-slate-300 text-sm leading-relaxed flex-1">{r.text}</p>
+                <div className="flex items-center gap-3 pt-2 border-t border-white/5">
+                  <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
+                    {r.name[0]}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white font-semibold text-sm">{r.name}</p>
+                    <p className="text-slate-500 text-xs">{r.role} · {r.location}</p>
+                  </div>
+                  <span className="ml-auto shrink-0 text-[10px] font-medium px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    {r.tag}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

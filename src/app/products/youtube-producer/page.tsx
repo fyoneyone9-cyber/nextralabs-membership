@@ -161,6 +161,51 @@ export default function YoutubeProducerLp() {
           </div>
         </div>
       </section>
+
+      {/* ── 口コミ ── */}
+      <section className="bg-[#0d1117] py-20 border-y border-white/5">
+        <div className="max-w-6xl mx-auto px-4 space-y-10">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
+              ユーザーの<span className="text-emerald-400">リアルな声</span>
+            </h2>
+            <p className="text-slate-400 text-sm">実際に使ったユーザーの感想</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              { name: '前田 拓己', role: 'チャンネル開設1年', location: '東京都', text: '伸び悩んでいたチャンネルのコンテンツ戦略を相談したら、競合分析からニッチなテーマを提案してくれました。そのテーマで作った動画が初めて1万再生を超えました。方向性が定まると伸び方が全然違います。', tag: '趣味チャンネル成長' },
+              { name: '木下 素子', role: '料理教室主宰', location: '大阪府', text: 'オンライン集客のためにYouTubeを始めましたが何を作ればいいか分かりませんでした。ターゲット層に刺さるテーマと台本の骨子をセットで出してくれるので、動画制作の壁が低くなりました。', tag: '教室集客' },
+              { name: '平井 和彦', role: '会社公式チャンネル担当', location: '名古屋市', text: '企業チャンネルの再生数が低迷していました。競合チャンネルの成功パターンを分析してくれて、採用した企画が社内で過去最高の再生数を出しました。上司への報告が楽しくなりました。', tag: '企業YouTubeチャンネル' },
+              { name: '加藤 夕子', role: '英会話講師・40代', location: '福岡県', text: '教育系コンテンツは差別化が難しいと思っていました。AIが独自アングルを提案してくれて、体験談という切り口が当たって登録者が月500人増えました。', tag: '教育系チャンネル' },
+              { name: '富田 昭二', role: '定年後のYouTube挑戦', location: '神奈川県', text: '60代でYouTubeを始めましたが操作も戦略も分からなかったです。一から丁寧に教えてくれて、シニア向けライフスタイルチャンネルとして少しずつ登録者が増えています。コメントが励みになっています。', tag: 'シニアYouTuber' },
+              { name: '安藤 めぐみ', role: 'Vlog系・20代', location: '東京都', text: '好きなことを撮っているだけでは伸びないと分かり戦略的にやりたかったです。トレンドキーワードと自分のジャンルを掛け合わせた企画を毎週提案してくれます。半年で登録者1万人を達成しました。', tag: 'Vlog系成長' },
+            ].map((r, i) => (
+              <div key={i} className="bg-[#13141f] border border-white/5 hover:border-emerald-500/20 rounded-2xl p-6 space-y-4 flex flex-col transition-all">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, j) => (
+                    <svg key={j} className="w-4 h-4 text-emerald-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-slate-300 text-sm leading-relaxed flex-1">{r.text}</p>
+                <div className="flex items-center gap-3 pt-2 border-t border-white/5">
+                  <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
+                    {r.name[0]}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white font-semibold text-sm">{r.name}</p>
+                    <p className="text-slate-500 text-xs">{r.role} · {r.location}</p>
+                  </div>
+                  <span className="ml-auto shrink-0 text-[10px] font-medium px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    {r.tag}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

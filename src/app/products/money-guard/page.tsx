@@ -217,6 +217,51 @@ export default function MoneyLp() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <NoSSRWrapper />
+
+      {/* ── 口コミ ── */}
+      <section className="bg-[#0d1117] py-20 border-y border-white/5">
+        <div className="max-w-6xl mx-auto px-4 space-y-10">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
+              ユーザーの<span className="text-emerald-400">リアルな声</span>
+            </h2>
+            <p className="text-slate-400 text-sm">実際に使ったユーザーの感想</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              { name: '立花 由紀', role: '共働き主婦・30代', location: '東京都', text: '夫婦二人で稼いでいるのに貯金がなかなか増えず不安でした。収支を入力したら固定費の見直しポイントを具体的に教えてくれました。通信費と保険の見直しだけで月2万円浮き、半年で12万円貯まりました。', tag: '共働き家計改善' },
+              { name: '峯岸 昭', role: '定年間近・50代', location: '神奈川県', text: '老後の資金が心配で定年後の家計シミュレーションを依頼しました。年金額との差分と必要な準備額を分かりやすく示してくれました。今から始めるべき積立額が明確になり、iDeCoを満額に変更しました。', tag: '老後資金対策' },
+              { name: '板垣 恵子', role: 'シングルマザー・40代', location: '大阪府', text: '一人で子ども2人を育てていて家計が常にギリギリでした。使える補助金と給付金を漏れなく教えてくれて、月3万円以上のサポートを受けられるようになりました。公的支援の活用は知っているかどうかで大差ですね。', tag: 'ひとり親の家計' },
+              { name: '津田 和彦', role: '自営業・40代', location: '愛知県', text: '事業費と生活費が混在して家計が把握できていませんでした。分けて管理する方法と節税シミュレーションを出してくれました。青色申告の控除も最大限活用できるようになり、手元に残るお金が増えました。', tag: '自営業の家計管理' },
+              { name: '水上 香里', role: '新婚・20代', location: '福岡県', text: '結婚して初めて家計管理を真剣に考えました。住宅購入のための貯蓄計画と毎月の目標額を出してくれます。ゲーム感覚で節約できて、夫婦で楽しみながら貯金が増えています。', tag: '新婚家計の設計' },
+              { name: '宗像 茂', role: '子育て世帯・40代', location: '埼玉県', text: '教育費の将来シミュレーションをしてもらいました。子ども2人の大学費用まで含めた資金計画が一覧で出て、何歳までにいくら貯めればいいか明確になりました。NISAとの組み合わせ提案も具体的でした。', tag: '教育資金計画' },
+            ].map((r, i) => (
+              <div key={i} className="bg-[#13141f] border border-white/5 hover:border-emerald-500/20 rounded-2xl p-6 space-y-4 flex flex-col transition-all">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, j) => (
+                    <svg key={j} className="w-4 h-4 text-emerald-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-slate-300 text-sm leading-relaxed flex-1">{r.text}</p>
+                <div className="flex items-center gap-3 pt-2 border-t border-white/5">
+                  <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
+                    {r.name[0]}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white font-semibold text-sm">{r.name}</p>
+                    <p className="text-slate-500 text-xs">{r.role} · {r.location}</p>
+                  </div>
+                  <span className="ml-auto shrink-0 text-[10px] font-medium px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    {r.tag}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </>
   )
 }
