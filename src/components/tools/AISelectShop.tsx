@@ -135,19 +135,21 @@ const MasterEngine = () => {
     const TC = TSHIRT_COLORS.find(c => c.id === tshirtColor) || TSHIRT_COLORS[1]
     ctx.clearRect(0, 0, w, h)
     ctx.fillStyle = '#1a1a2e'; ctx.fillRect(0, 0, w, h)
+    // Tシャツ本体を描画（clipなし — プリントボックスのclipだけで管理）
     ctx.save()
     getTshirtPath(ctx, w, h)
     ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 12
     ctx.fillStyle = TC.hex; ctx.fill()
     ctx.restore()
-    ctx.save(); getTshirtPath(ctx, w, h); ctx.clip()
+    // ※ Tシャツシルエットでclipしない（袖/肩でプリントボックスが切れる原因だったため削除）
 
     // プリント領域（角丸四角形）
+    // Tシャツ胴体の安全幅: w*0.2 〜 w*0.8 = 内側60%。余白8%ずつ取ると w*0.44 が最大安全幅
     const isSmall = printPosition === 'chest-left'
     const cx = w / 2
     const cy = printPosition === 'chest-left' ? h * 0.3 : printPosition === 'back-center' ? h * 0.55 : h * 0.44
-    // 内側余白を確保した安全な幅・高さ
-    const boxW = isSmall ? w * 0.28 : w * 0.52
+    // 安全なプリントボックス: 胴体幅(w*0.6)の80% = w*0.48、左胸は半分
+    const boxW = isSmall ? w * 0.22 : w * 0.48
     const boxH = isSmall ? h * 0.14 : h * 0.30
     const rx = 10 // 角丸半径
     const bx = cx - boxW / 2
@@ -228,11 +230,11 @@ const MasterEngine = () => {
 
     const startY = cy - (lines.length * lineHeight) / 2 + lineHeight / 2
     lines.forEach((line, i) => {
-      ctx.fillText(line, cx, startY + i * lineHeight, safeW)
+      // maxWidth引数を渡さない — 文字縮小圧縮させず、改行アルゴリズムに任せる
+      ctx.fillText(line, cx, startY + i * lineHeight)
     })
 
-    ctx.restore() // clip解除
-    ctx.restore() // Tシャツclip解除
+    ctx.restore() // テキストボックスclip解除
     setMockupDataUrl(canvas.toDataURL('image/png'))
   }, [keyword, style, tshirtColor, textColorId, printPosition])
 
