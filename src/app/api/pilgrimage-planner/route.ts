@@ -68,12 +68,12 @@ async function fetchVideoInfo(videoId: string): Promise<VideoInfo | null> {
 // ─── プリセット定義 ────────────────────────────────────────────────────────────
 
 export const PRESETS = [
-  { id: 'kimetsu', label: '鬼滅の刃', keyword: '鬼滅の刃 聖地 ロケ地', description: '竹林・大正ロマン情緒の街並み', color: 'border-red-500', emoji: '🗡️' },
-    { id: 'kiminonawa', label: '君の名は', keyword: '君の名は 聖地 ロケ地 飛騨 新宿', description: '飛騨古川・新宿・諏訪湖', color: 'border-blue-400', emoji: '☄️' },
-  { id: 'slamdunk', label: 'スラムダンク', keyword: 'スラムダンク 聖地 鎌倉 江ノ電', description: '鎌倉・江ノ電・湘南', color: 'border-orange-400', emoji: '🏀' },
-  { id: 'spirited', label: '千と千尋', keyword: '千と千尋の神隠し 聖地 モデル地', description: '道後温泉・台湾・山梨', color: 'border-purple-400', emoji: '🏮' },
-  { id: 'evangelion', label: 'エヴァンゲリオン', keyword: 'エヴァンゲリオン 聖地 箱根 宇部', description: '箱根・宇部市・鷹取山', color: 'border-green-400', emoji: '🤖' },
-  { id: 'yuruyuri', label: 'ゆるキャン△', keyword: 'ゆるキャン 聖地 山梨 富士山', description: '山梨・富士山周辺', color: 'border-yellow-400', emoji: '⛺' },
+  { id: 'kimetsu',    label: '鬼滅の刃',       keyword: '鬼滅の刃 聖地 ロケ地',          hotelArea: '福岡県',   description: '竹林・大正ロマン情緒の街並み', color: 'border-red-500',    emoji: '🗡️' },
+  { id: 'kiminonawa', label: '君の名は',        keyword: '君の名は 聖地 ロケ地 飛騨 新宿', hotelArea: '岐阜県',   description: '飛騨古川・新宿・諏訪湖',       color: 'border-blue-400',   emoji: '☄️' },
+  { id: 'slamdunk',   label: 'スラムダンク',    keyword: 'スラムダンク 聖地 鎌倉 江ノ電',  hotelArea: '神奈川県', description: '鎌倉・江ノ電・湘南',           color: 'border-orange-400', emoji: '🏀' },
+  { id: 'spirited',   label: '千と千尋',        keyword: '千と千尋の神隠し 聖地 モデル地', hotelArea: '山梨県',   description: '道後温泉・台湾・山梨',         color: 'border-purple-400', emoji: '🏮' },
+  { id: 'evangelion', label: 'エヴァンゲリオン', keyword: 'エヴァンゲリオン 聖地 箱根 宇部', hotelArea: '神奈川県', description: '箱根・宇部市・鷹取山',         color: 'border-green-400',  emoji: '🤖' },
+  { id: 'yuruyuri',   label: 'ゆるキャン△',     keyword: 'ゆるキャン 聖地 山梨 富士山',    hotelArea: '山梨県',   description: '山梨・富士山周辺',             color: 'border-yellow-400', emoji: '⛺' },
 ]
 
 // ─── Gemini でロケ地・聖地を特定 ───────────────────────────────────────────────
@@ -184,8 +184,6 @@ interface RakutenHotel {
 }
 
 async function searchNearbyHotels(
-  lat: number | null,
-  lng: number | null,
   keyword: string,
   checkinDate: string,
   checkoutDate: string,
@@ -194,17 +192,18 @@ async function searchNearbyHotels(
 ): Promise<RakutenHotel[]> {
   if (!RAKUTEN_APP_ID) return []
 
-  // 日帰りの場合チェックアウトを翌日にする（楽天は同日NG）
+  // 日帰り時はチェックアウトを翌日に補正（楽天は同日NG）
   const cin = checkinDate
   const cout = checkoutDate === checkinDate
     ? new Date(new Date(checkinDate).getTime() + 86400000).toISOString().split('T')[0]
     : checkoutDate
 
   try {
-    const baseParams: Record<string, string> = {
+    const params = new URLSearchParams({
       applicationId: RAKUTEN_APP_ID,
-      affiliateId: RAKUTEN_AFFILIATE_ID || '',
+      affiliateId: RAKUTEN_AFFILIATE_ID,
       format: 'json',
+      keyword,
       checkinDate: cin,
       checkoutDate: cout,
       adultNum: adults.toString(),
@@ -212,19 +211,8 @@ async function searchNearbyHotels(
       hits: '5',
       sort: '+hotelMinCharge',
       responseType: 'small',
-    }
+    })
 
-    // 座標があれば座標ベース検索（精度高）、なければキーワード検索
-    if (lat && lng) {
-      baseParams['latitude'] = lat.toFixed(6)
-      baseParams['longitude'] = lng.toFixed(6)
-      baseParams['searchRadius'] = '3'  // 3km圏内
-      baseParams['datumType'] = '1'     // 世界測地系
-    } else {
-      baseParams['keyword'] = keyword
-    }
-
-    const params = new URLSearchParams(baseParams)
     const res = await fetch(
       `https://app.rakuten.co.jp/services/api/Travel/SimpleHotelSearch/20170426?${params}`,
       { headers: { 'User-Agent': 'NextraLabs/1.0' } }
@@ -448,25 +436,23 @@ export async function POST(req: NextRequest) {
     // 座標付与
     spots = await geocodeSpots(spots)
 
-    // 最初のスポットの座標を楽天検索に使用（座標ベース検索が最も精度高い）
-    const firstSpot = spots[0]
-    const searchLat = firstSpot?.lat ?? null
-    const searchLng = firstSpot?.lng ?? null
-    // 座標なし時のフォールバック用キーワード（都道府県抽出）
-    const firstAddress = firstSpot?.address ?? ''
+    // 楽天ホテル検索キーワードを決定
+    // 優先順位: プリセットのhotelArea > Geocodingで取れた都道府県 > departure
+    const firstAddress = spots[0]?.address ?? ''
     const prefMatch = firstAddress.match(/(.+?[都道府県])/)
-    const fallbackKeyword = prefMatch ? prefMatch[1] : (firstAddress || departure || '東京')
+    const hotelKeyword =
+      preset?.hotelArea ||
+      (prefMatch ? prefMatch[1] : '') ||
+      departure ||
+      '東京'
 
     const today2 = new Date()
     const defaultCheckin = checkinDate || new Date(today2.getTime() + 7 * 86400000).toISOString().split('T')[0]
-    // 日帰り指定でもチェックアウトは翌日にする（API側でも補正するが念のため）
     const defaultCheckout = checkoutDate || new Date(today2.getTime() + 8 * 86400000).toISOString().split('T')[0]
 
-    // 楽天ホテル検索（座標ベース → キーワードフォールバック）
+    // 楽天ホテル検索
     const hotels = await searchNearbyHotels(
-      searchLat,
-      searchLng,
-      fallbackKeyword,
+      hotelKeyword,
       defaultCheckin,
       defaultCheckout,
       adults || 2,
