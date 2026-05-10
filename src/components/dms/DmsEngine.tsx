@@ -11,6 +11,7 @@ import {
 import DmsBookingEditor from './DmsBookingEditor'
 import DmsPropertyEditor from './DmsPropertyEditor'
 import LockListContent, { LockListHeaderActions } from './LockListEngine'
+import RoomListContent from './RoomListEngine'
 import { CloudPmsStorage } from '@/lib/cloud-pms-storage'
 import { useSearchParams } from 'next/navigation'
 
@@ -18,6 +19,7 @@ const MENU_ITEMS = [
   { id: 'checkin',    label: 'チェックイン',      icon: PenLine,      href: '/dms' },
   { id: 'survey',     label: 'アンケート回収',     icon: MessageSquare,href: '/dms/survey' },
   { id: 'property',   label: '物件',              icon: Building,     href: '/dms?tab=property' },
+  { id: 'room-list',  label: '部屋一覧',          icon: Building,     href: '/dms?tab=room-list' },
   { id: 'lock-list',  label: '錠デバイス一覧',     icon: Lock,         href: '/dms/lock-list' },
   { id: 'terminals',  label: 'チェックイン端末',   icon: Monitor,      href: '/dms/terminals' },
   { id: 'calls',      label: '通話一覧（フロント）',icon: Video,        href: '/dms/calls' },
@@ -133,6 +135,7 @@ export default function DmsEngine() {
   const [editingProperty, setEditingProperty] = useState<any>(null)
   const [propView, setPropView] = useState<'list' | 'create'>('list')
   const [lockSearchQuery, setLockSearchQuery] = useState('')
+  const [roomSearchQuery, setRoomSearchQuery] = useState('')
   const [lockDeleting, setLockDeleting] = useState(false)
   const [lockUnusedCount, setLockUnusedCount] = useState(2)
   const [bookings, setBookings] = useState<any[]>([])
@@ -245,6 +248,17 @@ export default function DmsEngine() {
                 onDeleteUnused={() => { if (lockUnusedCount === 0) return; if (!confirm(`未使用の鍵 ${lockUnusedCount}件 を全て削除しますか？`)) return; setLockDeleting(true); setTimeout(() => { setLockUnusedCount(0); setLockDeleting(false) }, 800) }}
                 deleting={lockDeleting} unusedCount={lockUnusedCount}
               />
+            )}
+            {activeTab === 'room-list' && (
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={12} />
+                <input
+                  value={roomSearchQuery}
+                  onChange={e => setRoomSearchQuery(e.target.value)}
+                  placeholder="部屋を検索..."
+                  className="pl-8 pr-4 py-1.5 bg-white/5 border border-white/10 rounded-lg text-xs w-40 outline-none focus:border-emerald-500 text-slate-300 transition-all"
+                />
+              </div>
             )}
             <button onClick={() => { localStorage.removeItem('dms_session'); window.location.href = '/dms/login' }}
               className="flex items-center gap-1.5 text-slate-500 hover:text-slate-300 text-[10px] font-semibold transition-colors ml-2">
@@ -560,6 +574,11 @@ export default function DmsEngine() {
                 </div>
               </div>
             </div>
+          )}
+
+          {/* 部屋一覧 */}
+          {activeTab === 'room-list' && (
+            <RoomListContent searchQuery={roomSearchQuery} />
           )}
 
           {/* 錠デバイス一覧 */}
