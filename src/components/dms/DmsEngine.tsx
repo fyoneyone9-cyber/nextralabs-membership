@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import {
   PenLine, MessageSquare, Building, Lock, Monitor, Video, Car, FileBarChart,
   Settings, Database, LogOut, ArrowRight, Search, RefreshCw,
-  Download, Plus, Edit3, BookText
+  Download, Plus, Edit3, BookText, Wrench, Plane, MapPin, Sparkles, ExternalLink
 } from 'lucide-react'
 import DmsBookingEditor from './DmsBookingEditor'
 import DmsPropertyEditor from './DmsPropertyEditor'
@@ -23,6 +23,7 @@ const MENU_ITEMS = [
   { id: 'calls',      label: '通話一覧（フロント）',icon: Video,        href: '/dms/calls' },
   { id: 'cars',       label: '車両情報',           icon: Car,          href: '/dms/cars' },
   { id: 'reports',    label: '宿泊実績定期報告',   icon: FileBarChart, href: '/dms/reports' },
+  { id: 'tools',      label: '便利ツール',          icon: Wrench,       href: '/dms?tab=tools' },
 ]
 
 const SETTINGS_MENU = [
@@ -356,6 +357,128 @@ export default function DmsEngine() {
                 </div>
               </div>
             </>
+          )}
+
+          {/* 便利ツール */}
+          {activeTab === 'tools' && (
+            <div className="space-y-6 max-w-4xl">
+              <div>
+                <h2 className="text-base font-bold text-slate-200 mb-1">便利ツール</h2>
+                <p className="text-xs text-slate-500">宿泊DMS連携の便利機能・AIツール集。宿泊者サービス向上にお使いください。</p>
+              </div>
+
+              {/* 旅行系ツール */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Plane size={13} className="text-emerald-400" />
+                  <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">旅行・観光</span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+                  {/* AI旅行コンシェルジュ */}
+                  <a
+                    href="/products/travel-concierge/app"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex gap-4 p-5 rounded-2xl transition-all hover:border-emerald-500/50 hover:scale-[1.01]"
+                    style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+                  >
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                      style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}
+                    >
+                      <Plane size={20} className="text-emerald-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-sm font-semibold text-slate-200">AI旅行コンシェルジュ</span>
+                        <ExternalLink size={11} className="text-slate-600 group-hover:text-emerald-400 transition-colors" />
+                      </div>
+                      <p className="text-xs text-slate-500 leading-relaxed">
+                        楽天トラベルの宿＋Google Mapsの観光地を自動収集し、Gemini AIが旅程を丸ごと生成。宿泊者のチェックイン前・滞在中のご案内に活用できます。
+                      </p>
+                      <div className="flex gap-2 mt-2.5 flex-wrap">
+                        {['楽天トラベル', 'Google Maps', 'Gemini AI'].map(tag => (
+                          <span
+                            key={tag}
+                            className="px-2 py-0.5 text-[10px] rounded-full font-medium"
+                            style={{ background: 'rgba(16,185,129,0.1)', color: '#6ee7b7', border: '1px solid rgba(16,185,129,0.2)' }}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </a>
+
+                  {/* AIロケーションファインダー */}
+                  <a
+                    href="/products/location-finder/app"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex gap-4 p-5 rounded-2xl transition-all hover:border-emerald-500/50 hover:scale-[1.01]"
+                    style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+                  >
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                      style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}
+                    >
+                      <MapPin size={20} className="text-emerald-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-sm font-semibold text-slate-200">AI Location Scout</span>
+                        <ExternalLink size={11} className="text-slate-600 group-hover:text-emerald-400 transition-colors" />
+                      </div>
+                      <p className="text-xs text-slate-500 leading-relaxed">
+                        YouTube URLを貼るだけでGemini AIがサムネイルを解析し撮影場所をGoogle Mapsにピン表示。周辺スポット紹介・SNS発信に活用。
+                      </p>
+                      <div className="flex gap-2 mt-2.5 flex-wrap">
+                        {['Gemini Vision', 'Google Maps', 'YouTube'].map(tag => (
+                          <span
+                            key={tag}
+                            className="px-2 py-0.5 text-[10px] rounded-full font-medium"
+                            style={{ background: 'rgba(16,185,129,0.1)', color: '#6ee7b7', border: '1px solid rgba(16,185,129,0.2)' }}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </a>
+
+                </div>
+              </div>
+
+              {/* 近日追加予定 */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles size={13} className="text-slate-500" />
+                  <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">近日追加予定</span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {[
+                    { icon: '🗾', title: '周辺グルメ自動案内', desc: 'チェックイン後に宿泊者へ周辺のおすすめグルメをAIが自動提案' },
+                    { icon: '🚂', title: 'アクセス自動案内', desc: '最寄り駅・バス停からのルートをAIが自動生成して宿泊者へ送付' },
+                  ].map(({ icon, title, desc }) => (
+                    <div
+                      key={title}
+                      className="flex gap-4 p-5 rounded-2xl opacity-50"
+                      style={{ background: '#0d1117', border: '1px dashed #1e293b' }}
+                    >
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-2xl" style={{ background: '#13141f' }}>
+                        {icon}
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-400 mb-1">{title}</p>
+                        <p className="text-xs text-slate-600 leading-relaxed">{desc}</p>
+                        <span className="inline-block mt-2 text-[10px] text-slate-700 font-medium">開発予定</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           )}
 
           {/* 錠デバイス一覧 */}
