@@ -86,7 +86,7 @@ const SidejobLpContent = () => {
           <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-4 hover:border-[#5845e0]/30 transition-all group">
             <div className="w-12 h-12 bg-[#5845e0]/10 rounded-xl flex items-center justify-center text-[#5845e0] group-hover:scale-110 transition-transform"><Target size={32} /></div>
             <h4 className="text-xl font-bold text-white uppercase ">特性・生活環境スキャン</h4>
-            <p className="text-slate-400 text-sm font-bold leading-relaxed">スキルだけでなく、週に取れる時間や本業の規則、PC環境までをAIが把握。現実的に継続可能な副業を導き出します。</p>
+            <p className="text-slate-400 text-sm font-bold leading-relaxed">週5日フルタイムでも、週末だけの2〜3時間でも対応。スキルだけでなく、週に取れる時間や本業の規則、PC環境までをAIが把握。現実的に継続可能な副業を導き出します。</p>
           </div>
           <div className="bg-[#13141f] border-2 border-white/5 p-10 rounded-[3rem] space-y-4 hover:border-[#5845e0]/30 transition-all group">
             <div className="w-12 h-12 bg-[#5845e0]/10 rounded-xl flex items-center justify-center text-[#5845e0] group-hover:scale-110 transition-transform"><Zap size={32} /></div>
