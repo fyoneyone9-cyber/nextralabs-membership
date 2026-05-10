@@ -226,14 +226,16 @@ function YoutubeProducerApp() {
   }
 
   const generateExtras = async () => {
-    const genreData = GENRES.find(g => g.id === genre)
     const styleData = IMAGE_STYLES.find(s => s.id === imageStyle)
     const genrePrompt = `画像スタイル: ${styleData?.label} (${styleData?.prompt})`;
 
+    // ① 登場人物
+    setLoadingStep('👥 登場人物を抽出中... (1/4)')
     const charRes = await callApi('characters', { transcript, genrePrompt })
     if (charRes) setCharacters(charRes.characters)
 
-    // サムネイルは3案を独立したAPIコールで生成（同じ結果を防ぐ）
+    // ② サムネイル3案（並列）
+    setLoadingStep('🖼️ サムネイル3案を同時生成中... (2/4)　少々お待ちください')
     const thumbPayload = { transcript, genre, scriptTitle: script?.opening, genrePrompt }
     const [t1, t2, t3] = await Promise.all([
       callApi('thumbnail1', thumbPayload),
@@ -243,10 +245,17 @@ function YoutubeProducerApp() {
     const thumbs = [t1, t2, t3].filter(Boolean)
     if (thumbs.length > 0) setThumbnails(thumbs)
 
+    // ③ SEO
+    setLoadingStep('🔍 SEOタイトル・タグを生成中... (3/4)')
     const seoRes = await callApi('title', { transcript, script: script?.fullScript, genre })
     if (seoRes) setSeo(seoRes)
+
+    // ④ BGM
+    setLoadingStep('🎵 BGMプロンプトを生成中... (4/4)')
     const bgmRes = await callApi('bgm', { transcript, genre })
     if (bgmRes) setBgm(bgmRes)
+
+    setLoadingStep(null)
     setActiveTab('visual')
   }
 
