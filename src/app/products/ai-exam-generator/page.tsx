@@ -44,14 +44,7 @@ export const metadata: Metadata = {
     ],
     locale: 'ja_JP',
     type: 'article',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'AI問題生成 & 過去問分析 | 最短合格を目指すAI併走型学習ツール',
-    description: 'AIがあなたの苦手分野を特定。ITパスポート・基本情報の合格力を最大化。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-exam.png'],
-    creator: '@NextraLabs',
-  },
+  },,
   alternates: { 
     canonical: 'https://membership-site-nextralabos.vercel.app/products/ai-exam-generator' 
   },

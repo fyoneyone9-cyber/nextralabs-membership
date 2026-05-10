@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/pet-translator',
   },
+  openGraph: {
     title: 'AIペット通訳士（Pet Translator）| 愛犬・愛猫の気持ちをAIが解読 | NextraLabs',
     description: '愛犬・愛猫の行動・鳴き声・表情をAIが分析して気持ちを翻訳。健康状態のチェックや行動改善アドバイスも。ペットとの絆が深まるNextraLabs無料ツール。',
     url: 'https://membership-site-nextralabos.vercel.app/products/pet-translator',

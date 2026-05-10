@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/closet-coach',
   },
+  openGraph: {
     title: 'AIクローゼットコーチ | タンスの肥やしをゼロにする断捨離AI | NextraLabs',
     description: '持ち服を撮影するだけでAIがコーデ提案・不要品判定・フリマ出品サポートまで。クローゼット整理でお金も生み出す。NextraLabsライトプラン以上。',
     url: 'https://membership-site-nextralabos.vercel.app/products/closet-coach',

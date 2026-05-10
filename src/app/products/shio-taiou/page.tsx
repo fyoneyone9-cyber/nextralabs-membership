@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/shio-taiou',
   },
+  openGraph: {
     title: 'AI塩対応ジェネレーター | 面倒な人間関係をスマートに断る | NextraLabs',
     description: '迷惑な勧誘・しつこいLINE・断りにくい頼まれごとをスマートに断る文章をAIが生成。角が立たず・後腐れなし・でも確実に断れる魔法の言葉。',
     url: 'https://membership-site-nextralabos.vercel.app/products/shio-taiou',

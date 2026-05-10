@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/staysee-ai-finder',
   },
+  openGraph: {
     title: 'Staysee AI Finder | 旅行の宿泊先をAIが予算・条件から最速提案 | NextraLabs',
     description: '予算・エリア・人数・目的を入力するだけでAIが最適な宿を提案。楽天トラベル・じゃらん連携で最安値をリアルタイム比較。旅行準備を10倍速く。',
     url: 'https://membership-site-nextralabos.vercel.app/products/staysee-ai-finder',
@@ -29,13 +30,7 @@ export const metadata: Metadata = {
     locale: 'ja_JP',
     siteName: 'NextraLabs',
     images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'Staysee AI Finder | 最高の宿をAIが条件から完全自動で発見' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Staysee AI Finder | 最高の宿をAIが条件から完全自動で発見',
-    description: 'ホテル・旅館・民泊をAIが予算・立地・口コミから最適な宿を自動提案。楽天トラベル・じゃらんとも連携。NextraLabsライトプラン以上。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
-  },
+  },,
 }
 
 import dynamic from 'next/dynamic'

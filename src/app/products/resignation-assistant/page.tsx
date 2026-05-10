@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/resignation-assistant',
   },
+  openGraph: {
     title: 'AI退職アシスタント | 退職届・引き継ぎ書類をAIが自動作成 | NextraLabs',
     description: '退職届・退職理由・引き継ぎ書類・上司への伝え方までAIが完全サポート。円満退職を実現する文章テンプレートと段取りを提案。NextraLabs無料〜利用可能。',
     url: 'https://membership-site-nextralabos.vercel.app/products/resignation-assistant',
