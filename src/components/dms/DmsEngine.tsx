@@ -260,7 +260,12 @@ export default function DmsEngine() {
                 />
               </div>
             )}
-            <button onClick={() => { localStorage.removeItem('dms_session'); window.location.href = '/dms/login' }}
+            <button onClick={async () => {
+                // Cookie削除 + localStorage削除
+                await fetch('/api/dms/logout', { method: 'POST' })
+                localStorage.removeItem('dms_session')
+                window.location.href = '/dms/login'
+              }}
               className="flex items-center gap-1.5 text-slate-500 hover:text-slate-300 text-[10px] font-semibold transition-colors ml-2">
               <LogOut size={12} /> ログアウト
             </button>

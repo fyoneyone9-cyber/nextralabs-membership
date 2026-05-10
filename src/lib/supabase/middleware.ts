@@ -53,7 +53,6 @@ export async function updateSession(request: NextRequest) {
     if (!user) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
-    // 管理者チェック
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
@@ -67,6 +66,45 @@ export async function updateSession(request: NextRequest) {
 
   if (isAuthRoute && user) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
+  // ── DMS 独自Cookie認証ガード ──
+  // /dms/login と /dms/admin/login は認証不要（ログインページ自体）
+  // /dms/* それ以外は dms_session cookie が必要
+  const pathname = request.nextUrl.pathname
+  const isDmsRoute      = pathname.startsWith('/dms')
+  const isDmsLoginPage  = pathname === '/dms/login'
+  const isDmsAdminRoute = pathname.startsWith('/dms/admin')
+
+  if (isDmsRoute && !isDmsLoginPage) {
+    const dmsSessionCookie = request.cookies.get('dms_session')?.value
+
+    // Cookieが無い場合はログインへリダイレクト
+    if (!dmsSessionCookie) {
+      return NextResponse.redirect(new URL('/dms/login', request.url))
+    }
+
+    // Cookieをパースしてroleチェック
+    try {
+      const session = JSON.parse(dmsSessionCookie)
+
+      // /dms/admin は super_admin のみ
+      if (isDmsAdminRoute && session.role !== 'super_admin') {
+        return NextResponse.redirect(new URL('/dms', request.url))
+      }
+
+      // role が無効（不正Cookie）
+      if (!session.role || !session.login_id) {
+        const res = NextResponse.redirect(new URL('/dms/login', request.url))
+        res.cookies.delete('dms_session')
+        return res
+      }
+    } catch {
+      // JSON parse 失敗 = 不正Cookie → 削除してログインへ
+      const res = NextResponse.redirect(new URL('/dms/login', request.url))
+      res.cookies.delete('dms_session')
+      return res
+    }
   }
 
   return response

@@ -19,18 +19,27 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'ID・パスワードを入力してください' }, { status: 400 })
   }
 
+  // Cookie共通オプション
+  const cookieOpts = {
+    httpOnly: false,   // クライアントJSからも読める（dms_session をUIで参照するため）
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax' as const,
+    path: '/dms',
+    maxAge: 60 * 60 * 8,  // 8時間
+  }
+
   // スーパーアドミン（マスター管理者）
   if (login_id === SUPER_ADMIN.login_id && password === SUPER_ADMIN.password) {
-    return NextResponse.json({
-      ok: true,
-      session: {
-        id: 'super-admin',
-        login_id,
-        company_name: 'NextraLabs（管理者）',
-        role: 'super_admin',
-        plan: 'admin',
-      }
-    })
+    const sessionData = {
+      id: 'super-admin',
+      login_id,
+      company_name: 'NextraLabs（管理者）',
+      role: 'super_admin',
+      plan: 'admin',
+    }
+    const res = NextResponse.json({ ok: true, session: sessionData })
+    res.cookies.set('dms_session', JSON.stringify(sessionData), cookieOpts)
+    return res
   }
 
   // Supabase dms_tenants からログインID検索
@@ -59,15 +68,15 @@ export async function POST(req: NextRequest) {
     .update({ last_login_at: new Date().toISOString() })
     .eq('id', tenant.id)
 
-  return NextResponse.json({
-    ok: true,
-    session: {
-      id: tenant.id,
-      login_id: tenant.login_id,
-      company_name: tenant.company_name,
-      role: 'tenant',
-      plan: tenant.plan,
-      pms_type: tenant.pms_type,
-    }
-  })
+  const sessionData = {
+    id: tenant.id,
+    login_id: tenant.login_id,
+    company_name: tenant.company_name,
+    role: 'tenant',
+    plan: tenant.plan,
+    pms_type: tenant.pms_type,
+  }
+  const res = NextResponse.json({ ok: true, session: sessionData })
+  res.cookies.set('dms_session', JSON.stringify(sessionData), cookieOpts)
+  return res
 }
