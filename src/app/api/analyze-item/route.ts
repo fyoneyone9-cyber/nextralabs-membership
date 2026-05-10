@@ -1,10 +1,21 @@
 ﻿import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { checkApiLimit } from "@/lib/api-limit";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   const trace: any[] = [];
   const logTrace = (action: string, data: any) => trace.push({ time: new Date().toISOString(), action, data });
 
   try {
+    // 認証 + 1日5回制限
+    const limitCheck = await checkApiLimit('analyze-item', 5)
+    if (!limitCheck.allowed) {
+      if (limitCheck.reason === 'unauthenticated') {
+        return NextResponse.json({ error: 'ログインが必要です', trace }, { status: 401 })
+      }
+      return NextResponse.json({ error: '本日の利用上限（5回）に達しました。明日またお試しください。', trace }, { status: 429 })
+    }
+
     const { image } = await req.json();
     logTrace("REQUEST_RECEIVED", { size: image?.length, type: typeof image });
 

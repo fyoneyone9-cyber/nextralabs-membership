@@ -3,10 +3,20 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 import {
   Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType
 } from 'docx'
+import { checkApiLimit } from '@/lib/api-limit'
 
 export async function POST(req: NextRequest) {
   try {
-    const { theme, genre, maxChars = 5000, includeCoverPrompt = false, isAdmin = false } = await req.json()
+    // 認証 + 1日3回制限（Kindle原稿生成は重いため厳しめに設定）
+    const limitCheck = await checkApiLimit('kindle-generate', 3)
+    if (!limitCheck.allowed) {
+      if (limitCheck.reason === 'unauthenticated') {
+        return NextResponse.json({ success: false, error: 'ログインが必要です' }, { status: 401 })
+      }
+      return NextResponse.json({ success: false, error: '本日の利用上限（3回）に達しました。明日またお試しください。' }, { status: 429 })
+    }
+
+    const { theme, genre, maxChars = 5000, includeCoverPrompt = false } = await req.json()
 
     if (!theme || !genre) {
       return NextResponse.json({ success: false, error: 'テーマとジャンルは必須です' }, { status: 400 })

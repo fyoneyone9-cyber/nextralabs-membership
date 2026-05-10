@@ -1,7 +1,18 @@
 ﻿import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { checkApiLimit } from "@/lib/api-limit";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
+    // 認証 + 1日10回制限
+    const limitCheck = await checkApiLimit('prompt-master', 10)
+    if (!limitCheck.allowed) {
+      if (limitCheck.reason === 'unauthenticated') {
+        return NextResponse.json({ error: 'ログインが必要です' }, { status: 401 })
+      }
+      return NextResponse.json({ error: '本日の利用上限（10回）に達しました。明日またお試しください。' }, { status: 429 })
+    }
+
     const { text } = await req.json();
     const apiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY1;
     if (!apiKey || !text) return NextResponse.json({ error: "No Data" }, { status: 400 });

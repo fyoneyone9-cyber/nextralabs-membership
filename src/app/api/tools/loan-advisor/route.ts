@@ -1,9 +1,19 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import OpenAI from 'openai'
+import { checkApiLimit } from '@/lib/api-limit'
 
 export async function POST(req: NextRequest) {
   try {
+    // 認証 + 1日5回制限（Gemini+OpenAIフォールバックで二重コストリスクあり）
+    const limitCheck = await checkApiLimit('loan-advisor', 5)
+    if (!limitCheck.allowed) {
+      if (limitCheck.reason === 'unauthenticated') {
+        return NextResponse.json({ success: false, error: 'ログインが必要です' }, { status: 401 })
+      }
+      return NextResponse.json({ success: false, error: '本日の利用上限（5回）に達しました。明日またお試しください。' }, { status: 429 })
+    }
+
     const body = await req.json()
     const { debts, currentTotal, currentAvgRate } = body
 

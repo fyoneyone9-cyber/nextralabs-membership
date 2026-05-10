@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createServerSupabaseClient } from '@/lib/supabase/server'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!
 const PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY!
@@ -148,6 +149,13 @@ async function extractEmailFromWebsite(url: string): Promise<string | null> {
 // ── メインハンドラ ──────────────────────────────────────
 export async function POST(req: NextRequest) {
   try {
+    // 管理者のみアクセス可能（Google Places APIは高額なため）
+    const supabase = createServerSupabaseClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user || user.email !== 'f.yoneyone9@gmail.com') {
+      return NextResponse.json({ error: '管理者専用機能です' }, { status: 403 })
+    }
+
     const { category, region } = await req.json()
     if (!category || !region) {
       return NextResponse.json({ error: 'category と region は必須です' }, { status: 400 })

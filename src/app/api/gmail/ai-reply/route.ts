@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createServerSupabaseClient } from '@/lib/supabase/server'
 
 const MODELS = ['gemini-2.5-flash']
 
 export async function POST(req: NextRequest) {
   try {
+    // 認証チェック（未ログインはGemini呼び出し不可）
+    const supabase = createServerSupabaseClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      return NextResponse.json({ error: 'ログインが必要です' }, { status: 401 })
+    }
+
     const { subject, from, snippet } = await req.json()
 
     if (!subject && !snippet) {

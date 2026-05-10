@@ -2,10 +2,22 @@
 import { NextRequest } from 'next/server';
 import { checkRateLimit } from '@/lib/rateLimit';
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { createServerSupabaseClient } from '@/lib/supabase/server';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function POST(req: NextRequest) {
+  // エンタープライズ認証チェック
+  const supabase = createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: 'ログインが必要です' }, { status: 401 });
+  }
+  const { data: sub } = await supabase.from('subscriptions').select('plan').eq('user_id', user.id).eq('status', 'active').maybeSingle();
+  if (sub?.plan !== 'enterprise' && user.email !== 'f.yoneyone9@gmail.com') {
+    return NextResponse.json({ error: 'エンタープライズプランが必要です' }, { status: 403 });
+  }
+
   const rateCheck = await checkRateLimit(req, 'staysee-ai-finder');
   if (!rateCheck.allowed) return rateCheck.response!;
   try {
