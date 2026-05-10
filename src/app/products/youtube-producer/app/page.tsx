@@ -83,6 +83,15 @@ const SCRIPT_TYPES = [
   { id: 'long', label: '長文台本', desc: '15〜30分の重厚な解説・ドキュメンタリー構成。深い満足度を提供します。', minutes: 20 },
 ]
 
+// 語尾スタイル設定
+const TONE_STYLES = [
+  { id: 'desu_masu', label: 'です・ます調', desc: '丁寧で親しみやすい。万人向け。', prompt: '語尾は「です」「ます」「ました」「でしょう」などの丁寧語で統一する。' },
+  { id: 'da_dearu', label: 'だ・である調', desc: '力強く断言する。解説・教育系に最適。', prompt: '語尾は「だ」「である」「だろう」「した」などの断言系で統一する。' },
+  { id: 'casual', label: 'タメ口・フレンドリー', desc: '友達に話すようなラフなトーン。エンタメ・Vlog向け。', prompt: '語尾はタメ口で「〜だよ」「〜だね」「〜じゃん」「〜してみた」などを使う。親友に話しかけるような口語体で。' },
+  { id: 'narrator', label: 'ナレーター調', desc: 'ドキュメンタリー・ドラマ風の重厚な語り口。', prompt: '語尾はナレーター風で「〜だった」「〜である」「〜していた」など、ドキュメンタリーの語り口で。情感を込めて。' },
+  { id: 'excitement', label: '熱血・エキサイト', desc: 'テンション高めで視聴者を煽るスタイル。ゲーム・スポーツ向け。', prompt: '語尾は「〜だぞ！」「〜だ！」「すごい！」など感嘆符多め。熱量高く、視聴者を鼓舞するスタイルで。' },
+]
+
 // ジャンル設定
 const GENRES = [
   { id: 'impact', label: '衝撃・暴露', prompt: '「衝撃」「真実」「暴露」をキーワードに、視聴者の好奇心を極限まで煽るスタイル。強い言葉選びと、謎を小出しにする構造。' },
@@ -113,6 +122,7 @@ function YoutubeProducerApp() {
   const [scriptType, setScriptType] = useState('standard')
   const [imageStyle, setImageStyle] = useState('anime')
   const [withLogo, setWithLogo] = useState(true)
+  const [toneStyle, setToneStyle] = useState('desu_masu')
   const [script, setScript] = useState<any>(null)
   const [characters, setCharacters] = useState<any[] | null>(null)
   const [thumbnails, setThumbnails] = useState<any[] | null>(null)
@@ -203,10 +213,11 @@ function YoutubeProducerApp() {
     const genreData = GENRES.find(g => g.id === genre)
     const typeData = SCRIPT_TYPES.find(t => t.id === scriptType)
     const styleData = IMAGE_STYLES.find(s => s.id === imageStyle)
+    const toneData = TONE_STYLES.find(t => t.id === toneStyle)
     const result = await callApi('script', { 
       transcript, 
       genre: genreData?.label, 
-      genrePrompt: `${genreData?.prompt} 長さ: ${typeData?.label} 画像スタイル: ${styleData?.label} ロゴ: ${withLogo ? 'あり' : 'なし'}` 
+      genrePrompt: `${genreData?.prompt} 長さ: ${typeData?.label} 画像スタイル: ${styleData?.label} ロゴ: ${withLogo ? 'あり' : 'なし'} 【語尾スタイル】${toneData?.prompt}` 
     })
     if (result) {
       setScript({ ...result, viralScore: Math.floor(75 + Math.random() * 20), estimatedMinutes: typeData?.minutes })
@@ -322,6 +333,10 @@ function YoutubeProducerApp() {
               <div className="border-t border-white/5 pt-5 space-y-3">
                 <div className="flex items-center gap-2 mb-2"><div className="h-5 w-1 bg-emerald-500 rounded-full"></div><h4 className="text-sm font-semibold text-white">4. 戦略パレットを選択</h4></div>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">{GENRES.map((g) => (<button key={g.id} onClick={() => setGenre(g.id)} className={`p-4 rounded-xl font-medium text-left border transition-all ${genre === g.id ? 'bg-emerald-500 border-emerald-400 text-slate-950' : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20'}`}><div className="flex items-center justify-between mb-2"><span className="text-sm font-semibold">{g.label}</span>{genre === g.id && <CheckCircle2 size={16} />}</div><p className="text-xs leading-relaxed opacity-80">{g.prompt}</p></button>))}</div>
+              </div>
+              <div className="border-t border-white/5 pt-5 space-y-3">
+                <div className="flex items-center gap-2 mb-2"><div className="h-5 w-1 bg-emerald-500 rounded-full"></div><h4 className="text-sm font-semibold text-white">5. 語尾スタイルを選択</h4></div>
+                <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-2">{TONE_STYLES.map((t) => (<button key={t.id} onClick={() => setToneStyle(t.id)} className={`p-3 rounded-xl font-medium text-left border transition-all ${toneStyle === t.id ? 'bg-emerald-500 border-emerald-400 text-slate-950' : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20'}`}><div className="flex items-center justify-between mb-1"><span className="text-xs font-semibold">{t.label}</span>{toneStyle === t.id && <CheckCircle2 size={12} />}</div><p className="text-xs opacity-70 leading-relaxed">{t.desc}</p></button>))}</div>
               </div>
               <div className="flex justify-end pt-2"><Button onClick={generateScript} disabled={isProcessing['script'] || !transcript} className="h-10 px-6 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-semibold text-sm rounded-lg transition-all">{isProcessing['script'] ? <Loader2 className="animate-spin h-4 w-4" /> : <span className="flex items-center gap-2">台本を生成する <ChevronRight className="h-4 w-4" /></span>}</Button></div>
             </div>
