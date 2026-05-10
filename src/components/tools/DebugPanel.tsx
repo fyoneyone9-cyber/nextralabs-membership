@@ -1,12 +1,15 @@
-﻿'use client'
+'use client'
 import React, { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { useRouter } from 'next/navigation'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { 
   Unlock, Activity, Zap, Copy, CheckCircle2, Terminal, ShieldCheck, Globe, X
 } from 'lucide-react'
+
+// 管理者メールアドレス（この人にだけボタンが見える）
+const ADMIN_EMAIL = 'f.yoneyone9@gmail.com'
 
 // --- ABSOLUTE LOGGING ENGINE (Reactの外で動作) ---
 const STORAGE_KEY = 'nextra_absolute_logs';
@@ -27,9 +30,7 @@ function pushAbsoluteLog(type: string, msg: string) {
     const updated = [entry, ...current].slice(0, 100);
     window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
     window.dispatchEvent(new CustomEvent('nextra_refresh_logs'));
-  } catch (e) {
-    // サイレントに失敗させる（無限ループ防止）
-  }
+  } catch (e) {}
 }
 
 // consoleジャックを即時実行
@@ -39,7 +40,6 @@ if (typeof window !== 'undefined' && !(window as any).nextra_initialized) {
   console.log = (...args) => { pushAbsoluteLog('info', args.map(String).join(' ')); oLog.apply(console, args); };
   console.warn = (...args) => { pushAbsoluteLog('warn', args.map(String).join(' ')); oWarn.apply(console, args); };
   console.error = (...args) => { pushAbsoluteLog('error', args.map(String).join(' ')); oErr.apply(console, args); };
-  
   window.addEventListener('mousedown', (e) => {
     const target = e.target as HTMLElement;
     const clickable = target.closest('button, a, input');
@@ -56,7 +56,9 @@ export function DebugPanel({ data }: { data?: any }) {
   const [displayLogs, setDisplayLogs] = useState<any[]>([])
   const [copied, setCopied] = useState(false)
   const [isTesting, setIsTesting] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
   const router = useRouter()
+  const supabase = createClientComponentClient()
 
   useEffect(() => {
     setIsMounted(true);
@@ -67,6 +69,14 @@ export function DebugPanel({ data }: { data?: any }) {
       if ((e.target as HTMLElement).closest('[data-nextra-port-trigger]')) setIsOpen(true);
     };
     window.addEventListener('click', handleTrigger);
+
+    // 管理者チェック
+    const checkAdmin = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user?.email === ADMIN_EMAIL) setIsAdmin(true)
+    }
+    checkAdmin()
+
     return () => {
       window.removeEventListener('nextra_refresh_logs', refresh);
       window.removeEventListener('click', handleTrigger);
@@ -74,13 +84,12 @@ export function DebugPanel({ data }: { data?: any }) {
   }, []);
 
   const copyReport = () => {
-    // 【重要】ReactのStateではなく、ストレージから直接取得
     const finalLogs = getStoredLogs();
     const report = {
       timestamp: new Date().toISOString(),
       url: window.location.href,
       apiHealth,
-      systemLogs: finalLogs, // これで空になることは絶対にない
+      systemLogs: finalLogs,
       componentData: data || {}
     };
     navigator.clipboard.writeText(JSON.stringify(report, null, 2));
@@ -109,81 +118,96 @@ export function DebugPanel({ data }: { data?: any }) {
     setIsTesting(false);
   };
 
-  if (!isMounted) return null;
+  // マウント前 or 管理者でない場合は何も表示しない
+  if (!isMounted || !isAdmin) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-[10001] hidden md:flex flex-col items-end font-sans">
-      <button 
-        onClick={() => setIsOpen(!isOpen)} 
-        className="flex items-center justify-center w-12 h-12 rounded-2xl border bg-black/40 backdrop-blur-md shadow-2xl border-white/5 text-slate-400 hover:text-emerald-500 transition-colors"
+    <div className="fixed bottom-4 right-4 z-[10001] hidden md:flex flex-col items-end font-sans">
+      {/* トリガーボタン：小さくシンプルに */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        title="Admin Panel"
+        className="flex items-center justify-center w-8 h-8 rounded-xl bg-black/30 backdrop-blur-sm border border-white/5 text-slate-600 hover:text-emerald-500 hover:border-emerald-500/20 transition-all"
       >
-        <Activity size={20} />
+        <Activity size={14} />
       </button>
-      
+
       {isOpen && (
-        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-md bg-[#050507]/98 backdrop-blur-3xl border-2 border-emerald-500/30 p-8 rounded-[3rem] space-y-6 animate-in zoom-in-95 duration-300">
-          {/* 終了ボタン (大きく、右上に配置) */}
-          <button 
-            onClick={() => setIsOpen(false)} 
-            className="absolute top-6 right-6 p-3 bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-500 rounded-full transition-all active:scale-90 border border-white/10 z-10"
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 bg-[#0d1117]/98 backdrop-blur-3xl border border-emerald-500/20 p-5 rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200">
+          {/* 閉じるボタン */}
+          <button
+            onClick={() => setIsOpen(false)}
+            className="absolute top-3 right-3 p-1.5 bg-white/5 hover:bg-red-500/20 text-slate-500 hover:text-red-400 rounded-lg transition-all"
           >
-            <X size={28} strokeWidth={3} />
+            <X size={14} />
           </button>
 
           {!isAuth ? (
-            <div className="py-10 space-y-10 text-center">
-              <div className="space-y-4">
-                <Terminal className="text-emerald-500 mx-auto" size={60} />
-                <h3 className="text-xl font-bold text-white uppercase tracking-tighter">System Authentication</h3>
+            /* 認証画面：コンパクト版 */
+            <div className="space-y-4 text-center py-2">
+              <div className="space-y-1">
+                <Terminal className="text-emerald-500 mx-auto" size={28} />
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">System Auth</p>
               </div>
-              
-              <div className="space-y-4 px-4">
-                <Input 
-                  type="password" 
-                  value={password} 
-                  onChange={(e) => setPassword(e.target.value)} 
-                  placeholder="PW" 
-                  className="h-12 bg-slate-900/50 border-2 border-white/10 rounded-2xl text-white text-center text-3xl font-bold outline-none focus:border-emerald-500 transition-all" 
-                  onKeyDown={(e) => e.key === 'Enter' && password === '2026' && setIsAuth(true)} 
-                  autoFocus 
-                />
-                <Button 
-                  onClick={() => password === '2026' ? setIsAuth(true) : alert('ERR')} 
-                  className="w-full h-20 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-2xl rounded-2xl shadow-xl transition-all active:scale-95 uppercase "
-                >
-                  Unlock <Unlock className="ml-2 h-6 w-6" />
-                </Button>
-              </div>
-              
-              <p className="text-[10px] text-slate-600 font-bold uppercase tracking-tight ">Authorized Personnel Only</p>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                className="h-9 bg-slate-900/60 border border-white/10 rounded-lg text-white text-center text-sm font-mono focus:border-emerald-500 transition-all"
+                onKeyDown={(e) => e.key === 'Enter' && password === '2026' && setIsAuth(true)}
+                autoFocus
+              />
+              <Button
+                onClick={() => password === '2026' ? setIsAuth(true) : alert('ERR')}
+                className="w-full h-9 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm rounded-lg transition-all"
+              >
+                <Unlock size={13} className="mr-1.5" /> Unlock
+              </Button>
+              <p className="text-[9px] text-slate-700 uppercase tracking-tight">Authorized Personnel Only</p>
             </div>
           ) : (
-            <div className="space-y-6 animate-in fade-in">
-              <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                <div className="flex items-center gap-3"><ShieldCheck className="h-6 w-6 text-emerald-500" /><span className="text-xl font-bold text-white ">監視パネル v15.2 ABSOLUTE</span></div>
-                <Button onClick={runApiScan} disabled={isTesting} className="h-10 bg-emerald-600 text-white text-[10px] font-bold rounded-xl px-6 flex items-center gap-2 shadow-lg"><Zap size={14} /> スキャン開始</Button>
-              </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                 {apiHealth && Object.keys(apiHealth).map(id => (
-                   <div key={id} className={`p-3 rounded-xl border transition-all flex flex-col gap-1 ${apiHealth[id].ok ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-red-500/5 border-red-500/10'}`}>
-                      <p className="text-[8px] font-bold text-slate-500">{apiHealth[id].name}</p>
-                      <p className={`text-lg font-bold ${apiHealth[id].ok ? 'text-white' : 'text-red-400'}`}>{apiHealth[id].status}</p>
-                   </div>
-                 ))}
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex justify-between items-center px-1">
-                   <p className="text-[9px] font-bold text-slate-600 uppercase tracking-tight border-l-2 border-emerald-500 pl-2">System Absolute Logs</p>
-                   <Button onClick={copyReport} className="h-7 bg-white/5 text-slate-400 text-[8px] font-bold rounded-lg px-3 flex items-center gap-1 border border-white/5">
-                      {copied ? <CheckCircle2 size={10} className="text-emerald-500" /> : <Copy size={10} />} {copied ? 'コピー成功' : 'レポートをコピー'}
-                   </Button>
+            /* 認証後パネル */
+            <div className="space-y-4 animate-in fade-in">
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="h-4 w-4 text-emerald-500" />
+                  <span className="text-sm font-bold text-white">監視パネル v15.2</span>
                 </div>
-                <div className="bg-black/80 border border-white/5 p-4 rounded-2xl h-48 overflow-y-auto font-mono text-[9px] space-y-1 shadow-inner">
+                <Button
+                  onClick={runApiScan}
+                  disabled={isTesting}
+                  className="h-7 bg-emerald-600/80 text-white text-[10px] font-bold rounded-lg px-3 flex items-center gap-1"
+                >
+                  <Zap size={10} /> スキャン
+                </Button>
+              </div>
+
+              {/* APIヘルス */}
+              {apiHealth && (
+                <div className="grid grid-cols-4 gap-1.5">
+                  {Object.keys(apiHealth).map(id => (
+                    <div key={id} className={`p-2 rounded-lg border text-center ${apiHealth[id].ok ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-red-500/5 border-red-500/10'}`}>
+                      <p className="text-[7px] font-bold text-slate-500 truncate">{apiHealth[id].name}</p>
+                      <p className={`text-sm font-bold ${apiHealth[id].ok ? 'text-white' : 'text-red-400'}`}>{apiHealth[id].status}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* ログ */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <p className="text-[9px] font-bold text-slate-600 uppercase tracking-tight border-l-2 border-emerald-500 pl-1.5">Logs</p>
+                  <Button onClick={copyReport} className="h-6 bg-white/5 text-slate-400 text-[8px] font-bold rounded-md px-2 flex items-center gap-1 border border-white/5">
+                    {copied ? <CheckCircle2 size={9} className="text-emerald-500" /> : <Copy size={9} />}
+                    {copied ? 'コピー済' : 'コピー'}
+                  </Button>
+                </div>
+                <div className="bg-black/60 border border-white/5 p-3 rounded-xl h-36 overflow-y-auto font-mono text-[8px] space-y-1 shadow-inner">
                   {displayLogs.map((log, i) => (
-                    <div key={i} className="flex gap-2 leading-tight break-all border-b border-white/5 pb-1">
-                      <span className="text-slate-600 shrink-0">[{log.time}]</span>
+                    <div key={i} className="flex gap-1.5 leading-tight break-all border-b border-white/5 pb-0.5">
+                      <span className="text-slate-700 shrink-0">[{log.time}]</span>
                       <span className={log.type === 'error' ? 'text-red-400' : log.type === 'action' ? 'text-blue-400 font-bold' : 'text-emerald-500/80'}>
                         {log.type === 'action' ? '▶ ' : ''}{log.msg}
                       </span>
@@ -192,9 +216,9 @@ export function DebugPanel({ data }: { data?: any }) {
                 </div>
               </div>
 
-              <div className="flex justify-between items-center pt-2">
-                 <button onClick={() => setIsOpen(false)} className="text-[10px] text-slate-700 hover:text-white font-bold underline">終了</button>
-                 <button onClick={() => router.push('/port')} className="text-[10px] text-emerald-500 font-bold flex items-center gap-1"><Globe size={10}/> PORTFOLIO</button>
+              <div className="flex justify-between items-center pt-1">
+                <button onClick={() => setIsOpen(false)} className="text-[9px] text-slate-700 hover:text-white font-bold underline">終了</button>
+                <button onClick={() => router.push('/port')} className="text-[9px] text-emerald-500 font-bold flex items-center gap-1"><Globe size={9}/> PORTFOLIO</button>
               </div>
             </div>
           )}
