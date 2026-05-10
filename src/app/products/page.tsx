@@ -138,6 +138,20 @@ function ProductsList() {
     loadFavs()
   }, [])
 
+  const handleToggleFav = async (e: React.MouseEvent, toolId: string) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!userId) return
+    const isAlreadyFav = favorites.includes(toolId)
+    if (isAlreadyFav) {
+      setFavorites(prev => prev.filter(id => id !== toolId))
+      await supabase.from('user_favorites').delete().eq('user_id', userId).eq('tool_id', toolId)
+    } else {
+      setFavorites(prev => [...prev, toolId])
+      await supabase.from('user_favorites').insert({ user_id: userId, tool_id: toolId })
+    }
+  }
+
   if (!mounted) return null
 
   return (
@@ -155,14 +169,14 @@ function ProductsList() {
             <Sparkles className="w-5 h-5 text-emerald-400" />
             <h2 className="text-lg md:text-xl font-semibold text-white tracking-tight">ピックアップ</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{pickupTools.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={() => {}} />)}</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{pickupTools.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} />)}</div>
         </section>
         <section>
           <div className="flex items-center gap-3 mb-4 border-l-4 border-emerald-500 pl-4 md:pl-6 py-0.5">
             <Gift className="w-5 h-5 text-emerald-400" />
             <h2 className="text-lg md:text-xl font-semibold text-white tracking-tight">無料トライアル</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{randomFree.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={() => {}} />)}</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{randomFree.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} />)}</div>
         </section>
         {CATEGORIES.map((cat) => (
           <section key={cat.id}>
@@ -170,7 +184,7 @@ function ProductsList() {
               <cat.icon className="w-5 h-5 text-slate-400" />
               <h2 className="text-lg md:text-xl font-semibold text-white tracking-tight">{cat.title}</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{TOOLS.filter(t => t.cat === cat.id).map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={() => {}} />)}</div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{TOOLS.filter(t => t.cat === cat.id).map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} />)}</div>
           </section>
         ))}
       </div>
