@@ -130,6 +130,8 @@ function YoutubeProducerApp() {
         setScriptType(state.scriptType || 'standard')
         setImageStyle(state.imageStyle || 'anime')
         setWithLogo(state.withLogo !== undefined ? state.withLogo : true)
+        // 生成結果は台本が一致する場合のみ復元
+        const savedTranscript = state.transcript || ''
         setScript(state.script || null)
         setCharacters(state.characters || null)
         setThumbnails(state.thumbnails || null)
@@ -139,6 +141,20 @@ function YoutubeProducerApp() {
       } catch (e) { console.error(e) }
     }
   }, [])
+
+  // transcript が変わったら生成結果をリセット
+  const prevTranscriptRef = useRef<string>('')
+  useEffect(() => {
+    if (prevTranscriptRef.current && prevTranscriptRef.current !== transcript) {
+      setScript(null)
+      setCharacters(null)
+      setThumbnails(null)
+      setSeo(null)
+      setBgm(null)
+      setActiveTab('input')
+    }
+    prevTranscriptRef.current = transcript
+  }, [transcript])
 
   useEffect(() => {
     const state = { transcript, genre, scriptType, imageStyle, withLogo, script, characters, thumbnails, seo, bgm, activeTab }
