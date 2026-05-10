@@ -1,7 +1,38 @@
 'use client'
 import React, { useState, useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { AlertTriangle, Copy, CheckCircle2, ExternalLink, Camera, X } from 'lucide-react'
+import { AlertTriangle, Copy, CheckCircle2, ExternalLink, Camera, X, ShoppingBag, Smartphone, Coffee, Shirt, Gamepad2, UtensilsCrossed, Wine, Zap } from 'lucide-react'
+
+// ── プリセット定義 ──────────────────────────────────────────
+const PRESETS = [
+  {
+    category: '衝動買い',
+    color: '#ef4444',
+    items: [
+      { label: 'セール品を大量購入',       icon: ShoppingBag,     text: 'セールにつられて必要かどうか分からないものをカートに入れています。「今だけ」という言葉に弱いです。' },
+      { label: 'SNSで見て欲しくなった',   icon: Smartphone,      text: 'InstagramやTikTokで見た商品が気になって購入しようとしています。数分前に見ただけで欲しくなりました。' },
+      { label: 'ゲーム課金したい',         icon: Gamepad2,        text: 'スマホゲームに課金しようとしています。「このアイテムを買えば強くなれる」と感じています。' },
+    ],
+  },
+  {
+    category: '食費・外食',
+    color: '#f59e0b',
+    items: [
+      { label: 'コンビニで無駄買い',        icon: Coffee,          text: 'コンビニに立ち寄ってスイーツや飲み物を余計に買おうとしています。お腹は空いていません。' },
+      { label: 'デリバリーを頼みたい',      icon: UtensilsCrossed, text: '料理が面倒でフードデリバリーを注文しようとしています。家に食材はあります。' },
+      { label: 'お酒を追加購入',            icon: Wine,            text: 'もうお酒が手元にあるのに、さらに購入しようとしています。ストレス発散が目的です。' },
+    ],
+  },
+  {
+    category: 'ファッション・ガジェット',
+    color: '#8b5cf6',
+    items: [
+      { label: '洋服をまた買いたい',        icon: Shirt,           text: 'クローゼットがいっぱいなのに新しい服を購入しようとしています。「今の気分に合う服がない」と感じています。' },
+      { label: '新型スマホに機種変したい',  icon: Smartphone,      text: '今のスマホは動いているのに新型に変えたくなっています。スペック差はほぼ気にならないレベルです。' },
+      { label: 'ガジェット・家電を衝動買い', icon: Zap,            text: '特に今困っているわけではないのに、新しいガジェットや家電が欲しくなっています。' },
+    ],
+  },
+]
 
 const MasterEngine = () => {
   const [inputText, setInputText] = useState('');
@@ -70,7 +101,7 @@ const MasterEngine = () => {
     <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left my-2 md:my-4">
 
       {/* ヘッダー */}
-      <div className="text-center space-y-2 md:space-y-3">
+      <div className="text-center space-y-3 md:space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
           <span className="text-xs font-medium text-emerald-400">Psychological Defense Command v7.0-MASTER</span>
@@ -78,6 +109,45 @@ const MasterEngine = () => {
         <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight leading-[1.15]">
           AI家計防衛<span className="text-emerald-400">シミュレーター</span>
         </h1>
+        <p className="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
+          「また買っちゃった…」を<span className="text-emerald-400 font-semibold">AIが未然に防ぐ</span>心理防衛ツール。<br />
+          レシートや衝動の瞬間を記録して、購入ボタンを押す前に<strong className="text-white">冷静な判断</strong>を取り戻しましょう。
+        </p>
+      </div>
+
+      {/* プリセット */}
+      <div className="bg-[#13141f] border border-white/5 rounded-2xl p-5 md:p-7 space-y-4">
+        <div className="flex items-center gap-2">
+          <ShoppingBag size={14} className="text-emerald-400" />
+          <p className="text-xs font-semibold text-white">よくある無駄遣いシーンから選ぶ</p>
+          <span className="text-[10px] text-slate-600 ml-auto">タップで自動入力</span>
+        </div>
+        {PRESETS.map(cat => (
+          <div key={cat.category} className="space-y-2">
+            <p className="text-[10px] font-bold uppercase tracking-widest px-0.5" style={{ color: cat.color }}>{cat.category}</p>
+            <div className="flex flex-wrap gap-2">
+              {cat.items.map(item => {
+                const Icon = item.icon
+                const isSelected = inputText === item.text
+                return (
+                  <button
+                    key={item.label}
+                    onClick={() => setInputText(isSelected ? '' : item.text)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
+                      isSelected
+                        ? 'text-slate-950 border-transparent'
+                        : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20 hover:text-white'
+                    }`}
+                    style={isSelected ? { background: cat.color, borderColor: cat.color } : {}}
+                  >
+                    <Icon size={12} />
+                    {item.label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        ))}
       </div>
 
       <div className="bg-[#13141f] border border-white/5 rounded-2xl p-6 md:p-10 shadow-2xl relative overflow-hidden">
