@@ -201,6 +201,7 @@ async function sendGmail(accessToken: string, to: string, subject: string, body:
 }
 
 // Gmail OAuth login with send scope
+// redirect_uri = /auth/gmail-callback (Google Cloud Consoleに登録済みのURL)
 function startGmailAuth() {
   const scopes = [
     'https://www.googleapis.com/auth/gmail.readonly',
@@ -209,13 +210,19 @@ function startGmailAuth() {
     'https://www.googleapis.com/auth/gmail.send',
   ].join(' ')
 
+  // 現在のページ（ダッシュボード）に戻るためにreturnUrlをstateに埋め込む
+  const returnPath = window.location.pathname + window.location.search
+  const stateParam = btoa(encodeURIComponent(returnPath))
+
+  const callbackUrl = `${window.location.origin}/auth/gmail-callback`
+
   const params = new URLSearchParams({
     client_id: GOOGLE_CLIENT_ID,
-    redirect_uri: window.location.origin + window.location.pathname,
+    redirect_uri: callbackUrl,
     response_type: 'token',
     scope: scopes,
     prompt: 'consent',
-    state: 'sales-mail',
+    state: stateParam,
   })
 
   window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`
@@ -237,25 +244,23 @@ export default function SalesMailPanel() {
   const [sendResult, setSendResult] = useState<{ ok: boolean; msg: string } | null>(null)
   const [showTemplates, setShowTemplates] = useState(false)
 
-  // OAuthコールバック処理 & トークン復元
+  // トークン復元（コールバックページでlocalStorageに保存済み）
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const hash = new URLSearchParams(window.location.hash.slice(1))
-    const token = hash.get('access_token')
-    const state = hash.get('state')
-    if (token && state === 'sales-mail') {
-      setGmailToken(token)
-      localStorage.setItem(GMAIL_TOKEN_KEY, token)
-      window.history.replaceState(null, '', window.location.pathname)
-      // Get email address
+
+    const saved = localStorage.getItem(GMAIL_TOKEN_KEY)
+    if (saved) {
+      setGmailToken(saved)
+      // メールアドレスを非同期で取得
       fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${saved}` },
       }).then(r => r.json()).then(p => {
         if (p.email) setGmailEmail(p.email)
-      }).catch(() => {})
-    } else {
-      const saved = localStorage.getItem(GMAIL_TOKEN_KEY)
-      if (saved) setGmailToken(saved)
+      }).catch(() => {
+        // トークン期限切れの場合はクリア
+        localStorage.removeItem(GMAIL_TOKEN_KEY)
+        setGmailToken(null)
+      })
     }
 
     setSentList(loadSentList())
