@@ -2,12 +2,23 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import {
   Mail, Send, CheckCircle2, Building2, Heart, RefreshCw,
-  Trash2, FileText, ChevronDown, ChevronUp, Loader2, AlertCircle, LogIn
+  Trash2, FileText, ChevronDown, ChevronUp, Loader2, AlertCircle, LogIn,
+  Search, Globe, Phone, Star, PlusCircle, MapPin
 } from 'lucide-react'
 
 // ─────────────────────────────────────────────
 // 型定義
 // ─────────────────────────────────────────────
+interface Prospect {
+  place_id: string
+  name: string
+  address: string
+  phone: string | null
+  website: string | null
+  email: string | null
+  rating: number | null
+}
+
 interface SentItem {
   id: string
   name: string
@@ -47,8 +58,6 @@ NextraLabsの米山と申します。
 
 初回無料デモのご案内も可能です。
 まずはオンラインにてご説明の機会をいただけますと幸いです。
-
-お忙しいところ恐れ入りますが、ご検討のほどよろしくお願い申し上げます。
 
 ━━━━━━━━━━━━━━━━
 NextraLabs
@@ -165,7 +174,6 @@ function saveSentList(list: SentItem[]) {
 
 // Gmail send via Google API directly
 async function sendGmail(accessToken: string, to: string, subject: string, body: string): Promise<string> {
-  // RFC 2822 raw email
   const lines = [
     `To: ${to}`,
     `Subject: =?UTF-8?B?${btoa(unescape(encodeURIComponent(subject)))}?=`,
@@ -176,8 +184,6 @@ async function sendGmail(accessToken: string, to: string, subject: string, body:
     body,
   ]
   const rawEmail = lines.join('\r\n')
-
-  // base64url encode
   const encoded = btoa(unescape(encodeURIComponent(rawEmail)))
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
@@ -191,18 +197,12 @@ async function sendGmail(accessToken: string, to: string, subject: string, body:
     },
     body: JSON.stringify({ raw: encoded }),
   })
-
   const data = await res.json()
-  if (!res.ok) {
-    const msg = data?.error?.message || 'Gmail send failed'
-    throw new Error(msg)
-  }
+  if (!res.ok) throw new Error(data?.error?.message || 'Gmail send failed')
   return data.id as string
 }
 
-// Gmail OAuth login with send scope
-// redirect_uri = InboxOrganizerのURL（Google Cloud Consoleに登録済み）
-// InboxOrganizerがtokenをlocalStorageに保存後、stateで指定したURLに戻る
+// Gmail OAuth（InboxOrganizerページを中継してダッシュボードに戻る）
 function startGmailAuth() {
   const scopes = [
     'https://www.googleapis.com/auth/gmail.readonly',
@@ -242,27 +242,64 @@ export default function SalesMailPanel() {
   const [sendResult, setSendResult] = useState<{ ok: boolean; msg: string } | null>(null)
   const [showTemplates, setShowTemplates] = useState(false)
 
-  // トークン復元（コールバックページでlocalStorageに保存済み）
+  // 見込み客検索
+  const [searchRegion, setSearchRegion] = useState('神奈川県')
+  const [searchCategory, setSearchCategory] = useState('ホテル・旅館')
+  const [prospects, setProspects] = useState<Prospect[]>([])
+  const [searching, setSearching] = useState(false)
+  const [searchDone, setSearchDone] = useState(false)
+
+  // トークン復元
   useEffect(() => {
     if (typeof window === 'undefined') return
-
     const saved = localStorage.getItem(GMAIL_TOKEN_KEY)
     if (saved) {
       setGmailToken(saved)
-      // メールアドレスを非同期で取得
       fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
         headers: { Authorization: `Bearer ${saved}` },
       }).then(r => r.json()).then(p => {
         if (p.email) setGmailEmail(p.email)
       }).catch(() => {
-        // トークン期限切れの場合はクリア
         localStorage.removeItem(GMAIL_TOKEN_KEY)
         setGmailToken(null)
       })
     }
-
     setSentList(loadSentList())
   }, [])
+
+  // 見込み客検索
+  const handleSearch = async () => {
+    setSearching(true)
+    setSearchDone(false)
+    setProspects([])
+    try {
+      const res = await fetch('/api/sales/prospect-search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category: searchCategory, region: searchRegion }),
+      })
+      const data = await res.json()
+      setProspects(data.results || [])
+    } catch {
+      // ignore
+    } finally {
+      setSearching(false)
+      setSearchDone(true)
+    }
+  }
+
+  // 見込み客をフォームにセット
+  const applyProspect = (p: Prospect) => {
+    setName(p.name)
+    setTo(p.email || '')
+    setCategory(searchCategory)
+    const tmpl = TEMPLATES.find(t => t.category === searchCategory) || TEMPLATES[3]
+    setSubject(tmpl.subject)
+    setBody(tmpl.body)
+    setTimeout(() => {
+      document.getElementById('sales-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 100)
+  }
 
   // リスト更新
   const handleRefresh = useCallback(() => {
@@ -289,14 +326,10 @@ export default function SalesMailPanel() {
       setSendResult({ ok: false, msg: '⚠️ Gmailにログインしてから送信してください' })
       return
     }
-
     setSending(true)
     setSendResult(null)
-
     try {
       const messageId = await sendGmail(gmailToken, to.trim(), subject.trim(), body.trim())
-
-      // 成功 → localStorageに追記
       const newItem: SentItem = {
         id: messageId || Date.now().toString(),
         name: name.trim() || to.trim(),
@@ -308,21 +341,14 @@ export default function SalesMailPanel() {
       const updated = [newItem, ...sentList]
       setSentList(updated)
       saveSentList(updated)
-
-      setSendResult({ ok: true, msg: '✅ 送信完了しました！Gmailの送信済みフォルダに記録されています。' })
-
-      // フォームリセット
-      setTo('')
-      setName('')
-      setSubject('')
-      setBody('')
+      setSendResult({ ok: true, msg: '✅ 送信完了！Gmailの送信済みフォルダに記録されました。' })
+      setTo(''); setName(''); setSubject(''); setBody('')
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err)
-      // token期限切れ
       if (msg.includes('401') || msg.includes('invalid_token') || msg.includes('Invalid Credentials')) {
         localStorage.removeItem(GMAIL_TOKEN_KEY)
         setGmailToken(null)
-        setSendResult({ ok: false, msg: '❌ Gmailトークンの期限が切れました。再ログインしてください。' })
+        setSendResult({ ok: false, msg: '❌ Gmailトークンの期限切れ。再ログインしてください。' })
       } else {
         setSendResult({ ok: false, msg: `❌ 送信失敗: ${msg}` })
       }
@@ -338,23 +364,22 @@ export default function SalesMailPanel() {
     saveSentList(updated)
   }
 
+  // ─── JSX ───────────────────────────────────
   return (
     <div className="space-y-8">
 
-      {/* ─── Gmail認証バナー ─── */}
+      {/* Gmail認証バナー */}
       {!gmailToken ? (
         <div className="bg-[#0d1117] border border-yellow-500/20 rounded-xl p-5 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <AlertCircle size={18} className="text-yellow-400 shrink-0" />
             <div>
               <p className="text-sm font-semibold text-yellow-400">Gmail連携が必要です</p>
-              <p className="text-xs text-slate-500 mt-0.5">実際のGmailから営業メールを送信するには、Googleアカウントと連携してください。</p>
+              <p className="text-xs text-slate-500 mt-0.5">Gmailから直接営業メールを送信するにはGoogleアカウントと連携してください。</p>
             </div>
           </div>
-          <button
-            onClick={startGmailAuth}
-            className="shrink-0 h-10 px-5 bg-yellow-500/20 hover:bg-yellow-500/30 border border-yellow-500/30 text-yellow-400 font-semibold text-sm rounded-lg transition-all flex items-center gap-2"
-          >
+          <button onClick={startGmailAuth}
+            className="shrink-0 h-10 px-5 bg-yellow-500/20 hover:bg-yellow-500/30 border border-yellow-500/30 text-yellow-400 font-semibold text-sm rounded-lg transition-all flex items-center gap-2">
             <LogIn size={14} /> Gmailでログイン
           </button>
         </div>
@@ -365,14 +390,131 @@ export default function SalesMailPanel() {
             <span className="text-sm text-emerald-400 font-medium">Gmail連携済み</span>
             {gmailEmail && <span className="text-xs text-slate-500">（{gmailEmail}）</span>}
           </div>
-          <button
-            onClick={() => { localStorage.removeItem(GMAIL_TOKEN_KEY); setGmailToken(null); setGmailEmail('') }}
-            className="text-xs text-slate-600 hover:text-slate-400 transition-colors"
-          >
+          <button onClick={() => { localStorage.removeItem(GMAIL_TOKEN_KEY); setGmailToken(null); setGmailEmail('') }}
+            className="text-xs text-slate-600 hover:text-slate-400 transition-colors">
             ログアウト
           </button>
         </div>
       )}
+
+      {/* ─── 🔍 見込み客検索 ─── */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 border-l-4 border-emerald-500/30 pl-4">
+          <Search size={16} className="text-emerald-400" />
+          <h2 className="font-semibold text-lg text-emerald-400">営業先を検索</h2>
+          <span className="text-xs text-slate-500 ml-1">Google Mapsから企業・メアドを自動取得</span>
+        </div>
+
+        <div className="bg-[#0d1117] border border-white/5 rounded-xl p-5 space-y-4">
+          <div className="flex gap-3 flex-wrap">
+            {/* カテゴリ */}
+            <div className="flex-1 min-w-[160px] space-y-1">
+              <label className="text-xs text-slate-400 font-medium">業種</label>
+              <select
+                value={searchCategory}
+                onChange={e => setSearchCategory(e.target.value)}
+                className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500/50"
+              >
+                <option>ホテル・旅館</option>
+                <option>結婚相談所</option>
+                <option>民泊・短期賃貸</option>
+                <option>その他</option>
+              </select>
+            </div>
+            {/* 地域 */}
+            <div className="flex-1 min-w-[160px] space-y-1">
+              <label className="text-xs text-slate-400 font-medium">地域</label>
+              <input
+                value={searchRegion}
+                onChange={e => setSearchRegion(e.target.value)}
+                placeholder="神奈川県、横浜市、海老名市..."
+                className="w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
+              />
+            </div>
+            {/* 検索ボタン */}
+            <div className="flex items-end">
+              <button
+                onClick={handleSearch}
+                disabled={searching}
+                className="h-10 px-6 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-semibold text-sm rounded-lg transition-all flex items-center gap-2"
+              >
+                {searching ? <Loader2 size={14} className="animate-spin" /> : <Search size={14} />}
+                {searching ? '検索中...' : '検索'}
+              </button>
+            </div>
+          </div>
+
+          {/* 検索結果 */}
+          {searching && (
+            <div className="text-center py-8 text-slate-500 text-sm flex flex-col items-center gap-3">
+              <Loader2 size={20} className="animate-spin text-emerald-500" />
+              Google Mapsから施設情報とメールアドレスを取得中...
+            </div>
+          )}
+
+          {searchDone && prospects.length === 0 && (
+            <div className="text-center py-6 text-slate-500 text-sm">
+              該当する施設が見つかりませんでした。地域や業種を変えてみてください。
+            </div>
+          )}
+
+          {prospects.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs text-slate-500">{prospects.length}件見つかりました。クリックでフォームに自動入力します。</p>
+              {prospects.map((p) => (
+                <div key={p.place_id}
+                  className="bg-black/30 border border-white/5 rounded-xl p-4 flex items-start justify-between gap-4 hover:border-emerald-500/30 transition-all group">
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <div className="flex items-center gap-2">
+                      <Building2 size={13} className="text-emerald-400 shrink-0" />
+                      <p className="text-sm font-medium text-white truncate">{p.name}</p>
+                      {p.rating && (
+                        <span className="flex items-center gap-0.5 text-xs text-yellow-400 shrink-0">
+                          <Star size={10} fill="currentColor" /> {p.rating}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1">
+                      {p.address && (
+                        <span className="flex items-center gap-1 text-xs text-slate-500">
+                          <MapPin size={10} /> {p.address.replace('日本、', '').slice(0, 40)}
+                        </span>
+                      )}
+                      {p.phone && (
+                        <span className="flex items-center gap-1 text-xs text-slate-500">
+                          <Phone size={10} /> {p.phone}
+                        </span>
+                      )}
+                      {p.website && (
+                        <a href={p.website} target="_blank" rel="noreferrer"
+                          className="flex items-center gap-1 text-xs text-slate-500 hover:text-emerald-400 transition-colors"
+                          onClick={e => e.stopPropagation()}>
+                          <Globe size={10} /> サイト
+                        </a>
+                      )}
+                    </div>
+                    {p.email ? (
+                      <span className="inline-flex items-center gap-1 text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full px-2 py-0.5">
+                        <Mail size={10} /> {p.email}
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-xs text-slate-600">
+                        <Mail size={10} /> メアド未取得
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => applyProspect(p)}
+                    className="shrink-0 flex items-center gap-1.5 text-xs bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 rounded-lg px-3 py-2 transition-all"
+                  >
+                    <PlusCircle size={13} /> フォームに入力
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* ─── 送信済み履歴 ─── */}
       <div className="space-y-4">
@@ -382,12 +524,9 @@ export default function SalesMailPanel() {
             <h2 className="font-semibold text-lg text-emerald-400">送信済み営業メール</h2>
             <span className="text-xs text-slate-500 ml-1">{sentList.length}件</span>
           </div>
-          <button
-            onClick={handleRefresh}
-            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-emerald-400 transition-colors px-3 py-1.5 rounded-lg border border-white/5 hover:border-emerald-500/30"
-          >
-            <RefreshCw size={12} />
-            更新
+          <button onClick={handleRefresh}
+            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-emerald-400 transition-colors px-3 py-1.5 rounded-lg border border-white/5 hover:border-emerald-500/30">
+            <RefreshCw size={12} /> 更新
           </button>
         </div>
 
@@ -395,23 +534,17 @@ export default function SalesMailPanel() {
           <div className="bg-[#0d1117] border border-white/5 rounded-xl p-8 text-center">
             <Mail size={24} className="text-slate-700 mx-auto mb-3" />
             <p className="text-slate-500 text-sm">まだ送信履歴がありません。</p>
-            <p className="text-slate-600 text-xs mt-1">下のフォームから最初のメールを送ってみましょう。</p>
           </div>
         ) : (
           <div className="space-y-2">
             {sentList.map((item) => (
               <div key={item.id} className="bg-[#0d1117] border border-white/5 rounded-xl p-4 flex items-center justify-between gap-4 group hover:border-white/10 transition-colors">
                 <div className="flex items-center gap-3 min-w-0">
-                  {item.category === '結婚相談所' || item.category === 'ブライダル'
-                    ? <Heart size={16} className="text-pink-400 shrink-0" />
-                    : <Building2 size={16} className="text-emerald-400 shrink-0" />
-                  }
+                  {item.category === '結婚相談所' ? <Heart size={16} className="text-pink-400 shrink-0" /> : <Building2 size={16} className="text-emerald-400 shrink-0" />}
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-white truncate">{item.name}</p>
                     <p className="text-xs text-slate-500 truncate">{item.email}</p>
-                    {item.subject && (
-                      <p className="text-xs text-slate-600 truncate mt-0.5">{item.subject}</p>
-                    )}
+                    {item.subject && <p className="text-xs text-slate-600 truncate mt-0.5">{item.subject}</p>}
                   </div>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
@@ -419,11 +552,8 @@ export default function SalesMailPanel() {
                   <span className="inline-flex items-center gap-1 text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full px-3 py-1">
                     <CheckCircle2 size={11} /> 送信済み
                   </span>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-600 hover:text-red-400"
-                    title="履歴から削除"
-                  >
+                  <button onClick={() => handleDelete(item.id)}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-600 hover:text-red-400" title="削除">
                     <Trash2 size={13} />
                   </button>
                 </div>
@@ -434,7 +564,7 @@ export default function SalesMailPanel() {
       </div>
 
       {/* ─── 新規送信フォーム ─── */}
-      <div className="space-y-4">
+      <div id="sales-form" className="space-y-4">
         <div className="flex items-center gap-2 border-l-4 border-emerald-500/30 pl-4">
           <Send size={16} className="text-emerald-400" />
           <h2 className="font-semibold text-lg text-emerald-400">新規営業メール送信</h2>
@@ -444,24 +574,16 @@ export default function SalesMailPanel() {
 
           {/* 雛形選択 */}
           <div>
-            <button
-              onClick={() => setShowTemplates(v => !v)}
-              className="w-full flex items-center justify-between px-4 py-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-sm text-emerald-400 hover:bg-emerald-500/15 transition-colors"
-            >
-              <span className="flex items-center gap-2">
-                <FileText size={14} />
-                雛形テンプレートを選択して本文を自動入力
-              </span>
+            <button onClick={() => setShowTemplates(v => !v)}
+              className="w-full flex items-center justify-between px-4 py-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-sm text-emerald-400 hover:bg-emerald-500/15 transition-colors">
+              <span className="flex items-center gap-2"><FileText size={14} />雛形テンプレートを選択して本文を自動入力</span>
               {showTemplates ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
             </button>
             {showTemplates && (
               <div className="mt-2 space-y-1.5 pl-1">
                 {TEMPLATES.map(tmpl => (
-                  <button
-                    key={tmpl.id}
-                    onClick={() => applyTemplate(tmpl)}
-                    className="w-full text-left px-4 py-2.5 bg-black/30 border border-white/5 rounded-lg text-sm text-slate-300 hover:border-emerald-500/30 hover:text-emerald-400 transition-all"
-                  >
+                  <button key={tmpl.id} onClick={() => applyTemplate(tmpl)}
+                    className="w-full text-left px-4 py-2.5 bg-black/30 border border-white/5 rounded-lg text-sm text-slate-300 hover:border-emerald-500/30 hover:text-emerald-400 transition-all">
                     {tmpl.label}
                   </button>
                 ))}
@@ -472,21 +594,15 @@ export default function SalesMailPanel() {
           {/* 宛先名 + カテゴリ */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-xs text-slate-400 font-medium">相手先名称（履歴表示用）</label>
-              <input
-                value={name}
-                onChange={e => setName(e.target.value)}
+              <label className="text-xs text-slate-400 font-medium">相手先名称</label>
+              <input value={name} onChange={e => setName(e.target.value)}
                 placeholder="HOTEL PLUMM 横浜"
-                className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
-              />
+                className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500/50" />
             </div>
             <div className="space-y-1">
               <label className="text-xs text-slate-400 font-medium">カテゴリ</label>
-              <select
-                value={category}
-                onChange={e => setCategory(e.target.value)}
-                className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500/50"
-              >
+              <select value={category} onChange={e => setCategory(e.target.value)}
+                className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500/50">
                 <option>ホテル・旅館</option>
                 <option>結婚相談所</option>
                 <option>民泊・短期賃貸</option>
@@ -498,36 +614,25 @@ export default function SalesMailPanel() {
           {/* メールアドレス */}
           <div className="space-y-1">
             <label className="text-xs text-slate-400 font-medium">宛先メールアドレス <span className="text-red-400">*</span></label>
-            <input
-              value={to}
-              onChange={e => setTo(e.target.value)}
-              placeholder="info@example.com"
-              type="email"
-              className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
-            />
+            <input value={to} onChange={e => setTo(e.target.value)}
+              placeholder="info@example.com" type="email"
+              className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500/50" />
           </div>
 
           {/* 件名 */}
           <div className="space-y-1">
             <label className="text-xs text-slate-400 font-medium">件名 <span className="text-red-400">*</span></label>
-            <input
-              value={subject}
-              onChange={e => setSubject(e.target.value)}
+            <input value={subject} onChange={e => setSubject(e.target.value)}
               placeholder="【ご提案】..."
-              className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
-            />
+              className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500/50" />
           </div>
 
           {/* 本文 */}
           <div className="space-y-1">
             <label className="text-xs text-slate-400 font-medium">本文 <span className="text-red-400">*</span></label>
-            <textarea
-              value={body}
-              onChange={e => setBody(e.target.value)}
-              rows={14}
-              placeholder="上の「雛形テンプレートを選択」から自動入力できます"
-              className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 resize-y font-mono text-xs leading-relaxed"
-            />
+            <textarea value={body} onChange={e => setBody(e.target.value)} rows={14}
+              placeholder="上の「雛形テンプレートを選択」か「営業先を検索」から自動入力できます"
+              className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 resize-y font-mono text-xs leading-relaxed" />
             <p className="text-xs text-slate-600 text-right">{body.length}文字</p>
           </div>
 
@@ -540,16 +645,9 @@ export default function SalesMailPanel() {
           )}
 
           {/* 送信ボタン */}
-          <button
-            onClick={handleSend}
-            disabled={sending || !gmailToken}
-            className="h-12 px-8 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-lg transition-all flex items-center gap-2"
-          >
-            {sending ? (
-              <><Loader2 size={15} className="animate-spin" /> 送信中...</>
-            ) : (
-              <><Send size={14} /> Gmailから送信する</>
-            )}
+          <button onClick={handleSend} disabled={sending || !gmailToken}
+            className="h-12 px-8 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-lg transition-all flex items-center gap-2">
+            {sending ? <><Loader2 size={15} className="animate-spin" /> 送信中...</> : <><Send size={14} /> Gmailから送信する</>}
           </button>
           {!gmailToken && (
             <p className="text-xs text-slate-600 text-center">※ 上の「Gmailでログイン」ボタンで連携後に送信できます</p>
