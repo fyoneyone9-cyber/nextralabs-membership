@@ -286,7 +286,7 @@ function YoutubeProducerApp() {
                 <div className="flex items-center gap-3 text-emerald-400"><Info size={18} /><h3 className="font-semibold text-base tracking-tight">ステップ 1: 核となる情報を入力</h3></div>
                 <div className="flex gap-3"><input type="file" ref={fileInputRef} onChange={handleFileUpload} accept="audio/*,video/*" className="hidden" /><Button onClick={() => fileInputRef.current?.click()} disabled={isProcessing['transcribe']} className="h-9 px-4 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-medium text-sm rounded-lg hover:bg-emerald-500/20 flex items-center gap-2">{isProcessing['transcribe'] ? <><Loader2 className="animate-spin h-4 w-4" />{compressProgress > 0 ? `圧縮中 ${compressProgress}%` : '読込中'}</> : <><Upload size={14} />直接読み起こし</>}</Button></div>
               </div>
-              <p className="text-sm text-slate-300 leading-relaxed border-l-4 border-emerald-500 pl-4">指示書をコピーしてAIに読み起こしを実施して下さい。AIの回答をフォームに貼り付けてください。</p>
+              <p className="text-sm text-slate-300 leading-relaxed">指示書をコピーしてAIに読み起こしを実施して下さい。AIの回答をフォームに貼り付けてください。</p>
               <div className="grid grid-cols-3 gap-3">
                 {['Claude', 'ChatGPT', 'Gemini'].map((ai) => (
                   <div key={ai} className="flex flex-col gap-2 p-2 bg-white/5 rounded-xl border border-white/5">
