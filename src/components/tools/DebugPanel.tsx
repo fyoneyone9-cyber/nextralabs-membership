@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useRouter } from 'next/navigation'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { 
   Unlock, Activity, Zap, Copy, CheckCircle2, Terminal, ShieldCheck, Globe, X
 } from 'lucide-react'
@@ -58,7 +58,7 @@ export function DebugPanel({ data }: { data?: any }) {
   const [isTesting, setIsTesting] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
   const router = useRouter()
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
 
   useEffect(() => {
     setIsMounted(true);
