@@ -7,6 +7,7 @@ import { Providers } from '@/components/providers'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 import { HeaderWrapper, FooterWrapper } from '@/components/layout-wrappers'
 import { ApiMonitorOverlay } from '@/components/tools/ApiMonitorOverlay'
+import ExternalLinkGuard from '@/components/ExternalLinkGuard'
 
 // Genspark Claw と同じフォントスタック: Inter (英字) + Noto Sans JP (日本語)
 const inter = Inter({
@@ -68,6 +69,7 @@ export default function RootLayout({
             {/* API監視ツールを確実に表示 */}
             <ApiMonitorOverlay />
             <DebugPanel data={{}} />
+            <ExternalLinkGuard />
           </div>
         </Providers>
       </body>
