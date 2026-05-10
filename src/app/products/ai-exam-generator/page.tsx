@@ -19,28 +19,21 @@ import {
 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'AI試験問題ジェネレーター | 資格試験の模擬問題を無制限自動生成',
-  description: 'CompTIA・FP・宅建・情報処理など各種資格試験の模擬問題をAIが自動生成。解説付きで理解が深まる。過去問だけでは足りない演習量を補う。',
-  keywords: ["AI試験問題","資格試験AI","模擬試験自動生成","CompTIA AI","FP試験AI"],
-  alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/ai-exam-generator',
-  },
+  title: 'AI問題生成 & 過去問分析 | ITパスポート・基本情報対策の決定版 - NextraLabs',
+  description: '【2026年最新】ITパスポート・基本情報技術者試験の合格をAIが徹底サポート。過去問ベースの無限問題生成と、AIによる苦手分野の1%単位での分析で、最短ルートの合格力を。NextraLabsのMASTERMODEL品質。',
+  keywords: ['ITパスポート AI', '基本情報技術者試験 対策', 'AI問題生成', '過去問分析 アプリ', 'IT試験 効率学習', 'NextraLabs', 'Ninja3'],
   openGraph: {
-    title: 'AI試験問題ジェネレーター | 資格試験の模擬問題を無制限自動生成 | NextraLabs',
-    description: 'CompTIA・FP・宅建・情報処理など各種資格試験の模擬問題をAIが自動生成。解説付きで理解が深まる。過去問だけでは足りない演習量を補う。',
+    title: 'AI問題生成 & 過去問分析 | 最短合格を目指すAI併走型学習ツール',
+    description: 'もう過去問を解くだけの勉強は終わり。AIがあなたの弱点を特定し、最適な問題を無限に生成します。',
     url: 'https://membership-site-nextralabos.vercel.app/products/ai-exam-generator',
-    type: 'website',
-    locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI試験問題ジェネレーター | 資格試験の模擬問題を無制限自動生成' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'AI試験問題ジェネレーター | 資格試験の模擬問題を無制限自動生成',
-    description: 'CompTIA・FP・宅建・情報処理など各種資格試験の模擬問題をAIが自動生成。解説付きで理解が深まる。過去問だけでは足りない演習量を補う。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
-  },
-},
+    images: [
+      {
+        url: 'https://membership-site-nextralabos.vercel.app/og-exam.png',
+        width: 1200,
+        height: 630,
+        alt: 'AI問題生成 & 過去問分析',
+      },
     ],
     locale: 'ja_JP',
     type: 'article',

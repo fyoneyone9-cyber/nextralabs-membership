@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { Inter, Noto_Sans_JP } from 'next/font/google'
-import Script from 'next/script'
 import './globals.css'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
@@ -24,162 +23,33 @@ const notoSansJP = Noto_Sans_JP({
   display: 'swap',
 })
 
-const BASE_URL = 'https://membership-site-nextralabos.vercel.app'
-
 export const metadata: Metadata = {
-  metadataBase: new URL(BASE_URL),
   verification: {
     google: 'google9fc5715d83add922',
   },
-  title: {
-    default: 'NextraLabs | 日本最大級AIツール使い放題メンバーシップ【月額980円〜】',
-    template: '%s | NextraLabs',
+  title: { 
+    default: 'NextraLabs | 日本最大級のAIツール使い放題メンバーシップ - MASTERMODEL', 
+    template: '%s | NextraLabs - 日本一のAIツールプラットフォーム' 
   },
-  description:
-    'NextraLabs（ネクストララボ）は、Gemini 2.5 Flash搭載の最新AIツール30種類以上が使い放題の日本最大級AIメンバーシップ。家計防衛・詐欺対策・Kindle出版・副業支援まで、月額980円から始められます。今すぐ無料登録。',
-  keywords: [
-    'NextraLabs',
-    'ネクストララボ',
-    'AIツール使い放題',
-    'AIメンバーシップ',
-    'AI副業',
-    'AI資格対策',
-    'Gemini 2.5 Flash',
-    'MASTERMODEL',
-    'Ninja3',
-    '日本最大級AIツール',
-    'AIサービス月額',
-    'AI家計防衛',
-    'AI詐欺対策',
-    'Kindle出版AI',
-    'NextraLabs登録',
-  ],
-  authors: [{ name: 'NextraLabs', url: BASE_URL }],
-  creator: 'NextraLabs (Ninja3)',
-  publisher: 'NextraLabs',
-  category: 'AIツール・サブスクリプション',
+  description: '【2026年決定版】NextraLabs（ネクストララボ）は、Gemini 2.5 Flash搭載の最新AIツール22種類が使い放題。家計防衛、断捨離、婚活、IT資格対策まで、あなたの人生をAIが劇的に効率化します。月額980円から。',
+  keywords: ['NextraLabs', 'ネクストララボ', 'AIツール使い放題', 'AI副業', 'AI資格対策', 'Gemini 2.5 Flash', 'MASTERMODEL', 'Ninja3'],
   manifest: '/manifest.json',
-  alternates: {
-    canonical: BASE_URL,
-    languages: { 'ja-JP': BASE_URL },
-  },
+  metadataBase: new URL('https://membership-site-nextralabos.vercel.app'),
   openGraph: {
     type: 'website',
     locale: 'ja_JP',
-    url: BASE_URL,
-    title: 'NextraLabs | 日本最大級AIツール使い放題メンバーシップ【月額980円〜】',
-    description:
-      '30種類以上のAIツールが月額980円で使い放題。Gemini 2.5 Flash搭載のMASTERMODEL品質。無料プランあり。今すぐ登録。',
+    url: 'https://membership-site-nextralabos.vercel.app',
+    title: 'NextraLabs | 日本一のAIツール使い放題メンバーシップ',
+    description: '人生を豊かにする22種類のAIツールがここに集結。MASTERMODEL品質のAI体験を。',
     siteName: 'NextraLabs',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'NextraLabs - 日本最大級AIツール使い放題メンバーシップ',
-        type: 'image/png',
-      },
-    ],
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
-    site: '@NextraLabs',
+    title: 'NextraLabs | 日本一のAIツール使い放題メンバーシップ',
+    description: 'Gemini 2.5 Flash搭載の最新AIツールが月額980円で使い放題。',
+    images: ['/og-image.jpg'],
     creator: '@NextraLabs',
-    title: 'NextraLabs | 日本最大級AIツール使い放題メンバーシップ',
-    description: 'Gemini 2.5 Flash搭載の最新AIツール30種類以上が月額980円で使い放題。無料プランあり。',
-    images: ['/og-image.png'],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    nocache: false,
-    googleBot: {
-      index: true,
-      follow: true,
-      noimageindex: false,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-}
-
-// 構造化データ: Organization + WebSite + SoftwareApplication
-const jsonLdOrganization = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'NextraLabs',
-  url: BASE_URL,
-  logo: `${BASE_URL}/icon.png`,
-  description: '日本最大級のAIツール使い放題メンバーシップ。Gemini 2.5 Flash搭載、30種類以上のAIツールが月額980円から。',
-  sameAs: [
-    'https://twitter.com/NextraLabs',
-  ],
-  contactPoint: {
-    '@type': 'ContactPoint',
-    contactType: 'customer support',
-    availableLanguage: '日本語',
-  },
-}
-
-const jsonLdWebSite = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: 'NextraLabs',
-  url: BASE_URL,
-  description: '日本最大級のAIツール使い放題メンバーシップ',
-  inLanguage: 'ja-JP',
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: {
-      '@type': 'EntryPoint',
-      urlTemplate: `${BASE_URL}/products?q={search_term_string}`,
-    },
-    'query-input': 'required name=search_term_string',
-  },
-}
-
-const jsonLdSoftwareApp = {
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'NextraLabs AIツールプラットフォーム',
-  operatingSystem: 'Web',
-  applicationCategory: 'ProductivityApplication',
-  offers: [
-    {
-      '@type': 'Offer',
-      name: '無料プラン',
-      price: '0',
-      priceCurrency: 'JPY',
-    },
-    {
-      '@type': 'Offer',
-      name: 'ライトプラン',
-      price: '980',
-      priceCurrency: 'JPY',
-      billingIncrement: 'P1M',
-    },
-    {
-      '@type': 'Offer',
-      name: 'スタンダードプラン',
-      price: '1980',
-      priceCurrency: 'JPY',
-      billingIncrement: 'P1M',
-    },
-    {
-      '@type': 'Offer',
-      name: 'プレミアムプラン',
-      price: '2980',
-      priceCurrency: 'JPY',
-      billingIncrement: 'P1M',
-    },
-  ],
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '4.8',
-    reviewCount: '1200',
-    bestRating: '5',
-    worstRating: '1',
   },
 }
 
@@ -190,26 +60,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja" className="dark" style={{ backgroundColor: '#050507', colorScheme: 'dark' }} suppressHydrationWarning>
-      <head>
-        {/* 構造化データ JSON-LD */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdOrganization) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdWebSite) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSoftwareApp) }}
-        />
-        {/* パフォーマンス最適化 */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://generativelanguage.googleapis.com" />
-        {/* canonical はページ個別に設定 */}
-      </head>
       <body className={`${inter.variable} ${notoSansJP.variable} font-sans min-h-screen bg-[#050507] text-slate-200 dark antialiased`}>
         <Providers>
           <div className="relative flex min-h-screen flex-col bg-[#050507]">

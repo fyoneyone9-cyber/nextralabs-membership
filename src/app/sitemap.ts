@@ -1,86 +1,41 @@
 import { MetadataRoute } from 'next'
 
 const BASE = 'https://membership-site-nextralabos.vercel.app'
-
-// 全製品一覧（LP page + app page 両方）
-const PRODUCTS = [
-  // ライフ系
+const products = [
+  'exam-scheduler',
+  'pet-translator',
+  'vintage-hunter',
+  'office-politics-graph',
+  'shio-taiou',
+  'moving-checker',
   'scam-defender',
   'money-guard',
   'disaster-guard',
   'shopping-stopper',
-  'moving-checker',
-  'loan-advisor',
-  // 副業・ビジネス系
-  'ai-sidejob',
-  'kindle-factory',
-  'kdp-guide',
-  'prompt-master',
-  'sns-auto-poster',
-  'youtube-producer',
-  'youtube-coordinator',
-  'ai-select-shop',
-  'buzz-writer',
-  'resignation-assistant',
-  // 教育・資格系
-  'exam-scheduler',
-  'ai-exam-generator',
-  // ホーム・ガーデン
-  'smart-gardening',
-  'closet-coach',
-  // コミュニケーション
   'comm-coach',
+  'closet-coach',
+  'sns-auto-poster',
+  'ai-sidejob',
   'inbox-organizer',
-  // 旅行・ホテル
-  'staysee-ai-finder',
-  'nextra-ai',
+  'prompt-master',
+  'youtube-producer',
   'location-finder',
-  // ツール系
-  'universal-converter',
-  'ai-recipe',
-  'pet-translator',
-  'buy-smart-nav',
-  'shio-taiou',
-]
+  'buzz-writer',
 
-// 静的ページ
-const STATIC_PAGES = [
-  { path: '', priority: 1.0, changeFreq: 'daily' as const },
-  { path: '/products', priority: 0.95, changeFreq: 'daily' as const },
-  { path: '/pricing', priority: 0.9, changeFreq: 'weekly' as const },
-  { path: '/guide', priority: 0.8, changeFreq: 'weekly' as const },
-  { path: '/contact', priority: 0.6, changeFreq: 'monthly' as const },
-  { path: '/privacy', priority: 0.4, changeFreq: 'yearly' as const },
-  { path: '/terms', priority: 0.4, changeFreq: 'yearly' as const },
-  { path: '/tokusho', priority: 0.4, changeFreq: 'yearly' as const },
+  'ai-select-shop',
+  'resignation-assistant',
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date()
-
-  // 静的ページ
-  const staticEntries: MetadataRoute.Sitemap = STATIC_PAGES.map(({ path, priority, changeFreq }) => ({
-    url: `${BASE}${path}`,
-    lastModified: now,
-    changeFrequency: changeFreq,
-    priority,
-  }))
-
-  // 各製品のLPページ
-  const productLpEntries: MetadataRoute.Sitemap = PRODUCTS.map((id) => ({
-    url: `${BASE}/products/${id}`,
-    lastModified: now,
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
-  }))
-
-  // 各製品のアプリページ
-  const productAppEntries: MetadataRoute.Sitemap = PRODUCTS.map((id) => ({
-    url: `${BASE}/products/${id}/app`,
-    lastModified: now,
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }))
-
-  return [...staticEntries, ...productLpEntries, ...productAppEntries]
+  return [
+    { url: BASE, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 },
+    { url: `${BASE}/products`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE}/pricing`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
+    ...products.map(id => ({
+      url: `${BASE}/products/${id}`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })),
+  ]
 }

@@ -1,29 +1,3 @@
-import { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'AI借金完済・おまとめ診断 | 最短完済ルートをAIが無料で計算',
-  description: '複数の借金をまとめておまとめローンで一本化。AIが毎月の返済額・利息・完済期間を複数シナリオで比較。完全無料で使えるNextraLabs公開ツール。',
-  keywords: ['AI借金診断', 'おまとめローン', '債務整理AI', '完済シミュレーション', '借金相談AI'],
-  alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/loan-advisor',
-  },
-  openGraph: {
-    title: 'AI借金完済・おまとめ診断 | 最短完済ルートをAIが無料で計算 | NextraLabs',
-    description: '複数の借金をまとめておまとめローンで一本化。AIが毎月の返済額・利息・完済期間を複数シナリオで比較。完全無料で使えるNextraLabs公開ツール。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/loan-advisor',
-    type: 'website',
-    locale: 'ja_JP',
-    siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI借金完済・おまとめ診断 | 最短完済ルートをAIが無料で計算' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'AI借金完済・おまとめ診断 | 最短完済ルートをAIが無料で計算',
-    description: '複数の借金をまとめておまとめローンで一本化。AIが毎月の返済額・利息・完済期間を複数シナリオで比較。完全無料で使えるNextraLabs公開ツール。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
-  },
-}
-
 ﻿import Link from 'next/link'
 import { ShieldCheck, TrendingDown, Zap, ArrowRight, CheckCircle2 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'

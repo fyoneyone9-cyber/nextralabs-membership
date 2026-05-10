@@ -6,28 +6,9 @@ import { Button } from '@/components/ui/button'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 
 export const metadata: Metadata = {
-  title: 'AIバズライター（Buzz Writer）| バズるブログ記事・SNS投稿を一発生成',
-  description: 'キーワードを入力するだけでSEO最適化済みのブログ記事・SNS投稿をAIが自動生成。Googleで上位表示されるコンテンツを最短5分で作成。NextraLabs会員限定。',
-  keywords: ["AIライター","ブログ自動生成","SEOコンテンツAI","SNS投稿AI","バズるAI記事"],
-  alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/buzz-writer',
-  },
-  openGraph: {
-    title: 'AIバズライター（Buzz Writer）| バズるブログ記事・SNS投稿を一発生成 | NextraLabs',
-    description: 'キーワードを入力するだけでSEO最適化済みのブログ記事・SNS投稿をAIが自動生成。Googleで上位表示されるコンテンツを最短5分で作成。NextraLabs会員限定。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/buzz-writer',
-    type: 'website',
-    locale: 'ja_JP',
-    siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AIバズライター（Buzz Writer）| バズるブログ記事・SNS投稿を一発生成' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'AIバズライター（Buzz Writer）| バズるブログ記事・SNS投稿を一発生成',
-    description: 'キーワードを入力するだけでSEO最適化済みのブログ記事・SNS投稿をAIが自動生成。Googleで上位表示されるコンテンツを最短5分で作成。NextraLabs会員限定。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
-  },
-},
+  title: 'AIバズ文章コーチ',
+  description: '今日のトレンドニュースをネタに10種類のテンプレートでバズる文章を自動生成。バズ度診断・投稿画像生成・ハッシュタグ辞典付き。月額¥980。',
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/buzz-writer' },
   openGraph: { title: 'AIバズ文章コーチ | NextraLabs', description: '今日のトレンドニュースをネタに10種類のテンプレートでバズる文章を自動生成。バズ度診断・投稿画像生成・ハッシュタグ辞典付き。', url: 'https://membership-site-nextralabos.vercel.app/products/buzz-writer', type: 'website' },
 }
 import {

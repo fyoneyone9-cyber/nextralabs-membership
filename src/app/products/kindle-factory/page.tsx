@@ -1,29 +1,3 @@
-import { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'Kindle AIファクトリー | AI原稿自動生成でKDP出版を最速完成',
-  description: 'テーマを入力するだけでAIが目次・章立て・本文を自動生成。KDP（Kindle Direct Publishing）入稿可能なdocx形式で出力。最短1日で電子書籍を完成。',
-  keywords: ['Kindle出版AI', 'KDP自動生成', '電子書籍AI', 'Kindleファクトリー', 'AI原稿生成'],
-  alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/kindle-factory',
-  },
-  openGraph: {
-    title: 'Kindle AIファクトリー | AI原稿自動生成でKDP出版を最速完成 | NextraLabs',
-    description: 'テーマを入力するだけでAIが目次・章立て・本文を自動生成。KDP（Kindle Direct Publishing）入稿可能なdocx形式で出力。最短1日で電子書籍を完成。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/kindle-factory',
-    type: 'website',
-    locale: 'ja_JP',
-    siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'Kindle AIファクトリー | AI原稿自動生成でKDP出版を最速完成' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Kindle AIファクトリー | AI原稿自動生成でKDP出版を最速完成',
-    description: 'テーマを入力するだけでAIが目次・章立て・本文を自動生成。KDP（Kindle Direct Publishing）入稿可能なdocx形式で出力。最短1日で電子書籍を完成。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
-  },
-}
-
 ﻿// ============================================================
 // 🔒 LOCKED — KindleFactory product page
 // 完成済みツール。NextraLabs様の明示的な指示なしに

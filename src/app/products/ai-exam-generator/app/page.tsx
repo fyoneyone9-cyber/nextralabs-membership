@@ -6,14 +6,78 @@ import { Button } from '@/components/ui/button'
 import {
   Zap, Loader2, TrendingUp, Search, ShoppingCart,
   Brain, ListChecks, ShieldAlert, FileText, FileDown,
-  ClipboardPaste, Smartphone, Info, ExternalLink, CheckCircle2
+  ClipboardPaste, Smartphone, Info, ExternalLink, CheckCircle2,
+  Network, BookOpen, Stethoscope, Scale, Building2, Calculator,
+  Globe, Car, Leaf, Award, GraduationCap, Cpu
 } from 'lucide-react'
 
-const PRESETS = [
-  { id: 'itpass', label: 'ITパスポート', icon: Smartphone, content: 'ITパスポート試験のシラバス（テクノロジ・マネジメント・ストラテジ）に基づき、過去問実物データから頻出の選択問題を解説付きで生成してください。' },
-  { id: 'fe', label: '基本情報技術者', icon: Zap, content: '基本情報技術者試験の科目A形式で、アルゴリズムと情報セキュリティの重要問題を実データに基づき生成してください。' },
-  { id: 'security', label: '情報処理安全確保', icon: ShieldAlert, content: '情報処理安全確保支援士試験向けに、最新のサイバー攻撃手法と防御策に関する応用問題を生成してください。' },
+const PRESET_CATEGORIES = [
+  {
+    label: 'IT・情報処理',
+    color: '#3b82f6',
+    presets: [
+      { id: 'itpass',   label: 'ITパスポート',         icon: Smartphone, content: 'ITパスポート試験のシラバス（テクノロジ・マネジメント・ストラテジ）に基づき、過去問実物データから頻出の選択問題を解説付きで生成してください。' },
+      { id: 'fe',       label: '基本情報技術者',        icon: Cpu,        content: '基本情報技術者試験の科目A形式で、アルゴリズムと情報セキュリティの重要問題を実データに基づき生成してください。' },
+      { id: 'ap',       label: '応用情報技術者',        icon: Brain,      content: '応用情報技術者試験の午前問題形式で、データベース・ネットワーク・経営戦略など幅広い分野の頻出問題を生成してください。' },
+      { id: 'security', label: '情報処理安全確保支援士', icon: ShieldAlert, content: '情報処理安全確保支援士試験向けに、最新のサイバー攻撃手法と防御策に関する応用問題を生成してください。' },
+      { id: 'nw',       label: 'ネットワークスペシャリスト', icon: Network, content: 'ネットワークスペシャリスト試験向けに、TCP/IP・ルーティング・セキュリティプロトコルの高難度問題を生成してください。' },
+      { id: 'db',       label: 'データベーススペシャリスト', icon: FileText, content: 'データベーススペシャリスト試験向けに、SQL・正規化・トランザクション管理の実践的な問題を生成してください。' },
+    ]
+  },
+  {
+    label: 'ビジネス・資格',
+    color: '#f59e0b',
+    presets: [
+      { id: 'biz2',     label: '簿記2級',               icon: Calculator, content: '日商簿記2級の商業簿記・工業簿記を網羅した頻出仕訳問題と計算問題を解説付きで生成してください。' },
+      { id: 'biz3',     label: '簿記3級',               icon: Calculator, content: '日商簿記3級の基本仕訳・決算処理・精算表の穴埋め問題を初学者向けに解説付きで生成してください。' },
+      { id: 'fp2',      label: 'FP2級',                 icon: TrendingUp, content: 'FP2級試験向けに、ライフプランニング・タックスプランニング・相続の頻出計算問題を生成してください。' },
+      { id: 'fp3',      label: 'FP3級',                 icon: TrendingUp, content: 'FP3級試験向けに、保険・年金・税金の基礎知識を問う選択問題を解説付きで生成してください。' },
+      { id: 'gyosei',   label: '行政書士',               icon: Scale,      content: '行政書士試験の行政法・民法・憲法の頻出問題と記述式対策問題を生成してください。' },
+      { id: 'syaroushi',label: '社会保険労務士',         icon: Building2,  content: '社会保険労務士試験の労働基準法・社会保険・雇用保険の選択式・択一式問題を生成してください。' },
+    ]
+  },
+  {
+    label: '語学・英語',
+    color: '#8b5cf6',
+    presets: [
+      { id: 'toeic',    label: 'TOEIC L&R 900点',       icon: Globe,      content: 'TOEIC L&R 900点突破を目指し、Part5文法問題・Part6長文穴埋め・Part7読解の頻出パターンを生成してください。' },
+      { id: 'toeic700', label: 'TOEIC L&R 700点',       icon: Globe,      content: 'TOEIC L&R 700点レベルの文法・語彙・読解問題を解説付きで生成してください。' },
+      { id: 'eiken2',   label: '英検2級',               icon: BookOpen,   content: '英検2級の語彙・文法・長文読解・英作文の頻出問題を解説付きで生成してください。' },
+      { id: 'eiken1',   label: '英検準1級',             icon: BookOpen,   content: '英検準1級の語彙・長文読解・英作文の難問を解説付きで生成してください。' },
+    ]
+  },
+  {
+    label: '医療・福祉',
+    color: '#ef4444',
+    presets: [
+      { id: 'kangoshi',  label: '看護師国家試験',        icon: Stethoscope, content: '看護師国家試験の必修問題・一般問題・状況設定問題の頻出パターンを解説付きで生成してください。' },
+      { id: 'kaigo',     label: '介護福祉士',            icon: Award,       content: '介護福祉士国家試験の介護・医療的ケア・社会の理解の頻出問題を生成してください。' },
+      { id: 'yakuzai',   label: '薬剤師国家試験',        icon: Stethoscope, content: '薬剤師国家試験の薬理・薬剤・衛生・法規の頻出問題を解説付きで生成してください。' },
+    ]
+  },
+  {
+    label: '法律・公務員',
+    color: '#06b6d4',
+    presets: [
+      { id: 'koumu',    label: '公務員試験（教養）',     icon: GraduationCap, content: '公務員試験の教養科目（文章理解・数的処理・社会科学・人文科学）の頻出問題を解説付きで生成してください。' },
+      { id: 'shiho',    label: '司法書士',               icon: Scale,         content: '司法書士試験の民法・不動産登記法・商業登記法・刑法の頻出問題を生成してください。' },
+      { id: 'kenteishi',label: '宅地建物取引士（宅建）', icon: Building2,     content: '宅建試験の権利関係・法令上の制限・宅建業法・税金の頻出問題を解説付きで生成してください。' },
+    ]
+  },
+  {
+    label: 'その他・技術',
+    color: '#10b981',
+    presets: [
+      { id: 'kiken',    label: '危険物取扱者（乙4）',    icon: ShieldAlert,   content: '危険物取扱者乙種第4類の物理化学・危険物の性質・法令の頻出問題を生成してください。' },
+      { id: 'denki',    label: '電気工事士（2種）',      icon: Zap,           content: '第二種電気工事士の筆記試験（電気理論・施工法・法規）の頻出問題を生成してください。' },
+      { id: 'kankyou',  label: '環境計量士',             icon: Leaf,           content: '環境計量士（濃度関係）の計量法・化学分析・環境関連法の頻出問題を生成してください。' },
+      { id: 'driver',   label: '普通自動車免許',          icon: Car,           content: '普通自動車免許の学科試験（交通ルール・標識・安全運転）の頻出問題を生成してください。' },
+    ]
+  },
 ]
+
+// 後方互換（既存コードが使っているPRESETSフラット配列）
+const PRESETS = PRESET_CATEGORIES.flatMap(c => c.presets)
 
 const ROADMAP = [
   { title: '弱点特定', desc: '過去問実データから「知識の穴」をAIが可視化。', icon: Search },
@@ -103,30 +167,32 @@ export default function AiExamGeneratorApp() {
           </p>
         </Card>
 
-        {/* プリセット */}
-        <div className="space-y-3">
-          <p className="text-xs font-medium text-slate-500 px-1">試験を選択</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {PRESETS.map(p => (
-              <button
-                key={p.id}
-                onClick={() => { setInputData(p.content); setResult(null); setDocUrl(null) }}
-                className="flex items-center gap-3 p-4 rounded-xl text-left transition-all"
-                style={{
-                  background: inputData === p.content ? 'rgba(16,185,129,0.1)' : '#0d1117',
-                  border: inputData === p.content ? '1px solid rgba(16,185,129,0.5)' : '1px solid #1e293b',
-                }}
-              >
-                <div
-                  className="p-2 rounded-lg shrink-0"
-                  style={{ background: 'rgba(16,185,129,0.1)' }}
-                >
-                  <p.icon size={16} style={{ color: '#10b981' }} />
-                </div>
-                <span className="text-sm font-semibold text-slate-200">{p.label}</span>
-              </button>
-            ))}
-          </div>
+        {/* プリセット：カテゴリ別 */}
+        <div className="space-y-5">
+          <p className="text-xs font-medium text-slate-500 px-1">試験を選択（{PRESETS.length}種類）</p>
+          {PRESET_CATEGORIES.map(cat => (
+            <div key={cat.label} className="space-y-2">
+              <p className="text-xs font-semibold px-1" style={{ color: cat.color }}>{cat.label}</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                {cat.presets.map(p => (
+                  <button
+                    key={p.id}
+                    onClick={() => { setInputData(p.content); setResult(null); setDocUrl(null) }}
+                    className="flex items-center gap-3 p-3 rounded-xl text-left transition-all"
+                    style={{
+                      background: inputData === p.content ? 'rgba(16,185,129,0.1)' : '#0d1117',
+                      border: inputData === p.content ? '1px solid rgba(16,185,129,0.5)' : '1px solid #1e293b',
+                    }}
+                  >
+                    <div className="p-1.5 rounded-lg shrink-0" style={{ background: `${cat.color}18` }}>
+                      <p.icon size={14} style={{ color: cat.color }} />
+                    </div>
+                    <span className="text-xs font-semibold text-slate-200 leading-tight">{p.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* 入力フォーム */}

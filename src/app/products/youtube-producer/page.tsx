@@ -1,32 +1,13 @@
-import { Metadata } from 'next'
 ﻿import React from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { CheckCircle2, Youtube, FileVideo, FileText, Zap, Sparkles, ArrowRight, Play, Scissors, Type, Music, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
 
-export const metadata: Metadata = {
-  title: 'AI YouTubeプロデューサー | 台本・サムネ・SEO最適化を全自動',
-  description: 'YouTubeの台本・タイトル・説明文・サムネイルをAIが全自動生成。検索上位に表示されるSEO最適化タグも自動設定。チャンネル登録者数を爆増させる。',
-  keywords: ["YouTubeAI台本","YouTube SEO","サムネイルAI","YouTube自動化","YouTubeプロデューサーAI"],
-  alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/youtube-producer',
-  },
-  openGraph: {
-    title: 'AI YouTubeプロデューサー | 台本・サムネ・SEO最適化を全自動 | NextraLabs',
-    description: 'YouTubeの台本・タイトル・説明文・サムネイルをAIが全自動生成。検索上位に表示されるSEO最適化タグも自動設定。チャンネル登録者数を爆増させる。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/youtube-producer',
-    type: 'website',
-    locale: 'ja_JP',
-    siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI YouTubeプロデューサー | 台本・サムネ・SEO最適化を全自動' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'AI YouTubeプロデューサー | 台本・サムネ・SEO最適化を全自動',
-    description: 'YouTubeの台本・タイトル・説明文・サムネイルをAIが全自動生成。検索上位に表示されるSEO最適化タグも自動設定。チャンネル登録者数を爆増させる。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
-  },
+export const metadata = {
+  title: 'AI YouTubeプロデューサー | 戦略パーツでバズる動画台本を全自動生成 | NextraLabs',
+  description: '10種類の最強「動画戦略パレット」を搭載。AIが動画のヒットを科学し、台本構成からサムネイル設計、SEO、BGM指示までを一本道UIで完結させます。',
+  keywords: ['YouTube 台本 AI', '動画制作 効率化', 'YouTube 運用 代行', 'バズる動画 構成', 'AI 動画プロデューサー'],
 }
 
 export default function YoutubeProducerLp() {

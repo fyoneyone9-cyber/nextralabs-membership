@@ -1,29 +1,3 @@
-import { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'YouTube AI Sync | 動画解析×楽天コーチで収益を最大化',
-  description: '動画のパフォーマンスをAIが解析し、改善案を自動提示。楽天アフィリエイト連携で動画からの収益を倍増。YouTubeチャンネル成長を加速。',
-  keywords: ['YouTube AI', 'YouTubeアナリティクスAI', '動画収益化AI', '楽天アフィリエイトYouTube', 'YouTubeコーチ'],
-  alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/youtube-coordinator',
-  },
-  openGraph: {
-    title: 'YouTube AI Sync | 動画解析×楽天コーチで収益を最大化 | NextraLabs',
-    description: '動画のパフォーマンスをAIが解析し、改善案を自動提示。楽天アフィリエイト連携で動画からの収益を倍増。YouTubeチャンネル成長を加速。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/youtube-coordinator',
-    type: 'website',
-    locale: 'ja_JP',
-    siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'YouTube AI Sync | 動画解析×楽天コーチで収益を最大化' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'YouTube AI Sync | 動画解析×楽天コーチで収益を最大化',
-    description: '動画のパフォーマンスをAIが解析し、改善案を自動提示。楽天アフィリエイト連携で動画からの収益を倍増。YouTubeチャンネル成長を加速。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
-  },
-}
-
 ﻿import React from 'react'
 import dynamic from 'next/dynamic'
 import { Card } from '@/components/ui/card'

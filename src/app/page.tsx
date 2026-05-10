@@ -342,59 +342,6 @@ export default function HomePage() {
       <div className="text-center text-[9px] text-slate-700 py-6 border-t border-white/5">
         NextraLabs • 2026 · <Link href="/privacy" className="hover:text-slate-500">プライバシー</Link> · <Link href="/terms" className="hover:text-slate-500">利用規約</Link>
       </div>
-
-      {/* ========== 構造化データ（FAQ + BreadcrumbList）========== */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'FAQPage',
-            mainEntity: [
-              {
-                '@type': 'Question',
-                name: 'NextraLabsは無料で使えますか？',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'はい、一部のツールは無料プランでご利用いただけます。無料登録後すぐにお試しいただけます。クレジットカード不要です。',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'NextraLabsのAIツールは何種類ありますか？',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: '2026年5月現在、30種類以上のAIツールをご用意しています。家計管理・副業支援・詐欺対策・Kindle出版・YouTube制作など多様なジャンルに対応しています。',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'どのプランから始めるのがおすすめですか？',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'まず無料プランで3〜5種のツールをお試しいただき、気に入ったらライトプラン（月額980円）へのアップグレードをおすすめします。',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'AIはどのモデルを使っていますか？',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'Google Gemini 2.5 Flashを中心に、各ツールに最適なAIモデルを採用しています。高速・高精度・低コストを実現しています。',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'いつでも解約できますか？',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'はい、いつでも解約可能です。解約手続きはマイページから1分以内に完了します。解約後も当月末まではサービスをご利用いただけます。',
-                },
-              },
-            ],
-          }),
-        }}
-      />
     </div>
   )
 }

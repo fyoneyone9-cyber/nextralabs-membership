@@ -1,29 +1,3 @@
-import { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'AIセレクトショップ | トレンド解析×Shopify連携で売上を最大化',
-  description: 'AIがトレンドを先読みしてECサイトの商品選定・仕入れを最適化。Shopify連携でリアルタイム在庫管理も。NextraLabsプレミアムプラン専用ツール。',
-  keywords: ['AIセレクトショップ', 'Shopify AI', 'トレンド解析', 'EC自動化', 'AIマーチャンダイジング'],
-  alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/ai-select-shop',
-  },
-  openGraph: {
-    title: 'AIセレクトショップ | トレンド解析×Shopify連携で売上を最大化 | NextraLabs',
-    description: 'AIがトレンドを先読みしてECサイトの商品選定・仕入れを最適化。Shopify連携でリアルタイム在庫管理も。NextraLabsプレミアムプラン専用ツール。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/ai-select-shop',
-    type: 'website',
-    locale: 'ja_JP',
-    siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AIセレクトショップ | トレンド解析×Shopify連携で売上を最大化' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'AIセレクトショップ | トレンド解析×Shopify連携で売上を最大化',
-    description: 'AIがトレンドを先読みしてECサイトの商品選定・仕入れを最適化。Shopify連携でリアルタイム在庫管理も。NextraLabsプレミアムプラン専用ツール。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
-  },
-}
-
 ﻿import React from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'

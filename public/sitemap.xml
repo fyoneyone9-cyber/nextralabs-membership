@@ -1,238 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-
-  <!-- ===== 静的ページ ===== -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://membership-site-nextralabos.vercel.app/</loc>
-    <lastmod>2026-05-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://membership-site-nextralabos.vercel.app/products</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.95</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/pricing</loc>
-    <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://membership-site-nextralabos.vercel.app/guide</loc>
-    <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://membership-site-nextralabos.vercel.app/contact</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/privacy</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/terms</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/tokusho</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
-  </url>
-
-  <!-- ===== 製品LPページ ===== -->
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/scam-defender</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/money-guard</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/disaster-guard</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://membership-site-nextralabos.vercel.app/products/inbox-organizer/app</loc>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/shopping-stopper</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://membership-site-nextralabos.vercel.app/products/staysee-ai-finder/app</loc>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/moving-checker</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://membership-site-nextralabos.vercel.app/products/ai-sidejob/app</loc>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/loan-advisor</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://membership-site-nextralabos.vercel.app/products/money-guard/app</loc>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/ai-sidejob</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/kindle-factory</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://membership-site-nextralabos.vercel.app/products/disaster-guard/app</loc>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/kdp-guide</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/prompt-master</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/sns-auto-poster</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/youtube-producer</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/youtube-coordinator</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/ai-select-shop</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/buzz-writer</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/resignation-assistant</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/exam-scheduler</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/ai-exam-generator</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/smart-gardening</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/closet-coach</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/comm-coach</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/inbox-organizer</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/staysee-ai-finder</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/nextra-ai</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/location-finder</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/universal-converter</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/ai-recipe</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/pet-translator</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/buy-smart-nav</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://membership-site-nextralabos.vercel.app/products/shio-taiou</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
   </url>
 </urlset>

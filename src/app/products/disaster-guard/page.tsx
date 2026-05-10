@@ -1,29 +1,3 @@
-import { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'AI防災パーソナルガイド | 家族の避難ルート×備蓄を自動最適化',
-  description: 'あなたの住所・家族構成に合わせた避難ルート・備蓄リストをAIが自動作成。ハザードマップ解析で最短避難経路を提示。NextraLabsスタンダードプラン。',
-  keywords: ['AI防災', '避難ルートAI', '備蓄リスト', 'ハザードマップAI', '防災対策'],
-  alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/disaster-guard',
-  },
-  openGraph: {
-    title: 'AI防災パーソナルガイド | 家族の避難ルート×備蓄を自動最適化 | NextraLabs',
-    description: 'あなたの住所・家族構成に合わせた避難ルート・備蓄リストをAIが自動作成。ハザードマップ解析で最短避難経路を提示。NextraLabsスタンダードプラン。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/disaster-guard',
-    type: 'website',
-    locale: 'ja_JP',
-    siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI防災パーソナルガイド | 家族の避難ルート×備蓄を自動最適化' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'AI防災パーソナルガイド | 家族の避難ルート×備蓄を自動最適化',
-    description: 'あなたの住所・家族構成に合わせた避難ルート・備蓄リストをAIが自動作成。ハザードマップ解析で最短避難経路を提示。NextraLabsスタンダードプラン。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
-  },
-}
-
 ﻿import React from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
