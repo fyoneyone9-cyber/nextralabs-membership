@@ -21,6 +21,8 @@ const inputStyle = { background: '#13141f', border: '1px solid #334155' }
 const MasterEngine = () => {
   const [activeTab, setActiveTab] = useState('kiosk')
   const [isMounted, setIsMounted] = useState(false)
+  const [checkoutStep, setCheckoutStep] = useState<'confirm'|'extra'|'processing'|'done'>('confirm')
+  const [hasExtraCharge] = useState(false)  // 実際はPMSから取得
 
   const [checkinStatus, setCheckinStatus] = useState('IDLE')
   const [ledgerName, setLedgerName] = useState('')
@@ -360,5 +362,116 @@ const NoSSR = dynamic(() => Promise.resolve(MasterEngine), {
     </div>
   ),
 })
+
+        {/* --- チェックアウト --- */}
+        {activeTab === 'checkout' && (
+          <div
+            className="rounded-xl p-8 flex flex-col items-center gap-8"
+            style={{ background: '#0d1117', border: '1px solid #1e293b', minHeight: 320 }}
+          >
+            {checkoutStep === 'confirm' && (
+              <div className="w-full max-w-md flex flex-col items-center gap-6">
+                <LogOut size={40} style={{ color: '#10b981' }} />
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold text-slate-100">チェックアウト確認</h3>
+                  <p className="text-xs text-slate-500 mt-1">以下の内容でチェックアウトします</p>
+                </div>
+                <div className="w-full rounded-xl p-5 space-y-3" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-500">お名前</span>
+                    <span className="text-slate-100 font-medium">山田 太郎 様</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-500">部屋番号</span>
+                    <span className="text-slate-100 font-medium">201号室</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-500">チェックイン</span>
+                    <span className="text-slate-100 font-medium">2026/05/10</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-500">チェックアウト</span>
+                    <span className="text-slate-100 font-medium">2026/05/11（本日）</span>
+                  </div>
+                  <div className="border-t border-slate-800 pt-3 flex justify-between text-sm">
+                    <span className="text-slate-500">追加料金</span>
+                    <span className={hasExtraCharge ? 'text-amber-400 font-semibold' : 'text-emerald-500 font-medium'}>
+                      {hasExtraCharge ? '¥3,300（要精算）' : 'なし'}
+                    </span>
+                  </div>
+                </div>
+                {hasExtraCharge ? (
+                  <div
+                    className="w-full rounded-xl p-5 flex flex-col items-center gap-4 text-center"
+                    style={{ background: '#1a1200', border: '1px solid rgba(251,191,36,0.3)' }}
+                  >
+                    <div className="text-amber-400 text-4xl">⚠️</div>
+                    <p className="text-amber-300 font-semibold text-sm">追加料金が発生しています</p>
+                    <p className="text-slate-400 text-xs leading-relaxed">
+                      自動精算できない料金があります。<br />
+                      スタッフをお呼びして精算の上、チェックアウトをお願いします。
+                    </p>
+                    <button
+                      className="px-6 h-10 rounded-lg text-sm font-semibold transition-all"
+                      style={{ background: '#f59e0b', color: '#000' }}
+                      onClick={() => alert('スタッフを呼び出しました。しばらくお待ちください。')}
+                    >
+                      🔔 スタッフを呼ぶ
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => { setCheckoutStep('processing') }}
+                    className="w-full h-12 rounded-xl text-sm font-semibold transition-all"
+                    style={{ background: '#10b981', color: '#fff' }}
+                  >
+                    チェックアウトする →
+                  </button>
+                )}
+                <button
+                  onClick={() => setActiveTab('kiosk')}
+                  className="text-xs text-slate-600 hover:text-slate-400 transition-colors"
+                >
+                  ← スタートに戻る
+                </button>
+              </div>
+            )}
+
+            {checkoutStep === 'processing' && (
+              <div className="flex flex-col items-center gap-6 py-8">
+                <div className="w-12 h-12 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                <p className="text-slate-300 font-medium text-sm">精算処理中...</p>
+                <p className="text-slate-500 text-xs">PMSと同期しています</p>
+                {/* 実際はAPIコール完了後にdoneへ遷移 */}
+                {typeof window !== 'undefined' && setTimeout(() => setCheckoutStep('done'), 2000) && null}
+              </div>
+            )}
+
+            {checkoutStep === 'done' && (
+              <div className="flex flex-col items-center gap-6 py-8 text-center">
+                <div
+                  className="w-20 h-20 rounded-full flex items-center justify-center"
+                  style={{ background: 'rgba(16,185,129,0.1)', border: '2px solid #10b981' }}
+                >
+                  <span className="text-4xl">✓</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-slate-100">チェックアウト完了</h3>
+                  <p className="text-slate-400 text-sm mt-1">ご利用ありがとうございました</p>
+                </div>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  鍵カードの返却をお忘れなく。<br />またのご利用をお待ちしております。
+                </p>
+                <button
+                  onClick={() => { setCheckoutStep('confirm'); setActiveTab('kiosk') }}
+                  className="px-8 h-10 rounded-lg text-sm font-semibold transition-all"
+                  style={{ background: '#1e293b', color: '#94a3b8', border: '1px solid #334155' }}
+                >
+                  スタートに戻る
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
 export default function HotelPage() { return <NoSSR /> }
