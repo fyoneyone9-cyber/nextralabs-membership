@@ -1,5 +1,5 @@
 ﻿'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
 import { Scale, Search, Loader2, ShoppingCart, Zap, TrendingUp, AlertTriangle, ArrowRight, RefreshCw } from 'lucide-react'
@@ -10,16 +10,9 @@ const MasterEngine = () => {
   const [result, setResult] = useState<any>(null)
   const [trends, setTrends] = useState<any[]>([])
   const [isMounted, setIsMounted] = useState(false)
+  const autoLoadedRef = useRef(false)
 
-  useEffect(() => {
-    setIsMounted(true)
-    fetch('/api/trends').then(r => r.json()).then(d => {
-      if (Array.isArray(d)) setTrends(d.slice(0, 8))
-      else if (d.trends) setTrends(d.trends.slice(0, 8))
-    }).catch(() => {})
-  }, [])
-
-  const runAnalysis = async (searchWord?: string) => {
+  const runAnalysis = useCallback(async (searchWord?: string) => {
     const word = searchWord || query
     if (!word) return
     setQuery(word)
@@ -39,7 +32,22 @@ const MasterEngine = () => {
     } finally {
       setIsAnalyzing(false)
     }
-  }
+  }, [query])
+
+  useEffect(() => {
+    setIsMounted(true)
+    fetch('/api/trends').then(r => r.json()).then(d => {
+      const list: any[] = Array.isArray(d) ? d.slice(0, 8) : (d.trends ? d.trends.slice(0, 8) : [])
+      setTrends(list)
+      // 最初のトレンドキーワードをプリセット → 自動解析（1回だけ）
+      if (list.length > 0 && !autoLoadedRef.current) {
+        autoLoadedRef.current = true
+        const firstWord = list[0].name || list[0].title || list[0]
+        setQuery(firstWord)
+        setTimeout(() => runAnalysis(firstWord), 300)
+      }
+    }).catch(() => {})
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!isMounted) return null
 
