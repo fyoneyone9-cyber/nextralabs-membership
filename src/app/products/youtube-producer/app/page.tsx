@@ -273,7 +273,7 @@ function YoutubeProducerApp() {
               <div className="grid grid-cols-3 gap-3">
                 {['Claude', 'ChatGPT', 'Gemini'].map((ai) => (
                   <div key={ai} className="flex flex-col gap-2 p-2 bg-white/5 rounded-xl border border-white/5">
-                    <Button onClick={() => { navigator.clipboard.writeText("この動画を日本語で文字起こししてください。"); alert(`コピーしました！${ai}に動画を添付して貼り付けてください。`); }} className="h-9 text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 font-medium hover:bg-emerald-500/40 rounded-lg">指示書をコピー 📋</Button>
+                    <Button onClick={() => { navigator.clipboard.writeText("この動画を日本語で文字起こししてください。"); alert(`✅ コピー完了！Claudeを開いて、動画または音声ファイルと一緒に貼り付けてください。ChatGPT・Geminiなど他のAIでもOKです！`); }} className="h-9 text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 font-medium hover:bg-emerald-500/40 rounded-lg">指示書をコピー 📋</Button>
                     <a href={ai === 'Claude' ? 'https://claude.ai' : ai === 'ChatGPT' ? 'https://chatgpt.com' : 'https://gemini.google.com'} target="_blank" className="bg-white/5 border border-white/10 rounded-lg p-3 text-center hover:bg-white/10 transition-all group"><p className="text-xs text-slate-400 group-hover:text-emerald-400 mb-1">{ai === 'Claude' ? 'Anthropic' : ai === 'ChatGPT' ? 'OpenAI' : 'Google'}</p><p className="text-base font-semibold text-white">{ai}</p></a>
                   </div>
                 ))}
