@@ -200,7 +200,8 @@ const MasterEngine = () => {
     }
 
     const generateLines = (size: number) => {
-      const fontStr = S.font.replace(/[\d.]+px/, `${size}px`)
+      // `300 28px Helvetica` のような文字列でも px 直前の数字だけ置換する
+      const fontStr = S.font.replace(/\b[\d.]+px\b/, `${size}px`)
       const tempLines: string[] = []
       let current = ''
       let currentW = 0
@@ -219,8 +220,8 @@ const MasterEngine = () => {
       return { lines: tempLines, fontStr }
     }
 
-    // 2. 初期フォントサイズ（スタイルのpxを取得し上限を設ける）
-    const styleSize = parseInt(S.font.match(/(\d+)px/)?.[1] || '24')
+    // 2. 初期フォントサイズ（スタイルの `NNpx` を取得し上限を設ける）
+    const styleSize = parseInt(S.font.match(/\b(\d+)px\b/)?.[1] || '24')
     let fontSize = isSmall ? Math.min(styleSize, 14) : Math.min(styleSize, 22)
     let lines: string[] = []
 
