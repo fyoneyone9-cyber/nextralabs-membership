@@ -194,24 +194,62 @@ function CheckoutProcessing({ onDone }: { onDone: () => void }) {
   )
 }
 
-/* ─────────── PMS設定バナー ─────────── */
-function PmsBanner({ pms, lockType, isOnline }: { pms: string; lockType: string; isOnline: boolean }) {
-  const pmsInfo = PMS_OPTIONS.find(p => p.id === pms) || PMS_OPTIONS[4]
+/* ─────────── PMS設定バナー（DMS同期ボタン付き） ─────────── */
+function PmsBanner({
+  pms, lockType, isOnline, onSync
+}: {
+  pms: string; lockType: string; isOnline: boolean
+  onSync: () => void
+}) {
+  const [syncing, setSyncing] = useState(false)
+  const [syncMsg, setSyncMsg] = useState<string | null>(null)
+  const pmsInfo  = PMS_OPTIONS.find(p => p.id === pms)  || PMS_OPTIONS[4]
   const lockInfo = LOCK_OPTIONS.find(l => l.id === lockType) || LOCK_OPTIONS[2]
+
+  const handleSync = async () => {
+    setSyncing(true)
+    setSyncMsg(null)
+    await onSync()
+    setSyncing(false)
+    setSyncMsg('DMSに同期しました')
+    setTimeout(() => setSyncMsg(null), 3000)
+  }
+
   return (
-    <div className="flex items-center gap-3 px-4 py-2 rounded-lg flex-wrap"
+    <div className="rounded-lg px-4 py-2.5 flex items-center gap-3 flex-wrap"
       style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
+      {/* PMS状態 */}
       <div className="flex items-center gap-1.5 text-[11px]">
         {isOnline
           ? <Wifi size={11} style={{ color: pmsInfo.color }} />
           : <WifiOff size={11} className="text-slate-500" />}
         <span style={{ color: pmsInfo.color }} className="font-semibold">{pmsInfo.label}</span>
-        {!isOnline && <span className="text-slate-600">（ローカルモード）</span>}
+        {!isOnline && <span className="text-slate-600">（ローカル）</span>}
       </div>
       <span className="text-slate-700 text-[10px]">|</span>
+      {/* 錠状態 */}
       <div className="flex items-center gap-1.5 text-[11px]">
         <Lock size={11} style={{ color: lockInfo.color }} />
         <span style={{ color: lockInfo.color }} className="font-semibold">{lockInfo.label}</span>
+      </div>
+      {/* 同期ボタン・ステータス */}
+      <div className="flex items-center gap-2 ml-auto">
+        {syncMsg && (
+          <span className="text-[10px] text-emerald-400 flex items-center gap-1">
+            <CheckCircle2 size={10} /> {syncMsg}
+          </span>
+        )}
+        <button onClick={handleSync} disabled={syncing}
+          className="flex items-center gap-1.5 px-3 h-7 rounded-md text-[11px] font-semibold transition-all"
+          style={{
+            background: 'rgba(16,185,129,0.1)',
+            border: '1px solid rgba(16,185,129,0.3)',
+            color: '#34d399',
+            opacity: syncing ? 0.6 : 1,
+          }}>
+          {syncing ? <Loader2 size={10} className="animate-spin" /> : <Wifi size={10} />}
+          DMSに同期
+        </button>
       </div>
     </div>
   )
@@ -793,8 +831,27 @@ const MasterEngine = () => {
 
       <div className="max-w-5xl mx-auto px-6 space-y-4">
 
-        {/* PMS接続状態バナー */}
-        <PmsBanner pms={pms} lockType={lockType} isOnline={isOnline} />
+        {/* PMS接続状態バナー + DMS同期ボタン */}
+        <PmsBanner
+          pms={pms}
+          lockType={lockType}
+          isOnline={isOnline}
+          onSync={async () => {
+            // PMS接続テストを実行してDMSの状態を更新
+            try {
+              const savedPms = JSON.parse(localStorage.getItem('nextra_ai_pms_config') || '{}')
+              const res = await fetch('/api/nextra-ai/connect', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: 'pms', pms, pmsApiKey: savedPms.apiKey || '' }),
+              })
+              const data = await res.json()
+              setIsOnline(data.ok && data.mode !== 'local')
+            } catch {
+              setIsOnline(false)
+            }
+          }}
+        />
 
         {/* タブナビ */}
         <div className="flex gap-1 p-1 rounded-xl overflow-x-auto" style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
@@ -1090,25 +1147,25 @@ const MasterEngine = () => {
               />
             </div>
 
-            {/* 登録ボタン */}
+            {/* チェックイン完了ボタン */}
             <button
               onClick={async () => {
                 if (selectedReservation?.id) await notifyCheckin(selectedReservation.id)
                 setActiveTab('lock')
               }}
-              disabled={!ledgerName || !signatureData}
+              disabled={!ledgerName}
               className="w-full h-12 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all"
               style={{
-                background: ledgerName && signatureData ? '#10b981' : '#1e293b',
-                color: ledgerName && signatureData ? '#fff' : '#475569',
+                background: ledgerName ? '#10b981' : '#1e293b',
+                color: ledgerName ? '#fff' : '#475569',
               }}>
-              PMS登録 ＆ 鍵発行へ <ArrowRight size={15} />
+              チェックイン完了 → 鍵発行 <ArrowRight size={15} />
             </button>
-            {(!ledgerName || !signatureData) && (
-              <p className="text-center text-[10px] text-slate-600">
-                {!ledgerName ? '氏名を入力してください' : '電子署名が必要です'}
-              </p>
-            )}
+            <p className="text-center text-[10px] text-slate-600">
+              {!ledgerName
+                ? '氏名を入力してください'
+                : `入力内容を${PMS_OPTIONS.find(p => p.id === pms)?.label || 'PMS'}に送信し、DMSに反映されます`}
+            </p>
           </div>
         )}
 
