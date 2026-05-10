@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { MapPin, Loader2, RotateCcw, ExternalLink, Train, Hotel, Utensils, Camera, ChevronDown, ChevronUp, ArrowRight, Star, Users, Compass, Youtube } from 'lucide-react'
+import { MapPin, Loader2, RotateCcw, ExternalLink, Train, Hotel, Utensils, Camera, ChevronDown, ChevronUp, ArrowRight, Star, Users, Compass } from 'lucide-react'
 // Markdown renderer (no external dependency)
 
 // ─── Markdown簡易レンダラー ───────────────────────────────────────────────────
@@ -34,12 +34,18 @@ function MarkdownRenderer({ content }: { content: string }) {
 // ─── 定数 ──────────────────────────────────────────────────────────────────────
 
 const PRESETS = [
-  { id: 'kimetsu', label: '鬼滅の刃', emoji: '🗡️', description: '竹林・大正ロマン', color: 'border-red-500/60 hover:border-red-400' },
-  { id: 'kiminonawa', label: '君の名は', emoji: '☄️', description: '飛騨古川・新宿', color: 'border-blue-500/60 hover:border-blue-400' },
-  { id: 'slamdunk', label: 'スラムダンク', emoji: '🏀', description: '鎌倉・江ノ電', color: 'border-orange-500/60 hover:border-orange-400' },
-  { id: 'spirited', label: '千と千尋', emoji: '🏮', description: '道後温泉・山梨', color: 'border-purple-500/60 hover:border-purple-400' },
-  { id: 'evangelion', label: 'エヴァンゲリオン', emoji: '🤖', description: '箱根・宇部市', color: 'border-green-500/60 hover:border-green-400' },
-  { id: 'yuruyuri', label: 'ゆるキャン△', emoji: '⛺', description: '山梨・富士山', color: 'border-yellow-500/60 hover:border-yellow-400' },
+  { id: 'kimetsu',    label: '鬼滅の刃',       emoji: '🗡️', description: '竹林・大正ロマン',    color: 'border-red-500/60 hover:border-red-400' },
+  { id: 'kiminonawa', label: '君の名は',        emoji: '☄️', description: '飛騨古川・新宿',      color: 'border-blue-500/60 hover:border-blue-400' },
+  { id: 'slamdunk',   label: 'スラムダンク',    emoji: '🏀', description: '鎌倉・江ノ電・湘南',  color: 'border-orange-500/60 hover:border-orange-400' },
+  { id: 'spirited',   label: '千と千尋',        emoji: '🏮', description: '道後温泉・神戸・山梨', color: 'border-purple-500/60 hover:border-purple-400' },
+  { id: 'evangelion', label: 'エヴァンゲリオン', emoji: '🤖', description: '箱根・宇部市',        color: 'border-green-500/60 hover:border-green-400' },
+  { id: 'yuruyuri',   label: 'ゆるキャン△',     emoji: '⛺', description: '山梨・富士山・浜名湖', color: 'border-yellow-500/60 hover:border-yellow-400' },
+  { id: 'yourname2',  label: '天気の子',        emoji: '🌦️', description: '新宿・渋谷・お台場',  color: 'border-cyan-500/60 hover:border-cyan-400' },
+  { id: 'demonslayer2', label: '呪術廻戦',      emoji: '🌀', description: '渋谷・新宿・仙台',    color: 'border-indigo-500/60 hover:border-indigo-400' },
+  { id: 'attack',     label: '進撃の巨人',      emoji: '⚔️', description: '軍艦島・岡山・長崎',  color: 'border-gray-500/60 hover:border-gray-400' },
+  { id: 'onepunch',   label: 'ワンピース',      emoji: '🏴‍☠️', description: '長崎・熊本・沖縄',   color: 'border-amber-500/60 hover:border-amber-400' },
+  { id: 'totoro',     label: 'となりのトトロ',  emoji: '🌳', description: '所沢・狭山丘陵',      color: 'border-teal-500/60 hover:border-teal-400' },
+  { id: 'demon',      label: '鬼太郎・境港',    emoji: '👁️', description: '境港・水木しげるロード', color: 'border-slate-500/60 hover:border-slate-400' },
 ]
 
 const TRIP_STYLES = ['日帰り', '1泊2日', '2泊3日']
@@ -94,7 +100,6 @@ export default function PilgrimagePlanner() {
   const router = useRouter()
 
   // ── 入力状態 ──
-  const [youtubeUrl, setYoutubeUrl] = useState('')
   const [keyword, setKeyword] = useState('')
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null)
   const [tripStyle, setTripStyle] = useState('1泊2日')
@@ -120,17 +125,15 @@ export default function PilgrimagePlanner() {
   const handlePresetSelect = (id: string) => {
     if (selectedPreset === id) {
       setSelectedPreset(null)
-      setKeyword('')
     } else {
       setSelectedPreset(id)
       setKeyword('')
-      setYoutubeUrl('')
     }
   }
 
   const handleSubmit = async () => {
-    if (!youtubeUrl && !keyword && !selectedPreset) {
-      setError('YouTube URL、作品名、またはプリセットを選択してください')
+    if (!keyword && !selectedPreset) {
+      setError('作品を選択するか、作品名を入力してください')
       return
     }
     setIsLoading(true)
@@ -142,7 +145,6 @@ export default function PilgrimagePlanner() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          youtubeUrl: youtubeUrl || undefined,
           keyword: keyword || undefined,
           presetId: selectedPreset || undefined,
           tripStyle,
@@ -200,73 +202,45 @@ export default function PilgrimagePlanner() {
           推し活<span className="text-emerald-400">聖地巡礼</span><br />ツアープランナー
         </h1>
         <p className="text-slate-400 text-sm mt-2 leading-relaxed">
-          URLを貼るだけで、AI が聖地を特定して<br />最適な巡礼プランを自動生成します
+          作品を選ぶだけで、AI が聖地を特定して<br />最適な巡礼プランを自動生成します
         </p>
       </div>
 
-      {/* STEP 1: 入力 */}
+      {/* STEP 1: 作品選択 */}
       <div className="bg-[#0d1117] rounded-xl border border-white/5 p-5 space-y-4">
-        <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">STEP 1 — 作品を教えてください</p>
+        <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">STEP 1 — 作品を選んでください</p>
 
-        {/* YouTube URL */}
-        <div>
-          <label className="text-sm text-slate-300 mb-1.5 block flex items-center gap-1.5">
-            <Youtube size={14} className="text-red-400" />
-            YouTube URL（任意）
-          </label>
-          <input
-            type="url"
-            value={youtubeUrl}
-            onChange={(e) => { setYoutubeUrl(e.target.value); setSelectedPreset(null); setKeyword('') }}
-            placeholder="https://www.youtube.com/watch?v=..."
-            className="w-full bg-[#0f1520] border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 transition"
-          />
-        </div>
-
-        {/* OR区切り */}
-        <div className="flex items-center gap-3">
-          <div className="flex-1 h-px bg-white/5" />
-          <span className="text-xs text-slate-600">または</span>
-          <div className="flex-1 h-px bg-white/5" />
-        </div>
-
-        {/* テキスト入力 */}
-        <div>
-          <label className="text-sm text-slate-300 mb-1.5 block">作品名・キーワードで入力</label>
-          <input
-            type="text"
-            value={keyword}
-            onChange={(e) => { setKeyword(e.target.value); setSelectedPreset(null); setYoutubeUrl('') }}
-            placeholder="例：鬼滅の刃、君の名は、新海誠..."
-            className="w-full bg-[#0f1520] border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 transition"
-          />
-        </div>
-
-        {/* OR区切り */}
-        <div className="flex items-center gap-3">
-          <div className="flex-1 h-px bg-white/5" />
-          <span className="text-xs text-slate-600">または プリセットから選ぶ</span>
-          <div className="flex-1 h-px bg-white/5" />
-        </div>
-
-        {/* プリセット */}
-        <div className="grid grid-cols-3 gap-2">
+        {/* プリセット 4列 */}
+        <div className="grid grid-cols-4 gap-2">
           {PRESETS.map((p) => (
             <button
               key={p.id}
               onClick={() => handlePresetSelect(p.id)}
-              className={`flex flex-col items-start gap-0.5 p-3 rounded-xl border text-left transition-all ${
+              className={`flex flex-col items-center gap-1 p-2.5 rounded-xl border text-center transition-all ${
                 selectedPreset === p.id
                   ? 'border-emerald-500 bg-emerald-500/10 text-white'
                   : `border-white/10 bg-[#0f1520] text-slate-300 ${p.color}`
               }`}
             >
-              <span className="text-xl">{p.emoji}</span>
-              <span className="text-sm font-medium leading-tight">{p.label}</span>
-              <span className="text-xs text-slate-500">{p.description}</span>
+              <span className="text-2xl">{p.emoji}</span>
+              <span className="text-xs font-medium leading-tight">{p.label}</span>
             </button>
           ))}
         </div>
+
+        {/* テキスト入力（プリセット以外） */}
+        <div className="flex items-center gap-3">
+          <div className="flex-1 h-px bg-white/5" />
+          <span className="text-xs text-slate-600">または作品名を直接入力</span>
+          <div className="flex-1 h-px bg-white/5" />
+        </div>
+        <input
+          type="text"
+          value={keyword}
+          onChange={(e) => { setKeyword(e.target.value); setSelectedPreset(null) }}
+          placeholder="例：ドラゴンボール、NARUTO、推しの子..."
+          className="w-full bg-[#0f1520] border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 transition"
+        />
       </div>
 
       {/* STEP 2: 旅のスタイル */}
