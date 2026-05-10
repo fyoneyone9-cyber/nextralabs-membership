@@ -40,6 +40,7 @@ const TOOLS = [
   { id: 'ai-exam-generator/app', cat: 'edu', title: 'AI問題生成 & 苦手分析', sub: '予想問題を無限生成と弱点ポイント可視化', icon: Brain, plan: 'プレミアム' , done: true },
   { id: 'location-finder/app', cat: 'hotel', title: 'AIロケーションファインダー', sub: '出店・移住の最適地をデータ分析', icon: MapPin, plan: 'スタンダード', done: true },
   { id: 'travel-concierge/app', cat: 'hotel', title: 'AI旅行コンシェルジュ', sub: '楽天トラベル×Google Maps×AIで旅程を自動生成', icon: Plane, plan: 'スタンダード' },
+  { id: 'pilgrimage-planner/app', cat: 'hotel', title: '推し活聖地巡礼プランナー', sub: 'YouTube URL → AI聖地特定 → 楽天トラベル自動提案', icon: MapPin, plan: 'スタンダード' },
   { id: 'smart-gardening/app', cat: 'life', title: 'AIスマートガーデニング', sub: '植物の声を聴く育成アドバイザー', icon: Sprout, plan: 'スタンダード', done: true },
 ]
 

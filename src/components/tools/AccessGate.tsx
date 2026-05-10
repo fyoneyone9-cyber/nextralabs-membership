@@ -35,6 +35,7 @@ const STANDARD_IDS = [
   'shio-taiou',
   'trend-stock',
   'travel-concierge',
+  'pilgrimage-planner',
 ]
 
 // ライト以上で使えるツール (¥480/月〜)
