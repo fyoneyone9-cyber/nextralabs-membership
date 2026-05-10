@@ -188,6 +188,59 @@ export default function TravelConciergeLP() {
         </div>
       </section>
 
+      {/* ─── ロードマップ ─── */}
+      <section className="max-w-4xl mx-auto px-6 py-16">
+        <h2 className="text-2xl font-semibold text-center mb-2">ロードマップ</h2>
+        <p className="text-sm text-slate-500 text-center mb-10">NextraLabsは「本物しか許さない」をコンセプトに継続進化します</p>
+        <div className="space-y-4">
+          {[
+            { version: 'v1.0', status: 'done', label: 'リリース済み', title: '楽天トラベル × Google Maps × AI旅程生成', desc: '宿・観光地のリアルデータ取得 + Gemini AIによる完全旅程自動生成' },
+            { version: 'v1.1', status: 'done', label: 'リリース済み', title: '旅行スタイルプリセット + ステップ型UI', desc: 'カップル/家族/一人旅など8種プリセット・季節ボタン・ロード進捗表示・旅程コピー機能' },
+            { version: 'v1.2', status: 'next', label: '開発予定', title: '旅程PDFダウンロード', desc: '生成した旅程をそのままPDFに書き出し。印刷・保存・シェアに対応' },
+            { version: 'v1.3', status: 'planned', label: '計画中', title: '過去旅程の保存・再利用', desc: 'マイページに旅程履歴を保存。過去のプランを再生成・アレンジ可能に' },
+            { version: 'v2.0', status: 'planned', label: '計画中', title: '交通費・新幹線・飛行機の自動組み込み', desc: '出発地から目的地の交通手段・料金をAIが自動計算し旅程に組み込む' },
+          ].map(({ version, status, label, title, desc }) => (
+            <div
+              key={version}
+              className="flex gap-4 p-5 rounded-xl"
+              style={{
+                background: status === 'done' ? 'rgba(16,185,129,0.05)' : '#0d1117',
+                border: status === 'done' ? '1px solid rgba(16,185,129,0.25)' : '1px solid #1e293b',
+              }}
+            >
+              <div className="shrink-0 mt-0.5">
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+                  style={{
+                    background: status === 'done' ? 'rgba(16,185,129,0.2)' : status === 'next' ? 'rgba(234,179,8,0.15)' : '#13141f',
+                    color: status === 'done' ? '#34d399' : status === 'next' ? '#fbbf24' : '#475569',
+                  }}
+                >
+                  {status === 'done' ? '✓' : status === 'next' ? '▶' : '○'}
+                </div>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <span className="text-xs font-bold" style={{ color: status === 'done' ? '#34d399' : '#64748b' }}>{version}</span>
+                  <span
+                    className="px-2 py-0.5 text-xs rounded-full font-medium"
+                    style={{
+                      background: status === 'done' ? 'rgba(16,185,129,0.15)' : status === 'next' ? 'rgba(234,179,8,0.1)' : '#13141f',
+                      color: status === 'done' ? '#34d399' : status === 'next' ? '#fbbf24' : '#64748b',
+                      border: `1px solid ${status === 'done' ? 'rgba(16,185,129,0.3)' : status === 'next' ? 'rgba(234,179,8,0.2)' : '#334155'}`,
+                    }}
+                  >
+                    {label}
+                  </span>
+                  <span className="text-sm font-semibold text-slate-200">{title}</span>
+                </div>
+                <p className="text-xs text-slate-500 leading-relaxed">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ─── Amazon アフィリエイト ─── */}
       <div className="max-w-4xl mx-auto px-6 pb-20 text-center">
         <div
