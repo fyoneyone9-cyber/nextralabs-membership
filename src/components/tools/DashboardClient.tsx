@@ -104,7 +104,7 @@ const TOOL_CATEGORIES = [
       { id: 'ai-sidejob',           name: 'AI副業スタートダッシュ',   icon: Briefcase,    color: 'text-emerald-400',  plan: 'premium' },
       { id: 'ai-select-shop',       name: 'AIセレクトショップ',       icon: ShoppingCart, color: 'text-pink-400',    plan: 'premium' },
       { id: 'ai-exam-generator',    name: 'AI問題生成 & 苦手分析',    icon: Brain,        color: 'text-emerald-400',  plan: 'premium' },
-      { id: 'interior-coordinator', name: 'Interior Sync',           icon: Sofa,         color: 'text-emerald-500',   plan: 'premium' },
+
       { id: 'scam-defender',         name: 'AI詐欺ディフェンダー',       icon: ShieldCheck,   color: 'text-red-400',     plan: 'premium' },
     ]
   },
@@ -119,7 +119,7 @@ const TOOL_CATEGORIES = [
       { id: 'buzz-writer',           name: 'AIバズ文章コーチ',           icon: Pen,            color: 'text-emerald-400', plan: 'standard' },
       { id: 'comm-coach',            name: 'AIコミュニケーション改善',   icon: MessageCircle,  color: 'text-blue-400',    plan: 'standard' },
       { id: 'resignation-assistant', name: '退職あんしんAI',             icon: LogOut,         color: 'text-slate-400',   plan: 'standard' },
-      { id: 'trend-stock',           name: 'SNSトレンド自動仕入れ',      icon: TrendingUp,     color: 'text-green-400',   plan: 'standard' },
+
       { id: 'kdp-guide',             name: 'Kindle KDP 攻略ナビ',       icon: BookOpen,       color: 'text-emerald-300',   plan: 'standard' },
     ]
   },
@@ -129,13 +129,11 @@ const TOOL_CATEGORIES = [
     borderColor: 'border-emerald-500/30',
     tools: [
       { id: 'universal-converter', name: '究極AIマルチコンバーター',  icon: Repeat,       color: 'text-emerald-400', plan: 'light' },
-      { id: 'expense-sync',       name: 'Expense Sync',        icon: DollarSign,   color: 'text-green-400',  plan: 'light' },
-      { id: 'contact-sync',       name: 'Contact Sync',        icon: UserPlus,     color: 'text-emerald-400', plan: 'light' },
 
       { id: 'moving-checker',        name: 'AI引越し安心チェッカー', icon: Home,         color: 'text-teal-400',    plan: 'free' },
       { id: 'ai-recipe',            name: 'AIレシピ献立コーチ',       icon: Utensils,     color: 'text-emerald-400',  plan: 'free' },
 
-      { id: 'evidence-manager',      name: 'エビデンス・マネージャー', icon: Archive,      color: 'text-emerald-400', plan: 'free' },
+
     ]
   },
 ]
