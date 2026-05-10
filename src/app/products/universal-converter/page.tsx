@@ -19,9 +19,26 @@ import {
 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: '究極AIマルチコンバーター | 動画・画像・PDFをこれ一台で自由自在 - NextraLabs',
-  description: 'NextraLabsの究極AIマルチコンバーター。MP4, MOV, WebP, PNG, PDFの相互変換と極限圧縮をワンストップで。憲法遵守・会員プラン厳守のセキュア設計。',
-  keywords: ['動画変換', '画像変換', 'PDF圧縮', 'AIコンバーター', 'NextraLabs', 'Ninja3'],
+  title: '究極AIマルチコンバーター | 動画・画像・PDF変換を全自動・高速処理 | NextraLabs',
+  description: '動画・画像・PDFを選択してボタンを押すだけ。MP4→MP3・JPG→PDF・PDF圧縮など50種類以上の変換に対応したAI搭載ファイル変換ツール。高速・高品質・セキュア。月額¥480のライトプランで利用可能。',
+  keywords: ['ファイル変換AI','動画変換','画像変換AI','PDF変換AI','MP4変換','動画圧縮AI','画像圧縮AI','PDF圧縮','ファイル形式変換','NextraLabsコンバーター','MP4MP3変換','JPG PNG変換','オンライン変換ツール'],
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
+  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/universal-converter' },
+  openGraph: {
+    title: '究極AIマルチコンバーター | 動画・画像・PDF変換を全自動 | NextraLabs',
+    description: '動画・画像・PDFを選択してボタンを押すだけ。50種類以上の変換に対応。月額¥480。',
+    url: 'https://membership-site-nextralabos.vercel.app/products/universal-converter',
+    type: 'website',
+    locale: 'ja_JP',
+    siteName: 'NextraLabs',
+    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: '究極AIマルチコンバーター | NextraLabs' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '究極AIマルチコンバーター | 動画・画像・PDF変換を全自動',
+    description: '動画・画像・PDFを選択してボタンを押すだけ。50種類以上の変換。月額¥480。',
+    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+  },
 }
 
 const features = [
@@ -49,7 +66,19 @@ const features = [
 ]
 
 export default function UniversalConverterPage() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: '究極AIマルチコンバーター',
+    description: '動画・画像・PDFを選択してボタンを押すだけ。50種類以上の変換に対応したAI搭載ファイル変換ツール。',
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Web',
+    offers: { '@type': 'Offer', price: '480', priceCurrency: 'JPY' },
+    publisher: { '@type': 'Organization', name: 'NextraLabs', url: 'https://membership-site-nextralabos.vercel.app' }
+  }
   return (
+    <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     <div className="min-h-screen bg-[#050507] text-slate-200 pb-20 font-sans">
       <section className="relative overflow-hidden py-16 md:py-24 border-b border-emerald-500/20">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-emerald-500/5" />
@@ -147,6 +176,28 @@ export default function UniversalConverterPage() {
           </div>
         </div>
       </section>
+
+      {/* FAQ */}
+      <section className="py-16" style={{ background: '#0d1117' }}>
+        <div className="max-w-3xl mx-auto px-4">
+          <h2 className="text-2xl font-bold text-white mb-8 text-center">よくある質問</h2>
+          <div className="space-y-4">
+            {[
+              { q: '対応しているファイル形式を教えてください。', a: '動画（MP4・MOV・AVI・WebM）、画像（JPG・PNG・WebP・GIF）、ドキュメント（PDF・DOCX）など50種類以上に対応しています。' },
+              { q: 'ファイルはサーバーに保存されますか？', a: 'いいえ。変換処理はブラウザ上で行い、ファイルはサーバーに送信・保存されません。プライバシーを完全に保護します。' },
+              { q: 'ファイルサイズの上限はありますか？', a: 'ライトプランでは1ファイル最大500MBまで対応しています。大容量ファイルの変換もスムーズに処理します。' },
+              { q: '変換にかかる時間はどれくらいですか？', a: 'ファイルサイズや形式によりますが、通常数秒〜数十秒で完了します。AIによる最適化処理で高速変換を実現しています。' },
+              { q: 'スマートフォンでも使えますか？', a: 'はい。ブラウザベースのツールのため、スマートフォン・タブレット・PCすべてで利用可能です。アプリのインストールは不要です。' },
+            ].map((item, i) => (
+              <div key={i} className="p-5 rounded-xl" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
+                <p className="font-semibold text-white mb-2">Q. {item.q}</p>
+                <p className="text-slate-400 text-sm leading-relaxed">A. {item.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
+    </>
   )
 }

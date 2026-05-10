@@ -1,9 +1,10 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'AI防災パーソナルガイド | 避難ルート・備蓄最適化・家族の安全をAIが守る | NextraLabs',
   description: '住所と家族構成を入力するだけ。AIがハザードマップ解析・最適避難ルート・家族構成に合わせた備蓄リスト・緊急連絡プランを自動生成。防災準備の決定版。月額¥980。',
   keywords: ['防災AIアプリ','避難ルートAI','備蓄リストAI','防災準備AI','ハザードマップ','家族防災AI','地震対策AI','防災計画AI','緊急連絡AI','NextraLabs防災'],
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/disaster-guard',
   },
@@ -134,5 +135,48 @@ const NoSSRWrapper = dynamic(() => Promise.resolve(DisasterLpContent), {
 })
 
 export default function DisasterGuardLp() {
-  return <NoSSRWrapper />
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'AI防災パーソナルガイド',
+    description: '住所と家族構成を入力するだけ。AIがハザードマップ解析・最適避難ルート・備蓄リスト・緊急連絡プランを自動生成。',
+    applicationCategory: 'LifestyleApplication',
+    operatingSystem: 'Web',
+    url: 'https://membership-site-nextralabos.vercel.app/products/disaster-guard',
+    offers: { '@type': 'Offer', price: '980', priceCurrency: 'JPY' },
+    publisher: { '@type': 'Organization', name: 'NextraLabs' },
+  }
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <NoSSRWrapper />
+      <section className="py-16 bg-[#0d1117]">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <h2 className="text-2xl font-bold text-white mb-8 text-center">よくある質問</h2>
+          <div className="space-y-6">
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 住所を入力することに不安があります。個人情報は安全ですか？</p>
+              <p className="text-slate-400 text-sm">A. 入力した住所情報は防災診断にのみ使用され、サーバーに保存されることはありません。ブラウザ内で処理が完結するため、プライバシーは完全に保護されます。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 子どもやお年寄りがいる家族向けの備蓄リストも作れますか？</p>
+              <p className="text-slate-400 text-sm">A. はい。家族構成（乳幼児・高齢者・ペットなど）を入力すると、それぞれに必要な備蓄品・医薬品・特別な対応が含まれた専用リストをAIが自動生成します。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. ハザードマップの解析とはどういうものですか？</p>
+              <p className="text-slate-400 text-sm">A. 国土交通省が公開するハザードマップデータをもとに、お住まいの地域の洪水・土砂災害・地震・津波リスクをAIが解析し、5段階の危険度スコアで表示します。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 避難ルートはどうやって提示されますか？</p>
+              <p className="text-slate-400 text-sm">A. 最寄りの避難所までの複数ルートと、危険エリアを回避した最適経路をAIが提案します。徒歩・自転車・車など移動手段別の所要時間も確認できます。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 緊急連絡プランとは何ですか？</p>
+              <p className="text-slate-400 text-sm">A. 災害発生時に家族が離れた場所にいても連絡を取り合えるよう、集合場所・連絡方法・緊急連絡先をまとめた家族専用の緊急連絡カードをAIが作成します。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  )
 }

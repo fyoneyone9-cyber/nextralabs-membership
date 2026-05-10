@@ -1,9 +1,10 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'AI SNSオートポスター | バズる投稿をAIが量産・全SNS一括生成 | NextraLabs',
   description: 'テーマを入力するだけでAIがX(Twitter)・Instagram・Facebook・TikTok向けに最適化されたバズる投稿文を一括生成。ハッシュタグ・投稿時間帯も自動提案。月額¥480。',
   keywords: ['SNS投稿AI','Twitter自動投稿','Instagram投稿AI','バズる投稿','SNSマーケティングAI','ハッシュタグAI','SNS運用AI','コンテンツ自動生成','投稿文AI','NextraLabsSNS'],
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/sns-auto-poster',
   },

@@ -1,25 +1,26 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'YouTube AI Sync | 動画解析×楽天コーチで収益を最大化',
-  description: '動画のパフォーマンスをAIが解析し、改善案を自動提示。楽天アフィリエイト連携で動画からの収益を倍増。YouTubeチャンネル成長を加速。',
-  keywords: ['YouTube AI', 'YouTubeアナリティクスAI', '動画収益化AI', '楽天アフィリエイトYouTube', 'YouTubeコーチ'],
+  title: 'YouTube AI Sync | 動画解析×楽天アフィリエイトで収益を最大化 | NextraLabs',
+  description: 'YouTube動画URLを入力するだけ。AIが動画内容を解析し、関連する楽天市場商品を自動抽出・アフィリエイトリンク生成。概要欄に貼るだけで収益化。YouTubeチャンネルの広告外収益を底上げ。月額¥1,980。',
+  keywords: ['YouTube楽天アフィリエイト','YouTube収益化AI','YouTube動画解析AI','楽天アフィリエイト自動化','YouTube概要欄AI','YouTube物販AI','アフィリエイトAI','YouTube収益最大化','動画収益AI','NextraLabsYouTube','YouTubeマネタイズ','楽天リンク自動生成'],
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/youtube-coordinator',
   },
   openGraph: {
-    title: 'YouTube AI Sync | 動画解析×楽天コーチで収益を最大化 | NextraLabs',
-    description: '動画のパフォーマンスをAIが解析し、改善案を自動提示。楽天アフィリエイト連携で動画からの収益を倍増。YouTubeチャンネル成長を加速。',
+    title: 'YouTube AI Sync | 動画解析×楽天アフィリエイトで収益を最大化 | NextraLabs',
+    description: 'YouTube動画URLを入力するだけ。AIが動画内容を解析し、関連する楽天市場商品を自動抽出・アフィリエイトリンク生成。概要欄に貼るだけで収益化。月額¥1,980。',
     url: 'https://membership-site-nextralabos.vercel.app/products/youtube-coordinator',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'YouTube AI Sync | 動画解析×楽天コーチで収益を最大化' }],
+    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'YouTube AI Sync | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'YouTube AI Sync | 動画解析×楽天コーチで収益を最大化',
-    description: '動画のパフォーマンスをAIが解析し、改善案を自動提示。楽天アフィリエイト連携で動画からの収益を倍増。YouTubeチャンネル成長を加速。',
+    title: 'YouTube AI Sync | 動画解析×楽天アフィリエイトで収益最大化',
+    description: 'YouTube動画URLを入力するだけ。AIが楽天アフィリエイトリンクを自動生成して概要欄収益を底上げ。月額¥1,980。',
     images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
   },
 }
@@ -141,5 +142,51 @@ const NoSSRWrapper = dynamic(() => Promise.resolve(YoutubeSyncLpContent), {
 })
 
 export default function YoutubeSyncLp() {
-  return <NoSSRWrapper />
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'YouTube AI Sync',
+    description: 'YouTube動画URLを入力するだけ。AIが動画内容を解析し、関連する楽天市場商品を自動抽出・アフィリエイトリンク生成。',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web',
+    offers: { '@type': 'Offer', price: '1980', priceCurrency: 'JPY' },
+    publisher: { '@type': 'Organization', name: 'NextraLabs', url: 'https://membership-site-nextralabos.vercel.app' }
+  }
+  const faqLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      { '@type': 'Question', name: 'どんなYouTubeチャンネルに向いていますか？', acceptedAnswer: { '@type': 'Answer', text: '商品紹介・ライフスタイル・ガジェット・料理・ファッション系のチャンネルに特に効果的です。動画内に商品が登場するコンテンツであれば業種を問わず活用できます。' } },
+      { '@type': 'Question', name: '楽天アフィリエイトのアカウントを持っていない場合は？', acceptedAnswer: { '@type': 'Answer', text: '楽天アフィリエイトの無料登録（審査あり）が必要です。本ツールはリンク生成の補助ツールのため、楽天アカウント登録後にご利用ください。' } },
+      { '@type': 'Question', name: '動画1本あたり何件の商品リンクが生成されますか？', acceptedAnswer: { '@type': 'Answer', text: 'AIが動画内容を解析し、関連性の高い商品を最大10件自動抽出します。概要欄に貼り付けやすい形式で出力します。' } },
+      { '@type': 'Question', name: '収益はいくら増えますか？', acceptedAnswer: { '@type': 'Answer', text: '楽天アフィリエイトの報酬率は商品カテゴリにより異なります（1〜15%）。月間再生数・動画テーマによって効果は変わりますが、概要欄収益の追加は広告収益外の安定収入源になります。' } },
+      { '@type': 'Question', name: 'どのプランで利用できますか？', acceptedAnswer: { '@type': 'Answer', text: 'プレミアムプラン（¥1,980/月）で利用可能です。30日間の無料トライアル後に課金が始まります。' } },
+    ]
+  }
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
+      <NoSSRWrapper />
+      <section className="py-16 bg-[#0d1117]">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <h2 className="text-2xl font-bold text-white mb-8 text-center">よくある質問</h2>
+          <div className="space-y-6">
+            {[
+              { q: 'どんなYouTubeチャンネルに向いていますか？', a: '商品紹介・ライフスタイル・ガジェット・料理・ファッション系のチャンネルに特に効果的です。動画内に商品が登場するコンテンツであれば業種を問わず活用できます。' },
+              { q: '楽天アフィリエイトのアカウントがなくても使えますか？', a: '楽天アフィリエイトの無料登録（審査あり）が必要です。本ツールはリンク生成補助ツールのため、楽天アカウント登録後にご利用ください。' },
+              { q: '動画1本あたり何件の商品リンクが生成されますか？', a: 'AIが動画内容を解析し、関連性の高い商品を最大10件自動抽出。概要欄に貼り付けやすい形式で出力します。' },
+              { q: '収益はどれくらい増えますか？', a: '楽天アフィリエイト報酬率は1〜15%（カテゴリ別）。月間再生数・テーマによって効果は変わりますが、広告収益外の安定収入源として機能します。' },
+              { q: 'どのプランで利用できますか？', a: 'プレミアムプラン（¥1,980/月）で利用可能です。' },
+            ].map((item, i) => (
+              <div key={i} className="p-5 rounded-xl" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
+                <p className="font-semibold text-white mb-2">Q. {item.q}</p>
+                <p className="text-slate-400 text-sm leading-relaxed">A. {item.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  )
 }

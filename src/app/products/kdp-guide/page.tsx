@@ -20,12 +20,13 @@ import {
 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Kindle出版手順ナビ | NextraLabs',
-  description: 'Amazon Kindle出版の手順をステップ形式でガイド。アカウント設定から原稿作成・価格設定・出版申請まで迷わず進められる。',
+  title: 'Kindle出版完全ナビ | KDP登録から出版・販売まで全手順をAIがガイド | NextraLabs',
+  description: 'Kindle出版を始めたい人向けの完全ガイド。KDPアカウント登録・原稿フォーマット・表紙作成・価格設定・ロイヤリティ計算まで全手順をAIがナビゲート。完全無料。',
+  keywords: ['KDP出版ガイド','Kindle出版方法','KDP登録','電子書籍出版AI','Kindle自費出版','KDP価格設定','Kindleロイヤリティ','電子書籍販売AI','本の出版AI','NextraLabsKDP'],
   alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/kdp-guide' },
   openGraph: {
-    title: 'Kindle出版手順ナビ | NextraLabs',
-    description: 'Amazon Kindle出版の手順をステップ形式でガイド。アカウント設定から出版申請まで迷わず進められる。',
+    title: 'Kindle出版完全ナビ | KDP登録から出版・販売まで全手順をAIがガイド | NextraLabs',
+    description: 'Kindle出版を始めたい人向けの完全ガイド。KDPアカウント登録・原稿フォーマット・表紙作成・価格設定・ロイヤリティ計算まで全手順をAIがナビゲート。完全無料。',
     url: 'https://membership-site-nextralabos.vercel.app/products/kdp-guide',
     type: 'website',
   },
@@ -110,15 +111,19 @@ const targets = [
 const faqs = [
   {
     q: 'KDPへの登録は無料ですか？',
-    a: 'はい。KDP（Kindle Direct Publishing）への登録は完全無料です。出版後、売上のロイヤリティ（35%または70%）を受け取る仕組みです。',
+    a: 'はい。KDP（Kindle Direct Publishing）への登録は完全無料です。このナビゲーターも完全無料でご利用いただけます。出版後、売上のロイヤリティ（35%または70%）を受け取る仕組みです。',
   },
   {
-    q: 'このツールを使えば本が出版できますか？',
-    a: '本ツールはKDP出版の手順をガイドするチェックリストです。原稿の作成や実際のKDP登録作業はご自身で行う必要があります。ただし、手順通りに進めることで迷いなく完了できます。',
+    q: '原稿はWordで書いたものでも出版できますか？',
+    a: 'はい。Microsoft Word（.docx形式）で書いた原稿を直接KDPにアップロードできます。KDP本体がEPUB形式に自動変換します。本ナビでは推奨フォーマット設定もガイドします。',
   },
   {
     q: 'マイナンバーの入力は必須ですか？',
-    a: '必須ではありませんが、入力しないと米国での源泉徴収が30%かかります。マイナンバーを入力すると0%になるため、売上に直結する重要な設定です。',
+    a: '必須ではありませんが、入力しないと米国での源泉徴収が30%かかります。マイナンバーを入力すると0%になるため、売上に直結する重要な設定です。本ナビでは設定手順を丁寧に解説しています。',
+  },
+  {
+    q: '70%ロイヤリティを受け取るにはどうすればいいですか？',
+    a: '価格設定を250円〜1,250円の範囲に設定し、KDPセレクトに登録することで70%ロイヤリティが適用されます。この範囲外では35%になります。本ナビでは最適な価格戦略も解説しています。',
   },
   {
     q: '出版後すぐにAmazonで購入できますか？',
@@ -127,8 +132,20 @@ const faqs = [
 ]
 
 export default function KdpGuidePage() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'Kindle出版完全ナビ',
+    description: 'KDPアカウント登録・原稿フォーマット・表紙作成・価格設定・ロイヤリティ計算まで全手順をAIがナビゲート。',
+    applicationCategory: 'EducationApplication',
+    operatingSystem: 'Web',
+    url: 'https://membership-site-nextralabos.vercel.app/products/kdp-guide',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+    publisher: { '@type': 'Organization', name: 'NextraLabs' },
+  }
   return (
     <div className="relative">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* MASTERMODEL SECURITY LINE (聖域の証: エメラルドグリーン) */}
       <div className="fixed top-0 left-0 w-full h-[1px] bg-emerald-500 z-[100] shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
       

@@ -6,32 +6,44 @@ import { CheckCircle2, Youtube, FileVideo, FileText, Zap, Sparkles, ArrowRight, 
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'AI YouTubeプロデューサー | 台本・サムネ・SEO最適化を全自動',
-  description: 'YouTubeの台本・タイトル・説明文・サムネイルをAIが全自動生成。検索上位に表示されるSEO最適化タグも自動設定。チャンネル登録者数を爆増させる。',
-  keywords: ["YouTubeAI台本","YouTube SEO","サムネイルAI","YouTube自動化","YouTubeプロデューサーAI"],
+  title: 'AI YouTubeプロデューサー | 全自動台本・構成・サムネイル案をAIが生成 | NextraLabs',
+  description: '動画テーマを入力するだけ。AIが視聴者を引き込む台本・構成・サムネイル文言・SEOタイトル・概要欄まで全自動生成。YouTubeチャンネル成長を加速。月額¥1,980。',
+  keywords: ['YouTube台本AI','YouTubeプロデューサーAI','YouTube構成自動生成','サムネイルAI','YouTube SEO','動画企画AI','YouTubeチャンネル成長','YouTube自動化AI','動画台本AI','NextraLabsYouTube'],
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/youtube-producer',
   },
   openGraph: {
-    title: 'AI YouTubeプロデューサー | 台本・サムネ・SEO最適化を全自動 | NextraLabs',
-    description: 'YouTubeの台本・タイトル・説明文・サムネイルをAIが全自動生成。検索上位に表示されるSEO最適化タグも自動設定。チャンネル登録者数を爆増させる。',
+    title: 'AI YouTubeプロデューサー | 全自動台本・構成・サムネイル案をAIが生成 | NextraLabs',
+    description: '動画テーマを入力するだけ。AIが視聴者を引き込む台本・構成・サムネイル文言・SEOタイトル・概要欄まで全自動生成。YouTubeチャンネル成長を加速。月額¥1,980。',
     url: 'https://membership-site-nextralabos.vercel.app/products/youtube-producer',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI YouTubeプロデューサー | 台本・サムネ・SEO最適化を全自動' }],
+    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI YouTubeプロデューサー | 全自動台本・構成・サムネイル案をAIが生成 | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AI YouTubeプロデューサー | 台本・サムネ・SEO最適化を全自動',
-    description: 'YouTubeの台本・タイトル・説明文・サムネイルをAIが全自動生成。検索上位に表示されるSEO最適化タグも自動設定。チャンネル登録者数を爆増させる。',
+    title: 'AI YouTubeプロデューサー | 全自動台本・構成・サムネイル案をAIが生成 | NextraLabs',
+    description: '動画テーマを入力するだけ。AIが視聴者を引き込む台本・構成・サムネイル文言・SEOタイトル・概要欄まで全自動生成。YouTubeチャンネル成長を加速。月額¥1,980。',
     images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
   },
 }
 
 export default function YoutubeProducerLp() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'AI YouTubeプロデューサー',
+    description: '動画テーマを入力するだけ。AIが台本・構成・サムネイル文言・SEOタイトル・概要欄まで全自動生成。',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web',
+    url: 'https://membership-site-nextralabos.vercel.app/products/youtube-producer',
+    offers: { '@type': 'Offer', price: '1980', priceCurrency: 'JPY' },
+    publisher: { '@type': 'Organization', name: 'NextraLabs' },
+  }
   return (
     <div className="min-h-screen bg-[#050507] text-slate-200 font-sans pb-32">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* 🚀 Hero Section */}
       <section className="max-w-6xl mx-auto px-4 pt-24 pb-20 text-center space-y-10">
         <Badge className="bg-red-600/10 text-red-500 border-red-500/20 px-6 py-1 rounded-full font-bold uppercase text-xs">Viral Content OS</Badge>
@@ -120,6 +132,34 @@ export default function YoutubeProducerLp() {
             </div>
           </div>
         </Card>
+      </section>
+      {/* FAQ */}
+      <section className="py-16 bg-[#0d1117]">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <h2 className="text-2xl font-bold text-white mb-8 text-center">よくある質問</h2>
+          <div className="space-y-6">
+            <div>
+              <p className="font-semibold text-white mb-2">Q. YouTube初心者でも使いこなせますか？</p>
+              <p className="text-slate-400 text-sm">A. はい。動画のテーマを入力するだけで、構成・台本・サムネイル案・タグまで全自動生成されます。チャンネル立ち上げ期から活用できます。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. SEOに最適化されたタイトルも生成されますか？</p>
+              <p className="text-slate-400 text-sm">A. はい。検索上位に表示されやすいSEOタイトル・概要欄・タグをAIが自動生成します。YouTube検索とGoogleサジェストの両方を意識した最適化を行います。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. サムネイルの実際のデザインも作れますか？</p>
+              <p className="text-slate-400 text-sm">A. テキスト案・配色・構図の提案まで行います。実際の画像生成にはAI画像生成ツールとの組み合わせをおすすめします。NextraLabsではAI画像プロンプトマスターも提供しています。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. どのジャンルの動画に対応していますか？</p>
+              <p className="text-slate-400 text-sm">A. ビジネス・教育・エンタメ・料理・美容・旅行・ゲーム・結婚相談など幅広いジャンルに対応しています。ターゲット視聴者層を指定すると、より最適化された台本を生成します。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 生成した台本は自由に編集できますか？</p>
+              <p className="text-slate-400 text-sm">A. はい。生成された台本・構成はすべてテキストとして出力されるため、自由に編集・加工してご利用いただけます。著作権も利用者に帰属します。</p>
+            </div>
+          </div>
+        </div>
       </section>
     </div>
   )

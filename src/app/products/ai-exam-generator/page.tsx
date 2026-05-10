@@ -19,25 +19,25 @@ import {
 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'AI試験問題ジェネレーター | 資格試験の模擬問題を無制限自動生成',
-  description: 'CompTIA・FP・宅建・情報処理など各種資格試験の模擬問題をAIが自動生成。解説付きで理解が深まる。過去問だけでは足りない演習量を補う。',
-  keywords: ["AI試験問題","資格試験AI","模擬試験自動生成","CompTIA AI","FP試験AI"],
+  title: 'AI問題生成 & 苦手分析 | 予想問題を無限生成・弱点ポイントを可視化 | NextraLabs',
+  description: 'テキストや単元を入力するだけ。AIが予想問題・過去問スタイルの問題を自動生成し、苦手箇所をスコアで可視化。資格試験・入試・定期テスト対策に。月額¥1,980。',
+  keywords: ['AI問題生成','予想問題AI','苦手分析AI','試験問題自動生成','テスト問題AI','資格試験問題AI','問題集AI','弱点克服AI','学習AI','NextraLabs問題生成'],
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/ai-exam-generator',
   },
   openGraph: {
-    title: 'AI試験問題ジェネレーター | 資格試験の模擬問題を無制限自動生成 | NextraLabs',
-    description: 'CompTIA・FP・宅建・情報処理など各種資格試験の模擬問題をAIが自動生成。解説付きで理解が深まる。過去問だけでは足りない演習量を補う。',
+    title: 'AI問題生成 & 苦手分析 | 予想問題を無限生成・弱点ポイントを可視化 | NextraLabs',
+    description: 'テキストや単元を入力するだけ。AIが予想問題・過去問スタイルの問題を自動生成し、苦手箇所をスコアで可視化。資格試験・入試・定期テスト対策に。月額¥1,980。',
     url: 'https://membership-site-nextralabos.vercel.app/products/ai-exam-generator',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI試験問題ジェネレーター | 資格試験の模擬問題を無制限自動生成' }],
+    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI問題生成 & 苦手分析 | 予想問題を無限生成・弱点ポイントを可視化 | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AI試験問題ジェネレーター | 資格試験の模擬問題を無制限自動生成',
-    description: 'CompTIA・FP・宅建・情報処理など各種資格試験の模擬問題をAIが自動生成。解説付きで理解が深まる。過去問だけでは足りない演習量を補う。',
+    title: 'AI問題生成 & 苦手分析 | 予想問題を無限生成・弱点ポイントを可視化 | NextraLabs',
+    description: 'テキストや単元を入力するだけ。AIが予想問題・過去問スタイルの問題を自動生成し、苦手箇所をスコアで可視化。資格試験・入試・定期テスト対策に。月額¥1,980。',
     images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
   },
 }
@@ -67,8 +67,20 @@ const examFeatures = [
 ]
 
 export default function ExamGeneratorPage() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'AI問題生成 & 苦手分析',
+    description: 'テキストや単元を入力するだけ。AIが予想問題・過去問スタイルの問題を自動生成し、苦手箇所をスコアで可視化。',
+    applicationCategory: 'EducationApplication',
+    operatingSystem: 'Web',
+    url: 'https://membership-site-nextralabos.vercel.app/products/ai-exam-generator',
+    offers: { '@type': 'Offer', price: '1980', priceCurrency: 'JPY' },
+    publisher: { '@type': 'Organization', name: 'NextraLabs' },
+  }
   return (
     <div className="min-h-screen bg-[#050507] text-slate-200 font-sans pb-20">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* Hero Section */}
       <section className="relative pt-10 md:pt-20 pb-16 overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
@@ -191,6 +203,35 @@ export default function ExamGeneratorPage() {
           </p>
           <ToolLaunchButton productId="ai-exam-generator" className="h-12 px-12 bg-white text-slate-950 font-bold text-xl rounded-2xl hover:bg-slate-200 transition-all" />
           <p className="mt-6 text-xs font-bold text-emerald-500 uppercase tracking-tight ">Premium Plan Master Model</p>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-16 bg-[#0d1117]">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <h2 className="text-2xl font-bold text-white mb-8 text-center">よくある質問</h2>
+          <div className="space-y-6">
+            <div>
+              <p className="font-semibold text-white mb-2">Q. どんな試験・資格に対応していますか？</p>
+              <p className="text-slate-400 text-sm">A. CompTIA・FP・宅建・情報処理技術者試験・TOEIC・英検・大学入試・定期テストなど幅広い分野に対応しています。独自のテキストや単元を貼り付けるだけでも問題生成できます。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 苦手分析はどのように行われますか？</p>
+              <p className="text-slate-400 text-sm">A. 回答した問題の正答率・回答時間・間違えたパターンをAIがリアルタイム分析し、「計算問題が弱い」「選択肢の引っかけ問題に弱い」など具体的な弱点をスコア化して可視化します。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 問題の難易度は調整できますか？</p>
+              <p className="text-slate-400 text-sm">A. はい。初級・中級・上級・本番レベルの4段階で難易度を設定できます。苦手な分野は簡単な問題から始め、徐々に難しくしていくアダプティブ学習にも対応しています。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 月額¥1,980以外のプランはありますか？</p>
+              <p className="text-slate-400 text-sm">A. NextraLabsではライト（¥480）・スタンダード（¥980）・プレミアム（¥1,980）の3プランをご用意しています。AI問題生成はプレミアムプランでご利用いただけます。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 解説付きの問題も生成されますか？</p>
+              <p className="text-slate-400 text-sm">A. はい。生成される問題にはAIによる詳細解説が付属します。なぜその答えが正解なのか、どこが引っかけポイントなのかを丁寧に説明するため、理解が深まります。</p>
+            </div>
+          </div>
         </div>
       </section>
     </div>

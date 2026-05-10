@@ -1,25 +1,26 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'AI買い物ナビ（Buy Smart Nav）| 最安値×最適タイミングで賢く購入',
-  description: '購入前にAIが価格履歴・口コミ分析・最安値タイミングを自動調査。衝動買いゼロで年間数万円の節約を実現。NextraLabsプレミアムプラン。',
-  keywords: ['AI買い物', '価格比較AI', '最安値タイミング', '賢い買い物', '節約AI'],
+  title: '中古・新品AI比較ナビ | 損得勘定とAI市場判定で賢い買い物 | NextraLabs',
+  description: '欲しい商品名を入力するだけ。AIが中古vs新品の損得を計算し、最安値・相場価格・おすすめ購入先を自動判定。楽天市場・メルカリ・ヤフオクの比較も。完全無料。',
+  keywords: ['中古vs新品AI','買い物比較AI','最安値AI','価格比較AI','メルカリ相場AI','楽天市場比較','商品購入AI','お得買い物AI','価格判定AI','NextraLabs買い物'],
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/buy-smart-nav',
   },
   openGraph: {
-    title: 'AI買い物ナビ（Buy Smart Nav）| 最安値×最適タイミングで賢く購入 | NextraLabs',
-    description: '購入前にAIが価格履歴・口コミ分析・最安値タイミングを自動調査。衝動買いゼロで年間数万円の節約を実現。NextraLabsプレミアムプラン。',
+    title: '中古・新品AI比較ナビ | 損得勘定とAI市場判定で賢い買い物 | NextraLabs',
+    description: '欲しい商品名を入力するだけ。AIが中古vs新品の損得を計算し、最安値・相場価格・おすすめ購入先を自動判定。楽天市場・メルカリ・ヤフオクの比較も。完全無料。',
     url: 'https://membership-site-nextralabos.vercel.app/products/buy-smart-nav',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI買い物ナビ（Buy Smart Nav）| 最安値×最適タイミングで賢く購入' }],
+    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: '中古・新品AI比較ナビ | 損得勘定とAI市場判定で賢い買い物 | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AI買い物ナビ（Buy Smart Nav）| 最安値×最適タイミングで賢く購入',
-    description: '購入前にAIが価格履歴・口コミ分析・最安値タイミングを自動調査。衝動買いゼロで年間数万円の節約を実現。NextraLabsプレミアムプラン。',
+    title: '中古・新品AI比較ナビ | 損得勘定とAI市場判定で賢い買い物 | NextraLabs',
+    description: '欲しい商品名を入力するだけ。AIが中古vs新品の損得を計算し、最安値・相場価格・おすすめ購入先を自動判定。楽天市場・メルカリ・ヤフオクの比較も。完全無料。',
     images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
   },
 }
@@ -133,5 +134,48 @@ const NoSSRWrapper = dynamic(() => Promise.resolve(BuySmartLpContent), {
 })
 
 export default function BuySmartNavLp() {
-  return <NoSSRWrapper />
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: '中古・新品AI比較ナビ',
+    description: '欲しい商品名を入力するだけ。AIが中古vs新品の損得を計算し、最安値・相場価格・おすすめ購入先を自動判定。',
+    applicationCategory: 'ShoppingApplication',
+    operatingSystem: 'Web',
+    url: 'https://membership-site-nextralabos.vercel.app/products/buy-smart-nav',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+    publisher: { '@type': 'Organization', name: 'NextraLabs' },
+  }
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <NoSSRWrapper />
+      <section className="py-16 bg-[#0d1117]">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <h2 className="text-2xl font-bold text-white mb-8 text-center">よくある質問</h2>
+          <div className="space-y-6">
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 完全無料で使えますか？</p>
+              <p className="text-slate-400 text-sm">A. はい、中古・新品AI比較ナビは完全無料でご利用いただけます。登録不要で、すぐに使い始めることができます。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. メルカリやヤフオクの相場も調べられますか？</p>
+              <p className="text-slate-400 text-sm">A. はい。楽天市場・メルカリ・ヤフオク・Amazonの相場価格をAIが横断的に比較し、中古品と新品の損得を数値で算出します。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. どんな商品でも比較できますか？</p>
+              <p className="text-slate-400 text-sm">A. 家電・スマートフォン・ゲーム・ブランド品・書籍など、市場で流通している商品であれば基本的に対応しています。商品名またはJANコードで検索できます。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 「今が買い時かどうか」も教えてもらえますか？</p>
+              <p className="text-slate-400 text-sm">A. はい。価格トレンドをAIが分析し、「今すぐ購入すべき」「もう少し待てば値下がりする可能性あり」「中古を選ぶとXX円お得」といった購入タイミングアドバイスを提供します。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white mb-2">Q. 個人情報の入力は必要ですか？</p>
+              <p className="text-slate-400 text-sm">A. 不要です。欲しい商品名を入力するだけで診断できます。アカウント登録・クレジットカード情報・個人情報は一切必要ありません。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  )
 }

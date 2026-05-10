@@ -1,9 +1,10 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'AI副業スタートダッシュ | 適性診断と収益ロードマップをAIが設計 | NextraLabs',
   description: 'スキル・時間・目標収入を入力するだけ。AIが最適な副業を提案し、収益化までのロードマップを自動設計。月1万円〜月50万円まで。副業初心者に最適。月額¥1,980。',
   keywords: ['副業AI','副業診断','副業ロードマップ','在宅副業AI','副業おすすめAI','副業収益AI','副業プランAI','サイドビジネスAI','フリーランスAI','NextraLabs副業'],
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/ai-sidejob',
   },
