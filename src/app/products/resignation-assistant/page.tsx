@@ -433,13 +433,11 @@ export default function ResignationAssistantPage() {
                   <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
                     {review.name[0]}
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-white font-semibold text-sm">{review.name}</p>
-                    <p className="text-slate-500 text-xs">{review.role} · {review.location}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-semibold text-sm whitespace-nowrap">{review.name}</p>
+                    <p className="text-slate-500 text-xs whitespace-nowrap">{review.role} · {review.location}</p>
+                    <span className="inline-block mt-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 whitespace-nowrap">{review.tag}</span>
                   </div>
-                  <span className="ml-auto shrink-0 text-[10px] font-medium px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    {review.tag}
-                  </span>
                 </div>
               </div>
             ))}

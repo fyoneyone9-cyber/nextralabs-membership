@@ -253,13 +253,11 @@ export default function CommCoachPage() {
                   <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
                     {r.name[0]}
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-white font-semibold text-sm">{r.name}</p>
-                    <p className="text-slate-500 text-xs">{r.role} · {r.location}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-semibold text-sm"> className="text-white font-semibold text-sm whitespace-nowrap">{r.name}</p>
+                    <p className="text-slate-500 text-xs"> className="text-slate-500 text-xs whitespace-nowrap">{r.role} · {r.location}</p>
+                    <span className="inline-block mt-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 whitespace-nowrap">{r.tag}</span>
                   </div>
-                  <span className="ml-auto shrink-0 text-[10px] font-medium px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    {r.tag}
-                  </span>
                 </div>
               </div>
             ))}
