@@ -250,7 +250,7 @@ export default function PilgrimagePlanner() {
         </div>
 
         {/* プリセット */}
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+        <div className="grid grid-cols-3 gap-2">
           {PRESETS.map((p) => (
             <button
               key={p.id}
