@@ -15,6 +15,12 @@ type StyleDef = {
   draw: (ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, text: string, pw: number, ph: number) => void
 }
 
+// フォント文字列からpx数値を安全に取り出す（"bold 35px serif" → 35）
+function parseFontSize(font: string): number {
+  const m = font.match(/(\d+(?:\.\d+)?)px/)
+  return m ? parseFloat(m[1]) : NaN
+}
+
 // テキストが maxWidth に収まるようフォントサイズをループで縮小、
 // それでも収まらない場合は2行に分割して描画するヘルパー
 function drawFitText(
@@ -30,19 +36,17 @@ function drawFitText(
   // Step1: 縮小ループ（最小14px）
   let safety = 0
   while (ctx.measureText(text).width > maxWidth && safety < 30) {
-    const currentSize = parseFloat(ctx.font)
+    const currentSize = parseFontSize(ctx.font)
     if (isNaN(currentSize) || currentSize <= 14) break
     const newSize = Math.max(14, Math.floor(currentSize * 0.88))
-    ctx.font = ctx.font.replace(/[\d.]+px/, `${newSize}px`)
+    ctx.font = ctx.font.replace(/(\d+(?:\.\d+)?)px/, `${newSize}px`)
     safety++
   }
 
   // Step2: まだ収まらない場合 → 2行分割
   if (ctx.measureText(text).width > maxWidth) {
-    // フォントを元に戻してさらに小さく設定
     ctx.font = savedFont
     const half = Math.ceil(text.length / 2)
-    // 空白で分割できるなら空白優先、なければ中央で分割
     let splitIdx = half
     const spaceIdx = text.indexOf(' ', Math.floor(text.length * 0.3))
     const midSpaceIdx = text.lastIndexOf(' ', Math.ceil(text.length * 0.7))
@@ -52,17 +56,16 @@ function drawFitText(
     const line1 = text.slice(0, splitIdx).trim()
     const line2 = text.slice(splitIdx).trim()
 
-    // 2行それぞれが収まるサイズを探す
     const longer = line1.length >= line2.length ? line1 : line2
     let safety2 = 0
     while (ctx.measureText(longer).width > maxWidth && safety2 < 30) {
-      const currentSize = parseFloat(ctx.font)
+      const currentSize = parseFontSize(ctx.font)
       if (isNaN(currentSize) || currentSize <= 10) break
       const newSize = Math.max(10, Math.floor(currentSize * 0.88))
-      ctx.font = ctx.font.replace(/[\d.]+px/, `${newSize}px`)
+      ctx.font = ctx.font.replace(/(\d+(?:\.\d+)?)px/, `${newSize}px`)
       safety2++
     }
-    const lineH = parseFloat(ctx.font) * 1.3
+    const lineH = (parseFontSize(ctx.font) || 14) * 1.3
     if (stroke) {
       ctx.strokeText(line1, x, y - lineH / 2)
       ctx.strokeText(line2, x, y + lineH / 2)
