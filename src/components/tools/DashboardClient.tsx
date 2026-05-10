@@ -16,6 +16,74 @@ import {
 } from 'lucide-react'
 import DashboardActivity from '@/components/dashboard/DashboardActivity'
 import { DebugPanel } from '@/components/tools/DebugPanel'
+function PWAInstallCard() {
+  const [deferredPrompt, setDeferredPrompt] = React.useState<any>(null)
+  const [isInstallable, setIsInstallable] = React.useState(false)
+  const [isInstalled, setIsInstalled] = React.useState(false)
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstalled(true)
+      return
+    }
+    const handler = (e: any) => {
+      e.preventDefault()
+      setDeferredPrompt(e)
+      setIsInstallable(true)
+    }
+    window.addEventListener('beforeinstallprompt', handler)
+    window.addEventListener('appinstalled', () => {
+      setIsInstalled(true)
+      setIsInstallable(false)
+      setDeferredPrompt(null)
+    })
+    return () => window.removeEventListener('beforeinstallprompt', handler)
+  }, [])
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return
+    deferredPrompt.prompt()
+    const { outcome } = await deferredPrompt.userChoice
+    if (outcome === 'accepted') {
+      setIsInstalled(true)
+      setIsInstallable(false)
+      setDeferredPrompt(null)
+    }
+  }
+
+  if (isInstalled) return (
+    <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 flex items-center gap-3">
+      <CheckCircle size={16} className="text-emerald-400" />
+      <div>
+        <p className="text-emerald-300 text-xs font-semibold">アプリインストール済み</p>
+        <p className="text-slate-500 text-[10px] mt-0.5">ホーム画面から起動できます</p>
+      </div>
+    </div>
+  )
+
+  return (
+    <div className="bg-[#0d0f1a] border border-emerald-500/20 rounded-2xl p-5 space-y-3">
+      <div className="flex items-center gap-2">
+        <Smartphone size={14} className="text-emerald-400" />
+        <p className="text-xs font-semibold text-white">アプリとしてインストール</p>
+      </div>
+      <p className="text-slate-500 text-[11px] leading-relaxed">
+        ホーム画面に追加してアプリ感覚で使えます。
+      </p>
+      {isInstallable ? (
+        <button
+          onClick={handleInstall}
+          className="w-full h-10 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all"
+        >
+          <Download size={13} /> ホーム画面に追加
+        </button>
+      ) : (
+        <p className="text-slate-600 text-[10px]">Chrome推奨。メニュー→「ホーム画面に追加」</p>
+      )}
+    </div>
+  )
+}
 
 const PLAN_META = {
   premium:  { label: 'プレミアム', color: 'from-emerald-500 to-emerald-500', text: 'text-emerald-400', border: 'border-emerald-500/40', badge: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', icon: Crown },
