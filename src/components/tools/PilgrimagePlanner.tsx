@@ -49,7 +49,11 @@ const PRESETS = [
   { id: 'naruto',      label: 'NARUTO',      emoji: '🍃', color: 'border-orange-500/60 hover:border-orange-400' },
   { id: 'dragonball',  label: 'ドラゴンボール', emoji: '⭕', color: 'border-yellow-500/60 hover:border-yellow-400' },
   { id: 'oshino',      label: '推しの子',    emoji: '⭐', color: 'border-pink-500/60 hover:border-pink-400' },
-  { id: 'haikyuu',     label: 'ハイキュー',  emoji: '🏐', color: 'border-orange-500/60 hover:border-orange-400' },
+  { id: 'haikyuu',    label: 'ハイキュー',  emoji: '🏐', color: 'border-orange-500/60 hover:border-orange-400' },
+  { id: 'fullmetal',  label: '鋼の錬金術師', emoji: '⚗️', color: 'border-yellow-500/60 hover:border-yellow-400' },
+  { id: 'bleach',     label: 'BLEACH',     emoji: '⚔️', color: 'border-slate-500/60 hover:border-slate-400' },
+  { id: 'conan',      label: 'コナン',      emoji: '🔍', color: 'border-blue-500/60 hover:border-blue-400' },
+  { id: 'doraemon',   label: 'ドラえもん',  emoji: '🤖', color: 'border-blue-500/60 hover:border-blue-400' },
 ]
 
 const TRIP_STYLES = ['日帰り', '1泊2日', '2泊3日']

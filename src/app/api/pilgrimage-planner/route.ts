@@ -2,8 +2,8 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!
-const RAKUTEN_APP_ID = process.env.RAKUTEN_APP_ID!
-const RAKUTEN_AFFILIATE_ID = process.env.RAKUTEN_AFFILIATE_ID!
+const RAKUTEN_APP_ID = process.env.RAKUTEN_APP_ID ?? ''
+const RAKUTEN_AFFILIATE_ID = process.env.RAKUTEN_AFFILIATE_ID ?? ''
 
 const TOOL_ID = 'pilgrimage-planner'
 const DAILY_LIMIT = 5
@@ -221,7 +221,54 @@ export const PRESETS: PresetDef[] = [
       { name: '松島（宮城）', address: '宮城県宮城郡松島町松島', description: '日本三景・東北の絶景', sceneDescription: '宮城遠征中の選手たちが見る景色', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=松島+宮城県' },
     ],
   },
-]
+  {
+    id: 'fullmetal', label: '鋼の錬金術師', emoji: '⚗️',
+    description: '北海道・富山・長野', color: 'border-yellow-500/60',
+    hotelArea: '富山県',
+    spots: [
+      { name: '富岩運河環水公園（富山）', address: '富山県富山市湊入船町', description: '水と橋の工業景観がアメストリスの街並み', sceneDescription: 'アメストリスの鉄道・橋梁シーンのイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=富岩運河環水公園+富山県' },
+      { name: '産業技術記念館（名古屋）', address: '愛知県名古屋市西区則武新町4丁目', description: '産業革命期の機械・製錬設備が圧巻', sceneDescription: '錬金術師たちの製鉄・研究所のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=産業技術記念館+名古屋市' },
+      { name: '北海道・夕張炭鉱跡', address: '北海道夕張市本町', description: '廃墟の炭鉱がイシュバール大虐殺後の廃墟感', sceneDescription: 'イシュバール廃墟・戦争後の荒廃地のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=夕張市+北海道' },
+      { name: '松本城（長野）', address: '長野県松本市丸の内4-1', description: '黒い城壁が中央司令部を彷彿させる', sceneDescription: '国家錬金術師・中央司令部のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=松本城+長野県' },
+      { name: '小樽運河（北海道）', address: '北海道小樽市港町', description: 'レトロな石造り倉庫群がヨーロッパ調', sceneDescription: 'アメストリスの港町・倉庫街のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=小樽運河+北海道' },
+    ],
+  },
+  {
+    id: 'bleach', label: 'BLEACH', emoji: '⚔️',
+    description: '尾道・広島・京都', color: 'border-slate-500/60',
+    hotelArea: '広島県',
+    spots: [
+      { name: '尾道（広島）', address: '広島県尾道市土堂1丁目', description: '坂道と寺院が続く街がソウル・ソサエティを想起', sceneDescription: '尸魂界（ソウル・ソサエティ）の街並みモデル', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=尾道+広島県' },
+      { name: '伏見稲荷大社（京都）', address: '京都府京都市伏見区深草藪之内町68', description: '無数の鳥居が続く霊的な空間', sceneDescription: '尸魂界への入口・霊的な空間のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=伏見稲荷大社+京都府' },
+      { name: '広島城', address: '広島県広島市中区基町21-1', description: '黒い天守閣が卍解のビジュアルに合致', sceneDescription: '護廷十三隊の本部・隊首室のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=広島城+広島市' },
+      { name: '嵐山（京都）', address: '京都府京都市西京区嵐山', description: '竹林と川の幽玄な景色', sceneDescription: '斬魄刀の精神世界・内なる世界のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=嵐山+京都府' },
+      { name: '浅草・仲見世通り（東京）', address: '東京都台東区浅草2丁目', description: '明治期の下町・石造り建築が混在', sceneDescription: '空座町・人間界の下町のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=浅草仲見世通り+東京都' },
+    ],
+  },
+  {
+    id: 'conan', label: '名探偵コナン', emoji: '🔍',
+    description: '米花町・東京・鳥取', color: 'border-blue-500/60',
+    hotelArea: '東京都',
+    spots: [
+      { name: '代々木上原駅周辺（東京）', address: '東京都渋谷区西原3丁目', description: '米花町・コナン君が住む町のモデル', sceneDescription: '工藤邸・毛利探偵事務所がある米花町のモデル', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=代々木上原駅+東京都渋谷区' },
+      { name: '鳥取・北栄町（コナン通り）', address: '鳥取県東伯郡北栄町由良宿', description: '青山剛昌先生の出身地・コナン一色の町', sceneDescription: 'コナン・蘭・小五郎のブロンズ像が並ぶ聖地', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=北栄町コナン通り+鳥取県' },
+      { name: '青山剛昌ふるさと館（鳥取）', address: '鳥取県東伯郡北栄町由良宿2-15', description: '直筆原稿・等身大フィギュアが展示', sceneDescription: 'コナン誕生の地・聖地中の聖地', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=青山剛昌ふるさと館+鳥取県' },
+      { name: '新宿・歌舞伎町（東京）', address: '東京都新宿区歌舞伎町', description: '事件の舞台となる都市の繁華街', sceneDescription: '黒の組織が暗躍する夜の都市シーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=歌舞伎町+新宿区+東京都' },
+      { name: '横浜中華街', address: '神奈川県横浜市中区山下町', description: '映画・特別編の舞台になることが多い', sceneDescription: 'コナン映画シリーズで頻繁に登場する横浜', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=横浜中華街+神奈川県' },
+    ],
+  },
+  {
+    id: 'doraemon', label: 'ドラえもん', emoji: '🤖',
+    description: '川崎・多摩・東京', color: 'border-blue-500/60',
+    hotelArea: '神奈川県',
+    spots: [
+      { name: 'ドラえもんミュージアム（川崎）', address: '神奈川県川崎市多摩区長尾2-8-1', description: '藤子・F・不二雄先生の公式ミュージアム', sceneDescription: '原作展示・等身大ドラえもんと記念撮影', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=藤子・F・不二雄ミュージアム+川崎市多摩区' },
+      { name: '多摩丘陵（東京・神奈川）', address: '東京都稲城市坂浜', description: '昭和の雑木林とのび太の原風景', sceneDescription: 'のび太が空き地で遊ぶ多摩の丘陵地帯', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=多摩丘陵+東京都稲城市' },
+      { name: '練馬区（東京）', address: '東京都練馬区豊玉北', description: 'のび太の家・空き地があるモデル地', sceneDescription: 'のび太の自宅・ジャイアンの空き地のモデル', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=練馬区+東京都' },
+      { name: '富士山（静岡）', address: '静岡県富士宮市山宮', description: 'ひみつ道具で空を飛ぶ目標地点', sceneDescription: 'タケコプターで飛んで富士山を目指すシーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=富士山+静岡県' },
+      { name: '清澄白河（東京）', address: '東京都江東区清澄', description: '昭和の下町風景が残るエリア', sceneDescription: 'のびたの通う小学校・商店街のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=清澄白河+東京都江東区' },
+    ],
+  },]
 
 // ─── 楽天トラベル 宿泊検索 ────────────────────────────────────────────────────
 
