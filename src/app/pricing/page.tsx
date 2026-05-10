@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -81,22 +81,23 @@ export default function PricingPage() {
           </div>
           <h1 className="text-3xl md:text-5xl font-semibold tracking-tight text-white mb-4 leading-[1.1]">料金プラン</h1>
           <p className="text-base text-slate-400 max-w-xl mx-auto leading-relaxed">
-            ¥480のライトから始めて、必要に応じてアップグレード。全プランいつでも解約OK。
+            ¥480のライトから始めて、必要に応じてアップグレード。全プラン共通で無料ツールも使えます。
           </p>
         </div>
 
-        {/* コスト分解バナー */}
+        {/* コスト比較バナー */}
         <div className="max-w-3xl mx-auto mb-12 bg-gradient-to-r from-emerald-950/60 to-teal-950/60 border border-emerald-500/30 rounded-2xl p-6 md:p-8 text-center">
           <p className="text-3xl font-bold text-white leading-relaxed mb-2">
-            スタバのラテ<span className="text-emerald-400">1杯</span>より安い。
+            スタバの珈琲<span className="text-emerald-400">1杯</span>分で始まる。
           </p>
           <p className="text-3xl font-bold text-white">
-            でも、毎日<span className="text-cyan-400">2時間</span>を取り戻せる。
+            でも、あなたの<span className="text-cyan-400">2時間</span>を返してくれる。
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-6 text-sm text-slate-400">
-            <span>🍬 ライト ¥480 = <strong className="text-cyan-400">1日16円</strong>（飴玉1個）</span>
-            <span>🍫 スタンダード ¥980 = <strong className="text-emerald-400">1日32円</strong>（チロルチョコ1個）</span>
-            <span>☕ プレミアム ¥1,980 = <strong className="text-emerald-400">コーヒー2杯/月</strong></span>
+            <span>🆓 無料 = ローカル完結ツール使い放題</span>
+            <span>🔵 ライト ¥480 = <strong className="text-cyan-400">1日16円</strong>（コーヒー1杯）</span>
+            <span>⚡ スタンダード ¥980 = <strong className="text-emerald-400">1日32円</strong>（チョコ1枚）</span>
+            <span>👑 プレミアム ¥1,980 = <strong className="text-emerald-400">コーヒー2杯/月</strong></span>
           </div>
         </div>
 
@@ -105,18 +106,27 @@ export default function PricingPage() {
           <Card className="relative flex flex-col bg-[#13141f] border border-white/10 rounded-2xl md:rounded-3xl">
             <CardContent className="p-6 flex flex-col flex-1">
               <h3 className="text-xl font-bold mb-2 text-slate-100">無料プラン</h3>
-              <p className="text-slate-400 text-sm mb-4">まずはお試しで</p>
+              <p className="text-slate-400 text-sm mb-4">登録不要・すぐ使える</p>
               <div className="flex items-baseline gap-1 mb-6">
                 <span className="text-4xl font-bold text-slate-100">¥0</span>
                 <span className="text-base text-slate-400 font-normal shrink-0">/月</span>
               </div>
               <ul className="space-y-2.5 flex-1 mb-8">
-                {['ツールの詳細閲覧', '無料ツール利用', 'メール通知'].map((f) => (
+                {[
+                  'KDP出版AI完全ナビ',
+                  'AI買い物依存ストッパー',
+                  '退職代行アシスタント',
+                  '塩対応ジェネレーター',
+                  'ペット翻訳',
+                  'Universal Converter',
+                  '借金完済診断',
+                  '+ ローカル完結ツール全部',
+                ].map((f) => (
                   <li key={f} className="flex items-center gap-2 text-sm text-slate-100">
                     <Check className="h-4 w-4 text-emerald-400 shrink-0" />{f}
                   </li>
                 ))}
-                {['有料ツール利用', 'プレミアムツール', '優先サポート'].map((f) => (
+                {['有料APIツール', '優先サポート'].map((f) => (
                   <li key={f} className="flex items-center gap-2 text-sm text-slate-400/50">
                     <span className="h-4 w-4 shrink-0 text-center">✕</span>{f}
                   </li>
@@ -133,20 +143,30 @@ export default function PricingPage() {
           {/* Light Plan */}
           <Card className="relative border-cyan-500/50 shadow-lg flex flex-col bg-[#13141f] rounded-2xl md:rounded-3xl">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-              <Badge className="bg-cyan-500 text-white px-4 py-1 whitespace-nowrap">⚡ ライト</Badge>
+              <Badge className="bg-cyan-500 text-white px-4 py-1 whitespace-nowrap">🔵 ライト</Badge>
             </div>
             <CardContent className="p-6 flex flex-col flex-1">
               <h3 className="text-xl font-bold mb-2 text-slate-100">ライトプラン</h3>
-              <p className="text-slate-400 text-sm mb-1">気軽に始める入門プラン</p>
-              <p className="text-xs text-cyan-400 mb-4">🍬 1日16円 — 飴玉1個分</p>
+              <p className="text-slate-400 text-sm mb-1">気軽に始めたい方向け</p>
+              <p className="text-xs text-cyan-400 mb-4">📅 1日16円 ≒ 缶コーヒー1本</p>
               <div className="flex items-baseline gap-1 mb-6">
                 <span className="text-4xl font-bold text-slate-100">¥480</span>
                 <span className="text-base text-slate-400 font-normal shrink-0">/月</span>
               </div>
               <ul className="space-y-2.5 flex-1 mb-8">
-                {['Expense Sync', 'Contact Sync', 'Price Tracker', '+ 無料ツール全て'].map((f) => (
+                {[
+                  '無料プランの全ツール',
+                  'Expense AI Sync',
+                  'Contact AI Sync',
+                  'Price Tracker',
+                ].map((f) => (
                   <li key={f} className="flex items-center gap-2 text-sm text-slate-100">
                     <Check className="h-4 w-4 text-cyan-500 shrink-0" />{f}
+                  </li>
+                ))}
+                {['Gemini AI系ツール', 'YouTube/SNS系ツール'].map((f) => (
+                  <li key={f} className="flex items-center gap-2 text-sm text-slate-400/50">
+                    <span className="h-4 w-4 shrink-0 text-center">✕</span>{f}
                   </li>
                 ))}
               </ul>
@@ -171,19 +191,30 @@ export default function PricingPage() {
             </div>
             <CardContent className="p-6 flex flex-col flex-1">
               <h3 className="text-xl font-bold mb-2 text-slate-100">スタンダードプラン</h3>
-              <p className="text-slate-400 text-sm mb-1">プレミアム以外の全ツール使い放題</p>
-              <p className="text-xs text-emerald-400 mb-4">🍫 1日32円 — チロルチョコ1個分</p>
+              <p className="text-slate-400 text-sm mb-1">Gemini AI系ツールが全部使える</p>
+              <p className="text-xs text-emerald-400 mb-4">📅 1日32円 ≒ チョコレート1枚</p>
               <div className="flex items-baseline gap-1 mb-6">
                 <span className="text-4xl font-bold text-slate-100">¥980</span>
                 <span className="text-base text-slate-400 font-normal shrink-0">/月</span>
               </div>
               <ul className="space-y-2.5 flex-1 mb-8">
-                {['プレミアム以外の全ツール使い放題', '無料・ライト・スタンダードツール全て', '優先サポート', '新ツールの先行アクセス', '商用利用OK', 'アップデート通知'].map((f) => (
+                {[
+                  'ライトプランの全ツール',
+                  'AI副業スタートダッシュ',
+                  'AI防災パーソナルガイド',
+                  'AI詐欺ディフェンダー',
+                  'AI家計防衛シミュレーター',
+                  'AI引越し安心チェッカー',
+                  'Kindle AI Factory',
+                  '+ Gemini AI系ツール全部',
+                  '優先サポート',
+                  '新ツールの先行アクセス',
+                ].map((f) => (
                   <li key={f} className="flex items-center gap-2 text-sm text-slate-100">
                     <Check className="h-4 w-4 text-emerald-400 shrink-0" />{f}
                   </li>
                 ))}
-                {['プレミアムツール（Gmail AI等）'].map((f) => (
+                {['YouTube/SNS/Gmail AI系ツール'].map((f) => (
                   <li key={f} className="flex items-center gap-2 text-sm text-slate-400/50">
                     <span className="h-4 w-4 shrink-0 text-center">✕</span>{f}
                   </li>
@@ -210,14 +241,25 @@ export default function PricingPage() {
             </div>
             <CardContent className="p-6 flex flex-col flex-1">
               <h3 className="text-xl font-bold mb-2 text-slate-100">プレミアムプラン</h3>
-              <p className="text-slate-400 text-sm mb-1">AI API連携ツール含む</p>
+              <p className="text-slate-400 text-sm mb-1">YouTube・SNS・Gmail AI系も全部</p>
               <p className="text-xs text-emerald-400 mb-4">☕ コーヒー2杯分/月</p>
               <div className="flex items-baseline gap-1 mb-6">
                 <span className="text-4xl font-bold text-slate-100">¥1,980</span>
                 <span className="text-base text-slate-400 font-normal shrink-0">/月</span>
               </div>
               <ul className="space-y-2.5 flex-1 mb-8">
-                {['全ツール使い放題プランの全機能', 'Gmail AI Accelerator', 'Staysee AI Finder', 'Interior Sync', 'YouTube Sync', 'AI副業スタートダッシュ', 'AI YouTubeプロデューサー', '最優先サポート'].map((f) => (
+                {[
+                  'スタンダードプランの全ツール',
+                  'Gmail AI Accelerator',
+                  'AI YouTubeプロデューサー',
+                  'YouTube AI Sync',
+                  'AI SNSオートポスター',
+                  'AIセレクトショップ',
+                  'SNSトレンドAI分析',
+                  'AI画像プロンプトマスター',
+                  'Nextra AI（ホテルDX）',
+                  '最優先サポート',
+                ].map((f) => (
                   <li key={f} className="flex items-center gap-2 text-sm text-slate-100">
                     <Check className="h-4 w-4 text-emerald-400 shrink-0" />{f}
                   </li>
@@ -244,11 +286,11 @@ export default function PricingPage() {
             </div>
             <CardContent className="p-8 flex flex-col flex-1">
               <h3 className="text-xl font-bold mb-2 text-slate-100">カスタマイズ<br />ツール開発</h3>
-              <p className="text-slate-400 mb-4">御社専用のAIツールを開発</p>
-              <div className="text-2xl font-bold mb-1 text-emerald-400">お見積り</div>
-              <p className="text-sm text-slate-400 mb-6">ご要件に応じて個別にご提案</p>
+              <p className="text-slate-400 mb-4">業務専用AIツールを開発</p>
+              <div className="text-2xl font-bold mb-1 text-emerald-400">要見積もり</div>
+              <p className="text-sm text-slate-400 mb-6">要件に応じて個別にご提案</p>
               <ul className="space-y-3 flex-1 mb-8">
-                {['御社業務に特化したAIツール開発', '既存ツールのカスタマイズ', '社内システムとのAPI連携', 'デザイン・UI/UXのカスタマイズ', '導入サポート・研修', '保守・運用サポート'].map((f) => (
+                {['業務特化型AIツール開発', '既存ツールのカスタマイズ', '社内システムとのAPI連携', 'デザイン・UI/UXのカスタマイズ', '専任サポート・ライン', '保守・継続サポート'].map((f) => (
                   <li key={f} className="flex items-center gap-2 text-sm text-slate-100">
                     <Check className="h-4 w-4 text-emerald-400 shrink-0" />{f}
                   </li>
