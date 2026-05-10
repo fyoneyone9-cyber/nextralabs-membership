@@ -329,6 +329,10 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* App Install */}
+      <PWAInstallSection />
+
     </div>
   )
 }
