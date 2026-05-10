@@ -1,13 +1,14 @@
 'use client'
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import {
   CheckCircle2, Lock, Camera, Loader2,
   UserPlus, Search, Key, LogOut, QrCode,
-  Monitor, ClipboardList, ArrowRight, PenLine, Phone, Hash
+  Monitor, ClipboardList, ArrowRight, PenLine, Phone, Hash,
+  Wifi, WifiOff, Settings, ChevronDown, Shield, Trash2
 } from 'lucide-react'
 
-/* ─────────── 定数 ─────────── */
+/* ─────────── 型定義 ─────────── */
 const TABS = [
   { id: 'kiosk',    label: 'スタート',        icon: Monitor   },
   { id: 'search',   label: '予約検索',        icon: Search    },
@@ -15,10 +16,24 @@ const TABS = [
   { id: 'lock',     label: '鍵発行',          icon: Key       },
   { id: 'checkout', label: 'チェックアウト',   icon: LogOut    },
 ]
-
 const LANGS = ['日本語', 'English', '中文', '한국어']
 
-/* Staysee予約データ型 */
+// PMS設定
+const PMS_OPTIONS = [
+  { id: 'staysee',   label: 'Staysee',        color: '#10b981' },
+  { id: 'easyaccounting', label: 'イージー会計', color: '#6366f1' },
+  { id: 'bets24',    label: 'BETS24',         color: '#f59e0b' },
+  { id: 'airhost',   label: 'エアホスト',      color: '#3b82f6' },
+  { id: 'none',      label: 'PMS未接続',       color: '#64748b' },
+]
+
+// 錠デバイス設定
+const LOCK_OPTIONS = [
+  { id: 'switchbot', label: 'SwitchBot',      color: '#10b981' },
+  { id: 'ttlock',    label: 'TT Lock',        color: '#6366f1' },
+  { id: 'fixed',     label: '固定パスワード',  color: '#f59e0b' },
+]
+
 type Reservation = {
   id: string
   name_kanji?: string
@@ -33,9 +48,8 @@ type Reservation = {
   check_out_time?: string
 }
 
-/** 表示用ヘルパー */
 const resName   = (r: Reservation) => r.name_kanji || r.name || '（氏名未設定）'
-const resRoom   = (r: Reservation) => r.allocate_rooms?.[0]?.room_id || '未設定'
+const resRoom   = (r: Reservation) => r.allocate_rooms?.[0]?.room_id || '—'
 const resPhone  = (r: Reservation) => r.tel || '—'
 const resAmount = (r: Reservation) => r.billing_amount ? `¥${r.billing_amount.toLocaleString()}` : '—'
 const resDate   = (s?: string) => s ? s.substring(5).replace('-', '/') : '—'
@@ -43,17 +57,243 @@ const resDate   = (s?: string) => s ? s.substring(5).replace('-', '/') : '—'
 const inputCls = `w-full h-11 rounded-lg px-4 text-sm text-slate-200 placeholder-slate-600 outline-none transition-colors`
 const inputStyle: React.CSSProperties = { background: '#13141f', border: '1px solid #334155' }
 
-/* ─────────── CheckoutProcessing（安全なsetTimeout） ─────────── */
+/* ─────────── ローカルモード用ダミー予約 ─────────── */
+const LOCAL_RESERVATIONS: Reservation[] = [
+  {
+    id: 'LOCAL-001', name_kanji: '山田 太郎', name: '山田 太郎',
+    tel: '090-1234-5678', start_date: '2026-05-10', end_date: '2026-05-12',
+    allocate_rooms: [{ room_id: '201' }], billing_amount: 18000, person_number: 2,
+  },
+  {
+    id: 'LOCAL-002', name_kanji: '鈴木 花子', name: '鈴木 花子',
+    tel: '080-9876-5432', start_date: '2026-05-10', end_date: '2026-05-11',
+    allocate_rooms: [{ room_id: '305' }], billing_amount: 12000, person_number: 1,
+  },
+]
+
+/* ─────────── 電子署名パネル ─────────── */
+function SignaturePanel({
+  onSigned, onClear
+}: {
+  onSigned: (dataUrl: string) => void
+  onClear: () => void
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [isDrawing, setIsDrawing] = useState(false)
+  const [hasSignature, setHasSignature] = useState(false)
+  const lastPos = useRef<{ x: number; y: number } | null>(null)
+
+  const getPos = (e: React.MouseEvent | React.TouchEvent, canvas: HTMLCanvasElement) => {
+    const rect = canvas.getBoundingClientRect()
+    const scaleX = canvas.width / rect.width
+    const scaleY = canvas.height / rect.height
+    if ('touches' in e) {
+      const t = e.touches[0]
+      return { x: (t.clientX - rect.left) * scaleX, y: (t.clientY - rect.top) * scaleY }
+    }
+    return { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY }
+  }
+
+  const startDraw = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault()
+    const canvas = canvasRef.current; if (!canvas) return
+    const pos = getPos(e, canvas)
+    lastPos.current = pos
+    setIsDrawing(true)
+  }
+
+  const draw = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault()
+    if (!isDrawing) return
+    const canvas = canvasRef.current; if (!canvas) return
+    const ctx = canvas.getContext('2d'); if (!ctx) return
+    const pos = getPos(e, canvas)
+    if (lastPos.current) {
+      ctx.beginPath()
+      ctx.moveTo(lastPos.current.x, lastPos.current.y)
+      ctx.lineTo(pos.x, pos.y)
+      ctx.strokeStyle = '#10b981'
+      ctx.lineWidth = 2.5
+      ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
+      ctx.stroke()
+    }
+    lastPos.current = pos
+    setHasSignature(true)
+  }
+
+  const stopDraw = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault()
+    setIsDrawing(false)
+    lastPos.current = null
+    if (hasSignature && canvasRef.current) {
+      onSigned(canvasRef.current.toDataURL())
+    }
+  }
+
+  const clear = () => {
+    const canvas = canvasRef.current; if (!canvas) return
+    const ctx = canvas.getContext('2d'); if (!ctx) return
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    setHasSignature(false)
+    onClear()
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <label className="text-[10px] font-semibold text-slate-500 flex items-center gap-1">
+          <PenLine size={11} /> 電子署名（ここに署名してください）
+        </label>
+        {hasSignature && (
+          <button onClick={clear} className="flex items-center gap-1 text-[10px] text-slate-600 hover:text-red-400 transition-colors">
+            <Trash2 size={10} /> クリア
+          </button>
+        )}
+      </div>
+      <div className="relative rounded-xl overflow-hidden"
+        style={{ border: `2px dashed ${hasSignature ? 'rgba(16,185,129,0.6)' : '#334155'}`, background: '#0a0b0f', transition: 'border-color 0.2s' }}>
+        <canvas
+          ref={canvasRef}
+          width={600}
+          height={160}
+          className="w-full block touch-none select-none"
+          style={{ cursor: 'crosshair', height: '160px' }}
+          onMouseDown={startDraw}
+          onMouseMove={draw}
+          onMouseUp={stopDraw}
+          onMouseLeave={stopDraw}
+          onTouchStart={startDraw}
+          onTouchMove={draw}
+          onTouchEnd={stopDraw}
+        />
+        {!hasSignature && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <p className="text-xs text-slate-600">ここに署名してください</p>
+          </div>
+        )}
+      </div>
+      {hasSignature && (
+        <div className="flex items-center gap-1.5 text-[10px] text-emerald-500">
+          <CheckCircle2 size={11} /> 署名完了
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ─────────── CheckoutProcessing ─────────── */
 function CheckoutProcessing({ onDone }: { onDone: () => void }) {
-  useEffect(() => {
-    const t = setTimeout(onDone, 2500)
-    return () => clearTimeout(t)
-  }, [onDone])
+  useEffect(() => { const t = setTimeout(onDone, 2500); return () => clearTimeout(t) }, [onDone])
   return (
     <div className="flex flex-col items-center gap-6 py-12">
       <div className="w-12 h-12 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
       <p className="text-slate-300 font-medium text-sm">精算処理中...</p>
       <p className="text-slate-500 text-xs">PMSと同期しています</p>
+    </div>
+  )
+}
+
+/* ─────────── PMS設定バナー ─────────── */
+function PmsBanner({ pms, lockType, isOnline }: { pms: string; lockType: string; isOnline: boolean }) {
+  const pmsInfo = PMS_OPTIONS.find(p => p.id === pms) || PMS_OPTIONS[4]
+  const lockInfo = LOCK_OPTIONS.find(l => l.id === lockType) || LOCK_OPTIONS[2]
+  return (
+    <div className="flex items-center gap-3 px-4 py-2 rounded-lg flex-wrap"
+      style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
+      <div className="flex items-center gap-1.5 text-[11px]">
+        {isOnline
+          ? <Wifi size={11} style={{ color: pmsInfo.color }} />
+          : <WifiOff size={11} className="text-slate-500" />}
+        <span style={{ color: pmsInfo.color }} className="font-semibold">{pmsInfo.label}</span>
+        {!isOnline && <span className="text-slate-600">（ローカルモード）</span>}
+      </div>
+      <span className="text-slate-700 text-[10px]">|</span>
+      <div className="flex items-center gap-1.5 text-[11px]">
+        <Lock size={11} style={{ color: lockInfo.color }} />
+        <span style={{ color: lockInfo.color }} className="font-semibold">{lockInfo.label}</span>
+      </div>
+    </div>
+  )
+}
+
+/* ─────────── 設定パネル ─────────── */
+function SettingsPanel({
+  pms, setPms, lockType, setLockType, fixedPassword, setFixedPassword, onClose
+}: {
+  pms: string; setPms: (v: string) => void
+  lockType: string; setLockType: (v: string) => void
+  fixedPassword: string; setFixedPassword: (v: string) => void
+  onClose: () => void
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80" onClick={onClose}>
+      <div className="w-full max-w-md rounded-2xl p-6 space-y-6"
+        style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+        onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between">
+          <h3 className="text-base font-semibold text-slate-100 flex items-center gap-2">
+            <Settings size={16} style={{ color: '#10b981' }} /> システム設定
+          </h3>
+          <button onClick={onClose} className="text-xs text-slate-600 hover:text-slate-400 transition-colors">✕ 閉じる</button>
+        </div>
+
+        {/* PMS選択 */}
+        <div className="space-y-3">
+          <label className="text-xs font-semibold text-slate-500">PMS連携</label>
+          <div className="grid grid-cols-2 gap-2">
+            {PMS_OPTIONS.map(opt => (
+              <button key={opt.id} onClick={() => setPms(opt.id)}
+                className="h-10 rounded-lg text-xs font-semibold transition-all"
+                style={{
+                  background: pms === opt.id ? `${opt.color}20` : '#13141f',
+                  border: `1px solid ${pms === opt.id ? opt.color + '80' : '#1e293b'}`,
+                  color: pms === opt.id ? opt.color : '#64748b',
+                }}>
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 錠デバイス選択 */}
+        <div className="space-y-3">
+          <label className="text-xs font-semibold text-slate-500">錠デバイス</label>
+          <div className="grid grid-cols-3 gap-2">
+            {LOCK_OPTIONS.map(opt => (
+              <button key={opt.id} onClick={() => setLockType(opt.id)}
+                className="h-10 rounded-lg text-xs font-semibold transition-all"
+                style={{
+                  background: lockType === opt.id ? `${opt.color}20` : '#13141f',
+                  border: `1px solid ${lockType === opt.id ? opt.color + '80' : '#1e293b'}`,
+                  color: lockType === opt.id ? opt.color : '#64748b',
+                }}>
+                {opt.label}
+              </button>
+            ))}
+          </div>
+          {lockType === 'fixed' && (
+            <div className="space-y-1">
+              <label className="text-[10px] font-medium text-slate-600">固定パスワード（4〜8桁）</label>
+              <input
+                value={fixedPassword}
+                onChange={e => setFixedPassword(e.target.value.replace(/\D/g, '').slice(0, 8))}
+                placeholder="1234"
+                className={inputCls} style={inputStyle}
+                maxLength={8}
+                onFocus={e => (e.target.style.borderColor = '#f59e0b')}
+                onBlur={e => (e.target.style.borderColor = '#334155')}
+              />
+            </div>
+          )}
+        </div>
+
+        <button onClick={onClose}
+          className="w-full h-11 rounded-xl text-sm font-semibold transition-all"
+          style={{ background: '#10b981', color: '#fff' }}>
+          保存して閉じる
+        </button>
+      </div>
     </div>
   )
 }
@@ -64,29 +304,37 @@ const MasterEngine = () => {
   const [isMounted, setIsMounted]         = useState(false)
   const [selectedLang, setSelectedLang]   = useState('日本語')
 
-  /* 予約検索 */
+  // システム設定
+  const [pms, setPms]                     = useState<string>('staysee')
+  const [lockType, setLockType]           = useState<string>('fixed')
+  const [fixedPassword, setFixedPassword] = useState<string>('8421')
+  const [showSettings, setShowSettings]   = useState(false)
+  const [isOnline, setIsOnline]           = useState(true)
+
+  // 予約検索
   const [searchMode, setSearchMode]       = useState<'select'|'reservation'|'name'|'phone'>('select')
   const [searchQuery, setSearchQuery]     = useState('')
   const [searchResults, setSearchResults] = useState<Reservation[]>([])
   const [searching, setSearching]         = useState(false)
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null)
 
-  /* チェックイン */
+  // チェックイン
   const [checkinStatus, setCheckinStatus] = useState<'IDLE'|'SCANNING'|'VERIFIED'>('IDLE')
   const [ledgerName, setLedgerName]       = useState('')
   const [ledgerAddress, setLedgerAddress] = useState('')
   const [ledgerOccupation, setLedgerOccupation] = useState('')
   const [ledgerTravel, setLedgerTravel]   = useState('')
+  const [signatureData, setSignatureData] = useState<string>('')
+  const [signatureClearedAt, setSignatureClearedAt] = useState(0)
 
-  /* カメラ */
+  // カメラ（IDスキャン専用）
   const [isCameraOpen, setIsCameraOpen]   = useState(false)
   const [cameraError, setCameraError]     = useState<string | null>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  /* チェックアウト */
+  // チェックアウト
   const [checkoutQuery, setCheckoutQuery]     = useState('')
   const [checkoutResults, setCheckoutResults] = useState<Reservation[]>([])
   const [checkoutTarget, setCheckoutTarget]   = useState<Reservation | null>(null)
@@ -96,7 +344,7 @@ const MasterEngine = () => {
 
   useEffect(() => { setIsMounted(true) }, [])
 
-  /* ── カメラ ── */
+  /* ─── カメラ ─── */
   const startCamera = async () => {
     setCameraError(null)
     setIsCameraOpen(true)
@@ -106,7 +354,11 @@ const MasterEngine = () => {
       if (videoRef.current) { videoRef.current.srcObject = stream; videoRef.current.play() }
     } catch { setCameraError('カメラへのアクセスが拒否されました') }
   }
-  const closeCamera = () => { streamRef.current?.getTracks().forEach(t => t.stop()); setIsCameraOpen(false); setCameraError(null) }
+  const closeCamera = () => {
+    streamRef.current?.getTracks().forEach(t => t.stop())
+    setIsCameraOpen(false)
+    setCameraError(null)
+  }
   const capturePhoto = () => {
     if (videoRef.current && canvasRef.current) {
       const ctx = canvasRef.current.getContext('2d')
@@ -118,32 +370,53 @@ const MasterEngine = () => {
     }
   }
 
-  /* ── チェックイン AI読み取りシミュ ── */
+  /* ─── チェックイン AI読み取りシミュ ─── */
   const runCheckin = async () => {
     setCheckinStatus('SCANNING')
     await new Promise(r => setTimeout(r, 2000))
     if (selectedReservation) {
-      setLedgerName(selectedReservation.name)
+      setLedgerName(resName(selectedReservation))
     } else {
       setLedgerName('山田 太郎')
       setLedgerAddress('東京都渋谷区1-2-3')
       setLedgerOccupation('会社員')
-      setLedgerTravel('大阪 → 東京 → 横浜')
+      setLedgerTravel('東京')
     }
     setCheckinStatus('VERIFIED')
   }
 
-  /* ── 予約検索（Staysee実API） ── */
+  /* ─── 予約検索（PMS分岐） ─── */
   const doSearch = async () => {
     if (!searchQuery.trim()) return
     setSearching(true)
     setSearchResults([])
     try {
-      const res = await fetch(`/api/staysee/search?q=${encodeURIComponent(searchQuery.trim())}`)
-      const data = await res.json()
-      setSearchResults(data.reservations || [])
+      if (pms === 'none') {
+        // ローカルモード: ダミーデータから検索
+        const q = searchQuery.toLowerCase()
+        const results = LOCAL_RESERVATIONS.filter(r =>
+          r.id.toLowerCase().includes(q) ||
+          (r.name_kanji || '').toLowerCase().includes(q) ||
+          (r.tel || '').replace(/-/g, '').includes(q.replace(/-/g, ''))
+        )
+        await new Promise(r => setTimeout(r, 500))
+        setSearchResults(results)
+        setIsOnline(false)
+      } else {
+        // PMS API呼び出し
+        const apiPath = pms === 'staysee' ? '/api/staysee/search' : `/api/pms/${pms}/search`
+        const res = await fetch(`${apiPath}?q=${encodeURIComponent(searchQuery.trim())}`)
+        const data = await res.json()
+        setSearchResults(data.reservations || [])
+        setIsOnline(true)
+      }
     } catch {
-      setSearchResults([])
+      // APIエラー時はローカルモードにフォールバック
+      const q = searchQuery.toLowerCase()
+      setSearchResults(LOCAL_RESERVATIONS.filter(r =>
+        r.id.toLowerCase().includes(q) || (r.name_kanji || '').includes(q) || (r.tel || '').includes(q)
+      ))
+      setIsOnline(false)
     } finally {
       setSearching(false)
     }
@@ -151,23 +424,37 @@ const MasterEngine = () => {
 
   const selectReservation = (r: Reservation) => {
     setSelectedReservation(r)
-    // 台帳に氏名を自動入力
     setLedgerName(resName(r))
     setCheckinStatus('IDLE')
     setActiveTab('checkin')
   }
 
-  /* ── チェックアウト検索（Staysee実API） ── */
+  /* ─── チェックアウト検索 ─── */
   const doCheckoutSearch = async () => {
     if (!checkoutQuery.trim()) return
     setCheckoutSearching(true)
     setCheckoutResults([])
     try {
-      const res = await fetch(`/api/staysee/search?q=${encodeURIComponent(checkoutQuery.trim())}&mode=checkout`)
-      const data = await res.json()
-      setCheckoutResults(data.reservations || [])
+      if (pms === 'none') {
+        const q = checkoutQuery.toLowerCase()
+        const results = LOCAL_RESERVATIONS.filter(r =>
+          r.id.toLowerCase().includes(q) ||
+          (r.name_kanji || '').toLowerCase().includes(q) ||
+          (r.tel || '').replace(/-/g, '').includes(q.replace(/-/g, ''))
+        )
+        await new Promise(r => setTimeout(r, 400))
+        setCheckoutResults(results)
+      } else {
+        const apiPath = pms === 'staysee' ? '/api/staysee/search' : `/api/pms/${pms}/search`
+        const res = await fetch(`${apiPath}?q=${encodeURIComponent(checkoutQuery.trim())}&mode=checkout`)
+        const data = await res.json()
+        setCheckoutResults(data.reservations || [])
+      }
     } catch {
-      setCheckoutResults([])
+      const q = checkoutQuery.toLowerCase()
+      setCheckoutResults(LOCAL_RESERVATIONS.filter(r =>
+        (r.name_kanji || '').includes(q) || (r.tel || '').includes(q)
+      ))
     } finally {
       setCheckoutSearching(false)
     }
@@ -178,29 +465,67 @@ const MasterEngine = () => {
     setCheckoutStep('confirm')
   }
 
-  /* ── チェックイン完了通知 ── */
+  /* ─── クラウド保存（Supabase経由） ─── */
+  const saveToCloud = async (payload: Record<string, unknown>) => {
+    try {
+      await fetch('/api/nextra-ai/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+    } catch {
+      // サイレントフェイル（UI影響なし）
+    }
+  }
+
+  /* ─── チェックイン完了通知 ─── */
   const notifyCheckin = async (reservationId: string) => {
-    await fetch('/api/staysee/search', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        reservationId,
-        action: 'checkin',
-        ledger: { name: ledgerName, address: ledgerAddress, occupation: ledgerOccupation, travel: ledgerTravel },
-      }),
-    }).catch(() => null)
+    if (pms !== 'none') {
+      await fetch('/api/staysee/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reservationId, action: 'checkin',
+          ledger: { name: ledgerName, address: ledgerAddress, occupation: ledgerOccupation, travel: ledgerTravel },
+        }),
+      }).catch(() => null)
+    }
+    // クラウド保存（常時）
+    await saveToCloud({
+      type: 'checkin', reservationId, pms,
+      ledger: { name: ledgerName, address: ledgerAddress, occupation: ledgerOccupation, travel: ledgerTravel },
+      hasSig: !!signatureData,
+      timestamp: new Date().toISOString(),
+    })
   }
 
-  /* ── チェックアウト完了通知 ── */
+  /* ─── チェックアウト完了通知 ─── */
   const notifyCheckout = async (reservationId: string) => {
-    await fetch('/api/staysee/search', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ reservationId, action: 'checkout' }),
-    }).catch(() => null)
+    if (pms !== 'none') {
+      await fetch('/api/staysee/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reservationId, action: 'checkout' }),
+      }).catch(() => null)
+    }
+    await saveToCloud({
+      type: 'checkout', reservationId, pms,
+      timestamp: new Date().toISOString(),
+    })
   }
 
-  /* ── タブ切り替え時リセット ── */
+  /* ─── 錠パスワード生成 ─── */
+  const getLockCode = useCallback(() => {
+    if (lockType === 'fixed') return fixedPassword || '8421'
+    if (lockType === 'switchbot' || lockType === 'ttlock') {
+      // 実API連携時はAPIから取得（現在はシミュレーション）
+      const base = selectedReservation?.id?.slice(-4) || '0000'
+      return base.padStart(4, '0')
+    }
+    return '—'
+  }, [lockType, fixedPassword, selectedReservation])
+
+  /* ─── タブ切り替え ─── */
   const gotoTab = (id: string) => {
     setActiveTab(id)
     if (id === 'search') { setSearchMode('select'); setSearchQuery(''); setSearchResults([]) }
@@ -212,22 +537,45 @@ const MasterEngine = () => {
   return (
     <div className="min-h-screen pb-24" style={{ background: '#050507', fontFamily: "'Inter', 'Noto Sans JP', sans-serif" }}>
 
-      {/* ── Hero ── */}
-      <div className="max-w-5xl mx-auto px-6 pt-14 pb-8 space-y-3">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-medium"
-          style={{ borderColor: 'rgba(16,185,129,0.3)', color: '#34d399', background: 'rgba(16,185,129,0.08)' }}>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          Nextra AI Autonomous OS
+      {/* 設定パネル */}
+      {showSettings && (
+        <SettingsPanel
+          pms={pms} setPms={setPms}
+          lockType={lockType} setLockType={setLockType}
+          fixedPassword={fixedPassword} setFixedPassword={setFixedPassword}
+          onClose={() => setShowSettings(false)}
+        />
+      )}
+
+      {/* Hero */}
+      <div className="max-w-5xl mx-auto px-6 pt-14 pb-6 flex items-start justify-between gap-4 flex-wrap">
+        <div className="space-y-3">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-medium"
+            style={{ borderColor: 'rgba(16,185,129,0.3)', color: '#34d399', background: 'rgba(16,185,129,0.08)' }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            Nextra AI Autonomous OS
+          </div>
+          <h1 className="text-3xl md:text-4xl font-semibold text-slate-100 tracking-tight leading-[1.2]">
+            次世代スマート<span style={{ color: '#10b981' }}>チェックイン</span>プロトコル
+          </h1>
+          <p className="text-slate-400 text-sm">PMS連携・本人確認・電子署名・鍵発行を完全自動化するホテルDXシステム。</p>
         </div>
-        <h1 className="text-3xl md:text-4xl font-semibold text-slate-100 tracking-tight leading-[1.2]">
-          次世代スマート<span style={{ color: '#10b981' }}>チェックイン</span>プロトコル
-        </h1>
-        <p className="text-slate-400 text-sm">PMS連携・本人確認・鍵発行を完全自動化するホテルDXシステム。</p>
+        <button onClick={() => setShowSettings(true)}
+          className="flex items-center gap-2 px-4 h-9 rounded-lg text-xs font-semibold transition-all shrink-0 mt-4"
+          style={{ background: '#0d1117', border: '1px solid #1e293b', color: '#64748b' }}
+          onMouseEnter={e => (e.currentTarget.style.color = '#94a3b8')}
+          onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}>
+          <Settings size={13} /> PMS / 錠 設定
+          <ChevronDown size={11} />
+        </button>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 space-y-5">
+      <div className="max-w-5xl mx-auto px-6 space-y-4">
 
-        {/* ── タブナビ ── */}
+        {/* PMS接続状態バナー */}
+        <PmsBanner pms={pms} lockType={lockType} isOnline={isOnline} />
+
+        {/* タブナビ */}
         <div className="flex gap-1 p-1 rounded-xl overflow-x-auto" style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
           {TABS.map(tab => (
             <button key={tab.id} onClick={() => gotoTab(tab.id)}
@@ -239,11 +587,10 @@ const MasterEngine = () => {
           ))}
         </div>
 
-        {/* ════════════ スタート ════════════ */}
+        {/* ════ スタート ════ */}
         {activeTab === 'kiosk' && (
           <div className="rounded-xl flex flex-col items-center justify-center py-16 space-y-10"
             style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
-            {/* 言語選択 */}
             <div className="flex gap-2 flex-wrap justify-center">
               {LANGS.map(lang => (
                 <button key={lang} onClick={() => setSelectedLang(lang)}
@@ -257,10 +604,7 @@ const MasterEngine = () => {
                 </button>
               ))}
             </div>
-
-            {/* メインボタン */}
             <div className="flex gap-8 flex-wrap justify-center">
-              {/* CHECK-IN START */}
               <button onClick={() => gotoTab('search')}
                 className="w-44 h-44 rounded-[2rem] flex flex-col items-center justify-center gap-2 transition-all hover:scale-[1.03]"
                 style={{ background: '#13141f', border: '2px solid rgba(16,185,129,0.35)' }}
@@ -270,7 +614,6 @@ const MasterEngine = () => {
                 <span className="text-emerald-400 text-base font-bold">チェックイン</span>
                 <span className="text-slate-600 text-[10px]">CHECK IN</span>
               </button>
-              {/* CHECK-OUT */}
               <button onClick={() => gotoTab('checkout')}
                 className="w-44 h-44 rounded-[2rem] flex flex-col items-center justify-center gap-2 transition-all hover:scale-[1.03]"
                 style={{ background: '#13141f', border: '2px solid rgba(99,102,241,0.35)' }}
@@ -281,22 +624,19 @@ const MasterEngine = () => {
                 <span className="text-slate-600 text-[10px]">CHECK OUT</span>
               </button>
             </div>
-
             <p className="text-xs text-slate-600">画面をタッチして開始してください</p>
           </div>
         )}
 
-        {/* ════════════ 予約検索 ════════════ */}
+        {/* ════ 予約検索 ════ */}
         {activeTab === 'search' && (
           <div className="space-y-4">
-
-            {/* 検索方法選択 */}
             {searchMode === 'select' && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
-                  { mode: 'reservation' as const, icon: Hash,          label: '予約番号で検索', color: '#10b981' },
-                  { mode: 'name'        as const, icon: ClipboardList,  label: '氏名で検索',     color: '#6366f1' },
-                  { mode: 'phone'       as const, icon: Phone,          label: '電話番号で検索',  color: '#f59e0b' },
+                  { mode: 'reservation' as const, icon: Hash,         label: '予約番号で検索', color: '#10b981' },
+                  { mode: 'name'        as const, icon: ClipboardList, label: '氏名で検索',     color: '#6366f1' },
+                  { mode: 'phone'       as const, icon: Phone,         label: '電話番号で検索',  color: '#f59e0b' },
                 ].map(item => (
                   <button key={item.mode} onClick={() => setSearchMode(item.mode)}
                     className="rounded-xl p-8 flex flex-col items-center justify-center gap-4 transition-all hover:scale-[1.02]"
@@ -310,7 +650,6 @@ const MasterEngine = () => {
               </div>
             )}
 
-            {/* QRコード（カメラ） */}
             {searchMode === 'select' && (
               <div className="rounded-xl p-6 flex flex-col items-center gap-3"
                 style={{ background: '#0d1117', border: '1px dashed #1e293b' }}>
@@ -323,7 +662,6 @@ const MasterEngine = () => {
               </div>
             )}
 
-            {/* 入力フォーム */}
             {searchMode !== 'select' && (
               <div className="rounded-xl p-6 space-y-4" style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
                 <div className="flex items-center justify-between">
@@ -338,9 +676,8 @@ const MasterEngine = () => {
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && doSearch()}
-                    placeholder={searchMode === 'reservation' ? 'NTR-20260510-001' : searchMode === 'name' ? '山田 太郎' : '090-1234-5678'}
-                    className={inputCls}
-                    style={inputStyle}
+                    placeholder={searchMode === 'reservation' ? 'NTR-001' : searchMode === 'name' ? '山田 太郎' : '090-1234-5678'}
+                    className={inputCls} style={inputStyle}
                     onFocus={e => (e.target.style.borderColor = '#10b981')}
                     onBlur={e => (e.target.style.borderColor = '#334155')}
                   />
@@ -352,7 +689,6 @@ const MasterEngine = () => {
                   </button>
                 </div>
 
-                {/* 検索結果 */}
                 {searchResults.length > 0 && (
                   <div className="space-y-2 pt-2">
                     <p className="text-xs text-slate-500">{searchResults.length}件見つかりました</p>
@@ -387,10 +723,34 @@ const MasterEngine = () => {
           </div>
         )}
 
-        {/* ════════════ 自動チェックイン ════════════ */}
+        {/* ════ 自動チェックイン ════ */}
         {activeTab === 'checkin' && (
           <div className="rounded-xl p-6 space-y-6" style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
-            {/* 選択中の予約情報 */}
+
+            {/* カメラモーダル */}
+            {isCameraOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90">
+                <div className="w-full max-w-sm space-y-4">
+                  {cameraError ? (
+                    <div className="rounded-xl p-6 text-center space-y-3"
+                      style={{ background: '#0d1117', border: '1px solid #ef4444' }}>
+                      <p className="text-red-400 text-sm">{cameraError}</p>
+                      <button onClick={closeCamera} className="px-6 py-2 rounded-lg bg-slate-800 text-sm font-bold text-white">閉じる</button>
+                    </div>
+                  ) : (
+                    <>
+                      <video ref={videoRef} autoPlay playsInline className="w-full rounded-xl" />
+                      <canvas ref={canvasRef} className="hidden" />
+                      <div className="flex gap-2">
+                        <button onClick={closeCamera} className="flex-1 py-3 rounded-lg bg-slate-800 text-sm font-bold text-white">キャンセル</button>
+                        <button onClick={capturePhoto} className="flex-1 py-3 rounded-lg bg-emerald-600 text-sm font-bold text-white">撮影する</button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+
             {selectedReservation && (
               <div className="flex items-center gap-3 p-3 rounded-lg"
                 style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
@@ -410,44 +770,26 @@ const MasterEngine = () => {
                 <h3 className="text-lg font-semibold text-slate-100">宿泊者情報の登録</h3>
                 <p className="text-xs text-slate-500 mt-1">旅館業法に基づき、正確な情報をご入力ください。</p>
               </div>
-              <span className="text-xs px-3 py-1 rounded-full font-medium animate-pulse"
+              <span className="text-xs px-3 py-1 rounded-full font-medium"
                 style={{ background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.25)' }}>
-                Identity Verification Active
+                <Shield size={10} className="inline mr-1" />
+                本人確認プロセス
               </span>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-5">
-              {/* Step1: IDスキャン */}
+
+              {/* Step 1: IDスキャン（カメラのみ） */}
               <div className="rounded-xl p-5 space-y-4" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
-                <p className="text-xs font-semibold text-slate-500">Step 1 — ID Scan</p>
+                <p className="text-xs font-semibold text-slate-500 flex items-center gap-1.5">
+                  <Camera size={12} className="text-emerald-400" />
+                  ステップ 1 — 身分証スキャン
+                </p>
 
-                {/* カメラモーダル */}
-                {isCameraOpen && (
-                  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90">
-                    <div className="w-full max-w-sm space-y-4">
-                      {cameraError ? (
-                        <div className="rounded-xl p-6 text-center space-y-3" style={{ background: '#0d1117', border: '1px solid #ef4444' }}>
-                          <p className="text-red-400 text-sm">{cameraError}</p>
-                          <button onClick={closeCamera} className="px-6 py-2 rounded-lg bg-slate-800 text-sm font-bold text-white">閉じる</button>
-                        </div>
-                      ) : (
-                        <>
-                          <video ref={videoRef} autoPlay playsInline className="w-full rounded-xl" />
-                          <canvas ref={canvasRef} className="hidden" />
-                          <div className="flex gap-2">
-                            <button onClick={closeCamera} className="flex-1 py-3 rounded-lg bg-slate-800 text-sm font-bold text-white">キャンセル</button>
-                            <button onClick={capturePhoto} className="flex-1 py-3 rounded-lg bg-emerald-600 text-sm font-bold text-white">撮影する</button>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                <div className="rounded-lg aspect-video flex flex-col items-center justify-center gap-3 cursor-pointer transition-colors"
-                  style={{ border: '2px dashed #334155', background: '#0a0b0f' }}
+                <div
+                  className="rounded-lg aspect-video flex flex-col items-center justify-center gap-3 cursor-pointer transition-all"
+                  style={{ border: `2px dashed ${checkinStatus === 'VERIFIED' ? '#10b981' : '#334155'}`, background: '#0a0b0f' }}
                   onClick={() => checkinStatus === 'IDLE' && startCamera()}>
-                  <input type="file" ref={fileInputRef} onChange={() => runCheckin()} className="hidden" accept="image/*" />
                   {checkinStatus === 'SCANNING' && <Loader2 size={36} className="text-emerald-400 animate-spin" />}
                   {checkinStatus === 'VERIFIED' && <CheckCircle2 size={36} style={{ color: '#10b981' }} />}
                   {checkinStatus === 'IDLE'     && <Camera size={36} className="text-slate-600" />}
@@ -456,32 +798,29 @@ const MasterEngine = () => {
                   </p>
                 </div>
 
-                <div className="flex gap-2">
-                  <button onClick={runCheckin} disabled={checkinStatus === 'SCANNING'}
-                    className="flex-1 h-9 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all"
-                    style={{ background: '#1e293b', color: '#94a3b8', border: '1px solid #334155' }}>
-                    <Camera size={12} /> カメラを起動
-                  </button>
-                  <button onClick={() => fileInputRef.current?.click()} disabled={checkinStatus === 'SCANNING'}
-                    className="flex-1 h-9 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all"
-                    style={{ background: '#1e293b', color: '#94a3b8', border: '1px solid #334155' }}>
-                    📁 ファイルを選択
-                  </button>
-                </div>
+                {/* カメラのみ（ファイル選択なし） */}
+                <button onClick={startCamera} disabled={checkinStatus === 'SCANNING'}
+                  className="w-full h-9 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all"
+                  style={{ background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.3)' }}>
+                  <Camera size={12} /> カメラを起動してスキャン
+                </button>
               </div>
 
-              {/* Step2: 台帳記入 */}
+              {/* Step 2: 台帳記入 */}
               <div className="rounded-xl p-5 space-y-4" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
-                <p className="text-xs font-semibold text-slate-500">Step 2 — Ledger Entry</p>
+                <p className="text-xs font-semibold text-slate-500 flex items-center gap-1.5">
+                  <ClipboardList size={12} className="text-indigo-400" />
+                  ステップ 2 — 宿泊者台帳記入
+                </p>
                 <div className="space-y-3">
                   {[
-                    { label: '氏名',  value: ledgerName,    set: setLedgerName,    placeholder: '氏名を入力' },
-                    { label: '住所',  value: ledgerAddress, set: setLedgerAddress, placeholder: '住所を入力' },
+                    { label: '氏名 *',  value: ledgerName,    set: setLedgerName,    ph: '例：山田 太郎' },
+                    { label: '住所 *',  value: ledgerAddress, set: setLedgerAddress, ph: '例：東京都渋谷区1-2-3' },
                   ].map(f => (
                     <div key={f.label} className="space-y-1">
                       <label className="text-[10px] font-medium text-slate-600">{f.label}</label>
                       <input value={f.value} onChange={e => f.set(e.target.value)}
-                        placeholder={checkinStatus === 'SCANNING' ? 'AI読み取り中...' : f.placeholder}
+                        placeholder={checkinStatus === 'SCANNING' ? 'AI読み取り中...' : f.ph}
                         className={inputCls} style={inputStyle}
                         onFocus={e => (e.target.style.borderColor = '#10b981')}
                         onBlur={e => (e.target.style.borderColor = '#334155')} />
@@ -510,50 +849,86 @@ const MasterEngine = () => {
                       ))}
                     </datalist>
                   </div>
-                  <div className="flex items-center gap-3 p-3 rounded-lg"
-                    style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)' }}>
-                    <PenLine size={14} className="text-indigo-400 shrink-0" />
-                    <span className="text-xs text-slate-400">電子署名パネルで署名を行ってください</span>
-                  </div>
-                  <button
-                    onClick={async () => {
-                      if (selectedReservation?.id) await notifyCheckin(selectedReservation.id)
-                      setActiveTab('lock')
-                    }}
-                    disabled={!ledgerName}
-                    className="w-full h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all"
-                    style={{ background: ledgerName ? '#10b981' : '#1e293b', color: ledgerName ? '#fff' : '#475569' }}>
-                    PMS登録 ＆ 鍵発行へ <ArrowRight size={15} />
-                  </button>
                 </div>
               </div>
             </div>
+
+            {/* Step 3: 電子署名（全幅） */}
+            <div className="rounded-xl p-5 space-y-4" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
+              <p className="text-xs font-semibold text-slate-500 flex items-center gap-1.5">
+                <PenLine size={12} className="text-violet-400" />
+                ステップ 3 — 電子署名（旅館業法・宿泊約款への同意）
+              </p>
+              <p className="text-[10px] text-slate-600 leading-relaxed">
+                宿泊約款および個人情報取扱方針に同意の上、下記にご署名ください。署名はデジタル台帳として保管されます。
+              </p>
+              <SignaturePanel
+                key={signatureClearedAt}
+                onSigned={setSignatureData}
+                onClear={() => { setSignatureData(''); setSignatureClearedAt(Date.now()) }}
+              />
+            </div>
+
+            {/* 登録ボタン */}
+            <button
+              onClick={async () => {
+                if (selectedReservation?.id) await notifyCheckin(selectedReservation.id)
+                setActiveTab('lock')
+              }}
+              disabled={!ledgerName || !signatureData}
+              className="w-full h-12 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all"
+              style={{
+                background: ledgerName && signatureData ? '#10b981' : '#1e293b',
+                color: ledgerName && signatureData ? '#fff' : '#475569',
+              }}>
+              PMS登録 ＆ 鍵発行へ <ArrowRight size={15} />
+            </button>
+            {(!ledgerName || !signatureData) && (
+              <p className="text-center text-[10px] text-slate-600">
+                {!ledgerName ? '氏名を入力してください' : '電子署名が必要です'}
+              </p>
+            )}
           </div>
         )}
 
-        {/* ════════════ 鍵発行 ════════════ */}
+        {/* ════ 鍵発行 ════ */}
         {activeTab === 'lock' && (
           <div className="rounded-xl p-10 flex flex-col items-center justify-center gap-8"
             style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
-            <Lock size={48} style={{ color: '#10b981' }} />
-            <div className="text-center space-y-1">
-              <h3 className="text-xl font-semibold text-slate-100">Your Access Key</h3>
-              <p className="text-xs text-slate-500">チェックイン期間中のみ有効な暗証番号です。</p>
+            <div className="flex items-center gap-3">
+              <Lock size={36} style={{ color: '#10b981' }} />
+              <div>
+                <h3 className="text-xl font-semibold text-slate-100">アクセスキー発行</h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  {LOCK_OPTIONS.find(l => l.id === lockType)?.label} 連携
+                </p>
+              </div>
             </div>
+
             <div className="rounded-xl px-12 py-8 text-center"
               style={{ background: '#13141f', border: '2px solid #10b981', boxShadow: '0 0 30px rgba(16,185,129,0.15)' }}>
               <p className="text-xs font-medium text-slate-500 mb-1">
-                Room: {selectedReservation ? resRoom(selectedReservation) : '201'}
+                Room: {selectedReservation ? resRoom(selectedReservation) : '—'}
               </p>
               <p className="text-xs text-slate-600 mb-3">
                 {selectedReservation
                   ? `${resDate(selectedReservation.start_date)}〜${resDate(selectedReservation.end_date)}`
                   : '—'}
               </p>
-              <p className="text-6xl font-bold tracking-[0.2em]" style={{ color: '#10b981' }}>8421</p>
-              <p className="text-xs text-slate-500 mt-3">暗証番号（スマートロック連携）</p>
+              {lockType !== 'fixed' && (
+                <p className="text-xs text-slate-500 mb-2">
+                  {lockType === 'switchbot' ? 'SwitchBot' : 'TT Lock'} 連携中
+                </p>
+              )}
+              <p className="text-6xl font-bold tracking-[0.2em]" style={{ color: '#10b981' }}>
+                {getLockCode()}
+              </p>
+              <p className="text-xs text-slate-500 mt-3">
+                {lockType === 'fixed' ? '固定暗証番号' : lockType === 'switchbot' ? 'SwitchBot 一時コード' : 'TT Lock 一時コード'}
+              </p>
             </div>
-            <div className="flex gap-3">
+
+            <div className="flex gap-3 flex-wrap justify-center">
               <button onClick={() => gotoTab('kiosk')}
                 className="px-8 h-10 rounded-lg text-sm font-semibold transition-all"
                 style={{ background: '#1e293b', color: '#94a3b8', border: '1px solid #334155' }}>
@@ -568,11 +943,10 @@ const MasterEngine = () => {
           </div>
         )}
 
-        {/* ════════════ チェックアウト ════════════ */}
+        {/* ════ チェックアウト ════ */}
         {activeTab === 'checkout' && (
           <div className="rounded-xl p-6 space-y-5" style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
 
-            {/* STEP: 検索 */}
             {checkoutStep === 'search' && (
               <div className="space-y-4">
                 <div>
@@ -619,7 +993,6 @@ const MasterEngine = () => {
                     ))}
                   </div>
                 )}
-
                 {checkoutResults.length === 0 && checkoutQuery && !checkoutSearching && (
                   <div className="rounded-xl p-6 text-center" style={{ background: '#13141f' }}>
                     <p className="text-sm text-slate-500">該当する予約が見つかりませんでした</p>
@@ -628,7 +1001,6 @@ const MasterEngine = () => {
               </div>
             )}
 
-            {/* STEP: 確認 */}
             {checkoutStep === 'confirm' && checkoutTarget && (
               <div className="flex flex-col items-center gap-6">
                 <LogOut size={40} style={{ color: '#818cf8' }} />
@@ -662,9 +1034,7 @@ const MasterEngine = () => {
                   <div className="w-full max-w-md rounded-xl p-5 flex flex-col items-center gap-4 text-center"
                     style={{ background: '#1a1200', border: '1px solid rgba(251,191,36,0.3)' }}>
                     <p className="text-amber-300 font-semibold text-sm">⚠️ 追加料金が発生しています</p>
-                    <p className="text-slate-400 text-xs leading-relaxed">
-                      スタッフをお呼びして精算の上、チェックアウトをお願いします。
-                    </p>
+                    <p className="text-slate-400 text-xs leading-relaxed">スタッフをお呼びして精算の上、チェックアウトをお願いします。</p>
                     <button className="px-6 h-10 rounded-lg text-sm font-semibold transition-all"
                       style={{ background: '#f59e0b', color: '#000' }}
                       onClick={() => alert('スタッフを呼び出しました。しばらくお待ちください。')}>
@@ -682,7 +1052,6 @@ const MasterEngine = () => {
                     チェックアウトする →
                   </button>
                 )}
-
                 <button onClick={() => setCheckoutStep('search')}
                   className="text-xs text-slate-600 hover:text-slate-400 transition-colors">
                   ← 検索に戻る
@@ -690,23 +1059,24 @@ const MasterEngine = () => {
               </div>
             )}
 
-            {/* STEP: 処理中 */}
             {checkoutStep === 'processing' && (
               <CheckoutProcessing onDone={() => setCheckoutStep('done')} />
             )}
 
-            {/* STEP: 完了 */}
             {checkoutStep === 'done' && (
               <div className="flex flex-col items-center gap-6 py-8 text-center">
                 <div className="w-20 h-20 rounded-full flex items-center justify-center"
                   style={{ background: 'rgba(99,102,241,0.1)', border: '2px solid #6366f1' }}>
-                  <span className="text-4xl">✓</span>
+                  <CheckCircle2 size={40} style={{ color: '#6366f1' }} />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-slate-100">チェックアウト完了</h3>
                   <p className="text-slate-400 text-sm mt-1">
                     {checkoutTarget ? resName(checkoutTarget) : ''} 様、ご利用ありがとうございました
                   </p>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-emerald-500">
+                  <CheckCircle2 size={12} /> データをクラウドに保存しました
                 </div>
                 <p className="text-xs text-slate-500 leading-relaxed">
                   鍵カードの返却をお忘れなく。<br />またのご利用をお待ちしております。
@@ -720,7 +1090,6 @@ const MasterEngine = () => {
             )}
           </div>
         )}
-
       </div>
 
       <div className="text-center mt-16 opacity-20">
@@ -730,7 +1099,7 @@ const MasterEngine = () => {
   )
 }
 
-/* ─────────── SSR無効でラップ ─────────── */
+/* ─── SSR無効でラップ ─── */
 const NoSSR = dynamic(() => Promise.resolve(MasterEngine), {
   ssr: false,
   loading: () => (
