@@ -217,68 +217,214 @@ function PmsBanner({ pms, lockType, isOnline }: { pms: string; lockType: string;
   )
 }
 
-/* ─────────── 設定パネル ─────────── */
+/* ─────────── 設定パネル（APIキー入力→保存→接続テスト） ─────────── */
+type ConnectStatus = { ok: boolean; message: string } | null
+
 function SettingsPanel({
-  pms, setPms, lockType, setLockType, fixedPassword, setFixedPassword, onClose
+  pms, setPms, lockType, setLockType, fixedPassword, setFixedPassword,
+  onClose, onPmsConnected, onLockConnected,
 }: {
   pms: string; setPms: (v: string) => void
   lockType: string; setLockType: (v: string) => void
   fixedPassword: string; setFixedPassword: (v: string) => void
   onClose: () => void
+  onPmsConnected: (mode: string) => void
+  onLockConnected: (mode: string) => void
 }) {
+  const STORAGE_KEY_PMS  = 'nextra_ai_pms_config'
+  const STORAGE_KEY_LOCK = 'nextra_ai_lock_config'
+
+  // localStorage から復元
+  const saved = typeof window !== 'undefined'
+    ? JSON.parse(localStorage.getItem(STORAGE_KEY_PMS) || '{}')
+    : {}
+  const savedLock = typeof window !== 'undefined'
+    ? JSON.parse(localStorage.getItem(STORAGE_KEY_LOCK) || '{}')
+    : {}
+
+  const [pmsApiKey, setPmsApiKey]     = useState<string>(saved.apiKey || '')
+  const [lockApiKey, setLockApiKey]   = useState<string>(savedLock.apiKey || '')
+  const [pmsStatus, setPmsStatus]     = useState<ConnectStatus>(null)
+  const [lockStatus, setLockStatus]   = useState<ConnectStatus>(null)
+  const [pmsTesting, setPmsTesting]   = useState(false)
+  const [lockTesting, setLockTesting] = useState(false)
+  const [showPmsKey, setShowPmsKey]   = useState(false)
+  const [showLockKey, setShowLockKey] = useState(false)
+
+  const pmsInfo  = PMS_OPTIONS.find(p => p.id === pms)!
+  const lockInfo = LOCK_OPTIONS.find(l => l.id === lockType)!
+
+  /* PMS保存 */
+  const savePms = () => {
+    localStorage.setItem(STORAGE_KEY_PMS, JSON.stringify({ pms, apiKey: pmsApiKey }))
+    setPmsStatus({ ok: true, message: '保存しました。「DMS接続テスト」を押してください。' })
+  }
+
+  /* 錠設定保存 */
+  const saveLock = () => {
+    localStorage.setItem(STORAGE_KEY_LOCK, JSON.stringify({ lockType, apiKey: lockApiKey, fixedPassword }))
+    setLockStatus({ ok: true, message: '保存しました。「錠接続テスト」を押してください。' })
+  }
+
+  /* DMS接続テスト */
+  const testPms = async () => {
+    setPmsTesting(true)
+    setPmsStatus(null)
+    try {
+      const res = await fetch('/api/nextra-ai/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'pms', pms, pmsApiKey }),
+      })
+      const data = await res.json()
+      setPmsStatus({ ok: data.ok, message: data.message })
+      if (data.ok) onPmsConnected(data.mode || 'live')
+    } catch {
+      setPmsStatus({ ok: false, message: 'ネットワークエラーが発生しました' })
+    } finally {
+      setPmsTesting(false)
+    }
+  }
+
+  /* 錠接続テスト */
+  const testLock = async () => {
+    setLockTesting(true)
+    setLockStatus(null)
+    try {
+      const res = await fetch('/api/nextra-ai/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'lock', lockType, lockApiKey }),
+      })
+      const data = await res.json()
+      setLockStatus({ ok: data.ok, message: data.message })
+      if (data.ok) onLockConnected(data.mode || 'live')
+    } catch {
+      setLockStatus({ ok: false, message: 'ネットワークエラーが発生しました' })
+    } finally {
+      setLockTesting(false)
+    }
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80" onClick={onClose}>
-      <div className="w-full max-w-md rounded-2xl p-6 space-y-6"
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 overflow-y-auto" onClick={onClose}>
+      <div className="w-full max-w-lg rounded-2xl p-6 space-y-7 my-4"
         style={{ background: '#0d1117', border: '1px solid #1e293b' }}
         onClick={e => e.stopPropagation()}>
+
         <div className="flex items-center justify-between">
           <h3 className="text-base font-semibold text-slate-100 flex items-center gap-2">
-            <Settings size={16} style={{ color: '#10b981' }} /> システム設定
+            <Settings size={16} style={{ color: '#10b981' }} /> DMS システム設定
           </h3>
           <button onClick={onClose} className="text-xs text-slate-600 hover:text-slate-400 transition-colors">✕ 閉じる</button>
         </div>
 
-        {/* PMS選択 */}
-        <div className="space-y-3">
-          <label className="text-xs font-semibold text-slate-500">PMS連携</label>
-          <div className="grid grid-cols-2 gap-2">
+        {/* ── PMS設定セクション ── */}
+        <div className="space-y-4 rounded-xl p-4" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
+          <div className="flex items-center gap-2">
+            <Wifi size={13} style={{ color: pmsInfo.color }} />
+            <span className="text-xs font-semibold text-slate-300">PMS連携設定</span>
+          </div>
+
+          {/* PMS選択 */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {PMS_OPTIONS.map(opt => (
-              <button key={opt.id} onClick={() => setPms(opt.id)}
-                className="h-10 rounded-lg text-xs font-semibold transition-all"
+              <button key={opt.id} onClick={() => { setPms(opt.id); setPmsStatus(null) }}
+                className="h-9 rounded-lg text-xs font-semibold transition-all"
                 style={{
-                  background: pms === opt.id ? `${opt.color}20` : '#13141f',
-                  border: `1px solid ${pms === opt.id ? opt.color + '80' : '#1e293b'}`,
+                  background: pms === opt.id ? `${opt.color}18` : '#0d1117',
+                  border: `1px solid ${pms === opt.id ? opt.color + '70' : '#334155'}`,
                   color: pms === opt.id ? opt.color : '#64748b',
                 }}>
                 {opt.label}
               </button>
             ))}
           </div>
+
+          {/* APIキー入力（PMS未接続以外） */}
+          {pms !== 'none' && (
+            <div className="space-y-2">
+              <label className="text-[10px] font-medium text-slate-500">
+                {pms === 'staysee' ? 'Staysee APIキー' : pms === 'easyaccounting' ? 'イージー会計 APIキー' : pms === 'bets24' ? 'BETS24 APIキー' : 'エアホスト APIキー'}
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type={showPmsKey ? 'text' : 'password'}
+                  value={pmsApiKey}
+                  onChange={e => setPmsApiKey(e.target.value)}
+                  placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx"
+                  className={inputCls} style={inputStyle}
+                  onFocus={e => (e.target.style.borderColor = pmsInfo.color)}
+                  onBlur={e => (e.target.style.borderColor = '#334155')}
+                />
+                <button onClick={() => setShowPmsKey(!showPmsKey)}
+                  className="shrink-0 h-11 px-3 rounded-lg text-xs transition-all"
+                  style={{ background: '#0d1117', border: '1px solid #334155', color: '#64748b' }}>
+                  {showPmsKey ? '🙈' : '👁'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* PMS 保存 + 接続テストボタン */}
+          <div className="flex gap-2">
+            <button onClick={savePms}
+              className="flex-1 h-9 rounded-lg text-xs font-semibold transition-all"
+              style={{ background: '#1e293b', color: '#94a3b8', border: '1px solid #334155' }}>
+              💾 保存
+            </button>
+            <button onClick={testPms} disabled={pmsTesting}
+              className="flex-1 h-9 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all"
+              style={{ background: pmsInfo.color, color: '#fff', opacity: pmsTesting ? 0.7 : 1 }}>
+              {pmsTesting ? <Loader2 size={12} className="animate-spin" /> : <Wifi size={12} />}
+              DMS接続テスト
+            </button>
+          </div>
+
+          {/* PMS ステータス */}
+          {pmsStatus && (
+            <div className="flex items-start gap-2 text-xs px-3 py-2 rounded-lg"
+              style={{
+                background: pmsStatus.ok ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)',
+                border: `1px solid ${pmsStatus.ok ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`,
+                color: pmsStatus.ok ? '#34d399' : '#f87171',
+              }}>
+              {pmsStatus.ok ? <CheckCircle2 size={13} className="shrink-0 mt-0.5" /> : <span className="shrink-0">✗</span>}
+              {pmsStatus.message}
+            </div>
+          )}
         </div>
 
-        {/* 錠デバイス選択 */}
-        <div className="space-y-3">
-          <label className="text-xs font-semibold text-slate-500">錠デバイス</label>
+        {/* ── 錠デバイス設定セクション ── */}
+        <div className="space-y-4 rounded-xl p-4" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
+          <div className="flex items-center gap-2">
+            <Lock size={13} style={{ color: lockInfo.color }} />
+            <span className="text-xs font-semibold text-slate-300">錠デバイス設定</span>
+          </div>
+
+          {/* 錠デバイス選択 */}
           <div className="grid grid-cols-3 gap-2">
             {LOCK_OPTIONS.map(opt => (
-              <button key={opt.id} onClick={() => setLockType(opt.id)}
-                className="h-10 rounded-lg text-xs font-semibold transition-all"
+              <button key={opt.id} onClick={() => { setLockType(opt.id); setLockStatus(null) }}
+                className="h-9 rounded-lg text-xs font-semibold transition-all"
                 style={{
-                  background: lockType === opt.id ? `${opt.color}20` : '#13141f',
-                  border: `1px solid ${lockType === opt.id ? opt.color + '80' : '#1e293b'}`,
+                  background: lockType === opt.id ? `${opt.color}18` : '#0d1117',
+                  border: `1px solid ${lockType === opt.id ? opt.color + '70' : '#334155'}`,
                   color: lockType === opt.id ? opt.color : '#64748b',
                 }}>
                 {opt.label}
               </button>
             ))}
           </div>
+
+          {/* 錠デバイス: 固定パスワード */}
           {lockType === 'fixed' && (
             <div className="space-y-1">
-              <label className="text-[10px] font-medium text-slate-600">固定パスワード（4〜8桁）</label>
+              <label className="text-[10px] font-medium text-slate-500">固定パスワード（4〜8桁の数字）</label>
               <input
                 value={fixedPassword}
                 onChange={e => setFixedPassword(e.target.value.replace(/\D/g, '').slice(0, 8))}
-                placeholder="1234"
+                placeholder="例：8421"
                 className={inputCls} style={inputStyle}
                 maxLength={8}
                 onFocus={e => (e.target.style.borderColor = '#f59e0b')}
@@ -286,12 +432,70 @@ function SettingsPanel({
               />
             </div>
           )}
+
+          {/* 錠デバイス: API/トークン入力 */}
+          {(lockType === 'switchbot' || lockType === 'ttlock') && (
+            <div className="space-y-2">
+              <label className="text-[10px] font-medium text-slate-500">
+                {lockType === 'switchbot' ? 'SwitchBot APIトークン' : 'TT Lock アクセストークン'}
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type={showLockKey ? 'text' : 'password'}
+                  value={lockApiKey}
+                  onChange={e => setLockApiKey(e.target.value)}
+                  placeholder={lockType === 'switchbot' ? 'SwitchBot APIトークンを入力' : 'TT Lock アクセストークンを入力'}
+                  className={inputCls} style={inputStyle}
+                  onFocus={e => (e.target.style.borderColor = lockInfo.color)}
+                  onBlur={e => (e.target.style.borderColor = '#334155')}
+                />
+                <button onClick={() => setShowLockKey(!showLockKey)}
+                  className="shrink-0 h-11 px-3 rounded-lg text-xs transition-all"
+                  style={{ background: '#0d1117', border: '1px solid #334155', color: '#64748b' }}>
+                  {showLockKey ? '🙈' : '👁'}
+                </button>
+              </div>
+              <p className="text-[10px] text-slate-600">
+                {lockType === 'switchbot'
+                  ? 'SwitchBot App → プロフィール → 設定 → アプリ・SwitchBotウェブサービスAPIキー'
+                  : 'TT Lock App → プロフィール → APIアクセス → アクセストークン'}
+              </p>
+            </div>
+          )}
+
+          {/* 錠 保存 + 接続テストボタン */}
+          <div className="flex gap-2">
+            <button onClick={saveLock}
+              className="flex-1 h-9 rounded-lg text-xs font-semibold transition-all"
+              style={{ background: '#1e293b', color: '#94a3b8', border: '1px solid #334155' }}>
+              💾 保存
+            </button>
+            <button onClick={testLock} disabled={lockTesting}
+              className="flex-1 h-9 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all"
+              style={{ background: lockInfo.color, color: lockType === 'fixed' ? '#000' : '#fff', opacity: lockTesting ? 0.7 : 1 }}>
+              {lockTesting ? <Loader2 size={12} className="animate-spin" /> : <Lock size={12} />}
+              錠接続テスト
+            </button>
+          </div>
+
+          {/* 錠 ステータス */}
+          {lockStatus && (
+            <div className="flex items-start gap-2 text-xs px-3 py-2 rounded-lg"
+              style={{
+                background: lockStatus.ok ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)',
+                border: `1px solid ${lockStatus.ok ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`,
+                color: lockStatus.ok ? '#34d399' : '#f87171',
+              }}>
+              {lockStatus.ok ? <CheckCircle2 size={13} className="shrink-0 mt-0.5" /> : <span className="shrink-0">✗</span>}
+              {lockStatus.message}
+            </div>
+          )}
         </div>
 
         <button onClick={onClose}
           className="w-full h-11 rounded-xl text-sm font-semibold transition-all"
           style={{ background: '#10b981', color: '#fff' }}>
-          保存して閉じる
+          設定を保存して閉じる
         </button>
       </div>
     </div>
@@ -342,7 +546,18 @@ const MasterEngine = () => {
   const [checkoutStep, setCheckoutStep]       = useState<'search'|'confirm'|'processing'|'done'>('search')
   const [hasExtraCharge] = useState(false)
 
-  useEffect(() => { setIsMounted(true) }, [])
+  useEffect(() => {
+    setIsMounted(true)
+    // localStorage から設定を復元
+    try {
+      const savedPms = JSON.parse(localStorage.getItem('nextra_ai_pms_config') || '{}')
+      const savedLock = JSON.parse(localStorage.getItem('nextra_ai_lock_config') || '{}')
+      if (savedPms.pms) setPms(savedPms.pms)
+      if (savedLock.lockType) setLockType(savedLock.lockType)
+      if (savedLock.fixedPassword) setFixedPassword(savedLock.fixedPassword)
+      if (savedPms.pms === 'none') setIsOnline(false)
+    } catch { /* ignore */ }
+  }, [])
 
   /* ─── カメラ ─── */
   const startCamera = async () => {
@@ -544,6 +759,12 @@ const MasterEngine = () => {
           lockType={lockType} setLockType={setLockType}
           fixedPassword={fixedPassword} setFixedPassword={setFixedPassword}
           onClose={() => setShowSettings(false)}
+          onPmsConnected={(mode) => {
+            setIsOnline(mode !== 'local')
+          }}
+          onLockConnected={(_mode) => {
+            // 接続成功を記録（UIバナーに反映）
+          }}
         />
       )}
 
