@@ -148,9 +148,9 @@ const MasterEngine = () => {
     const isSmall = printPosition === 'chest-left'
     const cx = w / 2
     const cy = printPosition === 'chest-left' ? h * 0.3 : printPosition === 'back-center' ? h * 0.55 : h * 0.44
-    // 安全なプリントボックス: 胴体幅(w*0.6)の80% = w*0.48、左胸は半分
-    const boxW = isSmall ? w * 0.22 : w * 0.48
-    const boxH = isSmall ? h * 0.14 : h * 0.30
+    // 安全なプリントボックス: 胴体幅(w*0.6)の80% = w*0.52、左胸は半分
+    const boxW = isSmall ? w * 0.22 : w * 0.52
+    const boxH = isSmall ? h * 0.14 : h * 0.32
     const rx = 10 // 角丸半径
     const bx = cx - boxW / 2
     const by = cy - boxH / 2
@@ -196,7 +196,8 @@ const MasterEngine = () => {
     
     // 文字幅に応じて改行する関数
     const generateLines = (size: number) => {
-      ctx.font = S.font.replace(/[\d.]+px/, `${size}px`)
+      const fontStr = S.font.replace(/[\d.]+px/, `${size}px`)
+      ctx.font = fontStr
       const tempLines: string[] = []
       let current = ''
       for (const ch of keyword) {
@@ -208,19 +209,25 @@ const MasterEngine = () => {
         }
       }
       if (current) tempLines.push(current)
-      return tempLines
+      return { lines: tempLines, fontStr }
     }
 
     // 2. 高さに収まるまでフォントサイズを縮小して再計算
-    lines = generateLines(fontSize)
+    let currentFontStr = ''
+    let result = generateLines(fontSize)
+    lines = result.lines
+    currentFontStr = result.fontStr
     let lineHeight = fontSize * 1.4
     while (lines.length * lineHeight > safeH && fontSize > 10) {
       fontSize -= 1
       lineHeight = fontSize * 1.4
-      lines = generateLines(fontSize)
+      result = generateLines(fontSize)
+      lines = result.lines
+      currentFontStr = result.fontStr
     }
 
-    // 3. 描画
+    // 3. 描画（フォントを明示的に再設定してから描画）
+    ctx.font = currentFontStr
     const resolvedColor = textColorId !== 'auto'
       ? (TEXT_COLORS.find(c => c.id === textColorId)?.hex || S.textColor)
       : S.textColor
@@ -230,7 +237,6 @@ const MasterEngine = () => {
 
     const startY = cy - (lines.length * lineHeight) / 2 + lineHeight / 2
     lines.forEach((line, i) => {
-      // maxWidth引数を渡さない — 文字縮小圧縮させず、改行アルゴリズムに任せる
       ctx.fillText(line, cx, startY + i * lineHeight)
     })
 
