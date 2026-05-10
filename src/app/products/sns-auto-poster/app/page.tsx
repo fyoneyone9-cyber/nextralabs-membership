@@ -172,6 +172,27 @@ export default function SnsAutoPosterApp() {
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-600 text-slate-300 text-xs font-bold">2</span>
                 <span className="text-sm font-semibold text-white">または自由にテーマを入力</span>
               </div>
+              {/* プリセット */}
+              <div className="flex flex-wrap gap-2">
+                {[
+                  '朝活で人生が変わった話',
+                  'ChatGPTで時間を10倍に',
+                  '副業で月5万円稼ぐ方法',
+                  'AIツール5選まとめ',
+                  '節約術で年30万貯めた',
+                  '在宅ワークのコツ',
+                  'Kindle出版してみた',
+                  '習慣化に失敗する理由',
+                ].map((preset, i) => (
+                  <button
+                    key={i}
+                    onClick={() => { setTopic(preset); setSelectedTrend(null) }}
+                    className={\px-3 py-1.5 rounded-full text-xs font-medium border transition-all \\}
+                  >
+                    {preset}
+                  </button>
+                ))}
+              </div>
               <textarea
                 value={topic}
                 onChange={e => { setTopic(e.target.value); setSelectedTrend(null) }}
