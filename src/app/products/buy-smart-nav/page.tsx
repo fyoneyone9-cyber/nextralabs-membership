@@ -1,3 +1,29 @@
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'AI買い物ナビ（Buy Smart Nav）| 最安値×最適タイミングで賢く購入',
+  description: '購入前にAIが価格履歴・口コミ分析・最安値タイミングを自動調査。衝動買いゼロで年間数万円の節約を実現。NextraLabsプレミアムプラン。',
+  keywords: ['AI買い物', '価格比較AI', '最安値タイミング', '賢い買い物', '節約AI'],
+  alternates: {
+    canonical: 'https://membership-site-nextralabos.vercel.app/products/buy-smart-nav',
+  },
+  openGraph: {
+    title: 'AI買い物ナビ（Buy Smart Nav）| 最安値×最適タイミングで賢く購入 | NextraLabs',
+    description: '購入前にAIが価格履歴・口コミ分析・最安値タイミングを自動調査。衝動買いゼロで年間数万円の節約を実現。NextraLabsプレミアムプラン。',
+    url: 'https://membership-site-nextralabos.vercel.app/products/buy-smart-nav',
+    type: 'website',
+    locale: 'ja_JP',
+    siteName: 'NextraLabs',
+    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI買い物ナビ（Buy Smart Nav）| 最安値×最適タイミングで賢く購入' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI買い物ナビ（Buy Smart Nav）| 最安値×最適タイミングで賢く購入',
+    description: '購入前にAIが価格履歴・口コミ分析・最安値タイミングを自動調査。衝動買いゼロで年間数万円の節約を実現。NextraLabsプレミアムプラン。',
+    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+  },
+}
+
 ﻿import React from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'

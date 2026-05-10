@@ -1,3 +1,29 @@
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'AI受信トレイ整理（Inbox Organizer）| Gmailを自動分類・返信',
+  description: 'AIがメールを自動分類・優先度付け・返信文を生成。受信トレイを常にゼロに。Gmail連携でビジネスメールを10倍効率化。NextraLabsライトプラン以上。',
+  keywords: ['AIメール整理', 'Gmail自動分類', '受信トレイゼロ', 'AIメール返信', 'メール効率化'],
+  alternates: {
+    canonical: 'https://membership-site-nextralabos.vercel.app/products/inbox-organizer',
+  },
+  openGraph: {
+    title: 'AI受信トレイ整理（Inbox Organizer）| Gmailを自動分類・返信 | NextraLabs',
+    description: 'AIがメールを自動分類・優先度付け・返信文を生成。受信トレイを常にゼロに。Gmail連携でビジネスメールを10倍効率化。NextraLabsライトプラン以上。',
+    url: 'https://membership-site-nextralabos.vercel.app/products/inbox-organizer',
+    type: 'website',
+    locale: 'ja_JP',
+    siteName: 'NextraLabs',
+    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI受信トレイ整理（Inbox Organizer）| Gmailを自動分類・返信' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI受信トレイ整理（Inbox Organizer）| Gmailを自動分類・返信',
+    description: 'AIがメールを自動分類・優先度付け・返信文を生成。受信トレイを常にゼロに。Gmail連携でビジネスメールを10倍効率化。NextraLabsライトプラン以上。',
+    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+  },
+}
+
 ﻿import React from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'

@@ -6,9 +6,28 @@ import { Badge } from '@/components/ui/badge'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 
 export const metadata: Metadata = {
-  title: 'AIペット翻訳モニター',
-  description: '留守中のペットの行動・鳴き声をAIがリアルタイム解析。猫・犬対応。感情を日本語で通知。月額¥1,980。',
-  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/pet-translator' },
+  title: 'AIペット通訳士（Pet Translator）| 愛犬・愛猫の気持ちをAIが解読',
+  description: '愛犬・愛猫の行動・鳴き声・表情をAIが分析して気持ちを翻訳。健康状態のチェックや行動改善アドバイスも。ペットとの絆が深まるNextraLabs無料ツール。',
+  keywords: ["AIペット翻訳","犬の気持ちAI","猫の気持ちAI","ペット行動分析","AIペット通訳"],
+  alternates: {
+    canonical: 'https://membership-site-nextralabos.vercel.app/products/pet-translator',
+  },
+  openGraph: {
+    title: 'AIペット通訳士（Pet Translator）| 愛犬・愛猫の気持ちをAIが解読 | NextraLabs',
+    description: '愛犬・愛猫の行動・鳴き声・表情をAIが分析して気持ちを翻訳。健康状態のチェックや行動改善アドバイスも。ペットとの絆が深まるNextraLabs無料ツール。',
+    url: 'https://membership-site-nextralabos.vercel.app/products/pet-translator',
+    type: 'website',
+    locale: 'ja_JP',
+    siteName: 'NextraLabs',
+    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AIペット通訳士（Pet Translator）| 愛犬・愛猫の気持ちをAIが解読' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AIペット通訳士（Pet Translator）| 愛犬・愛猫の気持ちをAIが解読',
+    description: '愛犬・愛猫の行動・鳴き声・表情をAIが分析して気持ちを翻訳。健康状態のチェックや行動改善アドバイスも。ペットとの絆が深まるNextraLabs無料ツール。',
+    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+  },
+},
   openGraph: { title: 'AIペット翻訳モニター | NextraLabs', description: '留守中のペットの行動・鳴き声をAIがリアルタイム解析。猫・犬対応。感情を日本語で通知。', url: 'https://membership-site-nextralabos.vercel.app/products/pet-translator', type: 'website' },
 }
 import {

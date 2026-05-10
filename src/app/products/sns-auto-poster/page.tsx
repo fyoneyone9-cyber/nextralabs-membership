@@ -1,3 +1,29 @@
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'AI SNSオートポスター | X・Instagram・TikTokを完全自動投稿',
+  description: 'AIがバズるコンテンツを生成し、最適な時間帯に自動投稿。フォロワー増加・エンゲージメント向上を自動化。NextraLabsライトプラン以上。',
+  keywords: ['SNS自動投稿', 'AIインスタ投稿', 'TwitterAI自動', 'TikTokAI', 'SNSマーケティングAI'],
+  alternates: {
+    canonical: 'https://membership-site-nextralabos.vercel.app/products/sns-auto-poster',
+  },
+  openGraph: {
+    title: 'AI SNSオートポスター | X・Instagram・TikTokを完全自動投稿 | NextraLabs',
+    description: 'AIがバズるコンテンツを生成し、最適な時間帯に自動投稿。フォロワー増加・エンゲージメント向上を自動化。NextraLabsライトプラン以上。',
+    url: 'https://membership-site-nextralabos.vercel.app/products/sns-auto-poster',
+    type: 'website',
+    locale: 'ja_JP',
+    siteName: 'NextraLabs',
+    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI SNSオートポスター | X・Instagram・TikTokを完全自動投稿' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI SNSオートポスター | X・Instagram・TikTokを完全自動投稿',
+    description: 'AIがバズるコンテンツを生成し、最適な時間帯に自動投稿。フォロワー増加・エンゲージメント向上を自動化。NextraLabsライトプラン以上。',
+    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+  },
+}
+
 ﻿import React from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'

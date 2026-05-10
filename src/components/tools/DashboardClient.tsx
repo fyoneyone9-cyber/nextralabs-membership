@@ -15,6 +15,7 @@ import {
   Network, Calendar, UserPlus, LineChart, Archive, Utensils, Wallet
 } from 'lucide-react'
 import DashboardActivity from '@/components/dashboard/DashboardActivity'
+import SalesMailPanel from '@/components/dashboard/SalesMailPanel'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 function PWAInstallCard() {
   const [deferredPrompt, setDeferredPrompt] = React.useState<any>(null)
@@ -148,7 +149,7 @@ function hasAccess(userPlan: string, toolPlan: string): boolean {
 export default function DashboardClient({ user, profile, subscription }: any) {
   const [favorites, setFavorites] = useState<string[]>([])
   const [mounted, setMounted] = useState(false)
-  const [activeTab, setActiveTab] = useState<'all' | 'favorites' | 'accessible'>('all')
+  const [activeTab, setActiveTab] = useState<'all' | 'favorites' | 'accessible' | 'sales'>('all')
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -174,6 +175,7 @@ export default function DashboardClient({ user, profile, subscription }: any) {
   const meta = PLAN_META[plan] || PLAN_META.free
   const PlanIcon = meta.icon
   const displayName = profile?.display_name || user?.email?.split('@')[0] || 'ゲスト'
+  const isAdmin = profile?.role === 'admin'
 
   const allTools = TOOL_CATEGORIES.flatMap(c => c.tools)
   const accessibleCount = allTools.filter(t => hasAccess(plan, t.plan)).length
@@ -214,15 +216,18 @@ export default function DashboardClient({ user, profile, subscription }: any) {
           <div className="lg:col-span-2 space-y-12">
             {/* タブ */}
             <div className="flex gap-4 border-b border-white/5">
-              {[{ key: 'all', label: '全ツール' }, { key: 'accessible', label: '利用可能' }, { key: 'favorites', label: 'お気に入り' }].map(tab => (
+              {[{ key: 'all', label: '全ツール' }, { key: 'accessible', label: '利用可能' }, { key: 'favorites', label: 'お気に入り' }, ...(isAdmin ? [{ key: 'sales', label: '📧 営業メール' }] : [])].map(tab => (
                 <button key={tab.key} onClick={() => setActiveTab(tab.key as any)} className={`px-5 py-3 text-sm font-medium transition-all border-b-2 ${activeTab === tab.key ? 'border-emerald-500 text-white' : 'border-transparent text-slate-500 hover:text-slate-300'}`}>
                   {tab.label}
                 </button>
               ))}
             </div>
 
+            {/* 営業メールパネル（admin専用） */}
+            {activeTab === 'sales' && isAdmin && <SalesMailPanel />}
+
             {/* ツール一覧（本物化・日本語化） */}
-            {TOOL_CATEGORIES.map(cat => {
+            {activeTab !== 'sales' && TOOL_CATEGORIES.map(cat => {
               let tools = cat.tools
               if (activeTab === 'accessible') tools = tools.filter(t => hasAccess(plan, t.plan))
               if (activeTab === 'favorites') tools = tools.filter(t => favorites.includes(t.id))
