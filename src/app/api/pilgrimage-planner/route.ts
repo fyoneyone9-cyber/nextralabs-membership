@@ -602,7 +602,8 @@ export async function POST(req: NextRequest) {
       .gte('created_at', `${today}T00:00:00.000Z`)
 
     const usageCount = usageLogs?.length ?? 0
-    if (usageCount >= DAILY_LIMIT) {
+    const isOwner = user.email === 'f.yoneyone9@gmail.com'
+    if (!isOwner && usageCount >= DAILY_LIMIT) {
       return NextResponse.json(
         { error: `本日の利用上限（${DAILY_LIMIT}回）に達しました。明日またお試しください。` },
         { status: 429 }
