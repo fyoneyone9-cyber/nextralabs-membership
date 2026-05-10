@@ -331,7 +331,16 @@ export default function ProfilePage() {
       </div>
 
       {/* App Install */}
-      <PWAInstallSection />
+      <div className="max-w-4xl mx-auto mt-6">
+        <div className="bg-[#0d0f1a] border border-emerald-500/20 rounded-2xl p-6 text-center space-y-3">
+          <p className="text-xs font-semibold text-emerald-400 uppercase tracking-widest">📱 アプリとして追加</p>
+          <p className="text-sm text-slate-400 leading-relaxed">
+            ブラウザの「ホーム画面に追加」からNextraLabsをインストールすると、<br className="hidden md:block" />
+            アプリと同様にすぐ起動できます（PWA対応）。
+          </p>
+          <p className="text-xs text-slate-600">iOS: Safari → 共有ボタン → ホーム画面に追加　/　Android: Chrome → メニュー → アプリをインストール</p>
+        </div>
+      </div>
 
     </div>
   )

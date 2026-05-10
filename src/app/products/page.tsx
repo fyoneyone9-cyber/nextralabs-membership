@@ -174,6 +174,52 @@ function ProductsList() {
           </section>
         ))}
       </div>
+      {/* Amazon アフィリエイト */}
+      <div className="max-w-6xl mx-auto px-4 mt-16">
+        <div className="border-t border-white/5 pt-12">
+          <div className="flex items-center gap-3 mb-6 justify-center">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-widest">Sponsored · Amazon</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              {
+                label: '🤖 AI・プログラミング本',
+                desc: 'ChatGPT・Python・機械学習の最新書籍を探す',
+                url: 'https://www.amazon.co.jp/s?k=AI+プログラミング+ChatGPT&tag=534e3725-22',
+                btn: 'Amazonで探す →',
+              },
+              {
+                label: '📚 副業・ビジネス書',
+                desc: 'フリーランス・副業・起業に役立つベストセラー',
+                url: 'https://www.amazon.co.jp/s?k=副業+ビジネス+フリーランス&tag=534e3725-22',
+                btn: 'Amazonで探す →',
+              },
+              {
+                label: '🌿 ガーデニング用品',
+                desc: 'スマートプランターから土・肥料まで揃う',
+                url: 'https://www.amazon.co.jp/s?k=ガーデニング+プランター+肥料&tag=534e3725-22',
+                btn: 'Amazonで探す →',
+              },
+            ].map((item, i) => (
+              <a
+                key={i}
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-[#13141f] border border-white/5 hover:border-emerald-500/30 rounded-xl p-5 transition-all group"
+              >
+                <p className="text-sm font-semibold text-white mb-1.5 group-hover:text-emerald-300 transition-colors">{item.label}</p>
+                <p className="text-xs text-slate-500 leading-relaxed mb-4">{item.desc}</p>
+                <span className="text-xs font-semibold text-emerald-400 group-hover:text-emerald-300 transition-colors">{item.btn}</span>
+              </a>
+            ))}
+          </div>
+          <p className="text-center text-[10px] text-slate-700 mt-4">
+            ※ Amazonアソシエイト・プログラム参加者です。リンク経由でご購入いただくとNextraLabsの運営に役立てられます。
+          </p>
+        </div>
+      </div>
+
       <div className="text-center opacity-20 mt-10 font-medium tracking-tight text-[10px] text-slate-500">Nextra Labs · 2026</div>
     </div>
   )
