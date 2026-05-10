@@ -12,29 +12,36 @@ import {
 } from 'lucide-react'
 
 const TOOL_DIRECTORY = [
-  { id: 'staysee-ai-finder', name: 'Nextra AI', desc: '宿泊予約・鍵発行を完全同期。人の手を介さない次世代フロント体験。', icon: Building2, Youtube, color: 'text-emerald-500' },
-  { id: 'sns-auto-poster', name: 'AI SNSオートポスター', desc: 'トレンド×戦略でバズを量産する、最強のマルチSNS投稿エンジン。', icon: Share2, color: 'text-rose-500' },
-  { id: 'trend-stock', name: 'SNSトレンドAI分析', desc: 'バズ予測×楽天在庫同期。流行を即座に収益（仕入れ）へ変換。', icon: TrendingUp, color: 'text-emerald-500' },
-  { id: 'ai-konkatsu', name: 'AI婚活コーチ', desc: '上級心理カウンセラーの知見を統合。データと心理で成婚を支援。', icon: HeartHandshake, color: 'text-pink-400' },
-  { id: 'inbox-organizer', name: 'Gmail AI Accelerator', desc: '未読ゼロを最速で実現。AIがメール要約と返信案作成を代行。', icon: Mail, color: 'text-emerald-500' },
-  { id: 'expense-sync', name: 'Expense AI Sync', desc: 'レシート画像をAI解析し、スプレッドシートへ全自動で記帳。', icon: Table, color: 'text-emerald-400' },
-  { id: 'contact-sync', name: 'Contact Sync', desc: '名刺をAIスキャンし、スマホ連絡先へ全自動で1行登録。', icon: UserPlus, color: 'text-blue-400' },
-  { id: 'ai-select-shop', name: 'AIセレクトショップ', desc: '流行をAI分析し、在庫リスクゼロでShopifyへ自動出品。', icon: Store, color: 'text-teal-500' },
-  { id: 'interior-coordinator', name: 'Interior Sync', desc: '空間分析×楽天一括購入。部屋に調和する家具をAIが提案。', icon: Sofa, color: 'text-emerald-500' },
-  { id: 'youtube-coordinator', name: 'YouTube AI Sync', desc: '動画内の服を特定。楽天市場から類似品を即座に提案。', icon: Play, color: 'text-red-500' },
-  { id: 'evidence-manager', name: 'エビデンスAIマネージャー', desc: '制作実績をAIが自動選別。Shopify等の証拠を美しくアーカイブ。', icon: Archive, color: 'text-emerald-400' },
-  { id: 'office-politics-graph', name: '社内政治 AI相関図', desc: '組織内のパワーバランスと人間関係の暗部をAIが可視化。', icon: Network, color: 'text-emerald-400' },
-  { id: 'moving-checker', name: 'AI引越し安心チェッカー', desc: '住所だけで周辺治安・物件リスクをAIが精密スコアリング。', icon: Home, color: 'text-emerald-400' },
-  { id: 'buy-smart-nav', name: '中古・新品AI比較ナビ', desc: '市場価格をAIが比較。今、新品と中古どちらを買うべきか判定。', icon: Scale, color: 'text-emerald-400' },
-  { id: 'kdp-guide', name: 'Kindle出版AI完全ナビ', desc: '執筆から申請まで。最短距離で作家デビューをAIがサポート。', icon: BookOpen, color: 'text-emerald-400' },
-
-  { id: 'shopping-stopper', name: 'AI買い物依存ストッパー', desc: '散財の鎖を断ち切る。AIが購買行動を健全な方向へガイド。', icon: ShieldAlert, color: 'text-rose-400' },
-  { id: 'scam-defender', name: 'AI詐欺ディフェンダー', desc: '詐欺・悪意のある連絡を即座に判定し、デジタル資産を保護。', icon: ShieldCheck, color: 'text-red-400' },
-  { id: 'money-guard', name: 'AI家計防衛シミュレーター', desc: '衝動買いの心理を抑止。支出の致命傷を未然に防ぐ。', icon: Wallet, color: 'text-emerald-400' },
-  { id: 'disaster-guard', name: 'AI防災パーソナルガイド', desc: '現在地のハザードマップに基づき、AIが生存戦略を立案。', icon: Shield, color: 'text-sky-400' },
-  { id: 'youtube-producer', name: 'AI YouTubeプロデューサー', desc: '最新ニュースから全自動で台本、サムネイル設計まで完結。', icon: Youtube, color: 'text-red-400' },
-  { id: 'ai-sidejob', name: 'AI副業スタートダッシュ', desc: '適性診断から収益化まで、AI副業の最短ロードマップを提示。', icon: Briefcase, color: 'text-emerald-400' },
-  { id: 'prompt-master', name: 'AI画像プロンプトマスター', desc: '1000以上のパーツから究極の画像生成プロンプトを錬成。', icon: Wand2, color: 'text-emerald-400' }
+  { id: 'nextra-ai',           name: 'Nextra AI',                 desc: '宿泊予約・鍵発行を完全同期。人の手を介さない次世代フロント体験。',              icon: Building2,     color: 'text-emerald-500' },
+  { id: 'staysee-ai-finder',  name: 'Staysee AI Finder',         desc: '現在地から最適な宿をAIが即提案。楽天トラベル連携で一発予約。',                icon: Hotel,         color: 'text-sky-400'    },
+  { id: 'sns-auto-poster',    name: 'AI SNSオートポスター',       desc: 'トレンド×戦略でバズを量産する、最強のマルチSNS投稿エンジン。',                icon: Share2,        color: 'text-rose-500'   },
+  { id: 'inbox-organizer',    name: 'Gmail AI Accelerator',       desc: '未読ゼロを最速で実現。AIがメール要約と返信案作成を代行。',                    icon: Mail,          color: 'text-emerald-500' },
+  { id: 'ai-select-shop',     name: 'AIセレクトショップ',         desc: '流行をAI分析し、在庫リスクゼロでShopifyへ自動出品。',                        icon: Store,         color: 'text-teal-500'   },
+  { id: 'youtube-coordinator',name: 'YouTube AI Sync',            desc: '動画内の服を特定。楽天市場から類似品を即座に提案。',                          icon: Play,          color: 'text-red-500'    },
+  { id: 'moving-checker',     name: 'AI引越し安心チェッカー',     desc: '住所だけで周辺治安・物件リスクをAIが精密スコアリング。',                      icon: Home,          color: 'text-emerald-400' },
+  { id: 'buy-smart-nav',      name: '中古・新品AI比較ナビ',       desc: '市場価格をAIが比較。今、新品と中古どちらを買うべきか判定。',                  icon: Scale,         color: 'text-emerald-400' },
+  { id: 'kdp-guide',          name: 'Kindle出版AI完全ナビ',       desc: '執筆から申請まで。最短距離で作家デビューをAIがサポート。',                    icon: BookOpen,      color: 'text-emerald-400' },
+  { id: 'kindle-factory',     name: 'Kindle Factory',             desc: 'AIが企画から原稿まで全自動生成。最短でKDP出版を実現。',                        icon: Sparkles,      color: 'text-amber-400'  },
+  { id: 'exam-scheduler',     name: 'AI試験スケジューラー',       desc: '合格から逆算した最適な学習スケジュールをAIが自動設計。',                      icon: Ticket,        color: 'text-emerald-400' },
+  { id: 'ai-exam-generator',  name: 'AI試験問題ジェネレーター',   desc: 'ITパスポート・資格対策の過去問と模擬問題をAIが即生成。',                      icon: FileText,      color: 'text-blue-400'   },
+  { id: 'location-finder',    name: 'AI Location Finder',         desc: '条件を入力するだけで全国の最適な移住・開業地をAIが選定。',                    icon: MapPin,        color: 'text-emerald-400' },
+  { id: 'universal-converter',name: 'Universal Converter',        desc: '文章・画像・PDFをなんでも変換。AI搭載の万能コンバーター。',                    icon: Zap,           color: 'text-emerald-400' },
+  { id: 'smart-gardening',    name: 'AIスマートガーデニング',     desc: '植物の状態をAIが診断。最適な水やり・肥料・手入れをガイド。',                  icon: Sprout,        color: 'text-green-500'  },
+  { id: 'shopping-stopper',   name: 'AI買い物依存ストッパー',     desc: '散財の鎖を断ち切る。AIが購買行動を健全な方向へガイド。',                      icon: ShieldAlert,   color: 'text-rose-400'   },
+  { id: 'scam-defender',      name: 'AI詐欺ディフェンダー',       desc: '詐欺・悪意のある連絡を即座に判定し、デジタル資産を保護。',                    icon: ShieldCheck,   color: 'text-red-400'    },
+  { id: 'money-guard',        name: 'AI家計防衛シミュレーター',   desc: '衝動買いの心理を抑止。支出の致命傷を未然に防ぐ。',                            icon: Wallet,        color: 'text-emerald-400' },
+  { id: 'disaster-guard',     name: 'AI防災パーソナルガイド',     desc: '現在地のハザードマップに基づき、AIが生存戦略を立案。',                        icon: Shield,        color: 'text-sky-400'    },
+  { id: 'youtube-producer',   name: 'AI YouTubeプロデューサー',   desc: '最新ニュースから全自動で台本、サムネイル設計まで完結。',                      icon: Clapperboard,  color: 'text-red-400'    },
+  { id: 'ai-sidejob',         name: 'AI副業スタートダッシュ',     desc: '適性診断から収益化まで、AI副業の最短ロードマップを提示。',                    icon: Briefcase,     color: 'text-emerald-400' },
+  { id: 'prompt-master',      name: 'AI画像プロンプトマスター',   desc: '1000以上のパーツから究極の画像生成プロンプトを錬成。',                        icon: Wand2,         color: 'text-emerald-400' },
+  { id: 'loan-advisor',       name: '借金完済・おまとめ診断',     desc: '借入状況を入力するだけで最適な返済・借り換えプランを提案。',                  icon: CreditCard,    color: 'text-orange-400' },
+  { id: 'ai-recipe',          name: 'AIレシピ献立コーチ',         desc: '冷蔵庫の残り物をスキャンして残り物ゼロのプランを即提案。',                    icon: Utensils,      color: 'text-yellow-400' },
+  { id: 'buzz-writer',        name: 'AIバズ文章コーチ',           desc: '最新トレンドニュースを元に10種のテンプレートでバズ文章を即生成。',            icon: Flame,         color: 'text-orange-500' },
+  { id: 'closet-coach',       name: 'AIクローゼット断捨離コーチ', desc: 'ワードローブ管理からコスパ最強コーデ提案まで。AIが最適化。',                  icon: Shirt,         color: 'text-purple-400' },
+  { id: 'comm-coach',         name: 'AIコミュニケーションコーチ', desc: 'あらゆるシーンの会話・文章をAIがリアルタイムでサポート。',                    icon: MessageCircleHeart, color: 'text-pink-400' },
+  { id: 'pet-translator',     name: 'AIペット行動モニター',       desc: 'ペットの仕草・鳴き声をAIが解析。気持ちと健康状態を可視化。',                  icon: PawPrint,      color: 'text-amber-500'  },
+  { id: 'resignation-assistant', name: 'AI退職支援アシスタント', desc: '退職手続きの流れを完全ガイド。書類作成から交渉まで伴走。',                    icon: Briefcase,     color: 'text-slate-400'  },
+  { id: 'shio-taiou',         name: '塩対応AIアシスタント',       desc: '苦手な相手への返信をAIが冷静・的確に代行。ストレスゼロ。',                  icon: Shield,        color: 'text-cyan-400'   },
 ];
 
 const ToolGuideContent = () => {
@@ -49,7 +56,7 @@ const ToolGuideContent = () => {
           <Badge variant="outline" className="px-4 py-1 text-[10px] font-bold text-emerald-500 border-emerald-500/20 uppercase tracking-tight">Master Directory</Badge>
           <h1 className="text-4xl md:text-7xl font-bold text-white tracking-tighter uppercase leading-none">ツール説明</h1>
           <p className="text-slate-500 max-w-2xl mx-auto text-sm md:text-lg font-bold leading-relaxed">
-            Nextra AILabsが提供する全24の特化型AIエンジン。その機能と戦略的価値を網羅した公式ディレクトリ。
+            Nextra AILabsが提供する全30の特化型AIエンジン。その機能と戦略的価値を網羅した公式ディレクトリ。
           </p>
         </div>
 

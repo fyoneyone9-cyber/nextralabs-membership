@@ -5,8 +5,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   PenLine, MessageSquare, Building, Lock, Monitor, Video, Car, FileBarChart,
-  Settings, Database, LogOut, ChevronDown, ArrowRight, Search, RefreshCw,
-  Download, Plus, Edit3, Loader2, Filter, BookText
+  Settings, Database, LogOut, ArrowRight, Search, RefreshCw,
+  Download, Plus, Edit3, BookText
 } from 'lucide-react'
 import DmsBookingEditor from './DmsBookingEditor'
 import DmsPropertyEditor from './DmsPropertyEditor'
@@ -31,10 +31,14 @@ const SETTINGS_MENU = [
   { id: 'lock-settings', label: 'ロック設定', icon: Lock,     href: '/dms/lock-settings' },
 ]
 
+const ALL_TABS = [
+  ...MENU_ITEMS,
+  ...SETTINGS_MENU,
+]
+
 export default function DmsEngine() {
   const [mounted, setMounted] = useState(false)
   const [activeTab, setActiveTab] = useState('checkin')
-  const [isSettingsOpen, setIsSettingsOpen] = useState(true)
   const [editingBooking, setEditingBooking] = useState<any>(null)
   const [editingProperty, setEditingProperty] = useState<any>(null)
   const [propView, setPropView] = useState<'list' | 'create'>('list')
@@ -43,7 +47,6 @@ export default function DmsEngine() {
   const [lockUnusedCount, setLockUnusedCount] = useState(2)
   const [bookings, setBookings] = useState<any[]>([])
   const [loadingBookings, setLoadingBookings] = useState(false)
-  const [pmsList, setPmsList] = useState<any[]>([])
   const [currentDate, setCurrentDate] = useState('')
 
   const searchParams = useSearchParams()
@@ -72,166 +75,103 @@ export default function DmsEngine() {
     const now = new Date()
     const days = ['日','月','火','水','木','金','土']
     setCurrentDate(`${now.getMonth()+1}/${now.getDate()}(${days[now.getDay()]}) ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`)
-    const initData = async () => {
-      const cloudList = await CloudPmsStorage.fetchList()
-      if (cloudList && cloudList.length > 0) setPmsList(cloudList)
-      fetchStayseeBookings()
-    }
-    initData()
+    fetchStayseeBookings()
   }, [])
 
   if (!mounted) return null
 
-  const NavItem = ({ item, isSub = false }: { item: any; isSub?: boolean }) => (
-    <Link
-      href={item.href}
-      onClick={() => { if (item.href.includes('?tab=')) setActiveTab(item.id) }}
-      className={
-        'w-full flex items-center gap-3 px-5 py-3 transition-all text-left ' +
-        (activeTab === item.id
-          ? 'bg-emerald-500/10 text-emerald-400 border-r-2 border-emerald-500 font-semibold'
-          : 'text-slate-400 hover:bg-white/5 hover:text-white font-medium') +
-        (isSub ? ' pl-10 text-xs' : ' text-sm')
-      }
-    >
-      <item.icon size={16} className={activeTab === item.id ? 'text-emerald-400' : 'text-slate-500'} />
-      <span>{item.label}</span>
-    </Link>
-  )
-
   return (
-    <div className="min-h-screen font-sans flex flex-col md:flex-row bg-[#050507] text-slate-200">
+    <div className="min-h-screen font-sans flex flex-col bg-[#050507] text-slate-200">
 
-      {/* サイドバー */}
-      <aside className="w-56 shrink-0 border-r border-white/5 bg-[#0d0f1a] flex flex-col">
-        {/* ロゴ */}
-        <div className="p-5 border-b border-white/5">
+      {/* 上部ヘッダー */}
+      <header className="border-b border-white/5 bg-[#0d0f1a] sticky top-0 z-40">
+        {/* ロゴ行 */}
+        <div className="px-6 py-3 flex items-center justify-between border-b border-white/5">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center">
-              <span className="font-bold text-slate-950 text-sm ">N</span>
+            <div className="w-7 h-7 bg-emerald-500 rounded-lg flex items-center justify-center shrink-0">
+              <span className="font-bold text-slate-950 text-xs">N</span>
             </div>
-            <div>
+            <div className="flex items-center gap-3">
               <p className="font-bold text-white text-sm tracking-tight">Nextra DMS</p>
-              <p className="text-[9px] text-slate-500 font-medium">{currentDate}</p>
+              <p className="text-[10px] text-slate-500 font-medium">{currentDate}</p>
+              <Badge className="bg-slate-800 text-slate-400 text-[9px] font-semibold px-2 py-0 h-4 border-0">今日の予約</Badge>
+              <Badge className="bg-emerald-500/20 text-emerald-400 text-[9px] font-semibold px-2 py-0 h-4 border-emerald-500/30">{bookings.length}件</Badge>
             </div>
           </div>
-          <div className="flex items-center gap-2 mt-3">
-            <Badge className="bg-slate-800 text-slate-400 text-[9px] font-semibold px-2 py-0 h-4 border-0">今日の予約</Badge>
-            <Badge className="bg-emerald-500/20 text-emerald-400 text-[9px] font-semibold px-2 py-0 h-4 border-emerald-500/30">{bookings.length}件</Badge>
-          </div>
-        </div>
-
-        {/* ナビ */}
-        <nav className="flex-1 py-3 overflow-y-auto space-y-0.5">
-          {MENU_ITEMS.map(item => <NavItem key={item.id} item={item} />)}
-          <div className="mt-2 pt-2 border-t border-white/5">
-            <button
-              onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-              className="w-full flex items-center justify-between px-5 py-3 text-slate-500 hover:text-slate-300 text-sm font-medium"
-            >
-              <div className="flex items-center gap-3"><Settings size={16} /><span>各種設定</span></div>
-              <ChevronDown size={12} className={`transition-transform ${isSettingsOpen ? '' : '-rotate-90'}`} />
-            </button>
-            {isSettingsOpen && (
-              <div className="bg-black/20">
-                {SETTINGS_MENU.map(sub => <NavItem key={sub.id} item={sub} isSub={true} />)}
-              </div>
-            )}
-          </div>
-        </nav>
-
-        {/* フッター */}
-        <div className="p-4 border-t border-white/5 space-y-3">
-          <div className="text-[10px] font-semibold text-slate-300 leading-tight">
-            有限会社黒潮屋
-            <span className="block text-slate-500 font-normal text-[8px] mt-0.5">b.h.apple@beach.ocn...</span>
-          </div>
-          <button
-            onClick={() => { localStorage.removeItem('dms_session'); window.location.href = '/dms/login' }}
-            className="flex items-center gap-2 text-slate-500 hover:text-slate-300 text-[10px] font-semibold transition-colors"
-          >
-            <LogOut size={12} /> ログアウト
-          </button>
-          <p className="text-[8px] text-slate-700">v3.50.2</p>
-        </div>
-      </aside>
-
-      {/* メインコンテンツ */}
-      <main className="flex-1 flex flex-col min-w-0">
-
-        {/* ヘッダー */}
-        <header className="h-14 border-b border-white/5 bg-[#0d0f1a] px-6 flex items-center justify-between sticky top-0 z-40">
-          <div className="flex items-center gap-3">
-            <h2 className="text-base font-bold text-white flex items-center gap-2">
-              {activeTab === 'checkin' && <><PenLine size={18} className="text-emerald-400" /> チェックイン一覧</>}
-              {activeTab === 'property' && <><Building size={18} className="text-emerald-400" /> 物件一覧</>}
-              {activeTab === 'lock-list' && <><Lock size={18} className="text-emerald-400" /> 錠デバイス一覧</>}
-              {!['checkin','property','lock-list'].includes(activeTab) && 'DMS'}
-            </h2>
-            <button
-              onClick={fetchStayseeBookings}
-              className="p-1.5 hover:bg-white/5 rounded-lg transition-colors text-slate-500 hover:text-slate-300"
-            >
-              <RefreshCw size={14} className={loadingBookings ? 'animate-spin text-emerald-400' : ''} />
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             {activeTab === 'checkin' && (
               <>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={12} />
-                  <input
-                    placeholder="予約検索"
-                    className="pl-8 pr-4 py-1.5 bg-white/5 border border-white/10 rounded-lg text-xs w-40 outline-none focus:border-emerald-500 text-slate-300 transition-all"
-                  />
+                  <input placeholder="予約検索" className="pl-8 pr-4 py-1.5 bg-white/5 border border-white/10 rounded-lg text-xs w-36 outline-none focus:border-emerald-500 text-slate-300 transition-all" />
                 </div>
-                <Button
-                  onClick={() => setEditingBooking({})}
-                  className="h-8 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-xs px-4"
-                >
-                  <Plus size={12} className="mr-1" /> 手動宿泊作成
+                <Button onClick={() => setEditingBooking({})} className="h-7 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-xs px-3">
+                  <Plus size={11} className="mr-1" /> 手動宿泊作成
                 </Button>
-                <Button
-                  onClick={fetchStayseeBookings}
-                  variant="ghost"
-                  className="h-8 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 rounded-lg text-xs px-4 font-semibold"
-                >
-                  <RefreshCw size={12} className={`mr-1 ${loadingBookings ? 'animate-spin' : ''}`} />
-                  手動予約同期
+                <Button onClick={fetchStayseeBookings} variant="ghost" className="h-7 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 rounded-lg text-xs px-3 font-semibold">
+                  <RefreshCw size={11} className={`mr-1 ${loadingBookings ? 'animate-spin' : ''}`} /> 予約同期
                 </Button>
-                <Button
-                  variant="ghost"
-                  className="h-8 border border-white/10 text-slate-400 hover:bg-white/5 rounded-lg text-xs px-4 font-semibold"
-                >
-                  <Download size={12} className="mr-1" /> CSV
+                <Button variant="ghost" className="h-7 border border-white/10 text-slate-400 hover:bg-white/5 rounded-lg text-xs px-3 font-semibold">
+                  <Download size={11} className="mr-1" /> CSV
                 </Button>
               </>
             )}
             {activeTab === 'property' && (
-              <Button
-                onClick={() => setPropView('create')}
-                className="h-8 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-xs px-4"
-              >
-                <Plus size={12} className="mr-1" /> 新規作成
+              <Button onClick={() => setPropView('create')} className="h-7 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-xs px-3">
+                <Plus size={11} className="mr-1" /> 新規作成
               </Button>
             )}
             {activeTab === 'lock-list' && (
-              <LockListHeaderActions
-                searchQuery={lockSearchQuery}
-                setSearchQuery={setLockSearchQuery}
-                onDeleteUnused={() => {
-                  if (lockUnusedCount === 0) return
-                  if (!confirm(`未使用の鍵 ${lockUnusedCount}件 を全て削除しますか？`)) return
-                  setLockDeleting(true)
-                  setTimeout(() => { setLockUnusedCount(0); setLockDeleting(false) }, 800)
-                }}
-                deleting={lockDeleting}
-                unusedCount={lockUnusedCount}
+              <LockListHeaderActions searchQuery={lockSearchQuery} setSearchQuery={setLockSearchQuery}
+                onDeleteUnused={() => { if (lockUnusedCount === 0) return; if (!confirm(`未使用の鍵 ${lockUnusedCount}件 を全て削除しますか？`)) return; setLockDeleting(true); setTimeout(() => { setLockUnusedCount(0); setLockDeleting(false) }, 800) }}
+                deleting={lockDeleting} unusedCount={lockUnusedCount}
               />
             )}
+            <button onClick={() => { localStorage.removeItem('dms_session'); window.location.href = '/dms/login' }}
+              className="flex items-center gap-1.5 text-slate-500 hover:text-slate-300 text-[10px] font-semibold transition-colors ml-2">
+              <LogOut size={12} /> ログアウト
+            </button>
           </div>
-        </header>
+        </div>
+
+        {/* タブナビ（常時表示） */}
+        <div className="px-4 flex items-center gap-0.5 overflow-x-auto">
+          {MENU_ITEMS.map(item => (
+            <button
+              key={item.id}
+              onClick={() => { setActiveTab(item.id); if (item.href && !item.href.includes('?')) window.history.pushState({}, '', item.href) }}
+              className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold whitespace-nowrap transition-all border-b-2 ${
+                activeTab === item.id
+                  ? 'border-emerald-500 text-emerald-400'
+                  : 'border-transparent text-slate-500 hover:text-slate-300 hover:border-white/20'
+              }`}
+            >
+              <item.icon size={13} />
+              {item.label}
+            </button>
+          ))}
+          {/* 区切り */}
+          <div className="h-4 w-px bg-white/10 mx-1 shrink-0" />
+          {/* 設定項目も常時表示 */}
+          {SETTINGS_MENU.map(item => (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold whitespace-nowrap transition-all border-b-2 ${
+                activeTab === item.id
+                  ? 'border-emerald-500 text-emerald-400'
+                  : 'border-transparent text-slate-400 hover:text-slate-300 hover:border-white/20'
+              }`}
+            >
+              <item.icon size={13} />
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </header>
+
+      {/* メインコンテンツ */}
+      <main className="flex-1 flex flex-col min-w-0">
 
         {/* コンテンツエリア */}
         <div className="p-5 overflow-y-auto space-y-5 flex-1 bg-[#050507]">
