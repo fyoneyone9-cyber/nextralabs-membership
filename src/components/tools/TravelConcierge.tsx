@@ -6,8 +6,6 @@ import {
   Sparkles, Navigation, Utensils, TreePine, ShoppingBag,
   Droplets, Building2, Search, CheckCircle2
 } from 'lucide-react'
-import ReactMarkdown from 'react-markdown'
-
 // ─── 定数 ─────────────────────────────────────────────────────────────────────
 
 const ATTRACTION_CATEGORIES = [
@@ -556,27 +554,76 @@ export default function TravelConcierge() {
   )
 }
 
-// ─── ReactMarkdown ラッパー ──────────────────────────────────────────────────
-// react-markdownが入っていない場合はシンプルなテキスト表示にフォールバック
+// ─── Markdown 簡易レンダラー ──────────────────────────────────────────────────
+// react-markdownに依存せず、見出し・箇条書き・太字を軽量変換
 function ReactMarkdownWrapper({ content }: { content: string }) {
-  const [hasMD, setHasMD] = React.useState<boolean | null>(null)
-  const [MDComponent, setMDComponent] = React.useState<React.ComponentType<{ children: string }> | null>(null)
-
-  React.useEffect(() => {
-    import('react-markdown')
-      .then((mod) => {
-        setMDComponent(() => mod.default as React.ComponentType<{ children: string }>)
-        setHasMD(true)
-      })
-      .catch(() => setHasMD(false))
-  }, [])
-
-  if (hasMD === null) return <p className="text-slate-400 text-xs animate-pulse">表示中…</p>
-  if (hasMD && MDComponent) {
-    return <MDComponent>{content}</MDComponent>
-  }
-  // フォールバック: 改行をそのまま表示
+  const lines = content.split('\n')
   return (
-    <div className="whitespace-pre-wrap text-slate-300 text-sm leading-relaxed">{content}</div>
+    <div className="space-y-1.5">
+      {lines.map((line, i) => {
+        if (line.startsWith('### ')) {
+          return (
+            <h3 key={i} className="text-base font-semibold text-emerald-400 mt-4 mb-1">
+              {line.replace(/^### /, '')}
+            </h3>
+          )
+        }
+        if (line.startsWith('## ')) {
+          return (
+            <h2 key={i} className="text-lg font-semibold text-slate-100 mt-5 mb-2">
+              {line.replace(/^## /, '')}
+            </h2>
+          )
+        }
+        if (line.startsWith('# ')) {
+          return (
+            <h1 key={i} className="text-xl font-bold text-slate-100 mt-6 mb-2">
+              {line.replace(/^# /, '')}
+            </h1>
+          )
+        }
+        if (line.startsWith('- ') || line.startsWith('* ')) {
+          return (
+            <li key={i} className="text-slate-300 text-sm leading-relaxed ml-4 list-disc">
+              <InlineMarkdown text={line.replace(/^[-*] /, '')} />
+            </li>
+          )
+        }
+        if (line.startsWith('#### ')) {
+          return (
+            <h4 key={i} className="text-sm font-semibold text-slate-200 mt-3 mb-1">
+              {line.replace(/^#### /, '')}
+            </h4>
+          )
+        }
+        if (line.trim() === '---') {
+          return <hr key={i} className="border-slate-700 my-3" />
+        }
+        if (line.trim() === '') {
+          return <div key={i} className="h-1" />
+        }
+        return (
+          <p key={i} className="text-slate-300 text-sm leading-relaxed">
+            <InlineMarkdown text={line} />
+          </p>
+        )
+      })}
+    </div>
+  )
+}
+
+function InlineMarkdown({ text }: { text: string }) {
+  // **bold** と __bold__ を変換
+  const parts = text.split(/(\*\*[^*]+\*\*|__[^_]+__)/g)
+  return (
+    <>
+      {parts.map((part, i) => {
+        if (/^\*\*(.+)\*\*$/.test(part) || /^__(.+)__$/.test(part)) {
+          const inner = part.replace(/^\*\*|\*\*$|^__|__$/g, '')
+          return <strong key={i} className="text-slate-100 font-semibold">{inner}</strong>
+        }
+        return <span key={i}>{part}</span>
+      })}
+    </>
   )
 }
