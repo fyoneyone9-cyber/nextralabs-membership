@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { MapPin, Loader2, RotateCcw, ExternalLink, Train, Hotel, Utensils, Camera, ChevronDown, ChevronUp, ArrowRight, Star, Users, Compass } from 'lucide-react'
+import { MapPin, Loader2, RotateCcw, ExternalLink, Train, Hotel, Utensils, Camera, ChevronDown, ChevronUp, ArrowRight, Users, Compass } from 'lucide-react'
 // Markdown renderer (no external dependency)
 
 // ─── Markdown簡易レンダラー ───────────────────────────────────────────────────
@@ -82,12 +82,8 @@ interface SacredSpot {
 interface Hotel {
   name: string
   url: string
-  imageUrl: string
-  rating: number | null
-  reviewCount: number
-  minCharge: number | null
-  address: string
-  nearestStation: string
+  description: string
+  source: string
 }
 
 interface PlanResult {
@@ -542,47 +538,29 @@ export default function PilgrimagePlanner() {
           </div>
         )}
 
-        {/* 楽天ホテル */}
+        {/* ホテル検索リンク */}
         {result.hotels.length > 0 && (
           <div className="bg-[#0d1117] rounded-xl border border-white/5 p-5">
-            <h3 className="text-sm font-semibold text-white flex items-center gap-1.5 mb-4">
+            <h3 className="text-sm font-semibold text-white flex items-center gap-1.5 mb-3">
               <Hotel size={14} className="text-emerald-400" />
-              最寄りの宿泊先（楽天トラベル）
+              宿泊先を探す
             </h3>
-            <div className="space-y-3">
+            <p className="text-xs text-slate-500 mb-3">下記サイトで聖地エリアの宿泊先を比較・予約できます</p>
+            <div className="grid grid-cols-1 gap-2">
               {result.hotels.map((hotel, i) => (
-                <div key={i} className="flex gap-3 p-3 bg-[#0f1520] rounded-lg border border-white/5">
-                  {hotel.imageUrl && (
-                    <img src={hotel.imageUrl} alt={hotel.name} className="w-16 h-12 object-cover rounded-lg flex-shrink-0" />
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="text-sm font-medium text-white leading-tight">{hotel.name}</p>
-                      <a
-                        href={hotel.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-shrink-0 flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 transition whitespace-nowrap"
-                      >
-                        予約 <ExternalLink size={11} />
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-3 mt-1">
-                      {hotel.rating && (
-                        <span className="flex items-center gap-0.5 text-xs text-yellow-400">
-                          <Star size={10} fill="currentColor" />
-                          {hotel.rating}
-                        </span>
-                      )}
-                      {hotel.minCharge && (
-                        <span className="text-xs text-slate-400">
-                          ¥{hotel.minCharge.toLocaleString()}/泊〜
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-slate-600 mt-0.5 truncate">{hotel.nearestStation}</p>
+                <a
+                  key={i}
+                  href={hotel.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-3 bg-[#0f1520] rounded-lg border border-white/5 hover:border-emerald-500/40 transition group"
+                >
+                  <div>
+                    <p className="text-sm font-medium text-white group-hover:text-emerald-400 transition">{hotel.name}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">{hotel.description}</p>
                   </div>
-                </div>
+                  <ExternalLink size={13} className="text-slate-600 group-hover:text-emerald-400 transition flex-shrink-0 ml-2" />
+                </a>
               ))}
             </div>
           </div>

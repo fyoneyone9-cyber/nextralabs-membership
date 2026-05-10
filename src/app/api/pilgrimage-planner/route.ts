@@ -270,93 +270,64 @@ export const PRESETS: PresetDef[] = [
     ],
   },]
 
-// ─── 楽天トラベル 宿泊検索 ────────────────────────────────────────────────────
+// ─── ホテル検索リンク生成（楽天Travel API 2026/02廃止のため検索リンク方式） ────────────
 
-interface RakutenHotel {
+export interface HotelSearchLink {
   name: string
   url: string
-  imageUrl: string
-  rating: number | null
-  reviewCount: number
-  minCharge: number | null
-  address: string
-  nearestStation: string
+  description: string
+  source: string
 }
 
-async function searchNearbyHotels(
-  keyword: string,
+function generateHotelSearchLinks(
+  area: string,
   checkinDate: string,
   checkoutDate: string,
-  adults: number,
-  budget: number
-): Promise<RakutenHotel[]> {
-  if (!RAKUTEN_APP_ID) return []
-
-  // 日帰り時はチェックアウトを翌日に補正
-  const cin = checkinDate
-  const cout = checkoutDate === checkinDate
-    ? new Date(new Date(checkinDate).getTime() + 86400000).toISOString().split('T')[0]
+  adults: number
+): HotelSearchLink[] {
+  const cin = checkinDate || new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0]
+  const cout = (!checkoutDate || checkoutDate === checkinDate)
+    ? new Date(new Date(cin).getTime() + 86400000).toISOString().split('T')[0]
     : checkoutDate
 
-  try {
-    const params = new URLSearchParams({
-      applicationId: RAKUTEN_APP_ID,
-      affiliateId: RAKUTEN_AFFILIATE_ID,
-      format: 'json',
-      keyword,
-      checkinDate: cin,
-      checkoutDate: cout,
-      adultNum: adults.toString(),
-      maxCharge: budget.toString(),
-      hits: '5',
-      sort: '+hotelMinCharge',
-      responseType: 'small',
-    })
-
-    const res = await fetch(
-      `https://app.rakuten.co.jp/services/api/Travel/SimpleHotelSearch/20170426?${params}`,
-      { headers: { 'User-Agent': 'NextraLabs/1.0' } }
-    )
-    if (!res.ok) return []
-    const data = await res.json()
-    if (!data.hotels) return []
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return data.hotels.slice(0, 5).map((h: any) => {
-      const info = h.hotelBasicInfo
-      return {
-        name: info.hotelName,
-        url: info.hotelInformationUrl,
-        imageUrl: info.hotelImageUrl,
-        rating: info.reviewAverage ?? null,
-        reviewCount: info.reviewCount ?? 0,
-        minCharge: info.hotelMinCharge ?? null,
-        address: `${info.address1}${info.address2}`,
-        nearestStation: info.nearestStation ?? '',
-      }
-    })
-  } catch {
-    return []
-  }
+  const enc = encodeURIComponent(area)
+  return [
+    {
+      name: `じゃらん: ${area}のホテルを探す`,
+      url: `https://www.jalan.net/kankou/sightseeing_guide/?keyword=${enc}&checkIn=${cin}&checkOut=${cout}&adultNum=${adults}`,
+      description: `じゃらんnetで${area}の宿泊先を比較・予約`,
+      source: 'jalan',
+    },
+    {
+      name: `楽天トラベル: ${area}のホテル`,
+      url: `https://travel.rakuten.co.jp/keyword/${enc}/`,
+      description: `楽天トラベルで${area}の宿を探す`,
+      source: 'rakuten',
+    },
+    {
+      name: `一休.com: ${area}の旅館・ホテル`,
+      url: `https://www.ikyu.com/search/hotel/?keyword=${enc}`,
+      description: `一休.comで${area}の高級宿・旅館を探す`,
+      source: 'ikyu',
+    },
+  ]
 }
 
 // ─── Gemini で旅程プラン生成 ──────────────────────────────────────────────────
 
 async function generatePilgrimageItinerary(
   spots: SacredSpot[],
-  hotels: RakutenHotel[],
   tripStyle: string,
   departure: string,
   adults: number,
-  workTitle: string
+  workTitle: string,
+  hotelArea: string
 ): Promise<string> {
   const spotList = spots
     .map((s, i) => `${i + 1}. ${s.name}（${s.address}）— ${s.sceneDescription}`)
     .join('\n')
 
-  const hotelList = hotels.length > 0
-    ? hotels.map((h, i) => `${i + 1}. ${h.name} ¥${(h.minCharge ?? 0).toLocaleString()}/泊 ${h.address}`).join('\n')
-    : '（楽天トラベルデータなし — 一般的な宿泊先を提案）'
+  const hotelList = `${hotelArea}エリアの宿泊先をじゃらん・楽天トラベル・一休.comで検索できます（ツール画面にリンクあり）`
 
   const days = tripStyle === '日帰り' ? 0 : tripStyle === '1泊2日' ? 1 : 2
 
@@ -510,28 +481,27 @@ export async function POST(req: NextRequest) {
       spots = await fetchSpotsFromGemini(keyword)
     }
 
-    // 楽天ホテル検索
-    const hotelKeyword = preset?.hotelArea ?? departure ?? '東京'
+    // ホテル検索リンク生成（楽天Travel API廃止のためリンク方式）
+    const hotelArea = preset?.hotelArea ?? departure ?? '東京'
     const today2 = new Date()
     const defaultCheckin = checkinDate || new Date(today2.getTime() + 7 * 86400000).toISOString().split('T')[0]
     const defaultCheckout = checkoutDate || new Date(today2.getTime() + 8 * 86400000).toISOString().split('T')[0]
 
-    const hotels = await searchNearbyHotels(
-      hotelKeyword,
+    const hotels = generateHotelSearchLinks(
+      hotelArea,
       defaultCheckin,
       defaultCheckout,
-      adults || 2,
-      budget || 15000
+      adults || 2
     )
 
     // 旅程生成
     const itinerary = await generatePilgrimageItinerary(
       spots,
-      hotels,
       tripStyle || '1泊2日',
       departure || '東京',
       adults || 2,
-      workTitle
+      workTitle,
+      hotelArea
     )
 
     await supabase.from('tool_usage_logs').insert({
