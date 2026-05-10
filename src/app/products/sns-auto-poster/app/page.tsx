@@ -1,5 +1,6 @@
 ﻿'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Zap, Loader2, CheckCircle2, TrendingUp,
   Share2, Clock, Copy, Sparkles, AlertCircle,
@@ -9,6 +10,7 @@ import {
 type Result = { content: string; strategy: string; bestTime: string }
 
 export default function SnsAutoPosterApp() {
+  const router = useRouter()
   const [topic, setTopic] = useState('')
   const [targetSns, setTargetSns] = useState<'X' | 'Instagram'>('X')
   const [isGenerating, setIsGenerating] = useState(false)
@@ -18,6 +20,37 @@ export default function SnsAutoPosterApp() {
   const [result, setResult] = useState<Result | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+
+  // ブラウザバック・マウスサイドボタン対応
+  useEffect(() => {
+    // 履歴スタックに現在ページを積む（popstate検知用）
+    window.history.pushState(null, '', window.location.href)
+    const handlePopState = () => {
+      const ok = window.confirm('ツールを終了しますか？')
+      if (ok) {
+        router.push('/dashboard')
+      } else {
+        window.history.pushState(null, '', window.location.href)
+      }
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [router])
+
+  // タブ閉じ・URL直打ち対応
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [])
+
+  const handleBack = useCallback(() => {
+    const ok = window.confirm('ツールを終了しますか？')
+    if (ok) router.push('/dashboard')
+  }, [router])
 
   const fetchTrends = async () => {
     setIsLoadingTrends(true)
@@ -98,6 +131,12 @@ export default function SnsAutoPosterApp() {
 
         {/* ヘッダー */}
         <div className="space-y-2">
+          <div className="flex items-center justify-between mb-1">
+            <button onClick={handleBack} className="flex items-center gap-1 text-xs text-slate-400 hover:text-emerald-400 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+              ダッシュボードへ戻る
+            </button>
+          </div>
           <div className="flex items-center gap-2">
             <Share2 size={18} className="text-emerald-400" />
             <span className="text-xs font-medium text-emerald-400 tracking-wide">SNS × AI コンテンツ生成</span>
