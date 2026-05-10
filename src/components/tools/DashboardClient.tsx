@@ -260,8 +260,25 @@ export default function DashboardClient({ user, profile, subscription }: any) {
           </div>
 
           {/* 右サイドバー：活動ログ & ライブステータス */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 space-y-6">
             <DashboardActivity />
+
+            {/* 管理者専用ツール（adminのみ表示） */}
+            {isAdmin && (
+              <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-5 space-y-3">
+                <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">🔧 Admin Tools</p>
+                <Link
+                  href="/mobile-preview"
+                  className="flex items-center gap-3 rounded-xl bg-[#0d1117] border border-white/10 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all px-4 py-3 group"
+                >
+                  <span className="text-lg">📱</span>
+                  <div>
+                    <p className="text-sm font-medium text-white group-hover:text-emerald-300 transition-colors">スマホプレビュー</p>
+                    <p className="text-[11px] text-slate-500">各ページをデバイス別に確認</p>
+                  </div>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
