@@ -438,19 +438,19 @@ function generateHotelSearchLinks(
   return [
     {
       name: `じゃらん: ${area}のホテルを探す`,
-      url: `https://www.jalan.net/yadplan/hotel/jalSearch.do?stayYear=${cin.substring(0,4)}&stayMonth=${cin.substring(5,7)}&stayDay=${cin.substring(8,10)}&stayCount=1&adultNum=${adults}&roomCount=1&keyword=${enc}`,
+      url: `https://www.jalan.net/uw/uwp2011/uww2011init.do?keyword=${enc}`,
       description: `じゃらんnetで${area}の宿泊先を比較・予約`,
       source: 'jalan',
     },
     {
       name: `楽天トラベル: ${area}のホテル`,
-      url: `https://travel.rakuten.co.jp/search/?f_keyword=${enc}&f_nen1=${cin.substring(0,4)}&f_tuki1=${cin.substring(5,7)}&f_hi1=${cin.substring(8,10)}&f_nen2=${cout.substring(0,4)}&f_tuki2=${cout.substring(5,7)}&f_hi2=${cout.substring(8,10)}&f_people_su=${adults}`,
+      url: `https://kw.travel.rakuten.co.jp/keyword/Search.do?f_query=${enc}`,
       description: `楽天トラベルで${area}の宿を探す`,
       source: 'rakuten',
     },
     {
       name: `一休.com: ${area}の旅館・ホテル`,
-      url: `https://www.ikyu.com/search/hotel/list/?checkin_date=${cin.replace(/-/g,'')}&checkout_date=${cout.replace(/-/g,'')}&adult_num=${adults}&keyword=${enc}`,
+      url: `https://www.ikyu.com/search?kw=${enc}`,
       description: `一休.comで${area}の高級宿・旅館を探す`,
       source: 'ikyu',
     },
