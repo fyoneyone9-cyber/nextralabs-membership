@@ -184,27 +184,47 @@ interface RakutenHotel {
 }
 
 async function searchNearbyHotels(
-  destination: string,
+  lat: number | null,
+  lng: number | null,
+  keyword: string,
   checkinDate: string,
   checkoutDate: string,
   adults: number,
   budget: number
 ): Promise<RakutenHotel[]> {
   if (!RAKUTEN_APP_ID) return []
+
+  // 日帰りの場合チェックアウトを翌日にする（楽天は同日NG）
+  const cin = checkinDate
+  const cout = checkoutDate === checkinDate
+    ? new Date(new Date(checkinDate).getTime() + 86400000).toISOString().split('T')[0]
+    : checkoutDate
+
   try {
-    const params = new URLSearchParams({
+    const baseParams: Record<string, string> = {
       applicationId: RAKUTEN_APP_ID,
       affiliateId: RAKUTEN_AFFILIATE_ID || '',
       format: 'json',
-      keyword: destination,
-      checkinDate,
-      checkoutDate,
+      checkinDate: cin,
+      checkoutDate: cout,
       adultNum: adults.toString(),
       maxCharge: budget.toString(),
       hits: '5',
       sort: '+hotelMinCharge',
       responseType: 'small',
-    })
+    }
+
+    // 座標があれば座標ベース検索（精度高）、なければキーワード検索
+    if (lat && lng) {
+      baseParams['latitude'] = lat.toFixed(6)
+      baseParams['longitude'] = lng.toFixed(6)
+      baseParams['searchRadius'] = '3'  // 3km圏内
+      baseParams['datumType'] = '1'     // 世界測地系
+    } else {
+      baseParams['keyword'] = keyword
+    }
+
+    const params = new URLSearchParams(baseParams)
     const res = await fetch(
       `https://app.rakuten.co.jp/services/api/Travel/SimpleHotelSearch/20170426?${params}`,
       { headers: { 'User-Agent': 'NextraLabs/1.0' } }
@@ -212,6 +232,7 @@ async function searchNearbyHotels(
     if (!res.ok) return []
     const data = await res.json()
     if (!data.hotels) return []
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return data.hotels.slice(0, 5).map((h: any) => {
       const info = h.hotelBasicInfo
@@ -427,17 +448,25 @@ export async function POST(req: NextRequest) {
     // 座標付与
     spots = await geocodeSpots(spots)
 
-    // 宿泊地は最初のスポットの都道府県 or 住所全体を楽天キーワードに使用
-    const firstAddress = spots[0]?.address ?? ''
+    // 最初のスポットの座標を楽天検索に使用（座標ベース検索が最も精度高い）
+    const firstSpot = spots[0]
+    const searchLat = firstSpot?.lat ?? null
+    const searchLng = firstSpot?.lng ?? null
+    // 座標なし時のフォールバック用キーワード（都道府県抽出）
+    const firstAddress = firstSpot?.address ?? ''
     const prefMatch = firstAddress.match(/(.+?[都道府県])/)
-    const primaryLocation = prefMatch ? prefMatch[1] : (firstAddress || departure || '東京')
+    const fallbackKeyword = prefMatch ? prefMatch[1] : (firstAddress || departure || '東京')
+
     const today2 = new Date()
     const defaultCheckin = checkinDate || new Date(today2.getTime() + 7 * 86400000).toISOString().split('T')[0]
+    // 日帰り指定でもチェックアウトは翌日にする（API側でも補正するが念のため）
     const defaultCheckout = checkoutDate || new Date(today2.getTime() + 8 * 86400000).toISOString().split('T')[0]
 
-    // 楽天ホテル検索
+    // 楽天ホテル検索（座標ベース → キーワードフォールバック）
     const hotels = await searchNearbyHotels(
-      primaryLocation,
+      searchLat,
+      searchLng,
+      fallbackKeyword,
       defaultCheckin,
       defaultCheckout,
       adults || 2,
