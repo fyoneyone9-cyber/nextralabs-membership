@@ -55,6 +55,23 @@ const MasterEngine = () => {
         <p className="text-slate-400 text-sm">楽天APIからリアルタイム相場を取得。Gemini AIが「本当の損得」を判定します。</p>
       </div>
 
+      {/* 使い方ガイド */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {[
+          { step: '①', icon: '🔍', title: '商品名を入力', desc: '「iPhone 15」「ダイソン掃除機」など、気になる商品名や型番を入力してください。' },
+          { step: '②', icon: '🤖', title: 'AIが市場を解析', desc: '楽天APIからリアルタイム価格を取得。Gemini AIが新品・中古の相場を自動比較します。' },
+          { step: '③', icon: '💡', title: '損得判定を確認', desc: '「新品推奨」「中古推奨」どちらがお得かAIが理由付きで判定。楽天市場への直リンクつき。' },
+        ].map(({ step, icon, title, desc }) => (
+          <div key={step} className="flex gap-3 bg-[#0d0f1a] border border-white/5 rounded-xl p-4">
+            <div className="shrink-0 w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-base">{icon}</div>
+            <div className="space-y-0.5">
+              <p className="text-xs font-semibold text-emerald-400">{step} {title}</p>
+              <p className="text-[11px] text-slate-500 leading-relaxed">{desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
       {/* 検索エリア */}
       <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 md:p-8 space-y-4">
         <div className="relative">
