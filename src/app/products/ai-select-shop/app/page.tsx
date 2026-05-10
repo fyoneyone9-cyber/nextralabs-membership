@@ -750,19 +750,165 @@ const STYLES: StyleDef[] = [
 ]
 
 // ──────────────────────────────────────────────
-// Tシャツカラー
+// Tシャツカラー（単色 + 柄物）
 // ──────────────────────────────────────────────
-const TSHIRT_COLORS = [
-  { id: 'white',  name: '白',      hex: '#FFFFFF' },
-  { id: 'black',  name: '黒',      hex: '#1a1a1a' },
-  { id: 'navy',   name: '紺',      hex: '#1e3a5f' },
-  { id: 'gray',   name: 'グレー', hex: '#808080' },
-  { id: 'red',    name: 'レッド', hex: '#e74c3c' },
-  { id: 'beige',  name: 'ベージュ', hex: '#f5e6c8' },
-  { id: 'green',  name: 'グリーン', hex: '#2d6a4f' },
-  { id: 'purple', name: 'パープル', hex: '#6b21a8' },
-  { id: 'pink',   name: 'ピンク', hex: '#f472b6' },
-  { id: 'orange', name: 'オレンジ', hex: '#ea580c' },
+type TshirtColor = {
+  id: string
+  name: string
+  hex: string           // プレビュー用のベースカラー
+  pattern?: (ctx: CanvasRenderingContext2D, w: number, h: number) => void  // 柄物のみ
+  label?: string        // ボタン表示ラベル（省略時はname）
+}
+
+// ── 柄物パターン描画関数 ──────────────────────
+
+function drawTieDye(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  // タイダイ: 放射状グラデ＋渦巻き
+  const colors = ['#e91e63','#9c27b0','#3f51b5','#00bcd4','#4caf50','#ffeb3b','#ff5722']
+  colors.forEach((c, i) => {
+    const g = ctx.createRadialGradient(
+      w * (0.2 + (i % 3) * 0.3), h * (0.2 + Math.floor(i / 3) * 0.3), 0,
+      w * (0.2 + (i % 3) * 0.3), h * (0.2 + Math.floor(i / 3) * 0.3), w * 0.4
+    )
+    g.addColorStop(0, c + 'cc')
+    g.addColorStop(1, c + '00')
+    ctx.fillStyle = g
+    ctx.fillRect(0, 0, w, h)
+  })
+  // 白いブリーチ感
+  const center = ctx.createRadialGradient(w*0.5, h*0.45, 0, w*0.5, h*0.45, w*0.25)
+  center.addColorStop(0, 'rgba(255,255,255,0.5)')
+  center.addColorStop(1, 'rgba(255,255,255,0)')
+  ctx.fillStyle = center
+  ctx.fillRect(0, 0, w, h)
+}
+
+function drawBuffaloCheck(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  // バッファローチェック（赤×黒）
+  ctx.fillStyle = '#c62828'
+  ctx.fillRect(0, 0, w, h)
+  const sz = Math.round(w / 10)
+  for (let row = 0; row < Math.ceil(h / sz); row++) {
+    for (let col = 0; col < Math.ceil(w / sz); col++) {
+      if ((row + col) % 2 === 0) {
+        ctx.fillStyle = '#1a1a1a'
+        ctx.fillRect(col * sz, row * sz, sz, sz)
+      }
+    }
+  }
+  // 格子オーバーレイ
+  ctx.strokeStyle = 'rgba(255,255,255,0.15)'
+  ctx.lineWidth = 1
+  for (let col = 0; col <= Math.ceil(w / sz); col++) {
+    ctx.beginPath(); ctx.moveTo(col * sz, 0); ctx.lineTo(col * sz, h); ctx.stroke()
+  }
+  for (let row = 0; row <= Math.ceil(h / sz); row++) {
+    ctx.beginPath(); ctx.moveTo(0, row * sz); ctx.lineTo(w, row * sz); ctx.stroke()
+  }
+}
+
+function drawCamo(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  // カモフラ（ミリタリー）
+  const cols = ['#4a5c3f','#2d3a24','#6b7c5a','#8a9478','#3d4a30']
+  ctx.fillStyle = cols[0]; ctx.fillRect(0, 0, w, h)
+  const rng = (seed: number) => { seed = (seed * 1664525 + 1013904223) & 0xffffffff; return (seed >>> 0) / 0xffffffff }
+  for (let i = 0; i < 80; i++) {
+    const seed = i * 137
+    const cx2 = rng(seed) * w
+    const cy2 = rng(seed + 1) * h
+    const rx = rng(seed + 2) * w * 0.18 + w * 0.04
+    const ry = rng(seed + 3) * h * 0.12 + h * 0.03
+    const rot = rng(seed + 4) * Math.PI
+    ctx.save()
+    ctx.translate(cx2, cy2)
+    ctx.rotate(rot)
+    ctx.fillStyle = cols[i % cols.length]
+    ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2); ctx.fill()
+    ctx.restore()
+  }
+}
+
+function drawStripe(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  // マリンストライプ（紺×白）
+  const stripeW = Math.round(w / 12)
+  for (let col = 0; col < Math.ceil(w / stripeW); col++) {
+    ctx.fillStyle = col % 2 === 0 ? '#1e3a5f' : '#f8fafc'
+    ctx.fillRect(col * stripeW, 0, stripeW, h)
+  }
+}
+
+function drawPaisley(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  // ペイズリー風（ボヘミアン）
+  ctx.fillStyle = '#4a1942'; ctx.fillRect(0, 0, w, h)
+  const motifColors = ['#d4a017','#c0392b','#1abc9c','#8e44ad']
+  const positions = [
+    [0.15,0.2],[0.45,0.15],[0.75,0.25],[0.25,0.55],[0.6,0.5],[0.85,0.65],
+    [0.1,0.75],[0.4,0.8],[0.7,0.85]
+  ]
+  positions.forEach(([px2, py2], i) => {
+    const c = motifColors[i % motifColors.length]
+    const x = px2 * w, y = py2 * h
+    const sz2 = w * 0.09
+    ctx.save(); ctx.translate(x, y); ctx.rotate(Math.PI / 6 * (i % 3))
+    // ティアドロップ形
+    ctx.fillStyle = c + 'cc'
+    ctx.beginPath()
+    ctx.arc(0, -sz2 * 0.4, sz2 * 0.4, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.moveTo(-sz2 * 0.4, -sz2 * 0.4)
+    ctx.quadraticCurveTo(-sz2 * 0.6, sz2 * 0.4, 0, sz2 * 0.6)
+    ctx.quadraticCurveTo(sz2 * 0.6, sz2 * 0.4, sz2 * 0.4, -sz2 * 0.4)
+    ctx.fill()
+    // 内側の小さい円
+    ctx.fillStyle = 'rgba(255,255,255,0.25)'
+    ctx.beginPath(); ctx.arc(0, -sz2 * 0.4, sz2 * 0.18, 0, Math.PI * 2); ctx.fill()
+    ctx.restore()
+  })
+}
+
+function drawDenim(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  // デニム風（インディゴ織り目）
+  const g = ctx.createLinearGradient(0, 0, w, h)
+  g.addColorStop(0, '#1a3a6e')
+  g.addColorStop(0.5, '#2251a0')
+  g.addColorStop(1, '#1a3a6e')
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h)
+  // 織り目テクスチャ
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1
+  for (let y = 0; y < h; y += 3) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke()
+  }
+  ctx.strokeStyle = 'rgba(0,0,0,0.08)'; ctx.lineWidth = 1
+  for (let x = 0; x < w; x += 4) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke()
+  }
+  // フェード感
+  const fade = ctx.createLinearGradient(0, 0, w * 0.3, h * 0.3)
+  fade.addColorStop(0, 'rgba(255,255,255,0.1)')
+  fade.addColorStop(1, 'rgba(255,255,255,0)')
+  ctx.fillStyle = fade; ctx.fillRect(0, 0, w, h)
+}
+
+const TSHIRT_COLORS: TshirtColor[] = [
+  // ── 単色 ──
+  { id: 'white',  name: '白',        hex: '#FFFFFF' },
+  { id: 'black',  name: '黒',        hex: '#1a1a1a' },
+  { id: 'navy',   name: '紺',        hex: '#1e3a5f' },
+  { id: 'gray',   name: 'グレー',    hex: '#808080' },
+  { id: 'red',    name: 'レッド',    hex: '#e74c3c' },
+  { id: 'beige',  name: 'ベージュ',  hex: '#f5e6c8' },
+  { id: 'green',  name: 'グリーン',  hex: '#2d6a4f' },
+  { id: 'purple', name: 'パープル',  hex: '#6b21a8' },
+  { id: 'pink',   name: 'ピンク',    hex: '#f472b6' },
+  { id: 'orange', name: 'オレンジ',  hex: '#ea580c' },
+  // ── 柄物（2026トレンド） ──
+  { id: 'tiedye',  name: 'タイダイ',      hex: '#9c27b0', pattern: drawTieDye },
+  { id: 'check',   name: 'チェック',      hex: '#c62828', pattern: drawBuffaloCheck },
+  { id: 'camo',    name: 'カモフラ',      hex: '#4a5c3f', pattern: drawCamo },
+  { id: 'stripe',  name: 'ストライプ',    hex: '#1e3a5f', pattern: drawStripe },
+  { id: 'paisley', name: 'ペイズリー',    hex: '#4a1942', pattern: drawPaisley },
+  { id: 'denim',   name: 'デニム',        hex: '#2251a0', pattern: drawDenim },
 ]
 
 // ──────────────────────────────────────────────
@@ -875,15 +1021,20 @@ const AISelectShopApp = () => {
     offscreen.width = w; offscreen.height = h
     const oc = offscreen.getContext('2d')!
     drawTshirtShape(oc, w, h)
-    oc.fillStyle = TC.hex
-    oc.fill()
+    oc.clip()
+    if (TC.pattern) {
+      TC.pattern(oc, w, h)
+    } else {
+      oc.fillStyle = TC.hex
+      oc.fillRect(0, 0, w, h)
+    }
     // 光沢
     const shine = oc.createLinearGradient(w * 0.2, h * 0.05, w * 0.75, h * 0.9)
     shine.addColorStop(0,   'rgba(255,255,255,0.22)')
     shine.addColorStop(0.35,'rgba(255,255,255,0.08)')
     shine.addColorStop(1,   'rgba(0,0,0,0.12)')
     oc.fillStyle = shine
-    oc.fill()
+    oc.fillRect(0, 0, w, h)
 
     // 影として合成
     ctx.save()
@@ -897,14 +1048,19 @@ const AISelectShopApp = () => {
     // ── STEP 3: Tシャツ本体（影なし、クリップ用パス再生成） ──
     ctx.save()
     drawTshirtShape(ctx, w, h)
-    ctx.fillStyle = TC.hex
-    ctx.fill()
+    ctx.clip()
+    if (TC.pattern) {
+      TC.pattern(ctx, w, h)
+    } else {
+      ctx.fillStyle = TC.hex
+      ctx.fillRect(0, 0, w, h)
+    }
     const shine2 = ctx.createLinearGradient(w * 0.2, h * 0.05, w * 0.75, h * 0.9)
     shine2.addColorStop(0,   'rgba(255,255,255,0.22)')
     shine2.addColorStop(0.35,'rgba(255,255,255,0.08)')
     shine2.addColorStop(1,   'rgba(0,0,0,0.12)')
     ctx.fillStyle = shine2
-    ctx.fill()
+    ctx.fillRect(0, 0, w, h)
     ctx.restore()
 
     // ── STEP 4: 印刷エリア（胸中央）にデザインを描画 ──
@@ -1156,21 +1312,48 @@ const AISelectShopApp = () => {
 
                 {/* Tシャツカラー */}
                 <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-3">
-                  <label className="text-xs font-medium text-slate-400 tracking-tight">Tシャツカラー</label>
-                  <div className="flex flex-wrap gap-2">
-                    {TSHIRT_COLORS.map(c => (
-                      <button
-                        key={c.id}
-                        onClick={() => setTshirtColorId(c.id)}
-                        title={c.name}
-                        className={`w-8 h-8 rounded-full border-2 transition-all ${
-                          tshirtColorId === c.id
-                            ? 'border-emerald-400 scale-110 shadow-[0_0_8px_rgba(16,185,129,0.5)]'
-                            : 'border-slate-600 hover:border-slate-400'
-                        }`}
-                        style={{ backgroundColor: c.hex }}
-                      />
-                    ))}
+                  <label className="text-xs font-medium text-slate-400 tracking-tight">Tシャツカラー・柄</label>
+
+                  {/* 単色 */}
+                  <div>
+                    <p className="text-[10px] text-slate-500 mb-1.5">単色</p>
+                    <div className="flex flex-wrap gap-2">
+                      {TSHIRT_COLORS.filter(c => !c.pattern).map(c => (
+                        <button
+                          key={c.id}
+                          onClick={() => setTshirtColorId(c.id)}
+                          title={c.name}
+                          className={`w-8 h-8 rounded-full border-2 transition-all ${
+                            tshirtColorId === c.id
+                              ? 'border-emerald-400 scale-110 shadow-[0_0_8px_rgba(16,185,129,0.5)]'
+                              : 'border-slate-600 hover:border-slate-400'
+                          }`}
+                          style={{ backgroundColor: c.hex }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 柄物（2026トレンド） */}
+                  <div>
+                    <p className="text-[10px] text-slate-500 mb-1.5">柄物 <span className="text-emerald-500">✦ 2026トレンド</span></p>
+                    <div className="flex flex-wrap gap-2">
+                      {TSHIRT_COLORS.filter(c => !!c.pattern).map(c => (
+                        <button
+                          key={c.id}
+                          onClick={() => setTshirtColorId(c.id)}
+                          title={c.name}
+                          className={`h-8 px-3 rounded-full border-2 transition-all text-[10px] font-medium ${
+                            tshirtColorId === c.id
+                              ? 'border-emerald-400 scale-105 shadow-[0_0_8px_rgba(16,185,129,0.5)] text-emerald-300'
+                              : 'border-slate-600 hover:border-slate-400 text-slate-300'
+                          }`}
+                          style={{ backgroundColor: c.hex }}
+                        >
+                          {c.name}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
