@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json()
     const { type, transcript, genre, genrePrompt, customPrompt, scriptTitle, script: scriptText, imageStyle, withLogo } = body
-    const transcriptSlice = (transcript || '').slice(0, 8000)
+    const transcriptSlice = (transcript || '').slice(0, 20000)
 
     switch (type) {
       case 'script': {
