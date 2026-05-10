@@ -15,7 +15,8 @@ import {
 
 const TOOLS = [
   { id: 'universal-converter/app', cat: 'compress', title: '究極AIマルチコンバーター', sub: '動画・画像・PDFへの変換圧縮', icon: Repeat, plan: 'ライト', done: true },
-  { id: 'nextra-ai/app', cat: 'hotel', title: 'Nextra AI（ホテルDX）', sub: 'チェックイン・予約・解錠OS', icon: Building2, plan: 'お見積もり' },
+  { id: 'nextra-ai/app', cat: 'hotel', title: 'Nextra AI（ホテルDX）', sub: 'チェックイン・予約・解錠OS', icon: Building2, plan: 'お見積もり', lpUrl: '/products/nextra-ai', target: 'corp' },
+  { id: 'nextra-ai/app', cat: 'hotel', title: 'Nextra AI（個人事業主向け）', sub: 'フロントレス民泊・小規模施設DX', icon: Building2, plan: 'お見積もり', lpUrl: '/products/nextra-ai', target: 'sole' },
   { id: 'moving-checker/app', cat: 'hotel', title: 'AI引越し安心チェッカー', sub: '治安と物件リスクを徹底解析', icon: Home, plan: '無料', done: true },
   { id: 'sns-auto-poster/app', cat: 'sns', title: 'AI SNSオートポスター', sub: 'バズを量産するマルチSNS生成', icon: Share2, plan: 'ライト', done: true },
   { id: 'ai-select-shop/app', cat: 'sns', title: 'AIセレクトショップ', sub: 'トレンド解析とShopify連携', icon: Store, plan: 'プレミアム' },
@@ -53,7 +54,7 @@ const CATEGORIES = [
 ]
 
 function ProductCard({ product, isFav, onToggleFav }: {
-  product: (typeof TOOLS[0]) & { done?: boolean } & { done?: boolean }
+  product: (typeof TOOLS[0]) & { done?: boolean; lpUrl?: string; target?: string }
   isFav: boolean
   onToggleFav: (e: React.MouseEvent, id: string) => void
 }) {
@@ -101,12 +102,21 @@ function ProductCard({ product, isFav, onToggleFav }: {
         </div>
         <div className="pt-4 border-t border-white/5 flex flex-col gap-2.5 mt-auto">
           {product.plan === 'お見積もり' ? (
-            <a href="mailto:f.yoneyone9@gmail.com?subject=Nextra AI（ホテルDX）お見積もり依頼" className="block w-full">
-              <Button className="w-full h-10 md:h-12 font-semibold text-sm rounded-lg transition-all"
-                style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#000' }}>
-                お見積もりを依頼 →
-              </Button>
-            </a>
+            <div className="flex flex-col gap-2 w-full">
+              <a href={`mailto:f.yoneyone9@gmail.com?subject=Nextra AI（${product.target === 'sole' ? '個人事業主向け' : 'ホテルDX'}）お見積もり依頼`} className="block w-full">
+                <Button className="w-full h-10 md:h-11 font-semibold text-sm rounded-lg transition-all"
+                  style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#000' }}>
+                  お見積もりを依頼 →
+                </Button>
+              </a>
+              {product.lpUrl && (
+                <Link href={product.lpUrl} className="block w-full">
+                  <Button variant="outline" className="w-full h-8 font-medium text-xs rounded-lg border-white/10 text-slate-400 hover:text-white hover:border-white/20 transition-all">
+                    詳細・LPを見る →
+                  </Button>
+                </Link>
+              )}
+            </div>
           ) : (
             <Link href={"/products/" + product.id} className="block w-full">
               <Button className="w-full h-10 md:h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-sm rounded-lg shadow-[0_0_16px_rgba(16,185,129,0.15)] hover:shadow-[0_0_24px_rgba(16,185,129,0.3)] transition-all">起動する →</Button>
@@ -117,7 +127,7 @@ function ProductCard({ product, isFav, onToggleFav }: {
               {product.plan === 'お見積もり' ? '¥9,800〜 / 月' : `${product.plan} プラン`}
             </span>
             {product.plan === 'お見積もり'
-              ? <span className="text-[8px] text-amber-500/60">法人向け</span>
+              ? <span className="text-[8px] text-amber-500/60">{product.target === 'sole' ? '個人事業主向け' : '法人向け'}</span>
               : product.plan !== '無料'
               ? <Lock className="h-2.5 w-2.5 text-emerald-500/30" />
               : <Sparkles className="h-2.5 w-2.5 text-emerald-400/50" />}
