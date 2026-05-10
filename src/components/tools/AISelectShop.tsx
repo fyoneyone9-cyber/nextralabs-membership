@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import dynamic from 'next/dynamic'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Loader2, Settings, CheckCircle2, Zap, ShoppingCart, TrendingUp, RefreshCw } from 'lucide-react'
@@ -190,30 +190,20 @@ const MasterEngine = () => {
     const safeW = boxW - pad * 2
     const safeH = boxH - pad * 2
 
-    // 1. フォントサイズを自動決定する関数
-    //    日本語全角文字は measureText が不安定なため、
-    //    全角1文字 = fontSize×1.05px として固定計算する
-    const charWidth = (ch: string, size: number) => {
-      const code = ch.charCodeAt(0)
-      // ASCII範囲は半角扱い（0.6倍）、それ以外は全角（1.05倍）
-      return code < 128 ? size * 0.6 : size * 1.05
-    }
-
+    // 1. measureText を使った正確な改行アルゴリズム
     const generateLines = (size: number) => {
-      // `300 28px Helvetica` のような文字列でも px 直前の数字だけ置換する
       const fontStr = S.font.replace(/\b[\d.]+px\b/, `${size}px`)
+      ctx.font = fontStr  // measureText のために事前にフォントをセット
       const tempLines: string[] = []
       let current = ''
-      let currentW = 0
       for (const ch of keyword) {
-        const cw = charWidth(ch, size)
-        if (currentW + cw > safeW && current.length > 0) {
+        const testLine = current + ch
+        const measured = ctx.measureText(testLine).width
+        if (measured > safeW && current.length > 0) {
           tempLines.push(current)
           current = ch
-          currentW = cw
         } else {
-          current += ch
-          currentW += cw
+          current = testLine
         }
       }
       if (current) tempLines.push(current)
