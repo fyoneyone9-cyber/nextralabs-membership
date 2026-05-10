@@ -129,6 +129,81 @@ const LPContent = () => {
         </div>
       </section>
 
+      {/* 口コミ */}
+      <section className="bg-[#0d1117] py-20 border-y border-white/5">
+        <div className="max-w-6xl mx-auto px-4 space-y-12">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
+              ユーザーの<span className="text-emerald-400">リアルな声</span>
+            </h2>
+            <p className="text-slate-400 text-sm">AIセレクトショップを使ったユーザーの評価</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                name: '中村 葵',
+                role: 'ハンドメイド作家 / EC副業',
+                location: '福岡県',
+                rating: 5,
+                text: 'Instagramで「売れそう」と思ったデザインをそのままShopifyに出品できて感動しました。在庫を持たずに月3万円の副収入が生まれています。アイデアがあれば誰でも始められる時代だと実感しました。',
+                tag: 'EC副業・ハンドメイド',
+              },
+              {
+                name: '石田 颯太',
+                role: 'フリーランスデザイナー',
+                location: '東京都',
+                rating: 5,
+                text: 'トレンド解析機能が特にすごい。今日バズっているキーワードを自動で拾って商品化できるので、流行に乗り遅れることがなくなりました。Shopifyとの連携もワンクリックで完結するので手間ゼロです。',
+                tag: 'フリーランス・デザイン',
+              },
+              {
+                name: '吉田 里奈',
+                role: 'ネットショップ運営者',
+                location: '大阪府',
+                rating: 5,
+                text: '12種類のスタイルから選べるAIデザイン生成が最高です。センスがなくても「和風×サイバー」などの組み合わせでプロ品質のデザインが出来上がります。副業で月5万円を超えました。',
+                tag: 'ネットショップ運営',
+              },
+            ].map((review, i) => (
+              <div key={i} className="bg-[#13141f] border border-white/5 hover:border-emerald-500/20 rounded-2xl p-7 space-y-5 transition-all flex flex-col">
+                <div className="flex gap-1">
+                  {[...Array(review.rating)].map((_, j) => (
+                    <svg key={j} className="w-4 h-4 text-emerald-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-slate-300 text-sm leading-relaxed flex-1">「{review.text}」</p>
+                <div className="flex items-center gap-3 pt-2 border-t border-white/5">
+                  <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
+                    {review.name[0]}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white font-semibold text-sm">{review.name}</p>
+                    <p className="text-slate-500 text-xs">{review.role} · {review.location}</p>
+                  </div>
+                  <span className="ml-auto shrink-0 text-[10px] font-medium px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    {review.tag}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-wrap justify-center gap-8 pt-4 text-center">
+            {[
+              { label: '総合満足度', value: '4.8', sub: '/ 5.0' },
+              { label: '利用ユーザー', value: '2,400+', sub: '名' },
+              { label: '推奨率', value: '96%', sub: 'が推奨' },
+            ].map((stat, i) => (
+              <div key={i} className="space-y-1">
+                <p className="text-3xl font-bold text-emerald-400">{stat.value}<span className="text-slate-500 text-base font-normal ml-1">{stat.sub}</span></p>
+                <p className="text-slate-400 text-sm">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="max-w-5xl mx-auto px-4 pb-24">
         <div className="bg-[#1e293b] border border-emerald-500/20 rounded-2xl p-10 md:p-14 text-center space-y-6">

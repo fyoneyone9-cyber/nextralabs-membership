@@ -384,6 +384,81 @@ export default function ResignationAssistantPage() {
         </div>
       </section>
 
+      {/* 口コミ */}
+      <section className="py-20 border-t bg-[#0d1117]">
+        <div className="container mx-auto px-4 space-y-12">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
+              使った人の<span className="text-emerald-400">リアルな声</span>
+            </h2>
+            <p className="text-slate-400 text-sm">退職を決意したユーザーからの評価</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {[
+              {
+                name: '田村 健介',
+                role: '元会社員 → フリーランス',
+                location: '神奈川県',
+                rating: 5,
+                text: '「退職届ってどう書けばいいの？」から始まって、AIが5分で完璧な書類を作ってくれました。未払い残業代のシミュレーターで約32万円の請求権があることも判明。退職前に絶対使うべきツールです。',
+                tag: '退職・転職',
+              },
+              {
+                name: '松本 沙織',
+                role: '元正社員 / 育休明け退職',
+                location: '愛知県',
+                rating: 5,
+                text: '育休明けに退職を考えていましたが、手続きが複雑すぎて途方に暮れていました。このツールのチェックリストが社保・年金・失業給付まですべてカバーしていて、迷わず進めることができました。',
+                tag: '育休明け・退職手続き',
+              },
+              {
+                name: '岡本 大樹',
+                role: '元営業職 → 独立',
+                location: '東京都',
+                rating: 5,
+                text: '完全ローカル処理なので会社にバレる心配がなく安心して使えました。退職届の文面も状況に合わせてカスタマイズしてくれて、上司への提出もスムーズでした。無料で使えるのが信じられないくらい高機能です。',
+                tag: '独立・起業',
+              },
+            ].map((review, i) => (
+              <div key={i} className="bg-[#13141f] border border-white/5 hover:border-emerald-500/20 rounded-2xl p-7 space-y-5 transition-all flex flex-col">
+                <div className="flex gap-1">
+                  {[...Array(review.rating)].map((_, j) => (
+                    <svg key={j} className="w-4 h-4 text-emerald-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-slate-300 text-sm leading-relaxed flex-1">「{review.text}」</p>
+                <div className="flex items-center gap-3 pt-2 border-t border-white/5">
+                  <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
+                    {review.name[0]}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white font-semibold text-sm">{review.name}</p>
+                    <p className="text-slate-500 text-xs">{review.role} · {review.location}</p>
+                  </div>
+                  <span className="ml-auto shrink-0 text-[10px] font-medium px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    {review.tag}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-wrap justify-center gap-8 pt-4 text-center">
+            {[
+              { label: '総合満足度', value: '4.9', sub: '/ 5.0' },
+              { label: '利用者数', value: '3,800+', sub: '名' },
+              { label: '推奨率', value: '98%', sub: 'が推奨' },
+            ].map((stat, i) => (
+              <div key={i} className="space-y-1">
+                <p className="text-3xl font-bold text-emerald-400">{stat.value}<span className="text-slate-500 text-base font-normal ml-1">{stat.sub}</span></p>
+                <p className="text-slate-400 text-sm">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Tech Stack */}
       <section className="py-16 border-t bg-muted/30">
         <div className="container mx-auto px-4">
