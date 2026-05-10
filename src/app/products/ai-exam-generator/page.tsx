@@ -40,14 +40,6 @@ export const metadata: Metadata = {
     description: 'CompTIA・FP・宅建・情報処理など各種資格試験の模擬問題をAIが自動生成。解説付きで理解が深まる。過去問だけでは足りない演習量を補う。',
     images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
   },
-},
-    ],
-    locale: 'ja_JP',
-    type: 'article',
-  },,
-  alternates: { 
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/ai-exam-generator' 
-  },
 }
 
 const examFeatures = [

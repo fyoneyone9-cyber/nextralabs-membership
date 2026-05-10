@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     description: '愛犬・愛猫の行動・鳴き声・表情をAIが分析して気持ちを翻訳。健康状態のチェックや行動改善アドバイスも。ペットとの絆が深まるNextraLabs無料ツール。',
     images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
   },
-},
+}
 import {
   Camera,
   Volume2,

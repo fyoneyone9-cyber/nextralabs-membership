@@ -22,18 +22,7 @@ export const metadata: Metadata = {
     description: '予算・エリア・人数・目的を入力するだけでAIが最適な宿を提案。楽天トラベル・じゃらん連携で最安値をリアルタイム比較。旅行準備を10倍速く。',
     images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
   },
-},
-    title: 'Staysee AI Finder | 最高の宿をAIが条件から完全自動で発見 | NextraLabs',
-    description: 'ホテル・旅館・民泊をAIが予算・立地・口コミから最適な宿を自動提案。楽天トラベル・じゃらんとも連携。NextraLabsライトプラン以上。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/staysee-ai-finder',
-    type: 'website',
-    locale: 'ja_JP',
-    siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'Staysee AI Finder | 最高の宿をAIが条件から完全自動で発見' }],
-  },,
 }
-
-import dynamic from 'next/dynamic'
 
 const StayseeFinderLP = dynamic(() => import('@/components/tools/StayseeFinderLP'), { ssr: false })
 

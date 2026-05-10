@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     description: '退職届・退職理由・引き継ぎ書類・上司への伝え方までAIが完全サポート。円満退職を実現する文章テンプレートと段取りを提案。NextraLabs無料〜利用可能。',
     images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
   },
-},
+}
 import {
   FileText,
   Calculator,

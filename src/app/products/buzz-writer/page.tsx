@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     description: 'キーワードを入力するだけでSEO最適化済みのブログ記事・SNS投稿をAIが自動生成。Googleで上位表示されるコンテンツを最短5分で作成。NextraLabs会員限定。',
     images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
   },
-},
+}
 import {
   ArrowLeft,
   Code2,

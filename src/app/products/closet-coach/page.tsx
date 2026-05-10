@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     description: '持ち服を撮影するだけでAIがコーデ提案・不要品判定・フリマ出品サポートまで。クローゼット整理でお金も生み出す。NextraLabsライトプラン以上。',
     images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
   },
-},
+}
 
 export default function ClosetCoachPage() {
   return (

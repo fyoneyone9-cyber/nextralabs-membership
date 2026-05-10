@@ -29,9 +29,7 @@ export const metadata: Metadata = {
     description: '迷惑な勧誘・しつこいLINE・断りにくい頼まれごとをスマートに断る文章をAIが生成。角が立たず・後腐れなし・でも確実に断れる魔法の言葉。',
     images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
   },
-},
-
-const features = [
+}\features = [
   { icon: MessageSquare, title: '6つのシチュエーション', description: '訪問要求・法事・お金の無心・生活干渉・子供の催促・その他、あらゆる「断りたい」場面に対応。' },
   { icon: Shield, title: '3段階のトーン調整', description: 'やんわり→しっかり→鉄壁。関係性を壊さない絶妙なラインを自動で調整。' },
   { icon: Clock, title: '既読タイミング提案', description: 'いつ既読にして、いつ返信するか。心理学に基づいた最適なタイミングを提案。' },
