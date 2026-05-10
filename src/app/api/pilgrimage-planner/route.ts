@@ -268,7 +268,151 @@ export const PRESETS: PresetDef[] = [
       { name: '富士山（静岡）', address: '静岡県富士宮市山宮', description: 'ひみつ道具で空を飛ぶ目標地点', sceneDescription: 'タケコプターで飛んで富士山を目指すシーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=富士山+静岡県' },
       { name: '清澄白河（東京）', address: '東京都江東区清澄', description: '昭和の下町風景が残るエリア', sceneDescription: 'のびたの通う小学校・商店街のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=清澄白河+東京都江東区' },
     ],
-  },]
+  },  {
+    id: 'fma', label: '鋼の錬金術師', emoji: '⚗️',
+    description: '富山・名古屋・北海道', color: 'border-yellow-500/60',
+    hotelArea: '富山県',
+    spots: [
+      { name: '富岩運河環水公園（富山）', address: '富山県富山市湊入船町', description: '水と橋の工業景観がアメストリスの街並み', sceneDescription: 'アメストリスの運河・都市風景のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=富岩運河環水公園+富山県' },
+      { name: '産業技術記念館（名古屋）', address: '愛知県名古屋市西区則武新町4丁目', description: '産業革命期の機械・製錬設備', sceneDescription: '錬金術師の研究所・製錬施設のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=産業技術記念館+名古屋市' },
+      { name: '松本城（長野）', address: '長野県松本市丸の内4-1', description: '黒い城壁が中央司令部を彷彿', sceneDescription: '中央司令部のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=松本城+長野県' },
+      { name: '小樽運河（北海道）', address: '北海道小樽市港町', description: 'レトロな石造り倉庫群', sceneDescription: 'リゼンブール村・北の街のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=小樽運河+北海道' },
+      { name: '夕張（北海道）', address: '北海道夕張市本町', description: '廃墟の炭鉱がイシュバール廃墟感', sceneDescription: 'イシュバール廃墟・戦後荒廃地のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=夕張市+北海道' },
+    ],
+  },
+  {
+    id: 'sailormoon', label: 'セーラームーン', emoji: '🌙',
+    description: '麻布十番・六本木・東京', color: 'border-pink-500/60',
+    hotelArea: '東京都',
+    spots: [
+      { name: '麻布十番商店街（東京）', address: '東京都港区麻布十番', description: '月野うさぎが住む麻布十番のモデル地', sceneDescription: 'うさぎが通学する商店街・日常シーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=麻布十番商店街+東京都港区' },
+      { name: '六本木・ヒルズ周辺（東京）', address: '東京都港区六本木', description: 'ダーク・キングダムとの戦いの舞台', sceneDescription: '敵の魔力が充満する都市・戦闘シーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=六本木+東京都港区' },
+      { name: '原宿・竹下通り（東京）', address: '東京都渋谷区神宮前1丁目', description: 'セーラー戦士たちが買い物する原宿', sceneDescription: 'うさぎとちびうさが遊ぶ原宿シーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=竹下通り+原宿+東京都' },
+      { name: '東京タワー', address: '東京都港区芝公園4丁目2-8', description: 'セーラームーンの象徴的ランドマーク', sceneDescription: '最終決戦・敵の本拠地の近くのシーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=東京タワー+東京都港区' },
+      { name: '国立天文台（三鷹）', address: '東京都三鷹市大沢2丁目21-1', description: '月・星・宇宙の研究施設', sceneDescription: '銀水晶・月の王国への想いを馳せる場所', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=国立天文台+三鷹市' },
+    ],
+  },
+  {
+    id: 'mononoke', label: 'もののけ姫', emoji: '🦌',
+    description: '屋久島・白神山地・京都', color: 'border-green-500/60',
+    hotelArea: '鹿児島県',
+    spots: [
+      { name: '屋久島・縄文杉（鹿児島）', address: '鹿児島県熊毛郡屋久島町', description: '樹齢7200年の神木・シシ神の森のモデル', sceneDescription: 'シシ神の森・古代の木々が生い茂る聖域', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=縄文杉+屋久島+鹿児島県' },
+      { name: '白神山地（青森・秋田）', address: '青森県西津軽郡深浦町', description: '世界遺産のブナ原生林', sceneDescription: 'もののけたちが暮らす太古の森のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=白神山地+青森県' },
+      { name: '出雲大社（島根）', address: '島根県出雲市大社町杵築東195', description: '神々が集う大社・神話の舞台', sceneDescription: 'シシ神・もののけたちの神域のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=出雲大社+島根県' },
+      { name: '宮島・原始林（広島）', address: '広島県廿日市市宮島町', description: '神の島・弥山の原始林', sceneDescription: 'もののけが棲む神聖な森のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=弥山原始林+宮島+広島県' },
+      { name: '高野龍神スカイライン（和歌山）', address: '和歌山県田辺市龍神村', description: '深い山岳地帯・ヤックルが駆けそうな林道', sceneDescription: 'アシタカが旅した山岳ルートのイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=高野龍神スカイライン+和歌山県' },
+    ],
+  },
+  {
+    id: 'laputa', label: 'ラピュタ', emoji: '⚙️',
+    description: '軍艦島・三池炭鉱・尾道', color: 'border-sky-500/60',
+    hotelArea: '長崎県',
+    spots: [
+      { name: '軍艦島（端島）', address: '長崎県長崎市高島町端島', description: '廃墟の要塞島がラピュタそのもの', sceneDescription: 'ラピュタの廃墟・古代文明の遺跡のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=軍艦島+長崎県' },
+      { name: '三池炭鉱・宮原坑（熊本）', address: '福岡県大牟田市宮原町', description: '明治の採掘施設が炭鉱シーンそのもの', sceneDescription: 'パズーが働く炭鉱・竪穴のシーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=宮原坑+大牟田市+福岡県' },
+      { name: '尾道（広島）', address: '広島県尾道市土堂1丁目', description: '坂道の街・港町がラピュタの港のイメージ', sceneDescription: 'パズーの町・港の街並みのモデル', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=尾道+広島県' },
+      { name: 'ラピュタの道（熊本）', address: '熊本県阿蘇市', description: '阿蘇外輪山の絶景ルート', sceneDescription: '空から見たラピュタの景色のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=ラピュタの道+阿蘇市+熊本県' },
+      { name: '彦根城（滋賀）', address: '滋賀県彦根市金亀町1-1', description: '石積みの古城・空に近い天守閣', sceneDescription: 'ラピュタの城壁・古代文明の石積み', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=彦根城+滋賀県彦根市' },
+    ],
+  },
+  {
+    id: 'jojo', label: 'ジョジョ', emoji: '💎',
+    description: '仙台・宇都宮・イタリア風', color: 'border-purple-500/60',
+    hotelArea: '宮城県',
+    spots: [
+      { name: 'S市杜王町のモデル（仙台市）', address: '宮城県仙台市', description: '第4部「ダイヤモンドは砕けない」舞台モデル', sceneDescription: '仗助・億泰・東方家が暮らす杜王町のモデル', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=仙台市+宮城県' },
+      { name: '宇都宮市（栃木）', address: '栃木県宇都宮市', description: '荒木飛呂彦先生の出身地', sceneDescription: '作者のルーツ地・聖地巡礼の出発点', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=宇都宮市+栃木県' },
+      { name: '仙台市農業園芸センター', address: '宮城県仙台市若林区荒井字切新田3', description: '広大な緑地が杜王町の公園のイメージ', sceneDescription: '億泰と仗助が走る公園・緑地のシーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=仙台市農業園芸センター+宮城県' },
+      { name: '川越市（埼玉）', address: '埼玉県川越市', description: '蔵造りの街並みがイタリア・ナポリ調', sceneDescription: '第5部の舞台・ナポリの街並みのイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=川越市+埼玉県' },
+      { name: '鎌倉市（神奈川）', address: '神奈川県鎌倉市', description: '古都の趣がジョジョの世界観に合致', sceneDescription: '第7・8部の雰囲気・歴史ある日本の街', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=鎌倉市+神奈川県' },
+    ],
+  },
+  {
+    id: 'violet', label: 'ヴァイオレットエバーガーデン', emoji: '✉️',
+    description: '長浜・琵琶湖・近江', color: 'border-blue-500/60',
+    hotelArea: '滋賀県',
+    spots: [
+      { name: '長浜市（滋賀）', address: '滋賀県長浜市', description: '作品のモデル地・レトロ洋館の街', sceneDescription: 'ヴァイオレットが手紙を届ける欧風の街', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=長浜市+滋賀県' },
+      { name: '琵琶湖（滋賀）', address: '滋賀県大津市柳が崎', description: '広大な湖が欧州の湖水地方のよう', sceneDescription: '汽車が走る湖畔のシーン・旅の風景', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=琵琶湖+滋賀県大津市' },
+      { name: '黒壁スクエア（滋賀・長浜）', address: '滋賀県長浜市元浜町12-38', description: 'ガラス工芸の街・洋風建築が並ぶ', sceneDescription: 'ヴァイオレットが依頼を受ける郵便局の街', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=黒壁スクエア+長浜市+滋賀県' },
+      { name: '神戸・北野異人館（兵庫）', address: '兵庫県神戸市中央区北野町', description: '明治期の洋館群が欧州の雰囲気', sceneDescription: '貴族の邸宅・依頼人の豪邸のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=北野異人館街+神戸市' },
+      { name: '函館・元町地区（北海道）', address: '北海道函館市元町', description: '日本最古の洋風建築群が残る', sceneDescription: '港町・欧風の街並みのイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=函館元町+北海道' },
+    ],
+  },
+  {
+    id: 'koe', label: '聲の形', emoji: '🎵',
+    description: '大垣・岐阜・奥養老', color: 'border-cyan-500/60',
+    hotelArea: '岐阜県',
+    spots: [
+      { name: '大垣市（岐阜）', address: '岐阜県大垣市', description: '聲の形の舞台そのものの街', sceneDescription: '将也と硝子が出会い、ともに歩く大垣の街', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=大垣市+岐阜県' },
+      { name: '大垣公園（岐阜）', address: '岐阜県大垣市郭町2丁目52', description: 'ベンチのシーン・将也と硝子が語るシーン', sceneDescription: '将也と硝子が向き合う重要なシーンの公園', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=大垣公園+岐阜県大垣市' },
+      { name: '奥養老・養老の滝（岐阜）', address: '岐阜県養老郡養老町養老公園', description: '硝子が将也を訪ねるシーン周辺', sceneDescription: '硝子が将也の元へ向かう山道シーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=養老の滝+岐阜県養老郡' },
+      { name: 'ソフトピアジャパン（岐阜）', address: '岐阜県大垣市加賀野4丁目1-7', description: '大垣のランドマーク・聖地エリア内', sceneDescription: '作中に登場する大垣市の建物のモデル', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=ソフトピアジャパン+大垣市+岐阜県' },
+      { name: '水門川（岐阜）', address: '岐阜県大垣市丸の内1丁目', description: '大垣の水郷・舟下りが楽しめる', sceneDescription: '将也と硝子が歩く川沿いのシーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=水門川+大垣市+岐阜県' },
+    ],
+  },
+  {
+    id: 'anohana', label: 'あの花', emoji: '🌸',
+    description: '秩父・長瀞・埼玉', color: 'border-pink-500/60',
+    hotelArea: '埼玉県',
+    spots: [
+      { name: '秩父市（埼玉）', address: '埼玉県秩父市', description: '「あの日見た花の名前を僕達はまだ知らない。」の舞台', sceneDescription: '仁太・めんま・超平和バスターズが暮らす秩父', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=秩父市+埼玉県' },
+      { name: '秩父神社', address: '埼玉県秩父市番場町1-3', description: '秩父の総鎮守・作中に登場する神社', sceneDescription: '超平和バスターズが集まる場所の近く', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=秩父神社+埼玉県秩父市' },
+      { name: '長瀞・岩畳（埼玉）', address: '埼玉県秩父郡長瀞町長瀞', description: '荒川の奇岩・自然の絶景', sceneDescription: 'めんまが遊ぶ川辺のシーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=長瀞岩畳+埼玉県秩父郡' },
+      { name: '羊山公園（埼玉）', address: '埼玉県秩父市西谷', description: '芝桜で有名な丘・秩父のシンボル', sceneDescription: 'めんまが走る丘・秩父の春の風景', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=羊山公園+秩父市+埼玉県' },
+      { name: '影森駅（秩父鉄道）', address: '埼玉県秩父市下影森', description: '仁太たちが乗降する無人駅', sceneDescription: '仁太がめんまを探す電車・駅のシーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=影森駅+秩父市+埼玉県' },
+    ],
+  },
+  {
+    id: 'ghost', label: '攻殻機動隊', emoji: '🤖',
+    description: '香港・神戸・博多', color: 'border-cyan-500/60',
+    hotelArea: '福岡県',
+    spots: [
+      { name: '博多港・臨海エリア（福岡）', address: '福岡県福岡市博多区築港本町', description: '港湾・コンテナが未来都市感を演出', sceneDescription: 'ニューポートシティの港・臨海部のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=博多港+福岡市博多区' },
+      { name: '神戸・ポートアイランド', address: '兵庫県神戸市中央区港島', description: '人工島の近未来的な景観', sceneDescription: '作品の舞台・海と人工島の都市のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=ポートアイランド+神戸市中央区' },
+      { name: '北九州市・門司港（福岡）', address: '福岡県北九州市門司区港町', description: '明治の洋風建築と工業施設が混在', sceneDescription: 'レトロ未来感・ニューポートシティのイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=門司港+北九州市門司区' },
+      { name: '大阪・難波（大阪）', address: '大阪府大阪市中央区難波', description: '雑多な都市・ネオンと人混み', sceneDescription: '素子が潜伏する下町・雑然とした都市', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=難波+大阪市中央区' },
+      { name: '東京湾岸・お台場（東京）', address: '東京都江東区青海', description: '未来的な湾岸エリア', sceneDescription: '公安9課の本部・都市の夜景シーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=お台場+東京都江東区' },
+    ],
+  },
+  {
+    id: 'akira', label: 'AKIRA', emoji: '🏍️',
+    description: '東京・新宿・国立競技場', color: 'border-red-500/60',
+    hotelArea: '東京都',
+    spots: [
+      { name: '国立競技場（東京）', address: '東京都新宿区霞ヶ丘町10-1', description: '2019年再建前の旧競技場がNEO-TOKYOオリンピックの舞台', sceneDescription: '金田とテツオが疾走するNEO-TOKYOのシーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=国立競技場+東京都新宿区' },
+      { name: '首都高速道路（東京）', address: '東京都', description: 'バイクチェイスシーンのモデル', sceneDescription: '金田のバイクが首都高を疾走するシーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=首都高速道路+東京都' },
+      { name: '渋谷スクランブル交差点', address: '東京都渋谷区道玄坂2丁目', description: 'NEO-TOKYOの繁華街のイメージ', sceneDescription: 'NEO-TOKYOの夜の繁華街・混沌とした都市', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=渋谷スクランブル交差点+東京都' },
+      { name: '東京ビッグサイト周辺', address: '東京都江東区有明3丁目11-1', description: '湾岸の未来的な建築', sceneDescription: 'NEO-TOKYOの行政区・大型施設のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=東京ビッグサイト+東京都江東区' },
+      { name: '新宿西口高層ビル街（東京）', address: '東京都新宿区西新宿2丁目', description: 'SF的な高層ビル群', sceneDescription: 'NEO-TOKYOのスカイライン・ビル群のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=新宿西口高層ビル街+東京都' },
+    ],
+  },
+  {
+    id: 'rezero', label: 'Re:ゼロ', emoji: '🔮',
+    description: '白川郷・立山・富山', color: 'border-blue-500/60',
+    hotelArea: '岐阜県',
+    spots: [
+      { name: '白川郷（岐阜）', address: '岐阜県大野郡白川村荻町', description: '世界遺産の合掌造り集落が王国の村のモデル', sceneDescription: 'ロズワール邸がある村・ルグニカ王国の農村', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=白川郷+岐阜県大野郡' },
+      { name: '立山黒部アルペンルート（富山）', address: '富山県中新川郡立山町芦峅寺', description: '雪山と湖が聖域感を演出', sceneDescription: '魔女の隠れ家・聖域の山岳地帯イメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=立山黒部アルペンルート+富山県' },
+      { name: '彦根城（滋賀）', address: '滋賀県彦根市金亀町1-1', description: '中世ヨーロッパ風の古城', sceneDescription: 'ルグニカ王国の城・貴族の居城イメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=彦根城+滋賀県彦根市' },
+      { name: '平湯温泉（岐阜）', address: '岐阜県高山市奥飛騨温泉郷平湯', description: '山の温泉地が王国の辺境っぽい', sceneDescription: '亜人の里・辺境の集落のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=平湯温泉+高山市+岐阜県' },
+      { name: '五箇山（富山）', address: '富山県南砺市上梨', description: '白川郷と並ぶ合掌造りの里', sceneDescription: 'スバルが迷い込む異世界の村のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=五箇山+富山県南砺市' },
+    ],
+  },
+  {
+    id: 'vinland', label: 'ヴィンランドサガ', emoji: '⚔️',
+    description: '北海道・アイスランド的地形', color: 'border-gray-500/60',
+    hotelArea: '北海道',
+    spots: [
+      { name: '知床半島（北海道）', address: '北海道斜里郡斜里町', description: '原始の自然・北の大地がバイキングの故郷感', sceneDescription: 'トルフィンが育ったアイスランドの荒野', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=知床半島+北海道斜里郡' },
+      { name: '富良野・美瑛（北海道）', address: '北海道上川郡美瑛町', description: '広大な農地がヴィンランドの農園感', sceneDescription: 'ヴィンランド・平和の農耕地のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=美瑛町+北海道上川郡' },
+      { name: '礼文島（北海道）', address: '北海道礼文郡礼文町', description: '北の果ての離島・荒涼とした自然', sceneDescription: 'アシェラッドが語る北の地のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=礼文島+北海道礼文郡' },
+      { name: '日高山脈（北海道）', address: '北海道沙流郡日高町', description: '険しい山岳地帯がノルウェー的', sceneDescription: 'バイキングが越える山脈・戦場のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=日高山脈+北海道沙流郡' },
+      { name: '根室（北海道）', address: '北海道根室市', description: '日本最東端・荒涼とした岬', sceneDescription: '北の海・バイキングが航海するシーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=根室市+北海道' },
+    ],
+  },
+]
 
 // ─── ホテル検索リンク生成（楽天Travel API 2026/02廃止のため検索リンク方式） ────────────
 
