@@ -16,7 +16,6 @@ const TOOL_NAMES: Record<string, string> = {
   'disaster-guard': 'AI防災パーソナルガイド',
   'money-guard': 'AI家計防衛シミュレーター',
   'kdp-guide': 'Kindle出版実況ナビ',
-  'office-politics-graph': '社内政治 相関図',
   'loan-advisor': '借金完済・おまとめ診断',
   'ai-exam-generator': 'AI試験対策ジェネレーター',
   'buy-smart-nav': 'Buy Smart Nav',
