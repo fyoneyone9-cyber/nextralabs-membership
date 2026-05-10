@@ -201,7 +201,8 @@ async function sendGmail(accessToken: string, to: string, subject: string, body:
 }
 
 // Gmail OAuth login with send scope
-// redirect_uri = /auth/gmail-callback (Google Cloud Consoleに登録済みのURL)
+// redirect_uri = InboxOrganizerのURL（Google Cloud Consoleに登録済み）
+// InboxOrganizerがtokenをlocalStorageに保存後、stateで指定したURLに戻る
 function startGmailAuth() {
   const scopes = [
     'https://www.googleapis.com/auth/gmail.readonly',
@@ -210,11 +211,8 @@ function startGmailAuth() {
     'https://www.googleapis.com/auth/gmail.send',
   ].join(' ')
 
-  // 現在のページ（ダッシュボード）に戻るためにreturnUrlをstateに埋め込む
   const returnPath = window.location.pathname + window.location.search
-  const stateParam = btoa(encodeURIComponent(returnPath))
-
-  const callbackUrl = `${window.location.origin}/auth/gmail-callback`
+  const callbackUrl = `${window.location.origin}/products/inbox-organizer/app`
 
   const params = new URLSearchParams({
     client_id: GOOGLE_CLIENT_ID,
@@ -222,7 +220,7 @@ function startGmailAuth() {
     response_type: 'token',
     scope: scopes,
     prompt: 'consent',
-    state: stateParam,
+    state: `redirect:${encodeURIComponent(returnPath)}`,
   })
 
   window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`

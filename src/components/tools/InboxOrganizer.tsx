@@ -46,10 +46,17 @@ const MasterEngine = () => {
     if (typeof window === 'undefined') return
     const hash = new URLSearchParams(window.location.hash.slice(1))
     const token = hash.get('access_token')
+    const state = hash.get('state')
     if (token) {
       setGoogleToken(token)
       localStorage.setItem('nextra_google_token', token)
       window.history.replaceState(null, '', window.location.pathname)
+      // stateにリダイレクト先が指定されている場合（営業メール等からの認証）はそちらに戻る
+      if (state && state.startsWith('redirect:')) {
+        const returnPath = decodeURIComponent(state.replace('redirect:', ''))
+        window.location.replace(returnPath)
+        return
+      }
       fetchEmails(token)
     } else {
       const saved = localStorage.getItem('nextra_google_token')
