@@ -196,7 +196,7 @@ function ProductsList() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{randomFree.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} />)}</div>
         </section>
         {CATEGORIES.map((cat) => (
-          <section key={cat.id}>
+          <section key={cat.id} id={cat.id} style={{ scrollMarginTop: '5rem' }}>
             <div className={"flex items-center gap-3 mb-4 border-l-4 " + cat.color + " pl-4 md:pl-6 py-0.5"}>
               <cat.icon className="w-5 h-5 text-slate-400" />
               <h2 className="text-lg md:text-xl font-semibold text-white tracking-tight">{cat.title}</h2>

@@ -1,12 +1,22 @@
 'use client'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
-import { Moon, Sun, Menu, X, User, LogOut, Twitter as TwitterIcon, Search, Download } from 'lucide-react'
+import { Moon, Sun, Menu, X, User, LogOut, Twitter as TwitterIcon, Search, Download, Zap, Hotel, Share2, ShieldCheck, BookOpen, Briefcase, HeartHandshake, ChevronDown } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Badge } from '@/components/ui/badge'
+
+const GENRE_LINKS = [
+  { id: 'compress', label: 'AI変換', icon: Zap },
+  { id: 'hotel', label: '宿泊DX', icon: Hotel },
+  { id: 'sns', label: 'SNS', icon: Share2 },
+  { id: 'life', label: 'ライフ', icon: ShieldCheck },
+  { id: 'edu', label: '学習', icon: BookOpen },
+  { id: 'biz', label: 'ビジネス', icon: Briefcase },
+  { id: 'mind', label: '心理', icon: HeartHandshake },
+]
 
 function InstallBanner() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
@@ -65,6 +75,7 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const pathname = usePathname()
 
   const handleSearch = (e) => {
     e.preventDefault()
@@ -197,6 +208,20 @@ export function Header() {
                 className="w-full h-12 bg-black border border-white/10 rounded-xl pl-12 pr-4 text-sm text-white focus:border-emerald-500 outline-none transition-all"
               />
             </form>
+            {/* モバイル ジャンルショートカット */}
+            <div className="grid grid-cols-4 gap-2">
+              {GENRE_LINKS.map(({ id, label, icon: Icon }) => (
+                <Link
+                  key={id}
+                  href={`/products#${id}`}
+                  onClick={() => setMenuOpen(false)}
+                  className="flex flex-col items-center gap-1 py-2 px-1 rounded-xl bg-white/5 hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/40 transition-all group"
+                >
+                  <Icon className="h-4 w-4 text-emerald-400 group-hover:text-emerald-300" />
+                  <span className="text-[10px] text-slate-400 group-hover:text-emerald-300 font-medium leading-none">{label}</span>
+                </Link>
+              ))}
+            </div>
             <Link href="/products" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>ツール一覧</Link>
             <Link href="/contact" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>📩 お問い合わせ</Link>
             {user ? (
@@ -207,6 +232,31 @@ export function Header() {
           </div>
         )}
       </header>
+
+      {/* ジャンルバー（デスクトップ用） */}
+      <div className="hidden md:block w-full border-b border-white/5 bg-background/80 backdrop-blur-sm">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-1 h-9 overflow-x-auto scrollbar-none">
+            <Link
+              href="/products"
+              className="shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all"
+            >
+              すべて
+            </Link>
+            <span className="text-white/10">|</span>
+            {GENRE_LINKS.map(({ id, label, icon: Icon }) => (
+              <Link
+                key={id}
+                href={`/products#${id}`}
+                className="shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all whitespace-nowrap"
+              >
+                <Icon className="h-3 w-3" />
+                {label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* スマホアプリ版インストールバナー（ヘッダー直下） */}
       <InstallBanner />
