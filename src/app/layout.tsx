@@ -8,6 +8,8 @@ import { Providers } from '@/components/providers'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 import { HeaderWrapper, FooterWrapper } from '@/components/layout-wrappers'
 import ExternalLinkGuard from '@/components/ExternalLinkGuard'
+import { PageViewTracker } from '@/components/analytics/PageViewTracker'
+import { Suspense } from 'react'
 
 // Genspark Claw と同じフォントスタック: Inter (英字) + Noto Sans JP (日本語)
 const inter = Inter({
@@ -212,6 +214,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${notoSansJP.variable} font-sans min-h-screen bg-[#050507] text-slate-200 dark antialiased`}>
         <Providers>
           <div className="relative flex min-h-screen flex-col bg-[#050507]">
+            <Suspense fallback={null}><PageViewTracker /></Suspense>
             <HeaderWrapper />
             <div className="flex-1">{children}</div>
             <FooterWrapper />

@@ -3,8 +3,9 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Users, ShieldCheck, TrendingUp, MessageSquare, Zap, Cpu, MousePointer2 } from 'lucide-react'
+import { Users, ShieldCheck, TrendingUp, MessageSquare, Zap, Cpu } from 'lucide-react'
 import ApiStatusBoard from '@/components/admin/ApiStatusBoard'
+import AnalyticsPanel from '@/components/admin/AnalyticsPanel'
 
 export default async function AdminPage() {
   const supabase = createServerSupabaseClient()
@@ -51,13 +52,6 @@ export default async function AdminPage() {
   const totalCalls = usageData?.length || 0
   const localAISavingsPerCall = 5.0 
   const totalSavings = Math.floor(totalCalls * localAISavingsPerCall)
-
-  const pvStats = [
-    { path: '/products', name: 'ツールストア', count: 1420 },
-    { path: '/products/staysee-ai-finder', name: 'Staysee AI Finder', count: 980 },
-    { path: '/products/universal-converter', name: 'マルチコンバーター', count: 850 },
-    { path: '/', name: 'トップページ', count: 2100 }
-  ]
 
   const activeSubUserIds = new Set((subscriptions || []).map((s: any) => s.user_id))
 
@@ -106,21 +100,7 @@ export default async function AdminPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl p-8">
-              <CardHeader className="p-0 border-b border-white/5 mb-6 pb-6">
-                <CardTitle className="text-xl font-bold tracking-tight text-white flex items-center gap-3">
-                  <MousePointer2 className="h-6 w-6 text-blue-400" /> アクセス解析
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0 space-y-6">
-                {pvStats.map((pv, i) => (
-                  <div key={i} className="flex justify-between items-center border-b border-white/5 pb-4">
-                    <div className="text-sm font-bold text-slate-300 ">{pv.name}</div>
-                    <div className="text-lg font-bold text-white ">{pv.count.toLocaleString()} PV</div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+            <AnalyticsPanel />
 
             <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden lg:col-span-2">
               <CardHeader className="bg-white/5 p-8 border-b border-white/5">
