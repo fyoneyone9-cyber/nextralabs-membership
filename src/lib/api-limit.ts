@@ -29,6 +29,12 @@ export async function checkApiLimit(toolId: string, limit: number = 20) {
   }
 
   const userId = session.user.id;
+
+  // 管理者・オーナーは無制限
+  if (session.user.email === 'f.yoneyone9@gmail.com') {
+    return { allowed: true, userId };
+  }
+
   const today = new Date().toISOString().split('T')[0];
 
   const { data: usage, error } = await supabase
