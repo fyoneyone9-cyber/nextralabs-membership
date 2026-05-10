@@ -119,45 +119,10 @@ function YoutubeProducerApp() {
   const [seo, setSeo] = useState<any>(null)
   const [bgm, setBgm] = useState<any>(null)
 
-  // ⚡ 憲法：ページ離脱してもクリアさせない（Persistence）
+  // 毎回クリーンスタート：ページロード時にlocalStorageをクリア
   useEffect(() => {
-    const saved = localStorage.getItem('yt_producer_state')
-    if (saved) {
-      try {
-        const state = JSON.parse(saved)
-        setTranscript(state.transcript || '')
-        setGenre(state.genre || 'entertainment')
-        setScriptType(state.scriptType || 'standard')
-        setImageStyle(state.imageStyle || 'anime')
-        setWithLogo(state.withLogo !== undefined ? state.withLogo : true)
-        setScript(state.script || null)
-        setCharacters(state.characters || null)
-        setThumbnails(state.thumbnails || null)
-        setSeo(state.seo || null)
-        setBgm(state.bgm || null)
-        if (state.activeTab) setActiveTab(state.activeTab)
-      } catch (e) { console.error(e) }
-    }
+    localStorage.removeItem('yt_producer_state')
   }, [])
-
-  // transcript が変わったら生成結果をリセット
-  const prevTranscriptRef = useRef<string>('')
-  useEffect(() => {
-    if (prevTranscriptRef.current && prevTranscriptRef.current !== transcript) {
-      setScript(null)
-      setCharacters(null)
-      setThumbnails(null)
-      setSeo(null)
-      setBgm(null)
-      setActiveTab('input')
-    }
-    prevTranscriptRef.current = transcript
-  }, [transcript])
-
-  useEffect(() => {
-    const state = { transcript, genre, scriptType, imageStyle, withLogo, script, characters, thumbnails, seo, bgm, activeTab }
-    localStorage.setItem('yt_producer_state', JSON.stringify(state))
-  }, [transcript, genre, scriptType, imageStyle, withLogo, script, characters, thumbnails, seo, bgm, activeTab])
 
   useEffect(() => {
     const load = async () => {
