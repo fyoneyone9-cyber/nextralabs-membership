@@ -73,30 +73,61 @@ export const CharacterMake: React.FC<CharacterMakeProps> = ({ onComplete, isSubm
             <p className="text-lg text-emerald-400/80 font-bold mt-3 ">あなたの武器を全て選べ（複数可） ➔</p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-            {/* デジタル・SNS系 */}
-            <SkillTag label="SNS投稿" icon={<Smartphone size={20}/>} active={data.skills.includes('sns')} onClick={() => toggleSkill('sns')} />
-            <SkillTag label="フリマ出品" icon={<ShoppingCart size={20}/>} active={data.skills.includes('mercari')} onClick={() => toggleSkill('mercari')} />
-            <SkillTag label="ポイ活" icon={<Zap size={20}/>} active={data.skills.includes('points')} onClick={() => toggleSkill('points')} />
-            <SkillTag label="リサーチ" icon={<Search size={20}/>} active={data.skills.includes('research')} onClick={() => toggleSkill('research')} />
-            
-            {/* クリエイティブ系 */}
-            <SkillTag label="画像作成" icon={<Palette size={20}/>} active={data.skills.includes('design')} onClick={() => toggleSkill('design')} />
-            <SkillTag label="動画編集" icon={<Video size={20}/>} active={data.skills.includes('video')} onClick={() => toggleSkill('video')} />
-            <SkillTag label="文章作成" icon={<Pen size={20}/>} active={data.skills.includes('writing')} onClick={() => toggleSkill('writing')} />
-            <SkillTag label="お悩み相談" icon={<MessageSquare size={20}/>} active={data.skills.includes('consulting')} onClick={() => toggleSkill('consulting')} />
-
-            {/* AI・IT系 */}
-            <SkillTag label="ChatGPT" icon={<Sparkles size={20}/>} active={data.skills.includes('chatgpt')} onClick={() => toggleSkill('chatgpt')} />
-            <SkillTag label="画像生成AI" icon={<ImageIcon size={20}/>} active={data.skills.includes('stable_diffusion')} onClick={() => toggleSkill('stable_diffusion')} />
-            <SkillTag label="データ入力" icon={<Laptop size={20}/>} active={data.skills.includes('data_entry')} onClick={() => toggleSkill('data_entry')} />
-            <SkillTag label="翻訳" icon={<Scale size={20}/>} active={data.skills.includes('translation')} onClick={() => toggleSkill('translation')} />
-
-            {/* リアル・生活系 */}
-            <SkillTag label="運転" icon={<Briefcase size={20}/>} active={data.skills.includes('driving')} onClick={() => toggleSkill('driving')} />
-            <SkillTag label="掃除・家事" icon={<CheckCircle2 size={20}/>} active={data.skills.includes('housework')} onClick={() => toggleSkill('housework')} />
-            <SkillTag label="接客・販売" icon={<UserCircle size={20}/>} active={data.skills.includes('sales')} onClick={() => toggleSkill('sales')} />
-            <SkillTag label="商品梱包" icon={<Download size={20}/>} active={data.skills.includes('packing')} onClick={() => toggleSkill('packing')} />
+          {/* カテゴリ見出し付きグリッド */}
+          <div className="space-y-4">
+            {[
+              {
+                label: 'デジタル・SNS',
+                items: [
+                  { key: 'sns', text: 'SNS投稿', icon: <Smartphone size={18}/> },
+                  { key: 'mercari', text: 'フリマ出品', icon: <ShoppingCart size={18}/> },
+                  { key: 'points', text: 'ポイ活', icon: <Zap size={18}/> },
+                  { key: 'research', text: 'リサーチ', icon: <Search size={18}/> },
+                ],
+              },
+              {
+                label: 'クリエイティブ',
+                items: [
+                  { key: 'design', text: '画像作成', icon: <Palette size={18}/> },
+                  { key: 'video', text: '動画編集', icon: <Video size={18}/> },
+                  { key: 'writing', text: '文章作成', icon: <Pen size={18}/> },
+                  { key: 'consulting', text: 'お悩み相談', icon: <MessageSquare size={18}/> },
+                ],
+              },
+              {
+                label: 'AI・IT',
+                items: [
+                  { key: 'chatgpt', text: 'ChatGPT', icon: <Sparkles size={18}/> },
+                  { key: 'stable_diffusion', text: '画像生成AI', icon: <ImageIcon size={18}/> },
+                  { key: 'data_entry', text: 'データ入力', icon: <Laptop size={18}/> },
+                  { key: 'translation', text: '翻訳', icon: <Scale size={18}/> },
+                ],
+              },
+              {
+                label: 'リアル・生活',
+                items: [
+                  { key: 'driving', text: '運転', icon: <Briefcase size={18}/> },
+                  { key: 'housework', text: '掃除・家事', icon: <CheckCircle2 size={18}/> },
+                  { key: 'sales', text: '接客・販売', icon: <UserCircle size={18}/> },
+                  { key: 'packing', text: '商品梱包', icon: <Download size={18}/> },
+                ],
+              },
+            ].map(group => (
+              <div key={group.label}>
+                <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-2 pl-1">{group.label}</p>
+                <div className="grid grid-cols-4 gap-2">
+                  {group.items.map(item => (
+                    <SkillTag
+                      key={item.key}
+                      label={item.text}
+                      icon={item.icon}
+                      active={data.skills.includes(item.key)}
+                      onClick={() => toggleSkill(item.key)}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
 
           <button 
@@ -171,11 +202,15 @@ const StyleButton = ({ icon, title, desc, onClick, active }: any) => (
 );
 
 const SkillTag = ({ label, icon, active, onClick }: any) => (
-  <button 
+  <button
     onClick={onClick}
-    className={`flex flex-col items-center gap-4 p-6 rounded-[2rem] border-2 transition-all shadow-lg ${active ? 'bg-emerald-500 border-emerald-400 text-slate-950 scale-[1.05]' : 'bg-white/5 border-white/10 text-slate-300 hover:border-emerald-500/50'}`}
+    className={`flex flex-col items-center justify-center gap-2 py-3 px-2 rounded-xl border-2 transition-all w-full ${
+      active
+        ? 'bg-emerald-500 border-emerald-400 text-slate-950 shadow-[0_0_12px_rgba(16,185,129,0.4)] scale-[1.03]'
+        : 'bg-white/5 border-white/10 text-slate-300 hover:border-emerald-500/50 hover:bg-white/10'
+    }`}
   >
     <div className={active ? 'text-slate-950' : 'text-emerald-400'}>{icon}</div>
-    <span className="text-lg font-bold uppercase tracking-tighter">{label}</span>
+    <span className="text-xs font-semibold leading-tight text-center">{label}</span>
   </button>
 );
