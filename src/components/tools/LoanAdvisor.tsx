@@ -1,7 +1,43 @@
 'use client'
 import React, { useState, useCallback } from 'react'
-import { Loader2, Calculator, TrendingDown, Calendar, ShieldCheck, ArrowRight, Wallet, CheckCircle2, AlertCircle, Sparkles, BookOpen } from 'lucide-react'
+import { Loader2, Calculator, TrendingDown, Calendar, ShieldCheck, ArrowRight, Wallet, CheckCircle2, AlertCircle, Sparkles, BookOpen, CreditCard, Car, GraduationCap, Home, Smartphone, ShoppingBag, Zap } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+
+// ── プリセット定義 ──────────────────────────────────────────
+const DEBT_PRESETS = [
+  {
+    category: 'カード・消費者金融',
+    color: '#ef4444',
+    icon: CreditCard,
+    items: [
+      { label: 'カードローン1社',   debts: [{ id:'p1', name:'カードローン', amount:50, rate:18.0 }] },
+      { label: 'カード2社おまとめ', debts: [{ id:'p1', name:'カードA', amount:50, rate:18.0 }, { id:'p2', name:'カードB', amount:30, rate:15.0 }] },
+      { label: '消費者金融3社',     debts: [{ id:'p1', name:'消費者金融A', amount:100, rate:18.0 }, { id:'p2', name:'消費者金融B', amount:50, rate:17.0 }, { id:'p3', name:'消費者金融C', amount:30, rate:15.0 }] },
+      { label: '多重借入（4社）',   debts: [{ id:'p1', name:'消費者金融A', amount:100, rate:18.0 }, { id:'p2', name:'消費者金融B', amount:80, rate:18.0 }, { id:'p3', name:'カードC', amount:50, rate:15.0 }, { id:'p4', name:'カードD', amount:30, rate:14.0 }] },
+    ],
+  },
+  {
+    category: '教育・自動車ローン',
+    color: '#3b82f6',
+    icon: GraduationCap,
+    items: [
+      { label: '奨学金のみ',           debts: [{ id:'p1', name:'奨学金', amount:200, rate:1.5 }] },
+      { label: '奨学金＋カード',        debts: [{ id:'p1', name:'奨学金', amount:200, rate:1.5 }, { id:'p2', name:'カードローン', amount:50, rate:18.0 }] },
+      { label: 'マイカーローン',        debts: [{ id:'p1', name:'オートローン', amount:150, rate:5.5 }] },
+      { label: 'カー＋カードローン',    debts: [{ id:'p1', name:'オートローン', amount:150, rate:5.5 }, { id:'p2', name:'カードローン', amount:80, rate:18.0 }] },
+    ],
+  },
+  {
+    category: '住宅・大型ローン',
+    color: '#10b981',
+    icon: Home,
+    items: [
+      { label: '住宅ローンのみ',         debts: [{ id:'p1', name:'住宅ローン', amount:3000, rate:1.2 }] },
+      { label: '住宅＋カードローン',      debts: [{ id:'p1', name:'住宅ローン', amount:3000, rate:1.2 }, { id:'p2', name:'カードローン', amount:100, rate:18.0 }] },
+      { label: 'リフォームローン',        debts: [{ id:'p1', name:'リフォームローン', amount:200, rate:4.5 }] },
+    ],
+  },
+]
 
 // ========================
 // 型定義
@@ -131,14 +167,73 @@ export function LoanAdvisor() {
         <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-black tracking-widest uppercase italic">
           <ShieldCheck size={14} /> AI Money Defense System
         </div>
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500 text-white text-xs font-semibold">✅ 完成</div>
         <h1 className="text-4xl md:text-5xl font-black text-white uppercase italic tracking-tighter">
           借金完済・おまとめ診断
         </h1>
-        <p className="text-slate-400 font-bold text-sm md:text-base">
-          AIが現在の借入を分析し、最適な完済ロードマップを提案します。<br className="hidden md:block" />
-          匿名・無料で、おまとめによる金利軽減効果を瞬時にシミュレーション。
+        <p className="text-slate-400 font-bold text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+          複数の借入をAIが分析し、<span className="text-emerald-400">おまとめによる年間節約額</span>と<br className="hidden md:block" />
+          最適な完済ロードマップを無料・匿名でシミュレーションします。
         </p>
+      </div>
+
+      {/* ツール説明 */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {[
+          { icon: Calculator, title: '借入を入力',   desc: '残高（万円）と金利（%）を社ごとに入力。最大5社まで対応。' },
+          { icon: Sparkles,   title: 'AIが即時診断', desc: 'おまとめ後の年間節約額・平均金利・返済シナリオをAIが算出。' },
+          { icon: TrendingDown, title: '完済プランを取得', desc: 'AIが生成した完済ロードマップと、おすすめのおまとめ先を提示。' },
+        ].map((step, i) => (
+          <div key={i} className="flex items-start gap-3 bg-[#13141f] border border-white/5 rounded-2xl p-5">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0 border border-emerald-500/20">
+              <step.icon size={16} className="text-emerald-400" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-emerald-400 mb-1">STEP {i + 1}　{step.title}</p>
+              <p className="text-xs text-slate-500 leading-relaxed">{step.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* プリセット */}
+      <div className="bg-[#13141f] border border-white/5 rounded-2xl p-5 md:p-7 space-y-4">
+        <div className="flex items-center gap-2">
+          <CreditCard size={14} className="text-emerald-400" />
+          <p className="text-xs font-semibold text-white">よくある借入パターンから選ぶ</p>
+          <span className="text-[10px] text-slate-600 ml-auto">タップで自動入力</span>
+        </div>
+        {DEBT_PRESETS.map(cat => {
+          const CatIcon = cat.icon
+          return (
+            <div key={cat.category} className="space-y-2">
+              <div className="flex items-center gap-1.5">
+                <CatIcon size={10} style={{ color: cat.color }} />
+                <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: cat.color }}>{cat.category}</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {cat.items.map(item => {
+                  const isSelected = JSON.stringify(debts.map(d => ({ name: d.name, amount: d.amount, rate: d.rate }))) ===
+                    JSON.stringify(item.debts.map(d => ({ name: d.name, amount: d.amount, rate: d.rate })))
+                  return (
+                    <button
+                      key={item.label}
+                      type="button"
+                      onClick={() => { setDebts(item.debts); setResult(null); setError(null) }}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
+                        isSelected
+                          ? 'text-slate-950 border-transparent'
+                          : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20 hover:text-white'
+                      }`}
+                      style={isSelected ? { background: cat.color, borderColor: cat.color } : {}}
+                    >
+                      {item.label}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-10">
