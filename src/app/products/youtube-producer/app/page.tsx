@@ -383,6 +383,13 @@ function YoutubeProducerApp() {
           </TabsContent>
         </Tabs>
 
+        {loadingStep && (
+          <div className="mt-6 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-6 flex flex-col items-center gap-3 text-center">
+            <Loader2 className="h-8 w-8 text-emerald-400 animate-spin" />
+            <p className="text-sm text-emerald-400 font-medium">{loadingStep}</p>
+          </div>
+        )}
+
         <div className="mt-8 pt-6 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-medium text-white/20"><p>© 2026 NextraLabs Viral Content OS. ALL RIGHTS RESERVED.</p><div className="flex gap-6"><a href="#" className="hover:text-emerald-500 transition-colors">利用規約</a><a href="#" className="hover:text-emerald-500 transition-colors">ステータス</a><a href="#" className="hover:text-emerald-500 transition-colors">サポート</a></div></div>
       </div>
     </div>
