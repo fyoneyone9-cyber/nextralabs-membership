@@ -427,8 +427,10 @@ export async function POST(req: NextRequest) {
     // 座標付与
     spots = await geocodeSpots(spots)
 
-    // 宿泊地は最初のスポットの住所を基準に検索
-    const primaryLocation = spots[0]?.address?.split(/[都道府県市区町村]/)[0] + (spots[0]?.address?.match(/[都道府県]/)?.[0] ?? '') || departure || '東京'
+    // 宿泊地は最初のスポットの都道府県 or 住所全体を楽天キーワードに使用
+    const firstAddress = spots[0]?.address ?? ''
+    const prefMatch = firstAddress.match(/(.+?[都道府県])/)
+    const primaryLocation = prefMatch ? prefMatch[1] : (firstAddress || departure || '東京')
     const today2 = new Date()
     const defaultCheckin = checkinDate || new Date(today2.getTime() + 7 * 86400000).toISOString().split('T')[0]
     const defaultCheckout = checkoutDate || new Date(today2.getTime() + 8 * 86400000).toISOString().split('T')[0]

@@ -427,7 +427,6 @@ export default function PilgrimagePlanner() {
           <div className="px-4 pb-4 text-xs text-slate-500 space-y-1.5">
             <p>• AIが動画メタデータ・作品情報からロケ地・聖地を推定します</p>
             <p>• ロケ地は推定情報です。必ず現地情報をご確認ください</p>
-            <p>• 楽天トラベルの宿泊リンクはアフィリエイトリンクを含みます</p>
             <p>• 本日の残り利用回数：1日5回まで</p>
           </div>
         )}
