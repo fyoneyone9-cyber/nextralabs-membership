@@ -52,6 +52,56 @@ function StatCounter({ end, suffix, label }: { end: number; suffix: string; labe
   )
 }
 
+// レビューセクション（スマホ：3件→もっと見る）
+function ReviewsSection() {
+  const [showAll, setShowAll] = useState(false)
+  const visible = showAll ? REVIEWS : REVIEWS.slice(0, 3)
+  return (
+    <section className="py-14 bg-[#050507] border-b border-white/5">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-4xl font-bold text-white mb-2">ユーザーの声</h2>
+          <div className="flex items-center justify-center gap-2 mt-2">
+            <div className="flex">
+              {[...Array(5)].map((_, i) => <Star key={i} size={16} className="text-emerald-400 fill-emerald-400" />)}
+            </div>
+            <span className="text-slate-400 text-sm font-medium">4.9 / 5.0 <span className="text-slate-600">（2,847件の評価）</span></span>
+          </div>
+        </div>
+        <div className="grid md:grid-cols-3 gap-4">
+          {visible.map((r, i) => (
+            <div key={i} className="bg-[#0d1117] border border-white/5 rounded-2xl p-5 hover:border-emerald-500/20 transition-all">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
+                  {r.avatar}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-bold text-slate-200 truncate">{r.name}</p>
+                  <p className="text-[11px] text-slate-500">{r.job}</p>
+                </div>
+                <div className="flex shrink-0">
+                  {[...Array(r.rating)].map((_, j) => <Star key={j} size={12} className="text-emerald-400 fill-emerald-400" />)}
+                </div>
+              </div>
+              <p className="text-sm text-slate-400 leading-relaxed">{r.text}</p>
+            </div>
+          ))}
+        </div>
+        {!showAll && (
+          <div className="text-center mt-6">
+            <button
+              onClick={() => setShowAll(true)}
+              className="text-sm text-emerald-400 hover:text-emerald-300 border border-emerald-500/30 hover:border-emerald-500/60 rounded-xl px-6 py-3 transition-all"
+            >
+              すべての口コミを見る（{REVIEWS.length}件） ↓
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
 export default function HomePage() {
   const [mounted, setMounted] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -117,14 +167,14 @@ export default function HomePage() {
 
       {/* ========== フローティングCTA ========== */}
       {scrolled && !floatClosed && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2"
+        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex items-center gap-2"
           style={{ animation: 'slideUp 0.3s ease' }}>
           <button onClick={() => setFloatClosed(true)}
-            className="w-7 h-7 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center text-slate-400 hover:text-slate-200 transition-colors">
-            <X size={13} />
+            className="w-8 h-8 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center text-slate-400 hover:text-slate-200 transition-colors shrink-0">
+            <X size={14} />
           </button>
           <Link href="/signup">
-            <Button className="h-12 px-6 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-sm shadow-[0_4px_24px_rgba(16,185,129,0.4)] hover:scale-105 transition-all"
+            <Button className="h-11 sm:h-12 px-4 sm:px-6 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-sm shadow-[0_4px_24px_rgba(16,185,129,0.4)] hover:scale-105 transition-all whitespace-nowrap"
               style={{ animation: 'emeraldPulse 2s ease-in-out infinite' }}>
               無料で使ってみる →
             </Button>
@@ -153,11 +203,11 @@ export default function HomePage() {
           </p>
 
           {/* 料金明示 */}
-          <div className="inline-flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-5 py-2.5 mb-8">
+          <div className="flex flex-wrap justify-center items-center gap-x-3 gap-y-2 bg-white/5 border border-white/10 rounded-xl px-5 py-3 mb-8 mx-auto max-w-xs sm:max-w-none sm:inline-flex">
             <span className="text-emerald-400 font-bold text-sm">無料プランあり</span>
-            <span className="w-px h-4 bg-white/10" />
+            <span className="hidden sm:block w-px h-4 bg-white/10" />
             <span className="text-slate-400 text-xs">プレミアム ¥1,980<span className="text-slate-600">/月〜</span></span>
-            <span className="w-px h-4 bg-white/10" />
+            <span className="hidden sm:block w-px h-4 bg-white/10" />
             <span className="text-slate-400 text-xs">クレカ不要</span>
           </div>
 
@@ -181,7 +231,7 @@ export default function HomePage() {
       {/* ========== 統計数字 ========== */}
       <section className="py-10 border-y border-white/5 bg-[#0d1117]">
         <div className="container mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             <StatCounter end={2847} suffix="名" label="登録ユーザー数" />
             <StatCounter end={30} suffix="+" label="AIツール数" />
             <StatCounter end={98} suffix="%" label="ユーザー満足度" />
@@ -282,38 +332,7 @@ export default function HomePage() {
       </section>
 
       {/* ========== レビュー ========== */}
-      <section className="py-14 bg-[#050507] border-b border-white/5">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-4xl font-bold text-white mb-2">ユーザーの声</h2>
-            <div className="flex items-center justify-center gap-2 mt-2">
-              <div className="flex">
-                {[...Array(5)].map((_, i) => <Star key={i} size={16} className="text-emerald-400 fill-emerald-400" />)}
-              </div>
-              <span className="text-slate-400 text-sm font-medium">4.9 / 5.0 <span className="text-slate-600">（2,847件の評価）</span></span>
-            </div>
-          </div>
-          <div className="grid md:grid-cols-3 gap-4">
-            {REVIEWS.map((r, i) => (
-              <div key={i} className="bg-[#0d1117] border border-white/5 rounded-2xl p-5 hover:border-emerald-500/20 transition-all">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
-                    {r.avatar}
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-slate-200">{r.name}</p>
-                    <p className="text-[10px] text-slate-600">{r.job}</p>
-                  </div>
-                  <div className="ml-auto flex">
-                    {[...Array(r.rating)].map((_, j) => <Star key={j} size={11} className="text-emerald-400 fill-emerald-400" />)}
-                  </div>
-                </div>
-                <p className="text-xs text-slate-400 leading-relaxed">{r.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ReviewsSection />
 
       {/* ========== 最終CTA ========== */}
       <section className="py-20 bg-[#050507]">
@@ -339,8 +358,17 @@ export default function HomePage() {
       </section>
 
       {/* フッター */}
-      <div className="text-center text-[9px] text-slate-700 py-6 border-t border-white/5">
-        NextraLabs • 2026 · <Link href="/privacy" className="hover:text-slate-500">プライバシー</Link> · <Link href="/terms" className="hover:text-slate-500">利用規約</Link>
+      <div className="border-t border-white/5 py-6">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+          <span className="text-xs text-slate-600">© 2026 NextraLabs</span>
+          <div className="flex items-center gap-1">
+            <Link href="/privacy" className="text-xs text-slate-500 hover:text-slate-300 py-2 px-3 rounded-lg transition-colors">プライバシーポリシー</Link>
+            <span className="text-slate-700">·</span>
+            <Link href="/terms" className="text-xs text-slate-500 hover:text-slate-300 py-2 px-3 rounded-lg transition-colors">利用規約</Link>
+            <span className="text-slate-700">·</span>
+            <Link href="/contact" className="text-xs text-slate-500 hover:text-slate-300 py-2 px-3 rounded-lg transition-colors">お問い合わせ</Link>
+          </div>
+        </div>
       </div>
 
       {/* ========== 構造化データ（FAQ + BreadcrumbList）========== */}
