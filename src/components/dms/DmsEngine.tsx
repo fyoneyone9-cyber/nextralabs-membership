@@ -139,6 +139,12 @@ export default function DmsEngine() {
   const [loadingBookings, setLoadingBookings] = useState(false)
   const [currentDate, setCurrentDate] = useState('')
 
+  // ── フィルターバー state ──
+  const [dateFilter, setDateFilter] = useState<'today' | 'tomorrow' | 'custom'>('today')
+  const [roomFilter, setRoomFilter] = useState<'all' | 'custom'>('all')
+  const [customDate, setCustomDate] = useState('')
+  const [customRoom, setCustomRoom] = useState('')
+
   const searchParams = useSearchParams()
   const tabParam = searchParams.get('tab')
 
@@ -146,19 +152,42 @@ export default function DmsEngine() {
     if (tabParam) setActiveTab(tabParam)
   }, [tabParam])
 
-  const fetchStayseeBookings = async () => {
+  const getTargetDate = (filter: 'today' | 'tomorrow' | 'custom', custom?: string) => {
+    if (filter === 'custom' && custom) return custom
+    const d = new Date()
+    if (filter === 'tomorrow') d.setDate(d.getDate() + 1)
+    return d.toISOString().slice(0, 10)
+  }
+
+  const fetchStayseeBookings = async (dateF = dateFilter, custDate = customDate) => {
     setLoadingBookings(true)
     try {
-      const today = new Date().toISOString().slice(0, 10)
-      const res = await fetch(`/api/staysee/reservations?date=${today}`)
+      const date = getTargetDate(dateF, custDate)
+      const res = await fetch(`/api/staysee/reservations?date=${date}`)
       const data = await res.json()
       if (data.reservations) setBookings(data.reservations)
+      else setBookings([])
     } catch (e) {
       console.error(e)
+      setBookings([])
     } finally {
       setLoadingBookings(false)
     }
   }
+
+  // 日付フィルター変更時に再取得
+  const handleDateFilter = (f: 'today' | 'tomorrow' | 'custom') => {
+    setDateFilter(f)
+    if (f !== 'custom') fetchStayseeBookings(f, '')
+  }
+
+  // 部屋フィルター: クライアントサイドでbookingsをフィルタリング
+  const filteredBookings = bookings.filter(b => {
+    if (roomFilter === 'all') return true
+    if (!customRoom.trim()) return true
+    const roomId = String(b.allocate_rooms?.[0]?.room_id || '')
+    return roomId.includes(customRoom.trim())
+  })
 
   useEffect(() => {
     setMounted(true)
@@ -269,21 +298,71 @@ export default function DmsEngine() {
           {/* チェックイン一覧 */}
           {activeTab === 'checkin' && (
             <>
+              {/* フィルターバー（実動作） */}
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center bg-[#0d0f1a] border border-white/5 p-1 rounded-xl">
-                  {['今日', '明日', '日付指定', '全部屋', '部屋選択'].map((t, i) => (
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* 日付フィルター */}
+                  <div className="flex items-center bg-[#0d0f1a] border border-white/5 p-1 rounded-xl">
+                    {(['today', 'tomorrow', 'custom'] as const).map((f, i) => (
+                      <button
+                        key={f}
+                        onClick={() => handleDateFilter(f)}
+                        className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                          dateFilter === f ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:text-slate-300'
+                        }`}
+                      >
+                        {i === 0 ? '今日' : i === 1 ? '明日' : '日付指定'}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* 日付指定input */}
+                  {dateFilter === 'custom' && (
+                    <div className="flex items-center gap-1.5">
+                      <input
+                        type="date"
+                        value={customDate}
+                        onChange={e => {
+                          setCustomDate(e.target.value)
+                          if (e.target.value) fetchStayseeBookings('custom', e.target.value)
+                        }}
+                        className="h-8 px-3 rounded-lg text-xs text-slate-200 outline-none focus:border-emerald-500 transition-all"
+                        style={{ background: '#0d0f1a', border: '1px solid rgba(16,185,129,0.4)', colorScheme: 'dark' }}
+                      />
+                    </div>
+                  )}
+
+                  {/* 部屋フィルター */}
+                  <div className="flex items-center bg-[#0d0f1a] border border-white/5 p-1 rounded-xl">
                     <button
-                      key={t}
-                      className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                        i === 0 ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:text-slate-300'
-                      }`}
-                    >
-                      {t}
-                    </button>
-                  ))}
+                      onClick={() => { setRoomFilter('all'); setCustomRoom('') }}
+                      className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${roomFilter === 'all' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                    >全部屋</button>
+                    <button
+                      onClick={() => setRoomFilter('custom')}
+                      className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${roomFilter === 'custom' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                    >部屋選択</button>
+                  </div>
+
+                  {/* 部屋番号input */}
+                  {roomFilter === 'custom' && (
+                    <input
+                      type="text"
+                      value={customRoom}
+                      onChange={e => setCustomRoom(e.target.value)}
+                      placeholder="部屋番号を入力..."
+                      className="h-8 px-3 rounded-lg text-xs text-slate-200 outline-none focus:border-emerald-500 transition-all w-32"
+                      style={{ background: '#0d0f1a', border: '1px solid rgba(99,102,241,0.4)' }}
+                    />
+                  )}
                 </div>
+
+                {/* 件数バッジ */}
                 <div className="flex items-center gap-2">
-                  <Badge className="bg-white/5 text-slate-300 border border-white/10 px-3 py-1 rounded-lg text-xs font-semibold">→ チェックイン {bookings.length}</Badge>
+                  <Badge className="bg-white/5 text-slate-300 border border-white/10 px-3 py-1 rounded-lg text-xs font-semibold">
+                    → チェックイン {filteredBookings.length}
+                    {roomFilter === 'custom' && customRoom && ` / 全${bookings.length}`}
+                  </Badge>
                   <Badge className="bg-white/5 text-slate-300 border border-white/10 px-3 py-1 rounded-lg text-xs font-semibold">← チェックアウト 6</Badge>
                   <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-lg text-xs font-semibold">⌨ 滞在中 2</Badge>
                 </div>
@@ -314,14 +393,16 @@ export default function DmsEngine() {
                             </div>
                           </td>
                         </tr>
-                      ) : bookings.length === 0 ? (
+                      ) : filteredBookings.length === 0 ? (
                         <tr>
                           <td colSpan={8} className="py-16 text-center text-slate-600 text-xs font-semibold">
-                            本日の予約はありません
+                            {bookings.length > 0
+                              ? `部屋「${customRoom}」の予約は見つかりません（全${bookings.length}件中）`
+                              : `${dateFilter === 'tomorrow' ? '明日' : dateFilter === 'custom' && customDate ? customDate : '本日'}の予約はありません`}
                           </td>
                         </tr>
                       ) : (
-                        bookings.map(b => (
+                        filteredBookings.map(b => (
                           <tr key={b.id} className="hover:bg-white/5 transition-colors">
                             <td className="px-4 py-3 text-center">
                               <Badge className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold px-3 py-0.5 rounded-full text-[9px]">
@@ -515,28 +596,76 @@ export default function DmsEngine() {
 
           {/* ロック設定 */}
           {activeTab === 'lock-settings' && (
-            <SettingsPanel
-              title="ロック・鍵デバイス設定"
-              icon={<Lock size={15} style={{ color: '#10b981' }} />}
-              fields={[
-                { key: 'lock_type', label: '鍵デバイス', type: 'select', options: ['RemoteLock','SwitchBot','ASSA ABLOY (Visionline)','dormakaba','SALTO Systems','bitlock','SESAME','その他'], placeholder: '鍵デバイスを選択...' },
-                { key: 'lock_api_key', label: '鍵デバイス API KEY', type: 'password', placeholder: '鍵デバイス APIキーを入力' },
-              ]}
-              storagePrefix="dms_lock"
-            />
+            <div className="space-y-4 max-w-2xl">
+              <SettingsPanel
+                title="ロック・鍵デバイス設定"
+                icon={<Lock size={15} style={{ color: '#10b981' }} />}
+                fields={[
+                  { key: 'lock_type', label: '鍵デバイス', type: 'select', options: [
+                    'SwitchBot','TT Lock','SESAME','igloohome','Nuki',
+                    'RemoteLOCK','Salto KS','固定パスワード','オフライン（手渡し）','その他'
+                  ], placeholder: '鍵デバイスを選択...' },
+                  { key: 'lock_api_key', label: '鍵デバイス API KEY / トークン', type: 'password', placeholder: 'APIキー・トークンを入力（固定PW・オフラインは不要）' },
+                ]}
+                storagePrefix="dms_lock"
+              />
+              {/* 錠デバイス一覧へのリンク（ローカル設定でも対応） */}
+              <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
+                <p className="text-xs font-semibold text-slate-400 flex items-center gap-2">
+                  <Lock size={13} style={{ color: '#10b981' }} />
+                  設定した錠デバイスを確認・管理
+                </p>
+                <p className="text-[11px] text-slate-600 leading-relaxed">
+                  保存した設定でデバイスの登録状態や接続台数を確認できます。<br />
+                  <span className="text-slate-500">固定パスワード・オフライン設定でもローカル管理リストとして利用できます。</span>
+                </p>
+                <button
+                  onClick={() => setActiveTab('lock-list')}
+                  className="flex items-center gap-2 h-9 px-5 rounded-lg text-xs font-semibold transition-all"
+                  style={{ background: '#10b981', color: '#fff' }}
+                >
+                  <Lock size={13} /> 錠デバイス一覧で確認 <ArrowRight size={13} />
+                </button>
+              </div>
+            </div>
           )}
 
           {/* PMS設定 */}
           {activeTab === 'pms-settings' && (
-            <SettingsPanel
-              title="PMSシステム設定"
-              icon={<Settings size={15} style={{ color: '#10b981' }} />}
-              fields={[
-                { key: 'pms_type', label: 'PMSシステム', type: 'select', options: ['Staysee','イージー会計','Oracle OPERA','Mews','apaleo','その他'], placeholder: 'PMSを選択...' },
-                { key: 'pms_api_key', label: 'PMS API KEY', type: 'password', placeholder: 'PMS APIキーを入力' },
-              ]}
-              storagePrefix="dms_pms"
-            />
+            <div className="space-y-4 max-w-2xl">
+              <SettingsPanel
+                title="PMSシステム設定"
+                icon={<Settings size={15} style={{ color: '#10b981' }} />}
+                fields={[
+                  { key: 'pms_type', label: 'PMSシステム', type: 'select', options: [
+                    'Staysee','エアホスト','Cloudbeds','Beds24',
+                    'イージー会計','BETS24','ねっぱん！',
+                    'apaleo','Hostaway','Little Hotelier','Oracle Opera',
+                    'PMS未接続（ローカル）'
+                  ], placeholder: 'PMSを選択...' },
+                  { key: 'pms_api_key', label: 'PMS API KEY', type: 'password', placeholder: 'PMS APIキーを入力（ローカルモードは不要）' },
+                ]}
+                storagePrefix="dms_pms"
+              />
+              {/* チェックイン一覧へのリンク（ローカル設定でも対応） */}
+              <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
+                <p className="text-xs font-semibold text-slate-400 flex items-center gap-2">
+                  <PenLine size={13} style={{ color: '#10b981' }} />
+                  PMS設定をチェックイン一覧に反映
+                </p>
+                <p className="text-[11px] text-slate-600 leading-relaxed">
+                  設定したPMSの予約データを今日・明日・日付指定でフィルターして確認できます。<br />
+                  <span className="text-slate-500">PMS未接続（ローカル）でも、手動入力した予約をローカル管理できます。</span>
+                </p>
+                <button
+                  onClick={() => setActiveTab('checkin')}
+                  className="flex items-center gap-2 h-9 px-5 rounded-lg text-xs font-semibold transition-all"
+                  style={{ background: '#10b981', color: '#fff' }}
+                >
+                  <PenLine size={13} /> チェックイン一覧で確認 <ArrowRight size={13} />
+                </button>
+              </div>
+            </div>
           )}
 
           {/* 組織設定 */}
