@@ -15,7 +15,7 @@ type StyleDef = {
   draw: (ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, text: string, pw: number, ph: number) => void
 }
 
-// テキストが maxWidth に収まるようフォントサイズを自動縮小してから描画するヘルパー
+// テキストが maxWidth に収まるようフォントサイズをループで確実に縮小してから描画するヘルパー
 function drawFitText(
   ctx: CanvasRenderingContext2D,
   text: string,
@@ -24,13 +24,14 @@ function drawFitText(
   maxWidth: number,
   stroke = false
 ) {
-  let measured = ctx.measureText(text).width
-  if (measured > maxWidth) {
+  // 収まるまでループで縮小（最小10px）
+  let safety = 0
+  while (ctx.measureText(text).width > maxWidth && safety < 20) {
     const currentSize = parseFloat(ctx.font)
-    if (!isNaN(currentSize) && currentSize > 0) {
-      const newSize = Math.max(10, Math.floor(currentSize * (maxWidth / measured)))
-      ctx.font = ctx.font.replace(/[\d.]+px/, `${newSize}px`)
-    }
+    if (isNaN(currentSize) || currentSize <= 10) break
+    const newSize = Math.max(10, Math.floor(currentSize * 0.9))
+    ctx.font = ctx.font.replace(/[\d.]+px/, `${newSize}px`)
+    safety++
   }
   if (stroke) ctx.strokeText(text, x, y)
   ctx.fillText(text, x, y)
@@ -889,8 +890,7 @@ const AISelectShopApp = () => {
     ctx.closePath()
     ctx.clip()
 
-    const shortText = keyword.length > 8 ? keyword.slice(0, 8) + '…' : keyword
-    S.draw(ctx, cx, cy, r, shortText, pw, ph)
+    S.draw(ctx, cx, cy, r, keyword, pw, ph)
     ctx.restore()
 
     // ── STEP 5: 印刷エリア枠（点線） ──
