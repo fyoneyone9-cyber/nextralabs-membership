@@ -69,16 +69,13 @@ export default function ExternalLinkGuard() {
             <X size={13} className="inline mr-1.5" />
             戻る
           </button>
-          <a
-            href={pending}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setPending(null)}
+          <button
+            onClick={() => { window.open(pending, '_blank', 'noopener,noreferrer'); setPending(null) }}
             className="flex-1 h-10 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm flex items-center justify-center gap-1.5 transition-colors"
           >
             移動する
             <ArrowRight size={13} />
-          </a>
+          </button>
         </div>
 
         <p className="text-[10px] text-slate-700 mt-4 text-center">
