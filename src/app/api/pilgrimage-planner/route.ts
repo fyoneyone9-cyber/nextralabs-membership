@@ -412,6 +412,102 @@ export const PRESETS: PresetDef[] = [
       { name: '根室（北海道）', address: '北海道根室市', description: '日本最東端・荒涼とした岬', sceneDescription: '北の海・バイキングが航海するシーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=根室市+北海道' },
     ],
   },
+  {
+    id: 'cowboy', label: 'カウボーイビバップ', emoji: '🎺',
+    description: '横浜・東京・宇宙的風景', color: 'border-orange-500/60',
+    hotelArea: '神奈川県',
+    spots: [
+      { name: '横浜みなとみらい（神奈川）', address: '神奈川県横浜市西区みなとみらい', description: '近未来的な夜景がビバップの世界観', sceneDescription: 'スパイクたちが漂うハーバー・宇宙ステーションのイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=みなとみらい+横浜市西区' },
+      { name: '横浜中華街（神奈川）', address: '神奈川県横浜市中区山下町', description: '多国籍文化が混在する街並み', sceneDescription: '異文化が混ざり合う宇宙の街のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=横浜中華街+横浜市中区' },
+      { name: '東京・六本木ヒルズ', address: '東京都港区六本木6丁目10-1', description: '未来的な都市景観', sceneDescription: '宇宙ステーションの居住区・バーのイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=六本木ヒルズ+東京都港区' },
+      { name: '豊洲市場・晴海周辺（東京）', address: '東京都江東区豊洲6丁目', description: '倉庫街・工業地帯の雰囲気', sceneDescription: 'ハードボイルドな追跡シーンの舞台', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=豊洲市場+東京都江東区' },
+      { name: '川崎臨海工業地帯（神奈川）', address: '神奈川県川崎市川崎区', description: 'SF的な工業施設の夜景', sceneDescription: '暗黒街・アンダーワールドのイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=川崎臨海工業地帯+川崎市' },
+    ],
+  },
+  {
+    id: 'dragonquest', label: 'ドラゴンクエスト', emoji: '🐉',
+    description: '城跡・洞窟・神殿・勇者の里', color: 'border-yellow-500/60',
+    hotelArea: '奈良県',
+    spots: [
+      { name: '姫路城（兵庫）', address: '兵庫県姫路市本町68', description: '白鷺城がドラクエの城そのもの', sceneDescription: '王様がいる城・勇者の目的地', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=姫路城+兵庫県姫路市' },
+      { name: '三輪山（奈良）', address: '奈良県桜井市三輪', description: '神聖な山が勇者のダンジョン感', sceneDescription: '最終ダンジョン・聖なる山のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=三輪山+奈良県桜井市' },
+      { name: '龍河洞（高知）', address: '高知県香美市土佐山田町逆川1424', description: '天然鍾乳洞・洞窟ダンジョンの聖地', sceneDescription: '洞窟の宝箱・モンスターが棲む地下ダンジョン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=龍河洞+高知県香美市' },
+      { name: '出雲大社（島根）', address: '島根県出雲市大社町杵築東195', description: '神々の国・神殿のモデル', sceneDescription: 'ルーラで飛べる神殿・神話の地', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=出雲大社+島根県出雲市' },
+      { name: '蔵王お釜（山形）', address: '山形県刈田郡蔵王町遠刈田温泉', description: '神秘的なエメラルドグリーンの火口湖', sceneDescription: '魔王の城近く・危険な火山地帯のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=蔵王お釜+山形県刈田郡' },
+    ],
+  },
+  {
+    id: 'howl', label: 'ハウルの動く城', emoji: '🏰',
+    description: 'アルザス・コルマール・岡山', color: 'border-blue-500/60',
+    hotelArea: '岡山県',
+    spots: [
+      { name: '倉敷美観地区（岡山）', address: '岡山県倉敷市本町', description: 'ヨーロッパ風の白壁と川の街並み', sceneDescription: 'ソフィーが住む帽子屋のある街のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=倉敷美観地区+岡山県倉敷市' },
+      { name: '犬山城下町（愛知）', address: '愛知県犬山市犬山北古券', description: '中世の城と城下町の雰囲気', sceneDescription: 'ハウルの城が近づく中世ヨーロッパ風の城', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=犬山城+愛知県犬山市' },
+      { name: '彦根城（滋賀）', address: '滋賀県彦根市金亀町1-1', description: '湖畔に立つ美しい城', sceneDescription: 'ハウルが住む動く城・古城のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=彦根城+滋賀県彦根市' },
+      { name: '萩（山口）', address: '山口県萩市堀内', description: '城下町と海が融合した古都', sceneDescription: '港町・ソフィーが旅する海辺の街', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=萩市城下町+山口県' },
+      { name: '城崎温泉（兵庫）', address: '兵庫県豊岡市城崎町湯島', description: '温泉街の石畳と柳が幻想的', sceneDescription: '魔法使いが訪れる温泉地・休息地のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=城崎温泉+兵庫県豊岡市' },
+    ],
+  },
+  {
+    id: 'nausicaa', label: '風の谷のナウシカ', emoji: '🌿',
+    description: '腐海・風の谷・工場地帯', color: 'border-green-500/60',
+    hotelArea: '広島県',
+    spots: [
+      { name: '白神山地（青森・秋田）', address: '青森県西津軽郡深浦町', description: '原生林が腐海のイメージに一番近い', sceneDescription: '腐海・菌類が支配する神秘の森', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=白神山地+青森県' },
+      { name: '軍艦島（長崎）', address: '長崎県長崎市高島町端島', description: '廃墟の工業施設・トルメキア感', sceneDescription: 'トルメキアの工業都市・廃墟の帝国', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=軍艦島+長崎県' },
+      { name: '屋久島（鹿児島）', address: '鹿児島県熊毛郡屋久島町', description: '太古の森・生命感あふれる島', sceneDescription: '風の谷・清浄な自然が残る場所のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=屋久島+鹿児島県熊毛郡' },
+      { name: '瀬戸内の離島（広島・岡山）', address: '広島県尾道市因島', description: '穏やかな海と丘・風の谷のイメージ', sceneDescription: 'ナウシカの住む谷・海に近い平和な集落', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=因島+広島県尾道市' },
+      { name: '足尾銅山（栃木）', address: '栃木県日光市足尾町', description: '公害・廃坑が作品のテーマと一致', sceneDescription: '人類が破壊した大地・腐海発生のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=足尾銅山+栃木県日光市' },
+    ],
+  },
+  {
+    id: 'lotgh', label: '銀河英雄伝説', emoji: '🚀',
+    description: '宇宙的スケール・軍事・帝国', color: 'border-indigo-500/60',
+    hotelArea: '東京都',
+    spots: [
+      { name: '国立西洋美術館（東京）', address: '東京都台東区上野公園7-7', description: 'ヨーロッパ的建築が銀英伝の帝国感', sceneDescription: 'ノイエ・サンスーシー宮殿・帝国の重厚建築', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=国立西洋美術館+東京都台東区' },
+      { name: '防衛省（東京）', address: '東京都新宿区市谷本村町5-1', description: '軍事施設・統合参謀本部のイメージ', sceneDescription: '同盟の最高評議会・軍令部のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=防衛省+東京都新宿区市谷' },
+      { name: '迎賓館赤坂離宮（東京）', address: '東京都港区元赤坂2丁目1-1', description: '宮殿建築がゴールデンバウム帝国感', sceneDescription: '皇帝の謁見の間・帝国の権力中枢', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=迎賓館赤坂離宮+東京都港区' },
+      { name: '横須賀・海上自衛隊（神奈川）', address: '神奈川県横須賀市西逸見町1丁目1-1', description: '艦隊基地・宇宙港のイメージ', sceneDescription: 'イゼルローン要塞・艦隊が集結する宇宙港', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=横須賀海上自衛隊+神奈川県' },
+      { name: '旧岩崎邸庭園（東京）', address: '東京都台東区池之端1丁目3-45', description: '明治の洋館・貴族の邸宅感', sceneDescription: 'ローエングラム伯の屋敷・帝国貴族の館', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=旧岩崎邸庭園+東京都台東区' },
+    ],
+  },
+  {
+    id: 'maid', label: 'メイドインアビス', emoji: '🕳️',
+    description: '洞窟・遺跡・深淵的地形', color: 'border-stone-500/60',
+    hotelArea: '大分県',
+    spots: [
+      { name: '別府地獄めぐり（大分）', address: '大分県別府市鉄輪559-1', description: '沸騰する泥と蒸気が奈落のイメージ', sceneDescription: '奈落の底・呪いの煙が立ち込める層', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=別府地獄めぐり+大分県別府市' },
+      { name: '龍河洞（高知）', address: '高知県香美市土佐山田町逆川1424', description: '日本三大鍾乳洞・深い洞窟の聖地', sceneDescription: '奈落の各層・洞窟の深部', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=龍河洞+高知県香美市' },
+      { name: '軍艦島（長崎）', address: '長崎県長崎市高島町端島', description: '廃墟の遺跡・文明の遺物感', sceneDescription: '遺跡の街オース・廃墟に残る文明の痕跡', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=軍艦島+長崎県' },
+      { name: '秋芳洞（山口）', address: '山口県美祢市秋芳町秋吉3506-2', description: '日本最大の鍾乳洞・地下世界', sceneDescription: '奈落の鍾乳洞層・白笛の冒険者が降りる場所', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=秋芳洞+山口県美祢市' },
+      { name: '三内丸山遺跡（青森）', address: '青森県青森市三内丸山305', description: '古代文明の遺跡・縄文時代の謎', sceneDescription: '古代文明の遺物・奈落の最深部に眠る秘密', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=三内丸山遺跡+青森県青森市' },
+    ],
+  },
+  {
+    id: 'lwa', label: 'リトルウィッチアカデミア', emoji: '🧙',
+    description: '魔法学校・イギリス的建築・秘密の森', color: 'border-purple-500/60',
+    hotelArea: '京都府',
+    spots: [
+      { name: '京都大学・百年時計台（京都）', address: '京都府京都市左京区吉田本町', description: '重厚な大学建築が魔法学校感', sceneDescription: 'ルーナノヴァ魔法学校・古い学舎のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=京都大学時計台+京都府京都市' },
+      { name: '嵐山竹林（京都）', address: '京都府京都市右京区嵯峨天龍寺芒ノ馬場町', description: '魔法の森のような幻想的な竹林', sceneDescription: '魔法の森・秘密の練習場所のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=嵐山竹林+京都市右京区' },
+      { name: '二条城（京都）', address: '京都府京都市中京区二条通堀川西入二条城町541', description: '豪華な洋風建築と庭園', sceneDescription: '魔法協会の本部・格式ある宮殿のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=二条城+京都市中京区' },
+      { name: '鞍馬山（京都）', address: '京都府京都市左京区鞍馬本町1074', description: '山岳修行地・神秘的な山', sceneDescription: '魔法の力が宿る霊山・修行の地のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=鞍馬山+京都市左京区' },
+      { name: '旧武徳殿（京都）', address: '京都府京都市左京区岡崎公園内', description: '武道場建築が魔法道場感', sceneDescription: '魔法の実技訓練場・ルーナノヴァの施設', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=武徳殿+京都市左京区' },
+    ],
+  },
+  {
+    id: 'gridman', label: 'グリッドマン', emoji: '⚡',
+    description: '新宿・廃工場・特撮的郊外', color: 'border-cyan-500/60',
+    hotelArea: '東京都',
+    spots: [
+      { name: '新宿副都心（東京）', address: '東京都新宿区西新宿2丁目', description: '巨大なビル群が怪獣映画感', sceneDescription: 'グリッドマンが戦う都市・高層ビル街', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=新宿副都心+東京都新宿区' },
+      { name: '東京電力・豊洲の工業地帯', address: '東京都江東区豊洲', description: '工業地帯・廃墟感', sceneDescription: '新世紀中学校の近く・怪獣が出現する工場地帯', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=豊洲工業地帯+東京都江東区' },
+      { name: '川崎臨海工業地帯（神奈川）', address: '神奈川県川崎市川崎区', description: '工場夜景・SF的景観', sceneDescription: 'アレクシス・ケリヴが暗躍する工業エリア', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=川崎臨海工業地帯+川崎市' },
+      { name: '東京タワー', address: '東京都港区芝公園4丁目2-8', description: '特撮の定番ランドマーク', sceneDescription: 'グリッドマンが守る東京のシンボル', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=東京タワー+東京都港区' },
+      { name: '秋葉原（東京）', address: '東京都千代田区外神田1丁目', description: 'サイバー・電子的な街並み', sceneDescription: 'コンピューターワールドのゲートウェイ・電子街', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=秋葉原+東京都千代田区' },
+    ],
+  },
 ]
 
 // ─── ホテル検索リンク生成（楽天Travel API 2026/02廃止のため検索リンク方式） ────────────
@@ -437,14 +533,8 @@ function generateHotelSearchLinks(
   const enc = encodeURIComponent(area)
   return [
     {
-      name: `じゃらん: ${area}のホテルを探す`,
-      url: `https://www.jalan.net/uw/uwp2011/uww2011init.do?keyword=${enc}`,
-      description: `じゃらんnetで${area}の宿泊先を比較・予約`,
-      source: 'jalan',
-    },
-    {
       name: `楽天トラベル: ${area}のホテル`,
-      url: `https://kw.travel.rakuten.co.jp/keyword/Search.do?f_query=${enc}`,
+      url: `https://kw.travel.rakuten.co.jp/keyword/Search.do?f_query=${enc}&charset=UTF-8`,
       description: `楽天トラベルで${area}の宿を探す`,
       source: 'rakuten',
     },
@@ -453,6 +543,12 @@ function generateHotelSearchLinks(
       url: `https://www.ikyu.com/search?kw=${enc}`,
       description: `一休.comで${area}の高級宿・旅館を探す`,
       source: 'ikyu',
+    },
+    {
+      name: `Googleホテル: ${area}の宿泊先`,
+      url: `https://www.google.com/travel/hotels?q=${enc}+ホテル&hl=ja`,
+      description: `Googleで${area}のホテル・旅館を比較`,
+      source: 'google',
     },
   ]
 }
