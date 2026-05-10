@@ -298,7 +298,7 @@ function YoutubeProducerApp() {
             </div>
             <div className="space-y-3">
               <label className="text-sm font-medium text-emerald-500 ml-1">ソース内容 (AIの回答を貼り付け)</label>
-              <textarea value={transcript} onChange={(e) => setTranscript(e.target.value)} className="w-full h-48 bg-black/50 border border-white/10 rounded-xl p-4 font-normal text-white outline-none focus:border-emerald-500 transition-all text-sm leading-relaxed" placeholder="ここにAIの回答を貼り付けてください..." />
+              <textarea value={transcript} onChange={(e) => setTranscript(e.target.value)} className="w-full h-48 bg-black/50 border border-white/10 rounded-xl p-4 font-normal text-white outline-none focus:border-emerald-500 transition-all text-sm leading-relaxed" placeholder="台本のテキストのみを貼り付けてください。メモ・注釈・指示文は除いてください。未完の台本でもOKです。" />
               <div className="flex justify-end"><Button onClick={() => { setActiveTab('genre'); window.scrollTo(0,0); }} disabled={!transcript} className="h-10 px-6 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-semibold text-sm rounded-lg transition-all"><span className="flex items-center gap-2">戦略選択へ <ChevronRight className="h-4 w-4" /></span></Button></div>
             </div>
           </TabsContent>
