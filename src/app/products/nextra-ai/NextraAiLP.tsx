@@ -33,7 +33,7 @@ const NextraAiLP = () => {
         </p>
 
         <div className="flex flex-wrap justify-center gap-4 pt-4">
-          <a href="mailto:f.yoneyone9@gmail.com?subject=Nextra AI お見積もり依頼">
+          <a href={`mailto:info@marriage-road.jp?subject=${encodeURIComponent('【お見積もり依頼】Nextra AI（ホテル・旅館DX）について')}&body=${encodeURIComponent('米山様\n\nはじめまして。\n[貴社名・お名前をご記入ください]\nと申します。\n\nNextra AIのサービスについて、詳細とお見積もりをご連絡いただけますでしょうか。\n\n■ご利用を検討している機能\n（例：チェックイン自動化 / 多言語チャット / 予約管理 など）\n\n■施設規模・現状\n（例：客室数・現在のシステム環境 など）\n\n■ご希望の導入時期\n\nお手数ですがよろしくお願いいたします。')}`}>
             <button className="h-12 px-8 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-base rounded-lg shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all flex items-center gap-2">
               お見積もりを依頼する <ChevronRight size={18} />
             </button>
@@ -277,7 +277,7 @@ const NextraAiLP = () => {
               導入コンサルもご相談ください。
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <a href="mailto:f.yoneyone9@gmail.com?subject=Nextra AI お見積もり依頼">
+              <a href={`mailto:info@marriage-road.jp?subject=${encodeURIComponent('【お見積もり依頼】Nextra AI（ホテル・旅館DX）について')}&body=${encodeURIComponent('米山様\n\nはじめまして。\n[貴社名・お名前をご記入ください]\nと申します。\n\nNextra AIのサービスについて、詳細とお見積もりをご連絡いただけますでしょうか。\n\n■ご利用を検討している機能\n（例：チェックイン自動化 / 多言語チャット / 予約管理 など）\n\n■施設規模・現状\n（例：客室数・現在のシステム環境 など）\n\n■ご希望の導入時期\n\nお手数ですがよろしくお願いいたします。')}`}>
                 <button className="h-12 px-10 bg-white text-emerald-700 font-semibold text-base rounded-lg shadow-lg hover:bg-emerald-50 transition-all flex items-center gap-2">
                   お見積もりを依頼する <ChevronRight size={18} />
                 </button>
@@ -332,7 +332,7 @@ const NexraPricingSection = () => (
               </li>
             ))}
           </ul>
-          <a href="mailto:f.yoneyone9@gmail.com?subject=Nextra AI お見積もり依頼">
+          <a href={`mailto:info@marriage-road.jp?subject=${encodeURIComponent('【お見積もり依頼】Nextra AI（ホテル・旅館DX）について')}&body=${encodeURIComponent('米山様\n\nはじめまして。\n[貴社名・お名前をご記入ください]\nと申します。\n\nNextra AIのサービスについて、詳細とお見積もりをご連絡いただけますでしょうか。\n\n■ご利用を検討している機能\n（例：チェックイン自動化 / 多言語チャット / 予約管理 など）\n\n■施設規模・現状\n（例：客室数・現在のシステム環境 など）\n\n■ご希望の導入時期\n\nお手数ですがよろしくお願いいたします。')}`}>
             <button
               className={`w-full h-12 rounded-lg font-semibold text-sm transition-all ${
                 plan.highlight
