@@ -2,9 +2,9 @@
 import React, { useState, useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import {
-  CheckCircle2, Zap, Lock, Camera, Loader2, Eye, EyeOff,
-  UserPlus, List, Search, Settings, Key, LogOut, QrCode,
-  Monitor, ClipboardList, PenTool, ArrowRight
+  CheckCircle2, Zap, Lock, Camera, Loader2,
+  UserPlus, Search, Key, LogOut, QrCode,
+  Monitor, ClipboardList, ArrowRight
 } from 'lucide-react'
 
 const TABS = [
@@ -13,7 +13,6 @@ const TABS = [
   { id: 'checkin',  label: '自動チェックイン', icon: UserPlus,      desc: '本人確認・台帳記帳' },
   { id: 'lock',     label: '鍵発行',          icon: Key,           desc: 'アクセス権デプロイ' },
   { id: 'checkout', label: 'チェックアウト',   icon: LogOut,        desc: '1秒退館・精算' },
-  { id: 'settings', label: 'システム設定',     icon: Settings,      desc: 'API一元管理' },
 ]
 
 const inputCls = `w-full h-11 rounded-lg px-4 text-sm text-slate-200 placeholder-slate-600 outline-none transition-colors`
@@ -22,12 +21,7 @@ const inputStyle = { background: '#13141f', border: '1px solid #334155' }
 const MasterEngine = () => {
   const [activeTab, setActiveTab] = useState('kiosk')
   const [isMounted, setIsMounted] = useState(false)
-  const [pmsApiKey, setPmsApiKey] = useState('')
-  const [lockApiKey, setLockApiKey] = useState('')
-  const [pmsType, setPmsType] = useState('')
-  const [lockType, setLockType] = useState('')
-  const [showPmsKey, setShowPmsKey] = useState(false)
-  const [showLockKey, setShowLockKey] = useState(false)
+
   const [checkinStatus, setCheckinStatus] = useState('IDLE')
   const [ledgerName, setLedgerName] = useState('')
   const [ledgerAddress, setLedgerAddress] = useState('')
@@ -76,14 +70,7 @@ const MasterEngine = () => {
 
   useEffect(() => {
     setIsMounted(true)
-    const k1 = localStorage.getItem('nextra_pms_key')
-    const k2 = localStorage.getItem('nextra_lock_key')
-    const t1 = localStorage.getItem('nextra_pms_type')
-    const t2 = localStorage.getItem('nextra_lock_type')
-    if (k1) setPmsApiKey(k1)
-    if (k2) setLockApiKey(k2)
-    if (t1) setPmsType(t1)
-    if (t2) setLockType(t2)
+
   }, [])
 
   const runCheckin = async () => {
@@ -356,95 +343,6 @@ const MasterEngine = () => {
           </div>
         )}
 
-        {/* --- システム設定 --- */}
-        {activeTab === 'settings' && (
-          <div
-            className="rounded-xl p-6 space-y-5"
-            style={{ background: '#0d1117', border: '1px solid #1e293b' }}
-          >
-            <div className="flex items-center gap-2 text-sm font-semibold text-slate-200">
-              <Settings size={15} style={{ color: '#10b981' }} />
-              API Environment
-            </div>
-            <div className="grid md:grid-cols-2 gap-5">
-              {/* PMS */}
-              <div className="space-y-3">
-                <label className="text-xs font-medium text-slate-500">PMSシステム</label>
-                <select
-                  value={pmsType}
-                  onChange={e => setPmsType(e.target.value)}
-                  className={inputCls}
-                  style={{ ...inputStyle, appearance: 'none' as any }}
-                >
-                  <option value="">PMSを選択...</option>
-                  {['Staysee','イージー会計','Oracle OPERA','Mews','apaleo','その他'].map(o => (
-                    <option key={o}>{o}</option>
-                  ))}
-                </select>
-                <label className="text-xs font-medium text-slate-500">PMS API KEY</label>
-                <div className="relative">
-                  <input
-                    type={showPmsKey ? 'text' : 'password'}
-                    value={pmsApiKey}
-                    onChange={e => setPmsApiKey(e.target.value)}
-                    placeholder="PMS APIキーを入力"
-                    className={`${inputCls} pr-10 font-mono`}
-                    style={{ ...inputStyle, color: '#10b981' }}
-                    onFocus={e => (e.target.style.borderColor = '#10b981')}
-                    onBlur={e => (e.target.style.borderColor = '#334155')}
-                  />
-                  <button type="button" onClick={() => setShowPmsKey(v => !v)} className="absolute right-3 top-3 text-slate-500 hover:text-slate-300">
-                    {showPmsKey ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-              </div>
-              {/* 鍵デバイス */}
-              <div className="space-y-3">
-                <label className="text-xs font-medium text-slate-500">鍵デバイス</label>
-                <select
-                  value={lockType}
-                  onChange={e => setLockType(e.target.value)}
-                  className={inputCls}
-                  style={{ ...inputStyle, appearance: 'none' as any }}
-                >
-                  <option value="">鍵デバイスを選択...</option>
-                  {['RemoteLock','SwitchBot','ASSA ABLOY (Visionline)','dormakaba','SALTO Systems','bitlock','SESAME','その他'].map(o => (
-                    <option key={o}>{o}</option>
-                  ))}
-                </select>
-                <label className="text-xs font-medium text-slate-500">鍵デバイス API KEY</label>
-                <div className="relative">
-                  <input
-                    type={showLockKey ? 'text' : 'password'}
-                    value={lockApiKey}
-                    onChange={e => setLockApiKey(e.target.value)}
-                    placeholder="鍵デバイス APIキーを入力"
-                    className={`${inputCls} pr-10 font-mono`}
-                    style={{ ...inputStyle, color: '#10b981' }}
-                    onFocus={e => (e.target.style.borderColor = '#10b981')}
-                    onBlur={e => (e.target.style.borderColor = '#334155')}
-                  />
-                  <button type="button" onClick={() => setShowLockKey(v => !v)} className="absolute right-3 top-3 text-slate-500 hover:text-slate-300">
-                    {showLockKey ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-              </div>
-            </div>
-            <button
-              onClick={() => {
-                localStorage.setItem('nextra_pms_key', pmsApiKey)
-                localStorage.setItem('nextra_lock_key', lockApiKey)
-                localStorage.setItem('nextra_pms_type', pmsType)
-                localStorage.setItem('nextra_lock_type', lockType)
-                alert('設定を保存しました')
-              }}
-              className="h-11 px-8 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all"
-              style={{ background: '#10b981', color: '#fff' }}
-            >
-              Save Configuration <ArrowRight size={14} />
-            </button>
-          </div>
-        )}
       </div>
 
       <div className="text-center mt-16 opacity-20">
