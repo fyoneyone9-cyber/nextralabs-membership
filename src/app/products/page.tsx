@@ -15,7 +15,7 @@ import {
 
 const TOOLS = [
   { id: 'universal-converter/app', cat: 'compress', title: '究極AIマルチコンバーター', sub: '動画・画像・PDFへの変換圧縮', icon: Repeat, plan: 'ライト', done: true },
-  { id: 'nextra-ai/app', cat: 'hotel', title: 'Nextra AI（ホテルDX）', sub: 'チェックイン・予約・解錠OS', icon: Building2, plan: 'プレミアム' },
+  { id: 'nextra-ai/app', cat: 'hotel', title: 'Nextra AI（ホテルDX）', sub: 'チェックイン・予約・解錠OS', icon: Building2, plan: 'お見積もり' },
   { id: 'moving-checker/app', cat: 'hotel', title: 'AI引越し安心チェッカー', sub: '治安と物件リスクを徹底解析', icon: Home, plan: '無料', done: true },
   { id: 'sns-auto-poster/app', cat: 'sns', title: 'AI SNSオートポスター', sub: 'バズを量産するマルチSNS生成', icon: Share2, plan: 'ライト', done: true },
   { id: 'ai-select-shop/app', cat: 'sns', title: 'AIセレクトショップ', sub: 'トレンド解析とShopify連携', icon: Store, plan: 'プレミアム' },
@@ -57,13 +57,14 @@ function ProductCard({ product, isFav, onToggleFav }: {
   isFav: boolean
   onToggleFav: (e: React.MouseEvent, id: string) => void
 }) {
-  const planLabelMap: Record<string, string> = { '無料': 'FREE', 'ライト': 'LIGHT', 'スタンダード': 'STANDARD', 'プレミアム': 'MASTER' }
+  const planLabelMap: Record<string, string> = { '無料': 'FREE', 'ライト': 'LIGHT', 'スタンダード': 'STANDARD', 'プレミアム': 'MASTER', 'お見積もり': 'ENTERPRISE' }
   const displayBadge = planLabelMap[product.plan] || 'BASIC'
   const planBadgeColors: Record<string, string> = {
     '無料': 'bg-slate-500/20 text-slate-300 border-slate-500/40',
     'ライト': 'bg-emerald-500/20 text-blue-300 border-emerald-500/40',
     'スタンダード': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
-    'プレミアム': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+    'プレミアム': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+    'お見積もり': 'bg-amber-500/20 text-amber-300 border-amber-500/40',
   }
   const badgeClass = "text-[9px] font-medium tracking-wide px-2 py-0.5 rounded-full border " + (planBadgeColors[product.plan] || planBadgeColors['無料'])
 
@@ -99,12 +100,27 @@ function ProductCard({ product, isFav, onToggleFav }: {
           <p className="text-slate-400 text-xs font-normal leading-relaxed">{product.sub}</p>
         </div>
         <div className="pt-4 border-t border-white/5 flex flex-col gap-2.5 mt-auto">
-          <Link href={"/products/" + product.id} className="block w-full">
-            <Button className="w-full h-10 md:h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-sm rounded-lg shadow-[0_0_16px_rgba(16,185,129,0.15)] hover:shadow-[0_0_24px_rgba(16,185,129,0.3)] transition-all">起動する →</Button>
-          </Link>
+          {product.plan === 'お見積もり' ? (
+            <a href="mailto:f.yoneyone9@gmail.com?subject=Nextra AI（ホテルDX）お見積もり依頼" className="block w-full">
+              <Button className="w-full h-10 md:h-12 font-semibold text-sm rounded-lg transition-all"
+                style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#000' }}>
+                お見積もりを依頼 →
+              </Button>
+            </a>
+          ) : (
+            <Link href={"/products/" + product.id} className="block w-full">
+              <Button className="w-full h-10 md:h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-sm rounded-lg shadow-[0_0_16px_rgba(16,185,129,0.15)] hover:shadow-[0_0_24px_rgba(16,185,129,0.3)] transition-all">起動する →</Button>
+            </Link>
+          )}
           <div className="flex justify-between items-center px-2 py-1 bg-black/40 rounded-lg border border-white/5">
-            <span className={badgeClass}>{product.plan} プラン</span>
-            {product.plan !== '無料' ? <Lock className="h-2.5 w-2.5 text-emerald-500/30" /> : <Sparkles className="h-2.5 w-2.5 text-emerald-400/50" />}
+            <span className={badgeClass}>
+              {product.plan === 'お見積もり' ? '¥9,800〜 / 月' : `${product.plan} プラン`}
+            </span>
+            {product.plan === 'お見積もり'
+              ? <span className="text-[8px] text-amber-500/60">法人向け</span>
+              : product.plan !== '無料'
+              ? <Lock className="h-2.5 w-2.5 text-emerald-500/30" />
+              : <Sparkles className="h-2.5 w-2.5 text-emerald-400/50" />}
           </div>
         </div>
       </CardContent>

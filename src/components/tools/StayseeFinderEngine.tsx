@@ -44,7 +44,7 @@ const I18N = {
     codeLabel: '固定暗証番号', codeSwitchBot: 'SwitchBot 一時コード', codeTTLock: 'TT Lock 一時コード', codeDefault: 'アクセスコード',
     returnStart: 'スタートに戻る',
     // 進捗
-    prog1: 'スタート', prog2: '予約確認', prog3: '受付', prog4: '鍵発行',
+    prog1: 'スタート', prog2: '予約確認', prog3: '受付', prog4: 'チェックイン完了',
     // カメラ
     camCancel: 'キャンセル', camCapture: '手動で撮影',
   },
@@ -78,7 +78,7 @@ const I18N = {
     roomLabel: 'Room Number',
     codeLabel: 'PIN Code', codeSwitchBot: 'SwitchBot Temp Code', codeTTLock: 'TT Lock Temp Code', codeDefault: 'Access Code',
     returnStart: 'Return to Start',
-    prog1: 'Start', prog2: 'Reservation', prog3: 'Check-In', prog4: 'Room Key',
+    prog1: 'Start', prog2: 'Reservation', prog3: 'Check-In', prog4: 'Complete',
     camCancel: 'Cancel', camCapture: 'Capture',
   },
   '中文': {

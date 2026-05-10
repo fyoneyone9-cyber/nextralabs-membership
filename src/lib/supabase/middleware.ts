@@ -76,6 +76,25 @@ export async function updateSession(request: NextRequest) {
   const isDmsLoginPage  = pathname === '/dms/login'
   const isDmsAdminRoute = pathname.startsWith('/dms/admin')
 
+  // ── KIOSK ガード（/products/nextra-ai/app はDMSセッション必須） ──
+  if (pathname.startsWith('/products/nextra-ai')) {
+    const dmsSession = request.cookies.get('dms_session')?.value
+    let isStaff = false
+    if (dmsSession) {
+      try {
+        const s = JSON.parse(dmsSession)
+        isStaff = !!(s.role && s.login_id)
+      } catch { /* ignore */ }
+    }
+    // Supabase authで管理者メールもOK
+    const { data: { user: supaUser } } = await supabase.auth.getUser()
+    const isAdmin = supaUser?.email === 'f.yoneyone9@gmail.com'
+
+    if (!isStaff && !isAdmin) {
+      return NextResponse.redirect(new URL('/dms/login?from=kiosk', request.url))
+    }
+  }
+
   if (isDmsRoute && !isDmsLoginPage) {
     const dmsSessionCookie = request.cookies.get('dms_session')?.value
 
