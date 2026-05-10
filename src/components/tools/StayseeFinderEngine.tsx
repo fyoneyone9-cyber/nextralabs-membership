@@ -8,6 +8,148 @@ import {
   Wifi, WifiOff, Settings, ChevronDown, Shield, Trash2
 } from 'lucide-react'
 
+/* ─────────── 多言語辞書 ─────────── */
+const I18N = {
+  '日本語': {
+    welcome: 'ようこそ',
+    welcomeSub: 'タッチしてチェックインを開始してください',
+    checkin: 'チェックイン',
+    checkinSub: 'CHECK IN',
+    staffMenu: 'スタッフメニュー',
+    // STEP 2
+    step2Title: '予約の確認',
+    step2Sub: 'お名前・予約番号・電話番号で検索できます',
+    byReservation: '予約番号', byReservationSub: 'Reservation No.',
+    byName: 'お名前', byNameSub: 'Guest Name',
+    byPhone: '電話番号', byPhoneSub: 'Phone Number',
+    qrScan: 'QRコードをスキャン', qrSub: '予約確認メールのQRコードをご用意ください',
+    inputReservation: '予約番号を入力', inputName: 'お名前を入力', inputPhone: '電話番号を入力',
+    phReservation: 'NTR-001', phName: '山田 太郎', phPhone: '090-1234-5678',
+    search: '検索', found: '件見つかりました', selectBtn: 'この予約で進む',
+    notFound: '該当する予約が見つかりませんでした', notFoundSub: '入力内容をご確認ください',
+    back: '← 戻る',
+    // STEP 3
+    scanTitle: '身分証をタップしてスキャン', scanSub: 'QR / 免許証 / パスポートに対応',
+    scanning: '読み取り中...', scanned: 'スキャン完了 ✓',
+    nextInfo: '台帳入力へ進む', skipScan: 'スキャンしない場合も次に進めます',
+    name: '氏名', address: '住所', occupation: '職業', travel: '前泊地・行先地',
+    phAddress: '例：東京都渋谷区1-2-3', phTravel: '例：東京',
+    nextSign: '署名へ進む',
+    signNote: '宿泊約款・個人情報取扱方針に同意の上、ご署名ください。デジタル台帳として保管されます。',
+    completeCheckin: 'チェックイン完了 → 鍵発行', signOptional: '署名は任意です · 氏名入力で完了できます',
+    // STEP 4
+    checkinDone: 'チェックイン完了',
+    welcome2: '様、ようこそ',
+    roomLabel: 'お部屋番号',
+    codeLabel: '固定暗証番号', codeSwitchBot: 'SwitchBot 一時コード', codeTTLock: 'TT Lock 一時コード', codeDefault: 'アクセスコード',
+    returnStart: 'スタートに戻る',
+    // 進捗
+    prog1: 'スタート', prog2: '予約確認', prog3: '受付', prog4: '鍵発行',
+    // カメラ
+    camCancel: 'キャンセル', camCapture: '手動で撮影',
+  },
+  'English': {
+    welcome: 'Welcome',
+    welcomeSub: 'Touch the screen to begin check-in',
+    checkin: 'Check In',
+    checkinSub: 'TAP TO START',
+    staffMenu: 'Staff Menu',
+    step2Title: 'Find Your Reservation',
+    step2Sub: 'Search by name, reservation number, or phone',
+    byReservation: 'Reservation No.', byReservationSub: 'Booking ID',
+    byName: 'Guest Name', byNameSub: 'Family / Given Name',
+    byPhone: 'Phone Number', byPhoneSub: 'Mobile / Home',
+    qrScan: 'Scan QR Code', qrSub: 'Please prepare the QR code from your booking email',
+    inputReservation: 'Enter Reservation No.', inputName: 'Enter Guest Name', inputPhone: 'Enter Phone Number',
+    phReservation: 'NTR-001', phName: 'Yamada Taro', phPhone: '090-1234-5678',
+    search: 'Search', found: 'result(s) found', selectBtn: 'Select & Continue',
+    notFound: 'No reservations found', notFoundSub: 'Please check your input and try again',
+    back: '← Back',
+    scanTitle: 'Tap to Scan ID', scanSub: 'QR / Driver\'s License / Passport',
+    scanning: 'Scanning...', scanned: 'Scan Complete ✓',
+    nextInfo: 'Enter Guest Details', skipScan: 'You can proceed without scanning',
+    name: 'Full Name', address: 'Address', occupation: 'Occupation', travel: 'Previous / Next Destination',
+    phAddress: 'e.g. 1-2-3 Shibuya, Tokyo', phTravel: 'e.g. Tokyo',
+    nextSign: 'Proceed to Signature',
+    signNote: 'By signing, you agree to our terms of stay and privacy policy. Your signature will be stored digitally.',
+    completeCheckin: 'Complete Check-In → Get Key', signOptional: 'Signature is optional · Name entry is sufficient',
+    checkinDone: 'Check-In Complete',
+    welcome2: ', Welcome!',
+    roomLabel: 'Room Number',
+    codeLabel: 'PIN Code', codeSwitchBot: 'SwitchBot Temp Code', codeTTLock: 'TT Lock Temp Code', codeDefault: 'Access Code',
+    returnStart: 'Return to Start',
+    prog1: 'Start', prog2: 'Reservation', prog3: 'Check-In', prog4: 'Room Key',
+    camCancel: 'Cancel', camCapture: 'Capture',
+  },
+  '中文': {
+    welcome: '欢迎光临',
+    welcomeSub: '请触摸屏幕开始办理入住',
+    checkin: '办理入住',
+    checkinSub: '点击开始',
+    staffMenu: '员工菜单',
+    step2Title: '查找预订',
+    step2Sub: '请通过姓名、预订号或电话号码进行搜索',
+    byReservation: '预订号', byReservationSub: '订单编号',
+    byName: '姓名', byNameSub: '客人姓名',
+    byPhone: '电话号码', byPhoneSub: '手机 / 固话',
+    qrScan: '扫描二维码', qrSub: '请准备好预订确认邮件中的二维码',
+    inputReservation: '输入预订号', inputName: '输入姓名', inputPhone: '输入电话号码',
+    phReservation: 'NTR-001', phName: '山田太郎', phPhone: '090-1234-5678',
+    search: '搜索', found: '条结果', selectBtn: '选择并继续',
+    notFound: '未找到相关预订', notFoundSub: '请确认输入内容后重试',
+    back: '← 返回',
+    scanTitle: '点击扫描证件', scanSub: '支持二维码 / 驾照 / 护照',
+    scanning: '扫描中...', scanned: '扫描完成 ✓',
+    nextInfo: '填写登记信息', skipScan: '也可以不扫描直接继续',
+    name: '姓名', address: '地址', occupation: '职业', travel: '出发地 / 目的地',
+    phAddress: '例：东京都涩谷区1-2-3', phTravel: '例：东京',
+    nextSign: '前往签名',
+    signNote: '签名即表示您同意住宿条款和隐私政策。您的签名将以数字方式存档。',
+    completeCheckin: '完成入住 → 获取房卡', signOptional: '签名为选填项 · 填写姓名即可完成',
+    checkinDone: '入住完成',
+    welcome2: '，欢迎入住！',
+    roomLabel: '房间号码',
+    codeLabel: '固定密码', codeSwitchBot: 'SwitchBot临时密码', codeTTLock: 'TT Lock临时密码', codeDefault: '访问密码',
+    returnStart: '返回首页',
+    prog1: '开始', prog2: '查找预订', prog3: '办理入住', prog4: '获取房卡',
+    camCancel: '取消', camCapture: '手动拍照',
+  },
+  '한국어': {
+    welcome: '환영합니다',
+    welcomeSub: '화면을 터치하여 체크인을 시작하세요',
+    checkin: '체크인',
+    checkinSub: '터치하여 시작',
+    staffMenu: '직원 메뉴',
+    step2Title: '예약 확인',
+    step2Sub: '이름, 예약번호, 전화번호로 검색하세요',
+    byReservation: '예약번호', byReservationSub: '예약 ID',
+    byName: '성함', byNameSub: '투숙객 이름',
+    byPhone: '전화번호', byPhoneSub: '휴대폰 / 일반전화',
+    qrScan: 'QR코드 스캔', qrSub: '예약 확인 이메일의 QR코드를 준비해 주세요',
+    inputReservation: '예약번호 입력', inputName: '이름 입력', inputPhone: '전화번호 입력',
+    phReservation: 'NTR-001', phName: '야마다 타로', phPhone: '090-1234-5678',
+    search: '검색', found: '건 검색됨', selectBtn: '선택하고 계속',
+    notFound: '예약을 찾을 수 없습니다', notFoundSub: '입력 내용을 확인하고 다시 시도해 주세요',
+    back: '← 뒤로',
+    scanTitle: '터치하여 신분증 스캔', scanSub: 'QR / 운전면허증 / 여권 지원',
+    scanning: '스캔 중...', scanned: '스캔 완료 ✓',
+    nextInfo: '투숙 정보 입력', skipScan: '스캔 없이도 다음으로 진행할 수 있습니다',
+    name: '성명', address: '주소', occupation: '직업', travel: '출발지 / 목적지',
+    phAddress: '예: 도쿄도 시부야구 1-2-3', phTravel: '예: 도쿄',
+    nextSign: '서명으로 이동',
+    signNote: '서명하면 숙박 약관 및 개인정보처리방침에 동의하는 것입니다. 서명은 디지털로 보관됩니다.',
+    completeCheckin: '체크인 완료 → 열쇠 발급', signOptional: '서명은 선택 사항입니다 · 이름 입력으로 완료 가능',
+    checkinDone: '체크인 완료',
+    welcome2: '님, 환영합니다!',
+    roomLabel: '객실 번호',
+    codeLabel: '고정 비밀번호', codeSwitchBot: 'SwitchBot 임시 코드', codeTTLock: 'TT Lock 임시 코드', codeDefault: '액세스 코드',
+    returnStart: '처음으로 돌아가기',
+    prog1: '시작', prog2: '예약 확인', prog3: '체크인', prog4: '열쇠 발급',
+    camCancel: '취소', camCapture: '수동 촬영',
+  },
+} as const
+type LangKey = keyof typeof I18N
+
 /* ─────────── 型定義 ─────────── */
 // ウィザードステップ（ゲスト導線は必ずこの順番）
 // kiosk → search → checkin → lock
@@ -808,6 +950,9 @@ const MasterEngine = () => {
   const [showSettings, setShowSettings]   = useState(false)
   const [isOnline, setIsOnline]           = useState(true)
 
+  // 翻訳ショートハンド（selectedLang が変わると自動再レンダー）
+  const t = I18N[selectedLang as LangKey] ?? I18N['日本語']
+
   // スタッフモード（PIN認証済み）
   const [staffMode, setStaffMode]         = useState(false)
   const [showPinOverlay, setShowPinOverlay] = useState(false)
@@ -1283,10 +1428,10 @@ const MasterEngine = () => {
         {activeTab !== 'checkout' && (
           <div className="flex items-center gap-0">
             {[
-              { id: 'kiosk',   label: 'スタート',  num: 1 },
-              { id: 'search',  label: '予約確認',  num: 2 },
-              { id: 'checkin', label: '受付',      num: 3 },
-              { id: 'lock',    label: '鍵発行',    num: 4 },
+              { id: 'kiosk',   label: t.prog1, num: 1 },
+              { id: 'search',  label: t.prog2, num: 2 },
+              { id: 'checkin', label: t.prog3, num: 3 },
+              { id: 'lock',    label: t.prog4, num: 4 },
             ].map((s, i) => {
               const stepIdx = WIZARD_STEPS.indexOf(activeTab as typeof WIZARD_STEPS[number])
               const thisIdx = i
@@ -1334,8 +1479,8 @@ const MasterEngine = () => {
 
             {/* ホテル名 + ウェルカム */}
             <div className="text-center space-y-2">
-              <p className="text-4xl font-semibold text-slate-100">ようこそ</p>
-              <p className="text-slate-500 text-sm">タッチしてチェックインを開始してください</p>
+              <p className="text-4xl font-semibold text-slate-100">{t.welcome}</p>
+              <p className="text-slate-500 text-sm">{t.welcomeSub}</p>
             </div>
 
             {/* 言語選択 */}
@@ -1371,8 +1516,8 @@ const MasterEngine = () => {
               }}>
               <UserPlus size={72} style={{ color: '#10b981' }} />
               <div className="text-center">
-                <p className="text-emerald-400 text-3xl font-bold">チェックイン</p>
-                <p className="text-slate-600 text-sm mt-1">CHECK IN</p>
+                <p className="text-emerald-400 text-3xl font-bold">{t.checkin}</p>
+                <p className="text-slate-600 text-sm mt-1">{t.checkinSub}</p>
               </div>
             </button>
 
@@ -1383,7 +1528,7 @@ const MasterEngine = () => {
               style={{ border: '1px solid transparent' }}
               onMouseEnter={e => (e.currentTarget.style.borderColor = '#334155')}
               onMouseLeave={e => (e.currentTarget.style.borderColor = 'transparent')}>
-              スタッフメニュー
+              {t.staffMenu}
             </button>
           </div>
         )}
@@ -1395,21 +1540,21 @@ const MasterEngine = () => {
             {/* ヘッダー */}
             <div className="px-8 py-6 border-b flex items-center justify-between" style={{ borderColor: '#1e293b' }}>
               <div>
-                <h2 className="text-2xl font-semibold text-slate-100">予約の確認</h2>
-                <p className="text-slate-500 text-sm mt-1">お名前・予約番号・電話番号で検索できます</p>
+                <h2 className="text-2xl font-semibold text-slate-100">{t.step2Title}</h2>
+                <p className="text-slate-500 text-sm mt-1">{t.step2Sub}</p>
               </div>
               <button onClick={() => gotoTab('kiosk')}
                 className="text-xs text-slate-600 hover:text-slate-400 transition-colors px-3 py-2 rounded-lg"
-                style={{ border: '1px solid #1e293b' }}>← 戻る</button>
+                style={{ border: '1px solid #1e293b' }}>{t.back}</button>
             </div>
 
             <div className="p-8 space-y-6">
             {searchMode === 'select' && (
               <div className="grid grid-cols-3 gap-5">
                 {[
-                  { mode: 'reservation' as const, icon: Hash,         label: '予約番号', sub: 'Reservation No.', color: '#10b981' },
-                  { mode: 'name'        as const, icon: ClipboardList, label: 'お名前',   sub: 'Guest Name',      color: '#6366f1' },
-                  { mode: 'phone'       as const, icon: Phone,         label: '電話番号', sub: 'Phone Number',    color: '#f59e0b' },
+                  { mode: 'reservation' as const, icon: Hash,         label: t.byReservation, sub: t.byReservationSub, color: '#10b981' },
+                  { mode: 'name'        as const, icon: ClipboardList, label: t.byName,        sub: t.byNameSub,        color: '#6366f1' },
+                  { mode: 'phone'       as const, icon: Phone,         label: t.byPhone,       sub: t.byPhoneSub,       color: '#f59e0b' },
                 ].map(item => (
                   <button key={item.mode} onClick={() => setSearchMode(item.mode)}
                     className="rounded-2xl py-10 flex flex-col items-center justify-center gap-4 transition-all hover:scale-[1.02] active:scale-[0.98]"
@@ -1432,9 +1577,9 @@ const MasterEngine = () => {
                 <button onClick={startCamera}
                   className="flex items-center gap-3 px-8 h-14 rounded-xl text-base font-semibold transition-all"
                   style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', color: '#34d399' }}>
-                  <QrCode size={20} /> QRコードをスキャン
+                  <QrCode size={20} /> {t.qrScan}
                 </button>
-                <p className="text-sm text-slate-600">予約確認メールのQRコードをご用意ください</p>
+                <p className="text-sm text-slate-600">{t.qrSub}</p>
               </div>
             )}
 
@@ -1442,18 +1587,18 @@ const MasterEngine = () => {
               <div className="rounded-2xl p-6 space-y-5" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
                 <div className="flex items-center justify-between">
                   <p className="text-lg font-semibold text-slate-200">
-                    {searchMode === 'reservation' ? '予約番号を入力' : searchMode === 'name' ? 'お名前を入力' : '電話番号を入力'}
+                    {searchMode === 'reservation' ? t.inputReservation : searchMode === 'name' ? t.inputName : t.inputPhone}
                   </p>
                   <button onClick={() => { setSearchMode('select'); setSearchResults([]) }}
                     className="text-sm text-slate-600 hover:text-slate-400 transition-colors px-3 py-2 rounded-lg"
-                    style={{ border: '1px solid #334155' }}>← 戻る</button>
+                    style={{ border: '1px solid #334155' }}>{t.back}</button>
                 </div>
                 <div className="flex gap-3">
                   <input
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && doSearch()}
-                    placeholder={searchMode === 'reservation' ? 'NTR-001' : searchMode === 'name' ? '山田 太郎' : '090-1234-5678'}
+                    placeholder={searchMode === 'reservation' ? t.phReservation : searchMode === 'name' ? t.phName : t.phPhone}
                     className="flex-1 h-14 text-lg rounded-xl px-5"
                     style={{ background: '#0d1117', border: '2px solid #334155', color: '#f1f5f9', outline: 'none' }}
                     onFocus={e => (e.target.style.borderColor = '#10b981')}
@@ -1463,13 +1608,13 @@ const MasterEngine = () => {
                     className="shrink-0 h-14 px-8 rounded-xl text-base font-semibold flex items-center gap-2 transition-all"
                     style={{ background: '#10b981', color: '#fff', opacity: searching ? 0.7 : 1 }}>
                     {searching ? <Loader2 size={18} className="animate-spin" /> : <Search size={18} />}
-                    検索
+                    {t.search}
                   </button>
                 </div>
 
                 {searchResults.length > 0 && (
                   <div className="space-y-3 pt-2">
-                    <p className="text-sm text-slate-500">{searchResults.length}件見つかりました</p>
+                    <p className="text-sm text-slate-500">{searchResults.length}{t.found}</p>
                     {searchResults.map(r => (
                       <div key={r.id} className="rounded-xl p-5 flex items-center justify-between gap-4"
                         style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
@@ -1483,7 +1628,7 @@ const MasterEngine = () => {
                         <button onClick={() => selectReservation(r)}
                           className="shrink-0 h-12 px-6 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all"
                           style={{ background: '#10b981', color: '#fff' }}>
-                          この予約で進む <ArrowRight size={15} />
+                          {t.selectBtn} <ArrowRight size={15} />
                         </button>
                       </div>
                     ))}
@@ -1492,8 +1637,8 @@ const MasterEngine = () => {
 
                 {searchResults.length === 0 && searchQuery && !searching && (
                   <div className="rounded-xl p-8 text-center" style={{ background: '#0d1117' }}>
-                    <p className="text-base text-slate-500">該当する予約が見つかりませんでした</p>
-                    <p className="text-sm text-slate-600 mt-2">入力内容をご確認ください</p>
+                    <p className="text-base text-slate-500">{t.notFound}</p>
+                    <p className="text-sm text-slate-600 mt-2">{t.notFoundSub}</p>
                   </div>
                 )}
               </div>
@@ -1528,9 +1673,9 @@ const MasterEngine = () => {
             {/* ステップタブ（進捗） */}
             <div className="flex border-b" style={{ borderColor: '#1e293b' }}>
               {[
-                { id: 'scan', label: '① 身分証', icon: Camera },
-                { id: 'info', label: '② 台帳入力', icon: ClipboardList },
-                { id: 'sign', label: '③ 署名', icon: PenLine },
+                { id: 'scan', label: `① ${t.byReservationSub !== 'Reservation No.' ? 'ID Scan' : '身分証'}`, icon: Camera },
+                { id: 'info', label: `② ${t.name}`, icon: ClipboardList },
+                { id: 'sign', label: `③ Sign`, icon: PenLine },
               ].map(s => {
                 const done = (s.id === 'scan' && checkinStatus === 'VERIFIED')
                   || (s.id === 'info' && !!ledgerName)
@@ -1584,8 +1729,8 @@ const MasterEngine = () => {
                     )}
                     <canvas ref={canvasRef} className="hidden" />
                     <div className="flex gap-2">
-                      <button onClick={closeCamera} className="flex-1 h-10 rounded-lg text-xs font-semibold text-slate-300" style={{ background: '#1e293b' }}>キャンセル</button>
-                      <button onClick={capturePhoto} className="flex-1 h-10 rounded-lg text-xs font-semibold text-white" style={{ background: '#10b981' }}>手動で撮影</button>
+                      <button onClick={closeCamera} className="flex-1 h-10 rounded-lg text-xs font-semibold text-slate-300" style={{ background: '#1e293b' }}>{t.camCancel}</button>
+                      <button onClick={capturePhoto} className="flex-1 h-10 rounded-lg text-xs font-semibold text-white" style={{ background: '#10b981' }}>{t.camCapture}</button>
                     </div>
                   </div>
                 ) : (
@@ -1598,9 +1743,9 @@ const MasterEngine = () => {
                     {checkinStatus === 'VERIFIED' && <CheckCircle2 size={40} style={{ color: '#10b981' }} />}
                     {checkinStatus === 'IDLE'     && <Camera size={40} className="text-slate-600" />}
                     <p className="text-sm font-semibold" style={{ color: checkinStatus === 'VERIFIED' ? '#10b981' : '#64748b' }}>
-                      {checkinStatus === 'VERIFIED' ? 'スキャン完了 ✓' : checkinStatus === 'SCANNING' ? '読み取り中...' : '身分証をタップしてスキャン'}
+                      {checkinStatus === 'VERIFIED' ? t.scanned : checkinStatus === 'SCANNING' ? t.scanning : t.scanTitle}
                     </p>
-                    {checkinStatus === 'IDLE' && <p className="text-[10px] text-slate-700">QR / 免許証 / パスポートに対応</p>}
+                    {checkinStatus === 'IDLE' && <p className="text-[10px] text-slate-700">{t.scanSub}</p>}
                   </button>
                 )}
 
@@ -1609,9 +1754,9 @@ const MasterEngine = () => {
                   onClick={() => { if (!ledgerName && selectedReservation) setLedgerName(resName(selectedReservation)); setCheckinStatus('VERIFIED') }}
                   className="w-full h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
                   style={{ background: '#10b981', color: '#fff' }}>
-                  台帳入力へ進む <ArrowRight size={14} />
+                  {t.nextInfo} <ArrowRight size={14} />
                 </button>
-                <p className="text-center text-[10px] text-slate-700">スキャンしない場合も次に進めます</p>
+                <p className="text-center text-[10px] text-slate-700">{t.skipScan}</p>
               </div>
             )}
 
@@ -1620,23 +1765,23 @@ const MasterEngine = () => {
               <div className="p-4 space-y-3">
                 <div className="grid grid-cols-2 gap-3">
                   <div className="col-span-2 space-y-1">
-                    <label className="text-[10px] font-medium text-slate-600">氏名 *</label>
+                    <label className="text-[10px] font-medium text-slate-600">{t.name} *</label>
                     <input value={ledgerName} onChange={e => setLedgerName(e.target.value)}
-                      placeholder="例：山田 太郎"
+                      placeholder={t.phName}
                       className={inputCls} style={inputStyle}
                       onFocus={e => (e.target.style.borderColor = '#10b981')}
                       onBlur={e => (e.target.style.borderColor = '#334155')} />
                   </div>
                   <div className="col-span-2 space-y-1">
-                    <label className="text-[10px] font-medium text-slate-600">住所</label>
+                    <label className="text-[10px] font-medium text-slate-600">{t.address}</label>
                     <input value={ledgerAddress} onChange={e => setLedgerAddress(e.target.value)}
-                      placeholder="例：東京都渋谷区1-2-3"
+                      placeholder={t.phAddress}
                       className={inputCls} style={inputStyle}
                       onFocus={e => (e.target.style.borderColor = '#10b981')}
                       onBlur={e => (e.target.style.borderColor = '#334155')} />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-medium text-slate-600">職業</label>
+                    <label className="text-[10px] font-medium text-slate-600">{t.occupation}</label>
                     <select value={ledgerOccupation} onChange={e => setLedgerOccupation(e.target.value)}
                       className={inputCls} style={{ ...inputStyle, colorScheme: 'dark' }}>
                       <option value="">選択...</option>
@@ -1644,9 +1789,9 @@ const MasterEngine = () => {
                     </select>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-medium text-slate-600">前泊地・行先地</label>
+                    <label className="text-[10px] font-medium text-slate-600">{t.travel}</label>
                     <input value={ledgerTravel} onChange={e => setLedgerTravel(e.target.value)}
-                      placeholder="例：東京" list="travel-suggestions"
+                      placeholder={t.phTravel} list="travel-suggestions"
                       className={inputCls} style={inputStyle}
                       onFocus={e => (e.target.style.borderColor = '#10b981')}
                       onBlur={e => (e.target.style.borderColor = '#334155')} />
@@ -1660,7 +1805,7 @@ const MasterEngine = () => {
                   disabled={!ledgerName}
                   className="w-full h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
                   style={{ background: ledgerName ? '#10b981' : '#1e293b', color: ledgerName ? '#fff' : '#475569' }}>
-                  署名へ進む <ArrowRight size={14} />
+                  {t.nextSign} <ArrowRight size={14} />
                 </button>
               </div>
             )}
@@ -1668,9 +1813,7 @@ const MasterEngine = () => {
             {/* ── Step 3: 電子署名 ── */}
             {step === 'sign' && (
               <div className="p-4 space-y-3">
-                <p className="text-[10px] text-slate-600 leading-relaxed">
-                  宿泊約款・個人情報取扱方針に同意の上、ご署名ください。デジタル台帳として保管されます。
-                </p>
+                <p className="text-[10px] text-slate-600 leading-relaxed">{t.signNote}</p>
                 <div style={{ maxHeight: '260px' }}>
                   <SignaturePanel
                     key={signatureClearedAt}
@@ -1686,9 +1829,9 @@ const MasterEngine = () => {
                   disabled={!ledgerName}
                   className="w-full h-12 rounded-xl text-sm font-bold flex items-center justify-center gap-2"
                   style={{ background: ledgerName ? '#10b981' : '#1e293b', color: ledgerName ? '#fff' : '#475569' }}>
-                  チェックイン完了 → 鍵発行 <ArrowRight size={15} />
+                  {t.completeCheckin} <ArrowRight size={15} />
                 </button>
-                <p className="text-center text-[10px] text-slate-600">署名は任意です · 氏名入力で完了できます</p>
+                <p className="text-center text-[10px] text-slate-600">{t.signOptional}</p>
               </div>
             )}
           </div>
@@ -1706,16 +1849,16 @@ const MasterEngine = () => {
                 style={{ background: 'rgba(16,185,129,0.12)' }}>
                 <CheckCircle2 size={36} style={{ color: '#10b981' }} />
               </div>
-              <p className="text-3xl font-semibold text-slate-100">チェックイン完了</p>
+              <p className="text-3xl font-semibold text-slate-100">{t.checkinDone}</p>
               <p className="text-slate-500 text-sm">
-                {selectedReservation ? `${resName(selectedReservation)} 様` : 'ゲスト様'}、ようこそ
+                {selectedReservation ? `${resName(selectedReservation)}${t.welcome2}` : t.welcome}
               </p>
             </div>
 
             {/* 部屋番号 ── 超大 */}
             <div className="w-full rounded-2xl flex flex-col items-center gap-2 py-8"
               style={{ background: '#13141f', border: '1px solid #1e293b' }}>
-              <p className="text-base font-medium text-slate-500">お部屋番号</p>
+              <p className="text-base font-medium text-slate-500">{t.roomLabel}</p>
               <p className="font-bold leading-none" style={{ fontSize: '9rem', color: '#f1f5f9', letterSpacing: '-0.02em' }}>
                 {selectedReservation ? resRoom(selectedReservation) : '—'}
               </p>
@@ -1734,7 +1877,7 @@ const MasterEngine = () => {
                 boxShadow: '0 0 40px rgba(16,185,129,0.1)',
               }}>
               <p className="text-base font-medium" style={{ color: '#6ee7b7' }}>
-                {lockType === 'fixed' ? '固定暗証番号' : lockType === 'switchbot' ? 'SwitchBot 一時コード' : lockType === 'ttlock' ? 'TT Lock 一時コード' : 'アクセスコード'}
+                {lockType === 'fixed' ? t.codeLabel : lockType === 'switchbot' ? t.codeSwitchBot : lockType === 'ttlock' ? t.codeTTLock : t.codeDefault}
               </p>
               <p className="font-bold tracking-[0.25em] leading-none" style={{ fontSize: '7rem', color: '#10b981' }}>
                 {getLockCode()}
@@ -1754,7 +1897,7 @@ const MasterEngine = () => {
             }}
               className="w-full h-16 rounded-2xl text-lg font-semibold transition-all active:scale-[0.98]"
               style={{ background: '#10b981', color: '#fff' }}>
-              スタートに戻る
+              {t.returnStart}
             </button>
           </div>
         )}
