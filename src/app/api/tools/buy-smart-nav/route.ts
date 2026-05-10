@@ -7,9 +7,8 @@ export const dynamic = 'force-dynamic';
 // 楽天API 2026年新仕様対応ヘルパー
 const RAKUTEN_APP_ID = '5b11580f-bdb5-4659-b89a-63db8ef20abf';
 const RAKUTEN_ACCESS_KEY = 'pk_FfxUYuFakO3oY9BEo0YxLAyRlMP6oeiwFk2lHMGwNiB';
-const RAKUTEN_BASE_URL = 'https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20220601';
-// ※ バージョンは 20220601 が正しい（20260401 は誤り）
-// ※ Origin + Referer ヘッダーが必須（2026年2月移行後の仕様）
+const RAKUTEN_BASE_URL = 'https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401';
+// ※ 2026年新APIエンドポイント（applicationId + accessKey + Referer 必須）
 
 async function rakutenSearch(keyword: string, usedFlag: 0 | 1, hits: number) {
   const params = new URLSearchParams({
@@ -98,19 +97,23 @@ export async function POST(req: Request) {
     const verdict = (newPrice > 0 && avgUsedPrice > 0 && avgUsedPrice < newPrice * 0.7) ? 'used' : 'new';
     const status = verdict === 'used' ? '中古購入を推奨' : '新品購入を推奨';
 
+    const mergedItems = [...newItems, ...usedItems].slice(0, 6).map((i: any) => ({
+      name: i.Item.itemName,
+      price: i.Item.itemPrice,
+      url: i.Item.itemUrl,
+      img: i.Item.mediumImageUrls?.[0]?.imageUrl ?? '',
+    }));
+
     return NextResponse.json({
       success: true,
       verdict,
       status,
-      reason,
-      newPrice,
-      usedPrice: avgUsedPrice,
-      items: [...newItems, ...usedItems].slice(0, 5).map((i: any) => ({
-        name: i.Item.itemName,
-        price: i.Item.itemPrice,
-        url: i.Item.itemUrl,
-        img: i.Item.mediumImageUrls[0]?.imageUrl
-      }))
+      reason,          // Gemini解析テキスト
+      data: {
+        minPrice: newPrice,
+        avgPrice: avgUsedPrice,
+        items: mergedItems,
+      },
     });
 
   } catch (error: any) {
