@@ -9,12 +9,16 @@ import {
 } from 'lucide-react'
 
 /* ─────────── 型定義 ─────────── */
+// ゲスト向けタブ（チェックアウトは非表示 — スタッフPIN経由のみ）
 const TABS = [
-  { id: 'kiosk',    label: 'スタート',        icon: Monitor   },
-  { id: 'search',   label: '予約検索',        icon: Search    },
-  { id: 'checkin',  label: '自動チェックイン', icon: UserPlus  },
-  { id: 'lock',     label: '鍵発行',          icon: Key       },
-  { id: 'checkout', label: 'チェックアウト',   icon: LogOut    },
+  { id: 'kiosk',    label: 'スタート',        icon: Monitor  },
+  { id: 'search',   label: '予約検索',        icon: Search   },
+  { id: 'checkin',  label: 'チェックイン',    icon: UserPlus },
+  { id: 'lock',     label: '鍵発行',          icon: Key      },
+]
+// スタッフ専用タブ（PIN認証後に追加表示）
+const STAFF_TABS = [
+  { id: 'checkout', label: 'チェックアウト', icon: LogOut },
 ]
 const LANGS = ['日本語', 'English', '中文', '한국어']
 
@@ -810,6 +814,17 @@ const MasterEngine = () => {
   const [showSettings, setShowSettings]   = useState(false)
   const [isOnline, setIsOnline]           = useState(true)
 
+  // スタッフモード（PIN認証済み）
+  const [staffMode, setStaffMode]         = useState(false)
+  const [showPinOverlay, setShowPinOverlay] = useState(false)
+  const [pinInput, setPinInput]           = useState('')
+  const [pinError, setPinError]           = useState(false)
+  const STAFF_PIN = '1234'   // DMSで設定可能にする想定
+
+  // 全画面
+  const containerRef = useRef<HTMLDivElement>(null)
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   // 予約検索
   const [searchMode, setSearchMode]       = useState<'select'|'reservation'|'name'|'phone'>('select')
   const [searchQuery, setSearchQuery]     = useState('')
@@ -840,6 +855,36 @@ const MasterEngine = () => {
   const [checkoutSearching, setCheckoutSearching] = useState(false)
   const [checkoutStep, setCheckoutStep]       = useState<'search'|'confirm'|'processing'|'done'>('search')
   const [hasExtraCharge] = useState(false)
+
+  /* ── Fullscreen（初回タッチで全画面） ── */
+  const requestFullscreen = () => {
+    const el = document.documentElement
+    if (el.requestFullscreen) el.requestFullscreen()
+    else if ((el as HTMLElement & { webkitRequestFullscreen?: () => void }).webkitRequestFullscreen) {
+      (el as HTMLElement & { webkitRequestFullscreen: () => void }).webkitRequestFullscreen()
+    }
+  }
+
+  /* ── スタッフPIN認証 ── */
+  const handlePinSubmit = () => {
+    if (pinInput === STAFF_PIN) {
+      setStaffMode(true)
+      setShowPinOverlay(false)
+      setPinInput('')
+      setPinError(false)
+      setActiveTab('checkout')
+    } else {
+      setPinError(true)
+      setPinInput('')
+      setTimeout(() => setPinError(false), 1500)
+    }
+  }
+
+  const handleStaffLongPress = () => {
+    setShowPinOverlay(true)
+    setPinInput('')
+    setPinError(false)
+  }
 
   useEffect(() => {
     setIsMounted(true)
@@ -1138,7 +1183,73 @@ const MasterEngine = () => {
   if (!isMounted) return null
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: '#050507', fontFamily: "'Inter', 'Noto Sans JP', sans-serif" }}>
+    <div
+      ref={containerRef}
+      className="min-h-screen pb-24"
+      style={{ background: '#050507', fontFamily: "'Inter', 'Noto Sans JP', sans-serif" }}
+      onClick={requestFullscreen}
+    >
+
+      {/* スタッフPINオーバーレイ */}
+      {showPinOverlay && (
+        <div className="fixed inset-0 z-[9998] flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.92)' }}>
+          <div className="w-full max-w-xs rounded-2xl p-6 space-y-5" style={{ background: '#0d0f1a', border: '1px solid rgba(16,185,129,0.3)' }}>
+            <div className="text-center space-y-1">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto text-xl" style={{ background: 'rgba(16,185,129,0.12)' }}>🔐</div>
+              <h3 className="text-sm font-semibold text-slate-100 mt-2">スタッフ認証</h3>
+              <p className="text-[10px] text-slate-600">スタッフPINを入力してください</p>
+            </div>
+            {/* PINディスプレイ */}
+            <div className="flex gap-3 justify-center">
+              {[0,1,2,3].map(i => (
+                <div key={i} className="w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold"
+                  style={{ background: '#13141f', border: `1px solid ${pinError ? '#ef4444' : pinInput.length > i ? '#10b981' : '#334155'}` }}>
+                  {pinInput.length > i ? '●' : ''}
+                </div>
+              ))}
+            </div>
+            {pinError && <p className="text-center text-xs text-red-400">PINが正しくありません</p>}
+            {/* テンキー */}
+            <div className="grid grid-cols-3 gap-2">
+              {['1','2','3','4','5','6','7','8','9','','0','⌫'].map((k, idx) => (
+                <button key={idx} onClick={() => {
+                  if (k === '⌫') setPinInput(p => p.slice(0,-1))
+                  else if (k === '') { /* 空 */ }
+                  else if (pinInput.length < 4) {
+                    const next = pinInput + k
+                    setPinInput(next)
+                    if (next.length === 4) setTimeout(() => {
+                      if (next === STAFF_PIN) {
+                        setStaffMode(true); setShowPinOverlay(false); setPinInput(''); setPinError(false); setActiveTab('checkout')
+                      } else {
+                        setPinError(true); setPinInput(''); setTimeout(() => setPinError(false), 1500)
+                      }
+                    }, 150)
+                  }
+                }}
+                  disabled={k === ''}
+                  className="h-12 rounded-xl text-base font-semibold transition-all active:scale-95"
+                  style={{ background: k ? '#1e293b' : 'transparent', color: k === '⌫' ? '#f87171' : '#e2e8f0' }}>
+                  {k}
+                </button>
+              ))}
+            </div>
+            <button onClick={() => { setShowPinOverlay(false); setPinInput('') }}
+              className="w-full h-9 rounded-lg text-xs font-semibold text-slate-500" style={{ background: '#13141f' }}>
+              キャンセル
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 画面左上隅 — 長押し5秒でスタッフメニュー起動（不可視） */}
+      <div
+        className="fixed top-0 left-0 w-16 h-16 z-40"
+        onTouchStart={() => { longPressTimer.current = setTimeout(handleStaffLongPress, 5000) }}
+        onTouchEnd={() => { if (longPressTimer.current) clearTimeout(longPressTimer.current) }}
+        onMouseDown={() => { longPressTimer.current = setTimeout(handleStaffLongPress, 5000) }}
+        onMouseUp={() => { if (longPressTimer.current) clearTimeout(longPressTimer.current) }}
+      />
 
       {/* Hero — タブレット最適化: max-w-2xl / pt控えめ / px小さめ */}
       <div className="max-w-2xl mx-auto px-4 pt-8 pb-5 flex items-start justify-between gap-3 flex-wrap">
@@ -1180,9 +1291,9 @@ const MasterEngine = () => {
           }}
         />
 
-        {/* タブナビ */}
+        {/* タブナビ（スタッフモード時のみチェックアウトタブ追加） */}
         <div className="flex gap-1 p-1 rounded-xl overflow-x-auto" style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
-          {TABS.map(tab => (
+          {[...TABS, ...(staffMode ? STAFF_TABS : [])].map(tab => (
             <button key={tab.id} onClick={() => gotoTab(tab.id)}
               className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all shrink-0"
               style={activeTab === tab.id ? { background: '#10b981', color: '#fff' } : { color: '#64748b' }}>
@@ -1190,6 +1301,14 @@ const MasterEngine = () => {
               {tab.label}
             </button>
           ))}
+          {/* スタッフモード解除ボタン */}
+          {staffMode && (
+            <button onClick={() => { setStaffMode(false); gotoTab('kiosk') }}
+              className="ml-auto px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap"
+              style={{ color: '#475569' }}>
+              🔓 解除
+            </button>
+          )}
         </div>
 
         {/* ════ スタート ════ */}
@@ -1209,28 +1328,26 @@ const MasterEngine = () => {
                 </button>
               ))}
             </div>
-            {/* タブレット最適化: 縦幅大きめ・横並び・タッチしやすいサイズ */}
-            <div className="grid grid-cols-2 gap-5 w-full max-w-md">
-              <button onClick={() => gotoTab('search')}
-                className="h-52 rounded-[2rem] flex flex-col items-center justify-center gap-3 transition-all active:scale-95"
-                style={{ background: '#13141f', border: '2px solid rgba(16,185,129,0.4)', boxShadow: '0 0 24px rgba(16,185,129,0.08)' }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.8)')}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.4)')}>
-                <UserPlus size={44} style={{ color: '#10b981' }} />
-                <span className="text-emerald-400 text-lg font-bold">チェックイン</span>
-                <span className="text-slate-600 text-xs">CHECK IN</span>
-              </button>
-              <button onClick={() => gotoTab('checkout')}
-                className="h-52 rounded-[2rem] flex flex-col items-center justify-center gap-3 transition-all active:scale-95"
-                style={{ background: '#13141f', border: '2px solid rgba(99,102,241,0.4)', boxShadow: '0 0 24px rgba(99,102,241,0.08)' }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(99,102,241,0.8)')}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(99,102,241,0.4)')}>
-                <LogOut size={44} style={{ color: '#818cf8' }} />
-                <span className="text-indigo-400 text-lg font-bold">チェックアウト</span>
-                <span className="text-slate-600 text-xs">CHECK OUT</span>
-              </button>
-            </div>
-            <p className="text-xs text-slate-600">画面をタッチして開始してください</p>
+            {/* ゲスト向けボタン（チェックインのみ） */}
+            <button onClick={() => gotoTab('search')}
+              className="w-full max-w-xs h-52 rounded-[2rem] flex flex-col items-center justify-center gap-3 transition-all active:scale-95"
+              style={{ background: '#13141f', border: '2px solid rgba(16,185,129,0.4)', boxShadow: '0 0 24px rgba(16,185,129,0.08)' }}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.8)')}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.4)')}>
+              <UserPlus size={48} style={{ color: '#10b981' }} />
+              <span className="text-emerald-400 text-xl font-bold">チェックイン</span>
+              <span className="text-slate-600 text-xs">タップして開始</span>
+            </button>
+
+            {/* スタッフ向け小ボタン（PIN認証） */}
+            <button
+              onClick={() => setShowPinOverlay(true)}
+              className="text-[10px] text-slate-700 hover:text-slate-500 transition-colors py-1 px-3 rounded-lg"
+              style={{ border: '1px solid transparent' }}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = '#334155')}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = 'transparent')}>
+              スタッフメニュー
+            </button>
           </div>
         )}
 
@@ -1559,16 +1676,11 @@ const MasterEngine = () => {
               </p>
             </div>
 
-            <div className="flex gap-3 flex-wrap justify-center">
+            <div className="flex justify-center">
               <button onClick={() => gotoTab('kiosk')}
-                className="px-8 h-10 rounded-lg text-sm font-semibold transition-all"
-                style={{ background: '#1e293b', color: '#94a3b8', border: '1px solid #334155' }}>
+                className="px-10 h-11 rounded-xl text-sm font-semibold transition-all"
+                style={{ background: '#10b981', color: '#fff' }}>
                 スタートへ戻る
-              </button>
-              <button onClick={() => gotoTab('checkout')}
-                className="px-8 h-10 rounded-lg text-sm font-semibold transition-all"
-                style={{ background: 'rgba(99,102,241,0.1)', color: '#818cf8', border: '1px solid rgba(99,102,241,0.3)' }}>
-                チェックアウトへ
               </button>
             </div>
           </div>
