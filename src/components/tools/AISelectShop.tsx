@@ -133,117 +133,99 @@ const MasterEngine = () => {
     const w = canvas.width, h = canvas.height
     const S = STYLES.find(s => s.id === style) || STYLES[0]
     const TC = TSHIRT_COLORS.find(c => c.id === tshirtColor) || TSHIRT_COLORS[1]
+
     ctx.clearRect(0, 0, w, h)
     ctx.fillStyle = '#1a1a2e'; ctx.fillRect(0, 0, w, h)
-    // Tシャツ本体を描画（clipなし — プリントボックスのclipだけで管理）
+
+    // Tシャツ本体を描画（clipなし）
     ctx.save()
     getTshirtPath(ctx, w, h)
     ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 12
     ctx.fillStyle = TC.hex; ctx.fill()
     ctx.restore()
-    // ※ Tシャツシルエットでclipしない（袖/肩でプリントボックスが切れる原因だったため削除）
 
-    // プリント領域（角丸四角形）
-    // Tシャツ胴体の安全幅: w*0.2 〜 w*0.8 = 内側60%。余白8%ずつ取ると w*0.44 が最大安全幅
+    // プリント領域のサイズ・位置
     const isSmall = printPosition === 'chest-left'
     const cx = w / 2
-    const cy = printPosition === 'chest-left' ? h * 0.3 : printPosition === 'back-center' ? h * 0.55 : h * 0.44
-    // 安全なプリントボックス: 胴体幅(w*0.6)の80% = w*0.52、左胸は半分
-    const boxW = isSmall ? w * 0.24 : w * 0.56
-    const boxH = isSmall ? h * 0.15 : h * 0.34
-    const rx = 10 // 角丸半径
+    const cy = printPosition === 'chest-left' ? h * 0.3
+             : printPosition === 'back-center' ? h * 0.55
+             : h * 0.44
+    const boxW = isSmall ? w * 0.22 : w * 0.52
+    const boxH = isSmall ? h * 0.14 : h * 0.32
+    const rx = 8
     const bx = cx - boxW / 2
     const by = cy - boxH / 2
-
-    // 角丸四角形を描画
-    ctx.beginPath()
-    ctx.moveTo(bx + rx, by)
-    ctx.lineTo(bx + boxW - rx, by)
-    ctx.quadraticCurveTo(bx + boxW, by, bx + boxW, by + rx)
-    ctx.lineTo(bx + boxW, by + boxH - rx)
-    ctx.quadraticCurveTo(bx + boxW, by + boxH, bx + boxW - rx, by + boxH)
-    ctx.lineTo(bx + rx, by + boxH)
-    ctx.quadraticCurveTo(bx, by + boxH, bx, by + boxH - rx)
-    ctx.lineTo(bx, by + rx)
-    ctx.quadraticCurveTo(bx, by, bx + rx, by)
-    ctx.closePath()
-    ctx.fillStyle = S.bg; ctx.globalAlpha = 0.9; ctx.fill()
-    ctx.globalAlpha = 1
-
-    // テキスト描画用に角丸四角形でclip（はみ出し防止）
-    ctx.save()
-    ctx.beginPath()
-    ctx.moveTo(bx + rx, by)
-    ctx.lineTo(bx + boxW - rx, by)
-    ctx.quadraticCurveTo(bx + boxW, by, bx + boxW, by + rx)
-    ctx.lineTo(bx + boxW, by + boxH - rx)
-    ctx.quadraticCurveTo(bx + boxW, by + boxH, bx + boxW - rx, by + boxH)
-    ctx.lineTo(bx + rx, by + boxH)
-    ctx.quadraticCurveTo(bx, by + boxH, bx, by + boxH - rx)
-    ctx.lineTo(bx, by + rx)
-    ctx.quadraticCurveTo(bx, by, bx + rx, by)
-    ctx.closePath()
-    ctx.clip()
-
-    // テキスト用の安全な最大幅
-    const pad = 14
+    const pad = 12
     const safeW = boxW - pad * 2
     const safeH = boxH - pad * 2
 
-    // 1. measureText を使った正確な改行アルゴリズム
-    const generateLines = (size: number) => {
-      const fontStr = S.font.replace(/\b[\d.]+px\b/, `${size}px`)
-      ctx.font = fontStr  // measureText のために事前にフォントをセット
-      const tempLines: string[] = []
-      let current = ''
+    // ラウンド矩形ヘルパー
+    const roundRect = (x: number, y: number, rw: number, rh: number, r: number) => {
+      ctx.beginPath()
+      ctx.moveTo(x + r, y)
+      ctx.lineTo(x + rw - r, y);  ctx.quadraticCurveTo(x + rw, y, x + rw, y + r)
+      ctx.lineTo(x + rw, y + rh - r); ctx.quadraticCurveTo(x + rw, y + rh, x + rw - r, y + rh)
+      ctx.lineTo(x + r, y + rh);  ctx.quadraticCurveTo(x, y + rh, x, y + rh - r)
+      ctx.lineTo(x, y + r);       ctx.quadraticCurveTo(x, y, x + r, y)
+      ctx.closePath()
+    }
+
+    // プリントボックス背景
+    roundRect(bx, by, boxW, boxH, rx)
+    ctx.fillStyle = S.bg; ctx.globalAlpha = 0.92; ctx.fill()
+    ctx.globalAlpha = 1
+
+    // テキスト描画をclipで囲む
+    ctx.save()
+    roundRect(bx, by, boxW, boxH, rx)
+    ctx.clip()
+
+    // フォントサイズ自動決定（上限から縮小）
+    const styleSize = parseInt(S.font.match(/\b(\d+)px\b/)?.[1] || '24', 10)
+    const maxFontSize = isSmall ? 13 : Math.min(styleSize, 20)
+    const minFontSize = 8
+    const effectiveSafeW = safeW * 0.88  // measureText のフォント読み込み遅延分の安全マージン
+
+    const splitLines = (size: number): string[] => {
+      ctx.font = S.font.replace(/\b[\d.]+px\b/, `${size}px`)
+      const result: string[] = []
+      let line = ''
       for (const ch of keyword) {
-        const testLine = current + ch
-        const measured = ctx.measureText(testLine).width
-        if (measured > safeW && current.length > 0) {
-          tempLines.push(current)
-          current = ch
+        const test = line + ch
+        if (ctx.measureText(test).width > effectiveSafeW && line.length > 0) {
+          result.push(line)
+          line = ch
         } else {
-          current = testLine
+          line = test
         }
       }
-      if (current) tempLines.push(current)
-      return { lines: tempLines, fontStr }
+      if (line) result.push(line)
+      return result
     }
 
-    // 2. 初期フォントサイズ（スタイルの `NNpx` を取得し上限を設ける）
-    const styleSize = parseInt(S.font.match(/\b(\d+)px\b/)?.[1] || '24')
-    let fontSize = isSmall ? Math.min(styleSize, 14) : Math.min(styleSize, 22)
-    let lines: string[] = []
-
-    // 3. 幅・高さに収まるまで縮小
-    let currentFontStr = ''
-    let result = generateLines(fontSize)
-    lines = result.lines
-    currentFontStr = result.fontStr
-    let lineHeight = fontSize * 1.45
-    while (lines.length * lineHeight > safeH && fontSize > 9) {
-      fontSize -= 1
-      lineHeight = fontSize * 1.45
-      result = generateLines(fontSize)
-      lines = result.lines
-      currentFontStr = result.fontStr
+    let fontSize = maxFontSize
+    let fittedLines: string[] = []
+    while (fontSize >= minFontSize) {
+      const ls = splitLines(fontSize)
+      if (ls.length * (fontSize * 1.4) <= safeH) { fittedLines = ls; break }
+      fontSize--
     }
+    if (fittedLines.length === 0) { fittedLines = splitLines(minFontSize); fontSize = minFontSize }
 
-    // 4. 描画（フォントを明示的に再設定してから描画）
-    ctx.font = currentFontStr
+    // テキスト描画
+    ctx.font = S.font.replace(/\b[\d.]+px\b/, `${fontSize}px`)
     const resolvedColor = textColorId !== 'auto'
-      ? (TEXT_COLORS.find(c => c.id === textColorId)?.hex || S.textColor)
+      ? (TEXT_COLORS.find(c => c.id === textColorId)?.hex ?? S.textColor)
       : S.textColor
     ctx.fillStyle = resolvedColor!
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
 
-    const startY = cy - (lines.length * lineHeight) / 2 + lineHeight / 2
-    lines.forEach((line, i) => {
-      ctx.fillText(line, cx, startY + i * lineHeight)
-    })
+    const lineH = fontSize * 1.4
+    const startY = cy - (fittedLines.length * lineH) / 2 + lineH / 2
+    fittedLines.forEach((ln, i) => { ctx.fillText(ln, cx, startY + i * lineH) })
 
-    ctx.restore() // テキストボックスclip解除
+    ctx.restore()
     setMockupDataUrl(canvas.toDataURL('image/png'))
   }, [keyword, style, tshirtColor, textColorId, printPosition])
 
