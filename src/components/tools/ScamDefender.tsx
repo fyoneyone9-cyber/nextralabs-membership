@@ -24,10 +24,6 @@ const DANGER_KEYWORDS = [
   // マルチ・投資詐欺
   '副業 簡単', '投資 確実', '億り人', 'FX 必勝', '仮想通貨 無料',
   '元本保証', '高利回り', 'ネットワークビジネス', 'MLM',
-  // 不快・迷惑・性的なスパム系
-  'アダルト', '出会い', '無料案内', 'ビデオ通話', '性的な', '画像送ります',
-  '当選', 'プレゼント', '受取', 'Amazonギフト', '当選しました', 'おめでとうございます',
-  '強制', '至急', '法的手続き', '警察', '弁護士'
 ]
 
 // URLパターン（怪しいドメイン特徴）
@@ -80,12 +76,12 @@ export default function ScamDefender() {
     setDetectedPatterns(foundPatterns)
 
     // スコア計算
-    let score = (text || sender || subject) ? 10 : 0 // ベーススコア10%付与
+    let score = 0
 
     // キーワードによるスコア
-    if (found.length >= 1) score += 30 // キーワードがあればベースに加算
-    if (found.length >= 2) score += found.length * 10
-    if (found.length >= 4) score += 15
+    if (found.length >= 1) score += 35
+    if (found.length >= 2) score += found.length * 12
+    if (found.length >= 4) score += 10
 
     // URLパターンによるスコア
     score += foundPatterns.length * 25
