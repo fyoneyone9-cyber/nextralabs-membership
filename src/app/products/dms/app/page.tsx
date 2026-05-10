@@ -35,7 +35,6 @@ export default function DmsRedirectPage() {
     if (ok) router.push('/dashboard')
   }, [router])
 
-  const router = useRouter()
   useEffect(() => {
     router.replace('/dms/login')
   }, [router])
