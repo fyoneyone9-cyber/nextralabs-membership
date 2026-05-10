@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import {
   CheckCircle2, Zap, Lock, Camera, Loader2,
   UserPlus, Search, Key, LogOut, QrCode,
-  Monitor, ClipboardList, ArrowRight
+  Monitor, ClipboardList, ArrowRight, PenLine
 } from 'lucide-react'
 
 const TABS = [
@@ -299,7 +299,7 @@ const MasterEngine = () => {
                     className="flex items-center gap-3 p-3 rounded-lg"
                     style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)' }}
                   >
-                    <PenTool size={14} className="text-emerald-400 shrink-0" />
+                    <PenLine size={14} className="text-emerald-400 shrink-0" />
                     <span className="text-xs text-slate-400">署名を行ってください</span>
                   </div>
                   <button
