@@ -375,7 +375,7 @@ function YoutubeProducerApp() {
                 </Button>
               </div>
 
-              <div className="grid gap-4">{[{ t: '導入', c: script.opening, col: 'from-emerald-500/10' }, { t: '本編', c: script.body, col: 'from-emerald-500/5' }, { t: '結末', c: script.closing, col: 'from-emerald-500/5' }].map((s, i) => (<Card key={i} className={`bg-gradient-to-br ${s.col} to-transparent border border-white/10 rounded-xl p-5`}><h4 className="text-xs font-semibold text-emerald-400 tracking-tight mb-3 border-l-4 border-emerald-500 pl-3">{s.t}</h4><p className="text-sm text-white leading-relaxed whitespace-pre-wrap">{s.c}</p></Card>))}</div>
+              <div className="space-y-4">{[{ t: '導入', c: script.opening, col: 'from-emerald-500/10' }, { t: '本編', c: script.body, col: 'from-emerald-500/5' }, { t: '結末', c: script.closing, col: 'from-emerald-500/5' }].map((s, i) => (<Card key={i} className={`w-full bg-gradient-to-br ${s.col} to-transparent border border-white/10 rounded-xl p-5`}><h4 className="text-xs font-semibold text-emerald-400 tracking-tight mb-3 border-l-4 border-emerald-500 pl-3">{s.t}</h4><p className="text-sm text-white leading-relaxed whitespace-pre-wrap">{s.c}</p></Card>))}</div>
             </div>)}
           </TabsContent>
 
