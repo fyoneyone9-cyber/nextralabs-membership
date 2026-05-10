@@ -251,19 +251,6 @@ export default function PilgrimagePlanner() {
           ))}
         </div>
 
-        {/* テキスト入力（プリセット以外） */}
-        <div className="flex items-center gap-3">
-          <div className="flex-1 h-px bg-white/5" />
-          <span className="text-xs text-slate-600">または作品名を直接入力</span>
-          <div className="flex-1 h-px bg-white/5" />
-        </div>
-        <input
-          type="text"
-          value={keyword}
-          onChange={(e) => { setKeyword(e.target.value); setSelectedPreset(null) }}
-          placeholder="例：ドラゴンボール、NARUTO、推しの子..."
-          className="w-full bg-[#0f1520] border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 transition"
-        />
       </div>
 
       {/* STEP 2: 旅のスタイル */}
