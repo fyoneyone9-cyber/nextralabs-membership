@@ -10,7 +10,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/comm-coach',
   },
-  openGraph: {
     title: 'AIコミュニケーションコーチ | 職場・恋愛・家族の人間関係をAIが改善 | NextraLabs',
     description: '苦手な人との会話・上司への報告・恋愛トーク・家族関係まで。AIがシチュエーション別の最適な言葉を提案。コミュ力を劇的に上げる。NextraLabsプラン。',
     url: 'https://membership-site-nextralabos.vercel.app/products/comm-coach',
@@ -26,8 +25,6 @@ export const metadata: Metadata = {
     images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
   },
 },
-  openGraph: { title: 'AIコミュニケーション改善コーチ | NextraLabs', description: '心理学ベースのメッセージ添削・4タイプコミュスタイル診断。恋愛・ビジネス・友人関係を改善。', url: 'https://membership-site-nextralabos.vercel.app/products/comm-coach', type: 'website' },
-}
 
 export default function CommCoachPage() {
   return (

@@ -12,7 +12,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/buzz-writer',
   },
-  openGraph: {
     title: 'AIバズライター（Buzz Writer）| バズるブログ記事・SNS投稿を一発生成 | NextraLabs',
     description: 'キーワードを入力するだけでSEO最適化済みのブログ記事・SNS投稿をAIが自動生成。Googleで上位表示されるコンテンツを最短5分で作成。NextraLabs会員限定。',
     url: 'https://membership-site-nextralabos.vercel.app/products/buzz-writer',
@@ -28,8 +27,6 @@ export const metadata: Metadata = {
     images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
   },
 },
-  openGraph: { title: 'AIバズ文章コーチ | NextraLabs', description: '今日のトレンドニュースをネタに10種類のテンプレートでバズる文章を自動生成。バズ度診断・投稿画像生成・ハッシュタグ辞典付き。', url: 'https://membership-site-nextralabos.vercel.app/products/buzz-writer', type: 'website' },
-}
 import {
   ArrowLeft,
   Code2,

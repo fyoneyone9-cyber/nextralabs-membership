@@ -14,7 +14,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://membership-site-nextralabos.vercel.app/products/shio-taiou',
   },
-  openGraph: {
     title: 'AI塩対応ジェネレーター | 面倒な人間関係をスマートに断る | NextraLabs',
     description: '迷惑な勧誘・しつこいLINE・断りにくい頼まれごとをスマートに断る文章をAIが生成。角が立たず・後腐れなし・でも確実に断れる魔法の言葉。',
     url: 'https://membership-site-nextralabos.vercel.app/products/shio-taiou',
@@ -30,8 +29,6 @@ export const metadata: Metadata = {
     images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
   },
 },
-  openGraph: { title: '塩対応代行AI | NextraLabs', description: '義実家・親戚からの重い連絡を角が立たずに断る文章を自動生成。6シチュエーション×3トーンで即生成。', url: 'https://membership-site-nextralabos.vercel.app/products/shio-taiou', type: 'website' },
-}
 
 const features = [
   { icon: MessageSquare, title: '6つのシチュエーション', description: '訪問要求・法事・お金の無心・生活干渉・子供の催促・その他、あらゆる「断りたい」場面に対応。' },
