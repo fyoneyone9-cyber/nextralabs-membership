@@ -336,8 +336,22 @@ function YoutubeProducerApp() {
                   <div className="bg-white/5 border border-white/10 px-4 py-2 rounded-lg text-center"><p className="text-xs text-white/30 mb-1">再生時間</p><p className="text-xl font-bold text-white">{script.estimatedMinutes}分</p></div>
                 </div>
               </div>
+
+              {/* ▼ 次のステップ案内バナー（目立つ位置に配置） */}
+              <div className="bg-emerald-500/10 border border-emerald-500/40 rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <Sparkles className="h-6 w-6 text-emerald-400 shrink-0" />
+                  <div>
+                    <p className="text-sm font-semibold text-white">台本が完成しました！次は画像・音楽・SEOを一括生成</p>
+                    <p className="text-xs text-slate-400 mt-0.5">キャラクター・サムネイル・BGMプロンプト・SEOタグをまとめて出力します</p>
+                  </div>
+                </div>
+                <Button onClick={generateExtras} disabled={isProcessing['characters']} className="shrink-0 h-11 px-8 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                  {isProcessing['characters'] ? <><Loader2 className="animate-spin h-4 w-4 mr-2" />生成中...</> : <span className="flex items-center gap-2">🚀 全データを一括出力</span>}
+                </Button>
+              </div>
+
               <div className="grid gap-4">{[{ t: '導入', c: script.opening, col: 'from-emerald-500/10' }, { t: '本編', c: script.body, col: 'from-emerald-500/5' }, { t: '結末', c: script.closing, col: 'from-emerald-500/5' }].map((s, i) => (<Card key={i} className={`bg-gradient-to-br ${s.col} to-transparent border border-white/10 rounded-xl p-5`}><h4 className="text-xs font-semibold text-emerald-400 tracking-tight mb-3 border-l-4 border-emerald-500 pl-3">{s.t}</h4><p className="text-sm text-white leading-relaxed whitespace-pre-wrap">{s.c}</p></Card>))}</div>
-              <div className="flex justify-end"><Button onClick={generateExtras} disabled={isProcessing['characters']} className="h-10 px-6 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-semibold text-sm rounded-lg transition-all"><span className="flex items-center gap-2">全データを一括出力 <ChevronRight className="h-4 w-4" /></span></Button></div>
             </div>)}
           </TabsContent>
 
