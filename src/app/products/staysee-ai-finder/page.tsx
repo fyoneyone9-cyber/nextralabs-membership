@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 
 export const metadata: Metadata = {
   title: 'Staysee AI Finder | 旅行の宿泊先をAIが予算・条件から最速提案',
