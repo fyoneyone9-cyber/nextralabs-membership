@@ -1,31 +1,20 @@
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-// ショッピング・EC向けトレンドキーワード（季節・需要・ジャンル）
-// Google Trends RSS が 404 になったため、
-// ECマーケット向けキュレーションキーワードで常時安定稼働（2026-05-09）
+// 季節別フォールバック（APIが全滅した場合のみ使用）
 const EC_TREND_POOLS: Record<string, string[]> = {
-  // 季節イベント
   spring:  ['春ファッション', 'GW旅行グッズ', '新生活インテリア'],
   summer:  ['夏フェスグッズ', 'UV対策アイテム', 'アウトドア用品'],
   autumn:  ['秋冬アパレル', 'ハロウィングッズ', 'キャンプ道具'],
   winter:  ['クリスマスギフト', '防寒インナー', '年末大掃除グッズ'],
-  // 常時需要（ECで売れ筋）
   always: [
-    'AI活用グッズ',
-    '副業・在宅ツール',
-    '健康・ダイエット',
-    'ゲーミングギア',
-    'おうち時間',
-    'ペットグッズ',
-    'スキンケア',
-    'スマホアクセサリ',
-    'サブスクボックス',
+    'AI活用グッズ', '副業・在宅ツール', '健康・ダイエット',
+    'ゲーミングギア', 'おうち時間', 'ペットグッズ',
+    'スキンケア', 'スマホアクセサリ', 'サブスクボックス',
   ],
 };
 
-// 現在の月から季節を判定
 function getSeason(month: number): string {
   if (month >= 3 && month <= 5)  return 'spring';
   if (month >= 6 && month <= 8)  return 'summer';
@@ -33,52 +22,37 @@ function getSeason(month: number): string {
   return 'winter';
 }
 
-// Rakuten Ichiba RSS (トレンドランキング)
-const RAKUTEN_RSS = 'https://ranking.rakuten.co.jp/rss/overall/';
+// Google Trends RSS（日本）
+const GOOGLE_TRENDS_RSS = 'https://trends.google.co.jp/trending/rss?geo=JP';
 
-function parseRakutenRSS(xml: string): string[] {
+function parseGoogleTrendsRSS(xml: string): string[] {
   const items = xml.match(/<item>[\s\S]*?<\/item>/g) || [];
   return items
     .map(block => {
-      const m = block.match(/<title><!\[CDATA\[([^\]]+)\]\]><\/title>/) ||
-                block.match(/<title>([^<]+)<\/title>/);
-      return m ? m[1].replace(/&amp;/g, '&').trim() : '';
+      const m = block.match(/<title>([^<]+)<\/title>/);
+      return m ? m[1].replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim() : '';
     })
-    .map(t => {
-      // 商品名を短縮（最初の区切り文字まで）
-      return t
-        .replace(/\s*[|｜\/\\].*/g, '')
-        .replace(/【[^】]*】/g, '')
-        .replace(/\[[^\]]*\]/g, '')
-        .replace(/（[^）]*）/g, '')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .slice(0, 12);
-    })
-    .filter(t => t.length >= 2);
+    .filter(t => t.length >= 2 && t.length <= 20);
 }
 
 export async function GET() {
   const month = new Date().getMonth() + 1;
   const season = getSeason(month);
-  const seasonalKws: string[] = EC_TREND_POOLS[season];
-  const alwaysKws:   string[] = EC_TREND_POOLS.always;
 
-  // まず楽天ランキングRSSを試みる
+  // ── 1. Google Trends RSS（本物・リアルタイム）──
   try {
-    const response = await fetch(RAKUTEN_RSS, {
+    const response = await fetch(GOOGLE_TRENDS_RSS, {
       cache: 'no-store',
       headers: {
         'Accept': 'application/rss+xml, */*',
         'User-Agent': 'Mozilla/5.0 (compatible; NextraLabs/1.0)',
       },
-      next: { revalidate: 0 },
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(6000),
     });
 
     if (response.ok) {
       const xml = await response.text();
-      const parsed = parseRakutenRSS(xml);
+      const parsed = parseGoogleTrendsRSS(xml);
 
       const seen = new Set<string>();
       const unique: string[] = [];
@@ -88,19 +62,23 @@ export async function GET() {
       }
 
       if (unique.length >= 6) {
-        const trends = unique.length >= 9
-          ? unique.slice(0, 9)
-          : [...unique, ...[...seasonalKws, ...alwaysKws].filter(k => !seen.has(k))].slice(0, 9);
-
-        return NextResponse.json({ trends, source: 'RAKUTEN_LIVE', isLive: true, count: trends.length });
+        return NextResponse.json({
+          trends: unique.slice(0, 9),
+          source: 'GOOGLE_TRENDS_LIVE',
+          isLive: true,
+          count: unique.length,
+        });
       }
     }
   } catch (_) {
-    // fallthrough
+    // fallthrough to curated
   }
 
-  // 楽天が取れない場合：季節3件 + 常時6件のキュレーション
+  // ── 2. 全APIが失敗した場合：季節キュレーション ──
+  const seasonalKws = EC_TREND_POOLS[season];
+  const alwaysKws   = EC_TREND_POOLS.always;
   const curated = [...seasonalKws, ...alwaysKws].slice(0, 9);
+
   return NextResponse.json({
     trends: curated,
     source: 'CURATED_EC',
