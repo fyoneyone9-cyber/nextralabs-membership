@@ -346,35 +346,113 @@ function SettingsPanel({
   const STORAGE_KEY_PMS  = 'nextra_ai_pms_config'
   const STORAGE_KEY_LOCK = 'nextra_ai_lock_config'
 
-  // localStorage から復元
-  const saved = typeof window !== 'undefined'
-    ? JSON.parse(localStorage.getItem(STORAGE_KEY_PMS) || '{}')
-    : {}
-  const savedLock = typeof window !== 'undefined'
-    ? JSON.parse(localStorage.getItem(STORAGE_KEY_LOCK) || '{}')
-    : {}
+  // localStorageから復元（複数フィールド対応）
+  const saved     = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem(STORAGE_KEY_PMS)  || '{}') : {}
+  const savedLock = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem(STORAGE_KEY_LOCK) || '{}') : {}
 
-  const [pmsApiKey, setPmsApiKey]     = useState<string>(saved.apiKey || '')
-  const [lockApiKey, setLockApiKey]   = useState<string>(savedLock.apiKey || '')
-  const [pmsStatus, setPmsStatus]     = useState<ConnectStatus>(null)
-  const [lockStatus, setLockStatus]   = useState<ConnectStatus>(null)
-  const [pmsTesting, setPmsTesting]   = useState(false)
+  // PMS フィールド
+  const [pmsFields, setPmsFields] = useState<Record<string, string>>(saved.fields || {})
+  // 錠 フィールド
+  const [lockFields, setLockFields] = useState<Record<string, string>>(savedLock.fields || {})
+
+  const [pmsStatus,  setPmsStatus]  = useState<ConnectStatus>(null)
+  const [lockStatus, setLockStatus] = useState<ConnectStatus>(null)
+  const [pmsTesting, setPmsTesting]  = useState(false)
   const [lockTesting, setLockTesting] = useState(false)
-  const [showPmsKey, setShowPmsKey]   = useState(false)
-  const [showLockKey, setShowLockKey] = useState(false)
+  const [showFields, setShowFields] = useState<Record<string, boolean>>({})
 
   const pmsInfo  = PMS_OPTIONS.find(p => p.id === pms)!
   const lockInfo = LOCK_OPTIONS.find(l => l.id === lockType)!
 
+  // PMS必須フィールド定義
+  const PMS_FIELDS: Record<string, { key: string; label: string; ph: string; secret?: boolean; hint?: string }[]> = {
+    staysee:        [{ key: 'apiKey',       label: 'APIキー',                      ph: 'sk-xxxxxxxx',              secret: true, hint: 'Staysee管理画面 → 設定 → APIキー' }],
+    airhost:        [{ key: 'apiKey',       label: 'APIキー',                      ph: 'ah-xxxxxxxx',              secret: true, hint: 'エアホスト管理画面 → API連携' }],
+    easyaccounting: [{ key: 'apiKey',       label: 'APIキー',                      ph: 'ea-xxxxxxxx',              secret: true, hint: 'イージー会計 → 設定 → API連携（開発中）' }],
+    bets24:         [{ key: 'apiKey',       label: 'APIキー',                      ph: 'bets-xxxxxxxx',            secret: true, hint: 'BETS24管理画面 → API設定（開発中）' }],
+    neppan:         [{ key: 'apiKey',       label: 'APIキー',                      ph: 'np-xxxxxxxx',              secret: true, hint: 'ねっぱん！管理画面 → API設定（開発中）' }],
+    cloudbeds:      [
+      { key: 'clientId',     label: 'Client ID',     ph: 'cb_client_xxxxxxxx', hint: 'Cloudbeds → Apps → API' },
+      { key: 'clientSecret', label: 'Client Secret', ph: 'cb_secret_xxxxxxxx', secret: true, hint: 'Cloudbeds → Apps → API' },
+    ],
+    beds24:         [
+      { key: 'propKey',     label: 'Prop Key (APIトークン)',  ph: 'xxxxxxxxxxxxxxxx', secret: true, hint: 'Beds24 → My Account → Advanced → API Keys' },
+      { key: 'inviteCode',  label: 'Invite Code（初回のみ）', ph: 'invite-xxxxxxxx',   hint: 'Beds24アカウントの招待コード（初期設定時のみ必要）' },
+    ],
+    apaleo:         [
+      { key: 'clientId',     label: 'Client ID',     ph: 'APALEO-xxxxxxxx', hint: 'apaleo Developer Portal → Apps' },
+      { key: 'clientSecret', label: 'Client Secret', ph: 'xxxxxxxxxxxxxxxx', secret: true },
+    ],
+    hostaway:       [
+      { key: 'accountId',   label: 'Account ID',    ph: '12345',           hint: 'Hostaway → Settings → API' },
+      { key: 'apiKey',      label: 'APIキー',        ph: 'ha-xxxxxxxx',    secret: true },
+    ],
+    little_hotelier: [{ key: 'apiKey', label: 'APIキー', ph: 'lh-xxxxxxxx', secret: true, hint: 'Little Hotelier → Settings → API Access' }],
+    opera:           [
+      { key: 'clientId',     label: 'Client ID',     ph: 'oracle-client-id',     hint: 'Oracle Cloud → API Gateway' },
+      { key: 'clientSecret', label: 'Client Secret', ph: 'oracle-client-secret', secret: true },
+      { key: 'propertyCode', label: 'Property Code', ph: 'HOTEL1', hint: 'Operaのプロパティコード（英数字）' },
+    ],
+    none: [],
+  }
+
+  // 錠デバイス必須フィールド定義
+  const LOCK_FIELDS: Record<string, { key: string; label: string; ph: string; secret?: boolean; hint?: string }[]> = {
+    switchbot: [
+      { key: 'token',     label: 'Open Token',  ph: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', secret: true,
+        hint: 'SwitchBotアプリ → プロフィール → 設定 → アプリ・SwitchBotウェブサービス → APIキー' },
+      { key: 'secret',    label: 'Secret Key',  ph: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', secret: true,
+        hint: 'Open Token取得画面の下に表示されるSecret Key（v1.1必須）' },
+    ],
+    ttlock: [
+      { key: 'clientId',  label: 'Client ID',   ph: 'your_client_id',     hint: 'TTLock開発者ポータル → アプリ作成 → Client ID' },
+      { key: 'clientSecret', label: 'Client Secret', ph: 'your_client_secret', secret: true },
+      { key: 'username',  label: 'ログインID（メール）', ph: 'your@email.com',  hint: 'TTLockアプリのアカウントメールアドレス' },
+      { key: 'password',  label: 'パスワード',   ph: '••••••••',           secret: true, hint: 'TTLockアプリのログインパスワード' },
+    ],
+    sesame: [
+      { key: 'apiKey',    label: 'API Key',      ph: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', secret: true,
+        hint: 'my.sesame.team → ログイン → API Keys → Generate API Key' },
+    ],
+    igloohome: [
+      { key: 'clientId',     label: 'Client ID',     ph: 'igl-client-xxxxxxxx', hint: 'igloohome Bridge → Developer → API Settings' },
+      { key: 'clientSecret', label: 'Client Secret', ph: 'igl-secret-xxxxxxxx', secret: true },
+    ],
+    remotelock: [
+      { key: 'apiKey',    label: 'APIキー',      ph: 'rl-xxxxxxxxxxxxxxxx', secret: true, hint: 'RemoteLOCK管理画面 → 設定 → API連携（開発中）' },
+    ],
+    nuki: [
+      { key: 'apiToken',  label: 'API Token',    ph: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', secret: true,
+        hint: 'Nuki Web（https://web.nuki.io）→ API → Manage API tokens → Generate API token' },
+    ],
+    salto: [
+      { key: 'clientId',     label: 'Client ID',     ph: 'salto-client-xxxxxxxx', hint: 'Saltoパートナーポータルで取得（開発中）' },
+      { key: 'clientSecret', label: 'Client Secret', ph: 'salto-secret-xxxxxxxx', secret: true },
+    ],
+    fixed: [
+      { key: 'password',  label: '固定パスワード（4〜8桁の数字）', ph: '8421', hint: 'チェックイン時にゲストへ案内するコード番号' },
+    ],
+    offline: [],
+  }
+
+  const curPmsFields  = PMS_FIELDS[pms]  || []
+  const curLockFields = LOCK_FIELDS[lockType] || []
+
+  const setPmsField  = (k: string, v: string) => setPmsFields(prev => ({ ...prev, [k]: v }))
+  const setLockField = (k: string, v: string) => setLockFields(prev => ({ ...prev, [k]: v }))
+  const toggleShow = (k: string) => setShowFields(prev => ({ ...prev, [k]: !prev[k] }))
+
   /* PMS保存 */
   const savePms = () => {
-    localStorage.setItem(STORAGE_KEY_PMS, JSON.stringify({ pms, apiKey: pmsApiKey }))
+    localStorage.setItem(STORAGE_KEY_PMS, JSON.stringify({ pms, fields: pmsFields }))
     setPmsStatus({ ok: true, message: '保存しました。「DMS接続テスト」を押してください。' })
   }
 
   /* 錠設定保存 */
   const saveLock = () => {
-    localStorage.setItem(STORAGE_KEY_LOCK, JSON.stringify({ lockType, apiKey: lockApiKey, fixedPassword }))
+    const pw = curLockFields.find(f => f.key === 'password')?.key
+    if (pw) setFixedPassword(lockFields[pw] || fixedPassword)
+    localStorage.setItem(STORAGE_KEY_LOCK, JSON.stringify({ lockType, fields: lockFields }))
     setLockStatus({ ok: true, message: '保存しました。「錠接続テスト」を押してください。' })
   }
 
@@ -386,7 +464,7 @@ function SettingsPanel({
       const res = await fetch('/api/nextra-ai/connect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'pms', pms, pmsApiKey }),
+        body: JSON.stringify({ type: 'pms', pms, fields: pmsFields }),
       })
       const data = await res.json()
       setPmsStatus({ ok: data.ok, message: data.message })
@@ -406,7 +484,7 @@ function SettingsPanel({
       const res = await fetch('/api/nextra-ai/connect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'lock', lockType, lockApiKey }),
+        body: JSON.stringify({ type: 'lock', lockType, fields: lockFields }),
       })
       const data = await res.json()
       setLockStatus({ ok: data.ok, message: data.message })
@@ -507,30 +585,43 @@ function SettingsPanel({
             </div>
           </div>
 
-          {/* APIキー入力（ローカル以外） */}
-          {!pmsInfo.local && (
-            <div className="space-y-2">
-              <label className="text-[10px] font-medium text-slate-500">
-                {pmsInfo.label} APIキー
-                {pmsInfo.pending && <span className="ml-2 text-amber-500">（連携開発中 — 先行保存可）</span>}
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type={showPmsKey ? 'text' : 'password'}
-                  value={pmsApiKey}
-                  onChange={e => setPmsApiKey(e.target.value)}
-                  placeholder="APIキーを入力..."
-                  className={inputCls} style={inputStyle}
-                  onFocus={e => (e.target.style.borderColor = pmsInfo.color)}
-                  onBlur={e => (e.target.style.borderColor = '#334155')}
-                />
-                <button onClick={() => setShowPmsKey(!showPmsKey)}
-                  className="shrink-0 h-11 px-3 rounded-lg text-xs transition-all"
-                  style={{ background: '#0d1117', border: '1px solid #334155', color: '#64748b' }}>
-                  {showPmsKey ? '🙈' : '👁'}
-                </button>
-              </div>
+          {/* PMS動的フィールド入力 */}
+          {!pmsInfo.local && curPmsFields.length > 0 && (
+            <div className="space-y-3">
+              {pmsInfo.pending && (
+                <div className="text-[10px] px-2 py-1.5 rounded-lg text-amber-400"
+                  style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}>
+                  ⚠️ このPMSは連携開発中です。APIキーを先行保存しておくと、リリース後すぐ使えます。
+                </div>
+              )}
+              {curPmsFields.map(f => (
+                <div key={f.key} className="space-y-1">
+                  <label className="text-[10px] font-medium text-slate-500">{f.label}</label>
+                  {f.hint && <p className="text-[10px] text-slate-600">📍 {f.hint}</p>}
+                  <div className="flex gap-2">
+                    <input
+                      type={f.secret && !showFields[`pms_${f.key}`] ? 'password' : 'text'}
+                      value={pmsFields[f.key] || ''}
+                      onChange={e => setPmsField(f.key, e.target.value)}
+                      placeholder={f.ph}
+                      className={inputCls} style={inputStyle}
+                      onFocus={e => (e.target.style.borderColor = pmsInfo.color)}
+                      onBlur={e => (e.target.style.borderColor = '#334155')}
+                    />
+                    {f.secret && (
+                      <button onClick={() => toggleShow(`pms_${f.key}`)}
+                        className="shrink-0 h-11 px-3 rounded-lg text-xs transition-all"
+                        style={{ background: '#0d1117', border: '1px solid #334155', color: '#64748b' }}>
+                        {showFields[`pms_${f.key}`] ? '🙈' : '👁'}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
+          )}
+          {!pmsInfo.local && curPmsFields.length === 0 && (
+            <p className="text-[10px] text-slate-600 px-2">このPMSのフィールド定義は準備中です。</p>
           )}
 
           {/* PMS 保存 + 接続テストボタン */}
@@ -614,49 +705,53 @@ function SettingsPanel({
             </div>
           </div>
 
-          {/* 固定パスワード入力 */}
-          {lockType === 'fixed' && (
-            <div className="space-y-1">
-              <label className="text-[10px] font-medium text-slate-500">固定パスワード（4〜8桁の数字）</label>
-              <input
-                value={fixedPassword}
-                onChange={e => setFixedPassword(e.target.value.replace(/\D/g, '').slice(0, 8))}
-                placeholder="例：8421"
-                className={inputCls} style={inputStyle}
-                maxLength={8}
-                onFocus={e => (e.target.style.borderColor = '#f97316')}
-                onBlur={e => (e.target.style.borderColor = '#334155')}
-              />
+          {/* 錠デバイス動的フィールド入力 */}
+          {curLockFields.length > 0 && (
+            <div className="space-y-3">
+              {lockInfo.pending && (
+                <div className="text-[10px] px-2 py-1.5 rounded-lg text-amber-400"
+                  style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)' }}>
+                  ⚠️ このデバイスは連携開発中です。先行保存しておくとリリース後すぐ使えます。
+                </div>
+              )}
+              {curLockFields.map(f => (
+                <div key={f.key} className="space-y-1">
+                  <label className="text-[10px] font-medium text-slate-500">{f.label}</label>
+                  {f.hint && <p className="text-[10px] text-slate-600">📍 {f.hint}</p>}
+                  <div className="flex gap-2">
+                    <input
+                      type={f.secret && !showFields[`lock_${f.key}`] ? 'password' : 'text'}
+                      value={lockFields[f.key] || ''}
+                      onChange={e => {
+                        const val = f.key === 'password' && lockType === 'fixed'
+                          ? e.target.value.replace(/\D/g, '').slice(0, 8)
+                          : e.target.value
+                        setLockField(f.key, val)
+                        if (f.key === 'password') setFixedPassword(val)
+                      }}
+                      placeholder={f.ph}
+                      className={inputCls} style={inputStyle}
+                      maxLength={f.key === 'password' && lockType === 'fixed' ? 8 : undefined}
+                      onFocus={e => (e.target.style.borderColor = lockInfo.color)}
+                      onBlur={e => (e.target.style.borderColor = '#334155')}
+                    />
+                    {f.secret && (
+                      <button onClick={() => toggleShow(`lock_${f.key}`)}
+                        className="shrink-0 h-11 px-3 rounded-lg text-xs transition-all"
+                        style={{ background: '#0d1117', border: '1px solid #334155', color: '#64748b' }}>
+                        {showFields[`lock_${f.key}`] ? '🙈' : '👁'}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
-
-          {/* API型: トークン入力（メタデータから動的生成） */}
-          {!lockInfo.local && (
-            <div className="space-y-2">
-              <label className="text-[10px] font-medium text-slate-500">
-                {lockInfo.keyLabel}
-                {lockInfo.pending && <span className="ml-2 text-amber-500">（開発中 — 先行保存可）</span>}
-              </label>
-              {lockInfo.keyHint && (
-                <p className="text-[10px] text-slate-600">📍 {lockInfo.keyHint}</p>
-              )}
-              <div className="flex gap-2">
-                <input
-                  type={showLockKey ? 'text' : 'password'}
-                  value={lockApiKey}
-                  onChange={e => setLockApiKey(e.target.value)}
-                  placeholder={`${lockInfo.label} ${lockInfo.keyLabel}を入力...`}
-                  className={inputCls} style={inputStyle}
-                  onFocus={e => (e.target.style.borderColor = lockInfo.color)}
-                  onBlur={e => (e.target.style.borderColor = '#334155')}
-                />
-                <button onClick={() => setShowLockKey(!showLockKey)}
-                  className="shrink-0 h-11 px-3 rounded-lg text-xs transition-all"
-                  style={{ background: '#0d1117', border: '1px solid #334155', color: '#64748b' }}>
-                  {showLockKey ? '🙈' : '👁'}
-                </button>
-              </div>
-            </div>
+          {lockType === 'offline' && (
+            <p className="text-[10px] text-slate-500 px-2 py-2 rounded-lg"
+              style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
+              🏠 API不要モード。スタッフが手動で鍵をゲストへ渡す運用です。
+            </p>
           )}
 
           {/* 錠 保存 + 接続テストボタン */}
@@ -748,14 +843,16 @@ const MasterEngine = () => {
 
   useEffect(() => {
     setIsMounted(true)
-    // localStorage から設定を復元
+    // localStorage から設定を復元（fields対応）
     try {
-      const savedPms = JSON.parse(localStorage.getItem('nextra_ai_pms_config') || '{}')
+      const savedPms  = JSON.parse(localStorage.getItem('nextra_ai_pms_config')  || '{}')
       const savedLock = JSON.parse(localStorage.getItem('nextra_ai_lock_config') || '{}')
-      if (savedPms.pms) setPms(savedPms.pms)
+      if (savedPms.pms)     setPms(savedPms.pms)
       if (savedLock.lockType) setLockType(savedLock.lockType)
-      if (savedLock.fixedPassword) setFixedPassword(savedLock.fixedPassword)
-      if (savedPms.pms === 'none') setIsOnline(false)
+      // fixedPasswordをfields.passwordから復元
+      const lockPw = savedLock.fields?.password
+      if (lockPw) setFixedPassword(lockPw)
+      if (savedPms.pms === 'none' || savedPms.pms === 'offline') setIsOnline(false)
     } catch { /* ignore */ }
   }, [])
 
