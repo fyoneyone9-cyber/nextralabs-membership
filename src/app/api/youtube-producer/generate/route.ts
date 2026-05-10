@@ -149,36 +149,49 @@ export async function POST(req: NextRequest) {
         )
         return NextResponse.json(result)
       }
-      case 'thumbnail': {
+      case 'thumbnail1': {
         const result = await callLLM(
-          `あなたはYouTubeサムネイルの専門家です。指定された「画像スタイル」に基づいた映えるサムネイル構成案を3つ作成してください。
-3つは必ずコンセプトを変え、それぞれ完全に異なる構図・文字・アプローチにしてください。
+          `あなたはYouTubeサムネイルの専門家です。
+【案1「衝撃型」】のサムネイルを1つだけ作成してください。
+- コンセプト: 視聴者が「え！？」となる数字・事実・逆説をタイトル文字に入れる。人物のリアクション顔アップ構図。
+- 指定画像スタイル: ${genrePrompt}
 
-指定画像スタイル: ${genrePrompt}
-
-【3案のコンセプト（必ず守ること）】
-- 案1「衝撃型」: 視聴者が思わず「え！？」となる数字・事実・逆説をタイトル文字に入れる。構図は人物のリアクション顔アップ
-- 案2「ビフォーアフター型」: 変化・対比・成長を示す。before/afterや対比を視覚的に表現する構図
-- 案3「謎かけ型」: 答えを隠す・続きが気になるタイトル。神秘的・引きのある構図
-
-各案で「title」は必ず内容が異なる別のキャッチコピーにすること。同じ文字列の使い回しは絶対禁止。
-
-必ず以下のJSON形式で返してください:
+必ず以下のJSON形式のみで返してください:
 {
-  "thumbnails": [
-    {
-      "title": "案1専用のキャッチコピー（衝撃型・数字や逆説を含む）",
-      "imagePrompt": "英語のAI画像生成プロンプト。16:9、高画質、衝撃型の構図。台本の登場人物・シーンを具体的に描写。"
-    },
-    {
-      "title": "案2専用のキャッチコピー（ビフォーアフター型・変化を示す）",
-      "imagePrompt": "英語のAI画像生成プロンプト。16:9、高画質、ビフォーアフター型の構図。台本の登場人物・シーンを具体的に描写。"
-    },
-    {
-      "title": "案3専用のキャッチコピー（謎かけ型・続きが気になる）",
-      "imagePrompt": "英語のAI画像生成プロンプト。16:9、高画質、謎かけ型の構図。台本の登場人物・シーンを具体的に描写。"
-    }
-  ]
+  "title": "衝撃型キャッチコピー（数字・逆説・禁断ワードを含む30文字以内）",
+  "imagePrompt": "detailed English image generation prompt, 16:9 YouTube thumbnail, shock reaction style, close-up face expression, bright dramatic lighting"
+}`,
+          `ジャンル: ${genre}\n台本タイトル: ${scriptTitle}\n\n台本全文:\n${transcriptSlice}`
+        )
+        return NextResponse.json(result)
+      }
+      case 'thumbnail2': {
+        const result = await callLLM(
+          `あなたはYouTubeサムネイルの専門家です。
+【案2「ビフォーアフター型」】のサムネイルを1つだけ作成してください。
+- コンセプト: 変化・対比・成長を示す。before/afterや対比を視覚的に表現する構図。
+- 指定画像スタイル: ${genrePrompt}
+
+必ず以下のJSON形式のみで返してください:
+{
+  "title": "ビフォーアフター型キャッチコピー（変化・対比・成長を示す30文字以内）",
+  "imagePrompt": "detailed English image generation prompt, 16:9 YouTube thumbnail, before-after split composition, transformation theme, contrast lighting"
+}`,
+          `ジャンル: ${genre}\n台本タイトル: ${scriptTitle}\n\n台本全文:\n${transcriptSlice}`
+        )
+        return NextResponse.json(result)
+      }
+      case 'thumbnail3': {
+        const result = await callLLM(
+          `あなたはYouTubeサムネイルの専門家です。
+【案3「謎かけ型」】のサムネイルを1つだけ作成してください。
+- コンセプト: 答えを隠す・続きが気になるタイトル。神秘的・引きのある構図。
+- 指定画像スタイル: ${genrePrompt}
+
+必ず以下のJSON形式のみで返してください:
+{
+  "title": "謎かけ型キャッチコピー（続きが気になる・答えを隠す30文字以内）",
+  "imagePrompt": "detailed English image generation prompt, 16:9 YouTube thumbnail, mysterious atmosphere, shadow and light contrast, cinematic suspense"
 }`,
           `ジャンル: ${genre}\n台本タイトル: ${scriptTitle}\n\n台本全文:\n${transcriptSlice}`
         )

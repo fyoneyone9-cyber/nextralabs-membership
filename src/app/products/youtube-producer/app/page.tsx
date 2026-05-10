@@ -232,8 +232,17 @@ function YoutubeProducerApp() {
 
     const charRes = await callApi('characters', { transcript, genrePrompt })
     if (charRes) setCharacters(charRes.characters)
-    const thumbRes = await callApi('thumbnail', { transcript, genre, scriptTitle: script?.opening, genrePrompt })
-    if (thumbRes) setThumbnails(thumbRes.thumbnails)
+
+    // サムネイルは3案を独立したAPIコールで生成（同じ結果を防ぐ）
+    const thumbPayload = { transcript, genre, scriptTitle: script?.opening, genrePrompt }
+    const [t1, t2, t3] = await Promise.all([
+      callApi('thumbnail1', thumbPayload),
+      callApi('thumbnail2', thumbPayload),
+      callApi('thumbnail3', thumbPayload),
+    ])
+    const thumbs = [t1, t2, t3].filter(Boolean)
+    if (thumbs.length > 0) setThumbnails(thumbs)
+
     const seoRes = await callApi('title', { transcript, script: script?.fullScript, genre })
     if (seoRes) setSeo(seoRes)
     const bgmRes = await callApi('bgm', { transcript, genre })
