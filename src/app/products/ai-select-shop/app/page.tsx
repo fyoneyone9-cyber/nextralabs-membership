@@ -1068,7 +1068,7 @@ const AISelectShopApp = () => {
 
                 {/* キーワード */}
                 <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-2">
-                  <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">キーワード</label>
+                  <label className="text-xs font-medium text-slate-400 tracking-tight">キーワード</label>
                   <input
                     value={keyword}
                     onChange={e => setKeyword(e.target.value)}
@@ -1079,7 +1079,7 @@ const AISelectShopApp = () => {
                 {/* デザインスタイル + ランダムボタン */}
                 <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-3">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">デザインスタイル</label>
+                    <label className="text-xs font-medium text-slate-400 tracking-tight">デザインスタイル</label>
                     <button
                       onClick={handleRandom}
                       className="flex items-center gap-1.5 text-xs font-medium text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 rounded-lg px-3 py-1.5 transition-all"
@@ -1107,7 +1107,7 @@ const AISelectShopApp = () => {
 
                 {/* Tシャツカラー */}
                 <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-3">
-                  <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">Tシャツカラー</label>
+                  <label className="text-xs font-medium text-slate-400 tracking-tight">Tシャツカラー</label>
                   <div className="flex flex-wrap gap-2">
                     {TSHIRT_COLORS.map(c => (
                       <button
@@ -1128,7 +1128,7 @@ const AISelectShopApp = () => {
                 {/* サイズ選択 */}
                 <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-3">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">販売サイズ</label>
+                    <label className="text-xs font-medium text-slate-400 tracking-tight">販売サイズ</label>
                     <span className="text-xs text-slate-500">{selectedSizes.length}種選択中</span>
                   </div>
                   <div className="flex gap-2 flex-wrap">
@@ -1174,7 +1174,7 @@ const AISelectShopApp = () => {
               {/* 右：プレビュー */}
               <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 flex flex-col items-center gap-4">
                 <div className="flex items-center justify-between w-full">
-                  <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">プレビュー</p>
+                  <p className="text-xs font-medium text-slate-400 tracking-tight">プレビュー</p>
                   {styleId && (
                     <span className="text-xs text-emerald-400 font-medium">
                       {STYLES.find(s => s.id === styleId)?.name}
@@ -1211,19 +1211,19 @@ const AISelectShopApp = () => {
               {/* 出品詳細 */}
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="bg-[#0f172a] border border-slate-700/50 rounded-xl p-4 space-y-1">
-                  <p className="text-xs text-slate-500 uppercase tracking-wide">商品名</p>
+                  <p className="text-xs text-slate-500 tracking-tight">商品名</p>
                   <p className="text-white font-medium">{keyword}</p>
                 </div>
                 <div className="bg-[#0f172a] border border-slate-700/50 rounded-xl p-4 space-y-1">
-                  <p className="text-xs text-slate-500 uppercase tracking-wide">デザイン</p>
+                  <p className="text-xs text-slate-500 tracking-tight">デザイン</p>
                   <p className="text-white font-medium">{STYLES.find(s => s.id === styleId)?.name || styleId}</p>
                 </div>
                 <div className="bg-[#0f172a] border border-slate-700/50 rounded-xl p-4 space-y-1">
-                  <p className="text-xs text-slate-500 uppercase tracking-wide">出品先</p>
+                  <p className="text-xs text-slate-500 tracking-tight">出品先</p>
                   <p className="text-emerald-400 font-medium font-mono text-xs">z5ju1n-vs.myshopify.com</p>
                 </div>
                 <div className="bg-[#0f172a] border border-slate-700/50 rounded-xl p-4 space-y-1">
-                  <p className="text-xs text-slate-500 uppercase tracking-wide">販売サイズ</p>
+                  <p className="text-xs text-slate-500 tracking-tight">販売サイズ</p>
                   <p className="text-white font-medium text-xs">{selectedSizes.join(' / ')}</p>
                 </div>
               </div>
