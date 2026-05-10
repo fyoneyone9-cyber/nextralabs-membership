@@ -210,7 +210,7 @@ export default function DashboardActivity() {
               </div>
             )}
 
-            <Link href="/dms/admin"
+            <Link href="/admin"
               className="flex items-center justify-center gap-2 w-full py-2.5 border border-emerald-500/30 hover:border-emerald-500/60 hover:bg-emerald-500/5 rounded-xl text-xs font-semibold text-emerald-400 transition-all">
               管理者画面を開く →
             </Link>
