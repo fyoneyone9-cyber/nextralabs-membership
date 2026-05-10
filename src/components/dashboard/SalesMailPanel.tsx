@@ -61,8 +61,8 @@ NextraLabsの米山と申します。
 
 ━━━━━━━━━━━━━━━━
 NextraLabs
-米山 文貴（Ninja3）
-Email: f.yoneyone9@gmail.com
+米山 文貴
+Email: info@marriage-road.jp
 Tel: 080-3207-8422
 https://membership-site-nextralabos.vercel.app
 ━━━━━━━━━━━━━━━━`,
@@ -91,8 +91,8 @@ NextraLabsの米山と申します。
 
 ━━━━━━━━━━━━━━━━
 NextraLabs / マレッジロードジャパン
-米山 文貴（Ninja3）
-Email: f.yoneyone9@gmail.com
+米山 文貴
+Email: info@marriage-road.jp
 Tel: 080-3207-8422
 https://www.youtube.com/@marriage_road
 ━━━━━━━━━━━━━━━━`,
@@ -120,8 +120,8 @@ NextraLabsの米山と申します。
 
 ━━━━━━━━━━━━━━━━
 NextraLabs
-米山 文貴（Ninja3）
-Email: f.yoneyone9@gmail.com
+米山 文貴
+Email: info@marriage-road.jp
 Tel: 080-3207-8422
 https://membership-site-nextralabos.vercel.app
 ━━━━━━━━━━━━━━━━`,
@@ -147,8 +147,8 @@ NextraLabsの米山と申します。
 
 ━━━━━━━━━━━━━━━━
 NextraLabs
-米山 文貴（Ninja3）
-Email: f.yoneyone9@gmail.com
+米山 文貴
+Email: info@marriage-road.jp
 Tel: 080-3207-8422
 https://membership-site-nextralabos.vercel.app
 ━━━━━━━━━━━━━━━━`,
