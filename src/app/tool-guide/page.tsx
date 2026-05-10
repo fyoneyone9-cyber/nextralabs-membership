@@ -1,15 +1,19 @@
-﻿﻿'use client'
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Metadata } from 'next'
 import { 
   Search, Bot, FileText, ArrowRight, PawPrint, Network, ShieldAlert, Store, Rocket, 
   ClipboardCheck, ShieldCheck, Wallet, Home, Flame, MessageCircleHeart, Shirt, 
   Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, Ticket, BookOpen, 
   Sprout, Zap, Droplets, Utensils, Building2, Youtube, Hotel, Key, Lock, CreditCard, Coins, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Smartphone
 } from 'lucide-react'
+
+export const metadata: Metadata = {
+  title: 'ツール説明 | 全AIツール一覧 | NextraLabs',
+  description: 'NextraLabsが提供する全30の特化型AIエンジン。学習計画・副業支援・家計管理・防犯・ガーデニングなど、あらゆる課題に特化したAIツールの機能と使い方を網羅した公式ディレクトリ。',
+}
 
 const TOOL_DIRECTORY = [
   { id: 'nextra-ai',           name: 'Nextra AI',                 desc: '宿泊予約・鍵発行を完全同期。人の手を介さない次世代フロント体験。',              icon: Building2,     color: 'text-emerald-500' },
@@ -42,13 +46,9 @@ const TOOL_DIRECTORY = [
   { id: 'pet-translator',     name: 'AIペット行動モニター',       desc: 'ペットの仕草・鳴き声をAIが解析。気持ちと健康状態を可視化。',                  icon: PawPrint,      color: 'text-amber-500'  },
   { id: 'resignation-assistant', name: 'AI退職支援アシスタント', desc: '退職手続きの流れを完全ガイド。書類作成から交渉まで伴走。',                    icon: Briefcase,     color: 'text-slate-400'  },
   { id: 'shio-taiou',         name: '塩対応AIアシスタント',       desc: '苦手な相手への返信をAIが冷静・的確に代行。ストレスゼロ。',                  icon: Shield,        color: 'text-cyan-400'   },
-];
+]
 
-const ToolGuideContent = () => {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
-  if (!mounted) return <div className="min-h-screen bg-[#050507]" />;
-
+export default function ToolGuidePage() {
   return (
     <div className="min-h-screen bg-[#050507] text-slate-200 font-sans pb-20">
       <div className="container mx-auto px-4 py-12 max-w-6xl space-y-12">
@@ -62,17 +62,17 @@ const ToolGuideContent = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 text-left">
           {TOOL_DIRECTORY.map((tool) => (
-            <Link key={tool.id} href={"/products/" + tool.id}>
+            <Link key={tool.id} href={'/products/' + tool.id}>
               <Card className="bg-[#13141f] transition-all duration-300 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group shadow-xl relative border-2 border-emerald-500/50 hover:border-emerald-400">
                 <CardContent className="p-6 flex items-center gap-6 h-full">
-                  <div className={"w-16 h-12 bg-white/5 " + tool.color + " rounded-2xl flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform shadow-inner flex-shrink-0"}>
+                  <div className={'w-16 h-12 bg-white/5 ' + tool.color + ' rounded-2xl flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform shadow-inner flex-shrink-0'}>
                     <tool.icon size={32} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-lg md:text-xl font-bold text-white uppercase mb-1 truncate group-hover:text-emerald-400 transition-colors">{tool.name}</h3>
-                    <p className="text-slate-400 text-[11px] md:text-xs font-bold leading-relaxed line-clamp-2 ">{tool.desc}</p>
+                    <p className="text-slate-400 text-[11px] md:text-xs font-bold leading-relaxed line-clamp-2">{tool.desc}</p>
                     <div className="flex items-center gap-2 mt-3 text-emerald-500 text-[9px] font-bold uppercase tracking-tight opacity-60 group-hover:opacity-100 transition-opacity">
-                      解説ページを開く ?
+                      解説ページを開く
                     </div>
                   </div>
                 </CardContent>
@@ -81,16 +81,7 @@ const ToolGuideContent = () => {
           ))}
         </div>
       </div>
-      <div className="text-center opacity-10 mt-12 font-bold uppercase tracking-[0.3em] text-[8px]">Nextra AILabs MASTERMODEL ? 2026</div>
+      <div className="text-center opacity-10 mt-12 font-bold uppercase tracking-[0.3em] text-[8px]">Nextra AILabs MASTERMODEL 2026</div>
     </div>
   )
-}
-
-const NoSSRWrapper = dynamic(() => Promise.resolve(ToolGuideContent), {
-  ssr: false,
-  loading: () => <div className="min-h-screen bg-[#050507]" />
-})
-
-export default function ToolGuidePage() {
-  return <NoSSRWrapper />
 }
