@@ -9,17 +9,11 @@ import {
 } from 'lucide-react'
 
 /* ─────────── 型定義 ─────────── */
-// ゲスト向けタブ（チェックアウトは非表示 — スタッフPIN経由のみ）
-const TABS = [
-  { id: 'kiosk',    label: 'スタート',        icon: Monitor  },
-  { id: 'search',   label: '予約検索',        icon: Search   },
-  { id: 'checkin',  label: 'チェックイン',    icon: UserPlus },
-  { id: 'lock',     label: '鍵発行',          icon: Key      },
-]
-// スタッフ専用タブ（PIN認証後に追加表示）
-const STAFF_TABS = [
-  { id: 'checkout', label: 'チェックアウト', icon: LogOut },
-]
+// ウィザードステップ（ゲスト導線は必ずこの順番）
+// kiosk → search → checkin → lock
+// checkout はスタッフPIN経由のみ
+const WIZARD_STEPS = ['kiosk', 'search', 'checkin', 'lock'] as const
+type WizardStep = typeof WIZARD_STEPS[number] | 'checkout'
 const LANGS = ['日本語', 'English', '中文', '한국어']
 
 // PMS設定
@@ -1173,8 +1167,14 @@ const MasterEngine = () => {
     return '—'
   }, [lockType, fixedPassword, selectedReservation])
 
-  /* ─── タブ切り替え ─── */
+  /* ─── ウィザードステップ切り替え（ガード付き） ─── */
   const gotoTab = (id: string) => {
+    // ガード: checkin / lock は予約選択済みが前提
+    if ((id === 'checkin' || id === 'lock') && !selectedReservation) {
+      setActiveTab('search')
+      setSearchMode('select')
+      return
+    }
     setActiveTab(id)
     if (id === 'search') { setSearchMode('select'); setSearchQuery(''); setSearchResults([]) }
     if (id === 'checkout') { setCheckoutStep('search'); setCheckoutQuery(''); setCheckoutResults([]); setCheckoutTarget(null) }
@@ -1251,74 +1251,98 @@ const MasterEngine = () => {
         onMouseUp={() => { if (longPressTimer.current) clearTimeout(longPressTimer.current) }}
       />
 
-      {/* Hero — タブレット最適化: max-w-2xl / pt控えめ / px小さめ */}
-      <div className="max-w-2xl mx-auto px-4 pt-8 pb-5 flex items-start justify-between gap-3 flex-wrap">
-        <div className="space-y-3">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-medium"
-            style={{ borderColor: 'rgba(16,185,129,0.3)', color: '#34d399', background: 'rgba(16,185,129,0.08)' }}>
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Nextra AI Autonomous OS
+      {/* ヘッダー: ロゴ + ステップ表示（全画面タブレット想定） */}
+      <div className="max-w-4xl mx-auto px-6 pt-6 pb-4">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'rgba(16,185,129,0.15)' }}>
+              <Monitor size={16} style={{ color: '#10b981' }} />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-slate-100">Nextra AI KIOSK</p>
+              <p className="text-[10px] text-slate-600">スマートチェックインシステム</p>
+            </div>
           </div>
-          <h1 className="text-2xl font-semibold text-slate-100 tracking-tight leading-[1.2]">
-            スマート<span style={{ color: '#10b981' }}>チェックイン</span>
-          </h1>
-          <p className="text-slate-400 text-xs">PMS連携・本人確認・電子署名・鍵発行を自動化</p>
+          {/* オンライン状態 + スタッフモード */}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-slate-600 flex items-center gap-1">
+              <span className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-red-500'}`} />
+              {isOnline ? 'PMS接続中' : 'ローカルモード'}
+            </span>
+            {staffMode && (
+              <button onClick={() => { setStaffMode(false); setActiveTab('kiosk') }}
+                className="text-[10px] px-2 py-1 rounded-md"
+                style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.2)' }}>
+                🔓 スタッフ解除
+              </button>
+            )}
+          </div>
         </div>
-        {/* PMS/錠設定はDMS（/dms）で管理 */}
+
+        {/* ウィザードプログレス（ゲスト用・kiosk→search→checkin→lock） */}
+        {activeTab !== 'checkout' && (
+          <div className="flex items-center gap-0">
+            {[
+              { id: 'kiosk',   label: 'スタート',  num: 1 },
+              { id: 'search',  label: '予約確認',  num: 2 },
+              { id: 'checkin', label: '受付',      num: 3 },
+              { id: 'lock',    label: '鍵発行',    num: 4 },
+            ].map((s, i) => {
+              const stepIdx = WIZARD_STEPS.indexOf(activeTab as typeof WIZARD_STEPS[number])
+              const thisIdx = i
+              const isDone   = stepIdx > thisIdx
+              const isActive = stepIdx === thisIdx
+              return (
+                <React.Fragment key={s.id}>
+                  <div className="flex flex-col items-center gap-1">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all"
+                      style={{
+                        background: isDone ? '#10b981' : isActive ? 'rgba(16,185,129,0.2)' : '#1e293b',
+                        border: `2px solid ${isDone || isActive ? '#10b981' : '#334155'}`,
+                        color: isDone ? '#fff' : isActive ? '#10b981' : '#475569',
+                      }}>
+                      {isDone ? '✓' : s.num}
+                    </div>
+                    <span className="text-[9px] font-medium whitespace-nowrap"
+                      style={{ color: isActive ? '#34d399' : isDone ? '#10b981' : '#475569' }}>
+                      {s.label}
+                    </span>
+                  </div>
+                  {i < 3 && (
+                    <div className="flex-1 h-0.5 mb-4 mx-1 transition-all"
+                      style={{ background: isDone ? '#10b981' : '#1e293b' }} />
+                  )}
+                </React.Fragment>
+              )
+            })}
+          </div>
+        )}
+        {activeTab === 'checkout' && (
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)' }}>
+            <LogOut size={13} style={{ color: '#818cf8' }} />
+            <span className="text-xs font-semibold text-indigo-300">スタッフモード — チェックアウト処理</span>
+          </div>
+        )}
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 space-y-4">
+      <div className="max-w-4xl mx-auto px-6 space-y-4">
 
-        {/* PMS接続状態バナー + DMS同期ボタン */}
-        <PmsBanner
-          pms={pms}
-          lockType={lockType}
-          isOnline={isOnline}
-          onSync={async () => {
-            // PMS接続テストを実行してDMSの状態を更新
-            try {
-              const savedPms = JSON.parse(localStorage.getItem('nextra_ai_pms_config') || '{}')
-              const res = await fetch('/api/nextra-ai/connect', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ type: 'pms', pms, pmsApiKey: savedPms.apiKey || '' }),
-              })
-              const data = await res.json()
-              setIsOnline(data.ok && data.mode !== 'local')
-            } catch {
-              setIsOnline(false)
-            }
-          }}
-        />
-
-        {/* タブナビ（スタッフモード時のみチェックアウトタブ追加） */}
-        <div className="flex gap-1 p-1 rounded-xl overflow-x-auto" style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
-          {[...TABS, ...(staffMode ? STAFF_TABS : [])].map(tab => (
-            <button key={tab.id} onClick={() => gotoTab(tab.id)}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all shrink-0"
-              style={activeTab === tab.id ? { background: '#10b981', color: '#fff' } : { color: '#64748b' }}>
-              <tab.icon size={13} />
-              {tab.label}
-            </button>
-          ))}
-          {/* スタッフモード解除ボタン */}
-          {staffMode && (
-            <button onClick={() => { setStaffMode(false); gotoTab('kiosk') }}
-              className="ml-auto px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap"
-              style={{ color: '#475569' }}>
-              🔓 解除
-            </button>
-          )}
-        </div>
-
-        {/* ════ スタート ════ */}
+        {/* ════ STEP 1: スタート ════ */}
         {activeTab === 'kiosk' && (
-          <div className="rounded-xl flex flex-col items-center justify-center py-16 space-y-10"
-            style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
-            <div className="flex gap-2 flex-wrap justify-center">
+          <div className="rounded-2xl flex flex-col items-center justify-center gap-8"
+            style={{ background: '#0d1117', border: '1px solid #1e293b', minHeight: 'calc(100vh - 200px)' }}>
+
+            {/* ホテル名 + ウェルカム */}
+            <div className="text-center space-y-2">
+              <p className="text-4xl font-semibold text-slate-100">ようこそ</p>
+              <p className="text-slate-500 text-sm">タッチしてチェックインを開始してください</p>
+            </div>
+
+            {/* 言語選択 */}
+            <div className="flex gap-3 flex-wrap justify-center">
               {LANGS.map(lang => (
                 <button key={lang} onClick={() => setSelectedLang(lang)}
-                  className="px-4 py-1.5 rounded-full text-xs font-medium transition-all"
+                  className="px-6 py-3 rounded-full text-sm font-medium transition-all"
                   style={{
                     background: selectedLang === lang ? 'rgba(16,185,129,0.15)' : '#13141f',
                     border: selectedLang === lang ? '1px solid rgba(16,185,129,0.6)' : '1px solid #334155',
@@ -1328,21 +1352,34 @@ const MasterEngine = () => {
                 </button>
               ))}
             </div>
-            {/* ゲスト向けボタン（チェックインのみ） */}
+
+            {/* メインCTA */}
             <button onClick={() => gotoTab('search')}
-              className="w-full max-w-xs h-52 rounded-[2rem] flex flex-col items-center justify-center gap-3 transition-all active:scale-95"
-              style={{ background: '#13141f', border: '2px solid rgba(16,185,129,0.4)', boxShadow: '0 0 24px rgba(16,185,129,0.08)' }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.8)')}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.4)')}>
-              <UserPlus size={48} style={{ color: '#10b981' }} />
-              <span className="text-emerald-400 text-xl font-bold">チェックイン</span>
-              <span className="text-slate-600 text-xs">タップして開始</span>
+              className="w-72 h-72 rounded-[3rem] flex flex-col items-center justify-center gap-5 transition-all active:scale-95"
+              style={{
+                background: 'linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.04))',
+                border: '2px solid rgba(16,185,129,0.5)',
+                boxShadow: '0 0 60px rgba(16,185,129,0.12)',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = '#10b981'
+                e.currentTarget.style.boxShadow = '0 0 80px rgba(16,185,129,0.25)'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = 'rgba(16,185,129,0.5)'
+                e.currentTarget.style.boxShadow = '0 0 60px rgba(16,185,129,0.12)'
+              }}>
+              <UserPlus size={72} style={{ color: '#10b981' }} />
+              <div className="text-center">
+                <p className="text-emerald-400 text-3xl font-bold">チェックイン</p>
+                <p className="text-slate-600 text-sm mt-1">CHECK IN</p>
+              </div>
             </button>
 
-            {/* スタッフ向け小ボタン（PIN認証） */}
+            {/* スタッフメニュー（目立たない） */}
             <button
               onClick={() => setShowPinOverlay(true)}
-              className="text-[10px] text-slate-700 hover:text-slate-500 transition-colors py-1 px-3 rounded-lg"
+              className="text-xs text-slate-700 hover:text-slate-500 transition-colors py-2 px-4 rounded-lg"
               style={{ border: '1px solid transparent' }}
               onMouseEnter={e => (e.currentTarget.style.borderColor = '#334155')}
               onMouseLeave={e => (e.currentTarget.style.borderColor = 'transparent')}>
@@ -1351,84 +1388,102 @@ const MasterEngine = () => {
           </div>
         )}
 
-        {/* ════ 予約検索 ════ */}
+        {/* ════ STEP 2: 予約検索 ════ */}
         {activeTab === 'search' && (
-          <div className="space-y-4">
+          <div className="rounded-2xl overflow-hidden" style={{ background: '#0d1117', border: '1px solid #1e293b', minHeight: 'calc(100vh - 200px)' }}>
+
+            {/* ヘッダー */}
+            <div className="px-8 py-6 border-b flex items-center justify-between" style={{ borderColor: '#1e293b' }}>
+              <div>
+                <h2 className="text-2xl font-semibold text-slate-100">予約の確認</h2>
+                <p className="text-slate-500 text-sm mt-1">お名前・予約番号・電話番号で検索できます</p>
+              </div>
+              <button onClick={() => gotoTab('kiosk')}
+                className="text-xs text-slate-600 hover:text-slate-400 transition-colors px-3 py-2 rounded-lg"
+                style={{ border: '1px solid #1e293b' }}>← 戻る</button>
+            </div>
+
+            <div className="p-8 space-y-6">
             {searchMode === 'select' && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-3 gap-5">
                 {[
-                  { mode: 'reservation' as const, icon: Hash,         label: '予約番号で検索', color: '#10b981' },
-                  { mode: 'name'        as const, icon: ClipboardList, label: '氏名で検索',     color: '#6366f1' },
-                  { mode: 'phone'       as const, icon: Phone,         label: '電話番号で検索',  color: '#f59e0b' },
+                  { mode: 'reservation' as const, icon: Hash,         label: '予約番号', sub: 'Reservation No.', color: '#10b981' },
+                  { mode: 'name'        as const, icon: ClipboardList, label: 'お名前',   sub: 'Guest Name',      color: '#6366f1' },
+                  { mode: 'phone'       as const, icon: Phone,         label: '電話番号', sub: 'Phone Number',    color: '#f59e0b' },
                 ].map(item => (
                   <button key={item.mode} onClick={() => setSearchMode(item.mode)}
-                    className="rounded-xl p-8 flex flex-col items-center justify-center gap-4 transition-all hover:scale-[1.02]"
-                    style={{ background: '#0d1117', border: '1px solid #1e293b' }}
-                    onMouseEnter={e => (e.currentTarget.style.borderColor = `${item.color}60`)}
-                    onMouseLeave={e => (e.currentTarget.style.borderColor = '#1e293b')}>
-                    <item.icon size={40} style={{ color: item.color }} />
-                    <p className="text-sm font-semibold text-slate-200">{item.label}</p>
+                    className="rounded-2xl py-10 flex flex-col items-center justify-center gap-4 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                    style={{ background: '#13141f', border: `2px solid ${item.color}25` }}
+                    onMouseEnter={e => (e.currentTarget.style.borderColor = `${item.color}80`)}
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = `${item.color}25`)}>
+                    <item.icon size={52} style={{ color: item.color }} />
+                    <div className="text-center">
+                      <p className="text-base font-semibold text-slate-200">{item.label}</p>
+                      <p className="text-xs text-slate-600 mt-1">{item.sub}</p>
+                    </div>
                   </button>
                 ))}
               </div>
             )}
 
             {searchMode === 'select' && (
-              <div className="rounded-xl p-6 flex flex-col items-center gap-3"
-                style={{ background: '#0d1117', border: '1px dashed #1e293b' }}>
+              <div className="rounded-2xl p-6 flex flex-col items-center gap-4"
+                style={{ background: '#13141f', border: '1px dashed #334155' }}>
                 <button onClick={startCamera}
-                  className="flex items-center gap-2 px-6 h-10 rounded-lg text-sm font-semibold transition-all"
+                  className="flex items-center gap-3 px-8 h-14 rounded-xl text-base font-semibold transition-all"
                   style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', color: '#34d399' }}>
-                  <QrCode size={16} /> QRコードをスキャン
+                  <QrCode size={20} /> QRコードをスキャン
                 </button>
-                <p className="text-xs text-slate-600">予約確認メールのQRコードをご用意ください</p>
+                <p className="text-sm text-slate-600">予約確認メールのQRコードをご用意ください</p>
               </div>
             )}
 
             {searchMode !== 'select' && (
-              <div className="rounded-xl p-6 space-y-4" style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
+              <div className="rounded-2xl p-6 space-y-5" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-slate-200">
-                    {searchMode === 'reservation' ? '予約番号を入力' : searchMode === 'name' ? '氏名を入力' : '電話番号を入力'}
+                  <p className="text-lg font-semibold text-slate-200">
+                    {searchMode === 'reservation' ? '予約番号を入力' : searchMode === 'name' ? 'お名前を入力' : '電話番号を入力'}
                   </p>
                   <button onClick={() => { setSearchMode('select'); setSearchResults([]) }}
-                    className="text-xs text-slate-600 hover:text-slate-400 transition-colors">← 戻る</button>
+                    className="text-sm text-slate-600 hover:text-slate-400 transition-colors px-3 py-2 rounded-lg"
+                    style={{ border: '1px solid #334155' }}>← 戻る</button>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                   <input
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && doSearch()}
                     placeholder={searchMode === 'reservation' ? 'NTR-001' : searchMode === 'name' ? '山田 太郎' : '090-1234-5678'}
-                    className={inputCls} style={inputStyle}
+                    className="flex-1 h-14 text-lg rounded-xl px-5"
+                    style={{ background: '#0d1117', border: '2px solid #334155', color: '#f1f5f9', outline: 'none' }}
                     onFocus={e => (e.target.style.borderColor = '#10b981')}
                     onBlur={e => (e.target.style.borderColor = '#334155')}
                   />
                   <button onClick={doSearch} disabled={searching}
-                    className="shrink-0 h-11 px-5 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all"
+                    className="shrink-0 h-14 px-8 rounded-xl text-base font-semibold flex items-center gap-2 transition-all"
                     style={{ background: '#10b981', color: '#fff', opacity: searching ? 0.7 : 1 }}>
-                    {searching ? <Loader2 size={15} className="animate-spin" /> : <Search size={15} />}
+                    {searching ? <Loader2 size={18} className="animate-spin" /> : <Search size={18} />}
                     検索
                   </button>
                 </div>
 
                 {searchResults.length > 0 && (
-                  <div className="space-y-2 pt-2">
-                    <p className="text-xs text-slate-500">{searchResults.length}件見つかりました</p>
+                  <div className="space-y-3 pt-2">
+                    <p className="text-sm text-slate-500">{searchResults.length}件見つかりました</p>
                     {searchResults.map(r => (
-                      <div key={r.id} className="rounded-xl p-4 flex items-center justify-between gap-4"
-                        style={{ background: '#13141f', border: '1px solid #1e293b' }}>
-                        <div className="space-y-1">
-                          <p className="text-sm font-semibold text-slate-100">{resName(r)} 様</p>
-                          <p className="text-xs text-slate-500">
-                            {r.id} | {resRoom(r)}号室 | {resDate(r.start_date)}〜{resDate(r.end_date)}
+                      <div key={r.id} className="rounded-xl p-5 flex items-center justify-between gap-4"
+                        style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
+                        <div className="space-y-1.5">
+                          <p className="text-lg font-semibold text-slate-100">{resName(r)} 様</p>
+                          <p className="text-sm text-slate-400">
+                            {resRoom(r)}号室 &nbsp;·&nbsp; {resDate(r.start_date)}〜{resDate(r.end_date)}
                           </p>
-                          <p className="text-xs text-slate-600">{resPhone(r)}</p>
+                          <p className="text-xs text-slate-600">{r.id} &nbsp;·&nbsp; {resPhone(r)}</p>
                         </div>
                         <button onClick={() => selectReservation(r)}
-                          className="shrink-0 h-9 px-4 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all"
+                          className="shrink-0 h-12 px-6 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all"
                           style={{ background: '#10b981', color: '#fff' }}>
-                          選択 <ArrowRight size={13} />
+                          この予約で進む <ArrowRight size={15} />
                         </button>
                       </div>
                     ))}
@@ -1436,17 +1491,18 @@ const MasterEngine = () => {
                 )}
 
                 {searchResults.length === 0 && searchQuery && !searching && (
-                  <div className="rounded-xl p-6 text-center" style={{ background: '#13141f' }}>
-                    <p className="text-sm text-slate-500">該当する予約が見つかりませんでした</p>
-                    <p className="text-xs text-slate-600 mt-1">入力内容をご確認ください</p>
+                  <div className="rounded-xl p-8 text-center" style={{ background: '#0d1117' }}>
+                    <p className="text-base text-slate-500">該当する予約が見つかりませんでした</p>
+                    <p className="text-sm text-slate-600 mt-2">入力内容をご確認ください</p>
                   </div>
                 )}
               </div>
             )}
+            </div>
           </div>
         )}
 
-        {/* ════ 自動チェックイン（3ステップ・画面内完結） ════ */}
+        {/* ════ STEP 3: チェックイン（予約選択済みのみ） ════ */}
         {activeTab === 'checkin' && (() => {
           // checkinStep: 'scan' | 'info' | 'sign'
           const step = (checkinStatus === 'IDLE' || checkinStatus === 'SCANNING') && !ledgerName
@@ -1456,15 +1512,15 @@ const MasterEngine = () => {
             : 'info'
 
           return (
-          <div className="rounded-xl overflow-hidden" style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
+          <div className="rounded-2xl overflow-hidden" style={{ background: '#0d1117', border: '1px solid #1e293b', minHeight: 'calc(100vh - 200px)' }}>
 
             {/* 予約バナー（常時表示） */}
             {selectedReservation && (
-              <div className="flex items-center gap-2 px-4 py-2.5 border-b" style={{ borderColor: '#1e293b', background: 'rgba(16,185,129,0.05)' }}>
-                <CheckCircle2 size={13} className="text-emerald-400 shrink-0" />
-                <p className="text-xs text-slate-300 truncate">
-                  <span className="font-semibold text-emerald-400">{resName(selectedReservation)} 様</span>
-                  <span className="text-slate-600 ml-2">{resRoom(selectedReservation)}号室 · {resDate(selectedReservation.start_date)}〜{resDate(selectedReservation.end_date)}</span>
+              <div className="flex items-center gap-3 px-6 py-4 border-b" style={{ borderColor: '#1e293b', background: 'rgba(16,185,129,0.05)' }}>
+                <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+                <p className="text-sm text-slate-300">
+                  <span className="font-bold text-emerald-400">{resName(selectedReservation)} 様</span>
+                  <span className="text-slate-500 ml-3">{resRoom(selectedReservation)}号室 &nbsp;·&nbsp; {resDate(selectedReservation.start_date)}〜{resDate(selectedReservation.end_date)}</span>
                 </p>
               </div>
             )}
@@ -1639,50 +1695,67 @@ const MasterEngine = () => {
           )
         })()}
 
-        {/* ════ 鍵発行 ════ */}
+        {/* ════ STEP 4: 鍵発行 ════ */}
         {activeTab === 'lock' && (
-          <div className="rounded-xl p-10 flex flex-col items-center justify-center gap-8"
-            style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
-            <div className="flex items-center gap-3">
-              <Lock size={36} style={{ color: '#10b981' }} />
-              <div>
-                <h3 className="text-xl font-semibold text-slate-100">アクセスキー発行</h3>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  {LOCK_OPTIONS.find(l => l.id === lockType)?.label} 連携
-                </p>
+          <div className="rounded-2xl flex flex-col items-center justify-between gap-6 px-8 py-10"
+            style={{ background: '#0d1117', border: '1px solid #1e293b', minHeight: 'calc(100vh - 200px)' }}>
+
+            {/* 完了ヘッダー */}
+            <div className="flex flex-col items-center gap-3 text-center">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center"
+                style={{ background: 'rgba(16,185,129,0.12)' }}>
+                <CheckCircle2 size={36} style={{ color: '#10b981' }} />
               </div>
+              <p className="text-3xl font-semibold text-slate-100">チェックイン完了</p>
+              <p className="text-slate-500 text-sm">
+                {selectedReservation ? `${resName(selectedReservation)} 様` : 'ゲスト様'}、ようこそ
+              </p>
             </div>
 
-            <div className="rounded-xl px-12 py-8 text-center"
-              style={{ background: '#13141f', border: '2px solid #10b981', boxShadow: '0 0 30px rgba(16,185,129,0.15)' }}>
-              <p className="text-xs font-medium text-slate-500 mb-1">
-                Room: {selectedReservation ? resRoom(selectedReservation) : '—'}
+            {/* 部屋番号 ── 超大 */}
+            <div className="w-full rounded-2xl flex flex-col items-center gap-2 py-8"
+              style={{ background: '#13141f', border: '1px solid #1e293b' }}>
+              <p className="text-base font-medium text-slate-500">お部屋番号</p>
+              <p className="font-bold leading-none" style={{ fontSize: '9rem', color: '#f1f5f9', letterSpacing: '-0.02em' }}>
+                {selectedReservation ? resRoom(selectedReservation) : '—'}
               </p>
-              <p className="text-xs text-slate-600 mb-3">
+              <p className="text-slate-600 text-sm">
                 {selectedReservation
-                  ? `${resDate(selectedReservation.start_date)}〜${resDate(selectedReservation.end_date)}`
-                  : '—'}
+                  ? `${resDate(selectedReservation.start_date)} 〜 ${resDate(selectedReservation.end_date)}`
+                  : ''}
               </p>
-              {lockType !== 'fixed' && (
-                <p className="text-xs text-slate-500 mb-2">
-                  {lockType === 'switchbot' ? 'SwitchBot' : 'TT Lock'} 連携中
-                </p>
-              )}
-              <p className="text-6xl font-bold tracking-[0.2em]" style={{ color: '#10b981' }}>
+            </div>
+
+            {/* 暗証番号 ── 超大 */}
+            <div className="w-full rounded-2xl flex flex-col items-center gap-3 py-8"
+              style={{
+                background: 'linear-gradient(135deg, rgba(16,185,129,0.08), rgba(16,185,129,0.03))',
+                border: '2px solid rgba(16,185,129,0.4)',
+                boxShadow: '0 0 40px rgba(16,185,129,0.1)',
+              }}>
+              <p className="text-base font-medium" style={{ color: '#6ee7b7' }}>
+                {lockType === 'fixed' ? '固定暗証番号' : lockType === 'switchbot' ? 'SwitchBot 一時コード' : lockType === 'ttlock' ? 'TT Lock 一時コード' : 'アクセスコード'}
+              </p>
+              <p className="font-bold tracking-[0.25em] leading-none" style={{ fontSize: '7rem', color: '#10b981' }}>
                 {getLockCode()}
               </p>
-              <p className="text-xs text-slate-500 mt-3">
-                {lockType === 'fixed' ? '固定暗証番号' : lockType === 'switchbot' ? 'SwitchBot 一時コード' : 'TT Lock 一時コード'}
+              <p className="text-sm text-slate-600">
+                {LOCK_OPTIONS.find(l => l.id === lockType)?.label ?? '錠デバイス'} 連携
               </p>
             </div>
 
-            <div className="flex justify-center">
-              <button onClick={() => gotoTab('kiosk')}
-                className="px-10 h-11 rounded-xl text-sm font-semibold transition-all"
-                style={{ background: '#10b981', color: '#fff' }}>
-                スタートへ戻る
-              </button>
-            </div>
+            {/* スタートへ戻る */}
+            <button onClick={() => {
+              // 状態リセット
+              setSelectedReservation(null)
+              setLedgerName(''); setLedgerAddress(''); setLedgerOccupation(''); setLedgerTravel('')
+              setSignatureData(''); setCheckinStatus('IDLE')
+              gotoTab('kiosk')
+            }}
+              className="w-full h-16 rounded-2xl text-lg font-semibold transition-all active:scale-[0.98]"
+              style={{ background: '#10b981', color: '#fff' }}>
+              スタートに戻る
+            </button>
           </div>
         )}
 
