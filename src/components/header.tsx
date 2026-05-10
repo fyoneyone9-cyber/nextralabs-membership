@@ -4,8 +4,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
-import { Moon, Sun, Menu, X, User, LogOut, Twitter as TwitterIcon, Search, Download, Zap, Hotel, Share2, ShieldCheck, BookOpen, Briefcase, HeartHandshake, ChevronDown } from 'lucide-react'
-import { useTheme } from 'next-themes'
+import { Menu, X, User, LogOut, Twitter as TwitterIcon, Search, Download, Zap, Hotel, Share2, ShieldCheck, BookOpen, Briefcase, HeartHandshake, ChevronDown } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 const GENRE_LINKS = [
@@ -68,7 +67,7 @@ function InstallBanner() {
 export function Header() {
   const router = useRouter()
   const supabase = createClient()
-  const { theme, setTheme } = useTheme()
+
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
   const [userPlan, setUserPlan] = useState<string | null>(null)
@@ -184,9 +183,7 @@ export function Header() {
             ) : (
               <Link href="/login"><Button variant="ghost" size="sm">ログイン</Button></Link>
             )}
-            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-              {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
+
           </nav>
 
           <div className="flex items-center gap-2 md:hidden">
