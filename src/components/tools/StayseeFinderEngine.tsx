@@ -843,16 +843,24 @@ const MasterEngine = () => {
 
   useEffect(() => {
     setIsMounted(true)
-    // localStorage から設定を復元（fields対応）
+    // DMSセッション（Supabaseログイン済みテナント設定）から復元
+    // localStorage は設定の一時キャッシュとして許容（書き込みはDMSログイン時のみ）
     try {
-      const savedPms  = JSON.parse(localStorage.getItem('nextra_ai_pms_config')  || '{}')
-      const savedLock = JSON.parse(localStorage.getItem('nextra_ai_lock_config') || '{}')
-      if (savedPms.pms)     setPms(savedPms.pms)
-      if (savedLock.lockType) setLockType(savedLock.lockType)
-      // fixedPasswordをfields.passwordから復元
-      const lockPw = savedLock.fields?.password
+      const dmsSession = JSON.parse(localStorage.getItem('dms_session') || '{}')
+      if (dmsSession.pms_type && dmsSession.pms_type !== 'none') {
+        setPms(dmsSession.pms_type)
+        setIsOnline(true)
+      } else {
+        // フォールバック: KIOSK用設定キャッシュを確認
+        const cached = JSON.parse(localStorage.getItem('nextra_ai_pms_config') || '{}')
+        if (cached.pms) setPms(cached.pms)
+        if (cached.pms === 'none' || cached.pms === 'offline') setIsOnline(false)
+      }
+      // 錠設定
+      const cachedLock = JSON.parse(localStorage.getItem('nextra_ai_lock_config') || '{}')
+      if (cachedLock.lockType) setLockType(cachedLock.lockType)
+      const lockPw = cachedLock.fields?.password
       if (lockPw) setFixedPassword(lockPw)
-      if (savedPms.pms === 'none' || savedPms.pms === 'offline') setIsOnline(false)
     } catch { /* ignore */ }
   }, [])
 
@@ -1132,23 +1140,23 @@ const MasterEngine = () => {
   return (
     <div className="min-h-screen pb-24" style={{ background: '#050507', fontFamily: "'Inter', 'Noto Sans JP', sans-serif" }}>
 
-      {/* Hero */}
-      <div className="max-w-5xl mx-auto px-6 pt-14 pb-6 flex items-start justify-between gap-4 flex-wrap">
+      {/* Hero — タブレット最適化: max-w-2xl / pt控えめ / px小さめ */}
+      <div className="max-w-2xl mx-auto px-4 pt-8 pb-5 flex items-start justify-between gap-3 flex-wrap">
         <div className="space-y-3">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-medium"
             style={{ borderColor: 'rgba(16,185,129,0.3)', color: '#34d399', background: 'rgba(16,185,129,0.08)' }}>
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             Nextra AI Autonomous OS
           </div>
-          <h1 className="text-3xl md:text-4xl font-semibold text-slate-100 tracking-tight leading-[1.2]">
-            次世代スマート<span style={{ color: '#10b981' }}>チェックイン</span>プロトコル
+          <h1 className="text-2xl font-semibold text-slate-100 tracking-tight leading-[1.2]">
+            スマート<span style={{ color: '#10b981' }}>チェックイン</span>
           </h1>
-          <p className="text-slate-400 text-sm">PMS連携・本人確認・電子署名・鍵発行を完全自動化するホテルDXシステム。</p>
+          <p className="text-slate-400 text-xs">PMS連携・本人確認・電子署名・鍵発行を自動化</p>
         </div>
         {/* PMS/錠設定はDMS（/dms）で管理 */}
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 space-y-4">
+      <div className="max-w-2xl mx-auto px-4 space-y-4">
 
         {/* PMS接続状態バナー + DMS同期ボタン */}
         <PmsBanner
@@ -1201,24 +1209,25 @@ const MasterEngine = () => {
                 </button>
               ))}
             </div>
-            <div className="flex gap-8 flex-wrap justify-center">
+            {/* タブレット最適化: 縦幅大きめ・横並び・タッチしやすいサイズ */}
+            <div className="grid grid-cols-2 gap-5 w-full max-w-md">
               <button onClick={() => gotoTab('search')}
-                className="w-44 h-44 rounded-[2rem] flex flex-col items-center justify-center gap-2 transition-all hover:scale-[1.03]"
-                style={{ background: '#13141f', border: '2px solid rgba(16,185,129,0.35)' }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.7)')}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.35)')}>
-                <UserPlus size={32} style={{ color: '#10b981' }} />
-                <span className="text-emerald-400 text-base font-bold">チェックイン</span>
-                <span className="text-slate-600 text-[10px]">CHECK IN</span>
+                className="h-52 rounded-[2rem] flex flex-col items-center justify-center gap-3 transition-all active:scale-95"
+                style={{ background: '#13141f', border: '2px solid rgba(16,185,129,0.4)', boxShadow: '0 0 24px rgba(16,185,129,0.08)' }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.8)')}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(16,185,129,0.4)')}>
+                <UserPlus size={44} style={{ color: '#10b981' }} />
+                <span className="text-emerald-400 text-lg font-bold">チェックイン</span>
+                <span className="text-slate-600 text-xs">CHECK IN</span>
               </button>
               <button onClick={() => gotoTab('checkout')}
-                className="w-44 h-44 rounded-[2rem] flex flex-col items-center justify-center gap-2 transition-all hover:scale-[1.03]"
-                style={{ background: '#13141f', border: '2px solid rgba(99,102,241,0.35)' }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(99,102,241,0.7)')}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(99,102,241,0.35)')}>
-                <LogOut size={32} style={{ color: '#818cf8' }} />
-                <span className="text-indigo-400 text-base font-bold">チェックアウト</span>
-                <span className="text-slate-600 text-[10px]">CHECK OUT</span>
+                className="h-52 rounded-[2rem] flex flex-col items-center justify-center gap-3 transition-all active:scale-95"
+                style={{ background: '#13141f', border: '2px solid rgba(99,102,241,0.4)', boxShadow: '0 0 24px rgba(99,102,241,0.08)' }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(99,102,241,0.8)')}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(99,102,241,0.4)')}>
+                <LogOut size={44} style={{ color: '#818cf8' }} />
+                <span className="text-indigo-400 text-lg font-bold">チェックアウト</span>
+                <span className="text-slate-600 text-xs">CHECK OUT</span>
               </button>
             </div>
             <p className="text-xs text-slate-600">画面をタッチして開始してください</p>
@@ -1324,27 +1333,56 @@ const MasterEngine = () => {
         {activeTab === 'checkin' && (
           <div className="rounded-xl p-6 space-y-6" style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
 
-            {/* カメラモーダル */}
+            {/* カメラビュー（インライン表示 — モーダルなし） */}
             {isCameraOpen && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90">
-                <div className="w-full max-w-sm space-y-4">
-                  {cameraError ? (
-                    <div className="rounded-xl p-6 text-center space-y-3"
-                      style={{ background: '#0d1117', border: '1px solid #ef4444' }}>
-                      <p className="text-red-400 text-sm">{cameraError}</p>
-                      <button onClick={closeCamera} className="px-6 py-2 rounded-lg bg-slate-800 text-sm font-bold text-white">閉じる</button>
+              <div className="rounded-xl overflow-hidden space-y-3" style={{ border: '1px solid rgba(16,185,129,0.3)' }}>
+                {cameraError ? (
+                  /* エラー: インラインで表示（画面を覆わない） */
+                  <div className="flex items-start gap-3 px-4 py-3 rounded-xl"
+                    style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                    <span className="text-red-400 text-lg mt-0.5">⚠️</span>
+                    <div className="flex-1">
+                      <p className="text-red-400 text-sm font-semibold">カメラエラー</p>
+                      <p className="text-slate-500 text-xs mt-0.5">{cameraError}</p>
+                      <p className="text-slate-600 text-[10px] mt-1">
+                        ブラウザの設定でカメラのアクセスを許可してください（設定 → サイトの設定 → カメラ）
+                      </p>
                     </div>
-                  ) : (
-                    <>
-                      <video ref={videoRef} autoPlay playsInline className="w-full rounded-xl" />
-                      <canvas ref={canvasRef} className="hidden" />
-                      <div className="flex gap-2">
-                        <button onClick={closeCamera} className="flex-1 py-3 rounded-lg bg-slate-800 text-sm font-bold text-white">キャンセル</button>
-                        <button onClick={capturePhoto} className="flex-1 py-3 rounded-lg bg-emerald-600 text-sm font-bold text-white">撮影する</button>
+                    <button onClick={closeCamera}
+                      className="text-slate-600 hover:text-slate-400 shrink-0 p-1">
+                      <span style={{ fontSize: 16 }}>✕</span>
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <div className="relative bg-black rounded-xl overflow-hidden">
+                      <video ref={videoRef} autoPlay playsInline muted className="w-full" style={{ maxHeight: '280px', objectFit: 'cover' }} />
+                      {/* QRスキャン枠 */}
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="w-48 h-48 border-2 rounded-xl opacity-70"
+                          style={{ borderColor: '#10b981', boxShadow: '0 0 0 9999px rgba(0,0,0,0.45)' }} />
                       </div>
-                    </>
-                  )}
-                </div>
+                      <div className="absolute bottom-3 left-0 right-0 text-center">
+                        <span className="text-[11px] text-emerald-400 font-medium px-3 py-1 rounded-full"
+                          style={{ background: 'rgba(0,0,0,0.7)' }}>
+                          QRコードを枠内に合わせてください
+                        </span>
+                      </div>
+                    </div>
+                    <canvas ref={canvasRef} className="hidden" />
+                    <div className="flex gap-2 px-3 pb-3">
+                      <button onClick={closeCamera}
+                        className="flex-1 h-10 rounded-lg bg-slate-800 text-sm font-semibold text-slate-300">
+                        キャンセル
+                      </button>
+                      <button onClick={capturePhoto}
+                        className="flex-1 h-10 rounded-lg text-sm font-semibold text-white"
+                        style={{ background: '#10b981' }}>
+                        手動で撮影
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             )}
 
@@ -1374,7 +1412,7 @@ const MasterEngine = () => {
               </span>
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-5">
+            <div className="grid gap-5">
 
               {/* Step 1: IDスキャン（カメラのみ） */}
               <div className="rounded-xl p-5 space-y-4" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
@@ -1384,7 +1422,7 @@ const MasterEngine = () => {
                 </p>
 
                 <div
-                  className="rounded-lg aspect-video flex flex-col items-center justify-center gap-3 cursor-pointer transition-all"
+                  className="rounded-xl h-36 flex flex-col items-center justify-center gap-3 cursor-pointer transition-all"
                   style={{ border: `2px dashed ${checkinStatus === 'VERIFIED' ? '#10b981' : '#334155'}`, background: '#0a0b0f' }}
                   onClick={() => checkinStatus === 'IDLE' && startCamera()}>
                   {checkinStatus === 'SCANNING' && <Loader2 size={36} className="text-emerald-400 animate-spin" />}
