@@ -114,6 +114,9 @@ interface PlanResult {
   itinerary: string
   tripStyle: string
   departure: string
+  checkinDate: string
+  checkoutDate: string
+  hotelArea: string
   remainingToday: number
 }
 
@@ -602,6 +605,35 @@ export default function PilgrimagePlanner() {
             </a>
           )}
         </div>
+
+        {/* Googleカレンダーに追加 */}
+        {(() => {
+          const cin = result.checkinDate || ''
+          const cout = result.checkoutDate || ''
+          if (!cin) return null
+          const fmt = (d: string) => d.replace(/-/g, '')
+          const title = encodeURIComponent(`【${result.workTitle}】聖地巡礼ツアー`)
+          const details = encodeURIComponent(
+            `${result.workTitle}の聖地巡礼ツアー（${result.tripStyle}）\n\nスポット:\n` +
+            result.spots.map((s, i) => `${i+1}. ${s.name}`).join('\n') +
+            `\n\nエリア: ${result.hotelArea}\n出発: ${result.departure}\n\n※NextraLabs 推し活聖地巡礼プランナーで生成`
+          )
+          const location = encodeURIComponent(result.spots[0]?.address || result.hotelArea || '')
+          const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${fmt(cin)}/${fmt(cout)}&details=${details}&location=${location}`
+          return (
+            <a
+              href={calUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 h-11 w-full bg-[#0d1117] border border-emerald-500/30 text-emerald-400 rounded-xl text-sm font-medium hover:bg-emerald-500/10 hover:border-emerald-500/60 transition"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3h-1V1h-2v2H8V1H6v2H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+              </svg>
+              Googleカレンダーに追加
+            </a>
+          )
+        })()}
 
         <button onClick={handleBack} className="w-full text-xs text-slate-600 py-2 hover:text-slate-400 transition">
           ← ダッシュボードに戻る

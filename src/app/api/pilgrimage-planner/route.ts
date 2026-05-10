@@ -572,7 +572,7 @@ ${daySchedule}
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.7, maxOutputTokens: 2048 },
+          generationConfig: { temperature: 0.7, maxOutputTokens: 8192 },
         }),
       }
     )
@@ -662,7 +662,10 @@ export async function POST(req: NextRequest) {
       itinerary,
       tripStyle: tripStyle || '1泊2日',
       departure: departure || '東京',
-      remainingToday: DAILY_LIMIT - usageCount - 1,
+      checkinDate: defaultCheckin,
+      checkoutDate: defaultCheckout,
+      hotelArea,
+      remainingToday: isOwner ? 999 : DAILY_LIMIT - usageCount - 1,
     })
   } catch (e) {
     console.error(e)
