@@ -3,19 +3,19 @@ import React, { useState } from 'react'
 import { Loader2, CheckCircle2, Repeat, Download, Video, ImageIcon, FileText, Upload } from 'lucide-react'
 
 const MODES = [
-  { id: 'video', label: '動画', icon: Video,     formats: ['mp4', 'webm', 'gif', 'mp3'] },
-  { id: 'image', label: '画像', icon: ImageIcon,  formats: ['webp', 'png', 'jpg', 'ico'] },
-  { id: 'pdf',   label: 'PDF',  icon: FileText,   formats: ['pdf-min'] },
+  { id: 'video', label: '動画変換', icon: Video,      formats: ['mp4', 'webm', 'gif', 'mp3'] },
+  { id: 'image', label: '画像変換', icon: ImageIcon,   formats: ['webp', 'png', 'jpg', 'ico'] },
+  { id: 'pdf',   label: 'PDF圧縮', icon: FileText,    formats: ['pdf-min'] },
 ] as const
 
 type Mode = typeof MODES[number]['id']
 
 export default function UniversalConverterApp() {
-  const [mode, setMode]               = useState<Mode>('video')
-  const [file, setFile]               = useState<File | null>(null)
+  const [mode, setMode]                 = useState<Mode>('video')
+  const [file, setFile]                 = useState<File | null>(null)
   const [targetFormat, setTargetFormat] = useState('mp4')
   const [isProcessing, setIsProcessing] = useState(false)
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
+  const [downloadUrl, setDownloadUrl]   = useState<string | null>(null)
 
   const currentMode = MODES.find(m => m.id === mode)!
 
@@ -42,116 +42,209 @@ export default function UniversalConverterApp() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050507] text-slate-100 font-sans">
-      <div className="max-w-lg mx-auto px-4 py-10 space-y-6">
+    <div
+      className="min-h-screen pb-24"
+      style={{ background: '#050507', fontFamily: "'Inter', 'Noto Sans JP', sans-serif" }}
+    >
+      {/* ─── Hero ─── */}
+      <div className="max-w-4xl mx-auto px-6 pt-16 pb-10 space-y-4">
+        {/* バッジ */}
+        <div
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-medium"
+          style={{ borderColor: 'rgba(16,185,129,0.3)', color: '#34d399', background: 'rgba(16,185,129,0.08)' }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          Universal Converter
+        </div>
 
-        {/* ヘッダー */}
-        <div className="flex items-center gap-2.5">
-          <Repeat size={18} className="text-emerald-400 shrink-0" />
-          <div>
-            <h1 className="text-base font-semibold text-white leading-tight">
-              究極AI<span className="text-emerald-400">マルチコンバーター</span>
-            </h1>
-            <p className="text-[11px] text-slate-500">動画・画像・PDFを変換</p>
+        {/* 見出し */}
+        <h1 className="text-3xl md:text-4xl font-semibold text-slate-100 tracking-tight leading-[1.2]">
+          動画・画像・PDFを<span style={{ color: '#10b981' }}>AIで即変換</span>
+        </h1>
+        <p className="text-slate-400 text-sm leading-relaxed max-w-xl">
+          ファイルをアップロードするだけ。AIが画質を維持したまま最適処理します。
+          動画変換・音声抽出・画像変換・PDF圧縮をこれ一台で。
+        </p>
+      </div>
+
+      {/* ─── メインコンテンツ ─── */}
+      <div className="max-w-4xl mx-auto px-6">
+        <div className="grid lg:grid-cols-[260px_1fr] gap-6">
+
+          {/* ─── 左：モード選択 + 変換形式 ─── */}
+          <div className="space-y-4">
+            {/* モード */}
+            <div
+              className="rounded-xl p-5 space-y-3"
+              style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+            >
+              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">変換モード</p>
+              <div className="flex flex-col gap-2">
+                {MODES.map(m => (
+                  <button
+                    key={m.id}
+                    onClick={() => handleModeChange(m.id)}
+                    className="flex items-center gap-3 h-11 px-4 rounded-lg text-sm font-medium transition-all"
+                    style={
+                      mode === m.id
+                        ? { background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.4)', color: '#34d399' }
+                        : { background: 'transparent', border: '1px solid #1e293b', color: '#64748b' }
+                    }
+                  >
+                    <m.icon size={15} />
+                    {m.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 変換形式 */}
+            <div
+              className="rounded-xl p-5 space-y-3"
+              style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+            >
+              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">変換形式</p>
+              <div className="flex flex-wrap gap-2">
+                {currentMode.formats.map(f => (
+                  <button
+                    key={f}
+                    onClick={() => setTargetFormat(f)}
+                    className="h-8 px-3 rounded-lg text-xs font-semibold uppercase transition-all"
+                    style={
+                      targetFormat === f
+                        ? { border: '1px solid rgba(16,185,129,0.5)', background: 'rgba(16,185,129,0.1)', color: '#34d399' }
+                        : { border: '1px solid #1e293b', background: 'rgba(0,0,0,0.3)', color: '#475569' }
+                    }
+                  >
+                    {f === 'mp3' ? '音声抽出' : f === 'pdf-min' ? 'PDF圧縮' : f.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 使いかた */}
+            <div
+              className="rounded-xl p-5 space-y-2"
+              style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+            >
+              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">📖 使いかた</p>
+              <ol className="text-xs text-slate-500 leading-relaxed space-y-1 list-none">
+                <li>① モードと変換形式を選択</li>
+                <li>② ファイルをアップロード</li>
+                <li>③「AI変換を開始」をタップ</li>
+                <li>④ 完了後にダウンロード</li>
+              </ol>
+              <p className="text-[10px] text-slate-600 pt-1">MAX 100MB対応</p>
+            </div>
+          </div>
+
+          {/* ─── 右：アップロード & 変換 ─── */}
+          <div className="space-y-4">
+            {!downloadUrl ? (
+              <>
+                {/* アップロードゾーン */}
+                <div
+                  className="rounded-xl p-6 space-y-4"
+                  style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+                >
+                  <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">ファイルを選択</p>
+                  <label
+                    className="relative flex flex-col items-center justify-center w-full h-52 rounded-xl cursor-pointer transition-all"
+                    style={{
+                      background: 'rgba(0,0,0,0.3)',
+                      border: `2px dashed ${file ? 'rgba(16,185,129,0.5)' : '#1e293b'}`,
+                    }}
+                  >
+                    <input
+                      type="file"
+                      onChange={e => setFile(e.target.files?.[0] || null)}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                    />
+                    <Upload
+                      size={28}
+                      style={{ color: file ? '#10b981' : '#334155' }}
+                    />
+                    <p
+                      className="mt-3 text-sm font-medium pointer-events-none"
+                      style={{ color: file ? '#f1f5f9' : '#475569' }}
+                    >
+                      {file ? file.name : 'クリックまたはドラッグ&ドロップ'}
+                    </p>
+                    <p className="text-xs mt-1 pointer-events-none" style={{ color: '#475569' }}>
+                      {file
+                        ? `${(file.size / 1024 / 1024).toFixed(1)} MB`
+                        : '動画・画像・PDF（MAX 100MB）'}
+                    </p>
+                  </label>
+                </div>
+
+                {/* 変換ボタン */}
+                <button
+                  onClick={handleProcess}
+                  disabled={isProcessing || !file}
+                  className="w-full h-12 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all"
+                  style={
+                    isProcessing || !file
+                      ? { background: '#1e293b', color: '#475569', cursor: 'not-allowed' }
+                      : { background: '#10b981', color: '#fff' }
+                  }
+                >
+                  {isProcessing
+                    ? <><Loader2 size={16} className="animate-spin" />変換中...</>
+                    : <><Repeat size={16} />AI変換を開始する</>}
+                </button>
+
+                {/* プログレス表示（処理中） */}
+                {isProcessing && (
+                  <div className="space-y-2">
+                    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#1e293b' }}>
+                      <div
+                        className="h-full rounded-full animate-pulse"
+                        style={{ width: '60%', background: 'linear-gradient(90deg, #10b981, #34d399)' }}
+                      />
+                    </div>
+                    <p className="text-xs text-center" style={{ color: '#475569' }}>AIが最適処理中...</p>
+                  </div>
+                )}
+              </>
+            ) : (
+              /* ─── 完了画面 ─── */
+              <div
+                className="rounded-xl p-12 flex flex-col items-center text-center space-y-6"
+                style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+              >
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center"
+                  style={{ background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.3)' }}
+                >
+                  <CheckCircle2 size={32} style={{ color: '#10b981' }} />
+                </div>
+                <div>
+                  <p className="text-xl font-semibold text-slate-100">変換完了</p>
+                  <p className="text-sm text-slate-500 mt-1">
+                    {targetFormat === 'pdf-min' ? 'PDF圧縮' : targetFormat.toUpperCase()} で出力済み
+                  </p>
+                </div>
+                <button
+                  onClick={handleDownload}
+                  className="h-12 px-8 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all"
+                  style={{ background: '#10b981', color: '#fff' }}
+                >
+                  <Download size={16} />ダウンロード
+                </button>
+                <button
+                  onClick={() => { setDownloadUrl(null); setFile(null) }}
+                  className="text-xs transition-colors"
+                  style={{ color: '#475569' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#94a3b8')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '#475569')}
+                >
+                  別のファイルを変換する
+                </button>
+              </div>
+            )}
           </div>
         </div>
-
-        {/* 使いかた */}
-        <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 space-y-1">
-          <p className="text-xs font-semibold text-slate-400 flex items-center gap-1.5">📖 使いかた・活用マニュアル</p>
-          <p className="text-xs text-slate-500 leading-relaxed">動画・画像・PDFをこれ一台で。モードを選択し、ファイルをアップロードしてください。AIが画質を維持したまま最適処理します。</p>
-        </div>
-
-        {/* モードタブ */}
-        <div className="flex gap-1.5">
-          {MODES.map(m => (
-            <button
-              key={m.id}
-              onClick={() => handleModeChange(m.id)}
-              className={`flex-1 h-9 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 border transition-all ${
-                mode === m.id
-                  ? 'bg-emerald-600 border-emerald-500 text-white'
-                  : 'bg-white/5 border-white/10 text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <m.icon size={13} />{m.label}
-            </button>
-          ))}
-        </div>
-
-        {/* カード */}
-        <div className="bg-[#0d0f1a] border border-white/10 rounded-xl p-5 space-y-5">
-          {!downloadUrl ? (
-            <>
-              {/* フォーマット */}
-              <div className="space-y-2">
-                <p className="text-[10px] text-slate-500 uppercase tracking-wider">変換形式</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {currentMode.formats.map(f => (
-                    <button
-                      key={f}
-                      onClick={() => setTargetFormat(f)}
-                      className={`h-7 px-3 rounded-md text-[11px] font-semibold uppercase border transition-all ${
-                        targetFormat === f
-                          ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
-                          : 'border-white/10 bg-black/30 text-slate-500 hover:text-slate-300'
-                      }`}
-                    >
-                      {f === 'mp3' ? '音声抽出' : f === 'pdf-min' ? 'PDF圧縮' : f.toUpperCase()}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* アップロード */}
-              <div className="space-y-2">
-                <p className="text-[10px] text-slate-500 uppercase tracking-wider">ファイル</p>
-                <label className="relative block w-full h-28 bg-black/30 border-2 border-dashed border-white/10 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500/40 transition-all">
-                  <input type="file" onChange={e => setFile(e.target.files?.[0] || null)} className="absolute inset-0 opacity-0 cursor-pointer" />
-                  <Upload size={20} className={file ? 'text-emerald-400' : 'text-slate-600'} />
-                  <p className="mt-1.5 text-sm text-slate-300 pointer-events-none">
-                    {file ? file.name : 'クリックまたはドロップ'}
-                  </p>
-                  <p className="text-[11px] text-slate-600 mt-0.5 pointer-events-none">
-                    {file ? `${(file.size / 1024 / 1024).toFixed(1)} MB` : 'MAX 100MB'}
-                  </p>
-                </label>
-              </div>
-
-              {/* 変換ボタン */}
-              <button
-                onClick={handleProcess}
-                disabled={isProcessing || !file}
-                className="w-full h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-emerald-600 hover:bg-emerald-500 text-white"
-              >
-                {isProcessing
-                  ? <><Loader2 size={15} className="animate-spin" />変換中...</>
-                  : <><Repeat size={15} />AI変換を開始する</>}
-              </button>
-            </>
-          ) : (
-            <div className="text-center space-y-4 py-2">
-              <CheckCircle2 size={40} className="text-emerald-400 mx-auto" />
-              <div>
-                <p className="text-base font-semibold text-white">変換完了</p>
-                <p className="text-xs text-slate-500 mt-0.5">{targetFormat === 'pdf-min' ? 'PDF圧縮' : targetFormat.toUpperCase()} で出力済み</p>
-              </div>
-              <button
-                onClick={handleDownload}
-                className="h-10 px-6 bg-white text-slate-900 font-semibold text-sm rounded-lg flex items-center gap-2 mx-auto hover:bg-slate-100 transition-all"
-              >
-                <Download size={15} />ダウンロード
-              </button>
-              <button
-                onClick={() => { setDownloadUrl(null); setFile(null) }}
-                className="text-xs text-slate-600 hover:text-slate-300 transition-colors underline block mx-auto"
-              >
-                別のファイルを変換する
-              </button>
-            </div>
-          )}
-        </div>
-
       </div>
     </div>
   )
