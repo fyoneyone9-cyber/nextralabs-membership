@@ -856,22 +856,80 @@ const MasterEngine = () => {
     } catch { /* ignore */ }
   }, [])
 
-  /* ─── カメラ ─── */
+  /* ─── QRスキャン（BarcodeDetector API） ─── */
+  const qrScanTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
   const startCamera = async () => {
     setCameraError(null)
     setIsCameraOpen(true)
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false })
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false
+      })
       streamRef.current = stream
-      if (videoRef.current) { videoRef.current.srcObject = stream; videoRef.current.play() }
-    } catch { setCameraError('カメラへのアクセスが拒否されました') }
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream
+        videoRef.current.play()
+        // BarcodeDetector APIでQRを連続検出
+        videoRef.current.addEventListener('playing', () => startQrDetection(), { once: true })
+      }
+    } catch {
+      setCameraError('カメラへのアクセスが拒否されました')
+      setIsCameraOpen(false)
+    }
   }
+
+  const startQrDetection = () => {
+    // BarcodeDetector API 非対応ブラウザはスキップ（手動スキャンボタンにフォールバック）
+    if (!('BarcodeDetector' in window)) return
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const detector = new (window as any).BarcodeDetector({ formats: ['qr_code'] })
+
+    qrScanTimerRef.current = setInterval(async () => {
+      if (!videoRef.current || videoRef.current.readyState < 2) return
+      try {
+        const barcodes = await detector.detect(videoRef.current)
+        if (barcodes.length > 0) {
+          const qrValue: string = barcodes[0].rawValue || ''
+          clearInterval(qrScanTimerRef.current!)
+          closeCamera()
+          handleQrResult(qrValue)
+        }
+      } catch { /* 検出エラーは無視 */ }
+    }, 300)
+  }
+
   const closeCamera = () => {
+    if (qrScanTimerRef.current) clearInterval(qrScanTimerRef.current)
     streamRef.current?.getTracks().forEach(t => t.stop())
     setIsCameraOpen(false)
     setCameraError(null)
   }
+
+  /* ─── QR読み取り結果処理 ─── */
+  const handleQrResult = (qrValue: string) => {
+    // 予約IDがQRに含まれているか検索（例: "reservation_id=ABC123" or "ABC123" など）
+    const idMatch = qrValue.match(/(?:reservation[_-]?id[=:]?\s*)([A-Za-z0-9-]+)/i)
+      || qrValue.match(/([A-Za-z0-9]{6,20})/)
+    const extractedId = idMatch?.[1] || qrValue.trim()
+
+    if (extractedId && selectedReservation) {
+      // 予約が既に選択済み → チェックイン処理へ
+      runCheckin()
+    } else if (extractedId) {
+      // 予約IDをQRから自動検索
+      setSearchQuery(extractedId)
+      setSearchMode('reservation')
+      doSearchByQuery(extractedId)
+    } else {
+      setCameraError('QRコードから予約IDを読み取れませんでした')
+    }
+  }
+
   const capturePhoto = () => {
+    // BarcodeDetector非対応時のフォールバック（手動撮影）
     if (videoRef.current && canvasRef.current) {
       const ctx = canvasRef.current.getContext('2d')
       canvasRef.current.width = videoRef.current.videoWidth
@@ -882,19 +940,44 @@ const MasterEngine = () => {
     }
   }
 
-  /* ─── チェックイン AI読み取りシミュ ─── */
+  /* ─── チェックイン処理（予約選択済みが前提） ─── */
   const runCheckin = async () => {
     setCheckinStatus('SCANNING')
-    await new Promise(r => setTimeout(r, 2000))
+    await new Promise(r => setTimeout(r, 800))
     if (selectedReservation) {
       setLedgerName(resName(selectedReservation))
-    } else {
-      setLedgerName('山田 太郎')
-      setLedgerAddress('東京都渋谷区1-2-3')
-      setLedgerOccupation('会社員')
-      setLedgerTravel('東京')
+      setLedgerAddress((selectedReservation as Record<string, unknown>).address as string || '')
+      setLedgerOccupation('')
+      setLedgerTravel('')
     }
     setCheckinStatus('VERIFIED')
+  }
+
+  /* ─── 予約検索（クエリ直接指定版） ─── */
+  const doSearchByQuery = async (query: string) => {
+    if (!query.trim()) return
+    setSearching(true)
+    setSearchResults([])
+    try {
+      if (pms === 'none') {
+        const q = query.toLowerCase()
+        const results = LOCAL_RESERVATIONS.filter(r =>
+          r.id.toLowerCase().includes(q) ||
+          (r.name_kanji || '').toLowerCase().includes(q) ||
+          (r.tel || '').replace(/-/g, '').includes(q.replace(/-/g, ''))
+        )
+        await new Promise(r => setTimeout(r, 400))
+        setSearchResults(results)
+      } else {
+        const res = await fetch(`/api/staysee/search?q=${encodeURIComponent(query)}`)
+        const data = await res.json()
+        setSearchResults(data.reservations || [])
+      }
+    } catch {
+      setSearchResults([])
+    } finally {
+      setSearching(false)
+    }
   }
 
   /* ─── 予約検索（PMS分岐） ─── */
