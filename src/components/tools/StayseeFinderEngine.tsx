@@ -1049,22 +1049,6 @@ const MasterEngine = () => {
   return (
     <div className="min-h-screen pb-24" style={{ background: '#050507', fontFamily: "'Inter', 'Noto Sans JP', sans-serif" }}>
 
-      {/* 設定パネル */}
-      {showSettings && (
-        <SettingsPanel
-          pms={pms} setPms={setPms}
-          lockType={lockType} setLockType={setLockType}
-          fixedPassword={fixedPassword} setFixedPassword={setFixedPassword}
-          onClose={() => setShowSettings(false)}
-          onPmsConnected={(mode) => {
-            setIsOnline(mode !== 'local')
-          }}
-          onLockConnected={(_mode) => {
-            // 接続成功を記録（UIバナーに反映）
-          }}
-        />
-      )}
-
       {/* Hero */}
       <div className="max-w-5xl mx-auto px-6 pt-14 pb-6 flex items-start justify-between gap-4 flex-wrap">
         <div className="space-y-3">
@@ -1078,14 +1062,7 @@ const MasterEngine = () => {
           </h1>
           <p className="text-slate-400 text-sm">PMS連携・本人確認・電子署名・鍵発行を完全自動化するホテルDXシステム。</p>
         </div>
-        <button onClick={() => setShowSettings(true)}
-          className="flex items-center gap-2 px-4 h-9 rounded-lg text-xs font-semibold transition-all shrink-0 mt-4"
-          style={{ background: '#0d1117', border: '1px solid #1e293b', color: '#64748b' }}
-          onMouseEnter={e => (e.currentTarget.style.color = '#94a3b8')}
-          onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}>
-          <Settings size={13} /> PMS / 錠 設定
-          <ChevronDown size={11} />
-        </button>
+        {/* PMS/錠設定はDMS（/dms）で管理 */}
       </div>
 
       <div className="max-w-5xl mx-auto px-6 space-y-4">
