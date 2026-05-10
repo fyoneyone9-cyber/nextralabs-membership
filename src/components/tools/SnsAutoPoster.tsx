@@ -13,21 +13,40 @@ const SNS_PLATFORMS = [
 ]
 
 const STRATEGIES = [
-  { label: '本音・暴露系',     content: '業界の当たり前に疑問を呈し、皆が言いにくいことを代弁する鋭い言葉で。' },
-  { label: '有益Tips',         content: '今日から使える業務効率化の神知識を、箇条書きを使って10秒で伝わる構成に。' },
-  { label: '共感・エモ',       content: '深夜の独り言のような、挑戦の孤独と希望に寄り添うエモーショナルな文章。' },
-  { label: 'スレッド誘導',     content: '続きが読みたくなる仕掛けを施し、深い知識へ誘導する導入文。' },
-  { label: '比較・検証',       content: 'AとBの違いを明確にし、独自の視点で結論を出すプロのレビュー。' },
-  { label: 'ニュース要約',     content: '複雑な時事ネタを中学生でもわかるレベルに噛み砕き、一言解説を添えて。' },
-  { label: '質問・対話',       content: 'フォロワーが回答しやすい二択や質問を投げかけ、交流を生む。' },
-  { label: 'モチベーション',   content: 'やる気が出ない人の背中を強力に押す、力強いメッセージとマインドセット。' },
-  { label: '婚活・成婚',       content: '成婚のプロが教える、婚活の「残酷な真実」と「選ばれるための具体的アクション」。' },
-  { label: '心理・相性',       content: '上級心理カウンセラーの知見から、長く続くカップルの共通点と心理的安全性。' },
+  { label: '🔥 本音・暴露系',   content: '業界の当たり前に疑問を呈し、皆が言いにくいことを代弁する鋭い言葉で。' },
+  { label: '💡 有益Tips',       content: '今日から使える業務効率化の神知識を、箇条書きを使って10秒で伝わる構成に。' },
+  { label: '😢 共感・エモ',     content: '深夜の独り言のような、挑戦の孤独と希望に寄り添うエモーショナルな文章。' },
+  { label: '🧵 スレッド誘導',   content: '続きが読みたくなる仕掛けを施し、深い知識へ誘導する導入文。' },
+  { label: '⚔️ 比較・検証',    content: 'AとBの違いを明確にし、独自の視点で結論を出すプロのレビュー。' },
+  { label: '📰 ニュース要約',   content: '複雑な時事ネタを中学生でもわかるレベルに噛み砕き、一言解説を添えて。' },
+  { label: '💬 質問・対話',     content: 'フォロワーが回答しやすい二択や質問を投げかけ、交流を生む。' },
+  { label: '💪 モチベーション', content: 'やる気が出ない人の背中を強力に押す、力強いメッセージとマインドセット。' },
+  { label: '💍 婚活・成婚',     content: '成婚のプロが教える、婚活の「残酷な真実」と「選ばれるための具体的アクション」。' },
+  { label: '🧠 心理・相性',     content: '上級心理カウンセラーの知見から、長く続くカップルの共通点と心理的安全性。' },
+  { label: '🤖 AI活用術',       content: 'AIツールを使いこなすための具体的なプロンプトや活用例を、初心者でも即実践できる形で。' },
+  { label: '💰 副業・収益化',   content: '月1万〜10万円を目指す副業の始め方を、失敗談も含めてリアルに。' },
+  { label: '📈 成長ストーリー', content: '過去の自分と今の自分を対比させ、変化と気づきを感情豊かに語る。' },
+  { label: '🎯 ターゲット刺し', content: '「〇〇な人にだけ読んでほしい」と特定ユーザーに刺さる限定感のある書き出しで。' },
+  { label: '🌅 朝活・習慣',     content: '毎朝続けることで人生が変わる習慣を、具体的なルーティンとともに紹介。' },
+]
+
+const GENRES = [
+  { label: '🤖 AI・テック',   value: 'AI・テクノロジー' },
+  { label: '💼 ビジネス',     value: 'ビジネス・起業' },
+  { label: '💰 副業・投資',   value: '副業・資産形成' },
+  { label: '💍 婚活・恋愛',   value: '婚活・恋愛・結婚' },
+  { label: '🏃 健康・美容',   value: '健康・ダイエット・美容' },
+  { label: '📚 学び・資格',   value: '勉強・資格取得' },
+  { label: '🍳 ライフスタイル', value: 'ライフスタイル・日常' },
+  { label: '🎮 エンタメ',     value: 'エンタメ・ゲーム・趣味' },
+  { label: '🌍 時事・社会',   value: '時事・ニュース・社会問題' },
+  { label: '💑 婚相談所',     value: '結婚相談所・マレッジロードジャパン' },
 ]
 
 const MasterEngine = () => {
   const [selectedTrend, setSelectedTrend] = useState('')
   const [selectedStrategy, setSelectedStrategy] = useState('')
+  const [selectedGenre, setSelectedGenre] = useState('')
   const [customTheme, setCustomTheme] = useState('')
   const [selectedPlatform, setSelectedPlatform] = useState('twitter')
   const [trends, setTrends] = useState<string[]>([])
@@ -55,7 +74,8 @@ const MasterEngine = () => {
   const strategy = selectedStrategy
 
   const buildPrompt = () => {
-    return `${platform.prompt}\n\n【テーマ】${topic}\n${strategy ? `【戦略】${strategy}` : ''}`
+    const genreLine = selectedGenre ? `【ジャンル】${selectedGenre}\n` : ''
+    return `${platform.prompt}\n\n${genreLine}【テーマ】${topic}\n${strategy ? `【戦略】${strategy}` : ''}`
   }
 
   const handleCopy = () => {
@@ -124,9 +144,26 @@ const MasterEngine = () => {
             </div>
           </div>
 
-          {/* 3. カスタムテーマ */}
+          {/* 3. ジャンル選択 */}
           <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
-            <p className="text-xs font-bold text-white">3. カスタムテーマ（任意）</p>
+            <p className="text-xs font-bold text-white">3. ジャンルを選択</p>
+            <div className="grid grid-cols-2 gap-2">
+              {GENRES.map(g => (
+                <button key={g.value} onClick={() => setSelectedGenre(prev => prev === g.value ? '' : g.value)}
+                  className={`h-9 px-3 rounded-lg text-xs font-semibold text-left truncate transition-all border ${
+                    selectedGenre === g.value
+                      ? 'bg-emerald-600 border-emerald-500 text-white'
+                      : 'border-white/5 bg-black/30 text-slate-400 hover:text-white hover:border-white/20'
+                  }`}>
+                  {g.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 4. カスタムテーマ */}
+          <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
+            <p className="text-xs font-bold text-white">4. カスタムテーマ（任意）</p>
             <textarea
               value={customTheme}
               onChange={e => { setCustomTheme(e.target.value); if (e.target.value) setSelectedTrend('') }}
@@ -140,13 +177,13 @@ const MasterEngine = () => {
         {/* 右：戦略＋生成 */}
         <div className="space-y-5">
 
-          {/* 4. 投稿戦略 */}
+          {/* 5. 投稿戦略 */}
           <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
-            <p className="text-xs font-bold text-white">4. 投稿戦略</p>
-            <div className="grid grid-cols-2 gap-2">
+            <p className="text-xs font-bold text-white">5. 投稿戦略（15種）</p>
+            <div className="grid grid-cols-3 gap-2">
               {STRATEGIES.map(s => (
                 <button key={s.label} onClick={() => setSelectedStrategy(prev => prev === s.content ? '' : s.content)}
-                  className={`h-9 px-3 rounded-lg text-xs font-semibold transition-all border ${
+                  className={`h-10 px-2 rounded-lg text-[10px] font-semibold transition-all border leading-tight ${
                     selectedStrategy === s.content
                       ? 'bg-emerald-600 border-emerald-500 text-white'
                       : 'border-white/5 bg-black/30 text-slate-400 hover:text-white'
