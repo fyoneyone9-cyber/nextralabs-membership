@@ -1,3 +1,29 @@
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'AI家計防衛シミュレーター | 衝動買いを心理的に阻止して月3万節約',
+  description: '購入前に「本当に必要？」とAIが問いかけ、衝動買いを防止。固定費見直し・節約シミュレーションで家計を自動最適化。NextraLabsスタンダードプラン。',
+  keywords: ['AI家計管理', '衝動買い防止', '節約シミュレーション', '家計防衛AI', '固定費見直し'],
+  alternates: {
+    canonical: 'https://membership-site-nextralabos.vercel.app/products/money-guard',
+  },
+  openGraph: {
+    title: 'AI家計防衛シミュレーター | 衝動買いを心理的に阻止して月3万節約 | NextraLabs',
+    description: '購入前に「本当に必要？」とAIが問いかけ、衝動買いを防止。固定費見直し・節約シミュレーションで家計を自動最適化。NextraLabsスタンダードプラン。',
+    url: 'https://membership-site-nextralabos.vercel.app/products/money-guard',
+    type: 'website',
+    locale: 'ja_JP',
+    siteName: 'NextraLabs',
+    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI家計防衛シミュレーター | 衝動買いを心理的に阻止して月3万節約' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI家計防衛シミュレーター | 衝動買いを心理的に阻止して月3万節約',
+    description: '購入前に「本当に必要？」とAIが問いかけ、衝動買いを防止。固定費見直し・節約シミュレーションで家計を自動最適化。NextraLabsスタンダードプラン。',
+    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+  },
+}
+
 ﻿import React from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
