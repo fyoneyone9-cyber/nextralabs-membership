@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useSearchParams } from 'next/navigation'
 import React, { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
@@ -32,10 +32,8 @@ const TOOLS = [
   { id: 'buy-smart-nav/app', cat: 'life', title: '中古・新品AI比較ナビ', sub: '損得勘定とAI市場判定OS', icon: Scale, plan: '無料' , done: true },
 
   { id: 'inbox-organizer', cat: 'biz', title: 'Gmail AI Accelerator', sub: '未読ゼロを最速で実現', icon: Mail, plan: 'プレミアム' , done: true },
-  { id: 'contact-sync/app', cat: 'biz', title: 'Contact AI Sync', sub: '名刺の全自動登録OS', icon: UserPlus, plan: 'ライト' , done: true },
 
   { id: 'ai-sidejob/app', cat: 'biz', title: 'AI副業スタートダッシュ', sub: '適性診断と収益ロードマップ', icon: Briefcase, plan: 'プレミアム' , done: true },
-  { id: 'interior-coordinator/app', cat: 'mind', title: 'Interior AI Sync', sub: '空間解析と楽天一括購入OS', icon: Sofa, plan: 'プレミアム' , done: true },
   { id: 'ai-recipe/app', cat: 'life', title: 'AIレシピ献立コーチ', sub: '冷蔵庫の残り物と栄養最適化', icon: Utensils, plan: '無料', done: true },
   { id: 'exam-scheduler/app', cat: 'edu', title: '資格試験AIスケジューラー', sub: '試験日から逆算して学習計画を自動生成', icon: ClipboardCheck, plan: 'スタンダード', done: true }, // ✅ LOCK 2026-05-10
   { id: 'ai-exam-generator/app', cat: 'edu', title: 'AI問題生成 & 苦手分析', sub: '予想問題を無限生成と弱点ポイント可視化', icon: Brain, plan: 'プレミアム' , done: true },
