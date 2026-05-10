@@ -1,3 +1,29 @@
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'AI副業スタートダッシュ | 初月から収益化できる副業ロードマップ',
+  description: '副業未経験でもAIが最適な副業を診断・サポート。ブログ・ハンドメイド・Kindle出版など30種の副業を月収目標に合わせて提案。NextraLabs会員限定。',
+  keywords: ['AI副業', '副業スタート', '副業ロードマップ', '在宅副業AI', '月収副業'],
+  alternates: {
+    canonical: 'https://membership-site-nextralabos.vercel.app/products/ai-sidejob',
+  },
+  openGraph: {
+    title: 'AI副業スタートダッシュ | 初月から収益化できる副業ロードマップ | NextraLabs',
+    description: '副業未経験でもAIが最適な副業を診断・サポート。ブログ・ハンドメイド・Kindle出版など30種の副業を月収目標に合わせて提案。NextraLabs会員限定。',
+    url: 'https://membership-site-nextralabos.vercel.app/products/ai-sidejob',
+    type: 'website',
+    locale: 'ja_JP',
+    siteName: 'NextraLabs',
+    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI副業スタートダッシュ | 初月から収益化できる副業ロードマップ' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI副業スタートダッシュ | 初月から収益化できる副業ロードマップ',
+    description: '副業未経験でもAIが最適な副業を診断・サポート。ブログ・ハンドメイド・Kindle出版など30種の副業を月収目標に合わせて提案。NextraLabs会員限定。',
+    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+  },
+}
+
 ﻿import React from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
