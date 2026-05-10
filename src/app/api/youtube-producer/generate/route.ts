@@ -93,7 +93,9 @@ export async function POST(req: NextRequest) {
       }
       case 'characters': {
         const result = await callLLM(
-          `あなたは文章分析の専門家です。テキストから登場人物を抽出し、指定された「画像スタイル」に基づいたイラスト生成用プロンプトを作成してください。
+          `あなたは文章分析の専門家です。テキストに登場する人物・キャラクターを全員漏れなく抽出してください。
+名前が明記されていない場合でも「語り手」「主人公」などとして抽出してください。
+指定された「画像スタイル」に基づいたイラスト生成用プロンプトを作成してください。
 
 指定画像スタイル: ${genrePrompt} (この指示に従ってプロンプトを構築してください)
 
@@ -101,9 +103,9 @@ export async function POST(req: NextRequest) {
 {
   "characters": [
     {
-      "name": "人物名",
-      "description": "説明",
-      "role": "役割",
+      "name": "人物名（テキストに記載の名前をそのまま使用）",
+      "description": "説明（テキストから読み取れる特徴・性格）",
+      "role": "役割（主人公・ナレーター・脇役など）",
       "imagePrompt": "英語のAI画像生成プロンプト。指定されたスタイルを反映し、詳細な外見、服装、背景を含めてください。"
     }
   ]
@@ -115,6 +117,7 @@ export async function POST(req: NextRequest) {
       case 'thumbnail': {
         const result = await callLLM(
           `あなたはYouTubeサムネイルの専門家です。指定された「画像スタイル」に基づいた映えるサムネイル構成案を3つ作成してください。
+台本の内容・登場人物・シーンを正確に反映してください。
 
 指定画像スタイル: ${genrePrompt}
 
@@ -122,12 +125,12 @@ export async function POST(req: NextRequest) {
 {
   "thumbnails": [
     {
-      "title": "サムネイルに入れる文字",
-      "imagePrompt": "英語のAI画像生成プロンプト。16:9、高画質、指定されたスタイルでYouTubeサムネイルとして映える構図。"
+      "title": "サムネイルに入れる文字（台本内容を反映した具体的なキャッチコピー）",
+      "imagePrompt": "英語のAI画像生成プロンプト。16:9、高画質、指定されたスタイルでYouTubeサムネイルとして映える構図。台本の登場人物・シーンを具体的に描写すること。"
     }
   ]
 }`,
-          `ジャンル: ${genre}\n台本概要: ${scriptTitle}`
+          `ジャンル: ${genre}\n台本タイトル: ${scriptTitle}\n\n台本全文:\n${transcriptSlice}`
         )
         return NextResponse.json(result)
       }
