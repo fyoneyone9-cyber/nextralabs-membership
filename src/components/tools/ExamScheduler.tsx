@@ -33,13 +33,75 @@ interface ResultItem {
   reason?: string
 }
 
-const PRESET_EXAMS: Omit<ExamConfig, 'id'>[] = [
-  { name: 'ITパスポート', studyWeeks: 6, sessionsPerWeek: 4, sessionHours: 1, examDate: '' },
-  { name: '基本情報技術者', studyWeeks: 12, sessionsPerWeek: 4, sessionHours: 2, examDate: '' },
-  { name: '応用情報技術者', studyWeeks: 16, sessionsPerWeek: 4, sessionHours: 2.5, examDate: '' },
-  { name: 'CompTIA Security+', studyWeeks: 12, sessionsPerWeek: 3, sessionHours: 2, examDate: '' },
-  { name: 'AWS ソリューションアーキテクト', studyWeeks: 10, sessionsPerWeek: 3, sessionHours: 2, examDate: '' },
+const PRESET_CATEGORIES = [
+  {
+    label: 'IT・情報処理',
+    presets: [
+      { name: 'ITパスポート',               studyWeeks: 6,  sessionsPerWeek: 4, sessionHours: 1,   examDate: '' },
+      { name: '基本情報技術者',             studyWeeks: 12, sessionsPerWeek: 4, sessionHours: 2,   examDate: '' },
+      { name: '応用情報技術者',             studyWeeks: 16, sessionsPerWeek: 4, sessionHours: 2.5, examDate: '' },
+      { name: '情報処理安全確保支援士',     studyWeeks: 20, sessionsPerWeek: 4, sessionHours: 2.5, examDate: '' },
+      { name: 'ネットワークスペシャリスト', studyWeeks: 24, sessionsPerWeek: 4, sessionHours: 2.5, examDate: '' },
+      { name: 'データベーススペシャリスト', studyWeeks: 20, sessionsPerWeek: 4, sessionHours: 2,   examDate: '' },
+      { name: 'CompTIA Security+',          studyWeeks: 12, sessionsPerWeek: 3, sessionHours: 2,   examDate: '' },
+      { name: 'AWS SAA',                    studyWeeks: 10, sessionsPerWeek: 3, sessionHours: 2,   examDate: '' },
+    ],
+  },
+  {
+    label: 'ビジネス・会計',
+    presets: [
+      { name: '簿記3級', studyWeeks: 6,  sessionsPerWeek: 4, sessionHours: 1,   examDate: '' },
+      { name: '簿記2級', studyWeeks: 12, sessionsPerWeek: 4, sessionHours: 1.5, examDate: '' },
+      { name: '簿記1級', studyWeeks: 40, sessionsPerWeek: 5, sessionHours: 2,   examDate: '' },
+      { name: 'FP3級',   studyWeeks: 6,  sessionsPerWeek: 4, sessionHours: 1,   examDate: '' },
+      { name: 'FP2級',   studyWeeks: 12, sessionsPerWeek: 4, sessionHours: 1.5, examDate: '' },
+      { name: 'FP1級',   studyWeeks: 30, sessionsPerWeek: 5, sessionHours: 2,   examDate: '' },
+      { name: '中小企業診断士', studyWeeks: 52, sessionsPerWeek: 5, sessionHours: 2, examDate: '' },
+    ],
+  },
+  {
+    label: '法律・行政',
+    presets: [
+      { name: '行政書士',       studyWeeks: 40, sessionsPerWeek: 5, sessionHours: 2,   examDate: '' },
+      { name: '社会保険労務士', studyWeeks: 52, sessionsPerWeek: 5, sessionHours: 2,   examDate: '' },
+      { name: '宅地建物取引士', studyWeeks: 16, sessionsPerWeek: 4, sessionHours: 1.5, examDate: '' },
+      { name: '司法書士',       studyWeeks: 80, sessionsPerWeek: 6, sessionHours: 3,   examDate: '' },
+      { name: '公務員試験（教養）', studyWeeks: 24, sessionsPerWeek: 5, sessionHours: 2, examDate: '' },
+    ],
+  },
+  {
+    label: '語学',
+    presets: [
+      { name: 'TOEIC 600点',   studyWeeks: 8,  sessionsPerWeek: 5, sessionHours: 1,   examDate: '' },
+      { name: 'TOEIC 700点',   studyWeeks: 16, sessionsPerWeek: 5, sessionHours: 1.5, examDate: '' },
+      { name: 'TOEIC 900点',   studyWeeks: 30, sessionsPerWeek: 5, sessionHours: 2,   examDate: '' },
+      { name: '英検3級',       studyWeeks: 6,  sessionsPerWeek: 4, sessionHours: 1,   examDate: '' },
+      { name: '英検2級',       studyWeeks: 12, sessionsPerWeek: 4, sessionHours: 1,   examDate: '' },
+      { name: '英検準1級',     studyWeeks: 20, sessionsPerWeek: 4, sessionHours: 1.5, examDate: '' },
+      { name: '英検1級',       studyWeeks: 40, sessionsPerWeek: 5, sessionHours: 2,   examDate: '' },
+    ],
+  },
+  {
+    label: '医療・福祉',
+    presets: [
+      { name: '看護師国家試験',   studyWeeks: 20, sessionsPerWeek: 5, sessionHours: 2,   examDate: '' },
+      { name: '介護福祉士',       studyWeeks: 16, sessionsPerWeek: 4, sessionHours: 1.5, examDate: '' },
+      { name: '薬剤師国家試験',   studyWeeks: 30, sessionsPerWeek: 5, sessionHours: 3,   examDate: '' },
+      { name: '医師国家試験',     studyWeeks: 52, sessionsPerWeek: 6, sessionHours: 4,   examDate: '' },
+    ],
+  },
+  {
+    label: '技術・工業',
+    presets: [
+      { name: '電気工事士2種', studyWeeks: 10, sessionsPerWeek: 4, sessionHours: 1,   examDate: '' },
+      { name: '電気工事士1種', studyWeeks: 16, sessionsPerWeek: 4, sessionHours: 1.5, examDate: '' },
+      { name: '危険物取扱者乙4', studyWeeks: 6, sessionsPerWeek: 4, sessionHours: 1,  examDate: '' },
+      { name: '普通自動車免許（学科）', studyWeeks: 2, sessionsPerWeek: 5, sessionHours: 1, examDate: '' },
+    ],
+  },
 ]
+
+const PRESET_EXAMS: Omit<ExamConfig, 'id'>[] = PRESET_CATEGORIES.flatMap(c => c.presets)
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''
 const GOOGLE_SCOPES = 'https://www.googleapis.com/auth/calendar.events'
@@ -169,10 +231,42 @@ export default function ExamScheduler() {
                   )}
                 </div>
 
+                {/* プリセット選択 */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">プリセットから選ぶ（{PRESET_EXAMS.length}種類）</label>
+                  <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                    {PRESET_CATEGORIES.map(cat => (
+                      <div key={cat.label}>
+                        <p className="text-[9px] font-bold text-emerald-500/70 uppercase tracking-widest mb-1 px-0.5">{cat.label}</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {cat.presets.map(p => (
+                            <button
+                              key={p.name}
+                              type="button"
+                              onClick={() => {
+                                setExams(prev => prev.map(e =>
+                                  e.id === exam.id ? { ...e, ...p } : e
+                                ))
+                              }}
+                              className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all border ${
+                                exam.name === p.name
+                                  ? 'bg-emerald-500 border-emerald-400 text-slate-950'
+                                  : 'bg-white/5 border-white/10 text-slate-400 hover:border-emerald-500/40 hover:text-white'
+                              }`}
+                            >
+                              {p.name}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="grid sm:grid-cols-2 gap-4">
                   {/* 試験名 */}
                   <div className="space-y-1.5 text-left">
-                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">試験名</label>
+                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-tight">試験名（直接編集も可）</label>
                     <input
                       type="text"
                       value={exam.name}
