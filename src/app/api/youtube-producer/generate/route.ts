@@ -23,7 +23,7 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
       'Authorization': `Bearer ${API_KEY}`,
     },
     body: JSON.stringify({
-      model: 'gemini-2.5-flash', // JSON生成精度が高いモデルを使用
+      model: 'gpt-5-mini', // Genspark LLMプロキシ対応モデル
       messages: [
         { role: 'system', content: COMMON_SYSTEM_PREFIX + systemPrompt },
         { role: 'user', content: userPrompt },
