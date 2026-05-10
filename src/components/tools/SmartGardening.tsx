@@ -475,6 +475,78 @@ export default function SmartGardening() {
             </button>
           </div>
         )}
+
+        {/* ページ下部 説明欄 */}
+        <div className="mt-10 border-t border-white/5 pt-10 space-y-8">
+
+          {/* このツールについて */}
+          <div>
+            <h2 className="text-lg font-semibold text-white mb-3 tracking-tight">🌿 AIスマートガーデニングとは？</h2>
+            <p className="text-sm text-slate-400 leading-relaxed">
+              植物の写真を1枚撮るだけで、AIが葉の色・形・質感などを解析し、健康状態・水やりのタイミング・日当たりの適否を即座に診断します。
+              園芸初心者から上級者まで、植物をより長く・元気に育てるためのパートナーとしてご活用ください。
+            </p>
+          </div>
+
+          {/* 特徴カード */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              {
+                icon: '📸',
+                title: '写真1枚で即診断',
+                desc: 'スマートフォンやカメラで撮影した植物の画像をアップロードするだけ。複雑な操作は一切不要です。',
+              },
+              {
+                icon: '🤖',
+                title: 'Gemini 2.5 Flash 搭載',
+                desc: 'Googleの最新AIモデルが高精度で植物を識別。病害虫のサインや栄養不足まで細かく検知します。',
+              },
+              {
+                icon: '💡',
+                title: 'ケアアドバイス付き',
+                desc: '診断結果だけでなく「今すぐできるケア」を具体的にリスト形式で提示。すぐに行動に移せます。',
+              },
+            ].map((item, i) => (
+              <div key={i} className="bg-[#13141f] rounded-xl border border-white/5 p-5 space-y-2">
+                <div className="text-2xl">{item.icon}</div>
+                <h3 className="text-sm font-semibold text-white">{item.title}</h3>
+                <p className="text-xs text-slate-500 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* 使い方ステップ */}
+          <div>
+            <h2 className="text-base font-semibold text-white mb-4 tracking-tight">📋 使い方</h2>
+            <ol className="space-y-3">
+              {[
+                '「画像アップロード」または「カメラで撮影」を選んでください。',
+                '植物全体が写るように画像を準備し、アップロードまたは撮影します。',
+                '「植物を診断する」ボタンを押してAI解析を開始します。',
+                '健康スコア・水やり・日照・ケアアドバイスが表示されます。',
+              ].map((step, i) => (
+                <li key={i} className="flex items-start gap-3 text-sm">
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-semibold flex items-center justify-center mt-0.5">
+                    {i + 1}
+                  </span>
+                  <span className="text-slate-400 leading-relaxed">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          {/* 注意事項 */}
+          <div className="bg-[#0d1117] border border-white/5 rounded-xl p-5">
+            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">ご注意</h3>
+            <ul className="space-y-1.5 text-xs text-slate-600 leading-relaxed list-disc list-inside">
+              <li>本ツールはAIによる参考診断です。深刻な病害は専門家にご相談ください。</li>
+              <li>画像は鮮明で明るい環境で撮影すると、より正確な診断が得られます。</li>
+              <li>1日あたりの診断回数には上限があります（利用規約に準拠）。</li>
+            </ul>
+          </div>
+
+        </div>
+
       </div>
     </div>
   )
