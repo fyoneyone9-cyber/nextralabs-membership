@@ -34,18 +34,22 @@ function MarkdownRenderer({ content }: { content: string }) {
 // ─── 定数 ──────────────────────────────────────────────────────────────────────
 
 const PRESETS = [
-  { id: 'kimetsu',    label: '鬼滅の刃',       emoji: '🗡️', description: '竹林・大正ロマン',    color: 'border-red-500/60 hover:border-red-400' },
-  { id: 'kiminonawa', label: '君の名は',        emoji: '☄️', description: '飛騨古川・新宿',      color: 'border-blue-500/60 hover:border-blue-400' },
-  { id: 'slamdunk',   label: 'スラムダンク',    emoji: '🏀', description: '鎌倉・江ノ電・湘南',  color: 'border-orange-500/60 hover:border-orange-400' },
-  { id: 'spirited',   label: '千と千尋',        emoji: '🏮', description: '道後温泉・神戸・山梨', color: 'border-purple-500/60 hover:border-purple-400' },
-  { id: 'evangelion', label: 'エヴァンゲリオン', emoji: '🤖', description: '箱根・宇部市',        color: 'border-green-500/60 hover:border-green-400' },
-  { id: 'yuruyuri',   label: 'ゆるキャン△',     emoji: '⛺', description: '山梨・富士山・浜名湖', color: 'border-yellow-500/60 hover:border-yellow-400' },
-  { id: 'yourname2',  label: '天気の子',        emoji: '🌦️', description: '新宿・渋谷・お台場',  color: 'border-cyan-500/60 hover:border-cyan-400' },
-  { id: 'demonslayer2', label: '呪術廻戦',      emoji: '🌀', description: '渋谷・新宿・仙台',    color: 'border-indigo-500/60 hover:border-indigo-400' },
-  { id: 'attack',     label: '進撃の巨人',      emoji: '⚔️', description: '軍艦島・岡山・長崎',  color: 'border-gray-500/60 hover:border-gray-400' },
-  { id: 'onepunch',   label: 'ワンピース',      emoji: '🏴‍☠️', description: '長崎・熊本・沖縄',   color: 'border-amber-500/60 hover:border-amber-400' },
-  { id: 'totoro',     label: 'となりのトトロ',  emoji: '🌳', description: '所沢・狭山丘陵',      color: 'border-teal-500/60 hover:border-teal-400' },
-  { id: 'demon',      label: '鬼太郎・境港',    emoji: '👁️', description: '境港・水木しげるロード', color: 'border-slate-500/60 hover:border-slate-400' },
+  { id: 'kimetsu',     label: '鬼滅の刃',    emoji: '🗡️', color: 'border-red-500/60 hover:border-red-400' },
+  { id: 'kiminonawa',  label: '君の名は',    emoji: '☄️', color: 'border-blue-500/60 hover:border-blue-400' },
+  { id: 'slamdunk',    label: 'スラムダンク', emoji: '🏀', color: 'border-orange-500/60 hover:border-orange-400' },
+  { id: 'spirited',    label: '千と千尋',    emoji: '🏮', color: 'border-purple-500/60 hover:border-purple-400' },
+  { id: 'evangelion',  label: 'エヴァ',      emoji: '🤖', color: 'border-green-500/60 hover:border-green-400' },
+  { id: 'yuruyuri',    label: 'ゆるキャン',  emoji: '⛺', color: 'border-yellow-500/60 hover:border-yellow-400' },
+  { id: 'yourname2',   label: '天気の子',    emoji: '🌦️', color: 'border-cyan-500/60 hover:border-cyan-400' },
+  { id: 'demonslayer2',label: '呪術廻戦',    emoji: '🌀', color: 'border-indigo-500/60 hover:border-indigo-400' },
+  { id: 'attack',      label: '進撃の巨人',  emoji: '⚔️', color: 'border-gray-500/60 hover:border-gray-400' },
+  { id: 'onepunch',    label: 'ワンピース',  emoji: '🏴‍☠️', color: 'border-amber-500/60 hover:border-amber-400' },
+  { id: 'totoro',      label: 'トトロ',      emoji: '🌳', color: 'border-teal-500/60 hover:border-teal-400' },
+  { id: 'demon',       label: '鬼太郎',      emoji: '👁️', color: 'border-slate-500/60 hover:border-slate-400' },
+  { id: 'naruto',      label: 'NARUTO',      emoji: '🍃', color: 'border-orange-500/60 hover:border-orange-400' },
+  { id: 'dragonball',  label: 'ドラゴンボール', emoji: '⭕', color: 'border-yellow-500/60 hover:border-yellow-400' },
+  { id: 'oshino',      label: '推しの子',    emoji: '⭐', color: 'border-pink-500/60 hover:border-pink-400' },
+  { id: 'haikyuu',     label: 'ハイキュー',  emoji: '🏐', color: 'border-orange-500/60 hover:border-orange-400' },
 ]
 
 const TRIP_STYLES = ['日帰り', '1泊2日', '2泊3日']
@@ -216,14 +220,14 @@ export default function PilgrimagePlanner() {
             <button
               key={p.id}
               onClick={() => handlePresetSelect(p.id)}
-              className={`flex flex-col items-center gap-1 p-2.5 rounded-xl border text-center transition-all ${
+              className={`flex flex-col items-center justify-center gap-1 p-2.5 rounded-xl border text-center transition-all min-h-[72px] ${
                 selectedPreset === p.id
                   ? 'border-emerald-500 bg-emerald-500/10 text-white'
                   : `border-white/10 bg-[#0f1520] text-slate-300 ${p.color}`
               }`}
             >
-              <span className="text-2xl">{p.emoji}</span>
-              <span className="text-xs font-medium leading-tight">{p.label}</span>
+              <span className="text-xl leading-none">{p.emoji}</span>
+              <span className="text-[11px] font-medium leading-tight break-keep">{p.label}</span>
             </button>
           ))}
         </div>

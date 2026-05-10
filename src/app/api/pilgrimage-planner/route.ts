@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!
@@ -171,6 +171,54 @@ export const PRESETS: PresetDef[] = [
       { name: '調布市（東京）', address: '東京都調布市', description: '水木しげる先生が長年住んだ街', sceneDescription: '鬼太郎が住む墓場のある町のモデル', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=調布市+東京都' },
       { name: '弓ヶ浜（鳥取）', address: '鳥取県境港市外江町', description: '境港の美しい砂浜と夕景', sceneDescription: '怪異が現れる浜辺のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=弓ヶ浜+境港市+鳥取県' },
       { name: '鬼太郎茶屋（調布）', address: '東京都調布市深大寺元町5-12-8', description: '鬼太郎グッズ・妖怪グルメが揃う公式ショップ', sceneDescription: '鬼太郎ワールドをリアルに体験できる場所', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=鬼太郎茶屋+調布市' },
+    ],
+  },
+  {
+    id: 'naruto', label: 'NARUTO', emoji: '🍃',
+    description: '奈良・和歌山・岐阜', color: 'border-orange-500/60 hover:border-orange-400',
+    hotelArea: '奈良県',
+    spots: [
+      { name: '猿沢池（奈良）', address: '奈良県奈良市登大路町', description: '忍者里・木の葉隠れのイメージ源', sceneDescription: '木の葉の里の池・ナルトの修行場イメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=猿沢池+奈良県' },
+      { name: '吉野山（奈良）', address: '奈良県吉野郡吉野町吉野山', description: '山岳修行の聖地・忍者の隠れ里感', sceneDescription: '仙人モードの修行場・自然の霊地', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=吉野山+奈良県' },
+      { name: '熊野古道（和歌山）', address: '和歌山県東牟婁郡那智勝浦町', description: '古来より続く霊峰の道', sceneDescription: '尾根伝いに走る忍者のアクションシーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=熊野古道+和歌山県' },
+      { name: '伊賀上野城（三重）', address: '三重県伊賀市上野丸之内', description: '本物の忍者の里・伊賀流忍者の本拠地', sceneDescription: '木の葉の里・忍術学校のモデル', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=伊賀上野城+三重県' },
+      { name: '甲賀の里（滋賀）', address: '滋賀県甲賀市甲南町竜法師', description: '甲賀流忍者の発祥地', sceneDescription: '忍術の達人たちが暮らす隠れ里', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=甲賀の里+滋賀県甲賀市' },
+    ],
+  },
+  {
+    id: 'dragonball', label: 'ドラゴンボール', emoji: '⭕',
+    description: '鳥取砂丘・宮島・沖縄', color: 'border-yellow-500/60 hover:border-yellow-400',
+    hotelArea: '鳥取県',
+    spots: [
+      { name: '鳥取砂丘', address: '鳥取県鳥取市福部町湯山', description: 'ナメック星・荒野の戦場感が圧倒的', sceneDescription: 'ナメック星や荒野での悟空vs敵のバトル', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=鳥取砂丘+鳥取県' },
+      { name: '宮島・弥山（広島）', address: '広島県廿日市市宮島町', description: '霊山の神秘的な雰囲気が亀仙人の島感', sceneDescription: '亀仙人の島・武天老師の修行場のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=弥山+宮島+広島県' },
+      { name: '屋久島（鹿児島）', address: '鹿児島県熊毛郡屋久島町', description: '樹齢数千年の縄文杉・神秘の森', sceneDescription: '仙豆が育つ神秘の島・自然のパワースポット', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=屋久島+鹿児島県' },
+      { name: '波照間島（沖縄）', address: '沖縄県八重山郡竹富町波照間', description: '日本最南端の島・南国の楽園', sceneDescription: '南の島・亀仙人の海辺のイメージ', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=波照間島+沖縄県' },
+      { name: '阿蘇山（熊本）', address: '熊本県阿蘇市黒川', description: '活火山の雄大な景色が天下一武道会のスタジアム感', sceneDescription: '天下一武道会・カリン塔周辺の景色', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=阿蘇山+熊本県' },
+    ],
+  },
+  {
+    id: 'oshino', label: '推しの子', emoji: '⭐',
+    description: '渋谷・六本木・原宿', color: 'border-pink-500/60 hover:border-pink-400',
+    hotelArea: '東京都',
+    spots: [
+      { name: '渋谷スクランブル交差点', address: '東京都渋谷区道玄坂2丁目', description: 'アクア・ルビーが芸能界で活躍する渋谷', sceneDescription: 'アイドル・芸能界の中心地として登場', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=渋谷スクランブル交差点+東京都' },
+      { name: '六本木ヒルズ（東京）', address: '東京都港区六本木6丁目', description: 'テレビ局・芸能プロダクション集中エリア', sceneDescription: 'アイドルのレコーディング・TV出演シーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=六本木ヒルズ+東京都港区' },
+      { name: '原宿・竹下通り', address: '東京都渋谷区神宮前1丁目', description: 'アイドル・ファッションの聖地', sceneDescription: 'ルビーたちアイドルが歩く原宿の街', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=竹下通り+原宿+東京都' },
+      { name: '東京ドーム', address: '東京都文京区後楽1丁目', description: '大型アイドルコンサートの聖地', sceneDescription: '作中の大型ライブ・コンサートシーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=東京ドーム+文京区' },
+      { name: '下北沢（東京）', address: '東京都世田谷区北沢2丁目', description: '演劇・インディーズ音楽の聖地', sceneDescription: '有馬かなが舞台に立つ演劇シーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=下北沢+世田谷区+東京都' },
+    ],
+  },
+  {
+    id: 'haikyuu', label: 'ハイキュー', emoji: '🏐',
+    description: '宮城・東京・大阪', color: 'border-orange-500/60 hover:border-orange-400',
+    hotelArea: '宮城県',
+    spots: [
+      { name: '宮城県総合運動公園（仙台）', address: '宮城県仙台市泉区明通2丁目', description: '春高バレーの会場イメージ', sceneDescription: '全国大会・インターハイ会場のモデル', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=宮城県総合運動公園+仙台市' },
+      { name: '岩手県・釜石市', address: '岩手県釜石市', description: '烏野高校のモデルとなる岩手の風景', sceneDescription: '日向翔陽の地元・宮城の田舎風景', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=釜石市+岩手県' },
+      { name: '牛タン仙台（仙台駅前）', address: '宮城県仙台市青葉区中央1丁目', description: '試合後に食べる仙台名物', sceneDescription: '宮城・仙台の地元グルメシーン', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=仙台駅+宮城県仙台市' },
+      { name: '東京体育館', address: '東京都渋谷区千駄ケ谷1丁目', description: '春高バレーの実際の会場', sceneDescription: '全国大会・春高バレー会場', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=東京体育館+渋谷区' },
+      { name: '松島（宮城）', address: '宮城県宮城郡松島町松島', description: '日本三景・東北の絶景', sceneDescription: '宮城遠征中の選手たちが見る景色', mapsUrl: 'https://www.google.com/maps/search/?api=1&query=松島+宮城県' },
     ],
   },
 ]
