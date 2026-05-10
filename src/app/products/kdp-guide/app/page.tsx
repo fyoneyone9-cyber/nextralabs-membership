@@ -171,7 +171,7 @@ export default function KdpGuideApp() {
 
   return (
     <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans selection:bg-emerald-500/30 text-left">
-      <div className="max-w-4xl mx-auto space-y-10 border-4 border-emerald-500 shadow-[0_0_100px_rgba(16,185,129,0.3)] rounded-[3rem] p-6 md:p-12 text-white font-bold relative overflow-hidden">
+      <div className="max-w-4xl mx-auto space-y-10 p-6 md:p-12 text-white font-bold relative overflow-hidden">
         {/* Security Line Accent */}
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-50"></div>
         
