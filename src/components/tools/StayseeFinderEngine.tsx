@@ -18,14 +18,27 @@ const TABS = [
 
 const LANGS = ['日本語', 'English', '中文', '한국어']
 
-/* ダミー予約データ（実際はPMS APIから取得） */
-const DUMMY_RESERVATIONS = [
-  { id: 'NTR-20260510-001', name: '山田 太郎', phone: '090-1234-5678', room: '201', checkin: '2026/05/10', checkout: '2026/05/11', guests: 2, amount: 18000 },
-  { id: 'NTR-20260510-002', name: '佐藤 花子', phone: '080-9876-5432', room: '305', checkin: '2026/05/10', checkout: '2026/05/12', guests: 1, amount: 24000 },
-  { id: 'NTR-20260510-003', name: 'John Smith', phone: '070-1111-2222', room: '102', checkin: '2026/05/10', checkout: '2026/05/11', guests: 2, amount: 16000 },
-]
+/* Staysee予約データ型 */
+type Reservation = {
+  id: string
+  name_kanji?: string
+  name?: string
+  tel?: string
+  start_date?: string
+  end_date?: string
+  allocate_rooms?: { room_id: string }[]
+  person_number?: number
+  billing_amount?: number
+  check_in_time?: string
+  check_out_time?: string
+}
 
-type Reservation = typeof DUMMY_RESERVATIONS[number]
+/** 表示用ヘルパー */
+const resName   = (r: Reservation) => r.name_kanji || r.name || '（氏名未設定）'
+const resRoom   = (r: Reservation) => r.allocate_rooms?.[0]?.room_id || '未設定'
+const resPhone  = (r: Reservation) => r.tel || '—'
+const resAmount = (r: Reservation) => r.billing_amount ? `¥${r.billing_amount.toLocaleString()}` : '—'
+const resDate   = (s?: string) => s ? s.substring(5).replace('-', '/') : '—'
 
 const inputCls = `w-full h-11 rounded-lg px-4 text-sm text-slate-200 placeholder-slate-600 outline-none transition-colors`
 const inputStyle: React.CSSProperties = { background: '#13141f', border: '1px solid #334155' }
@@ -120,45 +133,71 @@ const MasterEngine = () => {
     setCheckinStatus('VERIFIED')
   }
 
-  /* ── 予約検索 ── */
+  /* ── 予約検索（Staysee実API） ── */
   const doSearch = async () => {
     if (!searchQuery.trim()) return
     setSearching(true)
-    await new Promise(r => setTimeout(r, 800))
-    const q = searchQuery.trim().toLowerCase()
-    const results = DUMMY_RESERVATIONS.filter(r => {
-      if (searchMode === 'reservation') return r.id.toLowerCase().includes(q)
-      if (searchMode === 'name')        return r.name.toLowerCase().includes(q)
-      if (searchMode === 'phone')       return r.phone.replace(/-/g,'').includes(q.replace(/-/g,''))
-      return false
-    })
-    setSearchResults(results)
-    setSearching(false)
+    setSearchResults([])
+    try {
+      const res = await fetch(`/api/staysee/search?q=${encodeURIComponent(searchQuery.trim())}`)
+      const data = await res.json()
+      setSearchResults(data.reservations || [])
+    } catch {
+      setSearchResults([])
+    } finally {
+      setSearching(false)
+    }
   }
 
   const selectReservation = (r: Reservation) => {
     setSelectedReservation(r)
+    // 台帳に氏名を自動入力
+    setLedgerName(resName(r))
+    setCheckinStatus('IDLE')
     setActiveTab('checkin')
   }
 
-  /* ── チェックアウト検索 ── */
+  /* ── チェックアウト検索（Staysee実API） ── */
   const doCheckoutSearch = async () => {
     if (!checkoutQuery.trim()) return
     setCheckoutSearching(true)
-    await new Promise(r => setTimeout(r, 800))
-    const q = checkoutQuery.trim().toLowerCase()
-    const results = DUMMY_RESERVATIONS.filter(r =>
-      r.id.toLowerCase().includes(q) ||
-      r.name.toLowerCase().includes(q) ||
-      r.phone.replace(/-/g,'').includes(q.replace(/-/g,''))
-    )
-    setCheckoutResults(results)
-    setCheckoutSearching(false)
+    setCheckoutResults([])
+    try {
+      const res = await fetch(`/api/staysee/search?q=${encodeURIComponent(checkoutQuery.trim())}&mode=checkout`)
+      const data = await res.json()
+      setCheckoutResults(data.reservations || [])
+    } catch {
+      setCheckoutResults([])
+    } finally {
+      setCheckoutSearching(false)
+    }
   }
 
   const selectCheckoutTarget = (r: Reservation) => {
     setCheckoutTarget(r)
     setCheckoutStep('confirm')
+  }
+
+  /* ── チェックイン完了通知 ── */
+  const notifyCheckin = async (reservationId: string) => {
+    await fetch('/api/staysee/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        reservationId,
+        action: 'checkin',
+        ledger: { name: ledgerName, address: ledgerAddress, occupation: ledgerOccupation, travel: ledgerTravel },
+      }),
+    }).catch(() => null)
+  }
+
+  /* ── チェックアウト完了通知 ── */
+  const notifyCheckout = async (reservationId: string) => {
+    await fetch('/api/staysee/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reservationId, action: 'checkout' }),
+    }).catch(() => null)
   }
 
   /* ── タブ切り替え時リセット ── */
@@ -321,8 +360,11 @@ const MasterEngine = () => {
                       <div key={r.id} className="rounded-xl p-4 flex items-center justify-between gap-4"
                         style={{ background: '#13141f', border: '1px solid #1e293b' }}>
                         <div className="space-y-1">
-                          <p className="text-sm font-semibold text-slate-100">{r.name} 様</p>
-                          <p className="text-xs text-slate-500">{r.id} | {r.room}号室 | {r.checkin}〜{r.checkout}</p>
+                          <p className="text-sm font-semibold text-slate-100">{resName(r)} 様</p>
+                          <p className="text-xs text-slate-500">
+                            {r.id} | {resRoom(r)}号室 | {resDate(r.start_date)}〜{resDate(r.end_date)}
+                          </p>
+                          <p className="text-xs text-slate-600">{resPhone(r)}</p>
                         </div>
                         <button onClick={() => selectReservation(r)}
                           className="shrink-0 h-9 px-4 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all"
@@ -354,8 +396,11 @@ const MasterEngine = () => {
                 style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
                 <CheckCircle2 size={15} className="text-emerald-400 shrink-0" />
                 <div className="text-xs text-slate-300">
-                  <span className="font-semibold text-emerald-400">{selectedReservation.name} 様</span>
-                  <span className="text-slate-500 ml-2">{selectedReservation.id} | {selectedReservation.room}号室</span>
+                  <span className="font-semibold text-emerald-400">{resName(selectedReservation)} 様</span>
+                  <span className="text-slate-500 ml-2">
+                    {selectedReservation.id} | {resRoom(selectedReservation)}号室 |
+                    {resDate(selectedReservation.start_date)}〜{resDate(selectedReservation.end_date)}
+                  </span>
                 </div>
               </div>
             )}
@@ -470,7 +515,11 @@ const MasterEngine = () => {
                     <PenLine size={14} className="text-indigo-400 shrink-0" />
                     <span className="text-xs text-slate-400">電子署名パネルで署名を行ってください</span>
                   </div>
-                  <button onClick={() => setActiveTab('lock')}
+                  <button
+                    onClick={async () => {
+                      if (selectedReservation?.id) await notifyCheckin(selectedReservation.id)
+                      setActiveTab('lock')
+                    }}
                     disabled={!ledgerName}
                     className="w-full h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all"
                     style={{ background: ledgerName ? '#10b981' : '#1e293b', color: ledgerName ? '#fff' : '#475569' }}>
@@ -494,13 +543,15 @@ const MasterEngine = () => {
             <div className="rounded-xl px-12 py-8 text-center"
               style={{ background: '#13141f', border: '2px solid #10b981', boxShadow: '0 0 30px rgba(16,185,129,0.15)' }}>
               <p className="text-xs font-medium text-slate-500 mb-1">
-                Room: {selectedReservation?.room || '201'}
+                Room: {selectedReservation ? resRoom(selectedReservation) : '201'}
               </p>
               <p className="text-xs text-slate-600 mb-3">
-                {selectedReservation ? `${selectedReservation.checkin}〜${selectedReservation.checkout}` : '2026/05/10〜2026/05/11'}
+                {selectedReservation
+                  ? `${resDate(selectedReservation.start_date)}〜${resDate(selectedReservation.end_date)}`
+                  : '—'}
               </p>
               <p className="text-6xl font-bold tracking-[0.2em]" style={{ color: '#10b981' }}>8421</p>
-              <p className="text-xs text-slate-500 mt-3">暗証番号</p>
+              <p className="text-xs text-slate-500 mt-3">暗証番号（スマートロック連携）</p>
             </div>
             <div className="flex gap-3">
               <button onClick={() => gotoTab('kiosk')}
@@ -553,9 +604,11 @@ const MasterEngine = () => {
                       <div key={r.id} className="rounded-xl p-4 flex items-center justify-between gap-4"
                         style={{ background: '#13141f', border: '1px solid #1e293b' }}>
                         <div className="space-y-1">
-                          <p className="text-sm font-semibold text-slate-100">{r.name} 様</p>
-                          <p className="text-xs text-slate-500">{r.id} | {r.room}号室 | {r.checkin}〜{r.checkout}</p>
-                          <p className="text-xs text-slate-500">宿泊料金: ¥{r.amount.toLocaleString()}</p>
+                          <p className="text-sm font-semibold text-slate-100">{resName(r)} 様</p>
+                          <p className="text-xs text-slate-500">
+                            {r.id} | {resRoom(r)}号室 | {resDate(r.start_date)}〜{resDate(r.end_date)}
+                          </p>
+                          <p className="text-xs text-slate-500">宿泊料金: {resAmount(r)}</p>
                         </div>
                         <button onClick={() => selectCheckoutTarget(r)}
                           className="shrink-0 h-9 px-4 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all"
@@ -586,11 +639,11 @@ const MasterEngine = () => {
                 <div className="w-full max-w-md rounded-xl p-5 space-y-3"
                   style={{ background: '#13141f', border: '1px solid #1e293b' }}>
                   {[
-                    { label: 'お名前',        value: `${checkoutTarget.name} 様` },
-                    { label: '部屋番号',       value: `${checkoutTarget.room}号室` },
-                    { label: 'チェックイン',   value: checkoutTarget.checkin },
-                    { label: 'チェックアウト', value: `${checkoutTarget.checkout}（本日）` },
-                    { label: '宿泊料金',       value: `¥${checkoutTarget.amount.toLocaleString()}` },
+                    { label: 'お名前',        value: `${resName(checkoutTarget)} 様` },
+                    { label: '部屋番号',       value: `${resRoom(checkoutTarget)}号室` },
+                    { label: 'チェックイン',   value: resDate(checkoutTarget.start_date) },
+                    { label: 'チェックアウト', value: `${resDate(checkoutTarget.end_date)}（本日）` },
+                    { label: '宿泊料金',       value: resAmount(checkoutTarget) },
                   ].map(item => (
                     <div key={item.label} className="flex justify-between text-sm">
                       <span className="text-slate-500">{item.label}</span>
@@ -619,7 +672,11 @@ const MasterEngine = () => {
                     </button>
                   </div>
                 ) : (
-                  <button onClick={() => setCheckoutStep('processing')}
+                  <button
+                    onClick={async () => {
+                      if (checkoutTarget.id) await notifyCheckout(checkoutTarget.id)
+                      setCheckoutStep('processing')
+                    }}
                     className="w-full max-w-md h-12 rounded-xl text-sm font-semibold transition-all"
                     style={{ background: '#6366f1', color: '#fff' }}>
                     チェックアウトする →
@@ -648,7 +705,7 @@ const MasterEngine = () => {
                 <div>
                   <h3 className="text-xl font-semibold text-slate-100">チェックアウト完了</h3>
                   <p className="text-slate-400 text-sm mt-1">
-                    {checkoutTarget?.name} 様、ご利用ありがとうございました
+                    {checkoutTarget ? resName(checkoutTarget) : ''} 様、ご利用ありがとうございました
                   </p>
                 </div>
                 <p className="text-xs text-slate-500 leading-relaxed">
