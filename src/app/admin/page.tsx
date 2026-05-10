@@ -66,10 +66,10 @@ export default async function AdminPage() {
       <div className="container mx-auto px-4 py-12 max-w-7xl">
         <div className="flex justify-between items-end mb-10 border-b border-emerald-500/20 pb-8">
           <div>
-            <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-tighter text-white">Nextra Admin Central</h1>
-            <p className="text-emerald-400 font-bold uppercase tracking-[0.2em] text-xs mt-2">Management Dashboard • Master Quality Control</p>
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-white">管理者ダッシュボード</h1>
+            <p className="text-emerald-400 font-semibold text-xs mt-2">NextraLabs 管理者専用ページ</p>
           </div>
-          <Badge className="bg-emerald-500 text-slate-950 font-bold px-4 py-1.5 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)]">ADMIN ONLY</Badge>
+          <Badge className="bg-emerald-500 text-slate-950 font-bold px-4 py-1.5 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)]">管理者専用</Badge>
         </div>
 
         {/* Stats Grid */}
@@ -108,8 +108,8 @@ export default async function AdminPage() {
           <div className="lg:col-span-2 space-y-8">
             <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl p-8">
               <CardHeader className="p-0 border-b border-white/5 mb-6 pb-6">
-                <CardTitle className="text-xl font-bold uppercase tracking-tight text-white flex items-center gap-3">
-                  <MousePointer2 className="h-6 w-6 text-blue-400" /> アクセス解析 (PV)
+                <CardTitle className="text-xl font-bold tracking-tight text-white flex items-center gap-3">
+                  <MousePointer2 className="h-6 w-6 text-blue-400" /> アクセス解析
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0 space-y-6">
@@ -124,7 +124,7 @@ export default async function AdminPage() {
 
             <Card className="bg-[#13141f] border-2 border-white/10 rounded-[2.5rem] overflow-hidden lg:col-span-2">
               <CardHeader className="bg-white/5 p-8 border-b border-white/5">
-                <CardTitle className="text-xl font-bold uppercase tracking-tight text-white flex items-center gap-3">
+                <CardTitle className="text-xl font-bold tracking-tight text-white flex items-center gap-3">
                   <Users className="h-6 w-6 text-emerald-400" /> 会員一覧
                 </CardTitle>
               </CardHeader>
@@ -137,7 +137,7 @@ export default async function AdminPage() {
                           <td className="py-6 px-8 font-bold text-white">{p.display_name || 'No Name'}</td>
                           <td className="py-6 px-8">
                             <Badge className={activeSubUserIds.has(p.user_id) ? "bg-emerald-500 text-slate-950" : "bg-slate-700 text-slate-300"}>
-                              {activeSubUserIds.has(p.user_id) ? "PREMIUM" : "FREE"}
+                              {activeSubUserIds.has(p.user_id) ? "有料会員" : "無料会員"}
                             </Badge>
                           </td>
                           <td className="py-6 px-8 text-xs text-slate-500">{new Date(p.created_at).toLocaleDateString()}</td>
