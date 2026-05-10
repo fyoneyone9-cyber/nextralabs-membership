@@ -34,6 +34,7 @@ const STANDARD_IDS = [
   'money-guard',
   'shio-taiou',
   'trend-stock',
+  'travel-concierge',
 ]
 
 // ライト以上で使えるツール (¥480/月〜)
