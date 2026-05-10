@@ -1329,202 +1329,198 @@ const MasterEngine = () => {
           </div>
         )}
 
-        {/* ════ 自動チェックイン ════ */}
-        {activeTab === 'checkin' && (
-          <div className="rounded-xl p-6 space-y-6" style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
+        {/* ════ 自動チェックイン（3ステップ・画面内完結） ════ */}
+        {activeTab === 'checkin' && (() => {
+          // checkinStep: 'scan' | 'info' | 'sign'
+          const step = (checkinStatus === 'IDLE' || checkinStatus === 'SCANNING') && !ledgerName
+            ? 'scan'
+            : signatureData || checkinStatus === 'VERIFIED'
+            ? 'sign'
+            : 'info'
 
-            {/* カメラビュー（インライン表示 — モーダルなし） */}
-            {isCameraOpen && (
-              <div className="rounded-xl overflow-hidden space-y-3" style={{ border: '1px solid rgba(16,185,129,0.3)' }}>
-                {cameraError ? (
-                  /* エラー: インラインで表示（画面を覆わない） */
-                  <div className="flex items-start gap-3 px-4 py-3 rounded-xl"
-                    style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
-                    <span className="text-red-400 text-lg mt-0.5">⚠️</span>
-                    <div className="flex-1">
-                      <p className="text-red-400 text-sm font-semibold">カメラエラー</p>
-                      <p className="text-slate-500 text-xs mt-0.5">{cameraError}</p>
-                      <p className="text-slate-600 text-[10px] mt-1">
-                        ブラウザの設定でカメラのアクセスを許可してください（設定 → サイトの設定 → カメラ）
-                      </p>
-                    </div>
-                    <button onClick={closeCamera}
-                      className="text-slate-600 hover:text-slate-400 shrink-0 p-1">
-                      <span style={{ fontSize: 16 }}>✕</span>
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <div className="relative bg-black rounded-xl overflow-hidden">
-                      <video ref={videoRef} autoPlay playsInline muted className="w-full" style={{ maxHeight: '280px', objectFit: 'cover' }} />
-                      {/* QRスキャン枠 */}
-                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="w-48 h-48 border-2 rounded-xl opacity-70"
-                          style={{ borderColor: '#10b981', boxShadow: '0 0 0 9999px rgba(0,0,0,0.45)' }} />
-                      </div>
-                      <div className="absolute bottom-3 left-0 right-0 text-center">
-                        <span className="text-[11px] text-emerald-400 font-medium px-3 py-1 rounded-full"
-                          style={{ background: 'rgba(0,0,0,0.7)' }}>
-                          QRコードを枠内に合わせてください
-                        </span>
-                      </div>
-                    </div>
-                    <canvas ref={canvasRef} className="hidden" />
-                    <div className="flex gap-2 px-3 pb-3">
-                      <button onClick={closeCamera}
-                        className="flex-1 h-10 rounded-lg bg-slate-800 text-sm font-semibold text-slate-300">
-                        キャンセル
-                      </button>
-                      <button onClick={capturePhoto}
-                        className="flex-1 h-10 rounded-lg text-sm font-semibold text-white"
-                        style={{ background: '#10b981' }}>
-                        手動で撮影
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
-            )}
+          return (
+          <div className="rounded-xl overflow-hidden" style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
 
+            {/* 予約バナー（常時表示） */}
             {selectedReservation && (
-              <div className="flex items-center gap-3 p-3 rounded-lg"
-                style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
-                <CheckCircle2 size={15} className="text-emerald-400 shrink-0" />
-                <div className="text-xs text-slate-300">
+              <div className="flex items-center gap-2 px-4 py-2.5 border-b" style={{ borderColor: '#1e293b', background: 'rgba(16,185,129,0.05)' }}>
+                <CheckCircle2 size={13} className="text-emerald-400 shrink-0" />
+                <p className="text-xs text-slate-300 truncate">
                   <span className="font-semibold text-emerald-400">{resName(selectedReservation)} 様</span>
-                  <span className="text-slate-500 ml-2">
-                    {selectedReservation.id} | {resRoom(selectedReservation)}号室 |
-                    {resDate(selectedReservation.start_date)}〜{resDate(selectedReservation.end_date)}
-                  </span>
-                </div>
+                  <span className="text-slate-600 ml-2">{resRoom(selectedReservation)}号室 · {resDate(selectedReservation.start_date)}〜{resDate(selectedReservation.end_date)}</span>
+                </p>
               </div>
             )}
 
-            <div className="flex items-start justify-between gap-4 flex-wrap">
-              <div>
-                <h3 className="text-lg font-semibold text-slate-100">宿泊者情報の登録</h3>
-                <p className="text-xs text-slate-500 mt-1">旅館業法に基づき、正確な情報をご入力ください。</p>
-              </div>
-              <span className="text-xs px-3 py-1 rounded-full font-medium"
-                style={{ background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.25)' }}>
-                <Shield size={10} className="inline mr-1" />
-                本人確認プロセス
-              </span>
+            {/* ステップタブ（進捗） */}
+            <div className="flex border-b" style={{ borderColor: '#1e293b' }}>
+              {[
+                { id: 'scan', label: '① 身分証', icon: Camera },
+                { id: 'info', label: '② 台帳入力', icon: ClipboardList },
+                { id: 'sign', label: '③ 署名', icon: PenLine },
+              ].map(s => {
+                const done = (s.id === 'scan' && checkinStatus === 'VERIFIED')
+                  || (s.id === 'info' && !!ledgerName)
+                  || (s.id === 'sign' && !!signatureData)
+                const active = step === s.id
+                return (
+                  <button key={s.id}
+                    onClick={() => {
+                      if (s.id === 'scan') setCheckinStatus('IDLE')
+                      if (s.id === 'info') { /* そのまま */ }
+                      if (s.id === 'sign') { /* そのまま */ }
+                    }}
+                    className="flex-1 flex items-center justify-center gap-1.5 h-10 text-xs font-semibold transition-all"
+                    style={{
+                      background: active ? 'rgba(16,185,129,0.1)' : 'transparent',
+                      color: done ? '#10b981' : active ? '#34d399' : '#475569',
+                      borderBottom: active ? '2px solid #10b981' : '2px solid transparent',
+                    }}>
+                    {done ? <CheckCircle2 size={11} /> : <s.icon size={11} />}
+                    {s.label}
+                  </button>
+                )
+              })}
             </div>
 
-            <div className="grid gap-5">
-
-              {/* Step 1: IDスキャン（カメラのみ） */}
-              <div className="rounded-xl p-5 space-y-4" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
-                <p className="text-xs font-semibold text-slate-500 flex items-center gap-1.5">
-                  <Camera size={12} className="text-emerald-400" />
-                  ステップ 1 — 身分証スキャン
-                </p>
-
-                <div
-                  className="rounded-xl h-36 flex flex-col items-center justify-center gap-3 cursor-pointer transition-all"
-                  style={{ border: `2px dashed ${checkinStatus === 'VERIFIED' ? '#10b981' : '#334155'}`, background: '#0a0b0f' }}
-                  onClick={() => checkinStatus === 'IDLE' && startCamera()}>
-                  {checkinStatus === 'SCANNING' && <Loader2 size={36} className="text-emerald-400 animate-spin" />}
-                  {checkinStatus === 'VERIFIED' && <CheckCircle2 size={36} style={{ color: '#10b981' }} />}
-                  {checkinStatus === 'IDLE'     && <Camera size={36} className="text-slate-600" />}
-                  <p className="text-xs text-slate-500">
-                    {checkinStatus === 'VERIFIED' ? 'スキャン完了 ✓' : checkinStatus === 'SCANNING' ? 'AI読み取り中...' : '身分証をタップしてスキャン'}
-                  </p>
-                </div>
-
-                {/* カメラのみ（ファイル選択なし） */}
-                <button onClick={startCamera} disabled={checkinStatus === 'SCANNING'}
-                  className="w-full h-9 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all"
-                  style={{ background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.3)' }}>
-                  <Camera size={12} /> カメラを起動してスキャン
-                </button>
-              </div>
-
-              {/* Step 2: 台帳記入 */}
-              <div className="rounded-xl p-5 space-y-4" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
-                <p className="text-xs font-semibold text-slate-500 flex items-center gap-1.5">
-                  <ClipboardList size={12} className="text-indigo-400" />
-                  ステップ 2 — 宿泊者台帳記入
-                </p>
-                <div className="space-y-3">
-                  {[
-                    { label: '氏名 *',  value: ledgerName,    set: setLedgerName,    ph: '例：山田 太郎' },
-                    { label: '住所 *',  value: ledgerAddress, set: setLedgerAddress, ph: '例：東京都渋谷区1-2-3' },
-                  ].map(f => (
-                    <div key={f.label} className="space-y-1">
-                      <label className="text-[10px] font-medium text-slate-600">{f.label}</label>
-                      <input value={f.value} onChange={e => f.set(e.target.value)}
-                        placeholder={checkinStatus === 'SCANNING' ? 'AI読み取り中...' : f.ph}
-                        className={inputCls} style={inputStyle}
-                        onFocus={e => (e.target.style.borderColor = '#10b981')}
-                        onBlur={e => (e.target.style.borderColor = '#334155')} />
+            {/* ── Step 1: 身分証スキャン ── */}
+            {step === 'scan' && (
+              <div className="p-4 space-y-3">
+                {/* カメラビュー or タップエリア */}
+                {isCameraOpen ? (
+                  <div className="space-y-2">
+                    {cameraError ? (
+                      <div className="flex items-start gap-3 px-3 py-2.5 rounded-lg"
+                        style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                        <span className="text-red-400">⚠️</span>
+                        <div className="flex-1">
+                          <p className="text-red-400 text-xs font-semibold">{cameraError}</p>
+                          <p className="text-slate-600 text-[10px] mt-0.5">設定 → サイトの設定 → カメラ を許可してください</p>
+                        </div>
+                        <button onClick={closeCamera} className="text-slate-600 text-sm">✕</button>
+                      </div>
+                    ) : (
+                      <div className="relative bg-black rounded-xl overflow-hidden" style={{ height: '220px' }}>
+                        <video ref={videoRef} autoPlay playsInline muted className="w-full h-full" style={{ objectFit: 'cover' }} />
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <div className="w-40 h-40 border-2 rounded-xl"
+                            style={{ borderColor: '#10b981', boxShadow: '0 0 0 9999px rgba(0,0,0,0.5)' }} />
+                        </div>
+                        <p className="absolute bottom-2 left-0 right-0 text-center text-[10px] text-emerald-400">QRコードを枠内に</p>
+                      </div>
+                    )}
+                    <canvas ref={canvasRef} className="hidden" />
+                    <div className="flex gap-2">
+                      <button onClick={closeCamera} className="flex-1 h-10 rounded-lg text-xs font-semibold text-slate-300" style={{ background: '#1e293b' }}>キャンセル</button>
+                      <button onClick={capturePhoto} className="flex-1 h-10 rounded-lg text-xs font-semibold text-white" style={{ background: '#10b981' }}>手動で撮影</button>
                     </div>
-                  ))}
+                  </div>
+                ) : (
+                  <button
+                    onClick={startCamera}
+                    disabled={checkinStatus === 'SCANNING'}
+                    className="w-full rounded-xl flex flex-col items-center justify-center gap-3 transition-all active:scale-[0.98]"
+                    style={{ height: '200px', background: '#13141f', border: `2px dashed ${checkinStatus === 'VERIFIED' ? '#10b981' : '#334155'}` }}>
+                    {checkinStatus === 'SCANNING' && <Loader2 size={40} className="text-emerald-400 animate-spin" />}
+                    {checkinStatus === 'VERIFIED' && <CheckCircle2 size={40} style={{ color: '#10b981' }} />}
+                    {checkinStatus === 'IDLE'     && <Camera size={40} className="text-slate-600" />}
+                    <p className="text-sm font-semibold" style={{ color: checkinStatus === 'VERIFIED' ? '#10b981' : '#64748b' }}>
+                      {checkinStatus === 'VERIFIED' ? 'スキャン完了 ✓' : checkinStatus === 'SCANNING' ? '読み取り中...' : '身分証をタップしてスキャン'}
+                    </p>
+                    {checkinStatus === 'IDLE' && <p className="text-[10px] text-slate-700">QR / 免許証 / パスポートに対応</p>}
+                  </button>
+                )}
+
+                {/* スキャン済みなら次へ */}
+                <button
+                  onClick={() => { if (!ledgerName && selectedReservation) setLedgerName(resName(selectedReservation)); setCheckinStatus('VERIFIED') }}
+                  className="w-full h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
+                  style={{ background: '#10b981', color: '#fff' }}>
+                  台帳入力へ進む <ArrowRight size={14} />
+                </button>
+                <p className="text-center text-[10px] text-slate-700">スキャンしない場合も次に進めます</p>
+              </div>
+            )}
+
+            {/* ── Step 2: 台帳入力 ── */}
+            {step === 'info' && (
+              <div className="p-4 space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="col-span-2 space-y-1">
+                    <label className="text-[10px] font-medium text-slate-600">氏名 *</label>
+                    <input value={ledgerName} onChange={e => setLedgerName(e.target.value)}
+                      placeholder="例：山田 太郎"
+                      className={inputCls} style={inputStyle}
+                      onFocus={e => (e.target.style.borderColor = '#10b981')}
+                      onBlur={e => (e.target.style.borderColor = '#334155')} />
+                  </div>
+                  <div className="col-span-2 space-y-1">
+                    <label className="text-[10px] font-medium text-slate-600">住所</label>
+                    <input value={ledgerAddress} onChange={e => setLedgerAddress(e.target.value)}
+                      placeholder="例：東京都渋谷区1-2-3"
+                      className={inputCls} style={inputStyle}
+                      onFocus={e => (e.target.style.borderColor = '#10b981')}
+                      onBlur={e => (e.target.style.borderColor = '#334155')} />
+                  </div>
                   <div className="space-y-1">
                     <label className="text-[10px] font-medium text-slate-600">職業</label>
                     <select value={ledgerOccupation} onChange={e => setLedgerOccupation(e.target.value)}
-                      className={inputCls} style={{ ...inputStyle, appearance: 'none' as const }}>
-                      <option value="">職業を選択...</option>
-                      {['会社員','自営業','公務員','学生','無職','その他'].map(o => (
-                        <option key={o} value={o}>{o}</option>
-                      ))}
+                      className={inputCls} style={{ ...inputStyle, colorScheme: 'dark' }}>
+                      <option value="">選択...</option>
+                      {['会社員','自営業','公務員','学生','無職','その他'].map(o => <option key={o} value={o}>{o}</option>)}
                     </select>
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] font-medium text-slate-600">前泊地・行先地</label>
                     <input value={ledgerTravel} onChange={e => setLedgerTravel(e.target.value)}
-                      placeholder="例：大阪 → 東京 → 横浜" list="travel-suggestions"
+                      placeholder="例：東京" list="travel-suggestions"
                       className={inputCls} style={inputStyle}
                       onFocus={e => (e.target.style.borderColor = '#10b981')}
                       onBlur={e => (e.target.style.borderColor = '#334155')} />
                     <datalist id="travel-suggestions">
-                      {['自宅','東京','大阪','京都','名古屋','福岡','札幌','海外'].map(v => (
-                        <option key={v} value={v} />
-                      ))}
+                      {['自宅','東京','大阪','京都','名古屋','福岡','札幌','海外'].map(v => <option key={v} value={v} />)}
                     </datalist>
                   </div>
                 </div>
+                <button
+                  onClick={() => setSignatureData('')}
+                  disabled={!ledgerName}
+                  className="w-full h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
+                  style={{ background: ledgerName ? '#10b981' : '#1e293b', color: ledgerName ? '#fff' : '#475569' }}>
+                  署名へ進む <ArrowRight size={14} />
+                </button>
               </div>
-            </div>
+            )}
 
-            {/* Step 3: 電子署名（全幅） */}
-            <div className="rounded-xl p-5 space-y-4" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
-              <p className="text-xs font-semibold text-slate-500 flex items-center gap-1.5">
-                <PenLine size={12} className="text-violet-400" />
-                ステップ 3 — 電子署名（旅館業法・宿泊約款への同意）
-              </p>
-              <p className="text-[10px] text-slate-600 leading-relaxed">
-                宿泊約款および個人情報取扱方針に同意の上、下記にご署名ください。署名はデジタル台帳として保管されます。
-              </p>
-              <SignaturePanel
-                key={signatureClearedAt}
-                onSigned={setSignatureData}
-                onClear={() => { setSignatureData(''); setSignatureClearedAt(Date.now()) }}
-              />
-            </div>
-
-            {/* チェックイン完了ボタン */}
-            <button
-              onClick={async () => {
-                if (selectedReservation?.id) await notifyCheckin(selectedReservation.id)
-                setActiveTab('lock')
-              }}
-              disabled={!ledgerName}
-              className="w-full h-12 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all"
-              style={{
-                background: ledgerName ? '#10b981' : '#1e293b',
-                color: ledgerName ? '#fff' : '#475569',
-              }}>
-              チェックイン完了 → 鍵発行 <ArrowRight size={15} />
-            </button>
-            <p className="text-center text-[10px] text-slate-600">
-              {!ledgerName
-                ? '氏名を入力してください'
-                : `入力内容を${PMS_OPTIONS.find(p => p.id === pms)?.label || 'PMS'}に送信し、DMSに反映されます`}
-            </p>
+            {/* ── Step 3: 電子署名 ── */}
+            {step === 'sign' && (
+              <div className="p-4 space-y-3">
+                <p className="text-[10px] text-slate-600 leading-relaxed">
+                  宿泊約款・個人情報取扱方針に同意の上、ご署名ください。デジタル台帳として保管されます。
+                </p>
+                <div style={{ maxHeight: '260px' }}>
+                  <SignaturePanel
+                    key={signatureClearedAt}
+                    onSigned={setSignatureData}
+                    onClear={() => { setSignatureData(''); setSignatureClearedAt(Date.now()) }}
+                  />
+                </div>
+                <button
+                  onClick={async () => {
+                    if (selectedReservation?.id) await notifyCheckin(selectedReservation.id)
+                    setActiveTab('lock')
+                  }}
+                  disabled={!ledgerName}
+                  className="w-full h-12 rounded-xl text-sm font-bold flex items-center justify-center gap-2"
+                  style={{ background: ledgerName ? '#10b981' : '#1e293b', color: ledgerName ? '#fff' : '#475569' }}>
+                  チェックイン完了 → 鍵発行 <ArrowRight size={15} />
+                </button>
+                <p className="text-center text-[10px] text-slate-600">署名は任意です · 氏名入力で完了できます</p>
+              </div>
+            )}
           </div>
-        )}
+          )
+        })()}
 
         {/* ════ 鍵発行 ════ */}
         {activeTab === 'lock' && (
