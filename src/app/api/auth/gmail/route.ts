@@ -15,6 +15,7 @@ export async function GET() {
     'https://www.googleapis.com/auth/gmail.readonly',   // Read email list (subject, sender)
     'https://www.googleapis.com/auth/gmail.compose',     // Create drafts
     'https://www.googleapis.com/auth/gmail.modify',      // Trash/archive messages
+    'https://www.googleapis.com/auth/gmail.send',        // Send emails (営業メール送信)
   ].join(' ')
 
   const params = new URLSearchParams({
