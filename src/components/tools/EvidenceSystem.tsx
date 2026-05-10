@@ -42,7 +42,7 @@ export default function EvidenceSystem() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-slate-950 text-left">
+    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left">
       <div className="text-center space-y-3">
         <Badge className="bg-emerald-600 text-white font-bold tracking-tight px-6 py-1 text-[10px] uppercase rounded-full shadow-lg">Nextra Evidence Guardian v1.0-MASTER</Badge>
         <h1 className="text-5xl md:text-[8rem] font-bold text-white uppercase tracking-tighter leading-none drop-shadow-2xl">Evidence Manager</h1>

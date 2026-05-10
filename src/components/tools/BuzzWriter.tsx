@@ -46,7 +46,7 @@ ${draft || '（未入力）'}`;
   );
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-slate-950">
+    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-[#050507]">
       <div className="text-center space-y-2">
         <Badge className="bg-red-600 text-white font-bold tracking-tight px-4 py-1 text-[10px] uppercase rounded-full shadow-lg">VIRAL ENGINE</Badge>
         <h1 className="text-5xl md:text-7xl font-bold text-white uppercase tracking-tighter drop-shadow-xl leading-tight">AI バズ文章コーチ</h1>
@@ -69,7 +69,7 @@ ${draft || '（未入力）'}`;
             {renderGuide(['SNS投稿の下書きやネタを入力する', '分析指示をコピーしてAI三台体制へ投げる', 'AIが作成したバズる文章を右のエリアに戻す'])}
             <div className="grid lg:grid-cols-2 gap-12 text-left">
               <div className="space-y-6">
-                 <textarea value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="SNS投稿案をペースト..." className="w-full h-64 bg-slate-950 border-2 border-slate-800 rounded-2xl p-6 text-base text-slate-200 focus:border-red-600 outline-none font-medium shadow-inner leading-relaxed" />
+                 <textarea value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="SNS投稿案をペースト..." className="w-full h-64 bg-[#050507] border-2 border-slate-800 rounded-2xl p-6 text-base text-slate-200 focus:border-red-600 outline-none font-medium shadow-inner leading-relaxed" />
                  {draft && (
                     <div className="space-y-4">
                        <Button onClick={() => { handleCopy(FINAL_PROMPT); }} className={`w-full h-12 font-bold rounded-xl transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-red-600 text-white hover:bg-red-500'}`}>バズ指示をコピー</Button>
@@ -81,7 +81,7 @@ ${draft || '（未入力）'}`;
                     </div>
                  )}
               </div>
-              <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 space-y-6 shadow-2xl flex flex-col justify-center text-left">
+              <div className="bg-[#050507] rounded-[3rem] p-10 border border-slate-800 space-y-6 shadow-2xl flex flex-col justify-center text-left">
                  <div className="flex items-center gap-4"><ClipboardPaste className="h-8 w-8 text-red-500" /><h3 className="text-xl font-bold text-white uppercase tracking-tighter">AIの添削を戻す</h3></div>
                  <textarea value={buzzResult} onChange={(e) => setBuzzResult(e.target.value)} placeholder="AIからの回答をここにペースト..." className="w-full h-80 bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 text-sm text-slate-300 focus:border-red-600 outline-none font-medium leading-relaxed font-mono" />
               </div>
@@ -99,7 +99,7 @@ ${draft || '（未入力）'}`;
             <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-10 md:p-20 shadow-2xl border-l-8 border-l-red-600 relative overflow-hidden text-left">
                <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white"><TrendingUp className="w-80 h-80" /></div>
                <h3 className="text-4xl font-bold text-white uppercase mb-10 flex items-center justify-center gap-4 relative z-10"><Sparkles className="text-yellow-500 animate-pulse w-12 h-12" /> バズ文章完成レポート</h3>
-               <div className="bg-slate-950 rounded-[2.5rem] p-12 border border-slate-800 text-lg text-slate-200 leading-relaxed text-left whitespace-pre-wrap shadow-inner relative z-10 font-medium">
+               <div className="bg-[#050507] rounded-[2.5rem] p-12 border border-slate-800 text-lg text-slate-200 leading-relaxed text-left whitespace-pre-wrap shadow-inner relative z-10 font-medium">
                   {buzzResult || "データがありません。"}
                </div>
             </Card>

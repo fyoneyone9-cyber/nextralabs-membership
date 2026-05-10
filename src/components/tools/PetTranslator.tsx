@@ -79,7 +79,7 @@ const MasterEngine = () => {
   if (!isMounted) return null;
 
   return (
-    <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left border-4 md: rounded-[2rem] md:rounded-[4rem] my-2 md:my-4">
+    <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left md:">
       <div className="text-center space-y-1 md:space-y-3">
         <Badge className="bg-yellow-500 text-black font-bold px-3 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full">ANIMAL EMOTION ENGINE</Badge>
         <h1 className="text-4xl md:text-6xl font-bold text-white uppercase tracking-tighter leading-none drop-shadow-2xl">AIペット翻訳モニター</h1>
@@ -89,7 +89,7 @@ const MasterEngine = () => {
       <div className="grid lg:grid-cols-2 gap-8 animate-in fade-in duration-700">
         {/* 🔴 SENSORY INPUT SECTION (VIDEO) */}
         <div className="space-y-6">
-          <div className="relative aspect-video md:aspect-square rounded-[2.5rem] overflow-hidden border-4 border-white/5 bg-black shadow-2xl flex items-center justify-center">
+          <div className="relative aspect-video md:aspect-square rounded-[2.5rem] overflow-hidden border-white/5 bg-black shadow-2xl flex items-center justify-center">
             {cameraActive ? (
               <video 
                 ref={videoRef} 
@@ -141,7 +141,7 @@ const MasterEngine = () => {
           <button 
             onClick={startVoiceAnalysis} 
             disabled={isRecording}
-            className={`w-full h-24 ${isRecording ? 'bg-slate-800' : 'bg-emerald-600 hover:bg-emerald-500'} text-white font-bold rounded-[2rem] shadow-2xl flex items-center justify-center gap-6 text-3xl uppercase transition-all active:scale-95 border-b-8 border-emerald-900 active:border-b-0`}
+            className={`w-full h-24 ${isRecording ? 'bg-slate-800' : 'bg-emerald-600 hover:bg-emerald-500'} text-white font-bold shadow-2xl flex items-center justify-center gap-6 text-3xl uppercase transition-all active:scale-95 border-b-8 border-emerald-900 active:border-b-0`}
           >
             {isRecording ? (
               <Loader2 className="w-10 h-10 animate-spin" />
@@ -165,7 +165,7 @@ const MasterEngine = () => {
 
         {/* 🔴 RESULT / INTERFACE SECTION */}
         <div className="flex flex-col justify-center space-y-8">
-           <div className="bg-[#13141f] border-2 border-white/5 rounded-[3rem] p-10 relative shadow-2xl overflow-hidden min-h-[450px] flex flex-col">
+           <div className="bg-[#13141f] border-2 border-white/5 p-10 relative shadow-2xl overflow-hidden min-h-[450px] flex flex-col">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-30" />
               <div className="absolute -top-4 -left-4 bg-red-600 text-white p-4 rounded-3xl shadow-xl z-10">
                 <Heart className="w-8 h-8 fill-white" />
@@ -176,7 +176,7 @@ const MasterEngine = () => {
                 <h3 className="text-3xl font-bold text-white uppercase tracking-tighter">AI Translation</h3>
               </div>
 
-              <div className="flex-1 flex items-center justify-center bg-black/40 rounded-[2rem] border border-white/5 p-8 shadow-inner">
+              <div className="flex-1 flex items-center justify-center bg-black/40 border border-white/5 p-8 shadow-inner">
                 {translationResult ? (
                   <div className="space-y-6 animate-in fade-in zoom-in duration-500 text-center">
                     <p className="text-2xl md:text-4xl font-bold text-white leading-relaxed tracking-tight">
@@ -209,7 +209,7 @@ const MasterEngine = () => {
               )}
            </div>
 
-           <div className="bg-emerald-600/5 border-2 border-emerald-500/20 rounded-[2rem] p-8 space-y-4 shadow-inner">
+           <div className="bg-emerald-600/5 border-2 p-8 space-y-4 shadow-inner">
              <div className="flex items-center gap-3 text-emerald-500">
                 <Zap size={20} />
                 <p className="text-xs font-bold uppercase tracking-tight">Master Protocol</p>

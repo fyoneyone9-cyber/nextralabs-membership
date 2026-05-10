@@ -26,12 +26,12 @@ const MasterEngine = () => {
   if (!isMounted) return null;
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 bg-[#050507] rounded-[4rem]">
+    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-200 bg-[#050507]">
       <div className="text-center space-y-2">
         <Badge className="bg-emerald-600 text-white font-bold px-4 py-1 text-[10px] uppercase rounded-full">Evidence Security OS</Badge>
         <h1 className="text-4xl md:text-6xl font-bold text-white uppercase text-center">エビデンスAIマネージャー</h1>
       </div>
-      <Card className="bg-[#13141f] p-10 rounded-[3rem] text-center space-y-8">
+      <Card className="bg-[#13141f] p-10 text-center space-y-8">
         <div className="flex justify-center mb-4"><Archive size={48} className="text-emerald-400" /></div>
         <h3 className="text-3xl text-white font-bold mb-6 uppercase text-center">サブスク実績の証拠管理・クリーンアップ</h3>
         <p className="text-slate-400 max-w-xl mx-auto text-center font-bold">デスクトップをスキャンし、Shopifyの出品成功画像などの「本物の証拠」のみを選別・永久保存。AIが不要なデータを自動消去し、実績管理を自動化します。</p>

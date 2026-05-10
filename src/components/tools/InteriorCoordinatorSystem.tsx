@@ -59,11 +59,11 @@ const MasterEngine = () => {
   if (!isMounted) return null;
 
   return (
-    <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left border-4 md: rounded-[2rem] md:rounded-[4rem] my-2 md:my-4">
+    <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left md:">
 
       {/* ヘッダー */}
       <div className="text-center space-y-2 md:space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border bg-emerald-500/10">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
           <span className="text-xs font-medium text-emerald-400">Spatial AI Coordinator</span>
         </div>
@@ -75,11 +75,11 @@ const MasterEngine = () => {
 
         {/* 空間スキャンエリア */}
         <div className="space-y-4">
-          <div className="relative aspect-video rounded-[2rem] overflow-hidden border-2 border-white/5 bg-black shadow-2xl flex items-center justify-center">
+          <div className="relative aspect-video overflow-hidden border-2 border-white/5 bg-black shadow-2xl flex items-center justify-center">
             {cameraActive ? (
               <>
                 <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover opacity-80" />
-                <div className="absolute inset-0 border-[20px] border-emerald-500/10 pointer-events-none" />
+                <div className="absolute inset-0 border-[20px] pointer-events-none" />
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/5 to-transparent pointer-events-none" />
               </>
             ) : (
@@ -120,7 +120,7 @@ const MasterEngine = () => {
 
         {/* コーディネート結果 */}
         <div className="space-y-4 flex flex-col justify-center">
-          <div className="bg-[#13141f] border border-white/5 rounded-[2rem] p-6 md:p-8 relative shadow-2xl overflow-hidden min-h-[440px] flex flex-col">
+          <div className="bg-[#13141f] border border-white/5 p-6 md:p-8 relative shadow-2xl overflow-hidden min-h-[440px] flex flex-col">
             <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
 
             <div className="flex items-center justify-between mb-6">
@@ -129,7 +129,7 @@ const MasterEngine = () => {
                 <h3 className="text-xl font-bold text-white tracking-tight">楽天一括コーディネート</h3>
               </div>
               {suggestions.length > 0 && (
-                <Badge className="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 font-medium text-xs">
+                <Badge className="bg-emerald-600/20 text-emerald-400 border font-medium text-xs">
                   楽天 API 連動中
                 </Badge>
               )}
@@ -174,7 +174,7 @@ const MasterEngine = () => {
           </div>
 
           <div className="bg-[#0a0b14] border border-white/5 rounded-2xl p-5 flex items-start gap-4 shadow-inner">
-            <div className="w-8 h-8 rounded-full bg-emerald-600/10 flex items-center justify-center shrink-0 border border-emerald-500/20">
+            <div className="w-8 h-8 rounded-full bg-emerald-600/10 flex items-center justify-center shrink-0 border">
               <Zap className="text-emerald-500 w-4 h-4" />
             </div>
             <p className="text-sm text-slate-400 leading-relaxed">

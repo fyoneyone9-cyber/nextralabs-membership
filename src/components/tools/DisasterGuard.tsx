@@ -83,7 +83,7 @@ const MasterEngine = () => {
   if (!isClient) return null
 
   return (
-    <div className="max-w-4xl mx-auto p-4 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left rounded-[2rem] md:rounded-[4rem] my-2 md:my-4">
+    <div className="max-w-4xl mx-auto p-4 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left">
 
       {/* ヘッダー */}
       <div className="text-center space-y-2">
@@ -100,7 +100,7 @@ const MasterEngine = () => {
 
       <div className="grid lg:grid-cols-2 gap-6 md:gap-10">
         {/* LEFT: 入力 */}
-        <div className="bg-[#13141f] border border-white/10 rounded-[2rem] p-6 md:p-8 space-y-6 shadow-xl relative overflow-hidden">
+        <div className="bg-[#13141f] border border-white/10 p-6 md:p-8 space-y-6 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-emerald-500 to-transparent" />
 
           <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-tight">#1 Environment Scan</p>
@@ -194,7 +194,7 @@ const MasterEngine = () => {
 
         {/* RIGHT: レポート貼り付け */}
         <div className="flex flex-col gap-4">
-          <div className="bg-[#13141f] border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-xl flex flex-col gap-4 relative overflow-hidden flex-1">
+          <div className="bg-[#13141f] border border-white/10 p-6 md:p-8 shadow-xl flex flex-col gap-4 relative overflow-hidden flex-1">
             <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-emerald-500 to-transparent" />
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-emerald-600/10 border border-emerald-500/30 flex items-center justify-center">

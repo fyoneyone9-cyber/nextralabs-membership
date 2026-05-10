@@ -48,7 +48,7 @@ export default function ClosetCoach() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-slate-950">
+    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-[#050507]">
       <div className="text-center space-y-2">
         <Badge className="bg-emerald-600 text-white font-bold px-4 py-1 text-[10px] uppercase rounded-full">MINIMALIST ENGINE</Badge>
         <h1 className="text-4xl md:text-7xl font-bold text-white uppercase tracking-tighter leading-tight drop-shadow-xl">AI 断捨離コーチ</h1>
@@ -72,7 +72,7 @@ export default function ClosetCoach() {
             <div className="grid lg:grid-cols-2 gap-12">
               <div className="space-y-6 text-center">
                 {!image ? (
-                  <div className="border-4 border-dashed border-slate-800 rounded-[2rem] p-16 hover:bg-slate-950 cursor-pointer bg-slate-900/50 shadow-inner" onClick={() => fileInputRef.current?.click()}>
+                  <div className="border-4 border-dashed border-slate-800 rounded-[2rem] p-16 hover:bg-[#050507] cursor-pointer bg-slate-900/50 shadow-inner" onClick={() => fileInputRef.current?.click()}>
                     <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" /><Upload className="h-12 w-12 text-slate-700 mx-auto mb-4" /><p className="text-lg text-slate-500 font-bold uppercase">Drop Item Photo</p>
                   </div>
                 ) : (
@@ -90,7 +90,7 @@ export default function ClosetCoach() {
                   </div>
                 )}
               </div>
-              <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 space-y-4 shadow-2xl flex flex-col justify-center">
+              <div className="bg-[#050507] rounded-[3rem] p-10 border border-slate-800 space-y-4 shadow-2xl flex flex-col justify-center">
                  <div className="flex items-center gap-3"><ClipboardPaste className="h-8 w-8 text-emerald-500" /><h3 className="text-2xl font-bold text-white uppercase tracking-tighter">AIの診断を戻す</h3></div>
                  <textarea value={coachAdvice} onChange={(e) => setCoachAdvice(e.target.value)} placeholder="AIのアドバイスをここにペースト..." className="w-full h-64 bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 text-sm text-slate-200 focus:border-emerald-500 outline-none font-mono" />
               </div>
@@ -108,7 +108,7 @@ export default function ClosetCoach() {
             <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-10 md:p-20 shadow-2xl border-l-8 border-l-emerald-600 relative overflow-hidden">
                <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white"><Trash2 className="w-80 h-80" /></div>
                <h3 className="text-4xl font-bold text-white uppercase mb-10 flex items-center justify-center gap-4 relative z-10"><Sparkles className="text-emerald-500 animate-pulse w-12 h-12" /> AI断捨離レポート</h3>
-               <div className="bg-slate-950 rounded-[2.5rem] p-12 border border-slate-800 text-lg text-slate-200 leading-relaxed text-left whitespace-pre-wrap shadow-inner relative z-10">
+               <div className="bg-[#050507] rounded-[2.5rem] p-12 border border-slate-800 text-lg text-slate-200 leading-relaxed text-left whitespace-pre-wrap shadow-inner relative z-10">
                   {coachAdvice || "データがありません。"}
                </div>
             </Card>

@@ -25,7 +25,7 @@ export default function AiKonkatsuCoach() {
   const currentWeapon = WEAPONS.find(w => w.id === activeWeapon);
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-100 bg-[#050507] rounded-[3rem] md:rounded-[4rem] my-4">
+    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-10 min-h-screen text-slate-100 bg-[#050507]">
       <div className="text-center space-y-3">
         <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 font-bold px-4 py-0.5 text-[10px] uppercase tracking-tight mb-2">Marriage Strategic MASTER</Badge>
         <h1 className="text-4xl md:text-8xl font-bold text-white uppercase tracking-tighter">AI 婚活コーチ</h1>
@@ -40,7 +40,7 @@ export default function AiKonkatsuCoach() {
         </p>
       </div>
 
-      <div className="bg-slate-900/50 border border-white/5 p-2 rounded-[2rem] shadow-2xl flex gap-2 overflow-x-auto scrollbar-hide max-w-5xl mx-auto">
+      <div className="bg-slate-900/50 border border-white/5 p-2 shadow-2xl flex gap-2 overflow-x-auto scrollbar-hide max-w-5xl mx-auto">
         {WEAPONS.map((w) => (
           <button key={w.id} onClick={() => setActiveWeapon(w.id)} className={`flex-1 flex flex-col items-center justify-center py-4 px-4 rounded-2xl transition-all border-2 ${activeWeapon === w.id ? 'bg-emerald-600 border-emerald-400 scale-105 text-white' : 'bg-black/40 border-transparent text-slate-500 hover:text-white'}`}>
             <w.icon size={20} className={activeWeapon === w.id ? 'text-white' : w.color} />
@@ -51,7 +51,7 @@ export default function AiKonkatsuCoach() {
 
       {activeWeapon && (
         <div className="max-w-5xl mx-auto space-y-8 animate-in zoom-in-95 duration-500">
-          <Card className="bg-[#13141f] border-2 border-emerald-500 rounded-[3rem] p-10 md:p-16 relative overflow-hidden">
+          <Card className="bg-[#13141f] border-2 border-emerald-500 p-10 md:p-16 relative overflow-hidden">
             <div className="space-y-8">
               <h3 className="text-3xl font-bold text-white uppercase flex items-center gap-4">
                 {currentWeapon && React.createElement(currentWeapon.icon, { className: 'text-emerald-400', size: 32 })}
@@ -93,7 +93,7 @@ export default function AiKonkatsuCoach() {
           </div>
 
           <a href="https://www.marriage-road.jp/" target="_blank" className="block group">
-            <div className="bg-gradient-to-r from-rose-600 to-pink-800 p-10 rounded-[3rem] flex items-center justify-between shadow-2xl transition-all hover:scale-[1.01]">
+            <div className="bg-gradient-to-r from-rose-600 to-pink-800 p-10 flex items-center justify-between shadow-2xl transition-all hover:scale-[1.01]">
               <div className="space-y-2">
                 <p className="text-[10px] font-bold text-white/50 uppercase tracking-tight">Master Partner</p>
                 <h3 className="text-2xl font-bold text-white ">AIを超えた「本物」の成婚サポート。マリッジロードジャパン ➔</h3>

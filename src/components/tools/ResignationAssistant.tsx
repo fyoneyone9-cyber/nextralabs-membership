@@ -49,7 +49,7 @@ ${resignationInfo || '（未入力）'}`;
   );
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-slate-950">
+    <div className="max-w-7xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-[#050507]">
       <div className="text-center">
         <Badge className="bg-emerald-600 text-white font-bold tracking-tight px-4 py-1 text-[10px] uppercase rounded-full">CAREER SHIELD</Badge>
         <h1 className="text-5xl md:text-7xl font-bold text-white uppercase tracking-tighter drop-shadow-2xl">退職あんしんAI</h1>
@@ -72,7 +72,7 @@ ${resignationInfo || '（未入力）'}`;
             {renderGuide(['今の仕事の不満や契約条件を入力する', '戦略指示をコピーしてAI（Claude推奨）へ投げる', 'AIから届いた退職戦略を右のエリアに戻す'])}
             <div className="grid lg:grid-cols-2 gap-12 text-left">
               <div className="space-y-6">
-                 <textarea value={resignationInfo} onChange={(e) => setResignationInfo(e.target.value)} placeholder="不満点、有給消化、競合避止義務などの気になる点を入力..." className="w-full h-64 bg-slate-950 border-2 border-slate-800 rounded-2xl p-6 text-base text-slate-200 focus:border-emerald-500 outline-none font-medium shadow-inner leading-relaxed" />
+                 <textarea value={resignationInfo} onChange={(e) => setResignationInfo(e.target.value)} placeholder="不満点、有給消化、競合避止義務などの気になる点を入力..." className="w-full h-64 bg-[#050507] border-2 border-slate-800 rounded-2xl p-6 text-base text-slate-200 focus:border-emerald-500 outline-none font-medium shadow-inner leading-relaxed" />
                  {resignationInfo && (
                     <div className="space-y-4">
                        <Button onClick={() => handleCopy(FINAL_PROMPT)} className={`w-full h-12 font-bold rounded-xl transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-emerald-600 text-white hover:bg-emerald-500'}`}>戦略指示をコピー</Button>
@@ -83,7 +83,7 @@ ${resignationInfo || '（未入力）'}`;
                     </div>
                  )}
               </div>
-              <div className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 space-y-6 shadow-2xl flex flex-col justify-center">
+              <div className="bg-[#050507] rounded-[3rem] p-10 border border-slate-800 space-y-6 shadow-2xl flex flex-col justify-center">
                  <div className="flex items-center gap-4"><ClipboardPaste className="h-8 w-8 text-emerald-500" /><h3 className="text-xl font-bold text-white uppercase tracking-tighter">戦略レポートを戻す</h3></div>
                  <textarea value={finalAdvice} onChange={(e) => setFinalAdvice(e.target.value)} placeholder="AIが提案した退職戦略をここにペースト..." className="w-full h-80 bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 text-sm text-slate-300 focus:border-emerald-500 outline-none font-medium leading-relaxed font-mono" />
               </div>
@@ -101,7 +101,7 @@ ${resignationInfo || '（未入力）'}`;
             <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-10 md:p-20 shadow-2xl border-l-8 border-l-emerald-600 relative overflow-hidden text-left">
                <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12 text-white"><DoorOpen className="w-80 h-80" /></div>
                <h3 className="text-4xl font-bold text-white uppercase mb-10 flex items-center justify-center gap-4 relative z-10"><CheckCircle2 className="text-emerald-500 animate-pulse w-12 h-12" /> Graduation Roadmap</h3>
-               <div className="bg-slate-950 rounded-[2.5rem] p-12 border border-slate-800 text-lg text-slate-200 leading-relaxed text-left whitespace-pre-wrap shadow-inner relative z-10 font-medium">
+               <div className="bg-[#050507] rounded-[2.5rem] p-12 border border-slate-800 text-lg text-slate-200 leading-relaxed text-left whitespace-pre-wrap shadow-inner relative z-10 font-medium">
                   {finalAdvice || "データがありません。"}
                </div>
             </Card>

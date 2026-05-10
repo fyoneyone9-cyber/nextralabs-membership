@@ -50,7 +50,7 @@ ${trouble || '（未入力）'}
   );
 
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-slate-950">
+    <div className="max-w-6xl mx-auto p-4 md:p-10 space-y-8 min-h-screen text-slate-200 font-sans pb-20 bg-[#050507]">
       <div className="text-center space-y-2">
         <Badge className="bg-slate-800 text-white font-bold tracking-tight px-4 py-1 text-[10px] uppercase rounded-full">INTERPERSONAL DEFENSE</Badge>
         <h1 className="text-4xl md:text-6xl font-bold text-white uppercase tracking-tighter drop-shadow-2xl">塩対応 AI</h1>
@@ -73,7 +73,7 @@ ${trouble || '（未入力）'}
             {renderGuide(['しつこい誘いや面倒な相談内容を入力', '塩対応指示をコピーしてAIへ投げ、いなさせる', 'AIの冷徹な回答を右のエリアに戻す'])}
             <div className="grid lg:grid-cols-2 gap-10">
               <div className="space-y-4 text-left">
-                 <textarea value={trouble} onChange={(e) => setTrouble(e.target.value)} placeholder="例：あまり仲良くない知人から、週末の強引な誘いメールが来た..." className="w-full h-64 bg-slate-950 border-2 border-slate-800 rounded-2xl p-4 text-xs text-slate-200 focus:border-slate-500 outline-none font-medium shadow-inner" />
+                 <textarea value={trouble} onChange={(e) => setTrouble(e.target.value)} placeholder="例：あまり仲良くない知人から、週末の強引な誘いメールが来た..." className="w-full h-64 bg-[#050507] border-2 border-slate-800 rounded-2xl p-4 text-xs text-slate-200 focus:border-slate-500 outline-none font-medium shadow-inner" />
                  {trouble && (
                     <div className="space-y-4">
                        <Button onClick={() => { navigator.clipboard.writeText(FINAL_PROMPT); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className={`w-full h-12 font-bold rounded-xl transition-all ${copied ? 'bg-emerald-500 text-slate-950' : 'bg-slate-200 text-slate-950 hover:bg-white'}`}>塩対応指示をコピー</Button>
@@ -84,7 +84,7 @@ ${trouble || '（未入力）'}
                     </div>
                  )}
               </div>
-              <div className="bg-slate-950 rounded-[2.5rem] p-8 border border-slate-800 space-y-4 shadow-2xl flex flex-col justify-center text-left">
+              <div className="bg-[#050507] rounded-[2.5rem] p-8 border border-slate-800 space-y-4 shadow-2xl flex flex-col justify-center text-left">
                  <div className="flex items-center gap-3"><ClipboardPaste className="h-6 w-6 text-slate-400" /><h3 className="text-lg font-bold text-white uppercase">AIのいなしを戻す</h3></div>
                  <textarea value={shioResult} onChange={(e) => setShioResult(e.target.value)} placeholder="AIからの塩対応案をペースト..." className="w-full h-64 bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 text-[10px] text-slate-300 focus:border-slate-500 outline-none font-medium leading-relaxed" />
               </div>
@@ -96,7 +96,7 @@ ${trouble || '（未入力）'}
           <div className="animate-in fade-in zoom-in space-y-8 text-center">
             <Card className="bg-slate-900 border-2 border-slate-800 rounded-[3rem] p-8 md:p-12 shadow-2xl border-l-8 border-l-slate-400 text-left">
                <h3 className="text-3xl font-bold text-white uppercase mb-8 flex items-center justify-center gap-3"><Ghost className="text-slate-400 animate-pulse" /> 塩対応・撃退レポート</h3>
-               <div className="bg-slate-950 rounded-2xl p-8 border border-slate-800 text-sm text-slate-200 leading-relaxed whitespace-pre-wrap shadow-inner ">{shioResult || "データがありません。"}</div>
+               <div className="bg-[#050507] rounded-2xl p-8 border border-slate-800 text-sm text-slate-200 leading-relaxed whitespace-pre-wrap shadow-inner ">{shioResult || "データがありません。"}</div>
             </Card>
             <Button onClick={() => { setTrouble(''); setShioResult(''); setActiveTab('input'); }} variant="outline" className="w-full h-12 border-2 border-slate-800 text-slate-500 hover:bg-slate-800 font-bold rounded-2xl uppercase "><RotateCcw className="mr-2 h-5 w-5" /> 最初からやり直す</Button>
           </div>
