@@ -226,7 +226,7 @@ export default function SnsAutoPosterApp() {
                   <button
                     key={i}
                     onClick={() => { setTopic(preset); setSelectedTrend(null) }}
-                    className={\px-3 py-1.5 rounded-full text-xs font-medium border transition-all \\}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${topic === preset ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' : 'bg-[#0f172a] text-slate-400 border-slate-700/50 hover:border-emerald-500/50 hover:text-emerald-300'}`}
                   >
                     {preset}
                   </button>
