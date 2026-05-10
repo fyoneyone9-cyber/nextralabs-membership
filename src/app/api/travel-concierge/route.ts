@@ -266,6 +266,22 @@ export async function POST(req: NextRequest) {
       created_at: new Date().toISOString(),
     })
 
+    // Googleカレンダー用イベントデータを生成
+    const calendarEvents = [
+      {
+        title: `✈️ ${destination}旅行（チェックイン）`,
+        date: checkinDate,
+        description: `AI旅行コンシェルジュ生成\n${hotels[0] ? `宿泊先候補: ${hotels[0].hotelBasicInfo.hotelName}` : ''}\n\n旅程詳細はNextraLabsで確認`,
+        location: hotels[0] ? `${hotels[0].hotelBasicInfo.address1}${hotels[0].hotelBasicInfo.address2}` : destination,
+      },
+      {
+        title: `✈️ ${destination}旅行（チェックアウト）`,
+        date: checkoutDate,
+        description: `AI旅行コンシェルジュ生成 — チェックアウト日`,
+        location: destination,
+      },
+    ]
+
     return NextResponse.json({
       hotels: hotels.map((h) => ({
         name: h.hotelBasicInfo.hotelName,
@@ -285,6 +301,10 @@ export async function POST(req: NextRequest) {
         mapsUrl: `https://www.google.com/maps/place/?q=place_id:${a.placeId}`,
       })),
       itinerary,
+      calendarEvents,
+      checkinDate,
+      checkoutDate,
+      destination,
       remainingToday: 5 - usageCount - 1,
     })
   } catch (e) {

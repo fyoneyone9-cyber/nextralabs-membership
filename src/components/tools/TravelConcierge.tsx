@@ -5,8 +5,8 @@ import {
   Hotel, Star, ExternalLink, ChevronDown, ChevronUp,
   Sparkles, Navigation, Utensils, TreePine, ShoppingBag,
   Droplets, Building2, Search, CheckCircle2, Copy, Check,
-  Heart, Baby, User, Users2, Coffee, Camera, Waves, Landmark,
-  Sun, Snowflake, Wind, Flower2, ChevronRight
+  Heart, Baby, User, Users2, Camera, Landmark,
+  ChevronRight, CalendarPlus
 } from 'lucide-react'
 
 // ─── 旅行スタイルプリセット ────────────────────────────────────────────────────
@@ -141,10 +141,21 @@ interface AttractionResult {
   mapsUrl: string
 }
 
+interface CalendarEvent {
+  title: string
+  date: string
+  description: string
+  location: string
+}
+
 interface TravelResult {
   hotels: HotelResult[]
   attractions: AttractionResult[]
   itinerary: string
+  calendarEvents: CalendarEvent[]
+  checkinDate: string
+  checkoutDate: string
+  destination: string
   remainingToday: number
 }
 
@@ -442,11 +453,40 @@ export default function TravelConcierge() {
     }
   }
 
+  // URLや余分な先頭行を除去してクリーンなテキストをコピー
   const copyItinerary = async () => {
     if (!result?.itinerary) return
-    await navigator.clipboard.writeText(result.itinerary)
+    // https:// で始まる行・空行のみの先頭を除去
+    const cleaned = result.itinerary
+      .split('\n')
+      .filter((line, i) => {
+        if (i === 0 && /^https?:\/\//.test(line.trim())) return false
+        return true
+      })
+      .join('\n')
+      .trim()
+    await navigator.clipboard.writeText(cleaned)
     setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    setTimeout(() => setCopied(false), 2500)
+  }
+
+  // Googleカレンダーにイベントを追加（チェックイン・チェックアウト）
+  const addToGoogleCalendar = (event: CalendarEvent) => {
+    const formatDate = (d: string) => d.replace(/-/g, '')
+    const startDate = formatDate(event.date)
+    // 終日イベント: 翌日をendDateとする
+    const endDateObj = new Date(event.date)
+    endDateObj.setDate(endDateObj.getDate() + 1)
+    const endDate = endDateObj.toISOString().split('T')[0].replace(/-/g, '')
+
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: event.title,
+      dates: `${startDate}/${endDate}`,
+      details: event.description,
+      location: event.location,
+    })
+    window.open(`https://calendar.google.com/calendar/render?${params.toString()}`, '_blank')
   }
 
   const inputCls = `w-full h-11 rounded-lg px-4 text-sm text-slate-200 placeholder-slate-600 outline-none transition-colors focus:border-emerald-500/60`
@@ -678,17 +718,48 @@ export default function TravelConcierge() {
       {result && (
         <div id="result-section" className="max-w-4xl mx-auto px-6 mt-8 space-y-5">
 
-          {/* 完了バナー */}
+          {/* 完了バナー + Googleカレンダー登録 */}
           <div
-            className="flex items-center gap-3 px-5 py-3 rounded-xl"
-            style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}
+            className="rounded-xl overflow-hidden"
+            style={{ border: '1px solid rgba(16,185,129,0.2)' }}
           >
-            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-            <div className="flex-1">
-              <span className="text-sm text-slate-300 font-medium">旅程を生成しました！</span>
-              <span className="text-xs text-slate-500 ml-2">今日の残り利用回数：</span>
-              <span className="text-xs text-emerald-400 font-semibold">{result.remainingToday}回</span>
+            {/* 上段：完了表示 */}
+            <div
+              className="flex items-center gap-3 px-5 py-3"
+              style={{ background: 'rgba(16,185,129,0.06)' }}
+            >
+              <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+              <div className="flex-1">
+                <span className="text-sm text-slate-300 font-medium">旅程を生成しました！</span>
+                <span className="text-xs text-slate-500 ml-2">今日の残り：</span>
+                <span className="text-xs text-emerald-400 font-semibold">{result.remainingToday}回</span>
+              </div>
             </div>
+            {/* 下段：Googleカレンダーボタン */}
+            {result.calendarEvents && result.calendarEvents.length > 0 && (
+              <div
+                className="px-5 py-3 flex flex-wrap gap-2 items-center"
+                style={{ background: '#0d1117' }}
+              >
+                <CalendarPlus className="w-4 h-4 text-blue-400 shrink-0" />
+                <span className="text-xs text-slate-500">Googleカレンダーに追加：</span>
+                {result.calendarEvents.map((ev, i) => (
+                  <button
+                    key={i}
+                    onClick={() => addToGoogleCalendar(ev)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:scale-[1.02]"
+                    style={{
+                      background: 'rgba(66,133,244,0.12)',
+                      border: '1px solid rgba(66,133,244,0.3)',
+                      color: '#93bbfd',
+                    }}
+                  >
+                    <CalendarPlus className="w-3 h-3" />
+                    {i === 0 ? `チェックイン（${result.checkinDate}）` : `チェックアウト（${result.checkoutDate}）`}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* ホテル一覧 */}
