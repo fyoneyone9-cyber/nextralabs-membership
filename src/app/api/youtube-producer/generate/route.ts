@@ -23,7 +23,7 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
       'Authorization': `Bearer ${API_KEY}`,
     },
     body: JSON.stringify({
-      model: 'gpt-5-mini', // 許可されている最新モデルに切り替え
+      model: 'gemini-2.5-flash', // JSON生成精度が高いモデルを使用
       messages: [
         { role: 'system', content: COMMON_SYSTEM_PREFIX + systemPrompt },
         { role: 'user', content: userPrompt },
@@ -47,11 +47,18 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
   try {
     return JSON.parse(jsonStr)
   } catch {
+    // より広範なJSONマッチを試みる
     const objMatch = jsonStr.match(/\{[\s\S]*\}/)
     if (objMatch) {
       try { return JSON.parse(objMatch[0]) } catch { /* fall through */ }
     }
-    return { text: content }
+    // 配列形式のJSONも試みる
+    const arrMatch = jsonStr.match(/\[[\s\S]*\]/)
+    if (arrMatch) {
+      try { return JSON.parse(arrMatch[0]) } catch { /* fall through */ }
+    }
+    console.error('JSON parse failed. Raw content:', content.slice(0, 500))
+    return { text: content, _parseError: true }
   }
 }
 
