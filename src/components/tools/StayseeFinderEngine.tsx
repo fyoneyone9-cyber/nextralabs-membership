@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import React, { useState, useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import {
@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 
 const TABS = [
-  { id: 'kiosk',    label: 'KIOSKトップ',    icon: Monitor,       desc: '待機・言語選択' },
+{ id: 'kiosk',    label: 'スタート',        icon: Monitor,       desc: '待機・言語選択' },
   { id: 'search',   label: '予約検索',        icon: Search,        desc: 'QR/予約番号' },
   { id: 'checkin',  label: '自動チェックイン', icon: UserPlus,      desc: '本人確認・台帳記帳' },
   { id: 'lock',     label: '鍵発行',          icon: Key,           desc: 'アクセス権デプロイ' },
