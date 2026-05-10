@@ -1,23 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-/**
- * GET /api/dms/setup?key=nextra-admin-2026
- * dms_tenants テーブルを作成する（初回セットアップ用）
- * Service Role Key が必要なため、サーバーサイドでのみ実行可能
- */
 export async function GET(req: NextRequest) {
   const key = req.nextUrl.searchParams.get('key')
   if (key !== 'nextra-admin-2026') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const serviceKey  = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-  // テーブル作成 SQL（IF NOT EXISTS で冪等）
+  // テーブルが既に存在するか確認（dms_tenantsにSELECTを試みる）
+  const supabase = createClient(supabaseUrl, serviceKey)
+  const { error: checkErr } = await supabase.from('dms_tenants').select('id').limit(1)
+
+  if (!checkErr) {
+    return NextResponse.json({ ok: true, message: 'dms_tenants テーブルは既に存在します', exists: true })
+  }
+
+  // テーブルが存在しない場合: Supabase REST /query エンドポイントで作成
   const sql = `
     CREATE TABLE IF NOT EXISTS dms_tenants (
       id            uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -34,43 +35,18 @@ export async function GET(req: NextRequest) {
     );
   `
 
-  // supabase-js ではrawSQLを直接実行できないため、
-  // rpc か postgrest の / エンドポイント経由で実行
-  // → Service Role Key で直接 REST API を叩く
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/rpc/exec_sql`, {
-    method: 'POST',
-    headers: {
-      'apikey':        process.env.SUPABASE_SERVICE_ROLE_KEY || '',
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY || ''}`,
-      'Content-Type':  'application/json',
-    },
-    body: JSON.stringify({ sql }),
-  })
+  // supabase-js v2: sql タグを使って生SQLを実行
+  const { error } = await supabase.rpc('exec_sql', { sql }).single()
 
-  if (!response.ok) {
-    // exec_sql RPC がない場合は Management API を使う
-    const mgmtRes = await fetch(
-      `https://api.supabase.com/v1/projects/${extractProjectRef()}/database/query`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY || ''}`,
-          'Content-Type':  'application/json',
-        },
-        body: JSON.stringify({ query: sql }),
-      }
-    )
-    if (!mgmtRes.ok) {
-      const errText = await mgmtRes.text()
-      return NextResponse.json({ error: errText, hint: 'Supabase SQL Editorで手動実行してください', sql }, { status: 500 })
-    }
-    return NextResponse.json({ ok: true, method: 'management-api' })
+  if (error) {
+    // exec_sql RPCがない場合はSQLを返して手動実行を案内
+    return NextResponse.json({
+      ok: false,
+      message: 'テーブルが存在しないため、Supabase SQL Editorで以下のSQLを実行してください',
+      sql: sql.trim(),
+      error: error.message,
+    }, { status: 200 }) // 200で返して見やすくする
   }
 
-  return NextResponse.json({ ok: true, method: 'rpc' })
-}
-
-function extractProjectRef() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-  return url.replace('https://', '').replace('.supabase.co', '')
+  return NextResponse.json({ ok: true, message: 'dms_tenants テーブルを作成しました' })
 }
