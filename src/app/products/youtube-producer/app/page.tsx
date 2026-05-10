@@ -232,8 +232,6 @@ function YoutubeProducerApp() {
 
   return (
     <div className="min-h-screen bg-[#050507] text-slate-100 p-4 md:p-12 font-sans text-left selection:bg-emerald-500/30">
-      {/* ⚡ 憲法：MASTERMODEL最上位ロック - 全ページ一括変更などの干渉を一切拒絶 */}
-      <div className="fixed top-0 left-0 right-0 h-2 bg-emerald-500 z-[9999] shadow-[0_0_30px_rgba(16,185,129,1)]"></div>
       
       <div className="max-w-6xl mx-auto space-y-8 rounded-2xl p-4 md:p-8 relative bg-black/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-emerald-500/20 pb-6">
