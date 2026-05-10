@@ -149,8 +149,8 @@ const MasterEngine = () => {
     const cx = w / 2
     const cy = printPosition === 'chest-left' ? h * 0.3 : printPosition === 'back-center' ? h * 0.55 : h * 0.44
     // 安全なプリントボックス: 胴体幅(w*0.6)の80% = w*0.52、左胸は半分
-    const boxW = isSmall ? w * 0.22 : w * 0.52
-    const boxH = isSmall ? h * 0.14 : h * 0.32
+    const boxW = isSmall ? w * 0.24 : w * 0.56
+    const boxH = isSmall ? h * 0.15 : h * 0.34
     const rx = 10 // 角丸半径
     const bx = cx - boxW / 2
     const by = cy - boxH / 2
@@ -186,47 +186,59 @@ const MasterEngine = () => {
     ctx.clip()
 
     // テキスト用の安全な最大幅
-    const pad = 12
+    const pad = 14
     const safeW = boxW - pad * 2
     const safeH = boxH - pad * 2
 
-    // 1. まず適当なフォントサイズで改行を試みる
-    let fontSize = isSmall ? 16 : 24
-    let lines: string[] = []
-    
-    // 文字幅に応じて改行する関数
+    // 1. フォントサイズを自動決定する関数
+    //    日本語全角文字は measureText が不安定なため、
+    //    全角1文字 = fontSize×1.05px として固定計算する
+    const charWidth = (ch: string, size: number) => {
+      const code = ch.charCodeAt(0)
+      // ASCII範囲は半角扱い（0.6倍）、それ以外は全角（1.05倍）
+      return code < 128 ? size * 0.6 : size * 1.05
+    }
+
     const generateLines = (size: number) => {
       const fontStr = S.font.replace(/[\d.]+px/, `${size}px`)
-      ctx.font = fontStr
       const tempLines: string[] = []
       let current = ''
+      let currentW = 0
       for (const ch of keyword) {
-        if (ctx.measureText(current + ch).width > safeW && current.length > 0) {
+        const cw = charWidth(ch, size)
+        if (currentW + cw > safeW && current.length > 0) {
           tempLines.push(current)
           current = ch
+          currentW = cw
         } else {
           current += ch
+          currentW += cw
         }
       }
       if (current) tempLines.push(current)
       return { lines: tempLines, fontStr }
     }
 
-    // 2. 高さに収まるまでフォントサイズを縮小して再計算
+    // 2. 初期フォントサイズ（スタイルのpxを取得し上限を設ける）
+    const styleSize = parseInt(S.font.match(/(\d+)px/)?.[1] || '24')
+    let fontSize = isSmall ? Math.min(styleSize, 14) : Math.min(styleSize, 22)
+    let lines: string[] = []
+
+    // 3. 幅・高さに収まるまで縮小
     let currentFontStr = ''
     let result = generateLines(fontSize)
     lines = result.lines
     currentFontStr = result.fontStr
-    let lineHeight = fontSize * 1.4
-    while (lines.length * lineHeight > safeH && fontSize > 10) {
+    let lineHeight = fontSize * 1.45
+    while (lines.length * lineHeight > safeH && fontSize > 9) {
       fontSize -= 1
-      lineHeight = fontSize * 1.4
+      lineHeight = fontSize * 1.45
       result = generateLines(fontSize)
       lines = result.lines
       currentFontStr = result.fontStr
     }
 
-    // 3. 描画（フォントを明示的に再設定してから描画）
+    // 4. 描画（フォントを明示的に再設定してから描画）
     ctx.font = currentFontStr
     const resolvedColor = textColorId !== 'auto'
       ? (TEXT_COLORS.find(c => c.id === textColorId)?.hex || S.textColor)
