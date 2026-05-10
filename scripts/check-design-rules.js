@@ -42,6 +42,21 @@ function getAllTsxFiles(dir) {
   return results
 }
 
+// コンフリクトマーカーチェック（全行・全ファイル対象）
+function checkConflictMarkers(filePath, rel) {
+  const lines = fs.readFileSync(filePath, 'utf8').split('\n')
+  let found = 0
+  for (let i = 0; i < lines.length; i++) {
+    if (/^(<{7}|>{7}|={7})/.test(lines[i])) {
+      console.error(`❌ [RULE-0/CONFLICT] ${rel}:${i + 1}`)
+      console.error(`   ${lines[i].slice(0, 60)}`)
+      console.error(`   → Gitコンフリクトマーカーが残っています。解消してからコミットしてください。`)
+      found++
+    }
+  }
+  return found
+}
+
 const RULES = [
   {
     id: 'RULE-1',
@@ -76,6 +91,10 @@ const files = getAllTsxFiles(SRC_DIR)
 for (const filePath of files) {
   const rel = path.relative(SRC_DIR, filePath)
   const locked = isLockedFile(filePath)
+
+  // RULE-0: コンフリクトマーカーチェック（ロック済みも含む全ファイル）
+  errors += checkConflictMarkers(filePath, rel)
+
   const lines = fs.readFileSync(filePath, 'utf8').split('\n')
 
   for (let i = 0; i < Math.min(lines.length, 120); i++) {
