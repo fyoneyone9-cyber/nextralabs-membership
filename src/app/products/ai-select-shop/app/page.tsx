@@ -63,7 +63,7 @@ const STYLES: StyleDef[] = [
   },
   // ── 2. ストリート ──────────────────────────────
   {
-    id: 'street', name: '🏙 ストリート',
+    id: 'street', name: '🏙 街',
     draw: (ctx, cx, cy, r, text, pw, ph) => {
       ctx.fillStyle = '#0d0d0d'; ctx.fillRect(cx-pw/2, cy-ph/2, pw, ph)
       // ブリックウォール柄
@@ -145,7 +145,7 @@ const STYLES: StyleDef[] = [
   },
   // ── 5. かわいい ──────────────────────────────
   {
-    id: 'kawaii', name: '🎀 かわいい',
+    id: 'kawaii', name: '🎀 カワイイ',
     draw: (ctx, cx, cy, r, text, pw, ph) => {
       // ピンクグラデ背景
       const bg=ctx.createLinearGradient(cx-pw/2,cy-ph/2,cx+pw/2,cy+ph/2)
@@ -190,7 +190,7 @@ const STYLES: StyleDef[] = [
   },
   // ── 7. ラグジュアリー ──────────────────────────────
   {
-    id: 'gold', name: '💎 ラグジュアリー',
+    id: 'gold', name: '💎 高級',
     draw: (ctx, cx, cy, r, text, pw, ph) => {
       ctx.fillStyle='#080800'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
       // 菱形柄
@@ -246,7 +246,7 @@ const STYLES: StyleDef[] = [
   },
   // ── 9. ボタニカル ──────────────────────────────
   {
-    id: 'nature', name: '🌿 ボタニカル',
+    id: 'nature', name: '🌿 植物',
     draw: (ctx, cx, cy, r, text, pw, ph) => {
       ctx.fillStyle='#f0f7f0'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
       // 葉脈風ライン
@@ -273,7 +273,7 @@ const STYLES: StyleDef[] = [
   },
   // ── 10. グラデーション ──────────────────────────────
   {
-    id: 'gradient', name: '🌈 グラデーション',
+    id: 'gradient', name: '🌈 グラデ',
     draw: (ctx, cx, cy, r, text, pw, ph) => {
       // 全面グラデ
       const g=ctx.createLinearGradient(cx-pw/2,cy-ph/2,cx+pw/2,cy+ph/2)
@@ -295,7 +295,7 @@ const STYLES: StyleDef[] = [
   },
   // ── 11. 波・和柄 ──────────────────────────────
   {
-    id: 'wave', name: '🌊 波・和柄',
+    id: 'wave', name: '🌊 波',
     draw: (ctx, cx, cy, r, text, pw, ph) => {
       ctx.fillStyle='#0a2a5e'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
       // 北斎波柄
@@ -326,7 +326,7 @@ const STYLES: StyleDef[] = [
   },
   // ── 12. ポップアート ──────────────────────────────
   {
-    id: 'popart', name: '🎨 ポップアート',
+    id: 'popart', name: '🎨 ポップ',
     draw: (ctx, cx, cy, r, text, pw, ph) => {
       ctx.fillStyle='#ffff00'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
       // ベンデイドット
@@ -373,7 +373,7 @@ const STYLES: StyleDef[] = [
   },
   // ── 14. ヴィンテージ ──────────────────────────────
   {
-    id: 'vintage', name: '🗿 ヴィンテージ',
+    id: 'vintage', name: '🗿 古典',
     draw: (ctx, cx, cy, r, text, pw, ph) => {
       ctx.fillStyle='#e8d5a3'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
       // クロスハッチ
@@ -454,7 +454,7 @@ const STYLES: StyleDef[] = [
   },
   // ── 18. エモ系 ──────────────────────────────
   {
-    id: 'aesthetic', name: '🌙 エモ系',
+    id: 'aesthetic', name: '🌙 エモ',
     draw: (ctx, cx, cy, r, text, pw, ph) => {
       const g=ctx.createLinearGradient(cx-pw/2,cy-ph/2,cx+pw/2,cy+ph/2)
       g.addColorStop(0,'#0f0c29'); g.addColorStop(0.5,'#302b63'); g.addColorStop(1,'#24243e')
@@ -527,7 +527,7 @@ const STYLES: StyleDef[] = [
   },
   // ── 21. 山・自然 ──────────────────────────────
   {
-    id: 'nature2', name: '🍃 山・自然',
+    id: 'nature2', name: '🍃 山',
     draw: (ctx, cx, cy, r, text, pw, ph) => {
       const sky=ctx.createLinearGradient(cx,cy-ph/2,cx,cy+ph/2)
       sky.addColorStop(0,'#1e3a5f'); sky.addColorStop(0.55,'#3b6aa0'); sky.addColorStop(1,'#1a3a2a')
@@ -552,7 +552,7 @@ const STYLES: StyleDef[] = [
   },
   // ── 22. 猫・動物 ──────────────────────────────
   {
-    id: 'cats', name: '🐱 猫・動物',
+    id: 'cats', name: '🐱 猫',
     draw: (ctx, cx, cy, r, text, pw, ph) => {
       ctx.fillStyle='#fef3c7'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
       ctx.fillStyle='rgba(245,158,11,0.1)'
@@ -576,7 +576,7 @@ const STYLES: StyleDef[] = [
   },
   // ── 23. オールドマネー ──────────────────────────────
   {
-    id: 'oldmoney', name: '🎩 オールドマネー',
+    id: 'oldmoney', name: '🎩 紳士',
     draw: (ctx, cx, cy, r, text, pw, ph) => {
       ctx.fillStyle='#f8f4e8'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
       // 千鳥格子風
@@ -621,7 +621,7 @@ const STYLES: StyleDef[] = [
   },
   // ── 25. 幾何学 ──────────────────────────────
   {
-    id: 'abstract2', name: '🔷 幾何学',
+    id: 'abstract2', name: '🔷 幾何',
     draw: (ctx, cx, cy, r, text, pw, ph) => {
       ctx.fillStyle='#1e1b4b'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
       const shapes=[
@@ -666,7 +666,7 @@ const STYLES: StyleDef[] = [
   },
   // ── 27. 禅・墨 ──────────────────────────────
   {
-    id: 'zen', name: '☯ 禅・墨',
+    id: 'zen', name: '☯ 禅',
     draw: (ctx, cx, cy, r, text, pw, ph) => {
       ctx.fillStyle='#fafaf7'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
       // 墨の濃淡
@@ -685,7 +685,7 @@ const STYLES: StyleDef[] = [
   },
   // ── 28. ストリート系 ──────────────────────────────
   {
-    id: 'toxic', name: '☣ ストリート系',
+    id: 'toxic', name: '☣ 毒街',
     draw: (ctx, cx, cy, r, text, pw, ph) => {
       ctx.fillStyle='#050f05'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
       ctx.fillStyle='rgba(74,222,128,0.08)'
@@ -1088,20 +1088,27 @@ const AISelectShopApp = () => {
                       ランダム
                     </button>
                   </div>
-                  <div className="grid grid-cols-4 gap-2">
-                    {STYLES.map(s => (
-                      <button
-                        key={s.id}
-                        onClick={() => setStyleId(s.id)}
-                        className={`py-2 px-1 rounded-lg text-xs font-medium transition-all leading-tight ${
-                          styleId === s.id
-                            ? 'bg-emerald-500 text-slate-950'
-                            : 'bg-[#0f172a] text-slate-400 hover:text-slate-200 border border-slate-700/50 hover:border-slate-600'
-                        }`}
-                      >
-                        {s.name}
-                      </button>
-                    ))}
+                  <div className="grid grid-cols-4 gap-1.5">
+                    {STYLES.map(s => {
+                      const parts = s.name.split(' ')
+                      const emoji = parts[0]
+                      const label = parts.slice(1).join(' ')
+                      return (
+                        <button
+                          key={s.id}
+                          onClick={() => setStyleId(s.id)}
+                          className={`py-2 px-1 rounded-lg text-center transition-all flex flex-col items-center gap-0.5 ${
+                            styleId === s.id
+                              ? 'bg-emerald-500 text-slate-950'
+                              : 'bg-[#0f172a] text-slate-400 hover:text-slate-200 border border-slate-700/50 hover:border-slate-600'
+                          }`}
+                          title={s.name}
+                        >
+                          <span className="text-base leading-none">{emoji}</span>
+                          <span className="text-[10px] font-medium leading-tight">{label}</span>
+                        </button>
+                      )
+                    })}
                   </div>
                 </div>
 
