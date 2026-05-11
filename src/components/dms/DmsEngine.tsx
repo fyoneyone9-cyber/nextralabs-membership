@@ -593,6 +593,15 @@ export default function DmsEngine() {
             <LockListContent searchQuery={lockSearchQuery} />
           )}
 
+          {/* 物件新規作成 */}
+          {activeTab === 'property' && propView === 'create' && (
+            <DmsPropertyEditor
+              property={null}
+              isDarkMode={true}
+              onClose={() => setPropView('list')}
+            />
+          )}
+
           {/* 物件一覧 */}
           {activeTab === 'property' && propView === 'list' && (
             <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl overflow-hidden shadow-xl">
