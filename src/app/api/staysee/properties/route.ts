@@ -2,10 +2,15 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const STAYSEE_BASE = 'https://api.staysee.jp/v1'
 
+function getTenantApiKey(req: NextRequest): string {
+  // リクエストヘッダー優先、なければlocalStorageから渡されたヘッダー
+  return req.headers.get('x-staysee-api-key') || process.env.STAYSEE_API_KEY || ''
+}
+
 export async function GET(req: NextRequest) {
-  const apiKey = req.headers.get('x-staysee-api-key') || process.env.STAYSEE_API_KEY || ''
+  const apiKey = getTenantApiKey(req)
   if (!apiKey) {
-    return NextResponse.json({ error: 'STAYSEE_API_KEY not configured' }, { status: 400 })
+    return NextResponse.json({ error: 'Staysee APIキーが設定されていません。PMS設定から入力してください。' }, { status: 400 })
   }
 
   try {
@@ -19,20 +24,19 @@ export async function GET(req: NextRequest) {
 
     if (!res.ok) {
       const err = await res.text()
-      return NextResponse.json({ error: `Staysee API error: ${err}` }, { status: res.status })
+      return NextResponse.json({ error: `Staysee API エラー: ${err}` }, { status: res.status })
     }
 
     const data = await res.json()
-    // Stayseeのレスポンスをnormalize
     const properties = (data.properties || data.data || data || []).map((p: any) => ({
-      id: String(p.id || p.property_id || ''),
+      id: String(p.id || p.property_id || crypto.randomUUID()),
       name: p.name || p.property_name || '（名称未設定）',
-      pmsType: 'staysee',
-      pmsConnected: true,
+      pms_type: 'staysee',
+      pms_connected: true,
     }))
 
     return NextResponse.json({ properties })
-  } catch (e) {
-    return NextResponse.json({ error: 'Network error' }, { status: 500 })
+  } catch {
+    return NextResponse.json({ error: 'Staysee APIへの接続に失敗しました' }, { status: 500 })
   }
 }
