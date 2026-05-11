@@ -1055,6 +1055,42 @@ export default function DmsEngine() {
                     </div>
                   </a>
 
+                  {/* 推し活聖地巡礼プランナー */}
+                  <a
+                    href="/products/pilgrimage-planner/app"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex gap-4 p-5 rounded-2xl transition-all hover:border-emerald-500/50 hover:scale-[1.01]"
+                    style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+                  >
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                      style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}
+                    >
+                      <Sparkles size={20} className="text-emerald-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-sm font-semibold text-slate-200">推し活聖地巡礼プランナー</span>
+                        <ExternalLink size={11} className="text-slate-600 group-hover:text-emerald-400 transition-colors" />
+                      </div>
+                      <p className="text-xs text-slate-500 leading-relaxed">
+                        アニメ・ドラマ・アイドルの聖地をAIが自動検索し、宿泊地からの最適巡礼ルートと旅程を丸ごと生成。ファン宿泊者の特別体験づくりに。
+                      </p>
+                      <div className="flex gap-2 mt-2.5 flex-wrap">
+                        {['聖地マップ', '旅程自動生成', 'AI提案'].map(tag => (
+                          <span
+                            key={tag}
+                            className="px-2 py-0.5 text-[10px] rounded-full font-medium"
+                            style={{ background: 'rgba(16,185,129,0.1)', color: '#6ee7b7', border: '1px solid rgba(16,185,129,0.2)' }}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </a>
+
                 </div>
               </div>
 
