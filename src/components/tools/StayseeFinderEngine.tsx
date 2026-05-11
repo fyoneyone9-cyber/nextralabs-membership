@@ -2052,149 +2052,207 @@ const MasterEngine = () => {
 
         {/* ════ チェックアウト ════ */}
         {activeTab === 'checkout' && (
-          <div className="rounded-xl p-6 space-y-5" style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
+          <div className="rounded-2xl overflow-hidden" style={{ background: '#0d1117', border: '1px solid #1e293b', minHeight: 'calc(100vh - 200px)' }}>
 
-            {checkoutStep === 'search' && (
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-lg font-semibold text-slate-100">チェックアウト</h3>
-                  <p className="text-xs text-slate-500 mt-1">予約番号・氏名・電話番号のいずれかで検索してください</p>
-                </div>
-                <div className="flex gap-2">
-                  <input
-                    value={checkoutQuery}
-                    onChange={e => setCheckoutQuery(e.target.value)}
-                    onKeyDown={e => e.key === 'Enter' && doCheckoutSearch()}
-                    placeholder="予約番号 / 氏名 / 電話番号"
-                    className={inputCls} style={inputStyle}
-                    onFocus={e => (e.target.style.borderColor = '#818cf8')}
-                    onBlur={e => (e.target.style.borderColor = '#334155')}
-                  />
-                  <button onClick={doCheckoutSearch} disabled={checkoutSearching}
-                    className="shrink-0 h-11 px-5 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all"
-                    style={{ background: '#6366f1', color: '#fff', opacity: checkoutSearching ? 0.7 : 1 }}>
-                    {checkoutSearching ? <Loader2 size={15} className="animate-spin" /> : <Search size={15} />}
-                    検索
-                  </button>
-                </div>
+            {/* ヘッダー */}
+            <div className="px-8 py-6 border-b flex items-center justify-between" style={{ borderColor: '#1e293b' }}>
+              <div>
+                <h2 className="text-2xl font-semibold text-slate-100">チェックアウト</h2>
+                <p className="text-slate-500 text-sm mt-1">予約番号・お名前・電話番号で予約を検索してください</p>
+              </div>
+              <button onClick={() => { setStaffMode(false); gotoTab('kiosk') }}
+                className="text-xs text-slate-600 hover:text-slate-400 transition-colors px-3 py-2 rounded-lg"
+                style={{ border: '1px solid #1e293b' }}>← 戻る</button>
+            </div>
 
-                {checkoutResults.length > 0 && (
-                  <div className="space-y-2">
-                    <p className="text-xs text-slate-500">{checkoutResults.length}件見つかりました</p>
-                    {checkoutResults.map(r => (
-                      <div key={r.id} className="rounded-xl p-4 flex items-center justify-between gap-4"
-                        style={{ background: '#13141f', border: '1px solid #1e293b' }}>
-                        <div className="space-y-1">
-                          <p className="text-sm font-semibold text-slate-100">{resName(r)} 様</p>
-                          <p className="text-xs text-slate-500">
-                            {r.id} | {resRoom(r)}号室 | {resDate(r.start_date)}〜{resDate(r.end_date)}
+            <div className="p-8 space-y-6">
+
+              {/* ── STEP: search（3択カード＋入力） ── */}
+              {checkoutStep === 'search' && (() => {
+                type CoMode = 'select' | 'reservation' | 'name' | 'phone'
+                const [coMode, setCoMode] = React.useState<CoMode>('select')
+                return (
+                  <>
+                    {coMode === 'select' && (
+                      <div className="grid grid-cols-3 gap-5">
+                        {[
+                          { mode: 'reservation' as CoMode, icon: Hash,         label: '予約番号',  sub: 'Reservation No.', color: '#818cf8' },
+                          { mode: 'name'        as CoMode, icon: ClipboardList, label: 'お名前',    sub: 'Guest Name',       color: '#6366f1' },
+                          { mode: 'phone'       as CoMode, icon: Phone,         label: '電話番号',  sub: 'Phone Number',     color: '#a78bfa' },
+                        ].map(item => (
+                          <button key={item.mode} onClick={() => setCoMode(item.mode)}
+                            className="rounded-2xl py-10 flex flex-col items-center justify-center gap-4 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                            style={{ background: '#13141f', border: `2px solid ${item.color}25` }}
+                            onMouseEnter={e => (e.currentTarget.style.borderColor = `${item.color}80`)}
+                            onMouseLeave={e => (e.currentTarget.style.borderColor = `${item.color}25`)}>
+                            <item.icon size={52} style={{ color: item.color }} />
+                            <div className="text-center">
+                              <p className="text-base font-semibold text-slate-200">{item.label}</p>
+                              <p className="text-xs text-slate-600 mt-1">{item.sub}</p>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {coMode !== 'select' && (
+                      <div className="rounded-2xl p-6 space-y-5" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
+                        <div className="flex items-center justify-between">
+                          <p className="text-lg font-semibold text-slate-200">
+                            {coMode === 'reservation' ? '予約番号を入力' : coMode === 'name' ? 'お名前を入力' : '電話番号を入力'}
                           </p>
-                          <p className="text-xs text-slate-500">宿泊料金: {resAmount(r)}</p>
+                          <button onClick={() => { setCoMode('select'); setCheckoutResults([]) }}
+                            className="text-sm text-slate-600 hover:text-slate-400 transition-colors px-3 py-2 rounded-lg"
+                            style={{ border: '1px solid #334155' }}>← 戻る</button>
                         </div>
-                        <button onClick={() => selectCheckoutTarget(r)}
-                          className="shrink-0 h-9 px-4 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all"
-                          style={{ background: '#6366f1', color: '#fff' }}>
-                          選択 <ArrowRight size={13} />
-                        </button>
+                        <div className="flex gap-3">
+                          <input
+                            value={checkoutQuery}
+                            onChange={e => setCheckoutQuery(e.target.value)}
+                            onKeyDown={e => e.key === 'Enter' && doCheckoutSearch()}
+                            placeholder={coMode === 'reservation' ? 'NTR-001' : coMode === 'name' ? '山田 太郎' : '090-1234-5678'}
+                            className="flex-1 h-14 text-lg rounded-xl px-5"
+                            style={{ background: '#0d1117', border: '2px solid #334155', color: '#f1f5f9', outline: 'none' }}
+                            onFocus={e => (e.target.style.borderColor = '#818cf8')}
+                            onBlur={e => (e.target.style.borderColor = '#334155')}
+                          />
+                          <button onClick={doCheckoutSearch} disabled={checkoutSearching}
+                            className="shrink-0 h-14 px-8 rounded-xl text-base font-semibold flex items-center gap-2 transition-all"
+                            style={{ background: '#6366f1', color: '#fff', opacity: checkoutSearching ? 0.7 : 1 }}>
+                            {checkoutSearching ? <Loader2 size={18} className="animate-spin" /> : <Search size={18} />}
+                            検索
+                          </button>
+                        </div>
+
+                        {checkoutResults.length > 0 && (
+                          <div className="space-y-3 pt-2">
+                            <p className="text-sm text-slate-500">{checkoutResults.length}件見つかりました</p>
+                            {checkoutResults.map(r => (
+                              <div key={r.id} className="rounded-xl p-5 flex items-center justify-between gap-4"
+                                style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
+                                <div className="space-y-1.5">
+                                  <p className="text-lg font-semibold text-slate-100">{resName(r)} 様</p>
+                                  <p className="text-sm text-slate-400">
+                                    {resRoom(r)}号室 &nbsp;·&nbsp; {resDate(r.start_date)}〜{resDate(r.end_date)}
+                                  </p>
+                                  <p className="text-xs text-slate-600">{r.id} &nbsp;·&nbsp; {resPhone(r)} &nbsp;·&nbsp; {resAmount(r)}</p>
+                                </div>
+                                <button onClick={() => selectCheckoutTarget(r)}
+                                  className="shrink-0 h-12 px-6 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all"
+                                  style={{ background: '#6366f1', color: '#fff' }}>
+                                  選択 <ArrowRight size={15} />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        {checkoutResults.length === 0 && checkoutQuery && !checkoutSearching && (
+                          <div className="rounded-xl p-8 text-center" style={{ background: '#0d1117' }}>
+                            <p className="text-base text-slate-500">該当する予約が見つかりませんでした</p>
+                            <p className="text-sm text-slate-600 mt-2">入力内容をご確認ください</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </>
+                )
+              })()}
+
+              {/* ── STEP: confirm ── */}
+              {checkoutStep === 'confirm' && checkoutTarget && (
+                <div className="flex flex-col items-center gap-6">
+                  <div className="w-16 h-16 rounded-full flex items-center justify-center"
+                    style={{ background: 'rgba(99,102,241,0.12)', border: '2px solid rgba(99,102,241,0.4)' }}>
+                    <LogOut size={32} style={{ color: '#818cf8' }} />
+                  </div>
+                  <div className="text-center">
+                    <h3 className="text-2xl font-semibold text-slate-100">チェックアウト確認</h3>
+                    <p className="text-slate-500 text-sm mt-1">以下の内容でチェックアウトします</p>
+                  </div>
+                  <div className="w-full max-w-md rounded-2xl p-6 space-y-4"
+                    style={{ background: '#13141f', border: '1px solid #1e293b' }}>
+                    {[
+                      { label: 'お名前',        value: `${resName(checkoutTarget)} 様` },
+                      { label: '部屋番号',       value: `${resRoom(checkoutTarget)}号室` },
+                      { label: 'チェックイン',   value: resDate(checkoutTarget.start_date) },
+                      { label: 'チェックアウト', value: `${resDate(checkoutTarget.end_date)}（本日）` },
+                      { label: '宿泊料金',       value: resAmount(checkoutTarget) },
+                    ].map(item => (
+                      <div key={item.label} className="flex justify-between text-sm">
+                        <span className="text-slate-500">{item.label}</span>
+                        <span className="text-slate-100 font-medium">{item.value}</span>
                       </div>
                     ))}
-                  </div>
-                )}
-                {checkoutResults.length === 0 && checkoutQuery && !checkoutSearching && (
-                  <div className="rounded-xl p-6 text-center" style={{ background: '#13141f' }}>
-                    <p className="text-sm text-slate-500">該当する予約が見つかりませんでした</p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {checkoutStep === 'confirm' && checkoutTarget && (
-              <div className="flex flex-col items-center gap-6">
-                <LogOut size={40} style={{ color: '#818cf8' }} />
-                <div className="text-center">
-                  <h3 className="text-xl font-semibold text-slate-100">チェックアウト確認</h3>
-                  <p className="text-xs text-slate-500 mt-1">以下の内容でチェックアウトします</p>
-                </div>
-                <div className="w-full max-w-md rounded-xl p-5 space-y-3"
-                  style={{ background: '#13141f', border: '1px solid #1e293b' }}>
-                  {[
-                    { label: 'お名前',        value: `${resName(checkoutTarget)} 様` },
-                    { label: '部屋番号',       value: `${resRoom(checkoutTarget)}号室` },
-                    { label: 'チェックイン',   value: resDate(checkoutTarget.start_date) },
-                    { label: 'チェックアウト', value: `${resDate(checkoutTarget.end_date)}（本日）` },
-                    { label: '宿泊料金',       value: resAmount(checkoutTarget) },
-                  ].map(item => (
-                    <div key={item.label} className="flex justify-between text-sm">
-                      <span className="text-slate-500">{item.label}</span>
-                      <span className="text-slate-100 font-medium">{item.value}</span>
+                    <div className="border-t border-slate-800 pt-4 flex justify-between text-sm">
+                      <span className="text-slate-500">追加料金</span>
+                      <span className={hasExtraCharge ? 'text-amber-400 font-semibold' : 'text-emerald-500 font-medium'}>
+                        {hasExtraCharge ? '¥3,300（要精算）' : 'なし'}
+                      </span>
                     </div>
-                  ))}
-                  <div className="border-t border-slate-800 pt-3 flex justify-between text-sm">
-                    <span className="text-slate-500">追加料金</span>
-                    <span className={hasExtraCharge ? 'text-amber-400 font-semibold' : 'text-emerald-500 font-medium'}>
-                      {hasExtraCharge ? '¥3,300（要精算）' : 'なし'}
-                    </span>
                   </div>
-                </div>
 
-                {hasExtraCharge ? (
-                  <div className="w-full max-w-md rounded-xl p-5 flex flex-col items-center gap-4 text-center"
-                    style={{ background: '#1a1200', border: '1px solid rgba(251,191,36,0.3)' }}>
-                    <p className="text-amber-300 font-semibold text-sm">⚠️ 追加料金が発生しています</p>
-                    <p className="text-slate-400 text-xs leading-relaxed">スタッフをお呼びして精算の上、チェックアウトをお願いします。</p>
-                    <button className="px-6 h-10 rounded-lg text-sm font-semibold transition-all"
-                      style={{ background: '#f59e0b', color: '#000' }}
-                      onClick={() => alert('スタッフを呼び出しました。しばらくお待ちください。')}>
-                      🔔 スタッフを呼ぶ
+                  {hasExtraCharge ? (
+                    <div className="w-full max-w-md rounded-2xl p-6 flex flex-col items-center gap-4 text-center"
+                      style={{ background: '#1a1200', border: '1px solid rgba(251,191,36,0.3)' }}>
+                      <p className="text-amber-300 font-semibold">⚠️ 追加料金が発生しています</p>
+                      <p className="text-slate-400 text-sm leading-relaxed">スタッフをお呼びして精算の上、チェックアウトをお願いします。</p>
+                      <button className="px-8 h-12 rounded-xl text-sm font-semibold transition-all active:scale-95"
+                        style={{ background: '#f59e0b', color: '#000' }}
+                        onClick={() => alert('スタッフを呼び出しました。しばらくお待ちください。')}>
+                        🔔 スタッフを呼ぶ
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={async () => {
+                        if (checkoutTarget.id) await notifyCheckout(checkoutTarget.id)
+                        setCheckoutStep('processing')
+                      }}
+                      className="w-full max-w-md h-14 rounded-2xl text-base font-semibold transition-all active:scale-[0.98]"
+                      style={{ background: '#6366f1', color: '#fff', boxShadow: '0 0 30px rgba(99,102,241,0.3)' }}>
+                      チェックアウトする →
                     </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={async () => {
-                      if (checkoutTarget.id) await notifyCheckout(checkoutTarget.id)
-                      setCheckoutStep('processing')
-                    }}
-                    className="w-full max-w-md h-12 rounded-xl text-sm font-semibold transition-all"
-                    style={{ background: '#6366f1', color: '#fff' }}>
-                    チェックアウトする →
+                  )}
+                  <button onClick={() => setCheckoutStep('search')}
+                    className="text-sm text-slate-600 hover:text-slate-400 transition-colors">
+                    ← 検索に戻る
                   </button>
-                )}
-                <button onClick={() => setCheckoutStep('search')}
-                  className="text-xs text-slate-600 hover:text-slate-400 transition-colors">
-                  ← 検索に戻る
-                </button>
-              </div>
-            )}
-
-            {checkoutStep === 'processing' && (
-              <CheckoutProcessing onDone={() => setCheckoutStep('done')} />
-            )}
-
-            {checkoutStep === 'done' && (
-              <div className="flex flex-col items-center gap-6 py-8 text-center">
-                <div className="w-20 h-20 rounded-full flex items-center justify-center"
-                  style={{ background: 'rgba(99,102,241,0.1)', border: '2px solid #6366f1' }}>
-                  <CheckCircle2 size={40} style={{ color: '#6366f1' }} />
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-slate-100">チェックアウト完了</h3>
-                  <p className="text-slate-400 text-sm mt-1">
-                    {checkoutTarget ? resName(checkoutTarget) : ''} 様、ご利用ありがとうございました
+              )}
+
+              {/* ── STEP: processing ── */}
+              {checkoutStep === 'processing' && (
+                <CheckoutProcessing onDone={() => setCheckoutStep('done')} />
+              )}
+
+              {/* ── STEP: done ── */}
+              {checkoutStep === 'done' && (
+                <div className="flex flex-col items-center gap-6 py-12 text-center">
+                  <div className="w-24 h-24 rounded-full flex items-center justify-center"
+                    style={{ background: 'rgba(99,102,241,0.1)', border: '2px solid #6366f1', boxShadow: '0 0 40px rgba(99,102,241,0.2)' }}>
+                    <CheckCircle2 size={48} style={{ color: '#818cf8' }} />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-semibold text-slate-100">チェックアウト完了</h3>
+                    <p className="text-slate-400 text-base mt-2">
+                      {checkoutTarget ? resName(checkoutTarget) : ''} 様、ご利用ありがとうございました
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-emerald-400">
+                    <CheckCircle2 size={14} /> データをクラウドに保存しました
+                  </div>
+                  <p className="text-sm text-slate-500 leading-relaxed">
+                    鍵カードの返却をお忘れなく。<br />またのご利用をお待ちしております。
                   </p>
+                  <button onClick={() => gotoTab('kiosk')}
+                    className="px-10 h-12 rounded-xl text-sm font-semibold transition-all"
+                    style={{ background: '#1e293b', color: '#94a3b8', border: '1px solid #334155' }}>
+                    スタートへ戻る
+                  </button>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-emerald-500">
-                  <CheckCircle2 size={12} /> データをクラウドに保存しました
-                </div>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  鍵カードの返却をお忘れなく。<br />またのご利用をお待ちしております。
-                </p>
-                <button onClick={() => gotoTab('kiosk')}
-                  className="px-8 h-10 rounded-lg text-sm font-semibold transition-all"
-                  style={{ background: '#1e293b', color: '#94a3b8', border: '1px solid #334155' }}>
-                  スタートへ戻る
-                </button>
-              </div>
-            )}
+              )}
+
+            </div>
           </div>
         )}
       </div>
