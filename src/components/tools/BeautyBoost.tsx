@@ -4,7 +4,7 @@ import {
   Scissors, MapPin, Calendar, Clock, Wallet, Search,
   Star, ExternalLink, ChevronRight, Navigation, Loader2,
   Sparkles, User, Users, RefreshCw, Info, CheckCircle2,
-  ArrowRight, Map, Zap
+  ArrowRight, Map, Zap, CalendarPlus, Check
 } from 'lucide-react'
 
 // ─── 定数 ─────────────────────────────────────────────────────────────────────
@@ -117,6 +117,50 @@ function getGoogleMapsSearchUrl(venue: string): string {
   return `https://www.google.com/maps/search/${q}`
 }
 
+// Googleカレンダー追加URL生成（OAuthなし・リンクのみ）
+function getGoogleCalendarUrl(params: {
+  date: string       // YYYY-MM-DD
+  time: string       // HH:MM
+  recTime: string    // 推奨美容院セット時刻 HH:MM
+  venue: string
+  services: string[]
+  leadTime: number
+}): { salon: string; omiai: string } {
+  const { date, time, recTime, venue, services, leadTime } = params
+  if (!date || !recTime) return { salon: '', omiai: '' }
+
+  // 日時フォーマット: YYYYMMDDTHHmmss / YYYYMMDDTHHmmss
+  const toGcalDt = (d: string, t: string, durationMin = 60) => {
+    const [y, mo, day] = d.split('-')
+    const [h, m] = t.split(':').map(Number)
+    const startStr = `${y}${mo}${day}T${String(h).padStart(2,'0')}${String(m).padStart(2,'0')}00`
+    const endTotal = h * 60 + m + durationMin
+    const eh = Math.floor(endTotal / 60) % 24
+    const em = endTotal % 60
+    const endStr = `${y}${mo}${day}T${String(eh).padStart(2,'0')}${String(em).padStart(2,'0')}00`
+    return `${startStr}/${endStr}`
+  }
+
+  // 美容院セット予約リマインド
+  const salonTitle = encodeURIComponent(`💇 美容院セット（${services[0]}）@ ${venue}周辺`)
+  const salonDetails = encodeURIComponent(
+    `NextraLabs BeautyBoost で設定\n希望メニュー: ${services.join('・')}\n${leadTime}時間前セット完了目標`
+  )
+  const salonDt = toGcalDt(date, recTime, 90)
+  const salonUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${salonTitle}&dates=${salonDt}&details=${salonDetails}&location=${encodeURIComponent(venue + '周辺の美容院')}`
+
+  // お見合い本番
+  const [h, m] = time.split(':').map(Number)
+  const omiaiTitle = encodeURIComponent(`✨ お見合い @ ${venue}`)
+  const omiaiDetails = encodeURIComponent(
+    `NextraLabs BeautyBoost で管理\n美容院セット: ${recTime} 完了予定\n場所: ${venue}`
+  )
+  const omiaiDt = toGcalDt(date, time, 120)
+  const omiaiUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${omiaiTitle}&dates=${omiaiDt}&details=${omiaiDetails}&location=${encodeURIComponent(venue)}`
+
+  return { salon: salonUrl, omiai: omiaiUrl }
+}
+
 // Google Places API経由のモック（本番はAPIキー使用）
 function generateMockSalons(venue: string, leadHours: number, time: string): SalonResult[] {
   const recTime = calcRecommendTime(time, leadHours)
@@ -156,6 +200,7 @@ export default function BeautyBoost() {
   const [salons, setSalons] = useState<SalonResult[]>([])
   const [showRoadmap, setShowRoadmap] = useState(false)
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null)
+  const [calSaved, setCalSaved] = useState<'salon' | 'omiai' | null>(null)
 
   const selectedPreset = SERVICE_PRESETS.find(p => p.id === form.preset)
 
@@ -190,6 +235,14 @@ export default function BeautyBoost() {
   const roadmap = getRoadmapDates()
   const mapsUrl = getGoogleMapsSearchUrl(form.venue)
   const recTime = calcRecommendTime(form.time, form.leadTime)
+  const calendarUrls = getGoogleCalendarUrl({
+    date: form.date,
+    time: form.time,
+    recTime,
+    venue: form.venue,
+    services: selectedPreset?.services || ['ヘアセット'],
+    leadTime: form.leadTime,
+  })
 
   return (
     <div className="min-h-screen bg-[#050507] text-slate-100">
@@ -485,6 +538,43 @@ export default function BeautyBoost() {
                   <p className="text-xs text-slate-500">この時間に美容院でのセットを終わらせると余裕があります</p>
                 </div>
               </div>
+
+              {/* Googleカレンダー保存ボタン */}
+              {calendarUrls.salon && (
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold text-slate-500 flex items-center gap-1.5">
+                    <CalendarPlus size={12} className="text-emerald-400" />
+                    Googleカレンダーに保存
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <a
+                      href={calendarUrls.salon}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => { setCalSaved('salon'); setTimeout(() => setCalSaved(null), 3000) }}
+                      className="flex items-center justify-center gap-1.5 h-10 bg-[#13141f] border border-white/10 hover:border-emerald-500/30 rounded-xl text-xs font-medium text-slate-300 hover:text-emerald-400 transition-all"
+                    >
+                      {calSaved === 'salon'
+                        ? <><Check size={13} className="text-emerald-400" /><span className="text-emerald-400">追加しました</span></>
+                        : <><CalendarPlus size={13} />💇 美容院セット</>
+                      }
+                    </a>
+                    <a
+                      href={calendarUrls.omiai}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => { setCalSaved('omiai'); setTimeout(() => setCalSaved(null), 3000) }}
+                      className="flex items-center justify-center gap-1.5 h-10 bg-emerald-500/10 border border-emerald-500/20 hover:border-emerald-500/40 rounded-xl text-xs font-medium text-emerald-400 hover:text-emerald-300 transition-all"
+                    >
+                      {calSaved === 'omiai'
+                        ? <><Check size={13} /><span>追加しました</span></>
+                        : <><CalendarPlus size={13} />✨ お見合い本番</>
+                      }
+                    </a>
+                  </div>
+                  <p className="text-[10px] text-slate-600 text-center">タップするとGoogleカレンダーが開きます</p>
+                </div>
+              )}
             </div>
 
             {/* 逆算ロードマップ */}
