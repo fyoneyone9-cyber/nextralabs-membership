@@ -129,6 +129,218 @@ function SettingsPanel({ title, icon, fields, storagePrefix }: {
   )
 }
 
+// ── ロック設定パネル（種別ごとにフィールドが動的切り替え） ──
+const LOCK_TYPE_OPTIONS = [
+  { value: 'switchbot',  label: 'SwitchBot',          icon: '🔵', apiType: 'api' },
+  { value: 'ttlock',     label: 'TT Lock',             icon: '🟣', apiType: 'oauth' },
+  { value: 'sesame',     label: 'SESAME',              icon: '🟡', apiType: 'api' },
+  { value: 'igloohome',  label: 'igloohome',           icon: '🟤', apiType: 'oauth' },
+  { value: 'nuki',       label: 'Nuki',                icon: '⚫', apiType: 'api' },
+  { value: 'remotelock', label: 'RemoteLOCK',          icon: '🔴', apiType: 'api' },
+  { value: 'salto',      label: 'Salto KS',            icon: '🔶', apiType: 'oauth' },
+  { value: 'fixed',      label: '固定パスワード',       icon: '🔢', apiType: 'none' },
+  { value: 'offline',    label: 'オフライン（手渡し）', icon: '📋', apiType: 'none' },
+]
+
+const LOCK_FIELDS_DEF: Record<string, { key: string; label: string; ph: string; secret?: boolean; hint?: string }[]> = {
+  switchbot: [
+    { key: 'token',        label: 'Open Token',   ph: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', secret: true,
+      hint: 'SwitchBotアプリ → プロフィール → 設定 → アプリ・SwitchBotウェブサービス → APIキー' },
+    { key: 'secret',       label: 'Secret Key',   ph: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', secret: true,
+      hint: 'Open Token取得画面の下に表示されるSecret Key（v1.1必須）' },
+  ],
+  ttlock: [
+    { key: 'clientId',     label: 'Client ID',           ph: 'your_client_id',     hint: 'TTLock開発者ポータル → アプリ作成 → Client ID' },
+    { key: 'clientSecret', label: 'Client Secret',       ph: 'your_client_secret', secret: true },
+    { key: 'username',     label: 'ログインID（メール）', ph: 'your@email.com',     hint: 'TTLockアプリのアカウントメールアドレス' },
+    { key: 'password',     label: 'パスワード',           ph: '••••••••',           secret: true, hint: 'TTLockアプリのログインパスワード' },
+  ],
+  sesame: [
+    { key: 'apiKey',       label: 'API Key',      ph: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', secret: true,
+      hint: 'my.sesame.team → ログイン → API Keys → Generate API Key' },
+  ],
+  igloohome: [
+    { key: 'clientId',     label: 'Client ID',     ph: 'igl-client-xxxxxxxx', hint: 'igloohome Bridge → Developer → API Settings' },
+    { key: 'clientSecret', label: 'Client Secret', ph: 'igl-secret-xxxxxxxx', secret: true },
+  ],
+  nuki: [
+    { key: 'apiToken',     label: 'API Token',    ph: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', secret: true,
+      hint: 'Nuki Web（https://web.nuki.io）→ API → Manage API tokens → Generate API token' },
+  ],
+  remotelock: [
+    { key: 'apiKey',       label: 'APIキー',      ph: 'rl-xxxxxxxxxxxxxxxx', secret: true,
+      hint: 'RemoteLOCK管理画面 → 設定 → API連携' },
+  ],
+  salto: [
+    { key: 'clientId',     label: 'Client ID',     ph: 'salto-client-xxxxxxxx', hint: 'Saltoパートナーポータルで取得' },
+    { key: 'clientSecret', label: 'Client Secret', ph: 'salto-secret-xxxxxxxx', secret: true },
+  ],
+  fixed: [
+    { key: 'password',     label: '固定パスワード（4〜8桁の数字）', ph: '8421',
+      hint: 'チェックイン時にゲストへ案内するコード番号' },
+  ],
+  offline: [],
+}
+
+function LockSettingsPanel({ onGoLockList }: { onGoLockList: () => void }) {
+  const STORAGE_KEY = 'dms_lock_v2'
+  const [lockType, setLockType] = React.useState('switchbot')
+  const [fields, setFields] = React.useState<Record<string, string>>({})
+  const [showFields, setShowFields] = React.useState<Record<string, boolean>>({})
+  const [saved, setSaved] = React.useState(false)
+
+  // ローカルストレージから復元
+  React.useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY)
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        if (parsed.lockType) setLockType(parsed.lockType)
+        if (parsed.fields)   setFields(parsed.fields)
+      }
+    } catch {}
+  }, [])
+
+  // 種別切り替え時にフィールド値をリセット
+  const handleTypeChange = (v: string) => {
+    setLockType(v)
+    setFields({})
+    setSaved(false)
+  }
+
+  const curFields = LOCK_FIELDS_DEF[lockType] || []
+  const selectedOpt = LOCK_TYPE_OPTIONS.find(o => o.value === lockType)
+
+  const save = () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ lockType, fields }))
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2500)
+  }
+
+  return (
+    <div className="max-w-2xl space-y-4">
+      {/* 種別セレクター */}
+      <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-6 space-y-5">
+        <div className="flex items-center gap-2 text-sm font-semibold text-slate-200 border-b border-white/5 pb-4">
+          <Lock size={15} style={{ color: '#10b981' }} />
+          ロック・鍵デバイス設定
+        </div>
+
+        {/* 種別ドロップダウン */}
+        <div className="space-y-1.5">
+          <label className="text-xs font-medium text-slate-500">種別</label>
+          <select
+            value={lockType}
+            onChange={e => handleTypeChange(e.target.value)}
+            className={inputCls}
+            style={{ ...inputStyle, appearance: 'none' as any }}
+          >
+            {LOCK_TYPE_OPTIONS.map(o => (
+              <option key={o.value} value={o.value}>{o.icon} {o.label}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* 種別バッジ */}
+        {selectedOpt && (
+          <div className="flex items-center gap-2">
+            <span className="text-lg">{selectedOpt.icon}</span>
+            <span className="text-sm font-semibold text-slate-200">{selectedOpt.label}</span>
+            {selectedOpt.apiType === 'api' && (
+              <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">API接続</span>
+            )}
+            {selectedOpt.apiType === 'oauth' && (
+              <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-400 border border-sky-500/30">OAuth2</span>
+            )}
+            {selectedOpt.apiType === 'none' && (
+              <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-700/50 text-slate-400 border border-white/10">APIなし</span>
+            )}
+          </div>
+        )}
+
+        {/* 動的フィールド */}
+        {curFields.length > 0 ? (
+          <div className="space-y-4">
+            {curFields.map(f => (
+              <div key={f.key} className="space-y-1.5">
+                <label className="text-xs font-medium text-slate-500">{f.label}</label>
+                {f.secret ? (
+                  <div className="relative">
+                    <input
+                      type={showFields[f.key] ? 'text' : 'password'}
+                      value={fields[f.key] || ''}
+                      onChange={e => setFields(v => ({ ...v, [f.key]: e.target.value }))}
+                      placeholder={f.ph}
+                      className={`${inputCls} pr-10 font-mono`}
+                      style={{ ...inputStyle, color: '#10b981' }}
+                      onFocus={e => (e.target.style.borderColor = '#10b981')}
+                      onBlur={e => (e.target.style.borderColor = '#334155')}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowFields(v => ({ ...v, [f.key]: !v[f.key] }))}
+                      className="absolute right-3 top-2.5 text-slate-500 hover:text-slate-300 text-sm"
+                    >
+                      {showFields[f.key] ? '🙈' : '👁'}
+                    </button>
+                  </div>
+                ) : (
+                  <input
+                    type="text"
+                    value={fields[f.key] || ''}
+                    onChange={e => setFields(v => ({ ...v, [f.key]: e.target.value }))}
+                    placeholder={f.ph}
+                    className={inputCls}
+                    style={inputStyle}
+                    onFocus={e => (e.target.style.borderColor = '#10b981')}
+                    onBlur={e => (e.target.style.borderColor = '#334155')}
+                  />
+                )}
+                {f.hint && (
+                  <p className="text-[10px] text-slate-600 leading-relaxed">{f.hint}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : lockType === 'offline' ? (
+          <div className="bg-slate-800/30 rounded-xl p-4 border border-white/5 text-[11px] text-slate-500 leading-relaxed">
+            📋 オフライン（手渡し）モードはAPIキー不要です。<br />
+            チェックイン時に手動でゲストへ鍵を渡す運用となります。
+          </div>
+        ) : null}
+
+        <button
+          onClick={save}
+          disabled={lockType === 'offline'}
+          className="h-10 px-6 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all disabled:opacity-40"
+          style={{ background: saved ? '#059669' : '#10b981', color: '#fff' }}
+        >
+          {saved ? '✓ 保存しました' : '設定を保存'}
+        </button>
+      </div>
+
+      {/* 錠デバイス一覧へのリンク */}
+      <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
+        <p className="text-xs font-semibold text-slate-400 flex items-center gap-2">
+          <Lock size={13} style={{ color: '#10b981' }} />
+          設定した錠デバイスを確認・管理
+        </p>
+        <p className="text-[11px] text-slate-600 leading-relaxed">
+          保存した設定でデバイスの登録状態や接続台数を確認できます。<br />
+          <span className="text-slate-500">固定パスワード・オフライン設定でもローカル管理リストとして利用できます。</span>
+        </p>
+        <button
+          onClick={onGoLockList}
+          className="flex items-center gap-2 h-9 px-5 rounded-lg text-xs font-semibold transition-all"
+          style={{ background: '#10b981', color: '#fff' }}
+        >
+          <Lock size={13} /> 錠デバイス一覧で確認 <ArrowRight size={13} />
+        </button>
+      </div>
+    </div>
+  )
+}
+
 // PMS別APIキー取得ガイド
 const PMS_GUIDE: Record<string, { url: string; label: string; steps: string[] }> = {
   'Staysee': {
@@ -944,38 +1156,7 @@ export default function DmsEngine() {
 
           {/* ロック設定 */}
           {activeTab === 'lock-settings' && (
-            <div className="space-y-4 max-w-2xl">
-              <SettingsPanel
-                title="ロック・鍵デバイス設定"
-                icon={<Lock size={15} style={{ color: '#10b981' }} />}
-                fields={[
-                  { key: 'lock_type', label: '鍵デバイス', type: 'select', options: [
-                    'SwitchBot','TT Lock','SESAME','igloohome','Nuki',
-                    'RemoteLOCK','Salto KS','固定パスワード','オフライン（手渡し）','その他'
-                  ], placeholder: '鍵デバイスを選択...' },
-                  { key: 'lock_api_key', label: '鍵デバイス API KEY / トークン', type: 'password', placeholder: 'APIキー・トークンを入力（固定PW・オフラインは不要）' },
-                ]}
-                storagePrefix="dms_lock"
-              />
-              {/* 錠デバイス一覧へのリンク（ローカル設定でも対応） */}
-              <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
-                <p className="text-xs font-semibold text-slate-400 flex items-center gap-2">
-                  <Lock size={13} style={{ color: '#10b981' }} />
-                  設定した錠デバイスを確認・管理
-                </p>
-                <p className="text-[11px] text-slate-600 leading-relaxed">
-                  保存した設定でデバイスの登録状態や接続台数を確認できます。<br />
-                  <span className="text-slate-500">固定パスワード・オフライン設定でもローカル管理リストとして利用できます。</span>
-                </p>
-                <button
-                  onClick={() => setActiveTab('lock-list')}
-                  className="flex items-center gap-2 h-9 px-5 rounded-lg text-xs font-semibold transition-all"
-                  style={{ background: '#10b981', color: '#fff' }}
-                >
-                  <Lock size={13} /> 錠デバイス一覧で確認 <ArrowRight size={13} />
-                </button>
-              </div>
-            </div>
+            <LockSettingsPanel onGoLockList={() => setActiveTab('lock-list')} />
           )}
 
           {/* PMS設定 */}
