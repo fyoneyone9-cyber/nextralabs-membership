@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import { Video, ArrowLeft, ExternalLink, Plus, Clock, Building } from 'lucide-react'
+import { Video, ArrowLeft, ExternalLink, Plus, Clock, Building, RefreshCw, Info } from 'lucide-react'
 import Link from 'next/link'
 
 interface CallRecord {
@@ -22,6 +22,7 @@ export default function CallsEngine() {
   const [callHistory, setCallHistory] = useState<CallRecord[]>([])
   const [creating, setCreating] = useState(false)
   const [error, setError] = useState('')
+  const [refreshed, setRefreshed] = useState(false)
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY_API) || ''
@@ -39,6 +40,17 @@ export default function CallsEngine() {
     localStorage.setItem(STORAGE_KEY_API, apiKey.trim())
     setApiKeySaved(!!apiKey.trim())
     setError('')
+  }
+
+  const refreshHistory = () => {
+    try {
+      const hist = JSON.parse(localStorage.getItem(STORAGE_KEY_HISTORY) || '[]')
+      setCallHistory(hist)
+      setRefreshed(true)
+      setTimeout(() => setRefreshed(false), 2000)
+    } catch {
+      setCallHistory([])
+    }
   }
 
   const createRoom = async () => {
@@ -164,6 +176,57 @@ export default function CallsEngine() {
           </div>
         </div>
 
+        {/* ── 通話の仕組み説明（常時表示） ── */}
+        <div className="bg-[#0d0f1a] border border-indigo-500/20 rounded-2xl p-6 space-y-4">
+          <h3 className="text-sm font-bold text-indigo-300 flex items-center gap-2">
+            <Info size={15} className="text-indigo-400" />
+            フロント通話の仕組み
+          </h3>
+          <div className="space-y-3">
+            {[
+              {
+                step: '①',
+                title: 'ゲストがKIOSKで呼び出す',
+                desc: 'KIOSKトップ画面の「フロントを呼び出す」ボタンをゲストが押すと、Daily.coのビデオ通話ルームが自動生成され、ゲストのブラウザで通話画面が開きます。',
+                color: '#818cf8',
+              },
+              {
+                step: '②',
+                title: 'この画面で通話履歴を確認する',
+                desc: '「更新」ボタンを押すと、KIOSKから発信された通話ルームが一覧に表示されます。ゲストが呼び出した直後に更新すれば、リアルタイムで確認できます。',
+                color: '#a78bfa',
+              },
+              {
+                step: '③',
+                title: '「参加」ボタンで応答する',
+                desc: '一覧に表示されたルームの「参加」ボタンを押すと、スタッフ側のブラウザでビデオ通話に参加できます。ゲストとスタッフが同じルームURLに入ることで通話が成立します。',
+                color: '#6366f1',
+              },
+              {
+                step: '④',
+                title: 'スタッフ側から発信することも可能',
+                desc: '下の「新しい通話ルームを作成」ボタンを押すと、スタッフ側からルームを作成できます。URLをゲストに共有すれば、KIOSKを使わずに通話できます。',
+                color: '#10b981',
+              },
+            ].map(item => (
+              <div key={item.step} className="flex gap-3 p-3 rounded-xl" style={{ background: '#13141f', border: `1px solid ${item.color}20` }}>
+                <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
+                  style={{ background: `${item.color}20`, color: item.color }}>
+                  {item.step}
+                </span>
+                <div className="space-y-0.5">
+                  <p className="text-xs font-semibold" style={{ color: item.color }}>{item.title}</p>
+                  <p className="text-[11px] text-slate-500 leading-relaxed">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-start gap-2 p-3 rounded-xl text-[11px] text-amber-400"
+            style={{ background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.2)' }}>
+            ⚠️ <span className="leading-relaxed">通話ルームはDaily.coの無料プランで最大200分/月まで利用可能。使いすぎた場合はDailyの有料プランへアップグレードしてください。</span>
+          </div>
+        </div>
+
         {/* セットアップガイド（APIキー未設定時のみ） */}
         {!apiKeySaved && (
           <div className="bg-[#0d0f1a] border border-emerald-500/20 rounded-2xl p-6 space-y-4">
@@ -248,10 +311,23 @@ export default function CallsEngine() {
         {/* 通話履歴カード（APIキー設定済み時） */}
         {apiKeySaved && (
           <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-6 space-y-4">
-            <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
-              <Clock size={15} className="text-emerald-400" />
-              通話履歴
-            </h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
+                <Clock size={15} className="text-emerald-400" />
+                通話履歴
+              </h3>
+              <button
+                onClick={refreshHistory}
+                className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-semibold transition-all"
+                style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', color: refreshed ? '#34d399' : '#10b981' }}
+              >
+                <RefreshCw size={11} className={refreshed ? '' : ''} />
+                {refreshed ? '更新しました ✓' : '更新'}
+              </button>
+            </div>
+            <p className="text-[11px] text-slate-600">
+              KIOSKからゲストが呼び出した通話ルームが表示されます。「更新」を押して最新状態を確認してください。
+            </p>
 
             {callHistory.length === 0 ? (
               <p className="text-xs text-slate-600 py-4 text-center">通話履歴はありません</p>
