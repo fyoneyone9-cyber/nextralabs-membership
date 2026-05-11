@@ -62,7 +62,7 @@ export default function ToolGuidePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 text-left">
           {TOOL_DIRECTORY.map((tool) => (
-            <Link key={tool.id} href={'/products/' + tool.id}>
+            <Link key={tool.id} href={tool.id === 'nextra-ai' ? 'https://membership-site-six.vercel.app/dms/login?from=kioskLP' : '/products/' + tool.id}>
               <Card className="bg-[#13141f] transition-all duration-300 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden group shadow-xl relative border-2 border-emerald-500/50 hover:border-emerald-400">
                 <CardContent className="p-6 flex items-center gap-6 h-full">
                   <div className={'w-16 h-12 bg-white/5 ' + tool.color + ' rounded-2xl flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform shadow-inner flex-shrink-0'}>
