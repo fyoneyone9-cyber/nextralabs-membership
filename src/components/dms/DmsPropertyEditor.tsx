@@ -66,7 +66,7 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
   });
   const toggleKey = (k: keyof typeof toggles) => setToggles(p => ({ ...p, [k]: !p[k] }));
 
-  // 保存処理（ローカルstorage保存 + 親への通知）
+  // 保存処理（Supabase APIへ送信）
   const handleSave = async () => {
     if (!form.name.trim()) {
       setSaveMsg({ ok: false, text: '物件名は必須です' });
@@ -75,33 +75,38 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
     setSaving(true);
     setSaveMsg(null);
     try {
-      // ローカルに保存（実際はAPIへ送信する想定）
-      const key = 'dms_properties';
-      const existing = (() => { try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; } })();
       if (isNew) {
-        existing.push({ ...form, id: crypto.randomUUID(), createdAt: new Date().toISOString() });
+        const res = await fetch('/api/dms/properties', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: form.name.trim() }),
+        });
+        if (!res.ok) { const e = await res.json(); throw new Error(e.error); }
       } else {
-        const idx = existing.findIndex((p: any) => p.id === property.id || p.name === property.name);
-        if (idx >= 0) existing[idx] = { ...existing[idx], ...form };
-        else existing.push({ ...form, id: crypto.randomUUID() });
+        const res = await fetch('/api/dms/properties', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ properties: [{ id: property.id, name: form.name.trim(), pms_type: '', pms_connected: false }] }),
+        });
+        if (!res.ok) { const e = await res.json(); throw new Error(e.error); }
       }
-      localStorage.setItem(key, JSON.stringify(existing));
       setSaveMsg({ ok: true, text: isNew ? '物件を作成しました' : '保存しました' });
       setTimeout(() => { onClose(); }, 1000);
-    } catch {
-      setSaveMsg({ ok: false, text: '保存に失敗しました' });
+    } catch (e: any) {
+      setSaveMsg({ ok: false, text: e.message || '保存に失敗しました' });
     } finally {
       setSaving(false);
     }
   };
 
-  // 削除処理
-  const handleDelete = () => {
+  // 削除処理（Supabase APIへ送信）
+  const handleDelete = async () => {
     try {
-      const key = 'dms_properties';
-      const existing = (() => { try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; } })();
-      const filtered = existing.filter((p: any) => p.id !== property?.id && p.name !== property?.name);
-      localStorage.setItem(key, JSON.stringify(filtered));
+      await fetch('/api/dms/properties', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: property?.id }),
+      });
     } catch { /* ignore */ }
     setConfirmDelete(false);
     onDeleted?.();

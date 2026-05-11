@@ -654,24 +654,34 @@ interface Property {
   pmsConnected?: boolean // PMS接続テスト済みか
 }
 
-const PROPERTIES_KEY = 'dms_properties'
-
-function loadProperties(): Property[] {
-  if (typeof window === 'undefined') return []
+// 物件はSupabase管理（localStorage廃止）
+async function fetchPropertiesFromCloud(): Promise<Property[]> {
   try {
-    const raw = localStorage.getItem(PROPERTIES_KEY)
-    if (!raw) {
-      // 初回: 既存のサンプルデータをseed
-      const seed: Property[] = [{ id: crypto.randomUUID(), name: 'ビジネスホテルアップル' }]
-      localStorage.setItem(PROPERTIES_KEY, JSON.stringify(seed))
-      return seed
-    }
-    return JSON.parse(raw)
+    const res = await fetch('/api/dms/properties')
+    const data = await res.json()
+    return (data.properties || []).map((p: any) => ({
+      id: p.id,
+      name: p.name,
+      pmsType: p.pms_type || '',
+      pmsConnected: p.pms_connected || false,
+    }))
   } catch { return [] }
 }
 
-function saveProperties(props: Property[]) {
-  localStorage.setItem(PROPERTIES_KEY, JSON.stringify(props))
+async function savePropertiesToCloud(props: Property[]) {
+  await fetch('/api/dms/properties', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ properties: props }),
+  })
+}
+
+async function deletePropertyFromCloud(id: string) {
+  await fetch('/api/dms/properties', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id }),
+  })
 }
 
 export default function DmsEngine() {
@@ -755,7 +765,7 @@ export default function DmsEngine() {
     const now = new Date()
     const days = ['日','月','火','水','木','金','土']
     setCurrentDate(`${now.getMonth()+1}/${now.getDate()}(${days[now.getDay()]}) ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`)
-    setProperties(loadProperties())
+    fetchPropertiesFromCloud().then(setProperties)
     setOrgName(localStorage.getItem('dms_org_org_name') || '')
     setActivePmsType(localStorage.getItem('dms_pms_pms_type') || '')
     fetchStayseeBookings()
@@ -850,9 +860,9 @@ export default function DmsEngine() {
                       const data = await res.json()
                       if (!res.ok) { alert(`同期失敗: ${data.error}`); return }
                       if (data.properties?.length) {
-                        saveProperties(data.properties)
+                        await savePropertiesToCloud(data.properties)
                         setProperties(data.properties)
-                        alert(`✅ ${data.properties.length}件の物件を同期しました`)
+                        alert(`✅ ${data.properties.length}件の物件をクラウドに同期しました`)
                       } else {
                         alert('PMSに物件が見つかりませんでした')
                       }
@@ -1289,7 +1299,7 @@ export default function DmsEngine() {
             <DmsPropertyEditor
               property={null}
               isDarkMode={true}
-              onClose={() => { setPropView('list'); setProperties(loadProperties()) }}
+              onClose={() => { setPropView('list'); fetchPropertiesFromCloud().then(setProperties) }}
             />
           )}
 
@@ -1411,17 +1421,16 @@ export default function DmsEngine() {
       </main>
 
       {editingBooking && <DmsBookingEditor booking={editingBooking.name_kanji ? editingBooking : null} onClose={() => setEditingBooking(null)} />}
-      {editingProperty && <DmsPropertyEditor property={editingProperty} isDarkMode={true} onClose={() => { setEditingProperty(null); setProperties(loadProperties()) }} onDeleted={() => setProperties(loadProperties())} />}
+      {editingProperty && <DmsPropertyEditor property={editingProperty} isDarkMode={true} onClose={() => { setEditingProperty(null); fetchPropertiesFromCloud().then(setProperties) }} onDeleted={() => fetchPropertiesFromCloud().then(setProperties)} />}
       <DeleteConfirmDialog
         open={confirmDeleteProperty !== null}
         title={confirmDeleteProperty ? `「${properties.find(p => p.id === confirmDeleteProperty)?.name ?? ''}」を削除しますか？` : ''}
         description="物件を削除すると、紐づく部屋・鍵デバイスの設定も失われます。"
         warning="この操作は元に戻せません。削除すると復元できません。"
-        onConfirm={() => {
+        onConfirm={async () => {
           if (!confirmDeleteProperty) return
-          const updated = properties.filter(p => p.id !== confirmDeleteProperty)
-          saveProperties(updated)
-          setProperties(updated)
+          await deletePropertyFromCloud(confirmDeleteProperty)
+          setProperties(prev => prev.filter(p => p.id !== confirmDeleteProperty))
           setConfirmDeleteProperty(null)
         }}
         onCancel={() => setConfirmDeleteProperty(null)}
