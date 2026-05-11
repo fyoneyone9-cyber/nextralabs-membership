@@ -310,9 +310,7 @@ function ProductsList() {
               </a>
             ))}
           </div>
-          <p className="text-center text-[10px] text-slate-700 mt-4">
-            ※ Amazonアソシエイト・プログラム参加者です。リンク経由でご購入いただくとNextraLabsの運営に役立てられます。
-          </p>
+
         </div>
       </div>
 
