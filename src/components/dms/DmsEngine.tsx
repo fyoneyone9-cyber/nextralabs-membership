@@ -949,11 +949,13 @@ export default function DmsEngine() {
                                 {activePmsType && activePmsType !== 'PMS未接続（ローカル）' ? (
                                   <span className="inline-flex items-center gap-1 text-[9px] font-semibold px-1.5 py-0.5 rounded-full w-fit"
                                     style={{ background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.25)' }}>
-                                    ✓ {activePmsType} 連携中
+                                    <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
+                                    {activePmsType} 連携中
                                   </span>
                                 ) : (
                                   <span className="inline-flex items-center gap-1 text-[9px] font-semibold px-1.5 py-0.5 rounded-full w-fit"
                                     style={{ background: 'rgba(100,116,139,0.1)', color: '#64748b', border: '1px solid #1e293b' }}>
+                                    <span className="w-1 h-1 rounded-full bg-slate-600" />
                                     ローカル保存
                                   </span>
                                 )}
@@ -1188,8 +1190,9 @@ export default function DmsEngine() {
                     background: isPmsConnected ? 'rgba(16,185,129,0.06)' : 'rgba(100,116,139,0.06)',
                     border: isPmsConnected ? '1px solid rgba(16,185,129,0.25)' : '1px solid #1e293b',
                   }}>
+                  <span className={`w-2 h-2 rounded-full shrink-0 ${isPmsConnected ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`} />
                   {isPmsConnected
-                    ? <><span className="font-semibold text-emerald-400">✓ {pmsType} 接続済み</span><span className="text-slate-500 ml-2">予約データをPMSから取得中</span></>
+                    ? <><span className="font-semibold text-emerald-400">{pmsType} 接続済み</span><span className="text-slate-500 ml-2">予約データをPMSから取得中</span></>
                     : <><span className="font-semibold text-slate-400">PMS未接続（ローカル保存）</span><span className="text-slate-600 ml-2">左メニュー「PMS設定」から連携できます</span></>
                   }
                 </div>
@@ -1219,12 +1222,14 @@ export default function DmsEngine() {
                               {isLocal ? (
                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold"
                                   style={{ background: 'rgba(100,116,139,0.12)', color: '#64748b', border: '1px solid #1e293b' }}>
+                                  <span className="w-1.5 h-1.5 rounded-full bg-slate-600" />
                                   ローカル保存
                                 </span>
                               ) : (
                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold"
                                   style={{ background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.3)' }}>
-                                  ✓ {propPms} 連携
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                  {propPms} 連携
                                 </span>
                               )}
                             </td>
