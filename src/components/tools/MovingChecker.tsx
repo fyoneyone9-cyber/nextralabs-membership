@@ -7,7 +7,7 @@ import {
   Upload, CheckCircle2, Home, ShieldCheck, MapPin,
   Loader2, Search, Zap, Info, TrendingUp, ShoppingCart,
   Copy, ChevronRight, ExternalLink, ArrowLeft,
-  Camera, SwitchCamera, X
+  Camera, SwitchCamera, X, Navigation
 } from 'lucide-react'
 
 const ENTRY_MODES = [
@@ -46,6 +46,8 @@ const MasterEngine = () => {
   const [filePreview, setFilePreview] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [areaInputs, setAreaInputs] = useState(['', '', '']) // 3つのエリア用
+  const [gpsLoading, setGpsLoading] = useState(false)
+  const [gpsError, setGpsError] = useState<string | null>(null)
 
   // カメラ関連
   const [uploadMode, setUploadMode] = useState<'file' | 'camera'>('file')
@@ -111,6 +113,52 @@ const MasterEngine = () => {
   useEffect(() => () => stopCamera(), [stopCamera])
 
   useEffect(() => { setIsMounted(true) }, [])
+
+  // GPS → 住所取得（Nominatim 逆ジオコーディング）
+  const handleGetGps = useCallback(async () => {
+    setGpsLoading(true)
+    setGpsError(null)
+    try {
+      const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        })
+      )
+      const { latitude, longitude } = pos.coords
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=ja`,
+        { headers: { 'User-Agent': 'NextraLabs-MovingChecker/1.0' } }
+      )
+      const data = await res.json()
+      const addr = data.address
+      // 都道府県＋市区町村を組み立て
+      const prefecture = addr.state || addr.province || ''
+      const city = addr.city || addr.town || addr.village || addr.county || ''
+      const district = addr.suburb || addr.neighbourhood || addr.quarter || ''
+      const formatted = [prefecture, city, district].filter(Boolean).join('')
+      if (!formatted) throw new Error('住所の取得に失敗しました')
+      // 入力欄1番目に自動セット
+      setAreaInputs(prev => {
+        const next = [...prev]
+        next[0] = formatted
+        return next
+      })
+    } catch (err: any) {
+      if (err.code === 1) {
+        setGpsError('位置情報へのアクセスが拒否されました。ブラウザの設定から許可してください。')
+      } else if (err.code === 2) {
+        setGpsError('位置情報を取得できませんでした。電波状況を確認してください。')
+      } else if (err.code === 3) {
+        setGpsError('タイムアウトしました。もう一度お試しください。')
+      } else {
+        setGpsError(err.message || 'GPS取得に失敗しました。')
+      }
+    } finally {
+      setGpsLoading(false)
+    }
+  }, [])
 
   const handleAnalyze = async () => {
     setIsAnalyzing(true)
@@ -227,6 +275,29 @@ const MasterEngine = () => {
               {/* エリア解析用入力（エリアモードのみ） */}
               {mode === 'area' ? (
                 <div className="space-y-3">
+                  {/* GPS取得ボタン */}
+                  <button
+                    type="button"
+                    onClick={handleGetGps}
+                    disabled={gpsLoading}
+                    className="flex items-center gap-2 h-10 px-4 rounded-lg text-xs font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{
+                      background: gpsLoading ? '#1e293b' : 'rgba(16,185,129,0.12)',
+                      color: gpsLoading ? '#475569' : '#10b981',
+                      border: '1px solid rgba(16,185,129,0.3)',
+                    }}
+                  >
+                    {gpsLoading
+                      ? <><Loader2 size={13} className="animate-spin" />取得中...</>
+                      : <><Navigation size={13} />現在地を候補地1に入力</>
+                    }
+                  </button>
+                  {/* GPSエラー表示 */}
+                  {gpsError && (
+                    <div className="flex items-start gap-2 text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 text-xs leading-relaxed">
+                      {gpsError}
+                    </div>
+                  )}
                   {areaInputs.map((val, idx) => (
                     <input
                       key={idx}
