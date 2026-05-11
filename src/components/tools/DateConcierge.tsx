@@ -183,8 +183,6 @@ export default function DateConcierge() {
     setTimeout(() => setCopied(false), 2000)
   }, [result])
 
-  const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''
-
   return (
     <div className="min-h-screen bg-[#050507] text-white font-['Inter','Noto_Sans_JP',sans-serif]">
       <div className="max-w-2xl mx-auto px-4 py-8 pb-20">
@@ -364,17 +362,39 @@ export default function DateConcierge() {
               </div>
             </div>
 
-            {/* Google Maps */}
-            <div className="rounded-xl overflow-hidden border border-white/10">
-              <iframe
-                src={`https://www.google.com/maps/embed/v1/place?key=${mapsKey}&q=${result.midpoint.lat},${result.midpoint.lng}&zoom=14`}
-                width="100%"
-                height="300"
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="block"
-              />
+            {/* 中間地点マップリンク */}
+            <div className="bg-[#0d1117] border border-white/5 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <MapPin size={14} className="text-emerald-400" />
+                  <span className="text-xs font-semibold text-white">ふたりの中間地点</span>
+                </div>
+                <span className="text-[10px] text-slate-500">
+                  {result.midpoint.lat.toFixed(4)}, {result.midpoint.lng.toFixed(4)}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <a
+                  href={`https://www.google.com/maps/search/レストラン/@${result.midpoint.lat},${result.midpoint.lng},15z`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1.5 h-10 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-xs font-medium text-emerald-400 hover:bg-emerald-500/20 transition-all"
+                >
+                  <MapPin size={13} />
+                  中間地点を地図で見る
+                </a>
+                <a
+                  href={result.restaurant
+                    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(result.restaurant.name + ' ' + result.restaurant.address)}`
+                    : `https://www.google.com/maps/search/レストラン/@${result.midpoint.lat},${result.midpoint.lng},15z`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1.5 h-10 bg-[#13141f] border border-white/5 rounded-lg text-xs font-medium text-slate-400 hover:border-emerald-500/20 hover:text-emerald-400 transition-all"
+                >
+                  <Building2 size={13} />
+                  レストランをナビ
+                </a>
+              </div>
             </div>
 
             {/* レストランカード */}
@@ -411,7 +431,7 @@ export default function DateConcierge() {
                     className="mt-3 inline-flex items-center gap-1.5 text-xs text-emerald-400 hover:text-emerald-300 transition-colors"
                   >
                     <ExternalLink size={12} />
-                    楽天グルメで詳細を見る
+                    Googleマップで詳細を見る
                   </a>
                 </div>
               </div>
