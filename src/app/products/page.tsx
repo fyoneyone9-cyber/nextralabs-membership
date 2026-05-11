@@ -3,6 +3,7 @@ import { useSearchParams } from 'next/navigation'
 import React, { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { createBrowserClient } from '@supabase/ssr'
+import NewsletterBanner from '@/components/newsletter/NewsletterBanner'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -264,8 +265,13 @@ function ProductsList() {
           </section>
         ))}
       </div>
-      {/* Amazon アフィリエイト */}
+      {/* メルマガ登録バナー */}
       <div className="max-w-6xl mx-auto px-4 mt-16">
+        <NewsletterBanner variant="compact" />
+      </div>
+
+      {/* Amazon アフィリエイト */}
+      <div className="max-w-6xl mx-auto px-4 mt-10">
         <div className="border-t border-white/5 pt-12">
           <div className="flex items-center gap-3 mb-6 justify-center">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-widest">Sponsored · Amazon</span>
