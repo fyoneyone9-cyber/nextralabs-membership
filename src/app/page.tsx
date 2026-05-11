@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
-  Zap, Home, Share2, Shield, ArrowRight, Star, X
+  Zap, BookOpen, Calculator, ShoppingBag, ArrowRight, Star, X
 } from 'lucide-react'
 
 const REVIEWS = [
@@ -161,9 +161,9 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-4xl mx-auto">
             {[
-              { id: 'moving-checker', title: 'AI引越し安心チェッカー', icon: Home, desc: '物件内見・契約書を即チェック' },
-              { id: 'sns-auto-poster', title: 'SNSオートポスター', icon: Share2, desc: 'キャプション・ハッシュタグを自動生成' },
-              { id: 'scam-defender', title: 'AI詐欺ディフェンダー', icon: Shield, desc: '怪しいサイト・文面を即判定' },
+              { id: 'kdp-guide', title: 'Kindle出版完全ナビ', icon: BookOpen, desc: 'ゼロからKindle出版を完全ガイド' },
+              { id: 'loan-advisor', title: '借金完済・おまとめ診断', icon: Calculator, desc: '最適な返済プランをAIが診断' },
+              { id: 'shopping-stopper', title: 'AI買い物依存ストッパー', icon: ShoppingBag, desc: '衝動買いをAIがその場で止める' },
             ].map((tool) => (
               <Link key={tool.id} href={`/products/${tool.id}/app`} className="group block">
                 <div className="bg-[#0d1117] border border-white/5 hover:border-emerald-500/40 rounded-2xl p-6 flex items-center gap-5 transition-all hover:bg-[#0d1117]/80 hover:shadow-[0_0_24px_rgba(16,185,129,0.08)]">
