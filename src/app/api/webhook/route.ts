@@ -49,6 +49,17 @@ export async function POST(request: NextRequest) {
             current_period_start: new Date(subscriptionData.current_period_start * 1000).toISOString(),
             current_period_end: new Date(subscriptionData.current_period_end * 1000).toISOString(),
           }, { onConflict: 'user_id' })
+
+          // 管理者通知: 新規有料会員登録
+          const customerEmail = session.customer_details?.email || session.customer_email || '不明'
+          const planLabel = plan === 'premium' ? 'プレミアム' : plan === 'light' ? 'ライト' : 'スタンダード'
+          await supabaseAdmin.from('admin_notifications').insert({
+            type: 'new_subscription',
+            title: '🎉 新規有料会員登録',
+            message: `${customerEmail} が ${planLabel}プランに登録しました`,
+            metadata: { user_id: userId, plan, customer_email: customerEmail },
+            read: false,
+          })
         } else if (session.mode === 'payment') {
           // 単品購入完了 — purchases テーブルに記録
           const productId = session.metadata?.product_id

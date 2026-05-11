@@ -4,9 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { Users, ShieldCheck, TrendingUp, MessageSquare, Zap, Cpu, Activity } from 'lucide-react'
+import { Users, ShieldCheck, TrendingUp, MessageSquare, Zap, Cpu, Activity, Bell } from 'lucide-react'
 import ApiStatusBoard from '@/components/admin/ApiStatusBoard'
 import AnalyticsPanel from '@/components/admin/AnalyticsPanel'
+import AdminNotifications from '@/components/admin/AdminNotifications'
 
 export default async function AdminPage() {
   const supabase = createServerSupabaseClient()
@@ -44,6 +45,12 @@ export default async function AdminPage() {
 
   const newContactCount = (contacts || []).filter((c: any) => c.status === 'new').length
 
+  // 未読通知数
+  const { count: unreadNotifCount } = await supabase
+    .from('admin_notifications')
+    .select('*', { count: 'exact', head: true })
+    .eq('read', false)
+
   const { data: usageData } = await supabase
     .from('api_usage')
     .select('*')
@@ -70,6 +77,14 @@ export default async function AdminPage() {
                 <Activity className="h-4 w-4" /> Vercel Fleet Monitor
               </Button>
             </Link>
+            {(unreadNotifCount || 0) > 0 && (
+              <div className="relative">
+                <Bell className="h-6 w-6 text-emerald-400" />
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                  {unreadNotifCount}
+                </span>
+              </div>
+            )}
             <Badge className="bg-emerald-500 text-slate-950 font-bold px-4 py-1.5 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)]">管理者専用</Badge>
           </div>
         </div>
@@ -139,6 +154,8 @@ export default async function AdminPage() {
           </div>
 
           <div className="space-y-8">
+            {/* 🔔 管理者通知パネル */}
+            <AdminNotifications />
             {/* 🚀 API実稼働ステータスボード (完全見える化) */}
             <ApiStatusBoard />
           </div>
