@@ -15,8 +15,7 @@ import {
 
 const TOOLS = [
   { id: 'universal-converter/app', cat: 'compress', title: '究極AIマルチコンバーター', sub: '動画・画像・PDFへの変換圧縮', icon: Repeat, plan: 'ライト', done: true },
-  { id: 'nextra-ai/app', cat: 'hotel', title: 'Nextra AI（ホテルDX）', sub: 'チェックイン・予約・解錠OS', icon: Building2, plan: 'お見積もり', lpUrl: '/products/nextra-ai', target: 'corp' },
-  { id: 'nextra-ai/app', cat: 'hotel', title: 'Nextra AI（個人事業主向け）', sub: 'フロントレス民泊・小規模施設DX', icon: Building2, plan: 'お見積もり', lpUrl: '/products/nextra-ai', target: 'sole' },
+  { id: 'nextra-ai/app', cat: 'hotel', title: 'Nextra AI', sub: 'チェックイン・予約・解錠OS', icon: Building2, plan: 'お見積もり', lpUrl: '/products/nextra-ai', target: 'both' },
   { id: 'moving-checker/app', cat: 'hotel', title: 'AI引越し安心チェッカー', sub: '治安と物件リスクを徹底解析', icon: Home, plan: '無料', done: true },
   { id: 'sns-auto-poster/app', cat: 'sns', title: 'AI SNSオートポスター', sub: 'バズを量産するマルチSNS生成', icon: Share2, plan: 'ライト', done: true },
   { id: 'ai-select-shop/app', cat: 'sns', title: 'AIセレクトショップ', sub: 'トレンド解析とShopify連携', icon: Store, plan: 'プレミアム' },
@@ -105,7 +104,7 @@ function ProductCard({ product, isFav, onToggleFav }: {
         <div className="pt-4 border-t border-white/5 flex flex-col gap-2.5 mt-auto">
           {product.plan === 'お見積もり' ? (
             <div className="flex flex-col gap-2 w-full">
-              <a href={`mailto:f.yoneyone9@gmail.com?subject=Nextra AI（${product.target === 'sole' ? '個人事業主向け' : 'ホテルDX'}）お見積もり依頼`} className="block w-full">
+              <a href="mailto:f.yoneyone9@gmail.com?subject=Nextra AI お見積もり依頼" className="block w-full">
                 <Button className="w-full h-10 md:h-11 font-semibold text-sm rounded-lg transition-all"
                   style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#000' }}>
                   お見積もりを依頼 →
@@ -124,16 +123,24 @@ function ProductCard({ product, isFav, onToggleFav }: {
               <Button className="w-full h-10 md:h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-sm rounded-lg shadow-[0_0_16px_rgba(16,185,129,0.15)] hover:shadow-[0_0_24px_rgba(16,185,129,0.3)] transition-all">起動する →</Button>
             </Link>
           )}
-          <div className="flex justify-between items-center px-2 py-1 bg-black/40 rounded-lg border border-white/5">
-            <span className={badgeClass}>
-              {product.plan === 'お見積もり' ? '¥9,800〜 / 月' : `${product.plan} プラン`}
-            </span>
-            {product.plan === 'お見積もり'
-              ? <span className="text-[8px] text-amber-500/60">{product.target === 'sole' ? '個人事業主向け' : '法人向け'}</span>
-              : product.plan !== '無料'
-              ? <Lock className="h-2.5 w-2.5 text-emerald-500/30" />
-              : <Sparkles className="h-2.5 w-2.5 text-emerald-400/50" />}
-          </div>
+          {product.plan === 'お見積もり' ? (
+            <div className="flex flex-col gap-1.5 px-2 py-2 bg-black/40 rounded-lg border border-white/5">
+              <div className="flex items-center justify-between">
+                <span className={badgeClass}>¥9,800〜 / 月</span>
+              </div>
+              <div className="flex gap-2 pt-0.5">
+                <span className="flex-1 text-center text-[9px] font-medium px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">法人向け</span>
+                <span className="flex-1 text-center text-[9px] font-medium px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">個人事業主向け</span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex justify-between items-center px-2 py-1 bg-black/40 rounded-lg border border-white/5">
+              <span className={badgeClass}>{product.plan} プラン</span>
+              {product.plan !== '無料'
+                ? <Lock className="h-2.5 w-2.5 text-emerald-500/30" />
+                : <Sparkles className="h-2.5 w-2.5 text-emerald-400/50" />}
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
