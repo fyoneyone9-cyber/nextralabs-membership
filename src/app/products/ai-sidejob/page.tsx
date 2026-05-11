@@ -210,8 +210,8 @@ export default function SidejobLp() {
                     {r.name[0]}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-white font-semibold text-sm"> className="text-white font-semibold text-sm whitespace-nowrap">{r.name}</p>
-                    <p className="text-slate-500 text-xs"> className="text-slate-500 text-xs whitespace-nowrap">{r.role} · {r.location}</p>
+                    <p className="text-white font-semibold text-sm whitespace-nowrap">{r.name}</p>
+                    <p className="text-slate-500 text-xs whitespace-nowrap">{r.role} · {r.location}</p>
                     <span className="inline-block mt-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 whitespace-nowrap">{r.tag}</span>
                   </div>
                 </div>
