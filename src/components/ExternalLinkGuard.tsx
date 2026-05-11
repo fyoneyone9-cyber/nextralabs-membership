@@ -2,6 +2,9 @@
 import { useEffect, useState } from 'react'
 import { ExternalLink, X, ArrowRight } from 'lucide-react'
 
+// DMSページでは確認モーダルをスキップするドメイン
+const DMS_BYPASS_DOMAINS = ['daily.co', 'supabase.co', 'supabase.com']
+
 export default function ExternalLinkGuard() {
   const [pending, setPending] = useState<string | null>(null)
 
@@ -19,6 +22,11 @@ export default function ExternalLinkGuard() {
         !href.includes('localhost')
 
       if (!isExternal) return
+
+      // /dms 配下 または DMS用バイパスドメイン → 確認なしで開く
+      const isDmsPage = window.location.pathname.startsWith('/dms')
+      const isBypassDomain = DMS_BYPASS_DOMAINS.some(d => href.includes(d))
+      if (isDmsPage || isBypassDomain) return  // デフォルト動作に任せる
 
       e.preventDefault()
       e.stopPropagation()
