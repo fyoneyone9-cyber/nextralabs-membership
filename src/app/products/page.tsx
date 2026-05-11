@@ -49,6 +49,7 @@ const TOOLS = [
   { id: 'vercel-monitor/app', cat: 'biz', title: 'Vercel Fleet Monitor', sub: 'システムのデプロイ状況をリアルタイム監視', icon: Activity, plan: 'お見積もり', done: true, adminOnly: true },
   // ── 婚活・結婚相談所ジャンル ──
   { id: 'konkatsu-scheduler/app', cat: 'konkatsu', title: 'AI即アポ調整くん', sub: 'Google Calendar連携でお見合い日程を自動確定', icon: CalendarCheck, plan: 'スタンダード', lpUrl: '/products/konkatsu-scheduler' },
+  { id: 'omiai-room/app', cat: 'konkatsu', title: 'オンラインお見合い盛り上げシステム', sub: 'BGM×AIトークサジェストで気まずい沈黙を解消', icon: HeartHandshake, plan: 'お見積もり', lpUrl: '/products/omiai-room' },
 ]
 
 const CATEGORIES = [
