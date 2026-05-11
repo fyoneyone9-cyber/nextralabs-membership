@@ -1017,15 +1017,30 @@ export default function DmsEngine() {
                   )}
                 </div>
 
-                {/* 件数バッジ */}
-                <div className="flex items-center gap-2">
-                  <Badge className="bg-white/5 text-slate-300 border border-white/10 px-3 py-1 rounded-lg text-xs font-semibold">
-                    → チェックイン {filteredBookings.length}
-                    {roomFilter === 'custom' && customRoom && ` / 全${bookings.length}`}
-                  </Badge>
-                  <Badge className="bg-white/5 text-slate-300 border border-white/10 px-3 py-1 rounded-lg text-xs font-semibold">← チェックアウト 6</Badge>
-                  <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-lg text-xs font-semibold">⌨ 滞在中 2</Badge>
-                </div>
+                {/* 件数バッジ（本日のチェックアウト・滞在中をbookingsから計算） */}
+                {(() => {
+                  const today = new Date().toISOString().slice(0, 10)
+                  const checkoutCount = bookings.filter(b => b.end_date?.startsWith(today)).length
+                  const stayingCount = bookings.filter(b => {
+                    const start = b.start_date?.slice(0, 10) || ''
+                    const end = b.end_date?.slice(0, 10) || ''
+                    return start < today && end > today
+                  }).length
+                  return (
+                    <div className="flex items-center gap-2">
+                      <Badge className="bg-white/5 text-slate-300 border border-white/10 px-3 py-1 rounded-lg text-xs font-semibold">
+                        → チェックイン {filteredBookings.length}
+                        {roomFilter === 'custom' && customRoom && ` / 全${bookings.length}`}
+                      </Badge>
+                      <Badge className="bg-white/5 text-slate-300 border border-white/10 px-3 py-1 rounded-lg text-xs font-semibold">
+                        ← チェックアウト {checkoutCount}
+                      </Badge>
+                      <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-lg text-xs font-semibold">
+                        ⌨ 滞在中 {stayingCount}
+                      </Badge>
+                    </div>
+                  )
+                })()}
               </div>
 
               <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl overflow-hidden shadow-xl">
