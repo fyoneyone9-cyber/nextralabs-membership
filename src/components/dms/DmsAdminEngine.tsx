@@ -500,17 +500,7 @@ export default function DmsAdminEngine() {
           </div>
         </div>
 
-        {/* SQL案内 */}
-        <div className="rounded-xl px-4 py-3 text-xs space-y-1"
-          style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.15)' }}>
-          <p className="font-semibold text-emerald-400 flex items-center gap-1.5">
-            <Shield size={11} /> Supabase テーブル未作成の場合
-          </p>
-          <p className="text-slate-500 font-mono text-[10px] leading-relaxed">
-            Supabase SQL Editorで以下を実行してください:<br />
-            CREATE TABLE dms_tenants (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, company_name text NOT NULL, login_id text UNIQUE NOT NULL, password_hash text NOT NULL, contact_email text, contact_phone text, plan text DEFAULT &apos;standard&apos;, pms_type text DEFAULT &apos;none&apos;, status text DEFAULT &apos;active&apos;, created_at timestamptz DEFAULT now(), last_login_at timestamptz);
-          </p>
-        </div>
+
       </div>
 
       {/* メニューを閉じるオーバーレイ */}
