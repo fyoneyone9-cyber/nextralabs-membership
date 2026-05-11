@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import NewsletterBanner from '@/components/newsletter/NewsletterBanner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -356,6 +357,11 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── メルマガ登録バナー ── */}
+      <div className="max-w-4xl mx-auto w-full px-4 pb-12">
+        <NewsletterBanner variant="compact" />
+      </div>
 
       {/* フッター */}
       <div className="border-t border-white/5 py-6">
