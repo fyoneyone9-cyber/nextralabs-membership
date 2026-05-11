@@ -1,5 +1,6 @@
 ﻿'use client'
 import React, { useState, useEffect, useCallback, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
 import { Scale, Search, Loader2, ShoppingCart, Zap, TrendingUp, AlertTriangle, ArrowRight, RefreshCw } from 'lucide-react'
