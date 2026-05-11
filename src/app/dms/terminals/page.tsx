@@ -1,20 +1,74 @@
-﻿'use client'
+'use client'
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { 
-  Monitor, RefreshCw, Zap, Wifi, Signal, AlertCircle, ChevronRight, Power, Settings
+  Monitor, RefreshCw, Zap, Wifi, Power, ChevronRight, Video
 } from 'lucide-react'
+
+const STORAGE_KEY_API = 'dms_org_daily_api_key'
+const STORAGE_KEY_HISTORY = 'dms_call_history'
 
 export default function TerminalsPage() {
   const [mounted, setMounted] = useState(false)
+  const [calling, setCalling] = useState(false)
+  const [callError, setCallError] = useState('')
+  const [hasApiKey, setHasApiKey] = useState(false)
+
   const terminals = [
     { id: 'TRM-001', name: 'フロント 01', location: '1F エントランス', status: 'Online', battery: '98%', lastSync: '1分前', ip: '192.168.1.50' },
     { id: 'TRM-002', name: 'フロント 02', location: '1F エントランス', status: 'Offline', battery: '0%', lastSync: '3時間前', ip: '192.168.1.51' }
   ]
 
-  useEffect(() => { setMounted(true) }, [])
+  useEffect(() => {
+    setMounted(true)
+    const key = localStorage.getItem(STORAGE_KEY_API) || ''
+    setHasApiKey(!!key.trim())
+  }, [])
+
+  const handleCall = async () => {
+    setCallError('')
+    const apiKey = localStorage.getItem(STORAGE_KEY_API) || ''
+    if (!apiKey.trim()) {
+      setCallError('通話機能は管理者が設定後にご利用いただけます')
+      return
+    }
+    setCalling(true)
+    try {
+      const res = await fetch('/api/dms/daily-room', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-daily-api-key': apiKey,
+        },
+        body: JSON.stringify({ propertyName: 'フロント' }),
+      })
+      if (!res.ok) {
+        const err = await res.json()
+        setCallError(err.error || '通話の開始に失敗しました')
+        return
+      }
+      const data = await res.json()
+      // 通話履歴をlocalStorageに保存
+      const history = JSON.parse(localStorage.getItem(STORAGE_KEY_HISTORY) || '[]')
+      history.unshift({
+        id: data.name,
+        roomName: data.name,
+        roomUrl: data.url,
+        propertyName: data.propertyName,
+        createdAt: data.createdAt,
+        status: 'active',
+      })
+      localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(history.slice(0, 50)))
+      window.open(data.url, '_blank')
+    } catch (e) {
+      setCallError('ネットワークエラーが発生しました')
+    } finally {
+      setCalling(false)
+    }
+  }
+
   if (!mounted) return null
 
   return (
@@ -31,6 +85,44 @@ export default function TerminalsPage() {
             <h1 className="text-4xl md:text-5xl font-bold uppercase tracking-tighter text-white">Terminal <span className="text-emerald-500">Status</span></h1>
           </div>
           <Button variant="outline" className="border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/10 h-12 rounded-full font-bold px-8"><RefreshCw size={18} className="mr-2" /> 全端末一斉再起動指令</Button>
+        </div>
+
+        {/* フロントへのビデオ通話セクション */}
+        <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-6 space-y-4">
+          <div className="flex items-center gap-2">
+            <Video size={18} className="text-emerald-400" />
+            <h2 className="text-base font-bold text-slate-200">フロントへのビデオ通話</h2>
+          </div>
+          <p className="text-xs text-slate-500">フロントスタッフとビデオ通話でご相談いただけます。</p>
+
+          {callError && (
+            <div className="text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3">
+              {callError}
+            </div>
+          )}
+
+          {!hasApiKey ? (
+            <div className="text-xs text-slate-500 bg-white/5 border border-white/5 rounded-xl px-4 py-3">
+              通話機能は管理者が設定後にご利用いただけます
+            </div>
+          ) : (
+            <button
+              onClick={handleCall}
+              disabled={calling}
+              className="w-full h-16 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60 text-white text-lg font-bold rounded-xl flex items-center justify-center gap-3 transition-all duration-200"
+            >
+              {calling ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  接続中...
+                </>
+              ) : (
+                <>
+                  📹 フロントを呼び出す
+                </>
+              )}
+            </button>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

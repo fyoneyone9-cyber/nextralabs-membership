@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
-  PenLine, MessageSquare, Building, Lock, Monitor, Video, Car, FileBarChart,
+  PenLine, MessageSquare, Building, Lock, Video, Car, FileBarChart,
   Settings, Database, LogOut, ArrowRight, Search, RefreshCw,
   Download, Plus, Edit3, BookText, Wrench, Plane, MapPin, Sparkles, ExternalLink, Trash2
 } from 'lucide-react'
@@ -22,7 +22,6 @@ const MENU_ITEMS = [
   { id: 'property',   label: '物件',              icon: Building,     href: '/dms?tab=property' },
   { id: 'room-list',  label: '部屋一覧',          icon: Building,     href: '/dms?tab=room-list' },
   { id: 'lock-list',  label: '錠デバイス一覧',     icon: Lock,         href: '/dms/lock-list' },
-  { id: 'terminals',  label: 'チェックイン端末',   icon: Monitor,      href: '/dms/terminals' },
   { id: 'calls',      label: '通話一覧（フロント）',icon: Video,        href: '/dms/calls' },
   { id: 'cars',       label: '車両情報',           icon: Car,          href: '/dms/cars' },
   { id: 'reports',    label: '宿泊実績定期報告',   icon: FileBarChart, href: '/dms/reports' },
@@ -1207,6 +1206,7 @@ export default function DmsEngine() {
               fields={[
                 { key: 'org_name', label: '施設名', type: 'text', placeholder: '例：ビジネスホテルアップル' },
                 { key: 'org_email', label: '管理者メールアドレス', type: 'text', placeholder: 'admin@example.com' },
+                { key: 'daily_api_key', label: 'Daily.co API Key（通話機能）', type: 'password', placeholder: 'xxxxxxxxxxxxxxxxxxxxxxxxx' },
               ]}
               storagePrefix="dms_org"
             />
