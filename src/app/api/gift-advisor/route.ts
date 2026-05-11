@@ -109,11 +109,12 @@ ${itemSummary || '（商品データなし）'}
 }
 
 ## 絶対に守るルール
-1. JSONのみ出力すること（```jsonや説明文不要）
+1. JSONのみ出力すること（\`\`\`jsonや説明文不要）
 2. messageTemplateは${recipientRelation}の関係性に合った文体・敬語レベルで書くこと
 3. 除外条件に該当する商品は絶対に推薦しないこと
 4. mannerScoreは1〜5の整数で出力すること
-5. reasonは必ず3つ書くこと`
+5. reasonは必ず3つ書くこと
+`
 
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
