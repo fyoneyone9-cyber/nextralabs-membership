@@ -129,6 +129,260 @@ function SettingsPanel({ title, icon, fields, storagePrefix }: {
   )
 }
 
+// PMS別APIキー取得ガイド
+const PMS_GUIDE: Record<string, { url: string; label: string; steps: string[] }> = {
+  'Staysee': {
+    url: 'https://app.staysee.jp/settings/api',
+    label: 'Staysee 管理画面',
+    steps: [
+      'Staysee管理画面にログイン',
+      '右上のアカウントメニュー → 「設定」を開く',
+      '「API設定」タブを選択',
+      '「APIキーを生成」ボタンをクリック',
+      '表示されたAPIキーをコピーして上のフォームに貼り付け',
+    ],
+  },
+  'エアホスト': {
+    url: 'https://dashboard.airhost.co.jp/settings',
+    label: 'エアホスト ダッシュボード',
+    steps: [
+      'エアホスト ダッシュボードにログイン',
+      '左メニュー「設定」→「API連携」を開く',
+      '「APIキー発行」をクリック',
+      '発行されたAPIキーをコピーして貼り付け',
+    ],
+  },
+  'Cloudbeds': {
+    url: 'https://hotels.cloudbeds.com/api/v1.1/docs',
+    label: 'Cloudbeds APIドキュメント',
+    steps: [
+      'Cloudbeds管理画面にログイン',
+      '右上アカウント → 「Apps & Integrations」',
+      '「API Keys」セクション → 「Generate New Key」',
+      'スコープ（予約・ゲスト）にチェックを入れて生成',
+      '表示されたAPIキーをコピーして貼り付け',
+    ],
+  },
+  'Beds24': {
+    url: 'https://beds24.com/control2.php?pagetype=keychain',
+    label: 'Beds24 API設定',
+    steps: [
+      'Beds24管理画面にログイン',
+      '「Account」→「Apps & Integrations」→「API Keys」',
+      '「Add Key」で新しいAPIキーを作成',
+      '権限を「Read Bookings」に設定して保存',
+      'キーをコピーして貼り付け',
+    ],
+  },
+  'イージー会計': {
+    url: 'https://easy-kaikei.jp/',
+    label: 'イージー会計サポート',
+    steps: [
+      'イージー会計サポートページにてAPI連携申請が必要です',
+      'お問い合わせフォームから「API連携希望」と送信',
+      'サポートからAPIキーが発行されメールで届きます',
+      '届いたAPIキーをコピーして貼り付け',
+    ],
+  },
+  'ねっぱん！': {
+    url: 'https://www.neppan.com/',
+    label: 'ねっぱん！管理画面',
+    steps: [
+      'ねっぱん！管理画面にログイン',
+      '「システム設定」→「外部連携設定」を開く',
+      '「APIキー」欄に表示されているキーをコピー',
+      '上のフォームに貼り付けて保存',
+    ],
+  },
+  'Hostaway': {
+    url: 'https://dashboard.hostaway.com/settings/api',
+    label: 'Hostaway API設定',
+    steps: [
+      'Hostaway ダッシュボードにログイン',
+      '左メニュー「Settings」→「API Access」',
+      '「Generate API Key」をクリック',
+      '用途を入力してキーを生成',
+      'コピーして上のフォームに貼り付け',
+    ],
+  },
+  'apaleo': {
+    url: 'https://apaleo.com/developers',
+    label: 'apaleo Developer Portal',
+    steps: [
+      'apaleo Developer Portalにアクセス',
+      '「My Applications」→「Create Application」',
+      'Client IDとClient Secretが発行されます',
+      '※apaleoはOAuth2認証のため、サポートへ連携申請をお願いします',
+    ],
+  },
+  'Little Hotelier': {
+    url: 'https://www.littlehotelier.com/',
+    label: 'Little Hotelier サポート',
+    steps: [
+      'Little Hotelier管理画面にログイン',
+      '「Settings」→「Connectivity」→「Channel Manager API」',
+      'APIキーが表示されるのでコピー',
+      '上のフォームに貼り付けて保存',
+    ],
+  },
+  'Oracle Opera': {
+    url: 'https://docs.oracle.com/en/industries/hospitality/opera-cloud/',
+    label: 'Oracle Opera Cloud ドキュメント',
+    steps: [
+      'Oracle Opera Cloud管理者権限でログイン',
+      '「Administration」→「Interfaces」→「OXI Configuration」',
+      'API Credentialsを生成してコピー',
+      '※エンタープライズ向けのため、Oracleサポートへの連絡を推奨します',
+    ],
+  },
+}
+
+function PmsSettingsPanel({ onGoCheckin }: { onGoCheckin: () => void }) {
+  const [pmsType, setPmsType] = React.useState('')
+  const [apiKey, setApiKey] = React.useState('')
+  const [showKey, setShowKey] = React.useState(false)
+  const [saved, setSaved] = React.useState(false)
+
+  React.useEffect(() => {
+    setPmsType(localStorage.getItem('dms_pms_pms_type') || '')
+    setApiKey(localStorage.getItem('dms_pms_pms_api_key') || '')
+  }, [])
+
+  const save = () => {
+    localStorage.setItem('dms_pms_pms_type', pmsType)
+    localStorage.setItem('dms_pms_pms_api_key', apiKey)
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2000)
+  }
+
+  const guide = pmsType ? PMS_GUIDE[pmsType] : null
+  const isLocal = pmsType === 'PMS未接続（ローカル）'
+
+  return (
+    <div className="space-y-4 max-w-2xl">
+      {/* PMS選択 + APIキー入力 */}
+      <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-6 space-y-5">
+        <div className="flex items-center gap-2 text-sm font-semibold text-slate-200 border-b border-white/5 pb-4">
+          <Settings size={15} style={{ color: '#10b981' }} /> PMSシステム設定
+        </div>
+
+        {/* PMSシステム選択 */}
+        <div className="space-y-1.5">
+          <label className="text-xs font-medium text-slate-500">PMSシステム</label>
+          <select
+            value={pmsType}
+            onChange={e => setPmsType(e.target.value)}
+            className={inputCls}
+            style={{ ...inputStyle, appearance: 'none' as any }}
+          >
+            <option value="">PMSを選択...</option>
+            {['Staysee','エアホスト','Cloudbeds','Beds24','イージー会計','ねっぱん！',
+              'apaleo','Hostaway','Little Hotelier','Oracle Opera','PMS未接続（ローカル）'
+            ].map(o => <option key={o}>{o}</option>)}
+          </select>
+        </div>
+
+        {/* APIキー入力（ローカルモードは非表示） */}
+        {!isLocal && (
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-slate-500">PMS API KEY</label>
+            <div className="relative">
+              <input
+                type={showKey ? 'text' : 'password'}
+                value={apiKey}
+                onChange={e => setApiKey(e.target.value)}
+                placeholder="PMS APIキーを入力"
+                className={`${inputCls} pr-10 font-mono`}
+                style={{ ...inputStyle, color: '#10b981' }}
+                onFocus={e => (e.target.style.borderColor = '#10b981')}
+                onBlur={e => (e.target.style.borderColor = '#334155')}
+              />
+              <button
+                type="button"
+                onClick={() => setShowKey(v => !v)}
+                className="absolute right-3 top-2.5 text-slate-500 hover:text-slate-300"
+              >
+                {showKey ? '🙈' : '👁'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        <button
+          onClick={save}
+          className="h-10 px-6 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all"
+          style={{ background: saved ? '#059669' : '#10b981', color: '#fff' }}
+        >
+          {saved ? '✓ 保存しました' : '設定を保存'}
+        </button>
+      </div>
+
+      {/* ローカルモード説明 */}
+      {isLocal && (
+        <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-2">
+          <p className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+            <span style={{ color: '#10b981' }}>●</span> ローカルモード（PMS未接続）
+          </p>
+          <p className="text-[11px] text-slate-500 leading-relaxed">
+            APIキーは不要です。予約データを手動で入力してローカル管理できます。<br />
+            後からPMSを追加したい場合は、上のプルダウンから切り替えてください。
+          </p>
+        </div>
+      )}
+
+      {/* PMSごとのAPIキー取得ガイド */}
+      {guide && (
+        <div className="bg-[#0d0f1a] border border-emerald-500/20 rounded-2xl p-5 space-y-4">
+          <p className="text-xs font-semibold text-emerald-400 flex items-center gap-2">
+            <ExternalLink size={13} /> {pmsType} のAPIキー取得方法
+          </p>
+          <ol className="space-y-2">
+            {guide.steps.map((step, i) => (
+              <li key={i} className="flex items-start gap-3">
+                <span
+                  className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
+                  style={{ background: '#10b981', color: '#fff' }}
+                >
+                  {i + 1}
+                </span>
+                <span className="text-[12px] text-slate-400 leading-relaxed">{step}</span>
+              </li>
+            ))}
+          </ol>
+          <a
+            href={guide.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 h-9 px-4 rounded-lg text-xs font-semibold transition-all w-fit"
+            style={{ background: 'rgba(16,185,129,0.12)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)' }}
+          >
+            <ExternalLink size={12} /> {guide.label}を開く
+          </a>
+        </div>
+      )}
+
+      {/* チェックイン一覧へのリンク */}
+      <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
+        <p className="text-xs font-semibold text-slate-400 flex items-center gap-2">
+          <PenLine size={13} style={{ color: '#10b981' }} />
+          PMS設定をチェックイン一覧に反映
+        </p>
+        <p className="text-[11px] text-slate-600 leading-relaxed">
+          設定したPMSの予約データを今日・明日・日付指定でフィルターして確認できます。<br />
+          <span className="text-slate-500">PMS未接続（ローカル）でも、手動入力した予約をローカル管理できます。</span>
+        </p>
+        <button
+          onClick={onGoCheckin}
+          className="flex items-center gap-2 h-9 px-5 rounded-lg text-xs font-semibold transition-all"
+          style={{ background: '#10b981', color: '#fff' }}
+        >
+          <PenLine size={13} /> チェックイン一覧で確認 <ArrowRight size={13} />
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export default function DmsEngine() {
   const [mounted, setMounted] = useState(false)
   const [activeTab, setActiveTab] = useState('checkin')
@@ -675,42 +929,7 @@ export default function DmsEngine() {
           )}
 
           {/* PMS設定 */}
-          {activeTab === 'pms-settings' && (
-            <div className="space-y-4 max-w-2xl">
-              <SettingsPanel
-                title="PMSシステム設定"
-                icon={<Settings size={15} style={{ color: '#10b981' }} />}
-                fields={[
-                  { key: 'pms_type', label: 'PMSシステム', type: 'select', options: [
-                    'Staysee','エアホスト','Cloudbeds','Beds24',
-                    'イージー会計','BETS24','ねっぱん！',
-                    'apaleo','Hostaway','Little Hotelier','Oracle Opera',
-                    'PMS未接続（ローカル）'
-                  ], placeholder: 'PMSを選択...' },
-                  { key: 'pms_api_key', label: 'PMS API KEY', type: 'password', placeholder: 'PMS APIキーを入力（ローカルモードは不要）' },
-                ]}
-                storagePrefix="dms_pms"
-              />
-              {/* チェックイン一覧へのリンク（ローカル設定でも対応） */}
-              <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
-                <p className="text-xs font-semibold text-slate-400 flex items-center gap-2">
-                  <PenLine size={13} style={{ color: '#10b981' }} />
-                  PMS設定をチェックイン一覧に反映
-                </p>
-                <p className="text-[11px] text-slate-600 leading-relaxed">
-                  設定したPMSの予約データを今日・明日・日付指定でフィルターして確認できます。<br />
-                  <span className="text-slate-500">PMS未接続（ローカル）でも、手動入力した予約をローカル管理できます。</span>
-                </p>
-                <button
-                  onClick={() => setActiveTab('checkin')}
-                  className="flex items-center gap-2 h-9 px-5 rounded-lg text-xs font-semibold transition-all"
-                  style={{ background: '#10b981', color: '#fff' }}
-                >
-                  <PenLine size={13} /> チェックイン一覧で確認 <ArrowRight size={13} />
-                </button>
-              </div>
-            </div>
-          )}
+          {activeTab === 'pms-settings' && <PmsSettingsPanel onGoCheckin={() => setActiveTab('checkin')} />}
 
           {/* 組織設定 */}
           {activeTab === 'org-settings' && (
