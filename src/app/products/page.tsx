@@ -159,10 +159,13 @@ function ProductsList() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
 
+  // 一般ユーザー向けツール（adminOnlyを除外）
+  const PUBLIC_TOOLS = TOOLS.filter(t => !t.adminOnly)
+
   useEffect(() => {
     setMounted(true)
-    setRandomFree(TOOLS.filter(t => t.plan === '無料').sort(() => 0.5 - Math.random()).slice(0, 3))
-    setPickupTools([...TOOLS].sort(() => 0.5 - Math.random()).slice(0, 3))
+    setRandomFree(PUBLIC_TOOLS.filter(t => t.plan === '無料').sort(() => 0.5 - Math.random()).slice(0, 3))
+    setPickupTools([...PUBLIC_TOOLS].sort(() => 0.5 - Math.random()).slice(0, 3))
 
     const loadFavs = async () => {
       const { data: { user } } = await supabase.auth.getUser()
@@ -220,7 +223,7 @@ function ProductsList() {
               <cat.icon className="w-5 h-5 text-slate-400" />
               <h2 className="text-lg md:text-xl font-semibold text-white tracking-tight">{cat.title}</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{TOOLS.filter(t => t.cat === cat.id).map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} />)}</div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{PUBLIC_TOOLS.filter(t => t.cat === cat.id).map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} />)}</div>
           </section>
         ))}
       </div>

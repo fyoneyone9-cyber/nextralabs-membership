@@ -3,7 +3,8 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Users, ShieldCheck, TrendingUp, MessageSquare, Zap, Cpu } from 'lucide-react'
+import Link from 'next/link'
+import { Users, ShieldCheck, TrendingUp, MessageSquare, Zap, Cpu, Activity } from 'lucide-react'
 import ApiStatusBoard from '@/components/admin/ApiStatusBoard'
 import AnalyticsPanel from '@/components/admin/AnalyticsPanel'
 
@@ -63,7 +64,14 @@ export default async function AdminPage() {
             <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-white">管理者ダッシュボード</h1>
             <p className="text-emerald-400 font-semibold text-xs mt-2">NextraLabs 管理者専用ページ</p>
           </div>
-          <Badge className="bg-emerald-500 text-slate-950 font-bold px-4 py-1.5 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)]">管理者専用</Badge>
+          <div className="flex items-center gap-3">
+            <Link href="/products/vercel-monitor/app">
+              <Button variant="outline" className="h-9 gap-2 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500 text-sm font-semibold rounded-lg transition-all">
+                <Activity className="h-4 w-4" /> Vercel Fleet Monitor
+              </Button>
+            </Link>
+            <Badge className="bg-emerald-500 text-slate-950 font-bold px-4 py-1.5 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)]">管理者専用</Badge>
+          </div>
         </div>
 
         {/* Stats Grid */}
