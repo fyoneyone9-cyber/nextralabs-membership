@@ -11,7 +11,7 @@ import {
   FileText, ArrowRight, Network, Store, 
   ClipboardCheck, ShieldCheck, Wallet, Home, 
   Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, BookOpen, 
-  Sprout, Zap, Building2, Database, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils, Plane, Activity, CalendarHeart, CalendarCheck
+  Sprout, Zap, Building2, Database, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils, Plane, Activity, CalendarHeart, CalendarCheck, Scissors
 } from 'lucide-react'
 
 // 管理者メール（このアドレスでログインしているユーザーのみ管理者リンクが見える）
@@ -51,6 +51,7 @@ const TOOLS = [
   // ── 婚活・結婚相談所ジャンル ──
   { id: 'konkatsu-scheduler/app', cat: 'konkatsu', title: 'AI即アポ調整くん', sub: 'Google Calendar連携でお見合い日程を自動確定', icon: CalendarCheck, plan: 'スタンダード', lpUrl: '/products/konkatsu-scheduler' },
   { id: 'omiai-room/app', cat: 'konkatsu', title: 'オンラインお見合い盛り上げシステム', sub: 'BGM×AIトークサジェストで気まずい沈黙を解消', icon: HeartHandshake, plan: 'お見積もり', lpUrl: '/products/omiai-room' },
+  { id: 'beauty-boost/app', cat: 'konkatsu', title: 'お見合い垢抜けブースト', sub: '会場周辺の美容院をAI検索 → 予約へ直接案内', icon: Scissors, plan: 'スタンダード', lpUrl: '/products/beauty-boost' },
 ]
 
 const CATEGORIES = [
