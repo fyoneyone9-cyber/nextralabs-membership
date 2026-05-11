@@ -1,4 +1,5 @@
-'use client'
+﻿'use client'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'

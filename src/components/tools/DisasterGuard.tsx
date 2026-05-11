@@ -1,4 +1,5 @@
-'use client'
+﻿'use client'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'

@@ -1,4 +1,5 @@
-'use client'
+﻿'use client'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Sprout, Upload, Camera, Droplets, Sun, Zap, RotateCcw, CheckCircle2, AlertTriangle, Loader2, ImageIcon, Heart, SwitchCamera, X } from 'lucide-react'

@@ -5,6 +5,7 @@
 // Locked: 2026-05-10
 // ============================================================
 'use client'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 import React, { useState, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
