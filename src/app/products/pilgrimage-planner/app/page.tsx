@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
@@ -41,3 +41,4 @@ export default function PilgrimagePlannerPage() {
     </AccessGate>
   )
 }
+

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useRouter } from 'next/navigation'
 import React, { useState, useCallback, useEffect } from 'react'
 import { Loader2, CheckCircle2, Repeat, Download, Video, ImageIcon, FileText, Upload } from 'lucide-react'
@@ -282,3 +282,4 @@ export default function UniversalConverterApp() {
     </div>
   )
 }
+

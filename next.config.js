@@ -12,6 +12,16 @@ const nextConfig = {
   // ✅ SEO & セキュリティヘッダー
   async headers() {
     return [
+      // /products/xxx/app はログイン必須のため noindex
+      {
+        source: '/products/:path*/app',
+        headers: [
+          {
+            key: 'X-Robots-Tag',
+            value: 'noindex, nofollow',
+          },
+        ],
+      },
       {
         source: '/(.*)',
         headers: [

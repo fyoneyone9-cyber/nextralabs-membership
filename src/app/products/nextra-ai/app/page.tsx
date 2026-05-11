@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
 
@@ -132,3 +132,4 @@ export default function NextraAiKioskPage() {
     </div>
   )
 }
+

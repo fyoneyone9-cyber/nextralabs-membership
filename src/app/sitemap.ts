@@ -74,13 +74,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }))
 
-  // 各製品のアプリページ
-  const productAppEntries: MetadataRoute.Sitemap = PRODUCTS.map((id) => ({
-    url: `${BASE}/products/${id}/app`,
-    lastModified: now,
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }))
+  // /app ページはログイン必須のため意図的にサイトマップから除外（noindex設定済み）
 
-  return [...staticEntries, ...productLpEntries, ...productAppEntries]
+  return [...staticEntries, ...productLpEntries]
 }

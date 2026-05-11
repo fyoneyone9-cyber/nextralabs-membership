@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useRouter } from 'next/navigation'
 
 import React, { useState, useCallback, useEffect } from 'react'
@@ -374,3 +374,4 @@ export default function AiExamGeneratorApp() {
     </div>
   )
 }
+

@@ -22,15 +22,49 @@ export interface Room {
   source: 'pms' | 'local'   // データソース
 }
 
-/* ── デフォルトローカルデータ ── */
-const DEFAULT_LOCAL_ROOMS: Room[] = [
-  { id: 'local-1', displayName: '201', roomType: '-', pmsRoomId: '1', capacity: 2,   floor: '2F', lockDeviceId: '', lockDeviceName: '（未設定）', tabletId: '', propertyName: 'ビジネスホテルアップル', source: 'local' },
-  { id: 'local-2', displayName: '202', roomType: '-', pmsRoomId: '2', capacity: 2,   floor: '2F', lockDeviceId: '', lockDeviceName: '（未設定）', tabletId: '', propertyName: 'ビジネスホテルアップル', source: 'local' },
-  { id: 'local-3', displayName: '301', roomType: '-', pmsRoomId: '3', capacity: 2,   floor: '3F', lockDeviceId: '', lockDeviceName: '（未設定）', tabletId: '', propertyName: 'ビジネスホテルアップル', source: 'local' },
-  { id: 'local-4', displayName: '302', roomType: '-', pmsRoomId: '4', capacity: 2,   floor: '3F', lockDeviceId: '', lockDeviceName: '（未設定）', tabletId: '', propertyName: 'ビジネスホテルアップル', source: 'local' },
-  { id: 'local-5', displayName: '401', roomType: '-', pmsRoomId: '5', capacity: 4,   floor: '4F', lockDeviceId: '', lockDeviceName: '（未設定）', tabletId: '', propertyName: 'ビジネスホテルアップル', source: 'local' },
-]
-const STORAGE_KEY = 'nextra_dms_rooms'
+import { createClient } from '@/lib/supabase/client'
+
+/* ── Supabase helpers ── */
+const supabase = createClient()
+
+async function getUserId(): Promise<string | null> {
+  const { data: { user } } = await supabase.auth.getUser()
+  return user?.id ?? null
+}
+
+function toDbRow(r: Room, userId: string) {
+  return {
+    id: r.id,
+    user_id: userId,
+    display_name: r.displayName,
+    room_type: r.roomType,
+    pms_room_id: r.pmsRoomId,
+    capacity: r.capacity,
+    floor: r.floor,
+    lock_device_id: r.lockDeviceId,
+    lock_device_name: r.lockDeviceName,
+    tablet_id: r.tabletId,
+    property_name: r.propertyName,
+    source: r.source,
+    updated_at: new Date().toISOString(),
+  }
+}
+
+function fromDbRow(row: Record<string, unknown>): Room {
+  return {
+    id: row.id as string,
+    displayName: row.display_name as string,
+    roomType: (row.room_type as string) || '-',
+    pmsRoomId: (row.pms_room_id as string) || '',
+    capacity: (row.capacity as number | null) ?? null,
+    floor: (row.floor as string) || '-',
+    lockDeviceId: (row.lock_device_id as string) || '',
+    lockDeviceName: (row.lock_device_name as string) || '（未設定）',
+    tabletId: (row.tablet_id as string) || '',
+    propertyName: (row.property_name as string) || '',
+    source: (row.source as 'pms' | 'local') || 'local',
+  }
+}
 
 /* ══════════ 部屋編集モーダル ══════════ */
 function RoomEditModal({
@@ -206,32 +240,60 @@ export default function RoomListContent({
   const [syncMsg, setSyncMsg] = useState<{ ok: boolean; text: string } | null>(null)
   const [confirmTarget, setConfirmTarget] = useState<Room | null>(null)
 
-  /* ── ローカルデータ読み込み ── */
-  const loadLocal = useCallback((): Room[] => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY)
-      if (saved) return JSON.parse(saved)
-    } catch { /* ignore */ }
-    return DEFAULT_LOCAL_ROOMS
+  /* ── Supabase: 部屋一覧取得 ── */
+  const loadFromCloud = useCallback(async (): Promise<Room[]> => {
+    const userId = await getUserId()
+    if (!userId) return []
+    const { data, error } = await supabase
+      .from('dms_rooms')
+      .select('*')
+      .eq('user_id', userId)
+      .order('display_name')
+    if (error) { console.error('dms_rooms load error:', error); return [] }
+    return (data ?? []).map(fromDbRow)
   }, [])
 
-  const saveLocal = (data: Room[]) => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
-    } catch { /* ignore */ }
-  }
+  /* ── Supabase: 部屋upsert ── */
+  const saveToCloud = useCallback(async (room: Room) => {
+    const userId = await getUserId()
+    if (!userId) return
+    const { error } = await supabase
+      .from('dms_rooms')
+      .upsert(toDbRow(room, userId), { onConflict: 'id' })
+    if (error) console.error('dms_rooms save error:', error)
+  }, [])
 
-  /* ── PMS（Staysee）から部屋一覧を取得 ── */
+  /* ── Supabase: 部屋削除 ── */
+  const deleteFromCloud = useCallback(async (id: string) => {
+    const { error } = await supabase
+      .from('dms_rooms')
+      .delete()
+      .eq('id', id)
+    if (error) console.error('dms_rooms delete error:', error)
+  }, [])
+
+  /* ── PMS同期（Staysee → Supabase） ── */
   const syncFromPms = useCallback(async () => {
     setSyncing(true)
     setSyncMsg(null)
     try {
-      const pmsConfig = (() => {
-        try { return JSON.parse(localStorage.getItem('nextra_ai_pms_config') || '{}') } catch { return {} }
-      })()
-      const pmsApiKey: string = pmsConfig.fields?.apiKey
-        || localStorage.getItem('dms_pms_pms_api_key')
-        || ''
+      const userId = await getUserId()
+      // PMS設定はSupabaseのdms_settingsから取得（fallback: localStorage）
+      let pmsApiKey = ''
+      if (userId) {
+        const { data: cfg } = await supabase
+          .from('dms_settings')
+          .select('pms_api_key')
+          .eq('user_id', userId)
+          .single()
+        pmsApiKey = cfg?.pms_api_key || ''
+      }
+      if (!pmsApiKey) {
+        try {
+          const local = JSON.parse(localStorage.getItem('nextra_ai_pms_config') || '{}')
+          pmsApiKey = local.fields?.apiKey || ''
+        } catch { /* ignore */ }
+      }
 
       const res = await fetch('/api/nextra-ai/rooms', {
         headers: pmsApiKey ? { 'x-pms-api-key': pmsApiKey } : {},
@@ -254,59 +316,62 @@ export default function RoomListContent({
           propertyName:   r.property_name || '',
           source:         'pms' as const,
         }))
-        // ローカルデータとマージ（ローカルのみの部屋はそのまま保持）
-        const localOnly = loadLocal().filter(l => l.source === 'local')
-        const merged = [...pmsRooms, ...localOnly]
-        setRooms(merged)
-        saveLocal(merged)
+        // 全PMSデータをクラウドにupsert
+        if (userId) {
+          await supabase.from('dms_rooms')
+            .upsert(pmsRooms.map(r => toDbRow(r, userId)), { onConflict: 'id' })
+        }
+        // 再取得してstateを更新
+        const refreshed = await loadFromCloud()
+        setRooms(refreshed)
         setSyncMsg({ ok: true, text: `PMSから${pmsRooms.length}室を同期しました` })
       } else {
-        setSyncMsg({ ok: false, text: data.error || 'PMS同期に失敗しました（ローカルデータを使用中）' })
+        setSyncMsg({ ok: false, text: data.error || 'PMS同期に失敗しました' })
       }
     } catch {
-      setSyncMsg({ ok: false, text: 'PMS接続に失敗しました（ローカルデータを使用中）' })
+      setSyncMsg({ ok: false, text: 'PMS接続に失敗しました' })
     } finally {
       setSyncing(false)
     }
-  }, [loadLocal])
+  }, [loadFromCloud])
 
   /* ── 初期ロード ── */
   useEffect(() => {
-    const local = loadLocal()
-    setRooms(local)
+    ;(async () => {
+      const cloudRooms = await loadFromCloud()
+      setRooms(cloudRooms)
 
-    // PMS設定があればPMSモードとして自動同期
-    try {
-      const cfg = JSON.parse(localStorage.getItem('nextra_ai_pms_config') || '{}')
-      const dmsCfg = localStorage.getItem('dms_pms_pms_type') || ''
-      const hasPms = cfg.pms && cfg.pms !== 'none' && cfg.pms !== 'offline'
-        || (dmsCfg && !dmsCfg.includes('ローカル') && !dmsCfg.includes('未接続'))
-      setPmsMode(hasPms)
-    } catch { /* ignore */ }
-
-    setLoading(false)
-  }, [loadLocal])
+      // PMS設定確認（Supabase優先）
+      const userId = await getUserId()
+      if (userId) {
+        const { data: cfg } = await supabase
+          .from('dms_settings')
+          .select('pms_type, pms_api_key')
+          .eq('user_id', userId)
+          .single()
+        const hasPms = !!(cfg?.pms_type && cfg.pms_type !== 'none' && cfg.pms_api_key)
+        setPmsMode(hasPms)
+      }
+      setLoading(false)
+    })()
+  }, [loadFromCloud])
 
   /* ── 部屋保存（追加・更新） ── */
-  const handleSaveRoom = (room: Room) => {
+  const handleSaveRoom = async (room: Room) => {
+    await saveToCloud(room)
     setRooms(prev => {
       const exists = prev.findIndex(r => r.id === room.id)
-      const next = exists >= 0
+      return exists >= 0
         ? prev.map(r => r.id === room.id ? room : r)
         : [...prev, room]
-      saveLocal(next)
-      return next
     })
     setEditingRoom(null)
   }
 
   /* ── 部屋削除 ── */
-  const handleDelete = (id: string) => {
-    setRooms(prev => {
-      const next = prev.filter(r => r.id !== id)
-      saveLocal(next)
-      return next
-    })
+  const handleDelete = async (id: string) => {
+    await deleteFromCloud(id)
+    setRooms(prev => prev.filter(r => r.id !== id))
   }
 
   /* ── フィルタリング ── */
@@ -387,7 +452,7 @@ export default function RoomListContent({
             <p className="text-amber-400 font-semibold">ローカル管理モードで動作中</p>
             <p className="text-slate-500 mt-0.5">
               PMS設定でAPIキーを保存すると、PMSから部屋情報を自動同期できます。
-              現在はlocalStorageに保存した部屋データを使用しています。
+              部屋データはクラウド（Supabase）に保存されています。
             </p>
           </div>
         </div>
@@ -519,7 +584,7 @@ export default function RoomListContent({
       <DeleteConfirmDialog
         open={confirmTarget !== null}
         title={confirmTarget ? `「${confirmTarget.displayName}」を削除しますか？` : ''}
-        description="この部屋のデータをローカルから削除します。PMS連携データは影響を受けません。"
+        description="この部屋のデータをクラウドから削除します。PMS連携データは影響を受けません。"
         onConfirm={() => {
           if (!confirmTarget) return
           handleDelete(confirmTarget.id)

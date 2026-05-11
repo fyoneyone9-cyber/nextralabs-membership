@@ -1579,3 +1579,4 @@ export default function AISelectShopPage() {
 
   return <NoSSR onBack={handleBack} />
 }
+

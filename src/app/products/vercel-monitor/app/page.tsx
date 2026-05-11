@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { AccessGate } from '@/components/tools/AccessGate'
 import dynamic from 'next/dynamic'
 
@@ -15,3 +15,4 @@ export default function VercelMonitorAppPage() {
     </AccessGate>
   )
 }
+
