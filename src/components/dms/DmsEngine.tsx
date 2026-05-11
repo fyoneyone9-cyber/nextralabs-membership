@@ -598,6 +598,8 @@ function PmsSettingsPanel({ onGoCheckin }: { onGoCheckin: () => void }) {
 interface Property {
   id: string
   name: string
+  pmsType?: string       // 例: 'staysee' | 'airhost' | '' (空=ローカル)
+  pmsConnected?: boolean // PMS接続テスト済みか
 }
 
 const PROPERTIES_KEY = 'dms_properties'
@@ -1148,47 +1150,88 @@ export default function DmsEngine() {
           )}
 
           {/* 物件一覧 */}
-          {activeTab === 'property' && propView === 'list' && (
-            <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl overflow-hidden shadow-xl">
-              <table className="w-full text-left text-xs">
-                <thead className="border-b border-white/5 text-slate-500 font-semibold uppercase tracking-wider">
-                  <tr>
-                    <th className="px-5 py-3">物件名</th>
-                    <th className="px-5 py-3 text-right">操作</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
-                  {properties.length === 0 && (
-                    <tr>
-                      <td colSpan={2} className="px-5 py-8 text-center text-slate-500 text-xs">物件がまだ登録されていません</td>
-                    </tr>
-                  )}
-                  {properties.map((prop) => (
-                    <tr key={prop.id} className="hover:bg-white/5 transition-colors">
-                      <td className="px-5 py-4 font-semibold text-slate-200">{prop.name}</td>
-                      <td className="px-5 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => setEditingProperty(prop)}
-                            className="w-9 h-9 bg-emerald-600 hover:bg-emerald-500 rounded-xl flex items-center justify-center text-white transition-all"
-                          >
-                            <Edit3 size={15} />
-                          </button>
-                          <button
-                            onClick={() => setConfirmDeleteProperty(prop.id)}
-                            className="w-7 h-7 rounded-lg flex items-center justify-center ml-2 transition-all"
-                            style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)' }}
-                          >
-                            <Trash2 size={12} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+          {activeTab === 'property' && propView === 'list' && (() => {
+            // PMS接続状況をlocalStorageから読む
+            const pmsType = typeof window !== 'undefined' ? localStorage.getItem('dms_pms_pms_type') || '' : ''
+            const pmsApiKey = typeof window !== 'undefined' ? localStorage.getItem('dms_pms_pms_api_key') || '' : ''
+            const isPmsConnected = !!pmsApiKey.trim() && pmsType && pmsType !== 'PMS未接続（ローカル）'
+
+            return (
+              <div className="space-y-3">
+                {/* PMS接続状況サマリー */}
+                <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-xs"
+                  style={{
+                    background: isPmsConnected ? 'rgba(16,185,129,0.06)' : 'rgba(100,116,139,0.06)',
+                    border: isPmsConnected ? '1px solid rgba(16,185,129,0.25)' : '1px solid #1e293b',
+                  }}>
+                  <span className={`w-2 h-2 rounded-full shrink-0 ${isPmsConnected ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`} />
+                  {isPmsConnected
+                    ? <><span className="font-semibold text-emerald-400">{pmsType} 接続済み</span><span className="text-slate-500 ml-1">— 予約データをPMSからリアルタイム取得中</span></>
+                    : <><span className="font-semibold text-slate-500">PMS未接続（ローカルモード）</span><span className="text-slate-600 ml-1">— 予約データはローカル保存のみ。PMS設定から連携できます。</span></>
+                  }
+                </div>
+
+                <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+                  <table className="w-full text-left text-xs">
+                    <thead className="border-b border-white/5 text-slate-500 font-semibold uppercase tracking-wider">
+                      <tr>
+                        <th className="px-5 py-3">物件名</th>
+                        <th className="px-5 py-3">データソース</th>
+                        <th className="px-5 py-3 text-right">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {properties.length === 0 && (
+                        <tr>
+                          <td colSpan={3} className="px-5 py-8 text-center text-slate-500 text-xs">物件がまだ登録されていません</td>
+                        </tr>
+                      )}
+                      {properties.map((prop) => {
+                        const propPms = prop.pmsType || (isPmsConnected ? pmsType : '')
+                        const isLocal = !propPms || propPms === 'PMS未接続（ローカル）'
+                        return (
+                          <tr key={prop.id} className="hover:bg-white/5 transition-colors">
+                            <td className="px-5 py-4 font-semibold text-slate-200">{prop.name}</td>
+                            <td className="px-5 py-4">
+                              {isLocal ? (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold"
+                                  style={{ background: 'rgba(100,116,139,0.12)', color: '#64748b', border: '1px solid #1e293b' }}>
+                                  📴 ローカル保存
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold"
+                                  style={{ background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.3)' }}>
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                  {propPms} 連携
+                                </span>
+                              )}
+                            </td>
+                            <td className="px-5 py-4 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <button
+                                  onClick={() => setEditingProperty(prop)}
+                                  className="w-9 h-9 bg-emerald-600 hover:bg-emerald-500 rounded-xl flex items-center justify-center text-white transition-all"
+                                >
+                                  <Edit3 size={15} />
+                                </button>
+                                <button
+                                  onClick={() => setConfirmDeleteProperty(prop.id)}
+                                  className="w-7 h-7 rounded-lg flex items-center justify-center ml-2 transition-all"
+                                  style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)' }}
+                                >
+                                  <Trash2 size={12} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )
+          })()}
 
           {/* ロック設定 */}
           {activeTab === 'lock-settings' && (
