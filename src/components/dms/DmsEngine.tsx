@@ -758,8 +758,10 @@ export default function DmsEngine() {
     setOrgName(localStorage.getItem('dms_org_org_name') || '')
     setActivePmsType(localStorage.getItem('dms_pms_pms_type') || '')
     fetchStayseeBookings()
+  }, [])
 
-    // Supabase Realtime: フロント呼び出し通知
+  // Supabase Realtime: フロント呼び出し通知（別useEffectで分離）
+  useEffect(() => {
     const sb = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!

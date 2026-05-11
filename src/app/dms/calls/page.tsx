@@ -17,8 +17,8 @@ export default function CallsPage() {
       router.push('/dms/login')
     } else {
       setIsAuth(true)
-      setChecking(false)
     }
+    setChecking(false)
   }, [router])
 
   if (checking) return (
