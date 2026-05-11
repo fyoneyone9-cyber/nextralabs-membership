@@ -39,9 +39,13 @@ function playNotificationSound() {
 }
 
 export default function CallsEngine() {
-  const [apiKey, setApiKey] = useState('')
+  const [apiKey, setApiKey] = useState(() =>
+    typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY_API) || '' : ''
+  )
   const [showApiKey, setShowApiKey] = useState(false)
-  const [apiKeySaved, setApiKeySaved] = useState(false)
+  const [apiKeySaved, setApiKeySaved] = useState(() =>
+    typeof window !== 'undefined' ? !!localStorage.getItem(STORAGE_KEY_API)?.trim() : false
+  )
   const [callHistory, setCallHistory] = useState<CallRecord[]>([])
   const [creating, setCreating] = useState(false)
   const [error, setError] = useState('')
@@ -51,9 +55,7 @@ export default function CallsEngine() {
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null)
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY_API) || ''
-    setApiKey(stored)
-    setApiKeySaved(!!stored.trim())
+    // 初期値はuseStateの初期化関数で設定済み。ここは履歴のみ読む
     try {
       const hist = JSON.parse(localStorage.getItem(STORAGE_KEY_HISTORY) || '[]')
       setCallHistory(hist)
