@@ -47,6 +47,14 @@ const STANDARD_IDS = [
   'closet-coach',           // ClosetCoach — Gemini
   'comm-coach',             // CommCoach — Gemini
   'evidence-manager',       // エビデンスAIマネージャー — Gemini
+  // 2026-05-11 追加（登録漏れ修正）
+  'gift-advisor',           // AIギフトアドバイザー — Gemini
+  'travel-concierge',       // AI旅行コンシェルジュ — Gemini
+  'pilgrimage-planner',     // 推し活聖地巡礼プランナー — Gemini
+  'kindle-ai-factory',      // Kindle AI ファクトリー — Gemini
+  'repair-parts-finder',    // AI修理パーツ診断くん — Gemini
+  'ai-exam-generator',      // AI問題生成＆苦手分析 — Gemini
+  'konkatsu-scheduler',     // AI婚活スケジューラー — Gemini
 ]
 
 // 🔵 ライト以上（軽めAPIツール）
