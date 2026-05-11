@@ -1,35 +1,36 @@
-'use client'
+﻿'use client'
 import React, { useState, useRef, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { AlertTriangle, Copy, CheckCircle2, ExternalLink, Camera, X, ShoppingBag, Smartphone, Coffee, Shirt, Gamepad2, UtensilsCrossed, Wine, Zap } from 'lucide-react'
 
-// ── プリセット定義 ──────────────────────────────────────────
+// 笏笏 繝励Μ繧ｻ繝・ヨ螳夂ｾｩ 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
 const PRESETS = [
   {
-    category: '衝動買い',
+    category: '陦晏虚雋ｷ縺・,
     color: '#ef4444',
     items: [
-      { label: 'セール品を大量購入',       icon: ShoppingBag,     text: 'セールにつられて必要かどうか分からないものをカートに入れています。「今だけ」という言葉に弱いです。' },
-      { label: 'SNSで見て欲しくなった',   icon: Smartphone,      text: 'InstagramやTikTokで見た商品が気になって購入しようとしています。数分前に見ただけで欲しくなりました。' },
-      { label: 'ゲーム課金したい',         icon: Gamepad2,        text: 'スマホゲームに課金しようとしています。「このアイテムを買えば強くなれる」と感じています。' },
+      { label: '繧ｻ繝ｼ繝ｫ蜩√ｒ螟ｧ驥剰ｳｼ蜈･',       icon: ShoppingBag,     text: '繧ｻ繝ｼ繝ｫ縺ｫ縺､繧峨ｌ縺ｦ蠢・ｦ√°縺ｩ縺・°蛻・°繧峨↑縺・ｂ縺ｮ繧偵き繝ｼ繝医↓蜈･繧後※縺・∪縺吶ゅ御ｻ翫□縺代阪→縺・≧險闡峨↓蠑ｱ縺・〒縺吶・ },
+      { label: 'SNS縺ｧ隕九※谺ｲ縺励￥縺ｪ縺｣縺・,   icon: Smartphone,      text: 'Instagram繧УikTok縺ｧ隕九◆蝠・刀縺梧ｰ励↓縺ｪ縺｣縺ｦ雉ｼ蜈･縺励ｈ縺・→縺励※縺・∪縺吶よ焚蛻・燕縺ｫ隕九◆縺縺代〒谺ｲ縺励￥縺ｪ繧翫∪縺励◆縲・ },
+      { label: '繧ｲ繝ｼ繝隱ｲ驥代＠縺溘＞',         icon: Gamepad2,        text: '繧ｹ繝槭・繧ｲ繝ｼ繝縺ｫ隱ｲ驥代＠繧医≧縺ｨ縺励※縺・∪縺吶ゅ後％縺ｮ繧｢繧､繝・Β繧定ｲｷ縺医・蠑ｷ縺上↑繧後ｋ縲阪→諢溘§縺ｦ縺・∪縺吶・ },
     ],
   },
   {
-    category: '食費・外食',
+    category: '鬟溯ｲｻ繝ｻ螟夜｣・,
     color: '#f59e0b',
     items: [
-      { label: 'コンビニで無駄買い',        icon: Coffee,          text: 'コンビニに立ち寄ってスイーツや飲み物を余計に買おうとしています。お腹は空いていません。' },
-      { label: 'デリバリーを頼みたい',      icon: UtensilsCrossed, text: '料理が面倒でフードデリバリーを注文しようとしています。家に食材はあります。' },
-      { label: 'お酒を追加購入',            icon: Wine,            text: 'もうお酒が手元にあるのに、さらに購入しようとしています。ストレス発散が目的です。' },
+      { label: '繧ｳ繝ｳ繝薙ル縺ｧ辟｡鬧・ｲｷ縺・,        icon: Coffee,          text: '繧ｳ繝ｳ繝薙ル縺ｫ遶九■蟇・▲縺ｦ繧ｹ繧､繝ｼ繝・ｄ鬟ｲ縺ｿ迚ｩ繧剃ｽ呵ｨ医↓雋ｷ縺翫≧縺ｨ縺励※縺・∪縺吶ゅ♀閻ｹ縺ｯ遨ｺ縺・※縺・∪縺帙ｓ縲・ },
+      { label: '繝・Μ繝舌Μ繝ｼ繧帝ｼ縺ｿ縺溘＞',      icon: UtensilsCrossed, text: '譁咏炊縺碁擇蛟偵〒繝輔・繝峨ョ繝ｪ繝舌Μ繝ｼ繧呈ｳｨ譁・＠繧医≧縺ｨ縺励※縺・∪縺吶ょｮｶ縺ｫ鬟滓攝縺ｯ縺ゅｊ縺ｾ縺吶・ },
+      { label: '縺企・繧定ｿｽ蜉雉ｼ蜈･',            icon: Wine,            text: '繧ゅ≧縺企・縺梧焔蜈・↓縺ゅｋ縺ｮ縺ｫ縲√＆繧峨↓雉ｼ蜈･縺励ｈ縺・→縺励※縺・∪縺吶ゅせ繝医Ξ繧ｹ逋ｺ謨｣縺檎岼逧・〒縺吶・ },
     ],
   },
   {
-    category: 'ファッション・ガジェット',
+    category: '繝輔ぃ繝・す繝ｧ繝ｳ繝ｻ繧ｬ繧ｸ繧ｧ繝・ヨ',
     color: '#8b5cf6',
     items: [
-      { label: '洋服をまた買いたい',        icon: Shirt,           text: 'クローゼットがいっぱいなのに新しい服を購入しようとしています。「今の気分に合う服がない」と感じています。' },
-      { label: '新型スマホに機種変したい',  icon: Smartphone,      text: '今のスマホは動いているのに新型に変えたくなっています。スペック差はほぼ気にならないレベルです。' },
-      { label: 'ガジェット・家電を衝動買い', icon: Zap,            text: '特に今困っているわけではないのに、新しいガジェットや家電が欲しくなっています。' },
+      { label: '豢区恪繧偵∪縺溯ｲｷ縺・◆縺・,        icon: Shirt,           text: '繧ｯ繝ｭ繝ｼ繧ｼ繝・ヨ縺後＞縺｣縺ｱ縺・↑縺ｮ縺ｫ譁ｰ縺励＞譛阪ｒ雉ｼ蜈･縺励ｈ縺・→縺励※縺・∪縺吶ゅ御ｻ翫・豌怜・縺ｫ蜷医≧譛阪′縺ｪ縺・阪→諢溘§縺ｦ縺・∪縺吶・ },
+      { label: '譁ｰ蝙九せ繝槭・縺ｫ讖溽ｨｮ螟峨＠縺溘＞',  icon: Smartphone,      text: '莉翫・繧ｹ繝槭・縺ｯ蜍輔＞縺ｦ縺・ｋ縺ｮ縺ｫ譁ｰ蝙九↓螟峨∴縺溘￥縺ｪ縺｣縺ｦ縺・∪縺吶ゅせ繝壹ャ繧ｯ蟾ｮ縺ｯ縺ｻ縺ｼ豌励↓縺ｪ繧峨↑縺・Ξ繝吶Ν縺ｧ縺吶・ },
+      { label: '繧ｬ繧ｸ繧ｧ繝・ヨ繝ｻ螳ｶ髮ｻ繧定｡晏虚雋ｷ縺・, icon: Zap,            text: '迚ｹ縺ｫ莉雁峅縺｣縺ｦ縺・ｋ繧上￠縺ｧ縺ｯ縺ｪ縺・・縺ｫ縲∵眠縺励＞繧ｬ繧ｸ繧ｧ繝・ヨ繧・ｮｶ髮ｻ縺梧ｬｲ縺励￥縺ｪ縺｣縺ｦ縺・∪縺吶・ },
     ],
   },
 ]
@@ -61,7 +62,7 @@ const MasterEngine = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isLimitReached()) {
-      alert("1日の利用制限に達しました。家計防衛のため、続きは明日までお待ちください。");
+      alert("1譌･縺ｮ蛻ｩ逕ｨ蛻ｶ髯舌↓驕斐＠縺ｾ縺励◆縲ょｮｶ險磯亟陦帙・縺溘ａ縲∫ｶ壹″縺ｯ譏取律縺ｾ縺ｧ縺雁ｾ・■縺上□縺輔＞縲・);
       return;
     }
     const file = e.target.files?.[0];
@@ -84,43 +85,43 @@ const MasterEngine = () => {
     }
   };
 
-  const FINAL_PROMPT = `【最優先：添付された画像を解析してください】
-あなたはプロの金融・防犯コンサルタントです。
-今添付した【レシート/明細/商品画像】を隅々まで分析し、以下の【状況メモ】と合わせて、私の無駄遣いを全力で止めてください。
+  const FINAL_PROMPT = `縲先怙蜆ｪ蜈茨ｼ壽ｷｻ莉倥＆繧後◆逕ｻ蜒上ｒ隗｣譫舌＠縺ｦ縺上□縺輔＞縲・
+縺ゅ↑縺溘・繝励Ο縺ｮ驥題檮繝ｻ髦ｲ迥ｯ繧ｳ繝ｳ繧ｵ繝ｫ繧ｿ繝ｳ繝医〒縺吶・
+莉頑ｷｻ莉倥＠縺溘舌Ξ繧ｷ繝ｼ繝・譏守ｴｰ/蝠・刀逕ｻ蜒上代ｒ髫・・∪縺ｧ蛻・梵縺励∽ｻ･荳九・縲千憾豕√Γ繝｢縲代→蜷医ｏ縺帙※縲∫ｧ√・辟｡鬧・▲縺・ｒ蜈ｨ蜉帙〒豁｢繧√※縺上□縺輔＞縲・
 
-【状況メモ】: ${inputText || "（添付画像の内容をメインに解析してください）"}
+縲千憾豕√Γ繝｢縲・ ${inputText || "・域ｷｻ莉倡判蜒上・蜀・ｮｹ繧偵Γ繧､繝ｳ縺ｫ隗｣譫舌＠縺ｦ縺上□縺輔＞・・}
 
-以下の項目で回答してください：
-1. 【リスクスコア】: 0-100で判定（高いほど危険）
-2. 【心理的弱点】: 画像から読み取れる、私が今陥っている「買い物の罠」
-3. 【防衛アドバイス】: 今すぐスマホを置いて、この購入を止めるための具体的な3つのアクション`;
+莉･荳九・鬆・岼縺ｧ蝗樒ｭ斐＠縺ｦ縺上□縺輔＞・・
+1. 縲舌Μ繧ｹ繧ｯ繧ｹ繧ｳ繧｢縲・ 0-100縺ｧ蛻､螳夲ｼ磯ｫ倥＞縺ｻ縺ｩ蜊ｱ髯ｺ・・
+2. 縲仙ｿ・炊逧・ｼｱ轤ｹ縲・ 逕ｻ蜒上°繧芽ｪｭ縺ｿ蜿悶ｌ繧九∫ｧ√′莉企勍縺｣縺ｦ縺・ｋ縲瑚ｲｷ縺・黄縺ｮ鄂縲・
+3. 縲宣亟陦帙い繝峨ヰ繧､繧ｹ縲・ 莉翫☆縺舌せ繝槭・繧堤ｽｮ縺・※縲√％縺ｮ雉ｼ蜈･繧呈ｭ｢繧√ｋ縺溘ａ縺ｮ蜈ｷ菴鍋噪縺ｪ3縺､縺ｮ繧｢繧ｯ繧ｷ繝ｧ繝ｳ`;
 
   if (!isClient) return null;
 
   return (
     <div className="max-w-7xl mx-auto p-3 md:p-10 space-y-6 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left my-2 md:my-4">
 
-      {/* ヘッダー */}
+      {/* 繝倥ャ繝繝ｼ */}
       <div className="text-center space-y-3 md:space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
           <span className="text-xs font-medium text-emerald-400">Psychological Defense Command v7.0-MASTER</span>
         </div>
         <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight leading-[1.15]">
-          AI家計防衛<span className="text-emerald-400">シミュレーター</span>
+          AI螳ｶ險磯亟陦・span className="text-emerald-400">繧ｷ繝溘Η繝ｬ繝ｼ繧ｿ繝ｼ</span>
         </h1>
         <p className="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
-          「また買っちゃった…」を<span className="text-emerald-400 font-semibold">AIが未然に防ぐ</span>心理防衛ツール。<br />
-          レシートや衝動の瞬間を記録して、購入ボタンを押す前に<strong className="text-white">冷静な判断</strong>を取り戻しましょう。
+          縲後∪縺溯ｲｷ縺｣縺｡繧・▲縺溪ｦ縲阪ｒ<span className="text-emerald-400 font-semibold">AI縺梧悴辟ｶ縺ｫ髦ｲ縺・/span>蠢・炊髦ｲ陦帙ヤ繝ｼ繝ｫ縲・br />
+          繝ｬ繧ｷ繝ｼ繝医ｄ陦晏虚縺ｮ迸ｬ髢薙ｒ險倬鹸縺励※縲∬ｳｼ蜈･繝懊ち繝ｳ繧呈款縺吝燕縺ｫ<strong className="text-white">蜀ｷ髱吶↑蛻､譁ｭ</strong>繧貞叙繧頑綾縺励∪縺励ｇ縺・・
         </p>
       </div>
 
-      {/* プリセット */}
+      {/* 繝励Μ繧ｻ繝・ヨ */}
       <div className="bg-[#13141f] border border-white/5 rounded-2xl p-5 md:p-7 space-y-4">
         <div className="flex items-center gap-2">
           <ShoppingBag size={14} className="text-emerald-400" />
-          <p className="text-xs font-semibold text-white">よくある無駄遣いシーンから選ぶ</p>
-          <span className="text-[10px] text-slate-600 ml-auto">タップで自動入力</span>
+          <p className="text-xs font-semibold text-white">繧医￥縺ゅｋ辟｡鬧・▲縺・す繝ｼ繝ｳ縺九ｉ驕ｸ縺ｶ</p>
+          <span className="text-[10px] text-slate-600 ml-auto">繧ｿ繝・・縺ｧ閾ｪ蜍募・蜉・/span>
         </div>
         {PRESETS.map(cat => (
           <div key={cat.category} className="space-y-2">
@@ -153,19 +154,19 @@ const MasterEngine = () => {
       <div className="bg-[#13141f] border border-white/5 rounded-2xl p-6 md:p-10 shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
 
-        {/* 使い方 */}
+        {/* 菴ｿ縺・婿 */}
         <div className="bg-[#0a0b14] border border-white/5 rounded-xl p-5 mb-8 flex items-start gap-4">
           <div className="w-8 h-8 rounded-full border border-emerald-500/30 flex items-center justify-center shrink-0 text-emerald-400 font-bold text-sm">!</div>
           <div className="space-y-1.5 text-sm text-slate-400 leading-relaxed">
-            <p><span className="text-emerald-400 font-semibold mr-2">#1</span>レシートや明細を撮影してアップロード（自動で保存されます）</p>
-            <p><span className="text-emerald-400 font-semibold mr-2">#2</span>防衛指示をコピー。AIに<strong className="text-white">画像を添付</strong>してこの指示を投げる</p>
-            <p><span className="text-emerald-400 font-semibold mr-2">#3</span>AIのアドバイス結果を右のエリアに戻す</p>
+            <p><span className="text-emerald-400 font-semibold mr-2">#1</span>繝ｬ繧ｷ繝ｼ繝医ｄ譏守ｴｰ繧呈聴蠖ｱ縺励※繧｢繝・・繝ｭ繝ｼ繝会ｼ郁・蜍輔〒菫晏ｭ倥＆繧後∪縺呻ｼ・/p>
+            <p><span className="text-emerald-400 font-semibold mr-2">#2</span>髦ｲ陦帶欠遉ｺ繧偵さ繝斐・縲・I縺ｫ<strong className="text-white">逕ｻ蜒上ｒ豺ｻ莉・/strong>縺励※縺薙・謖・､ｺ繧呈兜縺偵ｋ</p>
+            <p><span className="text-emerald-400 font-semibold mr-2">#3</span>AI縺ｮ繧｢繝峨ヰ繧､繧ｹ邨先棡繧貞承縺ｮ繧ｨ繝ｪ繧｢縺ｫ謌ｻ縺・/p>
           </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
 
-          {/* 左：アップロード＋コピー */}
+          {/* 蟾ｦ・壹い繝・・繝ｭ繝ｼ繝会ｼ九さ繝斐・ */}
           <div className="space-y-4">
             {!image ? (
               <div
@@ -177,8 +178,8 @@ const MasterEngine = () => {
                   <Camera className="w-7 h-7 text-slate-500" />
                 </div>
                 <div className="text-center">
-                  <p className="text-base font-semibold text-slate-300">タップしてスキャン</p>
-                  <p className="text-xs text-slate-500 mt-1">レシート / 明細書</p>
+                  <p className="text-base font-semibold text-slate-300">繧ｿ繝・・縺励※繧ｹ繧ｭ繝｣繝ｳ</p>
+                  <p className="text-xs text-slate-500 mt-1">繝ｬ繧ｷ繝ｼ繝・/ 譏守ｴｰ譖ｸ</p>
                 </div>
               </div>
             ) : (
@@ -191,7 +192,7 @@ const MasterEngine = () => {
                   <X className="w-4 h-4" />
                 </button>
                 <div className="absolute bottom-3 left-3 bg-emerald-500/90 text-slate-950 font-medium text-xs px-3 py-1 rounded-full">
-                  画像保存済み
+                  逕ｻ蜒丈ｿ晏ｭ俶ｸ医∩
                 </div>
               </div>
             )}
@@ -200,7 +201,7 @@ const MasterEngine = () => {
               <textarea
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder="購入の言い訳や迷いを打ち込んでください..."
+                placeholder="雉ｼ蜈･縺ｮ險縺・ｨｳ繧・ｿｷ縺・ｒ謇薙■霎ｼ繧薙〒縺上□縺輔＞..."
                 className="w-full h-28 bg-[#0a0b14] border border-white/5 rounded-xl p-4 text-sm text-white focus:border-emerald-500/50 outline-none resize-none transition-all"
               />
               <button
@@ -212,12 +213,12 @@ const MasterEngine = () => {
                 }`}
               >
                 {copied
-                  ? <><CheckCircle2 className="w-4 h-4" /> コピーしました！</>
-                  : <><Copy className="w-4 h-4" /> 防衛指示をコピー</>
+                  ? <><CheckCircle2 className="w-4 h-4" /> 繧ｳ繝斐・縺励∪縺励◆・・/>
+                  : <><Copy className="w-4 h-4" /> 髦ｲ陦帶欠遉ｺ繧偵さ繝斐・</>
                 }
               </button>
 
-              {/* AIリンク */}
+              {/* AI繝ｪ繝ｳ繧ｯ */}
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { label: 'ChatGPT', url: 'https://chatgpt.com' },
@@ -236,14 +237,14 @@ const MasterEngine = () => {
             </div>
           </div>
 
-          {/* 右：分析結果 */}
+          {/* 蜿ｳ・壼・譫千ｵ先棡 */}
           <div className="bg-[#0a0b14] rounded-2xl p-6 border border-white/5 flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
                   <AlertTriangle className="w-4 h-4 text-emerald-400" />
                 </div>
-                <h3 className="text-base font-bold text-white tracking-tight">分析結果を戻す</h3>
+                <h3 className="text-base font-bold text-white tracking-tight">蛻・梵邨先棡繧呈綾縺・/h3>
               </div>
               <div className="text-right">
                 <p className="text-xs font-medium text-slate-500 mb-0.5">Dopamine Risk</p>
@@ -254,19 +255,19 @@ const MasterEngine = () => {
             <textarea
               value={appraisalResult}
               onChange={(e) => setAppraisalResult(e.target.value)}
-              placeholder="AIからのアドバイスをペースト..."
+              placeholder="AI縺九ｉ縺ｮ繧｢繝峨ヰ繧､繧ｹ繧偵・繝ｼ繧ｹ繝・.."
               className="flex-1 bg-[#13141f] border border-white/5 rounded-xl p-5 text-sm text-slate-300 focus:border-emerald-500/50 outline-none resize-none min-h-[320px] leading-relaxed transition-all"
             />
 
             {appraisalResult && (
               <div className="p-5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl space-y-2">
                 <div className="flex items-center gap-2 text-emerald-400 font-semibold text-sm">
-                  <CheckCircle2 className="w-4 h-4" /> 防衛シーケンス起動
+                  <CheckCircle2 className="w-4 h-4" /> 髦ｲ陦帙す繝ｼ繧ｱ繝ｳ繧ｹ襍ｷ蜍・
                 </div>
                 <p className="text-slate-300 text-sm leading-relaxed">
-                  警告：脳がドーパミンに支配されています！<br />
-                  今すぐブラウザを閉じ、このレポートを3回読み直してください。<br />
-                  冷静になるまで購入ボタンを押すことは許可されません。
+                  隴ｦ蜻奇ｼ夊┻縺後ラ繝ｼ繝代Α繝ｳ縺ｫ謾ｯ驟阪＆繧後※縺・∪縺呻ｼ・br />
+                  莉翫☆縺舌ヶ繝ｩ繧ｦ繧ｶ繧帝哩縺倥√％縺ｮ繝ｬ繝昴・繝医ｒ3蝗櫁ｪｭ縺ｿ逶ｴ縺励※縺上□縺輔＞縲・br />
+                  蜀ｷ髱吶↓縺ｪ繧九∪縺ｧ雉ｼ蜈･繝懊ち繝ｳ繧呈款縺吶％縺ｨ縺ｯ險ｱ蜿ｯ縺輔ｌ縺ｾ縺帙ｓ縲・
                 </p>
               </div>
             )}
@@ -282,11 +283,10 @@ const NoSSRWrapper = dynamic(() => Promise.resolve(MasterEngine), { ssr: false }
 export default function MoneyGuard() {
   const router = useRouter()
 
-  // ブラウザバック・マウスサイドボタン対応
-  useEffect(() => {
+  // 繝悶Λ繧ｦ繧ｶ繝舌ャ繧ｯ繝ｻ繝槭え繧ｹ繧ｵ繧､繝峨・繧ｿ繝ｳ蟇ｾ蠢・  useEffect(() => {
     window.history.pushState(null, '', window.location.href)
     const handlePopState = () => {
-      const ok = window.confirm('ツールを終了しますか？')
+      const ok = window.confirm('繝・・繝ｫ繧堤ｵゆｺ・＠縺ｾ縺吶°・・)
       if (ok) {
         router.push('/dashboard')
       } else {
@@ -297,8 +297,7 @@ export default function MoneyGuard() {
     return () => window.removeEventListener('popstate', handlePopState)
   }, [router])
 
-  // タブ閉じ・URL直打ち対応
-  useEffect(() => {
+  // 繧ｿ繝夜哩縺倥・URL逶ｴ謇薙■蟇ｾ蠢・  useEffect(() => {
     const handleBeforeUnload = (e) => {
       e.preventDefault()
       e.returnValue = ''
@@ -308,7 +307,7 @@ export default function MoneyGuard() {
   }, [])
 
   const handleBack = useCallback(() => {
-    const ok = window.confirm('ツールを終了しますか？')
+    const ok = window.confirm('繝・・繝ｫ繧堤ｵゆｺ・＠縺ｾ縺吶°・・)
     if (ok) router.push('/dashboard')
   }, [router])
 

@@ -6,6 +6,7 @@
 // ============================================================
 'use client'
 import React, { useState, useCallback, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
 import { Loader2, BookOpen, Download, FileText, Sparkles, Crown, Zap, Lock, PenLine, Copy, CheckCheck, AlertTriangle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'

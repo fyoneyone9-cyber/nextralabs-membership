@@ -1,6 +1,7 @@
 ﻿'use client'
 import React, { useState, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/navigation'
 import {
   Youtube, ShoppingCart, Loader2, Layers,
   Shirt, ExternalLink, Zap, Play, Star, Search

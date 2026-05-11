@@ -1,5 +1,6 @@
 ﻿'use client'
 import React, { useState, useRef, useCallback, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { MapPin, Camera, Loader2, RotateCcw, ExternalLink, Search, Upload } from 'lucide-react'
 

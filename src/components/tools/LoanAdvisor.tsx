@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useCallback, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Loader2, Calculator, TrendingDown, Calendar, ShieldCheck, ArrowRight, Wallet, CheckCircle2, AlertCircle, Sparkles, BookOpen, CreditCard, Car, GraduationCap, Home, Smartphone, ShoppingBag, Zap } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
