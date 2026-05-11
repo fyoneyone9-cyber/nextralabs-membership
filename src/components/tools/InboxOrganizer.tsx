@@ -44,23 +44,43 @@ const MasterEngine = () => {
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const hash = new URLSearchParams(window.location.hash.slice(1))
-    const token = hash.get('access_token')
-    const state = hash.get('state')
-    if (token) {
-      setGoogleToken(token)
-      localStorage.setItem('nextra_google_token', token)
-      window.history.replaceState(null, '', window.location.pathname)
-      // stateにリダイレクト先が指定されている場合（営業メール等からの認証）はそちらに戻る
-      if (state && state.startsWith('redirect:')) {
-        const returnPath = decodeURIComponent(state.replace('redirect:', ''))
-        window.location.replace(returnPath)
+    try {
+      const hashStr = window.location.hash.slice(1)
+      if (!hashStr) {
+        const saved = localStorage.getItem('nextra_google_token')
+        if (saved) {
+          setGoogleToken(saved)
+          fetchEmails(saved)
+        }
         return
       }
-      fetchEmails(token)
-    } else {
-      const saved = localStorage.getItem('nextra_google_token')
-      if (saved) setGoogleToken(saved)
+
+      const params = new URLSearchParams(hashStr)
+      const token = params.get('access_token')
+      const state = params.get('state')
+
+      if (token) {
+        setGoogleToken(token)
+        localStorage.setItem('nextra_google_token', token)
+        // URLからハッシュを消す
+        window.history.replaceState(null, '', window.location.pathname)
+
+        // stateにリダイレクト先が指定されている場合（営業メール等からの認証）はそちらに戻る
+        if (state && state.startsWith('redirect:')) {
+          try {
+            const returnPath = decodeURIComponent(state.replace('redirect:', ''))
+            if (returnPath.startsWith('/')) {
+              window.location.href = returnPath
+              return
+            }
+          } catch (e) {
+            console.error('Redirect failed:', e)
+          }
+        }
+        fetchEmails(token)
+      }
+    } catch (err) {
+      console.error('Hash parsing error:', err)
     }
   }, [])
 
