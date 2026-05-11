@@ -1,13 +1,12 @@
-﻿'use client'
+'use client'
 import React from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import {
-  Building2, Globe, ShieldCheck, KeyRound,
+  Building2, ShieldCheck, KeyRound,
   ScanFace, Smartphone, ChevronRight, CheckCircle2,
-  Languages, Clock, AlertTriangle, Zap
+  Languages, AlertTriangle, Video, LayoutDashboard, Bell
 } from 'lucide-react'
-import Link from 'next/link'
 
 const NextraAiLP = () => {
   return (
@@ -47,7 +46,7 @@ const NextraAiLP = () => {
 
         {/* 実績バッジ */}
         <div className="flex flex-wrap justify-center gap-6 pt-6 text-sm text-slate-500">
-          <span className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-400" /> 4言語対応</span>
+          <span className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-400" /> 14言語対応</span>
           <span className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-400" /> PMS完全連携</span>
           <span className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-400" /> 24時間無人運営</span>
           <span className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-400" /> ¥9,800〜/月</span>
@@ -90,12 +89,12 @@ const NextraAiLP = () => {
       <section id="features" className="max-w-6xl mx-auto px-4 py-24 space-y-16">
         <div className="text-center space-y-3">
           <h2 className="text-3xl md:text-4xl font-semibold text-white tracking-tight">
-            Nextra AI の <span className="text-emerald-400">5つのコア機能</span>
+            Nextra AI の <span className="text-emerald-400">8つのコア機能</span>
           </h2>
           <p className="text-slate-400 text-base">チェックインから退出まで、すべてのフローをAIがカバーします。</p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             {
               icon: <ScanFace size={28} />,
@@ -109,8 +108,8 @@ const NextraAiLP = () => {
             },
             {
               icon: <Languages size={28} />,
-              title: '4言語対応',
-              desc: '日本語・英語・中国語・韓国語をシームレスに切り替え。インバウンドゲストも自力でチェックイン。',
+              title: '14言語対応',
+              desc: '日本語・英語・中国語・韓国語をはじめ、スペイン語・フランス語・アラビア語など14言語をシームレスに切り替え。世界中のゲストに対応。',
             },
             {
               icon: <KeyRound size={28} />,
@@ -127,6 +126,16 @@ const NextraAiLP = () => {
               title: 'コンプライアンス対応',
               desc: '旅館業法の宿泊者名簿をデジタル自動記録。行政提出用データをワンクリックで出力。',
             },
+            {
+              icon: <Video size={28} />,
+              title: 'フロント通話ボタン',
+              desc: 'ゲストがKIOSK画面からワンタップでスタッフへビデオ通話。困りごとをリアルタイム解決。14言語のUIで迷わず操作できます。',
+            },
+            {
+              icon: <LayoutDashboard size={28} />,
+              title: 'DMS スタッフ管理',
+              desc: '専用ダッシュボードでチェックイン状況・通話履歴・PMS同期をリアルタイム一元管理。ゲストからの呼び出しをリアルタイム通知で即対応。',
+            },
           ].map((f, i) => (
             <div
               key={i}
@@ -142,8 +151,52 @@ const NextraAiLP = () => {
         </div>
       </section>
 
-      {/* ── フロー説明 ── */}
+      {/* ── 新機能ハイライト ── */}
       <section className="bg-[#0d1117] py-20 border-y border-white/5">
+        <div className="max-w-5xl mx-auto px-4 space-y-10">
+          <div className="text-center space-y-3">
+            <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-4 py-1 rounded-full text-xs font-medium">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mr-2" />
+              NEW — 最新アップデート
+            </Badge>
+            <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
+              さらに進化した <span className="text-emerald-400">Nextra AI</span>
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-[#13141f] border border-emerald-500/20 rounded-2xl p-7 space-y-4">
+              <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400">
+                <Languages size={28} />
+              </div>
+              <h3 className="text-white font-semibold text-lg">14言語対応に拡張</h3>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                従来の4言語（日英中韓）から、スペイン語・フランス語・ドイツ語・ポルトガル語・イタリア語・ロシア語・アラビア語・タイ語・ベトナム語・インドネシア語を追加。世界中のインバウンドゲストに対応できます。
+              </p>
+            </div>
+            <div className="bg-[#13141f] border border-emerald-500/20 rounded-2xl p-7 space-y-4">
+              <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400">
+                <Video size={28} />
+              </div>
+              <h3 className="text-white font-semibold text-lg">ビデオ通話サポート</h3>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                KIOSKにフロントスタッフへのビデオ通話ボタンを追加。ゲストが困ったときにワンタップで有人サポートへ接続。Daily.co技術基盤で安定した通話品質を提供します。
+              </p>
+            </div>
+            <div className="bg-[#13141f] border border-emerald-500/20 rounded-2xl p-7 space-y-4">
+              <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400">
+                <Bell size={28} />
+              </div>
+              <h3 className="text-white font-semibold text-lg">リアルタイム通知</h3>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                ゲストがフロント呼び出しボタンを押すと、スタッフのDMSダッシュボードにリアルタイムでプッシュ通知。どこにいてもゲスト対応が可能になります。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── フロー説明 ── */}
+      <section className="bg-[#050507] py-20">
         <div className="max-w-4xl mx-auto px-4 space-y-12 text-center">
           <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
             チェックインはたった <span className="text-emerald-400">4ステップ</span>
@@ -155,7 +208,7 @@ const NextraAiLP = () => {
               { step: '03', label: '自動チェックイン', desc: 'PMSに連携・書類自動記録' },
               { step: '04', label: '鍵受取', desc: 'デジタルキーを即時発行' },
             ].map((s, i) => (
-              <div key={i} className="bg-[#13141f] border border-white/5 rounded-xl p-6 space-y-3 text-left relative">
+              <div key={i} className="bg-[#0d1117] border border-white/5 rounded-xl p-6 space-y-3 text-left relative">
                 <span className="text-emerald-500/40 font-bold text-3xl">{s.step}</span>
                 <p className="text-white font-semibold text-sm">{s.label}</p>
                 <p className="text-slate-500 text-xs leading-relaxed">{s.desc}</p>
@@ -172,7 +225,7 @@ const NextraAiLP = () => {
       <section className="max-w-5xl mx-auto px-4 py-20 grid md:grid-cols-3 gap-8 text-center">
         {[
           { value: '90%', label: 'フロント対応工数削減', sub: 'AI自動化により人件費を大幅カット' },
-          { value: '4言語', label: 'インバウンド完全対応', sub: '言語の壁をAIが即時に解消' },
+          { value: '14言語', label: 'インバウンド完全対応', sub: '世界中のゲストを言語の壁なく迎える' },
           { value: '24h', label: '無人チェックイン対応', sub: '深夜・早朝も自動でゲストを迎える' },
         ].map((item, i) => (
           <div key={i} className="bg-[#0d1117] border border-white/5 rounded-xl p-8 space-y-2">
@@ -207,7 +260,7 @@ const NextraAiLP = () => {
                 role: 'フロントマネージャー',
                 location: '大阪府',
                 rating: 5,
-                text: 'インバウンドのお客様が多く、英語・中国語対応に追われていました。4言語の自動切り替えが本当に優秀で、クレームがほぼゼロになりました。PMSとのリアルタイム連携も完璧で、二重予約のミスも一切なくなっています。',
+                text: 'インバウンドのお客様が多く、英語・中国語対応に追われていました。14言語の自動切り替えが本当に優秀で、クレームがほぼゼロになりました。PMSとのリアルタイム連携も完璧で、二重予約のミスも一切なくなっています。',
                 tag: 'ブティックホテル',
               },
               {
@@ -215,12 +268,11 @@ const NextraAiLP = () => {
                 role: '民泊運営会社 代表',
                 location: '東京都',
                 rating: 5,
-                text: '複数物件を一人で回していたので鍵の受け渡しが最大の課題でした。スマートロック連携で完全無人化が実現。月額1万円以下のプランで始められたのも助かりました。旅館業法対応の書類も自動で出るので行政対応も安心です。',
+                text: '複数物件を一人で回していたので鍵の受け渡しが最大の課題でした。スマートロック連携で完全無人化が実現。ビデオ通話機能でゲストが困ったときも即対応できるので、安心感が全然違います。旅館業法対応の書類も自動で出るので行政対応も安心です。',
                 tag: '民泊・多物件運営',
               },
             ].map((review, i) => (
               <div key={i} className="bg-[#13141f] border border-white/5 hover:border-emerald-500/20 rounded-2xl p-7 space-y-5 transition-all flex flex-col">
-                {/* 星 */}
                 <div className="flex gap-1">
                   {[...Array(review.rating)].map((_, j) => (
                     <svg key={j} className="w-4 h-4 text-emerald-400 fill-current" viewBox="0 0 20 20">
@@ -228,9 +280,7 @@ const NextraAiLP = () => {
                     </svg>
                   ))}
                 </div>
-                {/* 本文 */}
                 <p className="text-slate-300 text-sm leading-relaxed flex-1">「{review.text}」</p>
-                {/* 属性 */}
                 <div className="flex items-center gap-3 pt-2 border-t border-white/5">
                   <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
                     {review.name[0]}
@@ -246,7 +296,6 @@ const NextraAiLP = () => {
               </div>
             ))}
           </div>
-          {/* 総合評価バー */}
           <div className="flex flex-wrap justify-center gap-8 pt-4 text-center">
             {[
               { label: '総合満足度', value: '4.9', sub: '/ 5.0' },
@@ -300,9 +349,9 @@ const NexraPricingSection = () => (
     </div>
     <div className="grid md:grid-cols-3 gap-6">
       {[
-        { name: 'スモールプラン', price: '¥9,800', period: '/月', rooms: '〜10室', features: ['無人チェックイン', 'AI身分証確認', '4言語対応', 'メールサポート'] },
-        { name: 'スタンダードプラン', price: '¥19,800', period: '/月', rooms: '〜30室', features: ['無人チェックイン', 'AI身分証確認', '4言語対応', 'PMS連携', 'スマートロック連携', 'オンボーディングサポート'], highlight: true },
-        { name: 'エンタープライズ', price: '¥29,800', period: '/月', rooms: '無制限', features: ['無人チェックイン', 'AI身分証確認', '4言語対応', 'PMS連携', 'スマートロック連携', '専任サポート', 'カスタマイズ対応'] },
+        { name: 'スモールプラン', price: '¥9,800', period: '/月', rooms: '〜10室', features: ['無人チェックイン', 'AI身分証確認', '14言語対応', 'メールサポート'] },
+        { name: 'スタンダードプラン', price: '¥19,800', period: '/月', rooms: '〜30室', features: ['無人チェックイン', 'AI身分証確認', '14言語対応', 'PMS連携', 'スマートロック連携', 'ビデオ通話サポート', 'オンボーディングサポート'], highlight: true },
+        { name: 'エンタープライズ', price: '¥29,800', period: '/月', rooms: '無制限', features: ['無人チェックイン', 'AI身分証確認', '14言語対応', 'PMS連携', 'スマートロック連携', 'ビデオ通話サポート', 'DMS管理ダッシュボード', '専任サポート', 'カスタマイズ対応'] },
       ].map((plan) => (
         <div
           key={plan.name}
@@ -366,6 +415,14 @@ const NextraFaqSection = () => {
     {
       q: '旅館業法に準拠していますか？',
       a: 'はい。旅館業法が定める宿泊者名簿の記録要件をデジタルで完全充足します。身分証スキャン・電子署名・宿泊記録の自動保存により、行政提出用データをワンクリックで出力可能です。',
+    },
+    {
+      q: '14言語対応とはどの言語ですか？',
+      a: '日本語・英語・中国語（簡体）・韓国語・スペイン語・フランス語・ドイツ語・ポルトガル語・イタリア語・ロシア語・アラビア語・タイ語・ベトナム語・インドネシア語の14言語に対応しています。',
+    },
+    {
+      q: 'ビデオ通話機能の仕組みを教えてください。',
+      a: 'KIOSKのフロント呼び出しボタンを押すと、Daily.co技術基盤を使ったビデオ通話が即座に開始されます。スタッフ側のDMSダッシュボードにリアルタイム通知が届き、どのデバイスからでも応答できます。',
     },
     {
       q: 'サポート体制はどうなっていますか？',
