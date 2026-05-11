@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import {
   Users, Plus, Edit3, Trash2, RefreshCw, LogOut, Shield,
   Building, Mail, Phone, X, Save, Eye, EyeOff, CheckCircle2,
-  AlertCircle, Loader2, Search, MoreVertical
+  AlertCircle, Loader2, Search
 } from 'lucide-react'
 
 /* ══════════ 型定義 ══════════ */
@@ -223,7 +223,7 @@ export default function DmsAdminEngine() {
   const [searchQuery, setSearchQuery] = useState('')
   const [editingTenant, setEditingTenant] = useState<Partial<Tenant> | null | false>(false)
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
-  const [openMenu, setOpenMenu] = useState<string | null>(null)
+
 
   const showMsg = (ok: boolean, text: string) => {
     setMsg({ ok, text })
@@ -469,26 +469,23 @@ export default function DmsAdminEngine() {
                           </button>
                         </td>
                         <td className="px-4 py-3 text-right">
-                          <div className="relative inline-block">
+                          <div className="flex items-center gap-1.5 justify-end">
                             <button
-                              onClick={() => setOpenMenu(openMenu === t.id ? null : t.id)}
+                              onClick={() => setEditingTenant(t)}
                               className="w-7 h-7 rounded-lg flex items-center justify-center transition-all"
-                              style={{ background: 'rgba(255,255,255,0.05)', color: '#64748b' }}>
-                              <MoreVertical size={13} />
+                              style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.2)' }}
+                              title="編集"
+                            >
+                              <Edit3 size={12} />
                             </button>
-                            {openMenu === t.id && (
-                              <div className="absolute right-0 top-8 z-50 w-36 rounded-xl shadow-xl overflow-hidden"
-                                style={{ background: '#13141f', border: '1px solid rgba(255,255,255,0.08)' }}>
-                                <button onClick={() => { setEditingTenant(t); setOpenMenu(null) }}
-                                  className="w-full flex items-center gap-2 px-3 py-2.5 text-xs text-slate-300 hover:bg-white/5 transition-colors">
-                                  <Edit3 size={11} style={{ color: '#10b981' }} /> 編集
-                                </button>
-                                <button onClick={() => { handleDelete(t); setOpenMenu(null) }}
-                                  className="w-full flex items-center gap-2 px-3 py-2.5 text-xs text-red-400 hover:bg-red-500/10 transition-colors">
-                                  <Trash2 size={11} /> 削除
-                                </button>
-                              </div>
-                            )}
+                            <button
+                              onClick={() => handleDelete(t)}
+                              className="w-7 h-7 rounded-lg flex items-center justify-center transition-all"
+                              style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)' }}
+                              title="削除"
+                            >
+                              <Trash2 size={12} />
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -503,10 +500,6 @@ export default function DmsAdminEngine() {
 
       </div>
 
-      {/* メニューを閉じるオーバーレイ */}
-      {openMenu && (
-        <div className="fixed inset-0 z-40" onClick={() => setOpenMenu(null)} />
-      )}
 
       {/* 編集モーダル */}
       {editingTenant !== false && (
