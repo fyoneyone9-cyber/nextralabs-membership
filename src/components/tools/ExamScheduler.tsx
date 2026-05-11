@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation'
 ﻿// ============================================================
 // 🔒 LOCKED — ExamScheduler
 // 完成済みツール。NextraLabs様の明示的な指示なしに
@@ -7,6 +6,7 @@ import { useRouter } from 'next/navigation'
 // ============================================================
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useState, useCallback, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
