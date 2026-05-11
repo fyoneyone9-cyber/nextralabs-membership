@@ -84,7 +84,8 @@ export default function LockListContent({
 }: {
   searchQuery?: string
 }) {
-  const [locks] = useState<LockDevice[]>(SAMPLE_LOCKS)
+  const [locks, setLocks] = useState<LockDevice[]>(SAMPLE_LOCKS)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const usedCount = locks.filter(l => l.inUse).length
   const unusedCount = locks.filter(l => !l.inUse).length
@@ -94,6 +95,19 @@ export default function LockListContent({
     l.property.toLowerCase().includes(searchQuery.toLowerCase()) ||
     l.room.toLowerCase().includes(searchQuery.toLowerCase())
   )
+
+  const handleDelete = (lock: LockDevice) => {
+    const confirmed = window.confirm(
+      `「${lock.name}」を削除しますか？\nこの操作は元に戻せません。`
+    )
+    if (!confirmed) return
+    setDeletingId(lock.id)
+    // 削除アニメーション後にリストから除去
+    setTimeout(() => {
+      setLocks(prev => prev.filter(l => l.id !== lock.id))
+      setDeletingId(null)
+    }, 400)
+  }
 
   return (
     <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl overflow-hidden shadow-xl">
@@ -108,18 +122,24 @@ export default function LockListContent({
               <th className="px-5 py-3">部屋タイプ</th>
               <th className="px-5 py-3">デバイスID / 解除番号</th>
               <th className="px-5 py-3 text-center">ステータス</th>
+              <th className="px-5 py-3 text-center">操作</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
             {filteredLocks.length === 0 ? (
               <tr>
-                <td colSpan={7} className="py-16 text-center text-slate-600 text-xs font-semibold">
+                <td colSpan={8} className="py-16 text-center text-slate-600 text-xs font-semibold">
                   該当する錠デバイスが見つかりません
                 </td>
               </tr>
             ) : (
               filteredLocks.map(lock => (
-                <tr key={lock.id} className="hover:bg-white/5 transition-colors">
+                <tr
+                  key={lock.id}
+                  className={`hover:bg-white/5 transition-all duration-300 ${
+                    deletingId === lock.id ? 'opacity-0 scale-95' : 'opacity-100'
+                  }`}
+                >
                   <td className="px-5 py-3 font-semibold text-slate-200">
                     <div className="flex items-center gap-2">
                       <div className="w-5 h-5 bg-emerald-500/10 rounded-md flex items-center justify-center">
@@ -153,6 +173,16 @@ export default function LockListContent({
                         未使用
                       </Badge>
                     )}
+                  </td>
+                  <td className="px-5 py-3 text-center">
+                    <button
+                      onClick={() => handleDelete(lock)}
+                      disabled={deletingId === lock.id}
+                      title={`${lock.name} を削除`}
+                      className="inline-flex items-center justify-center w-7 h-7 rounded-lg border border-red-500/20 text-red-500/50 hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-400 transition-all disabled:opacity-30"
+                    >
+                      <Trash2 size={12} />
+                    </button>
                   </td>
                 </tr>
               ))
