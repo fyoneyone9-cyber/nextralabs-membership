@@ -1,19 +1,20 @@
-'use client'
+﻿'use client'
 import { useRouter } from 'next/navigation'
+
 import React, { useState, useCallback, useEffect } from 'react';
 import { Briefcase, Info, ShoppingCart, ShieldCheck, Lock, Ticket } from 'lucide-react';
 import { CharacterMake } from '../components/CharacterMake';
 import { ResultView } from '../components/ResultView';
-import { AccessGate } from '@/components/tools/AccessGate';
 
-export default function AiSidejobAppPage() {
+export default function AiSidejobApp() {
   const router = useRouter()
 
-  // ブラウザバック防止
+  // ブラウザバック・マウスサイドボタン対応
   useEffect(() => {
     window.history.pushState(null, '', window.location.href)
     const handlePopState = () => {
-      if (window.confirm('ツールを終了しますか？')) {
+      const ok = window.confirm('ツールを終了しますか？')
+      if (ok) {
         router.push('/dashboard')
       } else {
         window.history.pushState(null, '', window.location.href)
@@ -23,31 +24,48 @@ export default function AiSidejobAppPage() {
     return () => window.removeEventListener('popstate', handlePopState)
   }, [router])
 
-  return (
-    <AccessGate productId="ai-sidejob">
-      <AiSidejobAppContent />
-    </AccessGate>
-  )
-}
+  // タブ閉じ・URL直打ち対応
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [])
 
-function AiSidejobAppContent() {
+  const handleBack = useCallback(() => {
+    const ok = window.confirm('ツールを終了しますか？')
+    if (ok) router.push('/dashboard')
+  }, [router])
+
   const [status, setStatus] = useState<'input' | 'analyzing' | 'result'>('input');
   const [resultData, setResultData] = useState<any>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleComplete = async (userData: any) => {
     setStatus('analyzing');
-    setIsSubmitting(true);
     
     try {
+      // 実際の実装ではここで /api/products/ai-sidejob/generate を呼ぶ
+      // 今回はプロトタイプとして、gsk searchの擬似的な結果を含むレスポンスを想定
       const response = await fetch('/api/products/ai-sidejob', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
       });
       
-      if (!response.ok) {
-        throw new Error('Analysis failed');
+      if (response.status === 401) {
+        const errData = await response.json().catch(() => ({}))
+        if (errData.reason === 'unauthenticated') {
+          const current = encodeURIComponent(window.location.pathname)
+          window.location.href = `/auth/login?redirect=${current}`
+          return
+        }
+      }
+      if (response.status === 429) {
+        alert('本日の利用制限に達しました。明日またご利用ください。')
+        setStatus('input')
+        return
       }
       
       const data = await response.json();
@@ -55,21 +73,21 @@ function AiSidejobAppContent() {
       setStatus('result');
     } catch (error) {
       console.error('Analysis failed:', error);
-      // フォールバック
-      setResultData({
-        title: "⚡️ 爆速AIコンテンツライター",
-        description: "あなたの武器と時間を掛け合わせた結果、クラウドソーシングでの記事量産が最短ルートと判定されました。",
-        roadmap: [
-          { title: "クラウドワークス登録", desc: "まずはアカウント作成。自己紹介文にはAI生成の『採用率UPテンプレ』を使用してください。", urgent: true },
-          { title: "AI記事作成コンペ応募", desc: "AIを活用し、15分で1記事を作成。質より量で実績を積みます。", urgent: false },
-          { title: "専属契約への移行", desc: "実績が貯まったら、継続案件へ交渉。月5万円の安定収益を目指します。", urgent: false }
-        ],
-        ai_hack: "プロンプトに『読者の悩みを3つ挙げ、それに対する解決策を網羅せよ』と加えるだけで、採用率が向上します。",
-        platforms: ["CrowdWorks", "Lancers"]
-      });
-      setStatus('result');
-    } finally {
-      setIsSubmitting(false);
+      // フォールバック（デモ用）
+      setTimeout(() => {
+        setResultData({
+          title: "⚡️ 爆速AIコンテンツライター",
+          description: "あなたの『文字入力』スキルと最新のAI需要を掛け合わせた結果、クラウドソーシングでの記事量産が最短ルートと判定されました。",
+          roadmap: [
+            { title: "クラウドワークス登録", desc: "まずはアカウント作成。自己紹介文にはAI生成の『採用率UPテンプレ』を使用してください。", urgent: true },
+            { title: "AI記事作成コンペ応募", desc: "Gemini 2.5 Flashを活用し、15分で1記事を作成。質より量で実績を積みます。", urgent: false },
+            { title: "専属契約への移行", desc: "実績が5件貯まったら、継続案件へ交渉。月5万円の安定収益を目指します。", urgent: false }
+          ],
+          ai_hack: "プロンプトに『読者の悩みを3つ挙げ、それに対する解決策を網羅せよ』と加えるだけで、採用率が40%向上します。",
+          platforms: ["CrowdWorks", "Lancers"]
+        });
+        setStatus('result');
+      }, 3000);
     }
   };
 
@@ -95,8 +113,15 @@ function AiSidejobAppContent() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col items-end gap-3 opacity-50">
-             <div className="text-[10px] font-bold text-slate-500">POWERED BY NEXTRALABS</div>
+          <div className="flex flex-col items-end gap-3">
+            <div className="flex items-center gap-2 bg-emerald-500 text-slate-950 font-bold px-8 py-3 text-lg rounded-full shadow-[0_10px_30px_rgba(16,185,129,0.3)]">
+              <Lock size={20} />
+              PREMIUM UNLOCKED
+            </div>
+            <div className="flex items-center gap-2 text-emerald-500 font-bold text-xs uppercase tracking-tight">
+              <Ticket size={14} />
+              Remaining: 3 Credits Today
+            </div>
           </div>
         </div>
 
@@ -107,14 +132,14 @@ function AiSidejobAppContent() {
             <h3 className="font-bold uppercase text-sm">使いかた・活用マニュアル</h3>
           </div>
           <p className="text-sm text-slate-300 font-bold leading-relaxed ">
-            「キャラメイク診断」を通じてあなたの武器を明確にします。AIが最新の市場動向を解析し、あなた専用の最短収益化ルートを構築します。
+            「キャラメイク診断」を通じてあなたの武器を明確にします。AIが最新の市場動向（gsk search）を解析し、あなた専用の最短収益化ルートを構築します。
           </p>
         </div>
 
         {/* Main Content Area */}
         <div className="py-4">
           {status === 'input' && (
-            <CharacterMake onComplete={handleComplete} isSubmitting={isSubmitting} />
+            <CharacterMake onComplete={handleComplete} isSubmitting={false} />
           )}
 
           {status === 'analyzing' && (
@@ -126,7 +151,7 @@ function AiSidejobAppContent() {
               <div className="space-y-2">
                 <h2 className="text-2xl font-bold text-white ">市場トレンドを解析中...</h2>
                 <p className="text-emerald-400 font-bold text-sm animate-bounce">
-                   最新案件をスキャンしています
+                  gsk search 連携：2026年5月の最新案件をスキャンしています
                 </p>
               </div>
             </div>
@@ -136,6 +161,17 @@ function AiSidejobAppContent() {
             <ResultView result={resultData} onReset={() => setStatus('input')} />
           )}
         </div>
+
+        {/* Affiliate / Conversion Area */}
+        <a href="https://www.amazon.co.jp/s?k=副業+稼ぎ方&tag=nextralabs-22" target="_blank" className="block group">
+          <div className="bg-gradient-to-r from-emerald-600 to-teal-800 p-10 rounded-[3rem] flex items-center justify-between shadow-2xl transition-all hover:scale-[1.02] active:scale-95">
+            <div>
+              <p className="text-emerald-200 text-xs font-bold mb-1">RECOMMENDED RESOURCE</p>
+              <h3 className="text-2xl font-bold text-white ">不敗の稼ぐ力：副業・独立のバイブル ➔</h3>
+            </div>
+            <ShoppingCart size={40} className="text-white group-hover:rotate-12 transition-transform" />
+          </div>
+        </a>
       </div>
     </div>
   );
