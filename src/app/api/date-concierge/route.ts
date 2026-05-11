@@ -41,16 +41,33 @@ interface TimelineItem {
 // ── Geocoding ────────────────────────────────────────────────────────────────
 
 async function geocode(address: string, apiKey: string): Promise<GeoResult | null> {
+  // 現在地フォーマット: "現在地:lat,lng"
+  if (address.startsWith('現在地:')) {
+    const [lat, lng] = address.replace('現在地:', '').split(',').map(Number)
+    if (!isNaN(lat) && !isNaN(lng)) return { lat, lng }
+  }
+
+  if (!apiKey) {
+    console.error('[date-concierge] GOOGLE_GEOCODING_API_KEY is not set')
+    return null
+  }
+
   try {
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}&language=ja&region=JP`
     const res = await fetch(url)
     const data = await res.json()
+    console.log(`[date-concierge] geocode("${address}") status=${data.status}`)
     if (data.status === 'OK' && data.results?.[0]) {
       const loc = data.results[0].geometry.location
       return { lat: loc.lat, lng: loc.lng }
     }
+    // エラー詳細をログ
+    if (data.error_message) {
+      console.error(`[date-concierge] geocode error: ${data.error_message}`)
+    }
     return null
-  } catch {
+  } catch (e) {
+    console.error('[date-concierge] geocode exception:', e)
     return null
   }
 }
@@ -289,8 +306,23 @@ export async function POST(req: NextRequest) {
       geocode(partnerLocation, geoKey),
     ])
 
-    if (!coordA || !coordB) {
-      return NextResponse.json({ error: '住所の検索に失敗しました。具体的な駅名や住所を入力してください。' }, { status: 400 })
+    if (!coordA && !coordB) {
+      return NextResponse.json({
+        error: '両方の住所の検索に失敗しました。「新宿駅」「渋谷区道玄坂1丁目」のように具体的な駅名・住所を入力してください。',
+        debug: { geoKeySet: !!geoKey, myLocation, partnerLocation }
+      }, { status: 400 })
+    }
+    if (!coordA) {
+      return NextResponse.json({
+        error: `「${myLocation}」の住所が見つかりませんでした。具体的な駅名や住所を入力してください。`,
+        debug: { geoKeySet: !!geoKey }
+      }, { status: 400 })
+    }
+    if (!coordB) {
+      return NextResponse.json({
+        error: `「${partnerLocation}」の住所が見つかりませんでした。具体的な駅名や住所を入力してください。`,
+        debug: { geoKeySet: !!geoKey }
+      }, { status: 400 })
     }
 
     // 2. 中間地点
