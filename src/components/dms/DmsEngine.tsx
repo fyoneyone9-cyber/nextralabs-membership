@@ -834,9 +834,39 @@ export default function DmsEngine() {
               </>
             )}
             {activeTab === 'property' && (
-              <Button onClick={() => setPropView('create')} className="h-7 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-xs px-3">
-                <Plus size={11} className="mr-1" /> 新規作成
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={async () => {
+                    const pmsApiKey = localStorage.getItem('dms_pms_pms_api_key') || ''
+                    const pmsType = localStorage.getItem('dms_pms_pms_type') || ''
+                    if (!pmsApiKey || !pmsType || pmsType === 'PMS未接続（ローカル）') {
+                      alert('PMS設定からAPIキーを設定してください')
+                      return
+                    }
+                    try {
+                      const res = await fetch('/api/staysee/properties', {
+                        headers: { 'x-staysee-api-key': pmsApiKey }
+                      })
+                      const data = await res.json()
+                      if (!res.ok) { alert(`同期失敗: ${data.error}`); return }
+                      if (data.properties?.length) {
+                        saveProperties(data.properties)
+                        setProperties(data.properties)
+                        alert(`✅ ${data.properties.length}件の物件を同期しました`)
+                      } else {
+                        alert('PMSに物件が見つかりませんでした')
+                      }
+                    } catch { alert('通信エラーが発生しました') }
+                  }}
+                  variant="ghost"
+                  className="h-7 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 rounded-lg text-xs px-3 font-semibold"
+                >
+                  <RefreshCw size={11} className="mr-1" /> PMSから同期
+                </Button>
+                <Button onClick={() => setPropView('create')} className="h-7 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-xs px-3">
+                  <Plus size={11} className="mr-1" /> 新規作成
+                </Button>
+              </div>
             )}
             {activeTab === 'lock-list' && (
               <LockListHeaderActions
