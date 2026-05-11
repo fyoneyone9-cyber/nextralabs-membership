@@ -749,6 +749,7 @@ export default function DmsEngine() {
               <LockListHeaderActions
                 searchQuery={lockSearchQuery}
                 setSearchQuery={setLockSearchQuery}
+                onAdd={() => (lockListRef.current as any)?.openRegisterDialog?.()}
                 onDeleteUnused={() => lockListRef.current?.triggerDeleteUnused()}
                 onDeleteAll={() => lockListRef.current?.triggerDeleteAll()}
                 deleting={lockDeleting}
