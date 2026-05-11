@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // NextraLabs アフィリエイトリンク定義
 // 憲法：本固定禁止・クリック率重視・ツールと文脈が一致する商品
 // タグ：534e3725-22（変更禁止）
@@ -115,6 +115,10 @@ export const AFFILIATE_LINKS: Record<string, AffiliateLink[]> = {
   'youtube-coordinator': [
     { id: 'ytcoord-mic',     label: '🎙 配信機材・マイク',     desc: '動画・配信クオリティを上げる機材',     url: AMZ('配信 マイク ゲーミング YouTube') },
     { id: 'ytcoord-book',    label: '📺 YouTube攻略本',        desc: 'チャンネル登録者を増やす戦略',         url: AMZ('YouTube 攻略 チャンネル登録 増やす') },
+  ],
+  'date-concierge': [
+    { id: 'date-travel',   label: '🧳 デート用トラベルグッズ',  desc: 'お出かけをもっと快適にするアイテム',    url: AMZ('トラベルグッズ カップル おでかけ 便利') },
+    { id: 'date-fashion',  label: '💍 デートアクセサリー',      desc: 'ペアルック・プレゼントに人気のアイテム', url: AMZ('ペアアクセサリー カップル プレゼント') },
   ],
 }
 
