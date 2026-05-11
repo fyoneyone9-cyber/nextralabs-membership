@@ -38,7 +38,7 @@ function playNotificationSound() {
   } catch { /* 非対応ブラウザは無視 */ }
 }
 
-export default function CallsEngine() {
+export default function CallsEngine({ embedded = false }: { embedded?: boolean }) {
   const [apiKey, setApiKey] = useState('')
   const [showApiKey, setShowApiKey] = useState(false)
   const [apiKeySaved, setApiKeySaved] = useState(false)
@@ -185,14 +185,14 @@ export default function CallsEngine() {
     } catch { return iso }
   }
 
-  if (!authChecked) return (
+  if (!authChecked && !embedded) return (
     <div className="min-h-screen flex items-center justify-center" style={{ background: '#050507' }}>
       <div className="w-6 h-6 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-[#050507] text-slate-200 font-sans">
+    <div className={embedded ? 'text-slate-200 font-sans' : 'min-h-screen bg-[#050507] text-slate-200 font-sans'}>
 
       {/* 着信バナー（フロート） */}
       {incomingCall && (
@@ -237,8 +237,8 @@ export default function CallsEngine() {
         </div>
       )}
 
-      {/* ヘッダー */}
-      <header className="bg-[#0d0f1a] border-b border-white/5 sticky top-0 z-40">
+      {/* ヘッダー（埋め込み時は非表示） */}
+      {!embedded && <header className="bg-[#0d0f1a] border-b border-white/5 sticky top-0 z-40">
         <div className="px-5 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/dms" className="flex items-center gap-1.5 text-slate-500 hover:text-slate-300 transition-colors text-sm">
@@ -270,7 +270,7 @@ export default function CallsEngine() {
             <Video size={18} className="text-emerald-400" />
           </div>
         </div>
-      </header>
+      </header>}
 
       <main className="p-5 space-y-5 max-w-3xl">
 

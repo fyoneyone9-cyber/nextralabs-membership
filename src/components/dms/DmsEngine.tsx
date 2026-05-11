@@ -13,6 +13,7 @@ import DmsPropertyEditor from './DmsPropertyEditor'
 import LockListContent, { LockListHeaderActions, LockListRef } from './LockListEngine'
 import RoomListContent from './RoomListEngine'
 import DeleteConfirmDialog from './DeleteConfirmDialog'
+import CallsEngine from './CallsEngine'
 import { CloudPmsStorage } from '@/lib/cloud-pms-storage'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
@@ -73,7 +74,7 @@ const MENU_ITEMS = [
   { id: 'property',   label: '物件',              icon: Building,     href: '/dms?tab=property' },
   { id: 'room-list',  label: '部屋一覧',          icon: Building,     href: '/dms?tab=room-list' },
   { id: 'lock-list',  label: '錠デバイス一覧',     icon: Lock,         href: '/dms/lock-list' },
-  { id: 'calls',      label: '通話一覧（フロント）',icon: Video,        href: '/dms/calls' },
+  { id: 'calls',      label: '通話一覧（フロント）',icon: Video,        href: '/dms?tab=calls' },
   { id: 'cars',       label: '車両情報',           icon: Car,          href: '/dms/cars' },
   { id: 'reports',    label: '宿泊実績定期報告',   icon: FileBarChart, href: '/dms/reports' },
   { id: 'tools',      label: '便利ツール',          icon: Wrench,       href: '/dms?tab=tools' },
@@ -1346,6 +1347,13 @@ export default function DmsEngine() {
               </div>
             )
           })()}
+
+          {/* 通話一覧（フロント） */}
+          {activeTab === 'calls' && (
+            <div className="-mx-6 -mt-4">
+              <CallsEngine embedded />
+            </div>
+          )}
 
           {/* ロック設定 */}
           {activeTab === 'lock-settings' && (
