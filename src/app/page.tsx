@@ -192,32 +192,45 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-4 max-w-4xl mx-auto">
             {[
               {
-                name: 'Free', price: '¥0', period: '永久無料',
-                features: ['無料ツール3種', '1日5回まで', 'コミュニティ'],
-                cta: '無料で始める', href: '/signup', accent: false,
+                name: 'スタンダード', price: '¥980', period: '/月',
+                badge: null,
+                features: ['人気ツール20本以上', 'AI副業・防災・料理・旅行など', 'Gemini AI フル活用', 'いつでも解約OK'],
+                cta: '始める', href: '/signup?plan=standard', accent: false,
+                note: 'まずはここから',
               },
               {
-                name: 'Pro', price: '¥1,980', period: '/月',
-                features: ['全30ツール使い放題', '1日50回', '優先サポート', 'API連携'],
-                cta: '今すぐ始める', href: '/signup?plan=pro', accent: true,
+                name: 'プレミアム', price: '¥1,980', period: '/月',
+                badge: '一番人気',
+                features: ['全ツール30本以上 使い放題', 'YouTube・SNS・Gmail AI連携', '画像生成・プロンプト最適化', '優先サポート'],
+                cta: '今すぐ始める', href: '/signup?plan=premium', accent: true,
+                note: null,
               },
               {
-                name: 'Business', price: '¥4,980', period: '/月',
-                features: ['全ツール無制限', 'チーム複数アカウント', '専用サポート'],
+                name: 'エンタープライズ', price: '¥4,980', period: '/月',
+                badge: null,
+                features: ['ホテル・民泊向けAI自動化', 'Nextra AI KIOSKシステム', 'チーム複数アカウント', '専用サポート・SLA'],
                 cta: 'お問い合わせ', href: '/contact', accent: false,
+                note: '法人・ホテル向け',
               },
             ].map(plan => (
               <div key={plan.name}
-                className={`rounded-2xl p-6 border transition-all ${plan.accent
-                  ? 'border-emerald-500/60 bg-emerald-500/5 shadow-[0_0_40px_rgba(16,185,129,0.08)]'
+                className={`rounded-2xl p-6 border transition-all relative ${plan.accent
+                  ? 'border-emerald-500/60 bg-emerald-500/5 shadow-[0_0_40px_rgba(16,185,129,0.1)]'
                   : 'border-white/5 bg-[#0d1117]'}`}>
-                {plan.accent && (
-                  <Badge className="bg-emerald-500 text-slate-950 font-bold text-[10px] mb-3">人気 No.1</Badge>
+                {plan.badge && (
+                  <Badge className="bg-emerald-500 text-slate-950 font-bold text-[10px] mb-3">{plan.badge}</Badge>
                 )}
-                <p className="text-slate-500 text-xs font-medium mb-1 uppercase tracking-wider">{plan.name}</p>
-                <p className="text-3xl font-bold text-white mb-5">
+                {plan.note && (
+                  <p className="text-[10px] text-emerald-400 font-medium mb-2">{plan.note}</p>
+                )}
+                <p className="text-slate-400 text-xs font-medium mb-1">{plan.name}</p>
+                <p className="text-3xl font-bold text-white mb-1">
                   {plan.price}<span className="text-sm text-slate-500 font-normal ml-1">{plan.period}</span>
                 </p>
+                {plan.accent && (
+                  <p className="text-[10px] text-slate-500 mb-4">年払いで2ヶ月分お得</p>
+                )}
+                {!plan.accent && <div className="mb-4" />}
                 <ul className="space-y-2.5 mb-6">
                   {plan.features.map(f => (
                     <li key={f} className="flex items-center gap-2 text-xs text-slate-400">
@@ -229,12 +242,13 @@ export default function HomePage() {
                   <Button className={`w-full h-10 rounded-xl font-semibold text-sm transition-all ${plan.accent
                     ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950'
                     : 'bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10'}`}>
-                    {plan.cta}
+                    {plan.cta} →
                   </Button>
                 </Link>
               </div>
             ))}
           </div>
+          <p className="text-center text-xs text-slate-600 mt-6">クレジットカード不要で無料登録 · いつでも解約可能</p>
         </div>
       </section>
 
