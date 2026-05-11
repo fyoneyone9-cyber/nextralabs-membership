@@ -63,6 +63,7 @@ interface GiftItem {
   reviewAverage: number
   reviewCount: number
   caption: string
+  isFallback?: boolean
 }
 
 interface Analysis {
@@ -79,6 +80,7 @@ interface GiftResult {
   analysis: Analysis
   searchKeyword: string
   remainingToday: number
+  hasRealItems: boolean
 }
 
 // ─── サブコンポーネント ────────────────────────────────────────────────────────
@@ -464,61 +466,97 @@ export default function GiftAdvisor() {
               <div className="flex items-center gap-2 mb-3">
                 <Gift size={16} className="text-emerald-400" />
                 <span className="text-sm font-semibold">おすすめ商品（楽天市場）</span>
-                <span className="text-xs text-slate-500 ml-auto">{result.items.length}件</span>
+                {!result.hasRealItems && (
+                  <span className="ml-auto text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">
+                    検索リンクモード
+                  </span>
+                )}
+                {result.hasRealItems && (
+                  <span className="text-xs text-slate-500 ml-auto">{result.items.length}件</span>
+                )}
               </div>
+
+              {/* フォールバック時の説明 */}
+              {!result.hasRealItems && (
+                <div className="mb-3 p-3 bg-amber-500/5 border border-amber-500/20 rounded-xl text-xs text-amber-300 leading-relaxed">
+                  💡 AIが提案するキーワードで楽天市場を直接検索できます。クリックして商品を探してください。
+                </div>
+              )}
+
               <div className="space-y-3">
                 {result.items.map((item, i) => (
-                  <div
-                    key={i}
-                    className={`bg-[#0d1117] border rounded-xl p-4 transition-all cursor-pointer ${
-                      selectedItem?.url === item.url
-                        ? 'border-emerald-500/50 ring-1 ring-emerald-500/20'
-                        : 'border-white/5 hover:border-emerald-500/30'
-                    }`}
-                    onClick={() => setSelectedItem(selectedItem?.url === item.url ? null : item)}
-                  >
-                    <div className="flex gap-3">
-                      {item.imageUrl && (
-                        <img
-                          src={item.imageUrl}
-                          alt={item.name}
-                          className="w-16 h-16 rounded-lg object-cover shrink-0 bg-slate-800"
-                          onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
-                        />
-                      )}
-                      <div className="flex-1 min-w-0 space-y-1">
-                        <p className="text-sm font-medium text-slate-200 leading-tight line-clamp-2">{item.name}</p>
-                        <div className="flex items-center gap-3">
-                          <span className="text-base font-bold text-emerald-400">
-                            ¥{item.price.toLocaleString()}
-                          </span>
-                          {item.reviewAverage > 0 && (
-                            <div className="flex items-center gap-1">
-                              <StarRating score={item.reviewAverage} />
-                              <span className="text-xs text-slate-500">({item.reviewCount})</span>
-                            </div>
-                          )}
+                  item.isFallback ? (
+                    // フォールバック: 楽天検索リンクボタン
+                    <a
+                      key={i}
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-4 bg-[#0d1117] border border-white/5 hover:border-emerald-500/40 rounded-xl transition-all group"
+                    >
+                      <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                        <Gift size={18} className="text-emerald-400" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-slate-200 group-hover:text-emerald-300 transition-colors">{item.name}</p>
+                        <p className="text-xs text-slate-500 mt-0.5">{item.caption}</p>
+                      </div>
+                      <ExternalLink size={14} className="text-slate-500 group-hover:text-emerald-400 transition-colors shrink-0" />
+                    </a>
+                  ) : (
+                    // 実商品カード
+                    <div
+                      key={i}
+                      className={`bg-[#0d1117] border rounded-xl p-4 transition-all cursor-pointer ${
+                        selectedItem?.url === item.url
+                          ? 'border-emerald-500/50 ring-1 ring-emerald-500/20'
+                          : 'border-white/5 hover:border-emerald-500/30'
+                      }`}
+                      onClick={() => setSelectedItem(selectedItem?.url === item.url ? null : item)}
+                    >
+                      <div className="flex gap-3">
+                        {item.imageUrl && (
+                          <img
+                            src={item.imageUrl}
+                            alt={item.name}
+                            className="w-16 h-16 rounded-lg object-cover shrink-0 bg-slate-800"
+                            onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+                          />
+                        )}
+                        <div className="flex-1 min-w-0 space-y-1">
+                          <p className="text-sm font-medium text-slate-200 leading-tight line-clamp-2">{item.name}</p>
+                          <div className="flex items-center gap-3">
+                            <span className="text-base font-bold text-emerald-400">
+                              ¥{item.price.toLocaleString()}
+                            </span>
+                            {item.reviewAverage > 0 && (
+                              <div className="flex items-center gap-1">
+                                <StarRating score={item.reviewAverage} />
+                                <span className="text-xs text-slate-500">({item.reviewCount})</span>
+                              </div>
+                            )}
+                          </div>
+                          <p className="text-xs text-slate-500">{item.shopName}</p>
                         </div>
-                        <p className="text-xs text-slate-500">{item.shopName}</p>
+                        <div className="flex flex-col items-end justify-between shrink-0">
+                          <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selectedItem?.url === item.url ? 'border-emerald-500 bg-emerald-500' : 'border-slate-700'}`}>
+                            {selectedItem?.url === item.url && <Check size={11} className="text-white" />}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex flex-col items-end justify-between shrink-0">
-                        <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selectedItem?.url === item.url ? 'border-emerald-500 bg-emerald-500' : 'border-slate-700'}`}>
-                          {selectedItem?.url === item.url && <Check size={11} className="text-white" />}
-                        </span>
-                      </div>
+                      {selectedItem?.url === item.url && item.caption && (
+                        <p className="text-xs text-slate-400 mt-3 leading-relaxed border-t border-white/5 pt-3">
+                          {item.caption}
+                        </p>
+                      )}
                     </div>
-                    {selectedItem?.url === item.url && item.caption && (
-                      <p className="text-xs text-slate-400 mt-3 leading-relaxed border-t border-white/5 pt-3">
-                        {item.caption}
-                      </p>
-                    )}
-                  </div>
+                  )
                 ))}
               </div>
             </div>
 
-            {/* 選択した商品の購入リンク */}
-            {selectedItem && (
+            {/* 選択した実商品の購入リンク */}
+            {selectedItem && !selectedItem.isFallback && (
               <a
                 href={selectedItem.url}
                 target="_blank"
