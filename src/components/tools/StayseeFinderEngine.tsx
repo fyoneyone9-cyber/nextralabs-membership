@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
@@ -46,7 +46,7 @@ function CallFrontButton({ t }: { t: Record<string, string> }) {
 
   if (noKey) return (
     <div className="text-xs text-center text-amber-400 py-2 px-4 rounded-xl" style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.2)' }}>
-      {t.callFront ? ${t.callFront}:  : ''}通話機能は管理者が設定後にご利用いただけます
+      {t.callFront ? `${t.callFront}:` : ''}通話機能は管理者が設定後にご利用いただけます
     </div>
   )
 
