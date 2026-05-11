@@ -152,19 +152,22 @@ export const CharacterMake: React.FC<CharacterMakeProps> = ({ onComplete, isSubm
               title="隙間時間（1日30分）" 
               desc="【スマホのみ】ポチポチ作業で着実に。" 
               active={data.time === 'gap'}
-              onClick={() => setData({...data, time:'gap'})} 
+              onClick={() => setData(prev => ({...prev, time:'gap'}))} 
             />
             <StyleButton 
               icon={<Calendar size={32} className="text-emerald-400" />} 
               title="集中稼働（1日2時間）" 
               desc="【PC推奨】腰を据えて収益を最大化。" 
               active={data.time === 'daily'}
-              onClick={() => setData({...data, time:'daily'})} 
+              onClick={() => setData(prev => ({...prev, time:'daily'}))} 
             />
           </div>
           <button 
             disabled={!data.time || isSubmitting}
-            onClick={() => onComplete(data)}
+            onClick={() => {
+              if (!data.time || isSubmitting) return;
+              onComplete(data);
+            }}
             className="w-full py-8 bg-emerald-600 text-slate-950 text-3xl font-bold rounded-[2.5rem] hover:bg-emerald-400 disabled:opacity-50 flex items-center justify-center gap-4 transition-all shadow-[0_20px_50px_rgba(16,185,129,0.4)] uppercase group"
           >
             {isSubmitting ? (
