@@ -1022,7 +1022,7 @@ const MasterEngine = () => {
   const [lockType, setLockType]           = useState<string>('fixed')
   const [fixedPassword, setFixedPassword] = useState<string>('8421')
   const [showSettings, setShowSettings]   = useState(false)
-  const [isOnline, setIsOnline]           = useState(true)
+  const [isOnline, setIsOnline]           = useState(false)
 
   // 翻訳ショートハンド（selectedLang が変わると自動再レンダー）
   const t = I18N[selectedLang as LangKey] ?? I18N['日本語']
@@ -1111,7 +1111,14 @@ const MasterEngine = () => {
       } else {
         // フォールバック: KIOSK用設定キャッシュを確認
         const cached = JSON.parse(localStorage.getItem('nextra_ai_pms_config') || '{}')
-        if (cached.pms) setPms(cached.pms)
+        if (cached.pms) {
+          setPms(cached.pms)
+          // PMSタイプが設定済み かつ none/offline でなければ接続中とみなす
+          const pmsApiKey = localStorage.getItem('dms_pms_pms_api_key') || ''
+          if (cached.pms !== 'none' && cached.pms !== 'offline' && pmsApiKey.trim()) {
+            setIsOnline(true)
+          }
+        }
         if (cached.pms === 'none' || cached.pms === 'offline') setIsOnline(false)
       }
       // 錠設定
