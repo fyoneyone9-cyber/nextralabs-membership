@@ -146,6 +146,36 @@ function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
             </div>
           )}
         </div>
+        {/* 管理者専用リンク（Ninja3のみ表示） */}
+        {isAdmin && (
+          <div className="mt-2 pt-2 border-t border-emerald-500/10 flex items-center gap-2">
+            <a
+              href={`/products/${product.id.replace('/app', '')}`}
+              className="flex-1 text-center text-[9px] font-medium px-2 py-1 rounded-md bg-emerald-500/5 text-emerald-600 border border-emerald-500/10 hover:bg-emerald-500/15 hover:text-emerald-400 transition-all"
+              onClick={e => e.stopPropagation()}
+            >
+              ⚙ LP編集
+            </a>
+            <a
+              href={`/products/${product.id}`}
+              className="flex-1 text-center text-[9px] font-medium px-2 py-1 rounded-md bg-sky-500/5 text-sky-600 border border-sky-500/10 hover:bg-sky-500/15 hover:text-sky-400 transition-all"
+              onClick={e => e.stopPropagation()}
+            >
+              🔗 直リンク
+            </a>
+            {product.adminLink && (
+              <a
+                href={product.adminLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 text-center text-[9px] font-medium px-2 py-1 rounded-md bg-amber-500/5 text-amber-600 border border-amber-500/10 hover:bg-amber-500/15 hover:text-amber-400 transition-all"
+                onClick={e => e.stopPropagation()}
+              >
+                🛠 管理
+              </a>
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   )
@@ -157,6 +187,7 @@ function ProductsList() {
   const [pickupTools, setPickupTools] = useState<typeof TOOLS>([])
   const [favorites, setFavorites] = useState<string[]>([])
   const [userId, setUserId] = useState<string | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -175,6 +206,8 @@ function ProductsList() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
       setUserId(user.id)
+      // 管理者判定（メールアドレスで照合）
+      if (user.email === ADMIN_EMAIL) setIsAdmin(true)
       const { data } = await supabase.from('user_favorites').select('tool_id').eq('user_id', user.id)
       if (data) setFavorites(data.map((r: any) => r.tool_id))
     }
@@ -212,14 +245,14 @@ function ProductsList() {
             <Sparkles className="w-5 h-5 text-emerald-400" />
             <h2 className="text-lg md:text-xl font-semibold text-white tracking-tight">ピックアップ</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{pickupTools.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} />)}</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{pickupTools.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} isAdmin={isAdmin} />)}</div>
         </section>
         <section>
           <div className="flex items-center gap-3 mb-4 border-l-4 border-emerald-500 pl-4 md:pl-6 py-0.5">
             <Gift className="w-5 h-5 text-emerald-400" />
             <h2 className="text-lg md:text-xl font-semibold text-white tracking-tight">無料トライアル</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{randomFree.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} />)}</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{randomFree.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} isAdmin={isAdmin} />)}</div>
         </section>
         {CATEGORIES.map((cat) => (
           <section key={cat.id} id={cat.id} style={{ scrollMarginTop: '5rem' }}>
@@ -227,7 +260,7 @@ function ProductsList() {
               <cat.icon className="w-5 h-5 text-slate-400" />
               <h2 className="text-lg md:text-xl font-semibold text-white tracking-tight">{cat.title}</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{PUBLIC_TOOLS.filter(t => t.cat === cat.id).map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} />)}</div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{PUBLIC_TOOLS.filter(t => t.cat === cat.id).map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} isAdmin={isAdmin} />)}</div>
           </section>
         ))}
       </div>
