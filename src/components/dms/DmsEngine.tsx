@@ -643,6 +643,8 @@ export default function DmsEngine() {
   const [bookings, setBookings] = useState<any[]>([])
   const [loadingBookings, setLoadingBookings] = useState(false)
   const [currentDate, setCurrentDate] = useState('')
+  const [orgName, setOrgName] = useState('')
+  const [activePmsType, setActivePmsType] = useState('')
 
   // ── フィルターバー state ──
   const [dateFilter, setDateFilter] = useState<'today' | 'tomorrow' | 'custom'>('today')
@@ -700,6 +702,8 @@ export default function DmsEngine() {
     const days = ['日','月','火','水','木','金','土']
     setCurrentDate(`${now.getMonth()+1}/${now.getDate()}(${days[now.getDay()]}) ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`)
     setProperties(loadProperties())
+    setOrgName(localStorage.getItem('dms_org_org_name') || '')
+    setActivePmsType(localStorage.getItem('dms_pms_pms_type') || '')
     fetchStayseeBookings()
   }, [])
 
@@ -937,7 +941,25 @@ export default function DmsEngine() {
                                 confirmed
                               </Badge>
                             </td>
-                            <td className="px-4 py-3 text-slate-400 text-xs">ビジネスホテルアップル</td>
+                            <td className="px-4 py-3 text-xs">
+                              <div className="flex flex-col gap-1">
+                                <span className="text-slate-300 font-medium">
+                                  {orgName || properties[0]?.name || '（施設名未設定）'}
+                                </span>
+                                {activePmsType && activePmsType !== 'PMS未接続（ローカル）' ? (
+                                  <span className="inline-flex items-center gap-1 text-[9px] font-semibold px-1.5 py-0.5 rounded-full w-fit"
+                                    style={{ background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.25)' }}>
+                                    <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
+                                    {activePmsType}
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center gap-1 text-[9px] font-semibold px-1.5 py-0.5 rounded-full w-fit"
+                                    style={{ background: 'rgba(100,116,139,0.1)', color: '#64748b', border: '1px solid #1e293b' }}>
+                                    📴 ローカル
+                                  </span>
+                                )}
+                              </div>
+                            </td>
                             <td className="px-4 py-3">
                               <p className="text-slate-600 text-[9px] font-medium uppercase">（未設定）</p>
                               <span className="text-sm font-bold text-white">{b.allocate_rooms?.[0]?.room_id || '---'}</span>
@@ -948,7 +970,10 @@ export default function DmsEngine() {
                                 {b.name_kanji}
                               </Link>
                             </td>
-                            <td className="px-4 py-3 text-slate-400 font-semibold text-xs uppercase">STAYSEE</td>
+                            <td className="px-4 py-3 font-semibold text-xs uppercase"
+                              style={{ color: activePmsType && activePmsType !== 'PMS未接続（ローカル）' ? '#34d399' : '#64748b' }}>
+                              {activePmsType && activePmsType !== 'PMS未接続（ローカル）' ? activePmsType.toUpperCase() : 'LOCAL'}
+                            </td>
                             <td className="px-4 py-3 font-mono text-slate-500 text-xs">{b.id}</td>
                             <td className="px-4 py-3 text-slate-300 font-semibold text-xs">{b.start_date?.substring(5)}</td>
                             <td className="px-4 py-3 text-right">
