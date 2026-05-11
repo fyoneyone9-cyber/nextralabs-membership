@@ -42,6 +42,7 @@ const TOOLS = [
   { id: 'travel-concierge/app', cat: 'hotel', title: 'AI旅行コンシェルジュ', sub: '楽天トラベル×Google Maps×AIで旅程を自動生成', icon: Plane, plan: 'スタンダード', done: true }, // ✅ LOCK 2026-05-11
   { id: 'pilgrimage-planner/app', cat: 'hotel', title: '推し活聖地巡礼プランナー', sub: 'YouTube URL → AI聖地特定 → 楽天トラベル自動提案', icon: MapPin, plan: 'スタンダード', done: true }, // ✅ LOCK 2026-05-11
   { id: 'smart-gardening/app', cat: 'life', title: 'AIスマートガーデニング', sub: '植物の声を聴く育成アドバイザー', icon: Sprout, plan: 'スタンダード', done: true },
+  { id: 'vercel-monitor/app', cat: 'biz', title: 'Vercel Fleet Monitor', sub: 'システムのデプロイ状況をリアルタイム監視', icon: Activity, plan: 'お見積もり', done: true, adminOnly: true },
 ]
 
 const CATEGORIES = [
