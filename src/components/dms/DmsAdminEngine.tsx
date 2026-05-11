@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect, useCallback } from 'react'
 import {
-  Users, Plus, Edit3, Trash2, RefreshCw, LogOut, Shield,
+  Plus, Edit3, RefreshCw, LogOut, Shield,
   Building, Mail, Phone, X, Save, Eye, EyeOff, CheckCircle2,
   AlertCircle, Loader2, Search
 } from 'lucide-react'
@@ -263,21 +263,6 @@ export default function DmsAdminEngine() {
     await fetchTenants()
   }
 
-  /* ── テナント削除 ── */
-  const handleDelete = async (tenant: Tenant) => {
-    if (!confirm(`「${tenant.company_name}」を削除しますか？\nこの操作は元に戻せません。`)) return
-    const res = await fetch(`/api/dms/tenants?id=${tenant.id}`, {
-      method: 'DELETE',
-      headers: { 'x-admin-key': 'nextra-admin-2026' }
-    })
-    if (res.ok) {
-      showMsg(true, `「${tenant.company_name}」を削除しました`)
-      await fetchTenants()
-    } else {
-      showMsg(false, '削除に失敗しました')
-    }
-  }
-
   /* ── ステータス切替 ── */
   const toggleStatus = async (tenant: Tenant) => {
     const newStatus = tenant.status === 'active' ? 'inactive' : 'active'
@@ -469,24 +454,14 @@ export default function DmsAdminEngine() {
                           </button>
                         </td>
                         <td className="px-4 py-3 text-right">
-                          <div className="flex items-center gap-1.5 justify-end">
-                            <button
-                              onClick={() => setEditingTenant(t)}
-                              className="w-7 h-7 rounded-lg flex items-center justify-center transition-all"
-                              style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.2)' }}
-                              title="編集"
-                            >
-                              <Edit3 size={12} />
-                            </button>
-                            <button
-                              onClick={() => handleDelete(t)}
-                              className="w-7 h-7 rounded-lg flex items-center justify-center transition-all"
-                              style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)' }}
-                              title="削除"
-                            >
-                              <Trash2 size={12} />
-                            </button>
-                          </div>
+                          <button
+                            onClick={() => setEditingTenant(t)}
+                            className="w-7 h-7 rounded-lg flex items-center justify-center transition-all"
+                            style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.2)' }}
+                            title="編集"
+                          >
+                            <Edit3 size={12} />
+                          </button>
                         </td>
                       </tr>
                     )

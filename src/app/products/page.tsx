@@ -13,6 +13,9 @@ import {
   Sprout, Zap, Building2, Database, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils, Plane, Activity
 } from 'lucide-react'
 
+// 管理者メール（このアドレスでログインしているユーザーのみ管理者リンクが見える）
+const ADMIN_EMAIL = 'f.yoneyone9@gmail.com'
+
 const TOOLS = [
   { id: 'universal-converter/app', cat: 'compress', title: '究極AIマルチコンバーター', sub: '動画・画像・PDFへの変換圧縮', icon: Repeat, plan: 'ライト', done: true },
   { id: 'nextra-ai/app', cat: 'hotel', title: 'Nextra AI', sub: 'チェックイン・予約・解錠OS', icon: Building2, plan: 'お見積もり', lpUrl: '/products/nextra-ai', target: 'both' },
@@ -54,10 +57,11 @@ const CATEGORIES = [
   { id: 'mind', title: '人間心理・対人戦略', icon: HeartHandshake, color: 'border-pink-500' }
 ]
 
-function ProductCard({ product, isFav, onToggleFav }: {
-  product: (typeof TOOLS[0]) & { done?: boolean; lpUrl?: string; target?: string }
+function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
+  product: (typeof TOOLS[0]) & { done?: boolean; lpUrl?: string; target?: string; adminLink?: string }
   isFav: boolean
   onToggleFav: (e: React.MouseEvent, id: string) => void
+  isAdmin?: boolean
 }) {
   const planLabelMap: Record<string, string> = { '無料': 'FREE', 'ライト': 'LIGHT', 'スタンダード': 'STANDARD', 'プレミアム': 'MASTER', 'お見積もり': 'ENTERPRISE' }
   const displayBadge = planLabelMap[product.plan] || 'BASIC'

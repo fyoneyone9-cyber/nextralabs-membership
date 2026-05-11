@@ -1,6 +1,6 @@
 ﻿'use client'
 import Link from 'next/link'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import DmsBookingEditor from './DmsBookingEditor'
 import DmsPropertyEditor from './DmsPropertyEditor'
-import LockListContent, { LockListHeaderActions } from './LockListEngine'
+import LockListContent, { LockListHeaderActions, LockListRef } from './LockListEngine'
 import RoomListContent from './RoomListEngine'
 import DeleteConfirmDialog from './DeleteConfirmDialog'
 import { CloudPmsStorage } from '@/lib/cloud-pms-storage'
@@ -420,7 +420,13 @@ export default function DmsEngine() {
   const [lockSearchQuery, setLockSearchQuery] = useState('')
   const [roomSearchQuery, setRoomSearchQuery] = useState('')
   const [lockDeleting, setLockDeleting] = useState(false)
-  const [lockUnusedCount, setLockUnusedCount] = useState(2)
+  const [lockUnusedCount, setLockUnusedCount] = useState(0)
+  const [lockTotalCount, setLockTotalCount] = useState(0)
+  const lockListRef = useRef<LockListRef>(null)
+  const handleLockCountChange = useCallback((total: number, unused: number) => {
+    setLockTotalCount(total)
+    setLockUnusedCount(unused)
+  }, [])
   const [bookings, setBookings] = useState<any[]>([])
   const [loadingBookings, setLoadingBookings] = useState(false)
   const [currentDate, setCurrentDate] = useState('')
@@ -528,9 +534,14 @@ export default function DmsEngine() {
               </Button>
             )}
             {activeTab === 'lock-list' && (
-              <LockListHeaderActions searchQuery={lockSearchQuery} setSearchQuery={setLockSearchQuery}
-                onDeleteUnused={() => { if (lockUnusedCount === 0) return; if (!confirm(`未使用の鍵 ${lockUnusedCount}件 を全て削除しますか？`)) return; setLockDeleting(true); setTimeout(() => { setLockUnusedCount(0); setLockDeleting(false) }, 800) }}
-                deleting={lockDeleting} unusedCount={lockUnusedCount}
+              <LockListHeaderActions
+                searchQuery={lockSearchQuery}
+                setSearchQuery={setLockSearchQuery}
+                onDeleteUnused={() => lockListRef.current?.triggerDeleteUnused()}
+                onDeleteAll={() => lockListRef.current?.triggerDeleteAll()}
+                deleting={lockDeleting}
+                unusedCount={lockUnusedCount}
+                totalCount={lockTotalCount}
               />
             )}
             {activeTab === 'room-list' && (
@@ -872,7 +883,11 @@ export default function DmsEngine() {
 
           {/* 錠デバイス一覧 */}
           {activeTab === 'lock-list' && (
-            <LockListContent searchQuery={lockSearchQuery} />
+            <LockListContent
+              ref={lockListRef}
+              searchQuery={lockSearchQuery}
+              onCountChange={handleLockCountChange}
+            />
           )}
 
           {/* 物件新規作成 */}
