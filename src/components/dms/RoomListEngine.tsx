@@ -5,6 +5,7 @@ import {
   Plus, Search, RefreshCw, Edit3, Phone, Lock,
   Monitor, Loader2, CheckCircle2, Building, X, Save
 } from 'lucide-react'
+import DeleteConfirmDialog from './DeleteConfirmDialog'
 
 /* ══════════ 型定義 ══════════ */
 export interface Room {
@@ -203,6 +204,7 @@ export default function RoomListContent({
   const [pmsMode, setPmsMode] = useState(false)
   const [editingRoom, setEditingRoom] = useState<Partial<Room> | null>(null)
   const [syncMsg, setSyncMsg] = useState<{ ok: boolean; text: string } | null>(null)
+  const [confirmTarget, setConfirmTarget] = useState<Room | null>(null)
 
   /* ── ローカルデータ読み込み ── */
   const loadLocal = useCallback((): Room[] => {
@@ -224,7 +226,16 @@ export default function RoomListContent({
     setSyncing(true)
     setSyncMsg(null)
     try {
-      const res = await fetch('/api/nextra-ai/rooms')
+      const pmsConfig = (() => {
+        try { return JSON.parse(localStorage.getItem('nextra_ai_pms_config') || '{}') } catch { return {} }
+      })()
+      const pmsApiKey: string = pmsConfig.fields?.apiKey
+        || localStorage.getItem('dms_pms_pms_api_key')
+        || ''
+
+      const res = await fetch('/api/nextra-ai/rooms', {
+        headers: pmsApiKey ? { 'x-pms-api-key': pmsApiKey } : {},
+      })
       const data = await res.json()
       if (data.rooms && Array.isArray(data.rooms)) {
         const pmsRooms: Room[] = data.rooms.map((r: {
@@ -291,7 +302,6 @@ export default function RoomListContent({
 
   /* ── 部屋削除 ── */
   const handleDelete = (id: string) => {
-    if (!confirm('この部屋を削除しますか？')) return
     setRooms(prev => {
       const next = prev.filter(r => r.id !== id)
       saveLocal(next)
@@ -480,8 +490,8 @@ export default function RoomListContent({
                         </button>
                         {r.source === 'local' && (
                           <button
-                            onClick={() => handleDelete(r.id)}
-                            className="w-7 h-7 rounded-lg flex items-center justify-center transition-all opacity-0 group-hover:opacity-100"
+                            onClick={() => setConfirmTarget(r)}
+                            className="w-7 h-7 rounded-lg flex items-center justify-center transition-all"
                             style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171' }}
                           >
                             <X size={12} />
@@ -505,6 +515,18 @@ export default function RoomListContent({
           onClose={() => setEditingRoom(null)}
         />
       )}
+
+      <DeleteConfirmDialog
+        open={confirmTarget !== null}
+        title={confirmTarget ? `「${confirmTarget.displayName}」を削除しますか？` : ''}
+        description="この部屋のデータをローカルから削除します。PMS連携データは影響を受けません。"
+        onConfirm={() => {
+          if (!confirmTarget) return
+          handleDelete(confirmTarget.id)
+          setConfirmTarget(null)
+        }}
+        onCancel={() => setConfirmTarget(null)}
+      />
     </div>
   )
 }

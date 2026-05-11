@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Lock, Plus, Trash2, RefreshCw, Search } from 'lucide-react'
+import DeleteConfirmDialog from './DeleteConfirmDialog'
 
 interface LockDevice {
   id: string
@@ -86,6 +87,7 @@ export default function LockListContent({
 }) {
   const [locks, setLocks] = useState<LockDevice[]>(SAMPLE_LOCKS)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [confirmTarget, setConfirmTarget] = useState<LockDevice | null>(null)
 
   const usedCount = locks.filter(l => l.inUse).length
   const unusedCount = locks.filter(l => !l.inUse).length
@@ -96,18 +98,7 @@ export default function LockListContent({
     l.room.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const handleDelete = (lock: LockDevice) => {
-    const confirmed = window.confirm(
-      `「${lock.name}」を削除しますか？\nこの操作は元に戻せません。`
-    )
-    if (!confirmed) return
-    setDeletingId(lock.id)
-    // 削除アニメーション後にリストから除去
-    setTimeout(() => {
-      setLocks(prev => prev.filter(l => l.id !== lock.id))
-      setDeletingId(null)
-    }, 400)
-  }
+  // handleDelete は confirmTarget 経由で処理するため削除
 
   return (
     <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl overflow-hidden shadow-xl">
@@ -176,7 +167,7 @@ export default function LockListContent({
                   </td>
                   <td className="px-5 py-3 text-center">
                     <button
-                      onClick={() => handleDelete(lock)}
+                      onClick={() => setConfirmTarget(lock)}
                       disabled={deletingId === lock.id}
                       title={`${lock.name} を削除`}
                       className="inline-flex items-center justify-center w-7 h-7 rounded-lg border border-red-500/20 text-red-500/50 hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-400 transition-all disabled:opacity-30"
@@ -198,6 +189,22 @@ export default function LockListContent({
           <p className="text-[10px] text-slate-700">検索結果: {filteredLocks.length} 件</p>
         )}
       </div>
+      <DeleteConfirmDialog
+        open={confirmTarget !== null}
+        title={confirmTarget ? `「${confirmTarget.name}」を削除しますか？` : ''}
+        description={confirmTarget?.inUse ? 'この鍵は現在使用中の部屋に紐づいています。' : '未使用の鍵デバイスです。'}
+        warning="この操作は元に戻せません。削除すると復元できません。"
+        onConfirm={() => {
+          if (!confirmTarget) return
+          setDeletingId(confirmTarget.id)
+          setTimeout(() => {
+            setLocks(prev => prev.filter(l => l.id !== confirmTarget.id))
+            setDeletingId(null)
+            setConfirmTarget(null)
+          }, 400)
+        }}
+        onCancel={() => setConfirmTarget(null)}
+      />
     </div>
   )
 }

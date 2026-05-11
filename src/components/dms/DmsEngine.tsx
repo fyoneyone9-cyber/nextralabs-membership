@@ -6,12 +6,13 @@ import { Button } from '@/components/ui/button'
 import {
   PenLine, MessageSquare, Building, Lock, Monitor, Video, Car, FileBarChart,
   Settings, Database, LogOut, ArrowRight, Search, RefreshCw,
-  Download, Plus, Edit3, BookText, Wrench, Plane, MapPin, Sparkles, ExternalLink
+  Download, Plus, Edit3, BookText, Wrench, Plane, MapPin, Sparkles, ExternalLink, Trash2
 } from 'lucide-react'
 import DmsBookingEditor from './DmsBookingEditor'
 import DmsPropertyEditor from './DmsPropertyEditor'
 import LockListContent, { LockListHeaderActions } from './LockListEngine'
 import RoomListContent from './RoomListEngine'
+import DeleteConfirmDialog from './DeleteConfirmDialog'
 import { CloudPmsStorage } from '@/lib/cloud-pms-storage'
 import { useSearchParams } from 'next/navigation'
 
@@ -133,6 +134,7 @@ export default function DmsEngine() {
   const [activeTab, setActiveTab] = useState('checkin')
   const [editingBooking, setEditingBooking] = useState<any>(null)
   const [editingProperty, setEditingProperty] = useState<any>(null)
+  const [confirmDeleteProperty, setConfirmDeleteProperty] = useState<string | null>(null)
   const [propView, setPropView] = useState<'list' | 'create'>('list')
   const [lockSearchQuery, setLockSearchQuery] = useState('')
   const [roomSearchQuery, setRoomSearchQuery] = useState('')
@@ -605,12 +607,21 @@ export default function DmsEngine() {
                   <tr className="hover:bg-white/5 transition-colors">
                     <td className="px-5 py-4 font-semibold text-slate-200">ビジネスホテルアップル</td>
                     <td className="px-5 py-4 text-right">
-                      <button
-                        onClick={() => setEditingProperty({ name: 'ビジネスホテルアップル' })}
-                        className="w-9 h-9 bg-emerald-600 hover:bg-emerald-500 rounded-xl flex items-center justify-center text-white ml-auto transition-all"
-                      >
-                        <Edit3 size={15} />
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => setEditingProperty({ name: 'ビジネスホテルアップル' })}
+                          className="w-9 h-9 bg-emerald-600 hover:bg-emerald-500 rounded-xl flex items-center justify-center text-white transition-all"
+                        >
+                          <Edit3 size={15} />
+                        </button>
+                        <button
+                          onClick={() => setConfirmDeleteProperty('ビジネスホテルアップル')}
+                          className="w-7 h-7 rounded-lg flex items-center justify-center ml-2 transition-all"
+                          style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)' }}
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -710,6 +721,14 @@ export default function DmsEngine() {
 
       {editingBooking && <DmsBookingEditor booking={editingBooking.name_kanji ? editingBooking : null} onClose={() => setEditingBooking(null)} />}
       {editingProperty && <DmsPropertyEditor property={editingProperty} isDarkMode={true} onClose={() => setEditingProperty(null)} />}
+      <DeleteConfirmDialog
+        open={confirmDeleteProperty !== null}
+        title={confirmDeleteProperty ? `「${confirmDeleteProperty}」を削除しますか？` : ''}
+        description="物件を削除すると、紐づく部屋・鍵デバイスの設定も失われます。"
+        warning="この操作は元に戻せません。削除すると復元できません。"
+        onConfirm={() => setConfirmDeleteProperty(null)}
+        onCancel={() => setConfirmDeleteProperty(null)}
+      />
     </div>
   )
 }
