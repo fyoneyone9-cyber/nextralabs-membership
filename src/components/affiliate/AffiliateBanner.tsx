@@ -44,9 +44,6 @@ export default function AffiliateBanner({ toolId }: Props) {
         ))}
       </div>
 
-      <p className="text-[9px] text-slate-700 mt-2">
-        ※ Amazonアソシエイト・プログラム参加者。リンク経由の購入でNextraLabsの運営に役立てられます。
-      </p>
     </div>
   )
 }
