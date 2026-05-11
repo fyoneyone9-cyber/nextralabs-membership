@@ -11,7 +11,7 @@ import {
   FileText, ArrowRight, Network, Store, 
   ClipboardCheck, ShieldCheck, Wallet, Home, 
   Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, BookOpen, 
-  Sprout, Zap, Building2, Database, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils, Plane, Activity, CalendarHeart
+  Sprout, Zap, Building2, Database, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils, Plane, Activity, CalendarHeart, CalendarCheck
 } from 'lucide-react'
 
 // 管理者メール（このアドレスでログインしているユーザーのみ管理者リンクが見える）
@@ -47,6 +47,8 @@ const TOOLS = [
   { id: 'gift-advisor/app', cat: 'life', title: 'AI先回りギフトナビ', sub: 'カレンダー連携×楽天×Geminiで最適ギフトを先回り提案', icon: CalendarHeart, plan: 'スタンダード' },
   { id: 'smart-gardening/app', cat: 'life', title: 'AIスマートガーデニング', sub: '植物の声を聴く育成アドバイザー', icon: Sprout, plan: 'スタンダード', done: true },
   { id: 'vercel-monitor/app', cat: 'biz', title: 'Vercel Fleet Monitor', sub: 'システムのデプロイ状況をリアルタイム監視', icon: Activity, plan: 'お見積もり', done: true, adminOnly: true },
+  // ── 婚活・結婚相談所ジャンル ──
+  { id: 'konkatsu-scheduler/app', cat: 'konkatsu', title: 'AI即アポ調整くん', sub: 'Google Calendar連携でお見合い日程を自動確定', icon: CalendarCheck, plan: 'スタンダード', lpUrl: '/products/konkatsu-scheduler' },
 ]
 
 const CATEGORIES = [
@@ -56,7 +58,8 @@ const CATEGORIES = [
   { id: 'life', title: '防犯・資産・ライフ', icon: ShieldCheck, color: 'border-red-500' },
   { id: 'edu', title: '学習・自己研鑽', icon: BookOpen, color: 'border-emerald-500' },
   { id: 'biz', title: 'ビジネス・自動化', icon: Briefcase, color: 'border-emerald-500' },
-  { id: 'mind', title: '人間心理・対人戦略', icon: HeartHandshake, color: 'border-pink-500' }
+  { id: 'mind', title: '人間心理・対人戦略', icon: HeartHandshake, color: 'border-pink-500' },
+  { id: 'konkatsu', title: '婚活・結婚相談所DX', icon: HeartHandshake, color: 'border-pink-500' },
 ]
 
 function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
