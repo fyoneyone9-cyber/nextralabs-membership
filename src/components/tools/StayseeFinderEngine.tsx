@@ -543,6 +543,67 @@ function PmsBanner({
   )
 }
 
+/* ─────────── フロント通話設定（Daily.co APIキー） ─────────── */
+function DailyApiKeySection() {
+  const STORAGE_KEY = 'dms_org_daily_api_key'
+  const [apiKey, setApiKey] = React.useState(() =>
+    typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) || '' : ''
+  )
+  const [show, setShow] = React.useState(false)
+  const [saved, setSaved] = React.useState(false)
+
+  const handleSave = () => {
+    localStorage.setItem(STORAGE_KEY, apiKey.trim())
+    setSaved(true)
+    setTimeout(() => setSaved(false), 3000)
+  }
+
+  return (
+    <div className="space-y-3 rounded-xl p-4" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
+      <div className="flex items-center gap-2">
+        <Video size={13} style={{ color: '#10b981' }} />
+        <span className="text-xs font-semibold text-slate-300">フロント通話設定（Daily.co）</span>
+      </div>
+      <p className="text-[10px] text-slate-500 leading-relaxed">
+        トップ画面の「フロントを呼び出す」ボタンでビデオ通話を使うには、<br />
+        <a href="https://dashboard.daily.co" target="_blank" rel="noreferrer" className="text-emerald-400 underline">dashboard.daily.co</a> で取得したAPIキーを入力してください。<br />
+        ※ 無料プランで利用可能。設定後すぐに通話ボタンが有効になります。
+      </p>
+      <div className="space-y-1">
+        <label className="text-[10px] font-medium text-slate-500">Daily.co APIキー</label>
+        <p className="text-[10px] text-slate-600">📍 dashboard.daily.co → Developers → API keys → Generate key</p>
+        <div className="flex gap-2">
+          <input
+            type={show ? 'text' : 'password'}
+            value={apiKey}
+            onChange={e => setApiKey(e.target.value)}
+            placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            className="flex-1 h-11 px-3 rounded-lg text-xs text-slate-200 font-mono outline-none"
+            style={{ background: '#0d1117', border: '1px solid #334155' }}
+            onFocus={e => (e.target.style.borderColor = '#10b981')}
+            onBlur={e => (e.target.style.borderColor = '#334155')}
+          />
+          <button onClick={() => setShow(v => !v)}
+            className="shrink-0 h-11 px-3 rounded-lg text-xs transition-all"
+            style={{ background: '#0d1117', border: '1px solid #334155', color: '#64748b' }}>
+            {show ? '🙈' : '👁'}
+          </button>
+        </div>
+      </div>
+      <button onClick={handleSave}
+        className="w-full h-9 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all"
+        style={{ background: apiKey.trim() ? '#10b981' : '#1e293b', color: '#fff', border: '1px solid #334155' }}>
+        {saved ? <><CheckCircle2 size={12} /> 保存しました！通話ボタンが有効になりました</> : '💾 APIキーを保存する'}
+      </button>
+      {!apiKey.trim() && (
+        <p className="text-[10px] text-amber-400 flex items-center gap-1">
+          ⚠️ APIキー未設定のため、フロント呼び出しボタンは現在使用できません
+        </p>
+      )}
+    </div>
+  )
+}
+
 /* ─────────── 設定パネル（APIキー入力→保存→接続テスト） ─────────── */
 type ConnectStatus = { ok: boolean; message: string } | null
 
@@ -1000,6 +1061,9 @@ function SettingsPanel({
             </div>
           )}
         </div>
+
+        {/* ── フロント通話設定（Daily.co APIキー） ── */}
+        <DailyApiKeySection />
 
         <button onClick={onClose}
           className="w-full h-11 rounded-xl text-sm font-semibold transition-all"
