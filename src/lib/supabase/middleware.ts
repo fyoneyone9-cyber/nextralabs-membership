@@ -76,8 +76,8 @@ export async function updateSession(request: NextRequest) {
   const isDmsLoginPage  = pathname === '/dms/login'
   const isDmsAdminRoute = pathname.startsWith('/dms/admin')
 
-  // ── KIOSK ガード（/products/nextra-ai/app はDMSセッション必須） ──
-  if (pathname.startsWith('/products/nextra-ai')) {
+  // ── KIOSK ガード（/products/nextra-ai/app はDMSセッション必須、LPページは除外） ──
+  if (pathname.startsWith('/products/nextra-ai') && pathname !== '/products/nextra-ai') {
     const dmsSession = request.cookies.get('dms_session')?.value
     let isStaff = false
     if (dmsSession) {
