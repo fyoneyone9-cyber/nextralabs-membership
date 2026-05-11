@@ -1,13 +1,74 @@
-'use client'
+﻿'use client'
 import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import {
   CheckCircle2, Lock, Camera, Loader2,
   UserPlus, Search, Key, LogOut, QrCode,
-  Monitor, ClipboardList, ArrowRight, PenLine, Phone, Hash,
+  Monitor, ClipboardList, ArrowRight, PenLine, Phone, Hash, Video,
   Wifi, WifiOff, Settings, ChevronDown, Shield, Trash2
 } from 'lucide-react'
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* フロント呼び出しボタンコンポーネント                                         */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function CallFrontButton({ t }: { t: Record<string, string> }) {
+  const [calling, setCalling] = React.useState(false)
+  const [error, setError] = React.useState('')
+  const [noKey, setNoKey] = React.useState(false)
+
+  const handleCall = async () => {
+    setError('')
+    const apiKey = localStorage.getItem('dms_org_daily_api_key') || ''
+    if (!apiKey.trim()) {
+      setNoKey(true)
+      setTimeout(() => setNoKey(false), 3000)
+      return
+    }
+    setCalling(true)
+    try {
+      const res = await fetch('/api/dms/daily-room', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-daily-api-key': apiKey },
+        body: JSON.stringify({ propertyName: 'フロント' }),
+      })
+      if (!res.ok) { setError('通話の開始に失敗しました'); return }
+      const data = await res.json()
+      const history = JSON.parse(localStorage.getItem('dms_call_history') || '[]')
+      history.unshift({ id: data.name, roomName: data.name, roomUrl: data.url, propertyName: data.propertyName, createdAt: data.createdAt, status: 'active' })
+      localStorage.setItem('dms_call_history', JSON.stringify(history.slice(0, 50)))
+      window.open(data.url, '_blank')
+    } catch {
+      setError('ネットワークエラーが発生しました')
+    } finally {
+      setCalling(false)
+    }
+  }
+
+  if (noKey) return (
+    <div className="text-xs text-center text-amber-400 py-2 px-4 rounded-xl" style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.2)' }}>
+      {t.callFront ? ${t.callFront}:  : ''}通話機能は管理者が設定後にご利用いただけます
+    </div>
+  )
+
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <button
+        onClick={handleCall}
+        disabled={calling}
+        className="flex items-center gap-3 px-8 py-4 rounded-2xl text-white font-semibold text-base transition-all active:scale-95 disabled:opacity-60"
+        style={{ background: calling ? '#059669' : '#10b981', boxShadow: '0 0 24px rgba(16,185,129,0.3)' }}
+      >
+        {calling ? (
+          <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />{t.callFront || 'フロントを呼び出す'}</>
+        ) : (
+          <><Video size={20} />{t.callFront || 'フロントを呼び出す'}</>
+        )}
+      </button>
+      {t.callFrontSub && <p className="text-xs text-slate-600">{t.callFrontSub}</p>}
+      {error && <p className="text-xs text-red-400">{error}</p>}
+    </div>
+  )
+}
 
 /* ─────────── 多言語辞書 ─────────── */
 const I18N = {
@@ -17,6 +78,10 @@ const I18N = {
     checkin: 'チェックイン',
     checkinSub: 'CHECK IN',
     staffMenu: 'スタッフメニュー',
+    callFront: 'フロントを呼び出す',
+    callFrontSub: 'スタッフにビデオ通話で連絡',
+    callFront: 'フロントを呼び出す',
+    callFrontSub: 'スタッフにビデオ通話で連絡',
     // STEP 2
     step2Title: '予約の確認',
     step2Sub: 'お名前・予約番号・電話番号で検索できます',
@@ -55,6 +120,10 @@ const I18N = {
     checkin: 'Check In',
     checkinSub: 'TAP TO START',
     staffMenu: 'Staff Menu',
+    callFront: 'Call Front Desk',
+    callFrontSub: 'Video call with staff',
+    callFront: 'Call Front Desk',
+    callFrontSub: 'Video call with staff',
     step2Title: 'Find Your Reservation',
     step2Sub: 'Search by name, reservation number, or phone',
     byReservation: 'Reservation No.', byReservationSub: 'Booking ID',
@@ -88,6 +157,8 @@ const I18N = {
     checkin: '办理入住',
     checkinSub: '点击开始',
     staffMenu: '员工菜单',
+    callFront: '呼叫前台',
+    callFrontSub: '通过视频通话联系工作人员',
     step2Title: '查找预订',
     step2Sub: '请通过姓名、预订号或电话号码进行搜索',
     byReservation: '预订号', byReservationSub: '订单编号',
@@ -121,6 +192,8 @@ const I18N = {
     checkin: '체크인',
     checkinSub: '터치하여 시작',
     staffMenu: '직원 메뉴',
+    callFront: '프론트 호출',
+    callFrontSub: '영상통화로 직원에게 연락',
     step2Title: '예약 확인',
     step2Sub: '이름, 예약번호, 전화번호로 검색하세요',
     byReservation: '예약번호', byReservationSub: '예약 ID',
@@ -1522,6 +1595,9 @@ const MasterEngine = () => {
               </div>
             </button>
 
+
+            {/* フロント呼び出しボタン */}
+            <CallFrontButton t={t} />
             {/* スタッフメニュー（目立たない） */}
             <button
               onClick={() => setShowPinOverlay(true)}
