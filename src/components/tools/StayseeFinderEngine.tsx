@@ -1131,6 +1131,7 @@ const MasterEngine = () => {
   const [checkoutTarget, setCheckoutTarget]   = useState<Reservation | null>(null)
   const [checkoutSearching, setCheckoutSearching] = useState(false)
   const [checkoutStep, setCheckoutStep]       = useState<'search'|'confirm'|'processing'|'done'>('search')
+  const [coMode, setCoMode]                   = useState<'select'|'reservation'|'name'|'phone'>('select')
   const [hasExtraCharge] = useState(false)
 
   /* ── Fullscreen（初回タッチで全画面） ── */
@@ -1467,7 +1468,7 @@ const MasterEngine = () => {
     }
     setActiveTab(id)
     if (id === 'search') { setSearchMode('select'); setSearchQuery(''); setSearchResults([]) }
-    if (id === 'checkout') { setCheckoutStep('search'); setCheckoutQuery(''); setCheckoutResults([]); setCheckoutTarget(null) }
+    if (id === 'checkout') { setCheckoutStep('search'); setCheckoutQuery(''); setCheckoutResults([]); setCheckoutTarget(null); setCoMode('select') }
   }
 
   if (!isMounted) return null
@@ -2068,95 +2069,91 @@ const MasterEngine = () => {
             <div className="p-8 space-y-6">
 
               {/* ── STEP: search（3択カード＋入力） ── */}
-              {checkoutStep === 'search' && (() => {
-                type CoMode = 'select' | 'reservation' | 'name' | 'phone'
-                const [coMode, setCoMode] = React.useState<CoMode>('select')
-                return (
-                  <>
-                    {coMode === 'select' && (
-                      <div className="grid grid-cols-3 gap-5">
-                        {[
-                          { mode: 'reservation' as CoMode, icon: Hash,         label: '予約番号',  sub: 'Reservation No.', color: '#818cf8' },
-                          { mode: 'name'        as CoMode, icon: ClipboardList, label: 'お名前',    sub: 'Guest Name',       color: '#6366f1' },
-                          { mode: 'phone'       as CoMode, icon: Phone,         label: '電話番号',  sub: 'Phone Number',     color: '#a78bfa' },
-                        ].map(item => (
-                          <button key={item.mode} onClick={() => setCoMode(item.mode)}
-                            className="rounded-2xl py-10 flex flex-col items-center justify-center gap-4 transition-all hover:scale-[1.02] active:scale-[0.98]"
-                            style={{ background: '#13141f', border: `2px solid ${item.color}25` }}
-                            onMouseEnter={e => (e.currentTarget.style.borderColor = `${item.color}80`)}
-                            onMouseLeave={e => (e.currentTarget.style.borderColor = `${item.color}25`)}>
-                            <item.icon size={52} style={{ color: item.color }} />
-                            <div className="text-center">
-                              <p className="text-base font-semibold text-slate-200">{item.label}</p>
-                              <p className="text-xs text-slate-600 mt-1">{item.sub}</p>
-                            </div>
-                          </button>
-                        ))}
+              {checkoutStep === 'search' && (
+                <>
+                  {coMode === 'select' && (
+                    <div className="grid grid-cols-3 gap-5">
+                      {[
+                        { mode: 'reservation' as const, icon: Hash,         label: '予約番号',  sub: 'Reservation No.', color: '#818cf8' },
+                        { mode: 'name'        as const, icon: ClipboardList, label: 'お名前',    sub: 'Guest Name',       color: '#6366f1' },
+                        { mode: 'phone'       as const, icon: Phone,         label: '電話番号',  sub: 'Phone Number',     color: '#a78bfa' },
+                      ].map(item => (
+                        <button key={item.mode} onClick={() => setCoMode(item.mode)}
+                          className="rounded-2xl py-10 flex flex-col items-center justify-center gap-4 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                          style={{ background: '#13141f', border: `2px solid ${item.color}25` }}
+                          onMouseEnter={e => (e.currentTarget.style.borderColor = `${item.color}80`)}
+                          onMouseLeave={e => (e.currentTarget.style.borderColor = `${item.color}25`)}>
+                          <item.icon size={52} style={{ color: item.color }} />
+                          <div className="text-center">
+                            <p className="text-base font-semibold text-slate-200">{item.label}</p>
+                            <p className="text-xs text-slate-600 mt-1">{item.sub}</p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {coMode !== 'select' && (
+                    <div className="rounded-2xl p-6 space-y-5" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
+                      <div className="flex items-center justify-between">
+                        <p className="text-lg font-semibold text-slate-200">
+                          {coMode === 'reservation' ? '予約番号を入力' : coMode === 'name' ? 'お名前を入力' : '電話番号を入力'}
+                        </p>
+                        <button onClick={() => { setCoMode('select'); setCheckoutResults([]) }}
+                          className="text-sm text-slate-600 hover:text-slate-400 transition-colors px-3 py-2 rounded-lg"
+                          style={{ border: '1px solid #334155' }}>← 戻る</button>
                       </div>
-                    )}
+                      <div className="flex gap-3">
+                        <input
+                          value={checkoutQuery}
+                          onChange={e => setCheckoutQuery(e.target.value)}
+                          onKeyDown={e => e.key === 'Enter' && doCheckoutSearch()}
+                          placeholder={coMode === 'reservation' ? 'NTR-001' : coMode === 'name' ? '山田 太郎' : '090-1234-5678'}
+                          className="flex-1 h-14 text-lg rounded-xl px-5"
+                          style={{ background: '#0d1117', border: '2px solid #334155', color: '#f1f5f9', outline: 'none' }}
+                          onFocus={e => (e.target.style.borderColor = '#818cf8')}
+                          onBlur={e => (e.target.style.borderColor = '#334155')}
+                        />
+                        <button onClick={doCheckoutSearch} disabled={checkoutSearching}
+                          className="shrink-0 h-14 px-8 rounded-xl text-base font-semibold flex items-center gap-2 transition-all"
+                          style={{ background: '#6366f1', color: '#fff', opacity: checkoutSearching ? 0.7 : 1 }}>
+                          {checkoutSearching ? <Loader2 size={18} className="animate-spin" /> : <Search size={18} />}
+                          検索
+                        </button>
+                      </div>
 
-                    {coMode !== 'select' && (
-                      <div className="rounded-2xl p-6 space-y-5" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
-                        <div className="flex items-center justify-between">
-                          <p className="text-lg font-semibold text-slate-200">
-                            {coMode === 'reservation' ? '予約番号を入力' : coMode === 'name' ? 'お名前を入力' : '電話番号を入力'}
-                          </p>
-                          <button onClick={() => { setCoMode('select'); setCheckoutResults([]) }}
-                            className="text-sm text-slate-600 hover:text-slate-400 transition-colors px-3 py-2 rounded-lg"
-                            style={{ border: '1px solid #334155' }}>← 戻る</button>
-                        </div>
-                        <div className="flex gap-3">
-                          <input
-                            value={checkoutQuery}
-                            onChange={e => setCheckoutQuery(e.target.value)}
-                            onKeyDown={e => e.key === 'Enter' && doCheckoutSearch()}
-                            placeholder={coMode === 'reservation' ? 'NTR-001' : coMode === 'name' ? '山田 太郎' : '090-1234-5678'}
-                            className="flex-1 h-14 text-lg rounded-xl px-5"
-                            style={{ background: '#0d1117', border: '2px solid #334155', color: '#f1f5f9', outline: 'none' }}
-                            onFocus={e => (e.target.style.borderColor = '#818cf8')}
-                            onBlur={e => (e.target.style.borderColor = '#334155')}
-                          />
-                          <button onClick={doCheckoutSearch} disabled={checkoutSearching}
-                            className="shrink-0 h-14 px-8 rounded-xl text-base font-semibold flex items-center gap-2 transition-all"
-                            style={{ background: '#6366f1', color: '#fff', opacity: checkoutSearching ? 0.7 : 1 }}>
-                            {checkoutSearching ? <Loader2 size={18} className="animate-spin" /> : <Search size={18} />}
-                            検索
-                          </button>
-                        </div>
-
-                        {checkoutResults.length > 0 && (
-                          <div className="space-y-3 pt-2">
-                            <p className="text-sm text-slate-500">{checkoutResults.length}件見つかりました</p>
-                            {checkoutResults.map(r => (
-                              <div key={r.id} className="rounded-xl p-5 flex items-center justify-between gap-4"
-                                style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
-                                <div className="space-y-1.5">
-                                  <p className="text-lg font-semibold text-slate-100">{resName(r)} 様</p>
-                                  <p className="text-sm text-slate-400">
-                                    {resRoom(r)}号室 &nbsp;·&nbsp; {resDate(r.start_date)}〜{resDate(r.end_date)}
-                                  </p>
-                                  <p className="text-xs text-slate-600">{r.id} &nbsp;·&nbsp; {resPhone(r)} &nbsp;·&nbsp; {resAmount(r)}</p>
-                                </div>
-                                <button onClick={() => selectCheckoutTarget(r)}
-                                  className="shrink-0 h-12 px-6 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all"
-                                  style={{ background: '#6366f1', color: '#fff' }}>
-                                  選択 <ArrowRight size={15} />
-                                </button>
+                      {checkoutResults.length > 0 && (
+                        <div className="space-y-3 pt-2">
+                          <p className="text-sm text-slate-500">{checkoutResults.length}件見つかりました</p>
+                          {checkoutResults.map(r => (
+                            <div key={r.id} className="rounded-xl p-5 flex items-center justify-between gap-4"
+                              style={{ background: '#0d1117', border: '1px solid #1e293b' }}>
+                              <div className="space-y-1.5">
+                                <p className="text-lg font-semibold text-slate-100">{resName(r)} 様</p>
+                                <p className="text-sm text-slate-400">
+                                  {resRoom(r)}号室 &nbsp;·&nbsp; {resDate(r.start_date)}〜{resDate(r.end_date)}
+                                </p>
+                                <p className="text-xs text-slate-600">{r.id} &nbsp;·&nbsp; {resPhone(r)} &nbsp;·&nbsp; {resAmount(r)}</p>
                               </div>
-                            ))}
-                          </div>
-                        )}
-                        {checkoutResults.length === 0 && checkoutQuery && !checkoutSearching && (
-                          <div className="rounded-xl p-8 text-center" style={{ background: '#0d1117' }}>
-                            <p className="text-base text-slate-500">該当する予約が見つかりませんでした</p>
-                            <p className="text-sm text-slate-600 mt-2">入力内容をご確認ください</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </>
-                )
-              })()}
+                              <button onClick={() => selectCheckoutTarget(r)}
+                                className="shrink-0 h-12 px-6 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all"
+                                style={{ background: '#6366f1', color: '#fff' }}>
+                                選択 <ArrowRight size={15} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {checkoutResults.length === 0 && checkoutQuery && !checkoutSearching && (
+                        <div className="rounded-xl p-8 text-center" style={{ background: '#0d1117' }}>
+                          <p className="text-base text-slate-500">該当する予約が見つかりませんでした</p>
+                          <p className="text-sm text-slate-600 mt-2">入力内容をご確認ください</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
 
               {/* ── STEP: confirm ── */}
               {checkoutStep === 'confirm' && checkoutTarget && (
