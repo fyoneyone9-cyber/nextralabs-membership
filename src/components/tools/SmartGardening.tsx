@@ -639,6 +639,9 @@ function PreviewAndAnalyze({
           </>
         )}
       </button>
-    </div>
+    
+      {/* Amazonアフィリエイト */}
+      <AffiliateBanner toolId="smart-gardening" />
+</div>
   )
 }

@@ -381,6 +381,9 @@ export default function InboxOrganizer() {
         <p className="text-slate-500 text-sm mt-2 leading-relaxed">🧠 送信履歴から文体を学習してパーソナライズ返信</p>
       </div>
       <NoSSRWrapper />
-    </div>
+    
+      {/* Amazonアフィリエイト */}
+      <AffiliateBanner toolId="inbox-organizer" />
+</div>
   )
 }

@@ -258,6 +258,9 @@ export default function LocationFinder() {
           </div>
         </div>
       )}
-    </div>
+    
+      {/* Amazonアフィリエイト */}
+      <AffiliateBanner toolId="location-finder" />
+</div>
   )
 }

@@ -459,7 +459,10 @@ export function LoanAdvisor() {
           本サービスは匿名で利用可能であり、入力された借入情報は診断終了後に破棄されます。
         </p>
       </div>
-    </div>
+    
+      {/* Amazonアフィリエイト */}
+      <AffiliateBanner toolId="loan-advisor" />
+</div>
   )
 }
 

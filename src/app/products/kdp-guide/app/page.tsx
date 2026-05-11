@@ -1,4 +1,5 @@
 ﻿'use client'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 import { useRouter } from 'next/navigation'
 
 import React, { useState, useCallback, useEffect } from 'react'
@@ -311,7 +312,10 @@ export default function KdpGuideApp() {
         </a>
 
       </div>
-    </div>
+    
+      {/* Amazonアフィリエイト */}
+      <AffiliateBanner toolId="kdp-guide" />
+</div>
   )
 }
 

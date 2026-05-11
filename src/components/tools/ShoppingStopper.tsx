@@ -1,4 +1,5 @@
 'use client'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 import { useRouter } from 'next/navigation'
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { Camera, Ban, Timer, Activity, ShieldAlert, Power } from 'lucide-react'
@@ -314,6 +315,9 @@ export default function ShoppingStopper() {
       </div>
 
       <DebugPanel data={{ excitementLevel, isCooldown, timer, isCameraActive }} toolId="shopping-stopper" />
-    </div>
+    
+      {/* Amazonアフィリエイト */}
+      <AffiliateBanner toolId="shopping-stopper" />
+</div>
   )
 }

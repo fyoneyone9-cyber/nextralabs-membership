@@ -1,4 +1,5 @@
 'use client'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 import React, { useState, useEffect, useRef } from 'react'
 import {
   MapPin, Calendar, Users, Wallet, Plane, Loader2,
@@ -888,6 +889,9 @@ export default function TravelConcierge() {
           </div>
         </div>
       )}
-    </div>
+    
+      {/* Amazonアフィリエイト */}
+      <AffiliateBanner toolId="travel-concierge" />
+</div>
   )
 }

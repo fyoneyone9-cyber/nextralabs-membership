@@ -383,7 +383,10 @@ export default function SnsAutoPosterApp() {
           </span>
         </div>
       </div>
-    </div>
+    
+      {/* Amazonアフィリエイト */}
+      <AffiliateBanner toolId="sns-auto-poster" />
+</div>
   )
 }
 

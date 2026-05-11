@@ -173,7 +173,10 @@ export default function AiSidejobApp() {
           </div>
         </a>
       </div>
-    </div>
+    
+      {/* Amazonアフィリエイト */}
+      <AffiliateBanner toolId="ai-sidejob" />
+</div>
   );
 }
 

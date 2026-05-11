@@ -401,7 +401,10 @@ const MasterEngine = () => {
 
 const NoSSRWrapper = dynamic(() => Promise.resolve(MasterEngine), {
   ssr: false,
-  loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Initializing Disaster Master...</div>
+  loading: () => <div className="min-h-screen bg-[#050507] flex items-center justify-center font-black italic text-emerald-500 animate-pulse uppercase tracking-[0.5em]">Initializing Disaster Master...
+      {/* Amazonアフィリエイト */}
+      <AffiliateBanner toolId="disaster-guard" />
+</div>
 })
 
 export default function DisasterGuard() {

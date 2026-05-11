@@ -1,4 +1,5 @@
 ﻿'use client'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 import { useRouter } from 'next/navigation'
 
 import dynamic from 'next/dynamic'
@@ -447,7 +448,10 @@ function YoutubeProducerApp() {
 
         <div className="mt-8 pt-6 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-medium text-white/20"><p>© 2026 NextraLabs Viral Content OS. ALL RIGHTS RESERVED.</p><div className="flex gap-6"><a href="#" className="hover:text-emerald-500 transition-colors">利用規約</a><a href="#" className="hover:text-emerald-500 transition-colors">ステータス</a><a href="#" className="hover:text-emerald-500 transition-colors">サポート</a></div></div>
       </div>
-    </div>
+    
+      {/* Amazonアフィリエイト */}
+      <AffiliateBanner toolId="youtube-producer" />
+</div>
   )
 }
 

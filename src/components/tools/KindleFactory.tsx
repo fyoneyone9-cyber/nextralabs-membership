@@ -524,6 +524,9 @@ export function KindleFactory() {
           </div>
         </div>
       )}
-    </div>
+    
+      {/* Amazonアフィリエイト */}
+      <AffiliateBanner toolId="kindle-factory" />
+</div>
   )
 }

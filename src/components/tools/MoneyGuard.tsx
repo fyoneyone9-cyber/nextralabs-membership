@@ -316,6 +316,9 @@ export default function MoneyGuard() {
   return (
     <div className="min-h-screen bg-[#050507] text-gray-100 font-sans p-4 md:p-10 overflow-x-hidden text-left">
       <NoSSRWrapper />
-    </div>
+    
+      {/* Amazonアフィリエイト */}
+      <AffiliateBanner toolId="money-guard" />
+</div>
   );
 }

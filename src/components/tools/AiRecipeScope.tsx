@@ -360,6 +360,9 @@ export default function AiRecipeScope() {
       <div className="text-center mt-16 opacity-20">
         <p className="text-xs text-slate-600 tracking-tight">NextraLabs 2026</p>
       </div>
-    </div>
+    
+      {/* Amazonアフィリエイト */}
+      <AffiliateBanner toolId="ai-recipe" />
+</div>
   )
 }

@@ -1,4 +1,5 @@
 'use client'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 import React, { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { MapPin, Loader2, RotateCcw, ExternalLink, Train, Hotel, Utensils, Camera, ChevronDown, ChevronUp, ArrowRight, Users, Compass, CheckCircle } from 'lucide-react'
@@ -831,6 +832,9 @@ export default function PilgrimagePlanner() {
       <div className="max-w-lg mx-auto px-4 py-8">
         {isLoading ? renderLoading() : result ? renderResultTabs(result) : renderForm()}
       </div>
-    </div>
+    
+      {/* Amazonアフィリエイト */}
+      <AffiliateBanner toolId="pilgrimage-planner" />
+</div>
   )
 }

@@ -1,4 +1,5 @@
 'use client'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import {
@@ -589,6 +590,9 @@ export default function ScamDefender() {
       <div className="text-center mt-16 opacity-20">
         <p className="text-xs text-slate-600 tracking-tight">Nextra Cyber Defense · NextraLabs 2026</p>
       </div>
-    </div>
+    
+      {/* Amazonアフィリエイト */}
+      <AffiliateBanner toolId="scam-defender" />
+</div>
   )
 }

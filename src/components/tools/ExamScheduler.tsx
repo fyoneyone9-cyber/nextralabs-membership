@@ -5,6 +5,7 @@
 // Locked: 2026-05-10
 // ============================================================
 'use client'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 
 import { useRouter } from 'next/navigation'
 import { useState, useCallback, useEffect } from 'react'
@@ -409,6 +410,9 @@ export default function ExamScheduler() {
         )}
 
       </div>
-    </div>
+    
+      {/* Amazonアフィリエイト */}
+      <AffiliateBanner toolId="exam-scheduler" />
+</div>
   )
 }
