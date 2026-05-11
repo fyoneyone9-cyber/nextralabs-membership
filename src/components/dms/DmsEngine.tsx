@@ -383,12 +383,39 @@ function PmsSettingsPanel({ onGoCheckin }: { onGoCheckin: () => void }) {
   )
 }
 
+// 物件の型定義
+interface Property {
+  id: string
+  name: string
+}
+
+const PROPERTIES_KEY = 'dms_properties'
+
+function loadProperties(): Property[] {
+  if (typeof window === 'undefined') return []
+  try {
+    const raw = localStorage.getItem(PROPERTIES_KEY)
+    if (!raw) {
+      // 初回: 既存のサンプルデータをseed
+      const seed: Property[] = [{ id: crypto.randomUUID(), name: 'ビジネスホテルアップル' }]
+      localStorage.setItem(PROPERTIES_KEY, JSON.stringify(seed))
+      return seed
+    }
+    return JSON.parse(raw)
+  } catch { return [] }
+}
+
+function saveProperties(props: Property[]) {
+  localStorage.setItem(PROPERTIES_KEY, JSON.stringify(props))
+}
+
 export default function DmsEngine() {
   const [mounted, setMounted] = useState(false)
   const [activeTab, setActiveTab] = useState('checkin')
   const [editingBooking, setEditingBooking] = useState<any>(null)
   const [editingProperty, setEditingProperty] = useState<any>(null)
   const [confirmDeleteProperty, setConfirmDeleteProperty] = useState<string | null>(null)
+  const [properties, setProperties] = useState<Property[]>([])
   const [propView, setPropView] = useState<'list' | 'create'>('list')
   const [lockSearchQuery, setLockSearchQuery] = useState('')
   const [roomSearchQuery, setRoomSearchQuery] = useState('')
@@ -453,6 +480,7 @@ export default function DmsEngine() {
     const now = new Date()
     const days = ['日','月','火','水','木','金','土']
     setCurrentDate(`${now.getMonth()+1}/${now.getDate()}(${days[now.getDay()]}) ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`)
+    setProperties(loadProperties())
     fetchStayseeBookings()
   }, [])
 
@@ -852,7 +880,7 @@ export default function DmsEngine() {
             <DmsPropertyEditor
               property={null}
               isDarkMode={true}
-              onClose={() => setPropView('list')}
+              onClose={() => { setPropView('list'); setProperties(loadProperties()) }}
             />
           )}
 
@@ -867,26 +895,33 @@ export default function DmsEngine() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
-                  <tr className="hover:bg-white/5 transition-colors">
-                    <td className="px-5 py-4 font-semibold text-slate-200">ビジネスホテルアップル</td>
-                    <td className="px-5 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => setEditingProperty({ name: 'ビジネスホテルアップル' })}
-                          className="w-9 h-9 bg-emerald-600 hover:bg-emerald-500 rounded-xl flex items-center justify-center text-white transition-all"
-                        >
-                          <Edit3 size={15} />
-                        </button>
-                        <button
-                          onClick={() => setConfirmDeleteProperty('ビジネスホテルアップル')}
-                          className="w-7 h-7 rounded-lg flex items-center justify-center ml-2 transition-all"
-                          style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)' }}
-                        >
-                          <Trash2 size={12} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                  {properties.length === 0 && (
+                    <tr>
+                      <td colSpan={2} className="px-5 py-8 text-center text-slate-500 text-xs">物件がまだ登録されていません</td>
+                    </tr>
+                  )}
+                  {properties.map((prop) => (
+                    <tr key={prop.id} className="hover:bg-white/5 transition-colors">
+                      <td className="px-5 py-4 font-semibold text-slate-200">{prop.name}</td>
+                      <td className="px-5 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => setEditingProperty(prop)}
+                            className="w-9 h-9 bg-emerald-600 hover:bg-emerald-500 rounded-xl flex items-center justify-center text-white transition-all"
+                          >
+                            <Edit3 size={15} />
+                          </button>
+                          <button
+                            onClick={() => setConfirmDeleteProperty(prop.id)}
+                            className="w-7 h-7 rounded-lg flex items-center justify-center ml-2 transition-all"
+                            style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)' }}
+                          >
+                            <Trash2 size={12} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -948,13 +983,19 @@ export default function DmsEngine() {
       </main>
 
       {editingBooking && <DmsBookingEditor booking={editingBooking.name_kanji ? editingBooking : null} onClose={() => setEditingBooking(null)} />}
-      {editingProperty && <DmsPropertyEditor property={editingProperty} isDarkMode={true} onClose={() => setEditingProperty(null)} />}
+      {editingProperty && <DmsPropertyEditor property={editingProperty} isDarkMode={true} onClose={() => { setEditingProperty(null); setProperties(loadProperties()) }} onDeleted={() => setProperties(loadProperties())} />}
       <DeleteConfirmDialog
         open={confirmDeleteProperty !== null}
-        title={confirmDeleteProperty ? `「${confirmDeleteProperty}」を削除しますか？` : ''}
+        title={confirmDeleteProperty ? `「${properties.find(p => p.id === confirmDeleteProperty)?.name ?? ''}」を削除しますか？` : ''}
         description="物件を削除すると、紐づく部屋・鍵デバイスの設定も失われます。"
         warning="この操作は元に戻せません。削除すると復元できません。"
-        onConfirm={() => setConfirmDeleteProperty(null)}
+        onConfirm={() => {
+          if (!confirmDeleteProperty) return
+          const updated = properties.filter(p => p.id !== confirmDeleteProperty)
+          saveProperties(updated)
+          setProperties(updated)
+          setConfirmDeleteProperty(null)
+        }}
         onCancel={() => setConfirmDeleteProperty(null)}
       />
     </div>

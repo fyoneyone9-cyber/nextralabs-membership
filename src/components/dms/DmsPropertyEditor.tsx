@@ -76,14 +76,14 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
     setSaveMsg(null);
     try {
       // ローカルに保存（実際はAPIへ送信する想定）
-      const key = 'nextra_dms_properties';
+      const key = 'dms_properties';
       const existing = (() => { try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; } })();
       if (isNew) {
-        existing.push({ ...form, id: `prop-${Date.now()}`, createdAt: new Date().toISOString() });
+        existing.push({ ...form, id: crypto.randomUUID(), createdAt: new Date().toISOString() });
       } else {
-        const idx = existing.findIndex((p: any) => p.name === property.name);
+        const idx = existing.findIndex((p: any) => p.id === property.id || p.name === property.name);
         if (idx >= 0) existing[idx] = { ...existing[idx], ...form };
-        else existing.push({ ...form, id: `prop-${Date.now()}` });
+        else existing.push({ ...form, id: crypto.randomUUID() });
       }
       localStorage.setItem(key, JSON.stringify(existing));
       setSaveMsg({ ok: true, text: isNew ? '物件を作成しました' : '保存しました' });
@@ -98,9 +98,9 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
   // 削除処理
   const handleDelete = () => {
     try {
-      const key = 'nextra_dms_properties';
+      const key = 'dms_properties';
       const existing = (() => { try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; } })();
-      const filtered = existing.filter((p: any) => p.name !== property?.name);
+      const filtered = existing.filter((p: any) => p.id !== property?.id && p.name !== property?.name);
       localStorage.setItem(key, JSON.stringify(filtered));
     } catch { /* ignore */ }
     setConfirmDelete(false);
