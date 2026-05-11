@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
 import { Camera, MapPin, ClipboardPaste, ArrowRight, ShieldCheck, X, ImagePlus } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { DebugPanel } from '@/components/tools/DebugPanel'
 
 const MasterEngine = () => {
