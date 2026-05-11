@@ -1,4 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export async function POST(req: NextRequest) {
   const apiKey = process.env.DAILY_API_KEY || req.headers.get('x-daily-api-key') || ''
@@ -36,12 +42,26 @@ export async function POST(req: NextRequest) {
   }
 
   const room = await res.json()
+  const createdAt = new Date().toISOString()
+
+  // Supabaseにイベント保存 → CallsEngineがRealtimeで検知して通知
+  try {
+    await supabase.from('dms_call_events').insert({
+      room_name: room.name,
+      room_url: room.url,
+      property_name: propertyName,
+      created_at: createdAt,
+      status: 'active',
+    })
+  } catch {
+    // 保存失敗してもルーム作成自体は成功として返す
+  }
 
   return NextResponse.json({
     url: room.url,
     name: room.name,
     propertyName,
-    createdAt: new Date().toISOString(),
+    createdAt,
   })
 }
 
@@ -54,5 +74,11 @@ export async function DELETE(req: NextRequest) {
     method: 'DELETE',
     headers: { 'Authorization': `Bearer ${apiKey}` },
   })
+
+  // Supabaseのステータスも更新
+  try {
+    await supabase.from('dms_call_events').update({ status: 'ended' }).eq('room_name', roomName)
+  } catch { /* 無視 */ }
+
   return NextResponse.json({ ok: true })
 }
