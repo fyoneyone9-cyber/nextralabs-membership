@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Sprout, Upload, Camera, Droplets, Sun, Zap, RotateCcw, CheckCircle2, AlertTriangle, Loader2, ImageIcon, Heart, SwitchCamera, X } from 'lucide-react'
@@ -21,10 +21,11 @@ type CameraFacing = 'environment' | 'user'
 export default function SmartGardening() {
   const router = useRouter()
 
-  // 繝悶Λ繧ｦ繧ｶ繝舌ャ繧ｯ繝ｻ繝槭え繧ｹ繧ｵ繧､繝峨・繧ｿ繝ｳ蟇ｾ蠢・  useEffect(() => {
+  // ブラウザバック・マウスサイドボタン対応
+  useEffect(() => {
     window.history.pushState(null, '', window.location.href)
     const handlePopState = () => {
-      const ok = window.confirm('繝・・繝ｫ繧堤ｵゆｺ・＠縺ｾ縺吶°・・)
+      const ok = window.confirm('ツールを終了しますか？')
       if (ok) {
         router.push('/dashboard')
       } else {
@@ -35,7 +36,8 @@ export default function SmartGardening() {
     return () => window.removeEventListener('popstate', handlePopState)
   }, [router])
 
-  // 繧ｿ繝夜哩縺倥・URL逶ｴ謇薙■蟇ｾ蠢・  useEffect(() => {
+  // タブ閉じ・URL直打ち対応
+  useEffect(() => {
     const handleBeforeUnload = (e) => {
       e.preventDefault()
       e.returnValue = ''
@@ -45,7 +47,7 @@ export default function SmartGardening() {
   }, [])
 
   const handleBack = useCallback(() => {
-    const ok = window.confirm('繝・・繝ｫ繧堤ｵゆｺ・＠縺ｾ縺吶°・・)
+    const ok = window.confirm('ツールを終了しますか？')
     if (ok) router.push('/dashboard')
   }, [router])
 
@@ -57,7 +59,7 @@ export default function SmartGardening() {
   const [error, setError] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
 
-  // 繧ｫ繝｡繝ｩ髢｢騾｣
+  // カメラ関連
   const [isCameraActive, setIsCameraActive] = useState(false)
   const [facingMode, setFacingMode] = useState<CameraFacing>('environment')
   const [cameraError, setCameraError] = useState<string | null>(null)
@@ -68,10 +70,10 @@ export default function SmartGardening() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
 
-  // 繧ｫ繝｡繝ｩ襍ｷ蜍・
+  // カメラ起動
   const startCamera = useCallback(async (facing: CameraFacing = facingMode) => {
     setCameraError(null)
-    // 譌｢蟄倥せ繝医Μ繝ｼ繝繧貞●豁｢
+    // 既存ストリームを停止
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(t => t.stop())
       streamRef.current = null
@@ -90,16 +92,16 @@ export default function SmartGardening() {
       setIsCameraActive(true)
     } catch (err: any) {
       if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-        setCameraError('繧ｫ繝｡繝ｩ縺ｸ縺ｮ繧｢繧ｯ繧ｻ繧ｹ縺梧拠蜷ｦ縺輔ｌ縺ｾ縺励◆縲ゅヶ繝ｩ繧ｦ繧ｶ縺ｮ險ｭ螳壹°繧峨き繝｡繝ｩ繧定ｨｱ蜿ｯ縺励※縺上□縺輔＞縲・)
+        setCameraError('カメラへのアクセスが拒否されました。ブラウザの設定からカメラを許可してください。')
       } else if (err.name === 'NotFoundError') {
-        setCameraError('繧ｫ繝｡繝ｩ縺瑚ｦ九▽縺九ｊ縺ｾ縺帙ｓ縲・)
+        setCameraError('カメラが見つかりません。')
       } else {
-        setCameraError(`繧ｫ繝｡繝ｩ繧定ｵｷ蜍輔〒縺阪∪縺帙ｓ縺ｧ縺励◆・・{err.name}・荏)
+        setCameraError(`カメラを起動できませんでした（${err.name}）`)
       }
     }
   }, [facingMode])
 
-  // 繧ｫ繝｡繝ｩ蛛懈ｭ｢
+  // カメラ停止
   const stopCamera = useCallback(() => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(t => t.stop())
@@ -109,14 +111,14 @@ export default function SmartGardening() {
     setIsCameraActive(false)
   }, [])
 
-  // 繧ｫ繝｡繝ｩ蛻・崛
+  // カメラ切替
   const flipCamera = useCallback(() => {
     const next: CameraFacing = facingMode === 'environment' ? 'user' : 'environment'
     setFacingMode(next)
     startCamera(next)
   }, [facingMode, startCamera])
 
-  // 謦ｮ蠖ｱ
+  // 撮影
   const capturePhoto = useCallback(() => {
     if (!videoRef.current || !canvasRef.current) return
     setIsCapturing(true)
@@ -139,7 +141,7 @@ export default function SmartGardening() {
     setTimeout(() => setIsCapturing(false), 300)
   }, [facingMode, stopCamera])
 
-  // 繧ｿ繝門・譖ｿ譎ゅ↓繧ｫ繝｡繝ｩ蛛懈ｭ｢
+  // タブ切替時にカメラ停止
   const switchMode = (mode: InputMode) => {
     if (mode !== inputMode) {
       stopCamera()
@@ -149,7 +151,7 @@ export default function SmartGardening() {
     }
   }
 
-  // 繧ｫ繝｡繝ｩ繧ｿ繝悶ｒ驕ｸ繧薙□縺ｨ縺崎・蜍戊ｵｷ蜍・
+  // カメラタブを選んだとき自動起動
   useEffect(() => {
     if (inputMode === 'camera' && !preview && !result) {
       startCamera(facingMode)
@@ -159,10 +161,10 @@ export default function SmartGardening() {
     }
   }, [inputMode]) // eslint-disable-line
 
-  // 繧｢繝ｳ繝槭え繝ｳ繝域凾縺ｫ蠢・★繧ｫ繝｡繝ｩ蛛懈ｭ｢
+  // アンマウント時に必ずカメラ停止
   useEffect(() => () => stopCamera(), [stopCamera])
 
-  // 繝輔ぃ繧､繝ｫ繧｢繝・・繝ｭ繝ｼ繝牙・逅・
+  // ファイルアップロード処理
   const handleFile = (file: File) => {
     if (!file.type.startsWith('image/')) return
     const reader = new FileReader()
@@ -183,7 +185,7 @@ export default function SmartGardening() {
     if (file) handleFile(file)
   }, [])
 
-  // API騾∽ｿ｡
+  // API送信
   const handleAnalyze = async () => {
     if (!image) return
     setIsAnalyzing(true)
@@ -195,10 +197,10 @@ export default function SmartGardening() {
         body: JSON.stringify({ image }),
       })
       const data = await res.json()
-      if (!res.ok || data.error) throw new Error(data.error || '隗｣譫仙､ｱ謨・)
+      if (!res.ok || data.error) throw new Error(data.error || '解析失敗')
       setResult(data)
     } catch (e: any) {
-      setError(e.message || '隗｣譫舌↓螟ｱ謨励＠縺ｾ縺励◆縲ゅｂ縺・ｸ蠎ｦ縺願ｩｦ縺励￥縺縺輔＞縲・)
+      setError(e.message || '解析に失敗しました。もう一度お試しください。')
     } finally {
       setIsAnalyzing(false)
     }
@@ -210,7 +212,7 @@ export default function SmartGardening() {
     setResult(null)
     setError(null)
     stopCamera()
-    // 繧ｫ繝｡繝ｩ繧ｿ繝悶・縺ｾ縺ｾ縺ｪ繧牙・襍ｷ蜍・
+    // カメラタブのままなら再起動
     if (inputMode === 'camera') {
       setTimeout(() => startCamera(facingMode), 300)
     }
@@ -232,26 +234,26 @@ export default function SmartGardening() {
       {/* hidden canvas for capture */}
       <canvas ref={canvasRef} className="hidden" />
 
-      {/* 繝倥ャ繝繝ｼ */}
+      {/* ヘッダー */}
       <div className="rounded-2xl mx-4 mt-6 mb-8 p-6 md:p-10 bg-[#0a0a0c] max-w-4xl md:mx-auto border border-white/5">
         <div className="flex items-center gap-4 mb-2">
           <div className="p-3 bg-emerald-500 rounded-xl shadow-[0_0_16px_rgba(16,185,129,0.4)]">
             <Sprout className="h-7 w-7 text-slate-950" />
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">AI繧ｹ繝槭・繝医ぎ繝ｼ繝・ル繝ｳ繧ｰ</h1>
-            <p className="text-sm text-slate-400 font-normal mt-0.5">讀咲黄縺ｮ蜀咏悄繧呈聴繧九□縺代〒縲、I縺悟▼蠎ｷ險ｺ譁ｭ縺励∪縺・/p>
+            <h1 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">AIスマートガーデニング</h1>
+            <p className="text-sm text-slate-400 font-normal mt-0.5">植物の写真を撮るだけで、AIが健康診断します</p>
           </div>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 pb-16 space-y-6">
 
-        {/* 險ｺ譁ｭ蜑搾ｼ壼・蜉婉I */}
+        {/* 診断前：入力UI */}
         {!result && (
           <div className="bg-[#13141f] rounded-xl border border-white/5 p-6 md:p-8 space-y-5">
 
-            {/* 繧ｿ繝門・譖ｿ */}
+            {/* タブ切替 */}
             <div className="flex gap-2 p-1 bg-slate-900 rounded-lg">
               <button
                 onClick={() => switchMode('upload')}
@@ -262,7 +264,7 @@ export default function SmartGardening() {
                 }`}
               >
                 <Upload size={15} />
-                逕ｻ蜒上い繝・・繝ｭ繝ｼ繝・
+                画像アップロード
               </button>
               <button
                 onClick={() => switchMode('camera')}
@@ -273,11 +275,11 @@ export default function SmartGardening() {
                 }`}
               >
                 <Camera size={15} />
-                繧ｫ繝｡繝ｩ縺ｧ謦ｮ蠖ｱ
+                カメラで撮影
               </button>
             </div>
 
-            {/* 笏笏 繧｢繝・・繝ｭ繝ｼ繝峨Δ繝ｼ繝・笏笏 */}
+            {/* ── アップロードモード ── */}
             {inputMode === 'upload' && (
               <>
                 {!preview ? (
@@ -301,9 +303,9 @@ export default function SmartGardening() {
                     />
                     <ImageIcon className="h-10 w-10 text-slate-600 mx-auto mb-3" />
                     <p className="text-sm font-medium text-slate-400">
-                      繧ｯ繝ｪ繝・け縺ｾ縺溘・繝峨Λ繝・げ・・ラ繝ｭ繝・・縺ｧ逕ｻ蜒上ｒ繧｢繝・・繝ｭ繝ｼ繝・
+                      クリックまたはドラッグ＆ドロップで画像をアップロード
                     </p>
-                    <p className="text-xs text-slate-600 mt-1">JPG / PNG / HEIC 蟇ｾ蠢・/p>
+                    <p className="text-xs text-slate-600 mt-1">JPG / PNG / HEIC 対応</p>
                   </div>
                 ) : (
                   <PreviewAndAnalyze
@@ -317,12 +319,12 @@ export default function SmartGardening() {
               </>
             )}
 
-            {/* 笏笏 繧ｫ繝｡繝ｩ繝｢繝ｼ繝・笏笏 */}
+            {/* ── カメラモード ── */}
             {inputMode === 'camera' && (
               <>
                 {!preview ? (
                   <div className="space-y-4">
-                    {/* 繧ｫ繝｡繝ｩ繧ｨ繝ｩ繝ｼ */}
+                    {/* カメラエラー */}
                     {cameraError && (
                       <div className="flex items-start gap-2 text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3 text-sm">
                         <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
@@ -330,7 +332,7 @@ export default function SmartGardening() {
                       </div>
                     )}
 
-                    {/* 繝ｩ繧､繝悶ン繝･繝ｼ */}
+                    {/* ライブビュー */}
                     <div className="relative rounded-xl overflow-hidden aspect-video bg-slate-900 border border-white/5">
                       <video
                         ref={videoRef}
@@ -345,7 +347,7 @@ export default function SmartGardening() {
                       {!isCameraActive && !cameraError && (
                         <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
                           <Loader2 className="h-7 w-7 text-emerald-400 animate-spin" />
-                          <p className="text-sm text-slate-500">繧ｫ繝｡繝ｩ繧定ｵｷ蜍穂ｸｭ...</p>
+                          <p className="text-sm text-slate-500">カメラを起動中...</p>
                         </div>
                       )}
 
@@ -356,23 +358,23 @@ export default function SmartGardening() {
                             onClick={() => startCamera(facingMode)}
                             className="text-xs text-emerald-400 hover:text-emerald-300 underline"
                           >
-                            蜀崎ｵｷ蜍輔☆繧・
+                            再起動する
                           </button>
                         </div>
                       )}
 
-                      {/* 繧ｫ繝｡繝ｩ蛻・崛繝懊ち繝ｳ */}
+                      {/* カメラ切替ボタン */}
                       {isCameraActive && (
                         <button
                           onClick={flipCamera}
                           className="absolute top-3 right-3 bg-black/50 hover:bg-black/80 text-white p-2 rounded-lg transition-all backdrop-blur-sm"
-                          title="繧ｫ繝｡繝ｩ蛻・崛"
+                          title="カメラ切替"
                         >
                           <SwitchCamera size={18} />
                         </button>
                       )}
 
-                      {/* 繧ｬ繧､繝画棧 */}
+                      {/* ガイド枠 */}
                       {isCameraActive && (
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                           <div
@@ -383,7 +385,7 @@ export default function SmartGardening() {
                       )}
                     </div>
 
-                    {/* 謦ｮ蠖ｱ繝懊ち繝ｳ */}
+                    {/* 撮影ボタン */}
                     <button
                       onClick={capturePhoto}
                       disabled={!isCameraActive || isCapturing}
@@ -393,11 +395,11 @@ export default function SmartGardening() {
                       onMouseLeave={e => { e.currentTarget.style.background = '#10b981'; e.currentTarget.style.transform = 'scale(1)' }}
                     >
                       <Camera size={16} />
-                      {isCapturing ? '謦ｮ蠖ｱ荳ｭ...' : '讀咲黄繧呈聴蠖ｱ縺吶ｋ'}
+                      {isCapturing ? '撮影中...' : '植物を撮影する'}
                     </button>
 
                     <p className="text-center text-xs text-slate-600">
-                      讀咲黄蜈ｨ菴薙′繝輔Ξ繝ｼ繝縺ｫ蜿弱∪繧九ｈ縺・↓謦ｮ蠖ｱ縺励※縺上□縺輔＞
+                      植物全体がフレームに収まるように撮影してください
                     </p>
                   </div>
                 ) : (
@@ -407,7 +409,7 @@ export default function SmartGardening() {
                     error={error}
                     onReset={handleReset}
                     onAnalyze={handleAnalyze}
-                    resetLabel="謦ｮ繧顔峩縺・
+                    resetLabel="撮り直す"
                   />
                 )}
               </>
@@ -415,31 +417,31 @@ export default function SmartGardening() {
           </div>
         )}
 
-        {/* 隗｣譫蝉ｸｭ */}
+        {/* 解析中 */}
         {isAnalyzing && !result && (
           <div className="bg-[#13141f] rounded-xl border border-emerald-500/20 p-10 text-center">
             <Loader2 className="h-8 w-8 text-emerald-400 animate-spin mx-auto mb-4" />
-            <p className="text-sm font-medium text-white">AI縺梧､咲黄繧定ｧ｣譫舌＠縺ｦ縺・∪縺・..</p>
-            <p className="text-xs text-slate-500 mt-2">Gemini 2.5 Flash 縺ｧ鬮倡ｲｾ蠎ｦ險ｺ譁ｭ荳ｭ</p>
+            <p className="text-sm font-medium text-white">AIが植物を解析しています...</p>
+            <p className="text-xs text-slate-500 mt-2">Gemini 2.5 Flash で高精度診断中</p>
           </div>
         )}
 
-        {/* 險ｺ譁ｭ邨先棡 */}
+        {/* 診断結果 */}
         {result && (
           <div className="space-y-4">
-            {/* 讀咲黄蜷・+ 繧ｹ繧ｳ繧｢ */}
+            {/* 植物名 + スコア */}
             <div className="bg-[#13141f] rounded-xl border border-white/5 p-6">
               {preview && (
-                <img src={preview} alt="險ｺ譁ｭ縺励◆讀咲黄" className="w-full max-h-48 object-cover rounded-lg mb-5 opacity-80" />
+                <img src={preview} alt="診断した植物" className="w-full max-h-48 object-cover rounded-lg mb-5 opacity-80" />
               )}
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs text-slate-500 font-medium mb-1">險ｺ譁ｭ邨先棡</p>
+                  <p className="text-xs text-slate-500 font-medium mb-1">診断結果</p>
                   <h2 className="text-2xl font-semibold text-white tracking-tight">{result.plantName}</h2>
                   <p className="text-sm text-slate-400 mt-1 leading-relaxed">{result.diagnosis}</p>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-xs text-slate-500 mb-1">蛛･蠎ｷ繧ｹ繧ｳ繧｢</p>
+                  <p className="text-xs text-slate-500 mb-1">健康スコア</p>
                   <p className={`text-4xl font-semibold ${getScoreColor(result.healthScore)}`}>{result.healthScore}</p>
                   <p className="text-xs text-slate-500 mt-0.5">{result.healthLabel}</p>
                 </div>
@@ -452,12 +454,12 @@ export default function SmartGardening() {
               </div>
             </div>
 
-            {/* 豌ｴ繧・ｊ繝ｻ譌･辣ｧ */}
+            {/* 水やり・日照 */}
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-[#13141f] rounded-xl border border-white/5 p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Droplets className="h-4 w-4 text-blue-400" />
-                  <span className="text-xs font-medium text-slate-400">豌ｴ繧・ｊ</span>
+                  <span className="text-xs font-medium text-slate-400">水やり</span>
                 </div>
                 <p className="text-base font-semibold text-white">{result.waterStatus}</p>
                 <p className="text-xs text-slate-500 mt-1 leading-relaxed">{result.waterComment}</p>
@@ -465,17 +467,17 @@ export default function SmartGardening() {
               <div className="bg-[#13141f] rounded-xl border border-white/5 p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Sun className="h-4 w-4 text-yellow-400" />
-                  <span className="text-xs font-medium text-slate-400">譌･蠖薙◆繧・/span>
+                  <span className="text-xs font-medium text-slate-400">日当たり</span>
                 </div>
                 <p className="text-base font-semibold text-white">{result.sunStatus}</p>
               </div>
             </div>
 
-            {/* 繧｢繧ｯ繧ｷ繝ｧ繝ｳ */}
+            {/* アクション */}
             <div className="bg-[#13141f] rounded-xl border border-white/5 p-6">
               <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                莉翫☆縺舌〒縺阪ｋ繧ｱ繧｢
+                今すぐできるケア
               </h3>
               <ul className="space-y-3">
                 {result.actions.map((action, i) => (
@@ -487,55 +489,55 @@ export default function SmartGardening() {
               </ul>
             </div>
 
-            {/* 繝励Ο縺ｮ繝偵Φ繝・*/}
+            {/* プロのヒント */}
             <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-5">
               <div className="flex items-center gap-2 mb-2">
                 <Heart className="h-4 w-4 text-emerald-400" />
-                <span className="text-xs font-medium text-emerald-400">繝励Ο縺ｮ繝ｯ繝ｳ繝昴う繝ｳ繝・/span>
+                <span className="text-xs font-medium text-emerald-400">プロのワンポイント</span>
               </div>
               <p className="text-sm text-slate-300 leading-relaxed">{result.tip}</p>
             </div>
 
-            {/* 蜀崎ｨｺ譁ｭ繝懊ち繝ｳ */}
+            {/* 再診断ボタン */}
             <button
               onClick={handleReset}
               className="w-full h-12 border border-white/10 hover:border-emerald-500/40 text-slate-400 hover:text-white font-medium text-sm rounded-lg transition-all flex items-center justify-center gap-2"
             >
               <RotateCcw className="h-4 w-4" />
-              蛻･縺ｮ讀咲黄繧定ｨｺ譁ｭ縺吶ｋ
+              別の植物を診断する
             </button>
           </div>
         )}
 
-        {/* 繝壹・繧ｸ荳矩Κ 隱ｬ譏取ｬ・*/}
+        {/* ページ下部 説明欄 */}
         <div className="mt-10 border-t border-white/5 pt-10 space-y-8">
 
-          {/* 縺薙・繝・・繝ｫ縺ｫ縺､縺・※ */}
+          {/* このツールについて */}
           <div>
-            <h2 className="text-lg font-semibold text-white mb-3 tracking-tight">諺 AI繧ｹ繝槭・繝医ぎ繝ｼ繝・ル繝ｳ繧ｰ縺ｨ縺ｯ・・/h2>
+            <h2 className="text-lg font-semibold text-white mb-3 tracking-tight">🌿 AIスマートガーデニングとは？</h2>
             <p className="text-sm text-slate-400 leading-relaxed">
-              讀咲黄縺ｮ蜀咏悄繧・譫壽聴繧九□縺代〒縲、I縺瑚痩縺ｮ濶ｲ繝ｻ蠖｢繝ｻ雉ｪ諢溘↑縺ｩ繧定ｧ｣譫舌＠縲∝▼蠎ｷ迥ｶ諷九・豌ｴ繧・ｊ縺ｮ繧ｿ繧､繝溘Φ繧ｰ繝ｻ譌･蠖薙◆繧翫・驕ｩ蜷ｦ繧貞叉蠎ｧ縺ｫ險ｺ譁ｭ縺励∪縺吶・
-              蝨定敢蛻晏ｿ・・°繧我ｸ顔ｴ夊・∪縺ｧ縲∵､咲黄繧偵ｈ繧企聞縺上・蜈・ｰ励↓閧ｲ縺ｦ繧九◆繧√・繝代・繝医リ繝ｼ縺ｨ縺励※縺疲ｴｻ逕ｨ縺上□縺輔＞縲・
+              植物の写真を1枚撮るだけで、AIが葉の色・形・質感などを解析し、健康状態・水やりのタイミング・日当たりの適否を即座に診断します。
+              園芸初心者から上級者まで、植物をより長く・元気に育てるためのパートナーとしてご活用ください。
             </p>
           </div>
 
-          {/* 迚ｹ蠕ｴ繧ｫ繝ｼ繝・*/}
+          {/* 特徴カード */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
               {
-                icon: '萄',
-                title: '蜀咏悄1譫壹〒蜊ｳ險ｺ譁ｭ',
-                desc: '繧ｹ繝槭・繝医ヵ繧ｩ繝ｳ繧・き繝｡繝ｩ縺ｧ謦ｮ蠖ｱ縺励◆讀咲黄縺ｮ逕ｻ蜒上ｒ繧｢繝・・繝ｭ繝ｼ繝峨☆繧九□縺代り､・尅縺ｪ謫堺ｽ懊・荳蛻・ｸ崎ｦ√〒縺吶・,
+                icon: '📸',
+                title: '写真1枚で即診断',
+                desc: 'スマートフォンやカメラで撮影した植物の画像をアップロードするだけ。複雑な操作は一切不要です。',
               },
               {
-                icon: '､・,
-                title: 'Gemini 2.5 Flash 謳ｭ霈・,
-                desc: 'Google縺ｮ譛譁ｰAI繝｢繝・Ν縺碁ｫ倡ｲｾ蠎ｦ縺ｧ讀咲黄繧定ｭ伜挨縲ら羅螳ｳ陌ｫ縺ｮ繧ｵ繧､繝ｳ繧・・､贋ｸ崎ｶｳ縺ｾ縺ｧ邏ｰ縺九￥讀懃衍縺励∪縺吶・,
+                icon: '🤖',
+                title: 'Gemini 2.5 Flash 搭載',
+                desc: 'Googleの最新AIモデルが高精度で植物を識別。病害虫のサインや栄養不足まで細かく検知します。',
               },
               {
-                icon: '庁',
-                title: '繧ｱ繧｢繧｢繝峨ヰ繧､繧ｹ莉倥″',
-                desc: '險ｺ譁ｭ邨先棡縺縺代〒縺ｪ縺上御ｻ翫☆縺舌〒縺阪ｋ繧ｱ繧｢縲阪ｒ蜈ｷ菴鍋噪縺ｫ繝ｪ繧ｹ繝亥ｽ｢蠑上〒謠千､ｺ縲ゅ☆縺舌↓陦悟虚縺ｫ遘ｻ縺帙∪縺吶・,
+                icon: '💡',
+                title: 'ケアアドバイス付き',
+                desc: '診断結果だけでなく「今すぐできるケア」を具体的にリスト形式で提示。すぐに行動に移せます。',
               },
             ].map((item, i) => (
               <div key={i} className="bg-[#13141f] rounded-xl border border-white/5 p-5 space-y-2">
@@ -546,15 +548,15 @@ export default function SmartGardening() {
             ))}
           </div>
 
-          {/* 菴ｿ縺・婿繧ｹ繝・ャ繝・*/}
+          {/* 使い方ステップ */}
           <div>
-            <h2 className="text-base font-semibold text-white mb-4 tracking-tight">搭 菴ｿ縺・婿</h2>
+            <h2 className="text-base font-semibold text-white mb-4 tracking-tight">📋 使い方</h2>
             <ol className="space-y-3">
               {[
-                '縲檎判蜒上い繝・・繝ｭ繝ｼ繝峨阪∪縺溘・縲後き繝｡繝ｩ縺ｧ謦ｮ蠖ｱ縲阪ｒ驕ｸ繧薙〒縺上□縺輔＞縲・,
-                '讀咲黄蜈ｨ菴薙′蜀吶ｋ繧医≧縺ｫ逕ｻ蜒上ｒ貅門ｙ縺励√い繝・・繝ｭ繝ｼ繝峨∪縺溘・謦ｮ蠖ｱ縺励∪縺吶・,
-                '縲梧､咲黄繧定ｨｺ譁ｭ縺吶ｋ縲阪・繧ｿ繝ｳ繧呈款縺励※AI隗｣譫舌ｒ髢句ｧ九＠縺ｾ縺吶・,
-                '蛛･蠎ｷ繧ｹ繧ｳ繧｢繝ｻ豌ｴ繧・ｊ繝ｻ譌･辣ｧ繝ｻ繧ｱ繧｢繧｢繝峨ヰ繧､繧ｹ縺瑚｡ｨ遉ｺ縺輔ｌ縺ｾ縺吶・,
+                '「画像アップロード」または「カメラで撮影」を選んでください。',
+                '植物全体が写るように画像を準備し、アップロードまたは撮影します。',
+                '「植物を診断する」ボタンを押してAI解析を開始します。',
+                '健康スコア・水やり・日照・ケアアドバイスが表示されます。',
               ].map((step, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-semibold flex items-center justify-center mt-0.5">
@@ -566,13 +568,13 @@ export default function SmartGardening() {
             </ol>
           </div>
 
-          {/* 豕ｨ諢丈ｺ矩・*/}
+          {/* 注意事項 */}
           <div className="bg-[#0d1117] border border-white/5 rounded-xl p-5">
-            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">縺疲ｳｨ諢・/h3>
+            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">ご注意</h3>
             <ul className="space-y-1.5 text-xs text-slate-600 leading-relaxed list-disc list-inside">
-              <li>譛ｬ繝・・繝ｫ縺ｯAI縺ｫ繧医ｋ蜿り・ｨｺ譁ｭ縺ｧ縺吶よｷｱ蛻ｻ縺ｪ逞・ｮｳ縺ｯ蟆る摩螳ｶ縺ｫ縺皮嶌隲・￥縺縺輔＞縲・/li>
-              <li>逕ｻ蜒上・魄ｮ譏弱〒譏弱ｋ縺・腸蠅・〒謦ｮ蠖ｱ縺吶ｋ縺ｨ縲√ｈ繧頑ｭ｣遒ｺ縺ｪ險ｺ譁ｭ縺悟ｾ励ｉ繧後∪縺吶・/li>
-              <li>1譌･縺ゅ◆繧翫・險ｺ譁ｭ蝗樊焚縺ｫ縺ｯ荳企剞縺後≠繧翫∪縺呻ｼ亥茜逕ｨ隕冗ｴ・↓貅匁侠・峨・/li>
+              <li>本ツールはAIによる参考診断です。深刻な病害は専門家にご相談ください。</li>
+              <li>画像は鮮明で明るい環境で撮影すると、より正確な診断が得られます。</li>
+              <li>1日あたりの診断回数には上限があります（利用規約に準拠）。</li>
             </ul>
           </div>
 
@@ -583,14 +585,14 @@ export default function SmartGardening() {
   )
 }
 
-// 笏笏 繝励Ξ繝薙Η繝ｼ・玖ｨｺ譁ｭ繝懊ち繝ｳ蜈ｱ騾壹さ繝ｳ繝昴・繝阪Φ繝・笏笏
+// ── プレビュー＋診断ボタン共通コンポーネント ──
 function PreviewAndAnalyze({
   preview,
   isAnalyzing,
   error,
   onReset,
   onAnalyze,
-  resetLabel = '螟画峩',
+  resetLabel = '変更',
 }: {
   preview: string
   isAnalyzing: boolean
@@ -628,12 +630,12 @@ function PreviewAndAnalyze({
         {isAnalyzing ? (
           <>
             <Loader2 className="h-4 w-4 animate-spin" />
-            AI縺瑚ｧ｣譫蝉ｸｭ...
+            AIが解析中...
           </>
         ) : (
           <>
             <Zap className="h-4 w-4" />
-            讀咲黄繧定ｨｺ譁ｭ縺吶ｋ 竊・
+            植物を診断する →
           </>
         )}
       </button>

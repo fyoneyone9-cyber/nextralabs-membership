@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation'
 ﻿// ============================================================
 // 🔒 LOCKED — ExamScheduler
 // 完成済みツール。NextraLabs様の明示的な指示なしに
