@@ -14,24 +14,26 @@ import {
 function CallFrontButton({ t }: { t: Record<string, string> }) {
   const [calling, setCalling] = React.useState(false)
   const [error, setError] = React.useState('')
-  const [noKey, setNoKey] = React.useState(false)
 
   const handleCall = async () => {
     setError('')
-    const apiKey = localStorage.getItem('dms_org_daily_api_key') || ''
-    if (!apiKey.trim()) {
-      setNoKey(true)
-      setTimeout(() => setNoKey(false), 3000)
-      return
-    }
     setCalling(true)
     try {
+      // localStorageのキーがあれば使う、なければサーバー側の環境変数(DAILY_API_KEY)で処理
+      const localKey = typeof window !== 'undefined' ? localStorage.getItem('dms_org_daily_api_key') || '' : ''
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      if (localKey.trim()) headers['x-daily-api-key'] = localKey
+
       const res = await fetch('/api/dms/daily-room', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-daily-api-key': apiKey },
+        headers,
         body: JSON.stringify({ propertyName: 'フロント' }),
       })
-      if (!res.ok) { setError('通話の開始に失敗しました'); return }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        setError(err.error || '通話の開始に失敗しました')
+        return
+      }
       const data = await res.json()
       const history = JSON.parse(localStorage.getItem('dms_call_history') || '[]')
       history.unshift({ id: data.name, roomName: data.name, roomUrl: data.url, propertyName: data.propertyName, createdAt: data.createdAt, status: 'active' })
@@ -43,12 +45,6 @@ function CallFrontButton({ t }: { t: Record<string, string> }) {
       setCalling(false)
     }
   }
-
-  if (noKey) return (
-    <div className="text-xs text-center text-amber-400 py-2 px-4 rounded-xl" style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.2)' }}>
-      {t.callFront ? `${t.callFront}:` : ''}通話機能は管理者が設定後にご利用いただけます
-    </div>
-  )
 
   return (
     <div className="flex flex-col items-center gap-2">
@@ -113,6 +109,8 @@ const I18N = {
     prog1: 'スタート', prog2: '予約確認', prog3: '受付', prog4: 'チェックイン完了',
     // カメラ
     camCancel: 'キャンセル', camCapture: '手動で撮影',
+    // チェックアウト
+    checkoutTitle: 'チェックアウト', checkoutSub: '予約番号・お名前・電話番号で予約を検索してください',
   },
   'English': {
     welcome: 'Welcome',
@@ -150,6 +148,7 @@ const I18N = {
     returnStart: 'Return to Start',
     prog1: 'Start', prog2: 'Reservation', prog3: 'Check-In', prog4: 'Complete',
     camCancel: 'Cancel', camCapture: 'Capture',
+    checkoutTitle: 'Check-Out', checkoutSub: 'Search by reservation number, name, or phone',
   },
   '中文': {
     welcome: '欢迎光临',
@@ -185,6 +184,7 @@ const I18N = {
     returnStart: '返回首页',
     prog1: '开始', prog2: '查找预订', prog3: '办理入住', prog4: '获取房卡',
     camCancel: '取消', camCapture: '手动拍照',
+    checkoutTitle: '退房', checkoutSub: '请通过预订号、姓名或电话号码搜索',
   },
   '한국어': {
     welcome: '환영합니다',
@@ -220,6 +220,7 @@ const I18N = {
     returnStart: '처음으로 돌아가기',
     prog1: '시작', prog2: '예약 확인', prog3: '체크인', prog4: '열쇠 발급',
     camCancel: '취소', camCapture: '수동 촬영',
+    checkoutTitle: '체크아웃', checkoutSub: '예약번호, 성함, 전화번호로 예약을 검색해 주세요',
   },
 } as const
 type LangKey = keyof typeof I18N
@@ -2058,12 +2059,12 @@ const MasterEngine = () => {
             {/* ヘッダー */}
             <div className="px-8 py-6 border-b flex items-center justify-between" style={{ borderColor: '#1e293b' }}>
               <div>
-                <h2 className="text-2xl font-semibold text-slate-100">チェックアウト</h2>
-                <p className="text-slate-500 text-sm mt-1">予約番号・お名前・電話番号で予約を検索してください</p>
+                <h2 className="text-2xl font-semibold text-slate-100">{t.checkoutTitle || 'チェックアウト'}</h2>
+                <p className="text-slate-500 text-sm mt-1">{t.checkoutSub || '予約番号・お名前・電話番号で予約を検索してください'}</p>
               </div>
               <button onClick={() => { setStaffMode(false); gotoTab('kiosk') }}
                 className="text-xs text-slate-600 hover:text-slate-400 transition-colors px-3 py-2 rounded-lg"
-                style={{ border: '1px solid #1e293b' }}>← 戻る</button>
+                style={{ border: '1px solid #1e293b' }}>{t.back || '← 戻る'}</button>
             </div>
 
             <div className="p-8 space-y-6">
@@ -2074,9 +2075,9 @@ const MasterEngine = () => {
                   {coMode === 'select' && (
                     <div className="grid grid-cols-3 gap-5">
                       {[
-                        { mode: 'reservation' as const, icon: Hash,         label: '予約番号',  sub: 'Reservation No.', color: '#818cf8' },
-                        { mode: 'name'        as const, icon: ClipboardList, label: 'お名前',    sub: 'Guest Name',       color: '#6366f1' },
-                        { mode: 'phone'       as const, icon: Phone,         label: '電話番号',  sub: 'Phone Number',     color: '#a78bfa' },
+                        { mode: 'reservation' as const, icon: Hash,         label: t.byReservation || '予約番号',  sub: t.byReservationSub || 'Reservation No.', color: '#818cf8' },
+                        { mode: 'name'        as const, icon: ClipboardList, label: t.byName        || 'お名前',    sub: t.byNameSub        || 'Guest Name',       color: '#6366f1' },
+                        { mode: 'phone'       as const, icon: Phone,         label: t.byPhone       || '電話番号',  sub: t.byPhoneSub       || 'Phone Number',     color: '#a78bfa' },
                       ].map(item => (
                         <button key={item.mode} onClick={() => setCoMode(item.mode)}
                           className="rounded-2xl py-10 flex flex-col items-center justify-center gap-4 transition-all hover:scale-[1.02] active:scale-[0.98]"
@@ -2097,18 +2098,18 @@ const MasterEngine = () => {
                     <div className="rounded-2xl p-6 space-y-5" style={{ background: '#13141f', border: '1px solid #1e293b' }}>
                       <div className="flex items-center justify-between">
                         <p className="text-lg font-semibold text-slate-200">
-                          {coMode === 'reservation' ? '予約番号を入力' : coMode === 'name' ? 'お名前を入力' : '電話番号を入力'}
+                          {coMode === 'reservation' ? (t.inputReservation || '予約番号を入力') : coMode === 'name' ? (t.inputName || 'お名前を入力') : (t.inputPhone || '電話番号を入力')}
                         </p>
                         <button onClick={() => { setCoMode('select'); setCheckoutResults([]) }}
                           className="text-sm text-slate-600 hover:text-slate-400 transition-colors px-3 py-2 rounded-lg"
-                          style={{ border: '1px solid #334155' }}>← 戻る</button>
+                          style={{ border: '1px solid #334155' }}>{t.back || '← 戻る'}</button>
                       </div>
                       <div className="flex gap-3">
                         <input
                           value={checkoutQuery}
                           onChange={e => setCheckoutQuery(e.target.value)}
                           onKeyDown={e => e.key === 'Enter' && doCheckoutSearch()}
-                          placeholder={coMode === 'reservation' ? 'NTR-001' : coMode === 'name' ? '山田 太郎' : '090-1234-5678'}
+                          placeholder={coMode === 'reservation' ? (t.phReservation || 'NTR-001') : coMode === 'name' ? (t.phName || '山田 太郎') : (t.phPhone || '090-1234-5678')}
                           className="flex-1 h-14 text-lg rounded-xl px-5"
                           style={{ background: '#0d1117', border: '2px solid #334155', color: '#f1f5f9', outline: 'none' }}
                           onFocus={e => (e.target.style.borderColor = '#818cf8')}
