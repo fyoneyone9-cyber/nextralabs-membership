@@ -39,23 +39,31 @@ function playNotificationSound() {
 }
 
 export default function CallsEngine() {
-  const [apiKey, setApiKey] = useState(() =>
-    typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY_API) || '' : ''
-  )
+  const [apiKey, setApiKey] = useState('')
   const [showApiKey, setShowApiKey] = useState(false)
-  const [apiKeySaved, setApiKeySaved] = useState(() =>
-    typeof window !== 'undefined' ? !!localStorage.getItem(STORAGE_KEY_API)?.trim() : false
-  )
+  const [apiKeySaved, setApiKeySaved] = useState(false)
   const [callHistory, setCallHistory] = useState<CallRecord[]>([])
   const [creating, setCreating] = useState(false)
   const [error, setError] = useState('')
   const [refreshed, setRefreshed] = useState(false)
   const [notifyEnabled, setNotifyEnabled] = useState(true)
   const [incomingCall, setIncomingCall] = useState<CallRecord | null>(null)
+  const [authChecked, setAuthChecked] = useState(false)
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null)
 
   useEffect(() => {
-    // 初期値はuseStateの初期化関数で設定済み。ここは履歴のみ読む
+    // 認証チェック
+    const session = localStorage.getItem('dms_session')
+    if (!session) {
+      window.location.href = '/dms/login'
+      return
+    }
+    setAuthChecked(true)
+
+    // APIキーと履歴を読み込む
+    const stored = localStorage.getItem(STORAGE_KEY_API) || ''
+    setApiKey(stored)
+    setApiKeySaved(!!stored.trim())
     try {
       const hist = JSON.parse(localStorage.getItem(STORAGE_KEY_HISTORY) || '[]')
       setCallHistory(hist)
@@ -176,6 +184,12 @@ export default function CallsEngine() {
       })
     } catch { return iso }
   }
+
+  if (!authChecked) return (
+    <div className="min-h-screen flex items-center justify-center" style={{ background: '#050507' }}>
+      <div className="w-6 h-6 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
+    </div>
+  )
 
   return (
     <div className="min-h-screen bg-[#050507] text-slate-200 font-sans">
