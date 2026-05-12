@@ -160,16 +160,17 @@ export default function ClosetCoachPage() {
         ))}
       </div>
 
-      {/* Amazon アソシエイト */}
-      <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 mb-12 text-center">
-        <p className="text-sm text-muted-foreground mb-3">🛒 断捨離・収納グッズをAmazonでチェック</p>
+      {/* Amazon アフィリエイト */}
+      <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between gap-3">
+        <p className="text-xs text-slate-500 truncate">🛒 断捨離・収納グッズをAmazonでチェック</p>
         <a
           href="https://www.amazon.co.jp/s?k=%E6%96%AD%E6%8D%A8%E9%9B%A2%20%E5%8F%8E%E7%B4%8D&tag=nextralabs-22"
           target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors"
+          rel="noopener noreferrer sponsored"
+          className="shrink-0 inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-400 hover:text-amber-400 transition-colors"
         >
-          Amazonで見る →
+          <span className="text-amber-500/60 font-bold text-[10px]">Amazon</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         </a>
       </div>
 
