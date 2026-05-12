@@ -20,7 +20,7 @@ const ADMIN_EMAIL = 'f.yoneyone9@gmail.com'
 const TOOLS = [
   // ── 📱 SNS・コンテンツ制作 ──
   { id: 'sns-auto-poster/app',      cat: 'content',   title: 'AI SNSオートポスター',         sub: 'バズを量産するマルチSNS生成',                                     icon: Share2,        plan: 'ライト',     done: true },
-  { id: 'ai-select-shop/app',       cat: 'content',   title: 'AIセレクトショップ',            sub: 'トレンド解析とShopify連携',                                       icon: Store,         plan: 'プレミアム' },
+  { id: 'ai-select-shop/app',       cat: 'content',   title: 'AIセレクトショップ',            sub: 'トレンド解析とShopify連携',                                       icon: Store,         plan: 'プレミアム', done: true },
   { id: 'youtube-producer/app',     cat: 'content',   title: 'AI YouTubeプロデューサー',      sub: '全自動台本・構成作成',                                            icon: Clapperboard,  plan: 'プレミアム', done: true },
   { id: 'youtube-coordinator/app',  cat: 'content',   title: 'YouTube AI Sync',              sub: '動画解析と楽天コーチ',                                            icon: Play,          plan: 'プレミアム', done: true },
   { id: 'prompt-master/app',        cat: 'content',   title: 'AI画像プロンプトマスター',      sub: '究極 of 究極の画像パーツ工房',                                    icon: Wand2,         plan: 'ライト',     done: true },
