@@ -40,12 +40,14 @@ export async function POST(req: NextRequest) {
   const { name, pms_type = '', pms_connected = false } = body
   if (!name?.trim()) return NextResponse.json({ error: '物件名は必須です' }, { status: 400 })
 
+  const { pms_fields = {} } = body
   const { data, error } = await supabase
     .from('dms_properties')
     .insert({
       id: crypto.randomUUID(),
       name: name.trim(),
       pms_type,
+      pms_fields,
       pms_connected,
       tenant_id: tenantId,
     })
@@ -71,6 +73,7 @@ export async function PUT(req: NextRequest) {
       id: p.id || crypto.randomUUID(),
       name: p.name,
       pms_type: p.pms_type || p.pmsType || '',
+      pms_fields: p.pms_fields || p.pmsFields || {},
       pms_connected: p.pms_connected ?? p.pmsConnected ?? false,
       tenant_id: tenantId,
       updated_at: new Date().toISOString(),

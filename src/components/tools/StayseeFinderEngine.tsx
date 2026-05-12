@@ -1452,6 +1452,8 @@ const MasterEngine = () => {
   const [fixedPassword, setFixedPassword] = useState<string>('8421')
   const [showSettings, setShowSettings]   = useState(false)
   const [isOnline, setIsOnline]           = useState(false)
+  // 物件ID（KIOSKが紐づく物件 — 物件ごとにAPIキーを切り替えるため）
+  const [currentPropertyId, setCurrentPropertyId] = useState<string>('')
 
   // 翻訳ショートハンド（selectedLang が変わると自動再レンダー）
   const t = I18N[selectedLang as LangKey] ?? I18N['日本語']
@@ -1542,6 +1544,8 @@ const MasterEngine = () => {
         }
         if (data.lock_type) setLockType(data.lock_type)
         if (data.fixed_password) setFixedPassword(data.fixed_password)
+        // 物件IDを復元（KIOSKが紐づく物件）
+        if (data.kiosk_property_id) setCurrentPropertyId(data.kiosk_property_id)
       })
       .catch(() => {})
   }, [])
@@ -1624,8 +1628,8 @@ const MasterEngine = () => {
           r.id.toLowerCase().includes(q)
         )
       } else {
-        const apiPath = getPmsApiPath(pms)
-        const res = await fetch(`${apiPath}?q=${encodeURIComponent(reservationId)}`)
+        const url = buildSearchUrl(pms, reservationId, 'all', currentPropertyId || undefined)
+        const res = await fetch(url)
         const data = await res.json()
         results = data.reservations || []
       }
@@ -1703,6 +1707,14 @@ const MasterEngine = () => {
     return key === 'staysee' ? '/api/staysee/search' : `/api/pms/${key}/search`
   }
 
+  /* ─── 検索URLビルダー（物件ID付き） ─── */
+  const buildSearchUrl = (pmsType: string, q: string, mode = 'all', propertyId?: string): string => {
+    const base = getPmsApiPath(pmsType)
+    const params = new URLSearchParams({ q, mode })
+    if (propertyId) params.set('property_id', propertyId)
+    return `${base}?${params.toString()}`
+  }
+
   /* ─── 予約検索（クエリ直接指定版） ─── */
   const doSearchByQuery = async (query: string) => {
     if (!query.trim()) return
@@ -1719,8 +1731,8 @@ const MasterEngine = () => {
         await new Promise(r => setTimeout(r, 400))
         setSearchResults(results)
       } else {
-        const apiPath = getPmsApiPath(pms)
-        const res = await fetch(`${apiPath}?q=${encodeURIComponent(query)}`)
+        const url = buildSearchUrl(pms, query, 'all', currentPropertyId || undefined)
+        const res = await fetch(url)
         const data = await res.json()
         setSearchResults(data.reservations || [])
       }
@@ -1749,9 +1761,9 @@ const MasterEngine = () => {
         setSearchResults(results)
         setIsOnline(false)
       } else {
-        // PMS API呼び出し（汎用アダプター経由）
-        const apiPath = getPmsApiPath(pms)
-        const res = await fetch(`${apiPath}?q=${encodeURIComponent(searchQuery.trim())}`)
+        // PMS API呼び出し（汎用アダプター経由・物件IDで自動キー切り替え）
+        const url = buildSearchUrl(pms, searchQuery.trim(), 'all', currentPropertyId || undefined)
+        const res = await fetch(url)
         const data = await res.json()
         setSearchResults(data.reservations || [])
         setIsOnline(true)
@@ -1791,8 +1803,8 @@ const MasterEngine = () => {
         await new Promise(r => setTimeout(r, 400))
         setCheckoutResults(results)
       } else {
-        const apiPath = getPmsApiPath(pms)
-        const res = await fetch(`${apiPath}?q=${encodeURIComponent(checkoutQuery.trim())}&mode=checkout`)
+        const url = buildSearchUrl(pms, checkoutQuery.trim(), 'checkout', currentPropertyId || undefined)
+        const res = await fetch(url)
         const data = await res.json()
         setCheckoutResults(data.reservations || [])
       }

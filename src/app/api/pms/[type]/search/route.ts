@@ -25,22 +25,48 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-// ── セッションからテナント設定を取得 ──
-async function getPmsConfig(req: NextRequest): Promise<{ pmsType: string; fields: Record<string, string> } | null> {
+// ── セッション + 物件IDからAPIキーを解決 ──
+// 優先順位: 物件固有のpms_fields > テナントのグローバルpms_fields
+async function resolvePmsConfig(
+  req: NextRequest,
+  propertyId?: string
+): Promise<{ pmsType: string; fields: Record<string, string> } | null> {
   try {
     const cookie = req.cookies.get('dms_session')?.value
     if (!cookie) return null
     const session = JSON.parse(cookie)
     if (!session?.id || session.id === 'super-admin') return null
 
-    const { data } = await supabase
+    // テナントのグローバル設定
+    const { data: tenant } = await supabase
       .from('dms_tenants')
       .select('pms_type, pms_fields')
       .eq('id', session.id)
       .single()
 
-    if (!data) return null
-    return { pmsType: data.pms_type || 'none', fields: data.pms_fields || {} }
+    const globalFields: Record<string, string> = tenant?.pms_fields || {}
+    const globalType: string = tenant?.pms_type || 'none'
+
+    // 物件固有の設定（propertyIdが指定されている場合）
+    if (propertyId) {
+      const { data: prop } = await supabase
+        .from('dms_properties')
+        .select('pms_type, pms_fields')
+        .eq('id', propertyId)
+        .eq('tenant_id', session.id)
+        .single()
+
+      if (prop?.pms_fields?.apiKey) {
+        // 物件固有キーが設定されていればそちらを優先
+        return {
+          pmsType: prop.pms_type || globalType,
+          fields: { ...globalFields, ...prop.pms_fields },
+        }
+      }
+    }
+
+    // フォールバック: テナントのグローバル設定
+    return { pmsType: globalType, fields: globalFields }
   } catch { return null }
 }
 
@@ -331,8 +357,9 @@ export async function GET(
 ) {
   const pmsType = params.type.toLowerCase()
   const { searchParams } = new URL(req.url)
-  const q    = (searchParams.get('q') || '').trim()
-  const mode = searchParams.get('mode') || 'all'
+  const q          = (searchParams.get('q') || '').trim()
+  const mode       = searchParams.get('mode') || 'all'
+  const propertyId = searchParams.get('property_id') || undefined
 
   // Staysee は既存APIに委譲
   if (pmsType === 'staysee') {
@@ -341,15 +368,18 @@ export async function GET(
     return fetch(url.toString(), { headers: req.headers })
   }
 
-  // テナント設定からAPIキーを取得
-  const config = await getPmsConfig(req)
+  // 物件固有 → テナントのグローバル設定の順でAPIキーを解決
+  const config = await resolvePmsConfig(req, propertyId)
   if (!config) {
     return NextResponse.json({ error: '認証情報が取得できません。DMSにログインしてください。' }, { status: 401 })
   }
 
   const apiKey = config.fields?.apiKey || config.fields?.api_key || ''
   if (!apiKey) {
-    return NextResponse.json({ error: `${pmsType} のAPIキーが設定されていません。DMS設定タブから入力してください。` }, { status: 400 })
+    return NextResponse.json({
+      error: `${pmsType} のAPIキーが設定されていません。DMS設定タブ（物件設定またはテナント設定）から入力してください。`,
+      propertyId: propertyId || null,
+    }, { status: 400 })
   }
 
   try {

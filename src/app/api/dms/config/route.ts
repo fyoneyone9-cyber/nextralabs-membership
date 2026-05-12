@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}))
 
   // 許可されたキーのみ更新（セキュリティ）
-  const allowed = ['pms_type', 'pms_fields', 'lock_type', 'lock_fields', 'daily_api_key', 'org_name', 'fixed_password']
+  const allowed = ['pms_type', 'pms_fields', 'lock_type', 'lock_fields', 'daily_api_key', 'org_name', 'fixed_password', 'kiosk_property_id']
   const patch: Record<string, unknown> = {}
   for (const key of allowed) {
     if (key in body) patch[key] = body[key]
