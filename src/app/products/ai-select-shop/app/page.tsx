@@ -748,6 +748,452 @@ const STYLES: StyleDef[] = [
       ctx.shadowBlur=0
     },
   },
+  // ── 29. AI/Tech ──────────────────────────────
+  {
+    id: 'aitech', name: '🤖 AI',
+    draw: (ctx, cx, cy, r, text, pw, ph) => {
+      ctx.fillStyle='#020617'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
+      // 流れる数字雨
+      ctx.font=`${Math.floor(r*0.13)}px monospace`
+      ctx.fillStyle='rgba(16,185,129,0.22)'
+      ctx.textAlign='left'; ctx.textBaseline='top'
+      const chars='01アイウエオ10ABCDEFあいう'
+      for(let col=0;col<12;col++){
+        for(let row=0;row<10;row++){
+          const ch=chars[Math.floor((col*7+row*3)%chars.length)]
+          ctx.fillText(ch, cx-pw/2+col*(pw/12), cy-ph/2+row*(ph/10))
+        }
+      }
+      // 六角形グリッド
+      ctx.strokeStyle='rgba(16,185,129,0.3)'; ctx.lineWidth=1
+      const hx=r*0.38, hy=r*0.44
+      for(let i=0;i<6;i++){
+        const a=i*Math.PI/3-Math.PI/6
+        const nx=cx+Math.cos(a)*hx, ny=cy+Math.sin(a)*hy
+        i===0?ctx.moveTo(nx,ny):ctx.lineTo(nx,ny)
+        if(i===0)ctx.beginPath(),ctx.moveTo(nx,ny)
+      }
+      ctx.closePath(); ctx.stroke()
+      ctx.shadowColor='#10b981'; ctx.shadowBlur=18
+      ctx.font=`700 ${Math.floor(r*0.44)}px monospace`
+      ctx.fillStyle='#10b981'; ctx.textAlign='center'; ctx.textBaseline='middle'
+      drawFitText(ctx, text, cx, cy, pw*0.88)
+      ctx.shadowBlur=0
+      ctx.font=`${Math.floor(r*0.14)}px monospace`
+      ctx.fillStyle='rgba(16,185,129,0.6)'; ctx.fillText('POWERED BY AI', cx, cy+r*0.6)
+    },
+  },
+  // ── 30. アウトドア ──────────────────────────────
+  {
+    id: 'outdoor', name: '🏔 アウトドア',
+    draw: (ctx, cx, cy, r, text, pw, ph) => {
+      // 空グラデ
+      const sky=ctx.createLinearGradient(cx,cy-ph/2,cx,cy+ph/2)
+      sky.addColorStop(0,'#0ea5e9'); sky.addColorStop(0.55,'#38bdf8'); sky.addColorStop(1,'#2d5a3d')
+      ctx.fillStyle=sky; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
+      // 山シルエット
+      ctx.fillStyle='#1e3a2a'
+      ctx.beginPath()
+      ctx.moveTo(cx-pw/2,cy+ph/2)
+      ctx.lineTo(cx-pw*0.4,cy-ph*0.1)
+      ctx.lineTo(cx-pw*0.15,cy+ph*0.05)
+      ctx.lineTo(cx+pw*0.05,cy-ph*0.25)
+      ctx.lineTo(cx+pw*0.25,cy+ph*0.0)
+      ctx.lineTo(cx+pw/2,cy-ph*0.08)
+      ctx.lineTo(cx+pw/2,cy+ph/2)
+      ctx.closePath(); ctx.fill()
+      // 雪山
+      ctx.fillStyle='#e2e8f0'
+      ctx.beginPath()
+      ctx.moveTo(cx+pw*0.05,cy-ph*0.25)
+      ctx.lineTo(cx+pw*0.2,cy-ph*0.05)
+      ctx.lineTo(cx-pw*0.08,cy-ph*0.05)
+      ctx.closePath(); ctx.fill()
+      // 太陽
+      ctx.fillStyle='#fbbf24'
+      ctx.beginPath(); ctx.arc(cx-r*0.5,cy-r*0.5,r*0.18,0,Math.PI*2); ctx.fill()
+      ctx.font=`bold ${Math.floor(r*0.38)}px "Noto Sans JP",sans-serif`
+      ctx.fillStyle='#ffffff'; ctx.textAlign='center'; ctx.textBaseline='middle'
+      ctx.shadowColor='rgba(0,0,0,0.5)'; ctx.shadowBlur=6
+      drawFitText(ctx, text, cx, cy+ph*0.32, pw*0.88)
+      ctx.shadowBlur=0
+    },
+  },
+  // ── 31. カフェ ──────────────────────────────
+  {
+    id: 'cafe', name: '☕ カフェ',
+    draw: (ctx, cx, cy, r, text, pw, ph) => {
+      ctx.fillStyle='#faf6f1'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
+      // クラフト紙テクスチャ
+      ctx.fillStyle='rgba(139,90,43,0.04)'
+      for(let i=0;i<200;i++){
+        const x=cx-pw/2+Math.random()*pw, y=cy-ph/2+Math.random()*ph
+        ctx.fillRect(x,y,Math.random()*3+1,Math.random()*3+1)
+      }
+      // コーヒーリング
+      ctx.strokeStyle='rgba(139,90,43,0.15)'; ctx.lineWidth=6
+      ctx.beginPath(); ctx.arc(cx+r*0.3,cy+r*0.3,r*0.45,0,Math.PI*2); ctx.stroke()
+      ctx.strokeStyle='rgba(139,90,43,0.08)'; ctx.lineWidth=3
+      ctx.beginPath(); ctx.arc(cx+r*0.3,cy+r*0.3,r*0.42,0,Math.PI*2); ctx.stroke()
+      ctx.strokeStyle='rgba(139,90,43,0.25)'; ctx.lineWidth=2
+      ctx.beginPath(); ctx.arc(cx-r*0.4,cy-r*0.2,r*0.3,0,Math.PI*2); ctx.stroke()
+      ctx.font=`600 ${Math.floor(r*0.42)}px Georgia,serif`
+      ctx.fillStyle='#3d2b1f'; ctx.textAlign='center'; ctx.textBaseline='middle'
+      drawFitText(ctx, text, cx-r*0.05, cy-r*0.1, pw*0.85)
+      ctx.font=`${Math.floor(r*0.15)}px Georgia,serif`
+      ctx.fillStyle='rgba(139,90,43,0.6)'; ctx.fillText('HANDCRAFTED', cx, cy+r*0.56)
+    },
+  },
+  // ── 32. ゲーミング ──────────────────────────────
+  {
+    id: 'gaming', name: '🎮 ゲーミング',
+    draw: (ctx, cx, cy, r, text, pw, ph) => {
+      ctx.fillStyle='#05001a'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
+      // スキャンライン
+      for(let y=cy-ph/2;y<cy+ph/2;y+=4){
+        ctx.fillStyle='rgba(255,255,255,0.02)'; ctx.fillRect(cx-pw/2,y,pw,2)
+      }
+      // RGB光柱
+      const beams=[{c:'#ff003c',x:-0.4},{c:'#00ff88',x:0},{c:'#0066ff',x:0.4}]
+      beams.forEach(b=>{
+        const grd=ctx.createLinearGradient(0,cy-ph/2,0,cy+ph/2)
+        grd.addColorStop(0,b.c+'00'); grd.addColorStop(0.5,b.c+'33'); grd.addColorStop(1,b.c+'00')
+        ctx.fillStyle=grd; ctx.fillRect(cx+b.x*pw/2-pw*0.1,cy-ph/2,pw*0.2,ph)
+      })
+      ctx.shadowColor='#00ff88'; ctx.shadowBlur=20
+      ctx.font=`900 ${Math.floor(r*0.5)}px Impact,sans-serif`
+      ctx.strokeStyle='#000'; ctx.lineWidth=4
+      ctx.fillStyle='#ffffff'; ctx.textAlign='center'; ctx.textBaseline='middle'
+      drawFitText(ctx, text, cx, cy, pw*0.88, true)
+      ctx.shadowBlur=0
+      ctx.font=`${Math.floor(r*0.14)}px monospace`
+      ctx.fillStyle='#00ff88'; ctx.fillText('▶ PLAYER ONE', cx, cy+r*0.62)
+    },
+  },
+  // ── 33. バタフライ ──────────────────────────────
+  {
+    id: 'butterfly', name: '🦋 バタフライ',
+    draw: (ctx, cx, cy, r, text, pw, ph) => {
+      const g=ctx.createLinearGradient(cx-pw/2,cy-ph/2,cx+pw/2,cy+ph/2)
+      g.addColorStop(0,'#0d0033'); g.addColorStop(1,'#1a0040')
+      ctx.fillStyle=g; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
+      // 蝶の羽
+      const wings=[
+        {dx:-0.5,dy:-0.3,rx:r*0.45,ry:r*0.35,rot:-0.5,c:'#a855f7'},
+        {dx:0.5,dy:-0.3,rx:r*0.45,ry:r*0.35,rot:0.5,c:'#ec4899'},
+        {dx:-0.35,dy:0.2,rx:r*0.3,ry:r*0.28,rot:-0.3,c:'#8b5cf6'},
+        {dx:0.35,dy:0.2,rx:r*0.3,ry:r*0.28,rot:0.3,c:'#f472b6'},
+      ]
+      wings.forEach(w=>{
+        ctx.save(); ctx.translate(cx+w.dx*r,cy+w.dy*r); ctx.rotate(w.rot)
+        const wg=ctx.createRadialGradient(0,0,0,0,0,w.rx)
+        wg.addColorStop(0,w.c+'cc'); wg.addColorStop(1,w.c+'22')
+        ctx.fillStyle=wg
+        ctx.beginPath(); ctx.ellipse(0,0,w.rx,w.ry,0,0,Math.PI*2); ctx.fill()
+        ctx.strokeStyle=w.c+'66'; ctx.lineWidth=1.5
+        ctx.beginPath(); ctx.ellipse(0,0,w.rx,w.ry,0,0,Math.PI*2); ctx.stroke()
+        ctx.restore()
+      })
+      ctx.shadowColor='#c084fc'; ctx.shadowBlur=12
+      ctx.font=`600 ${Math.floor(r*0.4)}px "Noto Sans JP",sans-serif`
+      ctx.fillStyle='#f0e6ff'; ctx.textAlign='center'; ctx.textBaseline='middle'
+      drawFitText(ctx, text, cx, cy, pw*0.88)
+      ctx.shadowBlur=0
+    },
+  },
+  // ── 34. ハワイアン ──────────────────────────────
+  {
+    id: 'hawaiian', name: '🌺 ハワイ',
+    draw: (ctx, cx, cy, r, text, pw, ph) => {
+      ctx.fillStyle='#0d4f3c'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
+      // 花・葉パターン
+      const flowers=['🌺','🌸','🌿','🌴','🌻']
+      const fpos=[[0.15,0.2],[0.75,0.15],[0.85,0.6],[0.1,0.75],[0.5,0.88],[0.0,0.45],[0.9,0.35]]
+      fpos.forEach(([fx,fy],i)=>{
+        ctx.font=`${Math.floor(r*0.28)}px sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'
+        ctx.fillText(flowers[i%flowers.length], cx-pw/2+fx*pw, cy-ph/2+fy*ph)
+      })
+      // 虹グラデ帯
+      const rg=ctx.createLinearGradient(cx-pw/2,cy-r*0.2,cx+pw/2,cy-r*0.2)
+      rg.addColorStop(0,'rgba(255,200,0,0.18)'); rg.addColorStop(0.5,'rgba(255,100,100,0.18)'); rg.addColorStop(1,'rgba(100,200,255,0.18)')
+      ctx.fillStyle=rg; ctx.fillRect(cx-pw/2,cy-r*0.35,pw,r*0.7)
+      ctx.font=`bold ${Math.floor(r*0.44)}px "Noto Sans JP",sans-serif`
+      ctx.fillStyle='#fff9e6'; ctx.textAlign='center'; ctx.textBaseline='middle'
+      ctx.shadowColor='rgba(0,0,0,0.5)'; ctx.shadowBlur=8
+      drawFitText(ctx, text, cx, cy, pw*0.88)
+      ctx.shadowBlur=0
+      ctx.font=`${Math.floor(r*0.15)}px sans-serif`
+      ctx.fillStyle='rgba(255,249,230,0.7)'; ctx.fillText('ALOHA', cx, cy+r*0.58)
+    },
+  },
+  // ── 35. ロック ──────────────────────────────
+  {
+    id: 'rock', name: '🎸 ロック',
+    draw: (ctx, cx, cy, r, text, pw, ph) => {
+      ctx.fillStyle='#0a0a0a'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
+      // ひびテクスチャ
+      ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1
+      for(let i=0;i<8;i++){
+        const sx=cx-pw/2+Math.random()*pw, sy=cy-ph/2+Math.random()*ph
+        ctx.beginPath(); ctx.moveTo(sx,sy)
+        ctx.lineTo(sx+(Math.random()-0.5)*pw*0.4, sy+(Math.random()-0.5)*ph*0.4)
+        ctx.stroke()
+      }
+      // 炎エフェクト
+      const flame=['#ff6600','#ff3300','#ff9900','#ffcc00']
+      for(let i=0;i<6;i++){
+        const fx=cx-pw*0.3+i*(pw*0.12), fy=cy+r*0.5
+        const fg=ctx.createRadialGradient(fx,fy,0,fx,fy-r*0.4,r*0.3)
+        fg.addColorStop(0,flame[i%4]+'cc'); fg.addColorStop(1,flame[i%4]+'00')
+        ctx.fillStyle=fg
+        ctx.beginPath(); ctx.arc(fx,fy-r*0.2,r*0.25,0,Math.PI*2); ctx.fill()
+      }
+      ctx.shadowColor='#ff4400'; ctx.shadowBlur=16
+      ctx.font=`900 ${Math.floor(r*0.5)}px Impact,sans-serif`
+      ctx.fillStyle='#ff4400'; ctx.textAlign='center'; ctx.textBaseline='middle'
+      ctx.strokeStyle='#000'; ctx.lineWidth=3
+      drawFitText(ctx, text, cx, cy-r*0.1, pw*0.88, true)
+      ctx.shadowBlur=0
+      ctx.font=`700 ${Math.floor(r*0.15)}px sans-serif`
+      ctx.fillStyle='rgba(255,68,0,0.6)'; ctx.fillText('ROCK & ROLL', cx, cy+r*0.6)
+    },
+  },
+  // ── 36. ラーメン ──────────────────────────────
+  {
+    id: 'ramen', name: '🍜 ラーメン',
+    draw: (ctx, cx, cy, r, text, pw, ph) => {
+      ctx.fillStyle='#1a0a00'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
+      // 湯気っぽいグラデ
+      for(let i=0;i<5;i++){
+        const vg=ctx.createLinearGradient(cx-pw*0.3+i*(pw*0.15),cy-ph/2,cx-pw*0.3+i*(pw*0.15),cy+ph/2)
+        vg.addColorStop(0,'rgba(255,180,50,0)'); vg.addColorStop(0.4,'rgba(255,180,50,0.08)'); vg.addColorStop(1,'rgba(255,180,50,0)')
+        ctx.fillStyle=vg; ctx.fillRect(cx-pw*0.3+i*(pw*0.15)-pw*0.05,cy-ph/2,pw*0.1,ph)
+      }
+      // 丼の縁
+      ctx.strokeStyle='rgba(255,150,50,0.4)'; ctx.lineWidth=3
+      ctx.beginPath(); ctx.ellipse(cx,cy+r*0.1,r*0.7,r*0.18,0,0,Math.PI*2); ctx.stroke()
+      ctx.strokeStyle='rgba(255,150,50,0.2)'; ctx.lineWidth=1.5
+      ctx.beginPath(); ctx.ellipse(cx,cy+r*0.1,r*0.62,r*0.15,0,0,Math.PI*2); ctx.stroke()
+      ctx.font=`bold ${Math.floor(r*0.48)}px "Noto Sans JP",serif`
+      ctx.fillStyle='#ff9820'; ctx.textAlign='center'; ctx.textBaseline='middle'
+      ctx.shadowColor='#ff6600'; ctx.shadowBlur=12
+      drawFitText(ctx, text, cx, cy-r*0.15, pw*0.88)
+      ctx.shadowBlur=0
+      ctx.font=`${Math.floor(r*0.15)}px "Noto Sans JP",serif`
+      ctx.fillStyle='rgba(255,152,32,0.6)'; ctx.fillText('本場の味', cx, cy+r*0.58)
+    },
+  },
+  // ── 37. バウハウス ──────────────────────────────
+  {
+    id: 'bauhaus', name: '🎭 バウハウス',
+    draw: (ctx, cx, cy, r, text, pw, ph) => {
+      ctx.fillStyle='#f5f0e8'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
+      // 幾何図形
+      ctx.fillStyle='#c41e3a'
+      ctx.beginPath(); ctx.arc(cx+r*0.4,cy-r*0.35,r*0.32,0,Math.PI*2); ctx.fill()
+      ctx.fillStyle='#1a3a8f'
+      ctx.fillRect(cx-r*0.85,cy-r*0.72,r*0.62,r*0.62)
+      ctx.fillStyle='#f5c518'; ctx.lineWidth=0
+      ctx.beginPath()
+      ctx.moveTo(cx-r*0.1,cy+r*0.62)
+      ctx.lineTo(cx+r*0.52,cy+r*0.62)
+      ctx.lineTo(cx+r*0.21,cy+r*0.1)
+      ctx.closePath(); ctx.fill()
+      // 細いライン
+      ctx.strokeStyle='#1a1a1a'; ctx.lineWidth=2
+      ctx.beginPath(); ctx.moveTo(cx-pw/2+8,cy); ctx.lineTo(cx+pw/2-8,cy); ctx.stroke()
+      ctx.beginPath(); ctx.moveTo(cx,cy-ph/2+8); ctx.lineTo(cx,cy+ph/2-8); ctx.stroke()
+      ctx.font=`700 ${Math.floor(r*0.36)}px Helvetica,sans-serif`
+      ctx.fillStyle='#1a1a1a'; ctx.textAlign='center'; ctx.textBaseline='middle'
+      drawFitText(ctx, text, cx, cy-r*0.08, pw*0.88)
+    },
+  },
+  // ── 38. ソーラーパンク ──────────────────────────────
+  {
+    id: 'solarpunk', name: '🌀 ソーラー',
+    draw: (ctx, cx, cy, r, text, pw, ph) => {
+      const g=ctx.createLinearGradient(cx-pw/2,cy-ph/2,cx+pw/2,cy+ph/2)
+      g.addColorStop(0,'#064e3b'); g.addColorStop(0.5,'#065f46'); g.addColorStop(1,'#047857')
+      ctx.fillStyle=g; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
+      // 太陽光線
+      const rays=12
+      for(let i=0;i<rays;i++){
+        const a=(i/rays)*Math.PI*2
+        const rg2=ctx.createLinearGradient(cx,cy,cx+Math.cos(a)*pw*0.6,cy+Math.sin(a)*ph*0.6)
+        rg2.addColorStop(0,'rgba(251,191,36,0.3)'); rg2.addColorStop(1,'rgba(251,191,36,0)')
+        ctx.strokeStyle=rg2; ctx.lineWidth=3
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(a)*pw*0.6,cy+Math.sin(a)*ph*0.6); ctx.stroke()
+      }
+      // 太陽
+      ctx.fillStyle='#fbbf24'; ctx.shadowColor='#fde68a'; ctx.shadowBlur=20
+      ctx.beginPath(); ctx.arc(cx,cy-r*0.15,r*0.28,0,Math.PI*2); ctx.fill()
+      ctx.shadowBlur=0
+      // 葉
+      ['🌿','🌱','🍃'].forEach((leaf,i)=>{
+        ctx.font=`${Math.floor(r*0.22)}px sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'
+        ctx.fillText(leaf, cx-r*0.6+i*r*0.6, cy+r*0.55)
+      })
+      ctx.font=`600 ${Math.floor(r*0.4)}px "Noto Sans JP",sans-serif`
+      ctx.fillStyle='#ecfdf5'; ctx.textAlign='center'; ctx.textBaseline='middle'
+      drawFitText(ctx, text, cx, cy+r*0.15, pw*0.88)
+    },
+  },
+  // ── 39. トランプ/カード ──────────────────────────────
+  {
+    id: 'playing_card', name: '🃏 トランプ',
+    draw: (ctx, cx, cy, r, text, pw, ph) => {
+      ctx.fillStyle='#fafafa'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
+      ctx.strokeStyle='#1a1a1a'; ctx.lineWidth=3
+      ctx.strokeRect(cx-pw/2+4,cy-ph/2+4,pw-8,ph-8)
+      // スート
+      const suits=[{s:'♠',c:'#1a1a1a',x:-0.45,y:-0.5},{s:'♥',c:'#dc2626',x:0.45,y:-0.5},{s:'♦',c:'#dc2626',x:-0.45,y:0.6},{s:'♣',c:'#1a1a1a',x:0.45,y:0.6}]
+      suits.forEach(s=>{
+        ctx.font=`bold ${Math.floor(r*0.3)}px sans-serif`
+        ctx.fillStyle=s.c; ctx.textAlign='center'; ctx.textBaseline='middle'
+        ctx.fillText(s.s, cx+s.x*r, cy+s.y*r)
+      })
+      // 中央テキスト
+      ctx.font=`bold ${Math.floor(r*0.44)}px Georgia,serif`
+      ctx.fillStyle='#1a1a1a'; ctx.textAlign='center'; ctx.textBaseline='middle'
+      drawFitText(ctx, text, cx, cy, pw*0.88)
+    },
+  },
+  // ── 40. ブルータリスト ──────────────────────────────
+  {
+    id: 'brutalist', name: '🪨 ブルータル',
+    draw: (ctx, cx, cy, r, text, pw, ph) => {
+      ctx.fillStyle='#d4d0c8'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
+      // コンクリートテクスチャ
+      for(let i=0;i<300;i++){
+        const x=cx-pw/2+Math.random()*pw, y=cy-ph/2+Math.random()*ph
+        ctx.fillStyle=`rgba(0,0,0,${Math.random()*0.06})`
+        ctx.fillRect(x,y,Math.random()*4,Math.random()*4)
+      }
+      // 太いボーダー
+      ctx.strokeStyle='#1a1a1a'; ctx.lineWidth=8
+      ctx.strokeRect(cx-pw/2+6,cy-ph/2+6,pw-12,ph-12)
+      // オフセットシャドウ
+      ctx.fillStyle='#1a1a1a'
+      ctx.fillRect(cx-pw/2+14,cy-ph/2+14,pw-12,ph-12)
+      ctx.fillStyle='#d4d0c8'
+      ctx.fillRect(cx-pw/2+6,cy-ph/2+6,pw-12,ph-12)
+      ctx.strokeStyle='#1a1a1a'; ctx.lineWidth=8
+      ctx.strokeRect(cx-pw/2+6,cy-ph/2+6,pw-12,ph-12)
+      ctx.font=`900 ${Math.floor(r*0.5)}px Helvetica,sans-serif`
+      ctx.fillStyle='#1a1a1a'; ctx.textAlign='center'; ctx.textBaseline='middle'
+      drawFitText(ctx, text, cx, cy, pw*0.88)
+    },
+  },
+  // ── 41. ハロウィン ──────────────────────────────
+  {
+    id: 'halloween', name: '🎃 ハロウィン',
+    draw: (ctx, cx, cy, r, text, pw, ph) => {
+      ctx.fillStyle='#0d0500'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
+      // 月
+      ctx.fillStyle='#f59e0b'; ctx.shadowColor='#f59e0b'; ctx.shadowBlur=20
+      ctx.beginPath(); ctx.arc(cx+r*0.4,cy-r*0.45,r*0.22,0,Math.PI*2); ctx.fill()
+      ctx.shadowBlur=0
+      ctx.fillStyle='#0d0500'; ctx.beginPath(); ctx.arc(cx+r*0.5,cy-r*0.52,r*0.18,0,Math.PI*2); ctx.fill()
+      // カボチャ・コウモリ
+      const deco=['🎃','🦇','🕷','🎃','🦇']
+      deco.forEach((d,i)=>{
+        ctx.font=`${Math.floor(r*0.22)}px sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'
+        ctx.fillText(d, cx-r*0.8+i*r*0.4, cy-r*0.55+Math.sin(i*1.5)*r*0.2)
+      })
+      ctx.shadowColor='#f97316'; ctx.shadowBlur=14
+      ctx.font=`bold ${Math.floor(r*0.44)}px serif`
+      ctx.fillStyle='#f97316'; ctx.textAlign='center'; ctx.textBaseline='middle'
+      drawFitText(ctx, text, cx, cy+r*0.1, pw*0.88)
+      ctx.shadowBlur=0
+      ctx.font=`${Math.floor(r*0.15)}px serif`
+      ctx.fillStyle='rgba(249,115,22,0.6)'; ctx.fillText('BOO!', cx, cy+r*0.62)
+    },
+  },
+  // ── 42. クリスマス ──────────────────────────────
+  {
+    id: 'christmas', name: '🎄 クリスマス',
+    draw: (ctx, cx, cy, r, text, pw, ph) => {
+      ctx.fillStyle='#0a1f0a'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
+      // 雪
+      ctx.fillStyle='rgba(255,255,255,0.7)'
+      for(let i=0;i<30;i++){
+        const sx=cx-pw/2+Math.random()*pw, sy=cy-ph/2+Math.random()*ph
+        ctx.beginPath(); ctx.arc(sx,sy,Math.random()*2+0.5,0,Math.PI*2); ctx.fill()
+      }
+      // ツリー
+      const tg=ctx.createLinearGradient(cx-r*0.3,cy-r*0.5,cx+r*0.3,cy+r*0.5)
+      tg.addColorStop(0,'#22c55e'); tg.addColorStop(1,'#15803d')
+      ctx.fillStyle=tg
+      ctx.beginPath(); ctx.moveTo(cx,cy-r*0.65); ctx.lineTo(cx+r*0.35,cy+r*0.1); ctx.lineTo(cx-r*0.35,cy+r*0.1); ctx.closePath(); ctx.fill()
+      // 電球
+      ['#ef4444','#fbbf24','#3b82f6','#f472b6'].forEach((c,i)=>{
+        const a=(i/4)*Math.PI+Math.PI*0.1; const lr=r*0.28
+        ctx.fillStyle=c; ctx.beginPath(); ctx.arc(cx+Math.cos(a)*lr,cy-r*0.2+Math.sin(a)*lr*0.5,r*0.05,0,Math.PI*2); ctx.fill()
+      })
+      ctx.font=`bold ${Math.floor(r*0.42)}px "Noto Sans JP",sans-serif`
+      ctx.fillStyle='#fbbf24'; ctx.textAlign='center'; ctx.textBaseline='middle'
+      ctx.shadowColor='#fbbf24'; ctx.shadowBlur=10
+      drawFitText(ctx, text, cx, cy+r*0.4, pw*0.88)
+      ctx.shadowBlur=0
+      ctx.font=`${Math.floor(r*0.14)}px sans-serif`
+      ctx.fillStyle='rgba(251,191,36,0.7)'; ctx.fillText('Merry Christmas', cx, cy+r*0.68)
+    },
+  },
+  // ── 43. 花見 ──────────────────────────────
+  {
+    id: 'hanami', name: '🌸 花見',
+    draw: (ctx, cx, cy, r, text, pw, ph) => {
+      const g=ctx.createLinearGradient(cx,cy-ph/2,cx,cy+ph/2)
+      g.addColorStop(0,'#ffe4f2'); g.addColorStop(1,'#ffd6e7')
+      ctx.fillStyle=g; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
+      // 散る花びら
+      for(let i=0;i<18;i++){
+        const px2=cx-pw/2+Math.random()*pw
+        const py2=cy-ph/2+Math.random()*ph
+        const pr=r*(0.04+Math.random()*0.04)
+        ctx.fillStyle=`rgba(255,${120+Math.floor(Math.random()*80)},${150+Math.floor(Math.random()*50)},0.6)`
+        ctx.save(); ctx.translate(px2,py2); ctx.rotate(Math.random()*Math.PI*2)
+        ctx.beginPath(); ctx.ellipse(0,0,pr*1.5,pr,0,0,Math.PI*2); ctx.fill()
+        ctx.restore()
+      }
+      // 桜の枝
+      ctx.strokeStyle='rgba(139,90,80,0.4)'; ctx.lineWidth=3
+      ctx.beginPath(); ctx.moveTo(cx-pw/2,cy+ph/2); ctx.quadraticCurveTo(cx-r*0.2,cy,cx+r*0.3,cy-r*0.3); ctx.stroke()
+      ctx.beginPath(); ctx.moveTo(cx+pw/2,cy+ph/2); ctx.quadraticCurveTo(cx+r*0.2,cy,cx-r*0.1,cy-r*0.4); ctx.stroke()
+      ctx.font=`bold ${Math.floor(r*0.44)}px "Noto Sans JP",serif`
+      ctx.fillStyle='#9d174d'; ctx.textAlign='center'; ctx.textBaseline='middle'
+      ctx.shadowColor='rgba(157,23,77,0.3)'; ctx.shadowBlur=8
+      drawFitText(ctx, text, cx, cy, pw*0.88)
+      ctx.shadowBlur=0
+    },
+  },
+  // ── 44. 夏祭り ──────────────────────────────
+  {
+    id: 'matsuri', name: '🏮 夏祭り',
+    draw: (ctx, cx, cy, r, text, pw, ph) => {
+      ctx.fillStyle='#1a0505'; ctx.fillRect(cx-pw/2,cy-ph/2,pw,ph)
+      // 提灯の光
+      const lanterns=[{x:-0.5,y:-0.5,c:'#ff4444'},{x:0,y:-0.6,c:'#ff8c00'},{x:0.5,y:-0.5,c:'#ff4444'},{x:-0.3,y:0.4,c:'#ff6600'},{x:0.3,y:0.4,c:'#ff3333'}]
+      lanterns.forEach(l=>{
+        const lg=ctx.createRadialGradient(cx+l.x*r,cy+l.y*r,0,cx+l.x*r,cy+l.y*r,r*0.25)
+        lg.addColorStop(0,l.c+'88'); lg.addColorStop(1,l.c+'00')
+        ctx.fillStyle=lg; ctx.beginPath(); ctx.arc(cx+l.x*r,cy+l.y*r,r*0.25,0,Math.PI*2); ctx.fill()
+        ctx.font=`${Math.floor(r*0.18)}px sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'
+        ctx.fillText('🏮', cx+l.x*r, cy+l.y*r)
+      })
+      // 花火
+      const fw=['✨','🎆']
+      fw.forEach((f,i)=>{
+        ctx.font=`${Math.floor(r*0.2)}px sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'
+        ctx.fillText(f, cx-r*0.55+i*r*1.1, cy-r*0.2)
+      })
+      ctx.font=`bold ${Math.floor(r*0.5)}px serif`
+      ctx.fillStyle='#ffcc00'; ctx.textAlign='center'; ctx.textBaseline='middle'
+      ctx.shadowColor='#ff8800'; ctx.shadowBlur=16
+      drawFitText(ctx, text, cx, cy+r*0.1, pw*0.88)
+      ctx.shadowBlur=0
+    },
+  },
 ]
 
 // ──────────────────────────────────────────────
@@ -875,7 +1321,6 @@ function drawDenim(ctx: CanvasRenderingContext2D, w: number, h: number) {
   g.addColorStop(0.5, '#2251a0')
   g.addColorStop(1, '#1a3a6e')
   ctx.fillStyle = g; ctx.fillRect(0, 0, w, h)
-  // 織り目テクスチャ
   ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1
   for (let y = 0; y < h; y += 3) {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke()
@@ -884,11 +1329,193 @@ function drawDenim(ctx: CanvasRenderingContext2D, w: number, h: number) {
   for (let x = 0; x < w; x += 4) {
     ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke()
   }
-  // フェード感
   const fade = ctx.createLinearGradient(0, 0, w * 0.3, h * 0.3)
   fade.addColorStop(0, 'rgba(255,255,255,0.1)')
   fade.addColorStop(1, 'rgba(255,255,255,0)')
   ctx.fillStyle = fade; ctx.fillRect(0, 0, w, h)
+}
+
+function drawArgyle(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  // アーガイル柄（菱形格子）
+  ctx.fillStyle = '#1e3a5f'; ctx.fillRect(0, 0, w, h)
+  const dw = w / 4, dh = h / 4
+  const colors = ['#2563eb','#1e40af','#3b82f6']
+  for (let row = -1; row < 5; row++) {
+    for (let col = -1; col < 5; col++) {
+      const cx2 = col * dw + (row % 2) * dw / 2
+      const cy2 = row * dh
+      ctx.fillStyle = colors[(row + col) % colors.length]
+      ctx.beginPath()
+      ctx.moveTo(cx2, cy2 - dh / 2)
+      ctx.lineTo(cx2 + dw / 2, cy2)
+      ctx.lineTo(cx2, cy2 + dh / 2)
+      ctx.lineTo(cx2 - dw / 2, cy2)
+      ctx.closePath(); ctx.fill()
+      ctx.strokeStyle = 'rgba(255,255,255,0.1)'; ctx.lineWidth = 1
+      ctx.stroke()
+    }
+  }
+  // 斜めライン
+  ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 1
+  for (let i = -h; i < w + h; i += dw) {
+    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i + h, h); ctx.stroke()
+    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i - h, h); ctx.stroke()
+  }
+}
+
+function drawLeopard(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  // レオパード柄
+  ctx.fillStyle = '#c8860a'; ctx.fillRect(0, 0, w, h)
+  const spots = [
+    [0.1,0.1],[0.3,0.25],[0.6,0.1],[0.8,0.3],[0.15,0.5],
+    [0.45,0.55],[0.75,0.6],[0.25,0.75],[0.55,0.8],[0.85,0.85],
+    [0.05,0.85],[0.4,0.15],[0.65,0.4],[0.9,0.15],[0.5,0.38],
+  ]
+  spots.forEach(([px2, py2]) => {
+    const x = px2 * w, y = py2 * h
+    const sr = w * 0.055
+    // 外縁（黒斑）
+    ctx.fillStyle = 'rgba(20,10,0,0.85)'
+    for (let a = 0; a < 5; a++) {
+      const ang = (a / 5) * Math.PI * 2
+      ctx.beginPath(); ctx.ellipse(x + Math.cos(ang) * sr * 0.9, y + Math.sin(ang) * sr * 0.7, sr * 0.45, sr * 0.32, ang, 0, Math.PI * 2); ctx.fill()
+    }
+    // 中心（明るい）
+    ctx.fillStyle = '#e8a020'
+    ctx.beginPath(); ctx.ellipse(x, y, sr * 0.38, sr * 0.28, 0, 0, Math.PI * 2); ctx.fill()
+  })
+}
+
+function drawPolkaDot(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  // ポルカドット（白地×カラードット）
+  ctx.fillStyle = '#fafafa'; ctx.fillRect(0, 0, w, h)
+  const colors2 = ['#ef4444','#f59e0b','#22c55e','#3b82f6','#a855f7','#ec4899']
+  const spacing = w / 6
+  let colorIdx = 0
+  for (let row = 0; row * spacing < h + spacing; row++) {
+    for (let col = -1; col * spacing < w + spacing; col++) {
+      const x = col * spacing + (row % 2) * spacing / 2
+      const y = row * spacing
+      ctx.fillStyle = colors2[colorIdx % colors2.length]
+      ctx.beginPath(); ctx.arc(x, y, spacing * 0.28, 0, Math.PI * 2); ctx.fill()
+      colorIdx++
+    }
+  }
+}
+
+function drawGlitch(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  // グリッチ（デジタルノイズ）
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h)
+  // ランダムノイズ帯
+  for (let i = 0; i < 20; i++) {
+    const y = Math.random() * h
+    const gh = Math.random() * 8 + 2
+    const colors3 = ['#ff003c','#00ffcc','#ffffff','#ffff00']
+    ctx.fillStyle = colors3[Math.floor(Math.random() * colors3.length)] + '88'
+    ctx.fillRect(0, y, w, gh)
+    // オフセット
+    const offsetX = (Math.random() - 0.5) * w * 0.2
+    if (offsetX !== 0) {
+      const imgData = ctx.getImageData(0, y, w, gh)
+      ctx.clearRect(0, y, w, gh)
+      ctx.putImageData(imgData, offsetX, y)
+    }
+  }
+  // スキャンライン
+  for (let y = 0; y < h; y += 3) {
+    ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(0, y, w, 1)
+  }
+  // RGB分離感
+  ctx.globalCompositeOperation = 'screen'
+  ctx.fillStyle = 'rgba(255,0,0,0.08)'; ctx.fillRect(2, 0, w, h)
+  ctx.fillStyle = 'rgba(0,255,255,0.08)'; ctx.fillRect(-2, 0, w, h)
+  ctx.globalCompositeOperation = 'source-over'
+}
+
+function drawSunset(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  // サンセットグラデ
+  const g = ctx.createLinearGradient(0, 0, 0, h)
+  g.addColorStop(0, '#0f0c29')
+  g.addColorStop(0.3, '#302b63')
+  g.addColorStop(0.6, '#ff6b35')
+  g.addColorStop(0.8, '#ff9f1c')
+  g.addColorStop(1, '#ffbf69')
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h)
+  // 太陽
+  const sg = ctx.createRadialGradient(w * 0.5, h * 0.65, 0, w * 0.5, h * 0.65, w * 0.3)
+  sg.addColorStop(0, 'rgba(255,220,50,0.9)')
+  sg.addColorStop(0.4, 'rgba(255,160,20,0.5)')
+  sg.addColorStop(1, 'rgba(255,100,0,0)')
+  ctx.fillStyle = sg; ctx.fillRect(0, 0, w, h)
+  // 水面反射
+  for (let i = 0; i < 6; i++) {
+    const ly = h * 0.68 + i * h * 0.05
+    const rg = ctx.createLinearGradient(0, ly, w, ly)
+    rg.addColorStop(0, 'rgba(255,180,50,0)')
+    rg.addColorStop(0.5, `rgba(255,180,50,${0.15 - i * 0.02})`)
+    rg.addColorStop(1, 'rgba(255,180,50,0)')
+    ctx.fillStyle = rg; ctx.fillRect(0, ly, w, h * 0.03)
+  }
+}
+
+function drawAcid(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  // アシッドウォッシュ
+  const g = ctx.createLinearGradient(0, 0, w, h)
+  g.addColorStop(0, '#e0e8ff')
+  g.addColorStop(0.4, '#c8d8f0')
+  g.addColorStop(1, '#b0c8e8')
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h)
+  // 不均一なブリーチ跡
+  for (let i = 0; i < 15; i++) {
+    const x = Math.random() * w, y = Math.random() * h
+    const rx = w * (0.08 + Math.random() * 0.15)
+    const ry = h * (0.06 + Math.random() * 0.12)
+    const bg2 = ctx.createRadialGradient(x, y, 0, x, y, rx)
+    bg2.addColorStop(0, 'rgba(255,255,255,0.65)')
+    bg2.addColorStop(0.5, 'rgba(255,255,255,0.2)')
+    bg2.addColorStop(1, 'rgba(255,255,255,0)')
+    ctx.fillStyle = bg2
+    ctx.save(); ctx.translate(x, y); ctx.scale(1, ry / rx); ctx.translate(-x, -y)
+    ctx.beginPath(); ctx.arc(x, y, rx, 0, Math.PI * 2); ctx.fill()
+    ctx.restore()
+  }
+  // 細い染み跡
+  ctx.strokeStyle = 'rgba(100,130,180,0.2)'; ctx.lineWidth = 1
+  for (let i = 0; i < 8; i++) {
+    ctx.beginPath()
+    ctx.moveTo(Math.random() * w, Math.random() * h)
+    ctx.bezierCurveTo(Math.random() * w, Math.random() * h, Math.random() * w, Math.random() * h, Math.random() * w, Math.random() * h)
+    ctx.stroke()
+  }
+}
+
+function drawFloral(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  // フローラル（花柄）
+  ctx.fillStyle = '#fdf2f8'; ctx.fillRect(0, 0, w, h)
+  const flowerPositions = [
+    [0.1,0.1],[0.35,0.08],[0.65,0.15],[0.88,0.05],
+    [0.05,0.4],[0.28,0.45],[0.55,0.35],[0.8,0.42],
+    [0.15,0.7],[0.42,0.75],[0.7,0.68],[0.92,0.78],
+    [0.0,0.9],[0.3,0.92],[0.6,0.88],[0.85,0.95],
+  ]
+  const petalColors = ['#f9a8d4','#f472b6','#fb7185','#fda4af','#fbbf24','#a78bfa']
+  flowerPositions.forEach(([fx, fy], idx) => {
+    const x = fx * w, y = fy * h
+    const fr = w * 0.055
+    const pc = petalColors[idx % petalColors.length]
+    // 花びら5枚
+    for (let p = 0; p < 5; p++) {
+      const pa = (p / 5) * Math.PI * 2
+      ctx.fillStyle = pc + 'cc'
+      ctx.beginPath(); ctx.ellipse(x + Math.cos(pa) * fr, y + Math.sin(pa) * fr, fr * 0.55, fr * 0.35, pa, 0, Math.PI * 2); ctx.fill()
+    }
+    // 花芯
+    ctx.fillStyle = '#fde68a'
+    ctx.beginPath(); ctx.arc(x, y, fr * 0.32, 0, Math.PI * 2); ctx.fill()
+    // 葉
+    ctx.strokeStyle = '#86efac'; ctx.lineWidth = 1.5
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + fr * 1.2, y + fr); ctx.stroke()
+  })
 }
 
 const TSHIRT_COLORS: TshirtColor[] = [
@@ -907,9 +1534,16 @@ const TSHIRT_COLORS: TshirtColor[] = [
   { id: 'tiedye',  name: 'タイダイ',      hex: '#9c27b0', pattern: drawTieDye },
   { id: 'check',   name: 'チェック',      hex: '#c62828', pattern: drawBuffaloCheck },
   { id: 'camo',    name: 'カモフラ',      hex: '#4a5c3f', pattern: drawCamo },
-  { id: 'stripe',  name: 'ストライプ',    hex: '#1e3a5f', pattern: drawStripe },
-  { id: 'paisley', name: 'ペイズリー',    hex: '#4a1942', pattern: drawPaisley },
-  { id: 'denim',   name: 'デニム',        hex: '#2251a0', pattern: drawDenim },
+  { id: 'stripe',   name: 'ストライプ',   hex: '#1e3a5f', pattern: drawStripe },
+  { id: 'paisley',  name: 'ペイズリー',   hex: '#4a1942', pattern: drawPaisley },
+  { id: 'denim',    name: 'デニム',       hex: '#2251a0', pattern: drawDenim },
+  { id: 'argyle',   name: 'アーガイル',   hex: '#1e3a5f', pattern: drawArgyle },
+  { id: 'leopard',  name: 'レオパード',   hex: '#c8860a', pattern: drawLeopard },
+  { id: 'polkadot', name: 'ポルカドット', hex: '#fafafa', pattern: drawPolkaDot },
+  { id: 'glitch',   name: 'グリッチ',     hex: '#000000', pattern: drawGlitch },
+  { id: 'sunset',   name: 'サンセット',   hex: '#302b63', pattern: drawSunset },
+  { id: 'acid',     name: 'アシッド',     hex: '#c8d8f0', pattern: drawAcid },
+  { id: 'floral',   name: 'フローラル',   hex: '#fdf2f8', pattern: drawFloral },
 ]
 
 // ──────────────────────────────────────────────
