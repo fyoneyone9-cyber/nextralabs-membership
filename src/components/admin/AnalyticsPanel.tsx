@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { MousePointer2, TrendingUp, RefreshCw } from 'lucide-react'
+import { MousePointer2, TrendingUp, RefreshCw, ExternalLink, Globe } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface PageStat {
@@ -13,11 +13,23 @@ interface DailyStat {
   count: number
 }
 
+interface ReferrerStat {
+  source: string
+  count: number
+}
+
+interface CountryStat {
+  country: string
+  count: number
+}
+
 interface AnalyticsData {
   pages: PageStat[]
   daily: DailyStat[]
   total: number
   days: number
+  referrers?: ReferrerStat[]
+  countries?: CountryStat[]
 }
 
 const PATH_LABELS: Record<string, string> = {
@@ -171,6 +183,68 @@ export default function AnalyticsPanel() {
                   </div>
                 )
               })}
+            </div>
+          </div>
+        )}
+
+        {/* 流入元（リファラー）ランキング */}
+        {!loading && data && (data.referrers?.length ?? 0) > 0 && (
+          <div className="pt-4 border-t border-white/5">
+            <p className="text-xs font-semibold text-slate-500 mb-3 flex items-center gap-1.5">
+              <ExternalLink size={11} className="text-emerald-400" />
+              流入元ランキング
+            </p>
+            <div className="space-y-2">
+              {(data.referrers || []).map((r, i) => {
+                const maxRef = data.referrers![0]?.count || 1
+                const isDirect = r.source === '(直接アクセス)'
+                const isInternal = r.source === '(サイト内遷移)'
+                return (
+                  <div key={r.source}>
+                    <div className="flex justify-between items-center mb-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold text-slate-600 w-4">{i + 1}</span>
+                        <span className={`text-xs font-semibold truncate max-w-[200px] ${
+                          isDirect ? 'text-slate-400' :
+                          isInternal ? 'text-blue-400' :
+                          'text-emerald-300'
+                        }`} title={r.source}>
+                          {isDirect ? '🔗 直接アクセス' : isInternal ? '↩ サイト内遷移' : `🌐 ${r.source}`}
+                        </span>
+                      </div>
+                      <span className="text-xs font-bold text-white shrink-0">{r.count.toLocaleString()}</span>
+                    </div>
+                    <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all duration-500 ${
+                          isDirect ? 'bg-slate-500' :
+                          isInternal ? 'bg-blue-500/60' :
+                          'bg-emerald-400'
+                        }`}
+                        style={{ width: `${Math.round((r.count / maxRef) * 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* 国別アクセス */}
+        {!loading && data && (data.countries?.length ?? 0) > 0 && (
+          <div className="pt-4 border-t border-white/5">
+            <p className="text-xs font-semibold text-slate-500 mb-3 flex items-center gap-1.5">
+              <Globe size={11} className="text-emerald-400" />
+              国別アクセス
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {(data.countries || []).map(c => (
+                <div key={c.country} className="flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-3 py-1">
+                  <span className="text-xs font-semibold text-slate-300">{c.country}</span>
+                  <span className="text-[10px] text-emerald-400 font-bold">{c.count}</span>
+                </div>
+              ))}
             </div>
           </div>
         )}

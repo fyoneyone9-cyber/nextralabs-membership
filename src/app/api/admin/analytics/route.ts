@@ -25,10 +25,10 @@ export async function GET(req: NextRequest) {
   const days = parseInt(searchParams.get('days') || '30')
   const since = new Date(Date.now() - days * 86400_000).toISOString()
 
-  // 期間内の全ページビューを取得
+  // 期間内の全ページビューを取得（referrer・countryも含む）
   const { data, error } = await adminSupabase
     .from('page_views')
-    .select('path, created_at')
+    .select('path, created_at, referrer, country')
     .gte('created_at', since)
     .order('created_at', { ascending: false })
     .limit(50000)
@@ -57,7 +57,46 @@ export async function GET(req: NextRequest) {
     .sort((a, b) => a[0].localeCompare(b[0]))
     .map(([date, count]) => ({ date, count }))
 
+  // 流入元（referrer）集計
+  const referrerCounts: Record<string, number> = {}
+  for (const row of data || []) {
+    const ref = row.referrer
+    if (!ref) {
+      referrerCounts['(直接アクセス)'] = (referrerCounts['(直接アクセス)'] || 0) + 1
+    } else {
+      try {
+        const url = new URL(ref)
+        // 自サイト内遷移は除外
+        if (url.hostname.includes('nextralabs') || url.hostname.includes('membership-site') || url.hostname.includes('nextralab')) {
+          referrerCounts['(サイト内遷移)'] = (referrerCounts['(サイト内遷移)'] || 0) + 1
+        } else {
+          const domain = url.hostname.replace(/^www\./, '')
+          referrerCounts[domain] = (referrerCounts[domain] || 0) + 1
+        }
+      } catch {
+        referrerCounts['(不明)'] = (referrerCounts['(不明)'] || 0) + 1
+      }
+    }
+  }
+
+  const referrers = Object.entries(referrerCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 15)
+    .map(([source, count]) => ({ source, count }))
+
+  // 国別集計
+  const countryCounts: Record<string, number> = {}
+  for (const row of data || []) {
+    const c = row.country || '不明'
+    countryCounts[c] = (countryCounts[c] || 0) + 1
+  }
+
+  const countries = Object.entries(countryCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([country, count]) => ({ country, count }))
+
   const total = (data || []).length
 
-  return NextResponse.json({ pages: sorted, daily, total, days })
+  return NextResponse.json({ pages: sorted, daily, total, days, referrers, countries })
 }
