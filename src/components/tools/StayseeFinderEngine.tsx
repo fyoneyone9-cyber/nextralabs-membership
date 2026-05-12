@@ -1919,18 +1919,19 @@ const MasterEngine = () => {
                 🔓 スタッフ解除
               </button>
             )}
-            {/* ログアウトボタン — DMS再ログイン用 */}
-            <button
-              onClick={async () => {
-                await fetch('/api/dms/logout', { method: 'POST' }).catch(() => {})
-                window.location.href = '/dms'
-              }}
-              className="text-[10px] px-2 py-1 rounded-md transition-all"
-              style={{ background: 'rgba(239,68,68,0.08)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)' }}
-              title="DMSログアウト（設定を変更する場合に使用）"
-            >
-              ← DMS
-            </button>
+            {/* ログアウトボタン — スタッフPIN認証済みの時のみ表示 */}
+            {staffMode && (
+              <button
+                onClick={async () => {
+                  await fetch('/api/dms/logout', { method: 'POST' }).catch(() => {})
+                  window.location.href = '/dms'
+                }}
+                className="text-[10px] px-2 py-1 rounded-md transition-all"
+                style={{ background: 'rgba(239,68,68,0.08)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)' }}
+              >
+                ← DMS
+              </button>
+            )}
           </div>
         </div>
 
