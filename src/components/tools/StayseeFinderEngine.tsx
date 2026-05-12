@@ -16,23 +16,13 @@ function CallFrontButton({ t }: { t: Record<string, string> }) {
   const [error, setError] = React.useState('')
   const [showError, setShowError] = React.useState(false)
 
-  // APIキー設定済みかチェック
-  const hasApiKey = typeof window !== 'undefined'
-    ? !!(localStorage.getItem('dms_org_daily_api_key') || '').trim()
-    : false
-
   const handleCall = async () => {
-    // APIキー未設定の場合は即エラー表示（くるくるしない）
-    if (!hasApiKey) {
-      setError('Daily.co APIキーが未設定です。設定メニューから登録してください。')
-      setShowError(true)
-      return
-    }
-
     setError('')
     setShowError(false)
     setCalling(true)
     try {
+      // localStorageのキーがあればヘッダーで送る
+      // なくてもサーバー側の DAILY_API_KEY 環境変数で処理される（DMS共通設定）
       const localKey = typeof window !== 'undefined' ? localStorage.getItem('dms_org_daily_api_key') || '' : ''
       const headers: Record<string, string> = { 'Content-Type': 'application/json' }
       if (localKey.trim()) headers['x-daily-api-key'] = localKey
@@ -44,7 +34,13 @@ function CallFrontButton({ t }: { t: Record<string, string> }) {
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
-        setError(err.error || '通話の開始に失敗しました')
+        // エラーメッセージを日本語化
+        const msg = err.error || ''
+        if (msg.includes('DAILY_API_KEY not configured')) {
+          setError('Daily.co APIキーが設定されていません。Vercel環境変数 DAILY_API_KEY を設定してください。')
+        } else {
+          setError(msg || '通話の開始に失敗しました')
+        }
         setShowError(true)
         return
       }
