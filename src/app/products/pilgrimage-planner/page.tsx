@@ -59,7 +59,7 @@ const FEATURES = [
 
 const REVIEWS = [
   {
-    name: '田中 美咲',
+    name: '川口 麻衣',
     role: 'アニメ好き会社員',
     location: '神奈川県',
     stars: 5,

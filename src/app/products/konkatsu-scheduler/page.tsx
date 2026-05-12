@@ -62,7 +62,7 @@ const FEATURES = [
 
 const REVIEWS = [
   {
-    name: '田中 美咲',
+    name: '森田 彩加',
     role: '結婚相談所オーナー',
     location: '東京都',
     stars: 5,
