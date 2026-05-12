@@ -42,8 +42,9 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="mt-8 border-t pt-4 text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} NextraLabs. All rights reserved.
+        <div className="mt-8 border-t pt-4 text-center text-sm text-muted-foreground flex flex-wrap items-center justify-center gap-3">
+          <span>© {new Date().getFullYear()} NextraLabs. All rights reserved.</span>
+          <a href="https://dti-affiliate.vercel.app" target="_blank" rel="noopener noreferrer nofollow" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">アダルトナビ</a>
         </div>
       </div>
     </footer>
