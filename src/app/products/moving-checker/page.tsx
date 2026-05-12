@@ -14,7 +14,6 @@ export const metadata: Metadata = {
 
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 import {
-import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
   ArrowLeft,
   Code2,
   HelpCircle,
@@ -31,6 +30,7 @@ import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
   Building,
   Search,
 } from 'lucide-react'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 
 const features = [
   {

@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
-import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
   ArrowLeft,
   Code2,
   HelpCircle,
@@ -19,6 +18,7 @@ import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
   PenLine,
   UserCheck,
 } from 'lucide-react'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 
 export const metadata: Metadata = {
   title: 'Kindle出版完全ナビ | KDP登録から出版・販売まで全手順をAIがガイド | NextraLabs',

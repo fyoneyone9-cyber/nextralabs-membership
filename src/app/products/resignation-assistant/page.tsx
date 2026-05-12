@@ -29,7 +29,6 @@ export const metadata: Metadata = {
   },
 }
 import {
-import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
   FileText,
   Calculator,
   CheckSquare,
@@ -45,6 +44,7 @@ import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
   AlertTriangle,
   Heart,
 } from 'lucide-react'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 
 const features = [
   {

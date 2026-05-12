@@ -29,7 +29,6 @@ export const metadata: Metadata = {
   },
 }
 import {
-import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
   Camera,
   Volume2,
   MessageCircle,
@@ -47,6 +46,7 @@ import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
   Wifi,
   Globe,
 } from 'lucide-react'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 
 const features = [
   {
