@@ -133,8 +133,11 @@ export default function ShioTaiouPage() {
           </Card>
         </div>
       </section>
-
       <AffiliateBanner toolId="shio-taiou" />
+      </section>
+
+      {/* ── 口コミ ── */}
+      <section className="bg-[#0d1117] py-20 border-y border-white/5">
         <div className="max-w-6xl mx-auto px-4 space-y-10">
           <div className="text-center space-y-2">
             <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">

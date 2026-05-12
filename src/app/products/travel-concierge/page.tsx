@@ -140,7 +140,8 @@ export default function TravelConciergeLP() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="min-h-screen" style={{ background: '#050507', fontFamily: "'Inter', 'Noto Sans JP', sans-serif", color: '#f1f5f9' }}>
-      <AffiliateBanner toolId="travel-concierge" />
+        <AffiliateBanner toolId="travel-concierge" />
+      </div>
     </>
   )
 }
