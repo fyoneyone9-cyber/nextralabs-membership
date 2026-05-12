@@ -1624,7 +1624,7 @@ const MasterEngine = () => {
           r.id.toLowerCase().includes(q)
         )
       } else {
-        const apiPath = pms === 'staysee' ? '/api/staysee/search' : `/api/pms/${pms}/search`
+        const apiPath = getPmsApiPath(pms)
         const res = await fetch(`${apiPath}?q=${encodeURIComponent(reservationId)}`)
         const data = await res.json()
         results = data.reservations || []
@@ -1681,6 +1681,28 @@ const MasterEngine = () => {
     setCheckinStatus('VERIFIED')
   }
 
+  /* ─── PMSタイプ → APIパス変換 ─── */
+  const getPmsApiPath = (pmsType: string): string => {
+    // 日本語名 → 英語キーに正規化
+    const normalized: Record<string, string> = {
+      'staysee':         'staysee',
+      'エアホスト':      'airhost',
+      'airhost':         'airhost',
+      'cloudbeds':       'cloudbeds',
+      'beds24':          'beds24',
+      'イージー会計':    'easyaccounting',
+      'easyaccounting':  'easyaccounting',
+      'easy_accounting': 'easyaccounting',
+      'hostaway':        'hostaway',
+      'little hotelier': 'little_hotelier',
+      'littlehotelier':  'little_hotelier',
+      'apaleo':          'apaleo',
+      'ねっぱん！':      'nepan',
+    }
+    const key = normalized[pmsType.toLowerCase()] || pmsType.toLowerCase()
+    return key === 'staysee' ? '/api/staysee/search' : `/api/pms/${key}/search`
+  }
+
   /* ─── 予約検索（クエリ直接指定版） ─── */
   const doSearchByQuery = async (query: string) => {
     if (!query.trim()) return
@@ -1697,7 +1719,8 @@ const MasterEngine = () => {
         await new Promise(r => setTimeout(r, 400))
         setSearchResults(results)
       } else {
-        const res = await fetch(`/api/staysee/search?q=${encodeURIComponent(query)}`)
+        const apiPath = getPmsApiPath(pms)
+        const res = await fetch(`${apiPath}?q=${encodeURIComponent(query)}`)
         const data = await res.json()
         setSearchResults(data.reservations || [])
       }
@@ -1726,8 +1749,8 @@ const MasterEngine = () => {
         setSearchResults(results)
         setIsOnline(false)
       } else {
-        // PMS API呼び出し
-        const apiPath = pms === 'staysee' ? '/api/staysee/search' : `/api/pms/${pms}/search`
+        // PMS API呼び出し（汎用アダプター経由）
+        const apiPath = getPmsApiPath(pms)
         const res = await fetch(`${apiPath}?q=${encodeURIComponent(searchQuery.trim())}`)
         const data = await res.json()
         setSearchResults(data.reservations || [])
@@ -1768,7 +1791,7 @@ const MasterEngine = () => {
         await new Promise(r => setTimeout(r, 400))
         setCheckoutResults(results)
       } else {
-        const apiPath = pms === 'staysee' ? '/api/staysee/search' : `/api/pms/${pms}/search`
+        const apiPath = getPmsApiPath(pms)
         const res = await fetch(`${apiPath}?q=${encodeURIComponent(checkoutQuery.trim())}&mode=checkout`)
         const data = await res.json()
         setCheckoutResults(data.reservations || [])
