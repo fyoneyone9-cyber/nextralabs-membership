@@ -1352,12 +1352,11 @@ const AISelectShopApp = ({ onBack }: { onBack?: () => void }) => {
                           key={c.id}
                           onClick={() => setTshirtColorId(c.id)}
                           title={c.name}
-                          className={`h-8 px-3 rounded-full border-2 transition-all text-[10px] font-medium ${
+                          className={`h-8 px-3 rounded-lg border transition-all text-[11px] font-medium ${
                             tshirtColorId === c.id
-                              ? 'border-emerald-400 scale-105 shadow-[0_0_8px_rgba(16,185,129,0.5)] text-emerald-300'
-                              : 'border-slate-600 hover:border-slate-400 text-slate-300'
+                              ? 'bg-emerald-500 border-emerald-400 text-slate-950 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
+                              : 'bg-[#0f172a] border-slate-700/60 hover:border-emerald-500/50 hover:text-emerald-300 text-slate-300'
                           }`}
-                          style={{ backgroundColor: c.hex }}
                         >
                           {c.name}
                         </button>
