@@ -310,6 +310,7 @@ export default function OmiaiRoomPage() {
 // お問い合わせフォームコンポーネント
 function ContactForm() {
   return (
+    <>
     <form
       action="https://formsubmit.co/f.yoneyone9@gmail.com"
       method="POST"
@@ -406,5 +407,6 @@ function ContactForm() {
           <span className="text-slate-500 group-hover:text-emerald-400 transition-colors text-sm">→</span>
         </a>
       </div>
+    </>
   )
 }
