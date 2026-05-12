@@ -159,14 +159,14 @@ export default function HomePage() {
             <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs mb-4">登録不要・無料</Badge>
             <h2 className="text-2xl md:text-4xl font-semibold text-white tracking-tight">今すぐ試せるツール</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-4xl mx-auto items-stretch">
             {[
               { id: 'kdp-guide', title: 'Kindle出版完全ナビ', icon: BookOpen, desc: 'ゼロからKindle出版を完全ガイド' },
               { id: 'loan-advisor', title: '借金完済・おまとめ診断', icon: Calculator, desc: '最適な返済プランをAIが診断' },
               { id: 'shopping-stopper', title: 'AI買い物依存ストッパー', icon: ShoppingBag, desc: '衝動買いをAIがその場で止める' },
             ].map((tool) => (
-              <Link key={tool.id} href={`/products/${tool.id}/app`} className="group block">
-                <div className="bg-[#0d1117] border border-white/5 hover:border-emerald-500/40 rounded-2xl p-6 flex items-center gap-5 transition-all hover:bg-[#0d1117]/80 hover:shadow-[0_0_24px_rgba(16,185,129,0.08)]">
+              <Link key={tool.id} href={`/products/${tool.id}/app`} className="group block h-full">
+                <div className="h-full bg-[#0d1117] border border-white/5 hover:border-emerald-500/40 rounded-2xl p-6 flex items-center gap-5 transition-all hover:bg-[#0d1117]/80 hover:shadow-[0_0_24px_rgba(16,185,129,0.08)]">
                   <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0 group-hover:bg-emerald-500/20 transition-colors">
                     <tool.icon className="h-5 w-5 text-emerald-400" />
                   </div>
