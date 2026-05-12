@@ -152,6 +152,7 @@ export function Header() {
             <Link href="/tool-guide" className="text-sm font-medium hover:text-primary transition-colors">ツール説明</Link>
             <Link href="/pricing" className="text-sm font-medium hover:text-primary transition-colors">料金プラン</Link>
             <Link href="/contact" className="text-sm font-medium hover:text-primary transition-colors">📩 お問い合わせ</Link>
+            <a href="https://sensual-hub.vercel.app" target="_blank" rel="noopener noreferrer" className="text-[10px] text-slate-500 hover:text-emerald-400 transition-colors border border-slate-700/50 rounded-full px-2.5 py-1">🔞 Adult</a>
             {user ? (
               <>
                 <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">ダッシュボード</Link>
