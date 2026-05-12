@@ -8,10 +8,6 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
-  $match = $args[0]
-  $match -replace "Mic", "Mic, CloudRain"
-
-
 // 管理者メール（このアドレスでログインしているユーザーのみ管理者リンクが見える）
 const ADMIN_EMAIL = 'f.yoneyone9@gmail.com'
 
