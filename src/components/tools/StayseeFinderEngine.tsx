@@ -14,12 +14,25 @@ import {
 function CallFrontButton({ t }: { t: Record<string, string> }) {
   const [calling, setCalling] = React.useState(false)
   const [error, setError] = React.useState('')
+  const [showError, setShowError] = React.useState(false)
+
+  // APIキー設定済みかチェック
+  const hasApiKey = typeof window !== 'undefined'
+    ? !!(localStorage.getItem('dms_org_daily_api_key') || '').trim()
+    : false
 
   const handleCall = async () => {
+    // APIキー未設定の場合は即エラー表示（くるくるしない）
+    if (!hasApiKey) {
+      setError('Daily.co APIキーが未設定です。設定メニューから登録してください。')
+      setShowError(true)
+      return
+    }
+
     setError('')
+    setShowError(false)
     setCalling(true)
     try {
-      // localStorageのキーがあれば使う、なければサーバー側の環境変数(DAILY_API_KEY)で処理
       const localKey = typeof window !== 'undefined' ? localStorage.getItem('dms_org_daily_api_key') || '' : ''
       const headers: Record<string, string> = { 'Content-Type': 'application/json' }
       if (localKey.trim()) headers['x-daily-api-key'] = localKey
@@ -32,6 +45,7 @@ function CallFrontButton({ t }: { t: Record<string, string> }) {
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
         setError(err.error || '通話の開始に失敗しました')
+        setShowError(true)
         return
       }
       const data = await res.json()
@@ -41,6 +55,7 @@ function CallFrontButton({ t }: { t: Record<string, string> }) {
       window.open(data.url, '_blank')
     } catch {
       setError('ネットワークエラーが発生しました')
+      setShowError(true)
     } finally {
       setCalling(false)
     }
@@ -61,7 +76,35 @@ function CallFrontButton({ t }: { t: Record<string, string> }) {
         )}
       </button>
       {t.callFrontSub && <p className="text-xs text-slate-600">{t.callFrontSub}</p>}
-      {error && <p className="text-xs text-red-400">{error}</p>}
+
+      {/* エラーモーダル — 消えない、タップで閉じる */}
+      {showError && error && (
+        <div
+          className="fixed inset-0 z-[9997] flex items-center justify-center"
+          style={{ background: 'rgba(0,0,0,0.75)' }}
+          onClick={() => setShowError(false)}
+        >
+          <div
+            className="rounded-2xl p-6 max-w-sm w-full mx-4 space-y-4 text-center"
+            style={{ background: '#0d1117', border: '1px solid rgba(239,68,68,0.35)' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto text-2xl"
+              style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)' }}>
+              ⚠️
+            </div>
+            <p className="text-sm font-semibold text-slate-100">フロント呼び出しエラー</p>
+            <p className="text-xs text-slate-400 leading-relaxed">{error}</p>
+            <button
+              onClick={() => setShowError(false)}
+              className="w-full h-10 rounded-xl text-sm font-semibold"
+              style={{ background: '#10b981', color: '#fff' }}
+            >
+              閉じる
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
