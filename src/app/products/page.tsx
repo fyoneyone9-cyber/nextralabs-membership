@@ -18,51 +18,66 @@ import {
 const ADMIN_EMAIL = 'f.yoneyone9@gmail.com'
 
 const TOOLS = [
-  { id: 'universal-converter/app', cat: 'compress', title: '究極AIマルチコンバーター', sub: '動画・画像・PDFへの変換圧縮', icon: Repeat, plan: 'ライト', done: true },
-  { id: 'nextra-ai/app', cat: 'hotel', title: 'Nextra AI', sub: 'チェックイン・予約・解錠OS', icon: Building2, plan: 'お見積もり', lpUrl: '/products/nextra-ai', target: 'both' },
-  { id: 'moving-checker/app', cat: 'hotel', title: 'AI引越し安心チェッカー', sub: '治安と物件リスクを徹底解析', icon: Home, plan: '無料', done: true },
-  { id: 'sns-auto-poster/app', cat: 'sns', title: 'AI SNSオートポスター', sub: 'バズを量産するマルチSNS生成', icon: Share2, plan: 'ライト', done: true },
-  { id: 'ai-select-shop/app', cat: 'sns', title: 'AIセレクトショップ', sub: 'トレンド解析とShopify連携', icon: Store, plan: 'プレミアム' },
-  { id: 'youtube-producer/app', cat: 'sns', title: 'AI YouTubeプロデューサー', sub: '全自動台本・構成作成', icon: Clapperboard, plan: 'プレミアム' , done: true },
-  { id: 'youtube-coordinator/app', cat: 'sns', title: 'YouTube AI Sync', sub: '動画解析と楽天コーチ', icon: Play, plan: 'プレミアム' , done: true },
-  { id: 'kdp-guide/app', cat: 'edu', title: 'Kindle出版完全ナビ', sub: '執筆から出版までの一気通貫', icon: BookOpen, plan: '無料' , done: true },
-  { id: 'kindle-factory/app', cat: 'biz', title: 'Kindle AI ファクトリー', sub: 'AI解析でKDP入稿可能な原稿を自動生成', icon: Crown, plan: 'プレミアム', done: true },
-  { id: 'prompt-master/app', cat: 'biz', title: 'AI画像プロンプトマスター', sub: '究極 of 究極の画像パーツ工房', icon: Wand2, plan: 'ライト', done: true },
-  { id: 'scam-defender/app', cat: 'life', title: 'AI詐欺ディフェンダー', sub: '詐欺・悪意を即座に判定', icon: ShieldCheck, plan: 'プレミアム', done: true },
-  { id: 'money-guard/app', cat: 'life', title: 'AI家計防衛シミュレーター', sub: '衝動買いの心理的阻止', icon: Wallet, plan: 'スタンダード' , done: true },
-  { id: 'loan-advisor/app', cat: 'life', title: 'AI借金完済・おまとめ診断', sub: '借金の一本化と完済への最短ルート', icon: CreditCard, plan: '無料' , done: true },
-  { id: 'disaster-guard/app', cat: 'life', title: 'AI防災パーソナルガイド', sub: '避難ルートと備蓄最適化', icon: Shield, plan: 'スタンダード' , done: true },
-  { id: 'shopping-stopper/app', cat: 'life', title: 'AI買い物依存ストッパー', sub: '散財の鎖を断ち切る', icon: ShieldAlert, plan: '無料', done: true },
-  { id: 'buy-smart-nav/app', cat: 'life', title: '中古・新品AI比較ナビ', sub: '損得勘定とAI市場判定OS', icon: Scale, plan: '無料' , done: true },
+  // ── 📱 SNS・コンテンツ制作 ──
+  { id: 'sns-auto-poster/app',      cat: 'content',   title: 'AI SNSオートポスター',         sub: 'バズを量産するマルチSNS生成',                                     icon: Share2,        plan: 'ライト',     done: true },
+  { id: 'ai-select-shop/app',       cat: 'content',   title: 'AIセレクトショップ',            sub: 'トレンド解析とShopify連携',                                       icon: Store,         plan: 'プレミアム' },
+  { id: 'youtube-producer/app',     cat: 'content',   title: 'AI YouTubeプロデューサー',      sub: '全自動台本・構成作成',                                            icon: Clapperboard,  plan: 'プレミアム', done: true },
+  { id: 'youtube-coordinator/app',  cat: 'content',   title: 'YouTube AI Sync',              sub: '動画解析と楽天コーチ',                                            icon: Play,          plan: 'プレミアム', done: true },
+  { id: 'prompt-master/app',        cat: 'content',   title: 'AI画像プロンプトマスター',      sub: '究極 of 究極の画像パーツ工房',                                    icon: Wand2,         plan: 'ライト',     done: true },
 
-  { id: 'inbox-organizer', cat: 'biz', title: 'Gmail AI Accelerator', sub: '未読ゼロを最速で実現', icon: Mail, plan: 'プレミアム' , done: true },
+  // ── 📖 出版・AI文章生成 ──
+  { id: 'kdp-guide/app',            cat: 'publish',   title: 'Kindle出版完全ナビ',            sub: '執筆から出版までの一気通貫',                                      icon: BookOpen,      plan: '無料',       done: true },
+  { id: 'kindle-factory/app',       cat: 'publish',   title: 'Kindle AI ファクトリー',        sub: 'AI解析でKDP入稿可能な原稿を自動生成',                             icon: Crown,         plan: 'プレミアム', done: true },
 
-  { id: 'ai-sidejob/app', cat: 'biz', title: 'AI副業スタートダッシュ', sub: '適性診断と収益ロードマップ', icon: Briefcase, plan: 'プレミアム' , done: true },
-  { id: 'ai-recipe/app', cat: 'life', title: 'AIレシピ献立コーチ', sub: '冷蔵庫の残り物と栄養最適化', icon: Utensils, plan: '無料', done: true },
-  { id: 'exam-scheduler/app', cat: 'edu', title: '資格試験AIスケジューラー', sub: '試験日から逆算して学習計画を自動生成', icon: ClipboardCheck, plan: 'スタンダード', done: true }, // ✅ LOCK 2026-05-10
-  { id: 'ai-exam-generator/app', cat: 'edu', title: 'AI問題生成 & 苦手分析', sub: '予想問題を無限生成と弱点ポイント可視化', icon: Brain, plan: 'プレミアム' , done: true },
-  { id: 'location-finder/app', cat: 'hotel', title: 'AIロケーションファインダー', sub: '出店・移住の最適地をデータ分析', icon: MapPin, plan: 'スタンダード', done: true },
-  { id: 'travel-concierge/app', cat: 'hotel', title: 'AI旅行コンシェルジュ', sub: '楽天トラベル×Google Maps×AIで旅程を自動生成', icon: Plane, plan: 'スタンダード', done: true }, // ✅ LOCK 2026-05-11
-  { id: 'date-concierge/app', cat: 'life', title: 'デートコース自動コンシェルジュ', sub: '中間地点×楽天グルメ×Googleマップで最高のデートを自動設計', icon: HeartHandshake, plan: 'スタンダード' },
-  { id: 'pilgrimage-planner/app', cat: 'hotel', title: '推し活聖地巡礼プランナー', sub: 'YouTube URL → AI聖地特定 → 楽天トラベル自動提案', icon: MapPin, plan: 'スタンダード', done: true }, // ✅ LOCK 2026-05-11
-  { id: 'gift-advisor/app', cat: 'life', title: 'AI先回りギフトナビ', sub: 'カレンダー連携×楽天×Geminiで最適ギフトを先回り提案', icon: CalendarHeart, plan: 'スタンダード' },
-  { id: 'smart-gardening/app', cat: 'life', title: 'AIスマートガーデニング', sub: '植物の声を聴く育成アドバイザー', icon: Sprout, plan: 'スタンダード', done: true },
-  { id: 'vercel-monitor/app', cat: 'biz', title: 'Vercel Fleet Monitor', sub: 'システムのデプロイ状況をリアルタイム監視', icon: Activity, plan: 'お見積もり', done: true, adminOnly: true },
-  // ── 婚活・結婚相談所ジャンル ──
-  { id: 'konkatsu-scheduler/app', cat: 'konkatsu', title: 'AI即アポ調整くん', sub: 'Google Calendar連携でお見合い日程を自動確定', icon: CalendarCheck, plan: 'スタンダード', lpUrl: '/products/konkatsu-scheduler' },
-  { id: 'omiai-room/app', cat: 'konkatsu', title: 'オンラインお見合い盛り上げシステム', sub: 'BGM×AIトークサジェストで気まずい沈黙を解消', icon: HeartHandshake, plan: 'お見積もり', lpUrl: '/products/omiai-room' },
-  { id: 'beauty-boost/app', cat: 'konkatsu', title: 'お見合い垢抜けブースト', sub: '会場周辺の美容院をAI検索 → 予約へ直接案内', icon: Scissors, plan: 'スタンダード', lpUrl: '/products/beauty-boost' },
+  // ── 💼 ビジネス・仕事効率化 ──
+  { id: 'inbox-organizer',          cat: 'biz',       title: 'Gmail AI Accelerator',         sub: '未読ゼロを最速で実現',                                            icon: Mail,          plan: 'プレミアム', done: true },
+  { id: 'ai-sidejob/app',           cat: 'biz',       title: 'AI副業スタートダッシュ',        sub: '適性診断と収益ロードマップ',                                      icon: Briefcase,     plan: 'プレミアム', done: true },
+  { id: 'universal-converter/app',  cat: 'biz',       title: '究極AIマルチコンバーター',      sub: '動画・画像・PDFへの変換圧縮',                                    icon: Repeat,        plan: 'ライト',     done: true },
+  { id: 'vercel-monitor/app',       cat: 'biz',       title: 'Vercel Fleet Monitor',         sub: 'システムのデプロイ状況をリアルタイム監視',                         icon: Activity,      plan: 'お見積もり', done: true, adminOnly: true },
+
+  // ── 🎓 学習・資格・自己研鑽 ──
+  { id: 'exam-scheduler/app',       cat: 'edu',       title: '資格試験AIスケジューラー',      sub: '試験日から逆算して学習計画を自動生成',                            icon: ClipboardCheck, plan: 'スタンダード', done: true },
+  { id: 'ai-exam-generator/app',    cat: 'edu',       title: 'AI問題生成 & 苦手分析',         sub: '予想問題を無限生成と弱点ポイント可視化',                          icon: Brain,         plan: 'プレミアム', done: true },
+
+  // ── 💰 お金・節約・防犯 ──
+  { id: 'money-guard/app',          cat: 'money',     title: 'AI家計防衛シミュレーター',      sub: '衝動買いの心理的阻止',                                            icon: Wallet,        plan: 'スタンダード', done: true },
+  { id: 'loan-advisor/app',         cat: 'money',     title: 'AI借金完済・おまとめ診断',      sub: '借金の一本化と完済への最短ルート',                                icon: CreditCard,    plan: '無料',       done: true },
+  { id: 'shopping-stopper/app',     cat: 'money',     title: 'AI買い物依存ストッパー',        sub: '散財の鎖を断ち切る',                                              icon: ShieldAlert,   plan: '無料',       done: true },
+  { id: 'buy-smart-nav/app',        cat: 'money',     title: '中古・新品AI比較ナビ',          sub: '損得勘定とAI市場判定OS',                                          icon: Scale,         plan: '無料',       done: true },
+  { id: 'scam-defender/app',        cat: 'money',     title: 'AI詐欺ディフェンダー',          sub: '詐欺・悪意を即座に判定',                                          icon: ShieldCheck,   plan: 'プレミアム', done: true },
+
+  // ── 🌿 ライフスタイル・日常 ──
+  { id: 'ai-recipe/app',            cat: 'lifestyle', title: 'AIレシピ献立コーチ',            sub: '冷蔵庫の残り物と栄養最適化',                                      icon: Utensils,      plan: '無料',       done: true },
+  { id: 'smart-gardening/app',      cat: 'lifestyle', title: 'AIスマートガーデニング',        sub: '植物の声を聴く育成アドバイザー',                                  icon: Sprout,        plan: 'スタンダード', done: true },
+  { id: 'disaster-guard/app',       cat: 'lifestyle', title: 'AI防災パーソナルガイド',        sub: '避難ルートと備蓄最適化',                                          icon: Shield,        plan: 'スタンダード', done: true },
+  { id: 'moving-checker/app',       cat: 'lifestyle', title: 'AI引越し安心チェッカー',        sub: '治安と物件リスクを徹底解析',                                      icon: Home,          plan: '無料',       done: true },
+  { id: 'gift-advisor/app',         cat: 'lifestyle', title: 'AI先回りギフトナビ',            sub: 'カレンダー連携×楽天×Geminiで最適ギフトを先回り提案',              icon: CalendarHeart, plan: 'スタンダード', done: true },
+
+  // ── ✈️ 旅行・おでかけ・聖地巡礼 ──
+  { id: 'travel-concierge/app',     cat: 'travel',    title: 'AI旅行コンシェルジュ',          sub: '楽天トラベル×Google Maps×AIで旅程を自動生成',                     icon: Plane,         plan: 'スタンダード', done: true },
+  { id: 'pilgrimage-planner/app',   cat: 'travel',    title: '推し活聖地巡礼プランナー',      sub: 'YouTube URL → AI聖地特定 → 楽天トラベル自動提案',                icon: MapPin,        plan: 'スタンダード', done: true },
+  { id: 'date-concierge/app',       cat: 'travel',    title: 'デートコース自動コンシェルジュ', sub: '中間地点×楽天グルメ×Googleマップで最高のデートを自動設計',         icon: HeartHandshake, plan: 'スタンダード' },
+  { id: 'location-finder/app',      cat: 'travel',    title: 'AIロケーションファインダー',     sub: '出店・移住の最適地をデータ分析',                                  icon: MapPin,        plan: 'スタンダード', done: true },
+
+  // ── 🏨 宿泊・不動産DX（法人向け） ──
+  { id: 'nextra-ai/app',            cat: 'hotel',     title: 'Nextra AI',                    sub: 'チェックイン・予約・解錠OS',                                      icon: Building2,     plan: 'お見積もり', lpUrl: '/products/nextra-ai', target: 'both' },
+
+  // ── 💕 婚活・結婚相談所DX ──
+  { id: 'konkatsu-scheduler/app',   cat: 'konkatsu',  title: 'AI即アポ調整くん',              sub: 'Google Calendar連携でお見合い日程を自動確定',                     icon: CalendarCheck, plan: 'スタンダード', lpUrl: '/products/konkatsu-scheduler' },
+  { id: 'omiai-room/app',           cat: 'konkatsu',  title: 'オンラインお見合い盛り上げシステム', sub: 'BGM×AIトークサジェストで気まずい沈黙を解消',                icon: HeartHandshake, plan: 'お見積もり', lpUrl: '/products/omiai-room' },
+  { id: 'beauty-boost/app',         cat: 'konkatsu',  title: 'お見合い垢抜けブースト',        sub: '会場周辺の美容院をAI検索 → 予約へ直接案内',                      icon: Scissors,      plan: 'スタンダード', lpUrl: '/products/beauty-boost' },
 ]
 
 const CATEGORIES = [
-  { id: 'compress', title: 'AI圧縮・変換ツール', icon: Zap, color: 'border-emerald-500' },
-  { id: 'hotel', title: '宿泊・不動産DX', icon: Hotel, color: 'border-emerald-500' },
-  { id: 'sns', title: 'SNS・コンテンツ戦略', icon: Share2, color: 'border-emerald-500' },
-  { id: 'life', title: '防犯・資産・ライフ', icon: ShieldCheck, color: 'border-red-500' },
-  { id: 'edu', title: '学習・自己研鑽', icon: BookOpen, color: 'border-emerald-500' },
-  { id: 'biz', title: 'ビジネス・自動化', icon: Briefcase, color: 'border-emerald-500' },
-  { id: 'mind', title: '人間心理・対人戦略', icon: HeartHandshake, color: 'border-pink-500' },
-  { id: 'konkatsu', title: '婚活・結婚相談所DX', icon: HeartHandshake, color: 'border-pink-500' },
+  { id: 'content',   title: '📱 SNS・コンテンツ制作',       icon: Share2,       color: 'border-emerald-500' },
+  { id: 'publish',   title: '📖 出版・AI文章生成',           icon: BookOpen,     color: 'border-emerald-500' },
+  { id: 'biz',       title: '💼 ビジネス・仕事効率化',       icon: Briefcase,    color: 'border-emerald-500' },
+  { id: 'edu',       title: '🎓 学習・資格・自己研鑽',       icon: Brain,        color: 'border-sky-500'     },
+  { id: 'money',     title: '💰 お金・節約・防犯',           icon: Wallet,       color: 'border-amber-500'   },
+  { id: 'lifestyle', title: '🌿 ライフスタイル・日常',       icon: Sprout,       color: 'border-emerald-500' },
+  { id: 'travel',    title: '✈️ 旅行・おでかけ・聖地巡礼',   icon: Plane,        color: 'border-sky-500'     },
+  { id: 'hotel',     title: '🏨 宿泊・不動産DX（法人向け）', icon: Hotel,        color: 'border-amber-500'   },
+  { id: 'konkatsu',  title: '💕 婚活・結婚相談所DX',         icon: HeartHandshake, color: 'border-pink-500'  },
 ]
 
 function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
