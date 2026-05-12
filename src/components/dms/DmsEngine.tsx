@@ -100,15 +100,28 @@ function SettingsPanel({ title, icon, fields, storagePrefix }: {
   const [saved, setSaved] = React.useState(false)
 
   React.useEffect(() => {
-    const loaded: Record<string, string> = {}
-    fields.forEach(f => {
-      loaded[f.key] = localStorage.getItem(`${storagePrefix}_${f.key}`) || ''
-    })
-    setValues(loaded)
-  }, [storagePrefix])
+    fetch('/api/dms/config')
+      .then(r => r.json())
+      .then(data => {
+        if (data.error) return
+        const loaded: Record<string, string> = {}
+        fields.forEach(f => {
+          const cfgKey = f.key // e.g. 'daily_api_key', 'org_name'
+          loaded[f.key] = (data[cfgKey] as string) || ''
+        })
+        setValues(loaded)
+      })
+      .catch(() => {})
+  }, [storagePrefix, fields])
 
-  const save = () => {
-    fields.forEach(f => localStorage.setItem(`${storagePrefix}_${f.key}`, values[f.key] || ''))
+  const save = async () => {
+    const patch: Record<string, string> = {}
+    fields.forEach(f => { patch[f.key] = values[f.key] || '' })
+    await fetch('/api/dms/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(patch),
+    })
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }
@@ -507,13 +520,25 @@ function PmsSettingsPanel({ onGoCheckin }: { onGoCheckin: () => void }) {
   const [saved, setSaved] = React.useState(false)
 
   React.useEffect(() => {
-    setPmsType(localStorage.getItem('dms_pms_pms_type') || '')
-    setApiKey(localStorage.getItem('dms_pms_pms_api_key') || '')
+    fetch('/api/dms/config')
+      .then(r => r.json())
+      .then(data => {
+        if (data.error) return
+        setPmsType(data.pms_type || '')
+        setApiKey(data.pms_fields?.apiKey || '')
+      })
+      .catch(() => {})
   }, [])
 
-  const save = () => {
-    localStorage.setItem('dms_pms_pms_type', pmsType)
-    localStorage.setItem('dms_pms_pms_api_key', apiKey)
+  const save = async () => {
+    await fetch('/api/dms/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        pms_type: pmsType,
+        pms_fields: { apiKey },
+      }),
+    })
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }
@@ -766,8 +791,15 @@ export default function DmsEngine() {
     const days = ['日','月','火','水','木','金','土']
     setCurrentDate(`${now.getMonth()+1}/${now.getDate()}(${days[now.getDay()]}) ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`)
     fetchPropertiesFromCloud().then(setProperties)
-    setOrgName(localStorage.getItem('dms_org_org_name') || '')
-    setActivePmsType(localStorage.getItem('dms_pms_pms_type') || '')
+    fetch('/api/dms/config')
+      .then(r => r.json())
+      .then(data => {
+        if (!data.error) {
+          setOrgName(data.org_name || '')
+          setActivePmsType(data.pms_type || '')
+        }
+      })
+      .catch(() => {})
     fetchStayseeBookings()
   }, [])
 
@@ -847,8 +879,10 @@ export default function DmsEngine() {
               <div className="flex items-center gap-2">
                 <Button
                   onClick={async () => {
-                    const pmsApiKey = localStorage.getItem('dms_pms_pms_api_key') || ''
-                    const pmsType = localStorage.getItem('dms_pms_pms_type') || ''
+                    const cfgRes = await fetch('/api/dms/config')
+                    const cfg = await cfgRes.json()
+                    const pmsApiKey = cfg.pms_fields?.apiKey || ''
+                    const pmsType = cfg.pms_type || ''
                     if (!pmsApiKey || !pmsType || pmsType === 'PMS未接続（ローカル）') {
                       alert('PMS設定からAPIキーを設定してください')
                       return
@@ -1320,10 +1354,9 @@ export default function DmsEngine() {
 
           {/* 物件一覧 */}
           {activeTab === 'property' && propView === 'list' && (() => {
-            // PMS接続状況をlocalStorageから読む
-            const pmsType = typeof window !== 'undefined' ? localStorage.getItem('dms_pms_pms_type') || '' : ''
-            const pmsApiKey = typeof window !== 'undefined' ? localStorage.getItem('dms_pms_pms_api_key') || '' : ''
-            const isPmsConnected = !!pmsApiKey.trim() && pmsType && pmsType !== 'PMS未接続（ローカル）'
+            // PMS接続状況をcloudconfigのstateから読む
+            const pmsType = activePmsType
+            const isPmsConnected = !!pmsType && pmsType !== 'PMS未接続（ローカル）'
 
             return (
               <div className="space-y-3">

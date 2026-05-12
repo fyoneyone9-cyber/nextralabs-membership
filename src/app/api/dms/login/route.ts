@@ -12,6 +12,15 @@ const SUPER_ADMIN = {
   password: '10Birano6587',
 }
 
+// Cookie共通オプション
+const cookieOpts = (env: string) => ({
+  httpOnly: false,   // クライアントからも読める（dms_session をUIで参照するため）
+  secure: env === 'production',
+  sameSite: 'lax' as const,
+  path: '/dms',
+  maxAge: 60 * 60 * 8,  // 8時間
+})
+
 export async function POST(req: NextRequest) {
   const { login_id, password } = await req.json()
 
@@ -19,30 +28,58 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'ID・パスワードを入力してください' }, { status: 400 })
   }
 
-  // Cookie共通オプション
-  const cookieOpts = {
-    httpOnly: false,   // クライアントJSからも読める（dms_session をUIで参照するため）
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax' as const,
-    path: '/dms',
-    maxAge: 60 * 60 * 8,  // 8時間
-  }
-
-  // スーパーアドミン（マスター管理者）
+  // ── スーパーアドミン ──
   if (login_id === SUPER_ADMIN.login_id && password === SUPER_ADMIN.password) {
+    // dms_tenants に super-admin レコードがあれば実UUID を使う
+    // なければ upsert して作成（初回のみ）
+    let tenantId = 'super-admin'
+    let companyName = 'NextraLabs（管理者）'
+
+    const { data: existing } = await supabase
+      .from('dms_tenants')
+      .select('id, company_name')
+      .eq('login_id', login_id)
+      .single()
+
+    if (existing) {
+      // 既存レコードのUUIDを使う
+      tenantId = existing.id
+      companyName = existing.company_name
+    } else {
+      // 初回：super-admin レコードを作成
+      const hash = await bcrypt.hash(password, 10)
+      const { data: created } = await supabase
+        .from('dms_tenants')
+        .insert({
+          company_name: 'NextraLabs（管理者）',
+          login_id,
+          password_hash: hash,
+          plan: 'admin',
+          status: 'active',
+        })
+        .select('id, company_name')
+        .single()
+
+      if (created) {
+        tenantId = created.id
+        companyName = created.company_name
+      }
+      // insert失敗してもフォールバックとして 'super-admin' 文字列を使う
+    }
+
     const sessionData = {
-      id: 'super-admin',
+      id: tenantId,
       login_id,
-      company_name: 'NextraLabs（管理者）',
+      company_name: companyName,
       role: 'super_admin',
       plan: 'admin',
     }
     const res = NextResponse.json({ ok: true, session: sessionData })
-    res.cookies.set('dms_session', JSON.stringify(sessionData), cookieOpts)
+    res.cookies.set('dms_session', JSON.stringify(sessionData), cookieOpts(process.env.NODE_ENV!))
     return res
   }
 
-  // Supabase dms_tenants からログインID検索
+  // ── 通常テナント ──
   const { data: tenant, error } = await supabase
     .from('dms_tenants')
     .select('id, company_name, login_id, password_hash, plan, pms_type, status')
@@ -77,6 +114,6 @@ export async function POST(req: NextRequest) {
     pms_type: tenant.pms_type,
   }
   const res = NextResponse.json({ ok: true, session: sessionData })
-  res.cookies.set('dms_session', JSON.stringify(sessionData), cookieOpts)
+  res.cookies.set('dms_session', JSON.stringify(sessionData), cookieOpts(process.env.NODE_ENV!))
   return res
 }

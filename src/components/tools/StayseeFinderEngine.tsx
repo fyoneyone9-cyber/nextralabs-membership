@@ -885,15 +885,27 @@ function PmsBanner({
 
 /* ─────────── フロント通話設定（Daily.co APIキー） ─────────── */
 function DailyApiKeySection() {
-  const STORAGE_KEY = 'dms_org_daily_api_key'
-  const [apiKey, setApiKey] = React.useState(() =>
-    typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) || '' : ''
-  )
+  const [apiKey, setApiKey] = React.useState('')
   const [show, setShow] = React.useState(false)
   const [saved, setSaved] = React.useState(false)
 
-  const handleSave = () => {
-    localStorage.setItem(STORAGE_KEY, apiKey.trim())
+  React.useEffect(() => {
+    fetch('/api/dms/config')
+      .then(r => r.json())
+      .then(data => {
+        if (!data.error) {
+          setApiKey(data.daily_api_key || '')
+        }
+      })
+      .catch(() => {})
+  }, [])
+
+  const handleSave = async () => {
+    await fetch('/api/dms/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ daily_api_key: apiKey.trim() }),
+    })
     setSaved(true)
     setTimeout(() => setSaved(false), 3000)
   }
@@ -958,17 +970,22 @@ function SettingsPanel({
   onPmsConnected: (mode: string) => void
   onLockConnected: (mode: string) => void
 }) {
-  const STORAGE_KEY_PMS  = 'nextra_ai_pms_config'
-  const STORAGE_KEY_LOCK = 'nextra_ai_lock_config'
-
-  // localStorageから復元（複数フィールド対応）
-  const saved     = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem(STORAGE_KEY_PMS)  || '{}') : {}
-  const savedLock = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem(STORAGE_KEY_LOCK) || '{}') : {}
-
   // PMS フィールド
-  const [pmsFields, setPmsFields] = useState<Record<string, string>>(saved.fields || {})
+  const [pmsFields, setPmsFields] = useState<Record<string, string>>({})
   // 錠 フィールド
-  const [lockFields, setLockFields] = useState<Record<string, string>>(savedLock.fields || {})
+  const [lockFields, setLockFields] = useState<Record<string, string>>({})
+
+  // /api/dms/config から復元
+  useEffect(() => {
+    fetch('/api/dms/config').then(r => r.json()).then(data => {
+      if (!data.error) {
+        if (data.pms_type) setPms(data.pms_type)
+        if (data.pms_fields) setPmsFields(data.pms_fields)
+        if (data.lock_type) setLockType(data.lock_type)
+        if (data.lock_fields) setLockFields(data.lock_fields)
+      }
+    }).catch(() => {})
+  }, [])
 
   const [pmsStatus,  setPmsStatus]  = useState<ConnectStatus>(null)
   const [lockStatus, setLockStatus] = useState<ConnectStatus>(null)
@@ -1058,16 +1075,24 @@ function SettingsPanel({
   const toggleShow = (k: string) => setShowFields(prev => ({ ...prev, [k]: !prev[k] }))
 
   /* PMS保存 */
-  const savePms = () => {
-    localStorage.setItem(STORAGE_KEY_PMS, JSON.stringify({ pms, fields: pmsFields }))
+  const savePms = async () => {
+    await fetch('/api/dms/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pms_type: pms, pms_fields: pmsFields }),
+    })
     setPmsStatus({ ok: true, message: '保存しました。「DMS接続テスト」を押してください。' })
   }
 
   /* 錠設定保存 */
-  const saveLock = () => {
+  const saveLock = async () => {
     const pw = curLockFields.find(f => f.key === 'password')?.key
     if (pw) setFixedPassword(lockFields[pw] || fixedPassword)
-    localStorage.setItem(STORAGE_KEY_LOCK, JSON.stringify({ lockType, fields: lockFields }))
+    await fetch('/api/dms/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lock_type: lockType, lock_fields: lockFields }),
+    })
     setLockStatus({ ok: true, message: '保存しました。「錠接続テスト」を押してください。' })
   }
 
@@ -1506,32 +1531,19 @@ const MasterEngine = () => {
 
   useEffect(() => {
     setIsMounted(true)
-    // DMSセッション（Supabaseログイン済みテナント設定）から復元
-    // localStorage は設定の一時キャッシュとして許容（書き込みはDMSログイン時のみ）
-    try {
-      const dmsSession = JSON.parse(localStorage.getItem('dms_session') || '{}')
-      if (dmsSession.pms_type && dmsSession.pms_type !== 'none') {
-        setPms(dmsSession.pms_type)
-        setIsOnline(true)
-      } else {
-        // フォールバック: KIOSK用設定キャッシュを確認
-        const cached = JSON.parse(localStorage.getItem('nextra_ai_pms_config') || '{}')
-        if (cached.pms) {
-          setPms(cached.pms)
-          // PMSタイプが設定済み かつ none/offline でなければ接続中とみなす
-          const pmsApiKey = localStorage.getItem('dms_pms_pms_api_key') || ''
-          if (cached.pms !== 'none' && cached.pms !== 'offline' && pmsApiKey.trim()) {
-            setIsOnline(true)
-          }
+    // /api/dms/config からクラウド設定を復元
+    fetch('/api/dms/config')
+      .then(r => r.json())
+      .then(data => {
+        if (data.error) return
+        if (data.pms_type && data.pms_type !== 'none') {
+          setPms(data.pms_type)
+          setIsOnline(true)
         }
-        if (cached.pms === 'none' || cached.pms === 'offline') setIsOnline(false)
-      }
-      // 錠設定
-      const cachedLock = JSON.parse(localStorage.getItem('nextra_ai_lock_config') || '{}')
-      if (cachedLock.lockType) setLockType(cachedLock.lockType)
-      const lockPw = cachedLock.fields?.password
-      if (lockPw) setFixedPassword(lockPw)
-    } catch { /* ignore */ }
+        if (data.lock_type) setLockType(data.lock_type)
+        if (data.fixed_password) setFixedPassword(data.fixed_password)
+      })
+      .catch(() => {})
   }, [])
 
   /* ─── QRスキャン（BarcodeDetector API） ─── */
