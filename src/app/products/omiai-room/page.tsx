@@ -393,7 +393,7 @@ function ContactForm() {
       {/* 💒 マリッジロードジャパン */}
       <div className="mt-8 mb-4 flex justify-center">
         <a
-          href="https://www.marriage-road.jp/"
+          href="https://marriage-road-site.vercel.app"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-3 bg-[#0d1117] border border-emerald-500/40 rounded-xl px-5 py-3 hover:border-emerald-500/70 hover:shadow-[0_0_12px_rgba(16,185,129,0.2)] transition-all group w-full max-w-sm"
