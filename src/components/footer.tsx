@@ -6,7 +6,7 @@ export function Footer() {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="text-lg font-bold text-emerald-400">
+            <h3 className="text-lg font-bold text-white">
               NextraLabs AI Tool Store
             </h3>
             <p className="mt-2 text-sm text-muted-foreground">
@@ -19,8 +19,8 @@ export function Footer() {
               <li><Link href="/products" className="hover:text-primary transition-colors">ツール一覧</Link></li>
               <li><Link href="/tool-guide" className="hover:text-primary transition-colors">ツール説明</Link></li>
               <li><Link href="/pricing" className="hover:text-primary transition-colors">料金プラン</Link></li>
-              <li><Link href="/interview" className="hover:text-emerald-400 transition-colors">代表インタビュー</Link></li>
-              <li><a href="https://nextralabos.booth.pm/items/8321436" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center gap-1 text-emerald-400 font-bold">公式BOOTHショップ ↗</a></li>
+              <li><Link href="/interview" className="hover:text-primary transition-colors">代表インタビュー</Link></li>
+              <li><a href="https://nextralabos.booth.pm/items/8321436" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center gap-1">公式BOOTHショップ ↗</a></li>
             </ul>
           </div>
           <div>
