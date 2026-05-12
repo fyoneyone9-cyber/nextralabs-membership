@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { AFFILIATE_LINKS, trackUrl } from '@/lib/affiliate-links'
-import { ShoppingCart, ExternalLink } from 'lucide-react'
+import { ExternalLink } from 'lucide-react'
 
 interface Props {
   toolId: string
@@ -13,37 +13,30 @@ export default function AffiliateBanner({ toolId }: Props) {
   if (!links || links.length === 0) return null
 
   return (
-    <div className="mt-8 border-t border-white/5 pt-6">
+    <div className="mt-8 pt-6 border-t border-white/5">
       {/* ラベル */}
-      <div className="flex items-center gap-2 mb-3">
-        <ShoppingCart size={11} className="text-slate-600" />
-        <span className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest">Sponsored · Amazon</span>
-      </div>
+      <p className="text-[11px] text-slate-500 mb-3">関連商品（Amazon）</p>
 
       {/* リンクカード */}
-      <div className={`grid gap-3 ${links.length === 1 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}>
+      <div className={`grid gap-2 ${links.length === 1 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}>
         {links.map(link => (
           <a
             key={link.id}
             href={trackUrl(link, toolId)}
             target="_blank"
             rel="noopener noreferrer sponsored"
-            className="flex items-center gap-3 bg-[#0d1117] border border-white/5 hover:border-white/15 rounded-xl px-4 py-3 transition-all group"
+            className="flex items-center gap-3 bg-[#13141f] border border-white/5 hover:border-emerald-500/20 rounded-lg px-4 py-3 transition-all group"
           >
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-slate-300 group-hover:text-white transition-colors truncate">
+              <p className="text-xs font-medium text-slate-300 group-hover:text-white transition-colors truncate">
                 {link.label}
               </p>
-              <p className="text-[10px] text-slate-600 truncate mt-0.5">{link.desc}</p>
+              <p className="text-[10px] text-slate-500 truncate mt-0.5">{link.desc}</p>
             </div>
-            <div className="flex items-center gap-1 shrink-0">
-              <span className="text-[9px] font-bold text-amber-500/70">Amazon</span>
-              <ExternalLink size={10} className="text-slate-700 group-hover:text-slate-500 transition-colors" />
-            </div>
+            <ExternalLink size={12} className="text-slate-600 group-hover:text-emerald-500 transition-colors shrink-0" />
           </a>
         ))}
       </div>
-
     </div>
   )
 }
