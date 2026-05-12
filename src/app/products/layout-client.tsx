@@ -16,7 +16,7 @@ export default function ProductsLayoutClient({ children }: { children: React.Rea
     <>
       {children}
       {shouldShowBanner(pathname) && (
-        <div className="max-w-4xl mx-auto w-full px-4 pb-16">
+        <div className="max-w-4xl mx-auto w-full px-4 pt-16 pb-16">
           <NewsletterBanner variant="compact" />
         </div>
       )}
