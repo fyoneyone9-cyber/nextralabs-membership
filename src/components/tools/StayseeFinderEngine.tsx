@@ -11,7 +11,7 @@ import {
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 /* フロント呼び出しボタンコンポーネント                                         */
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-function CallFrontButton({ t }: { t: Record<string, string> }) {
+function CallFrontButton({ t, propertyId }: { t: Record<string, string>; propertyId?: string }) {
   const [calling, setCalling] = React.useState(false)
   const [error, setError] = React.useState('')
   const [showError, setShowError] = React.useState(false)
@@ -21,16 +21,11 @@ function CallFrontButton({ t }: { t: Record<string, string> }) {
     setShowError(false)
     setCalling(true)
     try {
-      // localStorageのキーがあればヘッダーで送る
-      // なくてもサーバー側の DAILY_API_KEY 環境変数で処理される（DMS共通設定）
-      const localKey = typeof window !== 'undefined' ? localStorage.getItem('dms_org_daily_api_key') || '' : ''
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-      if (localKey.trim()) headers['x-daily-api-key'] = localKey
-
       const res = await fetch('/api/dms/daily-room', {
         method: 'POST',
-        headers,
-        body: JSON.stringify({ propertyName: 'フロント' }),
+        headers: { 'Content-Type': 'application/json' },
+        // property_id を渡すことでサーバー側が物件固有キー→テナントキー→環境変数の順で解決
+        body: JSON.stringify({ propertyName: 'フロント', property_id: propertyId || '' }),
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
@@ -2133,7 +2128,7 @@ const MasterEngine = () => {
 
 
             {/* フロント呼び出しボタン */}
-            <CallFrontButton t={t} />
+            <CallFrontButton t={t} propertyId={currentPropertyId || undefined} />
             {/* スタッフメニュー（目立たない） */}
             <button
               onClick={() => setShowPinOverlay(true)}

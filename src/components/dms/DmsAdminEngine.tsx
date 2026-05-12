@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import {
   Plus, Edit3, RefreshCw, LogOut, Shield,
   Building, Mail, Phone, X, Save, Eye, EyeOff, CheckCircle2,
-  AlertCircle, Loader2, Search
+  AlertCircle, Loader2, Search, Video
 } from 'lucide-react'
 
 /* ══════════ 型定義 ══════════ */
@@ -15,6 +15,7 @@ interface Tenant {
   contact_phone: string | null
   plan: string
   pms_type: string
+  daily_api_key?: string
   status: 'active' | 'inactive'
   created_at: string
   last_login_at: string | null
@@ -38,16 +39,18 @@ function TenantModal({
 }) {
   const isNew = !tenant?.id
   const [form, setForm] = useState({
-    company_name: tenant?.company_name || '',
-    login_id:     tenant?.login_id     || '',
-    password:     '',
+    company_name:  tenant?.company_name  || '',
+    login_id:      tenant?.login_id      || '',
+    password:      '',
     contact_email: tenant?.contact_email || '',
     contact_phone: tenant?.contact_phone || '',
     plan:          tenant?.plan          || 'standard',
     pms_type:      tenant?.pms_type      || 'none',
+    daily_api_key: tenant?.daily_api_key || '',
     status:        tenant?.status        || 'active' as 'active' | 'inactive',
   })
   const [showPw, setShowPw] = useState(false)
+  const [showDailyKey, setShowDailyKey] = useState(false)
   const [saving, setSaving] = useState(false)
   const [err, setErr] = useState('')
 
@@ -171,6 +174,30 @@ function TenantModal({
               <option value="neppan">ねっぱん！</option>
             </select>
           </div>
+          {/* Daily.co APIキー */}
+          <div className="col-span-2">
+            <label className="text-[10px] font-medium text-slate-500 block mb-1 flex items-center gap-1">
+              <Video size={10} style={{ color: '#f59e0b' }} /> Daily.co APIキー（フロント通話）
+            </label>
+            <div className="relative">
+              <input
+                type={showDailyKey ? 'text' : 'password'}
+                value={form.daily_api_key}
+                onChange={e => set('daily_api_key', e.target.value)}
+                placeholder="d0-xxxx（任意 — 未設定時はVercel環境変数を使用）"
+                className={inputCls + ' pr-14 font-mono'}
+                style={{ ...inputStyle, color: form.daily_api_key ? '#f59e0b' : '#475569' }}
+              />
+              <button type="button" onClick={() => setShowDailyKey(v => !v)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-500 hover:text-slate-300 px-1.5 py-0.5 rounded">
+                {showDailyKey ? '隠す' : '表示'}
+              </button>
+            </div>
+            {form.daily_api_key && (
+              <p className="text-[10px] text-amber-400 mt-0.5">✓ このテナント共通のDaily.co APIキー（物件固有設定がない場合に使用）</p>
+            )}
+          </div>
+
           {!isNew && (
             <div className="col-span-2">
               <label className="text-[10px] font-medium text-slate-500 block mb-1">ステータス</label>
@@ -375,6 +402,7 @@ export default function DmsAdminEngine() {
                     <th className="px-4 py-3">連絡先</th>
                     <th className="px-4 py-3">プラン</th>
                     <th className="px-4 py-3">PMS</th>
+                    <th className="px-4 py-3 text-center">通話</th>
                     <th className="px-4 py-3">最終ログイン</th>
                     <th className="px-4 py-3 text-center">状態</th>
                     <th className="px-4 py-3 text-right">操作</th>
@@ -436,6 +464,16 @@ export default function DmsAdminEngine() {
                         </td>
                         <td className="px-4 py-3 text-slate-500">
                           {t.pms_type === 'none' ? <span className="text-slate-700">ローカル</span> : t.pms_type}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          {t.daily_api_key ? (
+                            <span title="Daily.co APIキー設定済み" className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full"
+                              style={{ background: 'rgba(245,158,11,0.12)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.2)' }}>
+                              <Video size={9} /> 設定済
+                            </span>
+                          ) : (
+                            <span className="text-slate-700 text-[10px]">—</span>
+                          )}
                         </td>
                         <td className="px-4 py-3 text-slate-600 text-[10px]">
                           {t.last_login_at

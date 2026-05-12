@@ -23,6 +23,7 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
     name:          property?.name          || '',
     pms:           property?.pms_type      || property?.pms || 'none',
     pmsApiKey:     property?.pms_fields?.apiKey || '',
+    daily_api_key: property?.pms_fields?.daily_api_key || '',
     pmsId:         property?.pmsId         || '',
     propKey:       property?.propKey       || 'PROP-8824',
     wifiSsid:      property?.wifiSsid      || '',
@@ -36,6 +37,7 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
     invoiceNo:     property?.invoiceNo     || '',
   });
   const [showApiKey, setShowApiKey] = useState(false);
+  const [showDailyKey, setShowDailyKey] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -80,7 +82,10 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
       const pmsPayload = {
         name:          form.name.trim(),
         pms_type:      form.pms,
-        pms_fields:    form.pmsApiKey ? { apiKey: form.pmsApiKey } : {},
+        pms_fields:    {
+          ...(form.pmsApiKey     ? { apiKey:          form.pmsApiKey     } : {}),
+          ...(form.daily_api_key ? { daily_api_key:   form.daily_api_key } : {}),
+        },
         pms_connected: form.pms !== 'none' && !!form.pmsApiKey,
       }
       if (isNew) {
@@ -247,6 +252,42 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
                       )}
                     </div>
                   )}
+
+                  {/* Daily.co APIキー（フロント通話） — PMS問わず常に表示 */}
+                  <div className="col-span-2">
+                    <label className={labelClass}>
+                      Daily.co APIキー（フロント通話）
+                      <span className="ml-2 text-slate-600 normal-case tracking-normal font-normal">
+                        — KIOSKの「フロントを呼び出す」ボタンに使用。未入力の場合はVercel環境変数を使用
+                      </span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showDailyKey ? 'text' : 'password'}
+                        value={form.daily_api_key}
+                        onChange={e => set('daily_api_key', e.target.value)}
+                        placeholder="d0-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                        className={`${inputClass} pr-20 font-mono`}
+                        style={{ color: form.daily_api_key ? '#f59e0b' : undefined }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowDailyKey(v => !v)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-500 hover:text-slate-300 px-2 py-1 rounded"
+                      >
+                        {showDailyKey ? '隠す' : '表示'}
+                      </button>
+                    </div>
+                    {form.daily_api_key ? (
+                      <p className="mt-1 ml-1 text-[10px] text-amber-400">
+                        ✓ この物件固有のDaily.co APIキーが設定されます（Vercel環境変数より優先）
+                      </p>
+                    ) : (
+                      <p className="mt-1 ml-1 text-[10px] text-slate-600">
+                        未入力の場合: Vercel環境変数 DAILY_API_KEY → テナント共通設定 の順で使用
+                      </p>
+                    )}
+                  </div>
                   <div className="grid grid-cols-2 gap-5">
                     <div>
                       <label className={labelClass}>物件名 ※ *</label>
