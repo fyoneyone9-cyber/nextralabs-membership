@@ -1,4 +1,5 @@
-﻿import { Metadata } from 'next'
+﻿import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft, MessageCircleHeart, Brain, BarChart3, Calendar, BookOpen, HeartHandshake, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -209,56 +210,8 @@ export default function CommCoachPage() {
         ))}
       </div>
 
-      {/* Amazon アフィリエイト */}
-      <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between gap-3">
-        <p className="text-xs text-slate-500 truncate">🛒 コミュニケーション本をAmazonでチェック</p>
-        <a
-          href="https://www.amazon.co.jp/s?k=%E3%82%B3%E3%83%9F%E3%83%A5%E3%83%8B%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%20%E8%A9%B1%E3%81%97%E6%96%B9&tag=nextralabs-22"
-          target="_blank"
-          rel="noopener noreferrer sponsored"
-          className="shrink-0 inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-400 hover:text-amber-400 transition-colors"
-        >
-          <span className="text-amber-500/60 font-bold text-[10px]">Amazon</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        </a>
-      </div>
 
-      {/* ── 口コミ ── */}
-      <section className="bg-[#0d1117] py-20 border-y border-white/5">
-        <div className="max-w-6xl mx-auto px-4 space-y-10">
-          <div className="text-center space-y-2">
-            <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
-              ユーザーの<span className="text-emerald-400">リアルな声</span>
-            </h2>
-            <p className="text-slate-400 text-sm">実際に使ったユーザーの感想</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-5">
-            {[
-              { name: '石原 一成', role: '管理職・40代', location: '東京都', text: '部下のモチベーションを上げる言葉がけが苦手でした。具体的なシーンを入力したら効果的な声掛けの例文を出してくれます。1on1の質が上がって部署の離職率が下がりました。管理職になりたての方にも勧めたいです。', tag: 'マネジメント改善' },
-              { name: '東山 麻里', role: '転職活動中・30代', location: '大阪府', text: '面接で緊張してうまく話せなかったです。想定質問と回答例をロールプレイ形式で練習できました。本番でも自然に話せて第一志望に内定をもらいました。コミュ力を鍛えるツールとして最高です。', tag: '面接対策' },
-              { name: '西川 竜也', role: '営業職・20代', location: '神奈川県', text: 'お客様への提案トークが単調でクロージングが弱かったです。相手のタイプ別の話し方を教えてくれるので、成約率が上がりました。先輩に相談しにくいことを気軽に聞けるのもいいです。', tag: '営業トーク改善' },
-              { name: '白石 奈津子', role: '主婦・40代', location: '愛知県', text: '夫との会話がすれ違いばかりで疲れていました。相手の言い方の意図を分析してくれて、どう返せばいいかを教えてくれます。喧嘩が減ってお互い話しやすくなりました。家庭の雰囲気が変わりました。', tag: '夫婦間コミュニケーション' },
-              { name: '桑田 光男', role: '中小企業経営者', location: '福岡県', text: '社員に意図が伝わらず、指示が空回りすることが多かったです。伝わる指示の出し方と確認の取り方を具体的に教えてもらいました。会議の生産性が上がり、残業が月20時間減りました。', tag: '経営者のリーダーシップ' },
-              { name: '坂田 莉奈', role: '看護師・20代', location: '埼玉県', text: '患者さんや家族への説明が難しくて悩んでいました。専門用語を分かりやすく言い換える練習ができます。患者さんから説明が丁寧で安心できると言ってもらえる機会が増えました。', tag: '医療コミュニケーション' },
-            ].map((r, i) => (
-              <div key={i} className="bg-[#13141f] border border-white/5 hover:border-emerald-500/20 rounded-2xl p-6 space-y-4 flex flex-col transition-all">
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, j) => (
-                    <svg key={j} className="w-4 h-4 text-emerald-400 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-slate-300 text-sm leading-relaxed flex-1">{r.text}</p>
-                <div className="flex items-center gap-3 pt-2 border-t border-white/5">
-                  <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
-                    {r.name[0]}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-white font-semibold text-sm whitespace-nowrap">{r.name}</p>
-                    <p className="text-slate-500 text-xs whitespace-nowrap">{r.role} · {r.location}</p>
-                    <span className="inline-block mt-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 whitespace-nowrap">{r.tag}</span>
-                  </div>
+      <AffiliateBanner toolId="comm-coach" />
                 </div>
               </div>
             ))}

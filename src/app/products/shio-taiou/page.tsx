@@ -1,4 +1,5 @@
-﻿import { Metadata } from 'next'
+﻿import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -133,21 +134,8 @@ export default function ShioTaiouPage() {
         </div>
       </section>
 
-      {/* Amazon アフィリエイト */}
-      <section className="py-8 border-t">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between gap-3 max-w-2xl mx-auto">
-            <p className="text-xs text-slate-500 truncate">🛒 コミュニケーション本をAmazonでチェック</p>
-            <a
-              href="https://www.amazon.co.jp/s?k=%E3%82%B3%E3%83%9F%E3%83%A5%E3%83%8B%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%20%E8%A9%B1%E3%81%97%E6%96%B9&tag=nextralabs-22"
-              target="_blank"
-              rel="noopener noreferrer sponsored"
-              className="shrink-0 inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-400 hover:text-amber-400 transition-colors"
-            >
-              <span className="text-amber-500/60 font-bold text-[10px]">Amazon</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            </a>
-          </div>
+
+      <AffiliateBanner toolId="shio-taiou" />
         </div>
       </section>
 
