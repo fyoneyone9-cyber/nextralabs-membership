@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { createClient } from '@supabase/supabase-js'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -22,14 +23,23 @@ export default function HomePage() {
   const [floatClosed, setFloatClosed] = useState(false)
   const [exitPopup, setExitPopup] = useState(false)
   const [showAllReviews, setShowAllReviews] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const exitFired = useRef(false)
 
   useEffect(() => {
     setMounted(true)
+    // ログイン状態確認
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) setIsLoggedIn(true)
+    })
     const onScroll = () => setScrolled(window.scrollY > 300)
     window.addEventListener('scroll', onScroll)
     const onMouseLeave = (e: MouseEvent) => {
-      if (e.clientY < 5 && !exitFired.current) {
+      if (e.clientY < 5 && !exitFired.current && !isLoggedIn) {
         exitFired.current = true
         setExitPopup(true)
       }
@@ -53,8 +63,8 @@ export default function HomePage() {
         @keyframes emeraldPulse { 0%,100% { box-shadow: 0 4px 24px rgba(16,185,129,0.4); } 50% { box-shadow: 0 4px 32px rgba(16,185,129,0.65); } }
       `}</style>
 
-      {/* ===== Exit Intent ===== */}
-      {exitPopup && (
+      {/* ===== Exit Intent（未ログインのみ表示） ===== */}
+      {exitPopup && !isLoggedIn && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4"
           onClick={() => setExitPopup(false)}>
           <div className="bg-[#0d1117] border border-emerald-500/40 rounded-2xl p-8 max-w-md w-full text-center relative shadow-[0_0_60px_rgba(16,185,129,0.15)]"
