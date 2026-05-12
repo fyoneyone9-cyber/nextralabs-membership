@@ -1,5 +1,4 @@
-﻿import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -30,6 +29,7 @@ export const metadata: Metadata = {
   },
 }
 import {
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
   Camera,
   Volume2,
   MessageCircle,
@@ -594,7 +594,6 @@ export default function PetTranslatorPage() {
           </div>
         </div>
       </section>
-
 
       <AffiliateBanner toolId="pet-translator" />
     </div>

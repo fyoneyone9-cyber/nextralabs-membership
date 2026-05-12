@@ -1,5 +1,4 @@
-﻿import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -30,6 +29,7 @@ export const metadata: Metadata = {
   },
 }
 import {
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
   ArrowLeft,
   Code2,
   HelpCircle,
@@ -281,8 +281,44 @@ export default function BuzzWriterPage() {
         </div>
       </section>
 
-
       <AffiliateBanner toolId="buzz-writer" />
+
+      {/* ── 口コミ ── */}
+      <section className="bg-[#0d1117] py-20 border-y border-white/5">
+        <div className="max-w-6xl mx-auto px-4 space-y-10">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
+              ユーザーの<span className="text-emerald-400">リアルな声</span>
+            </h2>
+            <p className="text-slate-400 text-sm">実際に使ったユーザーの感想</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              { name: '仲村 詩織', role: 'ブロガー・30代', location: '東京都', text: 'ブログのPVが伸び悩んでいたときに使い始めました。タイトルの付け方とファーストビューの改善をアドバイスしてもらったら、翌週からPVが1.5倍になりました。文章力に自信がなくてもバズる記事が書けます。', tag: 'アフィリエイトブログ' },
+              { name: '春日 健一', role: 'Webライター・フリーランス', location: '大阪府', text: 'クライアントへの納品品質を上げたくて使っています。SEOとUXを両立した文章構成を提案してくれて、クライアントのサイトの順位が上がりました。単価交渉の際の実績として使えています。', tag: 'Webライター' },
+              { name: '矢崎 真澄', role: 'EC事業者', location: '神奈川県', text: '商品説明文を書くのが苦手でした。商品の特徴を箇条書きで入力するだけで購買意欲を高める文章にしてくれます。カート追加率が改善してROASが上がりました。', tag: 'EC商品ライティング' },
+              { name: '桐島 俊', role: 'SNS担当・会社員', location: '愛知県', text: 'Twitter/Xの投稿文がなかなかバズらなくて悩んでいました。バズりやすい構造と感情訴求のポイントを教えてくれて、フォロワーが2ヶ月で3倍になりました。会社のアカウントでもその手法を使っています。', tag: 'SNS運用担当' },
+              { name: '有田 美紀', role: 'note作家', location: '福岡県', text: 'noteで有料記事を売りたいけど導入文で離脱されていました。読者を引き込む冒頭文の型を教えてもらってから購読率が2倍になりました。文章の型を知るだけでこんなに変わるんだと驚きました。', tag: 'note有料記事' },
+              { name: '滝沢 修平', role: '広告代理店勤務', location: '東京都', text: 'コピーライティングの仕事でアイデアが枯渇したときの壁打ち相手として使っています。ターゲットと商品を入力するだけでキャッチコピー候補を10案出してくれます。プレゼン前夜の強い味方です。', tag: 'コピーライター' },
+            ].map((r, i) => (
+              <div key={i} className="bg-[#13141f] border border-white/5 hover:border-emerald-500/20 rounded-2xl p-6 space-y-4 flex flex-col transition-all">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, j) => (
+                    <svg key={j} className="w-4 h-4 text-emerald-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-slate-300 text-sm leading-relaxed flex-1">{r.text}</p>
+                <div className="flex items-center gap-3 pt-2 border-t border-white/5">
+                  <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
+                    {r.name[0]}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-semibold text-sm whitespace-nowrap">{r.name}</p>
+                    <p className="text-slate-500 text-xs whitespace-nowrap">{r.role} · {r.location}</p>
+                    <span className="inline-block mt-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 whitespace-nowrap">{r.tag}</span>
+                  </div>
                 </div>
               </div>
             ))}

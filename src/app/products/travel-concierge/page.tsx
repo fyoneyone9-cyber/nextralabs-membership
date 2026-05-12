@@ -1,6 +1,6 @@
-﻿import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 
 export const metadata: Metadata = {
   title: 'AI旅行コンシェルジュ | 楽天トラベル×Google Maps×Gemini AIで旅程を自動生成 | NextraLabs',
@@ -140,8 +140,7 @@ export default function TravelConciergeLP() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="min-h-screen" style={{ background: '#050507', fontFamily: "'Inter', 'Noto Sans JP', sans-serif", color: '#f1f5f9' }}>
-        <AffiliateBanner toolId="travel-concierge" />
-      </div>
+      <AffiliateBanner toolId="travel-concierge" />
     </>
   )
 }

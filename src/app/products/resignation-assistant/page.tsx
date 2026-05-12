@@ -1,5 +1,4 @@
-﻿import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -30,6 +29,7 @@ export const metadata: Metadata = {
   },
 }
 import {
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
   FileText,
   Calculator,
   CheckSquare,
@@ -531,7 +531,6 @@ export default function ResignationAssistantPage() {
           </div>
         </div>
       </section>
-
 
       <AffiliateBanner toolId="resignation-assistant" />
     </div>

@@ -1,10 +1,10 @@
-﻿import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
   ArrowLeft,
   Code2,
   HelpCircle,
@@ -366,7 +366,6 @@ export default function KdpGuidePage() {
           </div>
         </div>
       </section>
-
 
       <AffiliateBanner toolId="kdp-guide" />
     </div>

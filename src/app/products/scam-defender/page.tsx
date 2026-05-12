@@ -1,5 +1,4 @@
-﻿import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -37,6 +36,7 @@ export const metadata: Metadata = {
 
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 import {
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
   ArrowLeft,
   Code2,
   HelpCircle,
@@ -510,8 +510,7 @@ export default function ScamDefenderPage() {
           </div>
         </section>
 
-
-        <AffiliateBanner toolId="scam-defender" />
+      <AffiliateBanner toolId="scam-defender" />
       </div>
 
       {/* ── 口コミ ── */}

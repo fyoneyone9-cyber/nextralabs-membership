@@ -1,10 +1,10 @@
-﻿import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { ArrowRight, CheckCircle2, MapPin } from 'lucide-react'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 
 export const metadata: Metadata = {
   title: 'AI Location Finder | 条件から最適な場所・物件・エリアをAIが瞬時に発見 | NextraLabs',
@@ -206,7 +206,6 @@ export default function LocationFinderPage() {
           ))}
         </div>
       </section>
-
 
       <AffiliateBanner toolId="location-finder" />
     </div>

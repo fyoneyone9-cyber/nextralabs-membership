@@ -1,5 +1,4 @@
-﻿import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -14,6 +13,7 @@ export const metadata: Metadata = {
   openGraph: { title: 'AI買い物依存ストッパー | 衝動買いを止めるAI心理カウンセラー | NextraLabs', description: '「これ買っていい？」をAIに相談するだけ。衝動買いリスクスコア・心理的購買動機分析・クールダウン提案で無駄遣いを撲滅。借金体質改善にも。完全無料。', url: 'https://nextralab.jp/products/shopping-stopper', type: 'website' },
 }
 import {
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
   Camera,
   Timer,
   TrendingDown,
@@ -490,7 +490,6 @@ export default function ShoppingStopperPage() {
           </div>
         </div>
       </section>
-
 
       <AffiliateBanner toolId="shopping-stopper" />
     </div>

@@ -1,5 +1,4 @@
-﻿import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -7,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
 
 import { Shield, Clock, MessageSquare, Zap, CheckCircle2, ArrowLeft, Brain, Users } from 'lucide-react'
+import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 
 export const metadata: Metadata = {
   title: 'AI塩対応ジェネレーター | 面倒な人間関係をスマートに断る',
@@ -134,13 +134,7 @@ export default function ShioTaiouPage() {
         </div>
       </section>
 
-
       <AffiliateBanner toolId="shio-taiou" />
-        </div>
-      </section>
-
-      {/* ── 口コミ ── */}
-      <section className="bg-[#0d1117] py-20 border-y border-white/5">
         <div className="max-w-6xl mx-auto px-4 space-y-10">
           <div className="text-center space-y-2">
             <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
