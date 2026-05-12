@@ -390,5 +390,21 @@ function ContactForm() {
         しつこい営業は一切しません。
       </p>
     </form>
+      {/* 💒 マリッジロードジャパン */}
+      <div className="mt-8 mb-4 flex justify-center">
+        <a
+          href="https://www.youtube.com/@marriage_road"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 bg-[#0d1117] border border-emerald-500/40 rounded-xl px-5 py-3 hover:border-emerald-500/70 hover:shadow-[0_0_12px_rgba(16,185,129,0.2)] transition-all group w-full max-w-sm"
+        >
+          <span className="text-2xl">💒</span>
+          <div className="flex-1">
+            <p className="text-xs font-semibold text-emerald-400 group-hover:text-emerald-300 transition-colors">結婚相談所をお探しの方へ</p>
+            <p className="text-[11px] text-slate-400 mt-0.5">マリッジロードジャパン — 無料相談受付中</p>
+          </div>
+          <span className="text-slate-500 group-hover:text-emerald-400 transition-colors text-sm">→</span>
+        </a>
+      </div>
   )
 }
