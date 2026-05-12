@@ -21,7 +21,8 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
   // フォーム状態
   const [form, setForm] = useState({
     name:          property?.name          || '',
-    pms:           property?.pms           || 'Staysee',
+    pms:           property?.pms_type      || property?.pms || 'none',
+    pmsApiKey:     property?.pms_fields?.apiKey || '',
     pmsId:         property?.pmsId         || '',
     propKey:       property?.propKey       || 'PROP-8824',
     wifiSsid:      property?.wifiSsid      || '',
@@ -34,6 +35,7 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
     phone:         property?.phone         || '',
     invoiceNo:     property?.invoiceNo     || '',
   });
+  const [showApiKey, setShowApiKey] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -75,18 +77,24 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
     setSaving(true);
     setSaveMsg(null);
     try {
+      const pmsPayload = {
+        name:          form.name.trim(),
+        pms_type:      form.pms,
+        pms_fields:    form.pmsApiKey ? { apiKey: form.pmsApiKey } : {},
+        pms_connected: form.pms !== 'none' && !!form.pmsApiKey,
+      }
       if (isNew) {
         const res = await fetch('/api/dms/properties', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: form.name.trim() }),
+          body: JSON.stringify(pmsPayload),
         });
         if (!res.ok) { const e = await res.json(); throw new Error(e.error); }
       } else {
         const res = await fetch('/api/dms/properties', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ properties: [{ id: property.id, name: form.name.trim(), pms_type: '', pms_connected: false }] }),
+          body: JSON.stringify({ properties: [{ id: property.id, ...pmsPayload }] }),
         });
         if (!res.ok) { const e = await res.json(); throw new Error(e.error); }
       }
@@ -184,8 +192,19 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
                       <label className={labelClass}>連携元PMS</label>
                       <select value={form.pms} onChange={e => set('pms', e.target.value)}
                         className={inputClass} style={{ colorScheme: 'dark' }}>
-                        {['Staysee','エアホスト','Cloudbeds','Beds24','未接続（ローカル）'].map(p => (
-                          <option key={p}>{p}</option>
+                        {[
+                          { value: 'none',             label: '未接続（ローカル）' },
+                          { value: 'staysee',          label: 'Staysee' },
+                          { value: 'airhost',          label: 'エアホスト' },
+                          { value: 'cloudbeds',        label: 'Cloudbeds' },
+                          { value: 'beds24',           label: 'Beds24' },
+                          { value: 'easyaccounting',   label: 'イージー会計' },
+                          { value: 'hostaway',         label: 'Hostaway' },
+                          { value: 'little_hotelier',  label: 'Little Hotelier' },
+                          { value: 'apaleo',           label: 'apaleo' },
+                          { value: 'nepan',            label: 'ねっぱん！' },
+                        ].map(p => (
+                          <option key={p.value} value={p.value}>{p.label}</option>
                         ))}
                       </select>
                     </div>
@@ -194,6 +213,40 @@ const DmsPropertyEditor: React.FC<DmsPropertyEditorProps> = ({ property, onClose
                       <input value={form.pmsId} onChange={e => set('pmsId', e.target.value)} placeholder="ID" className={inputClass} />
                     </div>
                   </div>
+
+                  {/* 物件固有APIキー（PMS未接続以外で表示） */}
+                  {form.pms !== 'none' && (
+                    <div className="col-span-2">
+                      <label className={labelClass}>
+                        PMS APIキー（物件固有）
+                        <span className="ml-2 text-slate-600 normal-case tracking-normal font-normal">
+                          — 未入力の場合はテナント共通設定のキーを使用
+                        </span>
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showApiKey ? 'text' : 'password'}
+                          value={form.pmsApiKey}
+                          onChange={e => set('pmsApiKey', e.target.value)}
+                          placeholder={`${form.pms} のAPIキーを入力（任意）`}
+                          className={`${inputClass} pr-20 font-mono`}
+                          style={{ color: form.pmsApiKey ? '#10b981' : undefined }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowApiKey(v => !v)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-500 hover:text-slate-300 px-2 py-1 rounded"
+                        >
+                          {showApiKey ? '隠す' : '表示'}
+                        </button>
+                      </div>
+                      {form.pmsApiKey && (
+                        <p className="mt-1 ml-1 text-[10px] text-emerald-500">
+                          ✓ この物件固有のAPIキーが設定されます（テナント共通設定より優先）
+                        </p>
+                      )}
+                    </div>
+                  )}
                   <div className="grid grid-cols-2 gap-5">
                     <div>
                       <label className={labelClass}>物件名 ※ *</label>
