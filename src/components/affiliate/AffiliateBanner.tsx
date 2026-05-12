@@ -13,8 +13,8 @@ export default function AffiliateBanner({ toolId }: Props) {
   if (!links || links.length === 0) return null
 
   return (
-    <div className="mt-10 border-t border-white/5 bg-[#0a0b10]">
-      <div className="max-w-3xl mx-auto px-4 py-8">
+    <div className="mt-10 pt-8 border-t border-white/5">
+      <div>
 
         {/* セクションヘッダー */}
         <div className="flex items-center gap-3 mb-5">

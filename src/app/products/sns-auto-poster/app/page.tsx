@@ -375,6 +375,9 @@ export default function SnsAutoPosterApp() {
           </div>
         )}
 
+        {/* Amazonアフィリエイト */}
+        <AffiliateBanner toolId="sns-auto-poster" />
+
         {/* フッター */}
         <div className="pt-6 border-t border-slate-800 flex items-center justify-between text-xs text-slate-600">
           <span>© 2026 NextraLabs</span>
@@ -384,10 +387,7 @@ export default function SnsAutoPosterApp() {
           </span>
         </div>
       </div>
-    
-      {/* Amazonアフィリエイト */}
-      <AffiliateBanner toolId="sns-auto-poster" />
-</div>
+    </div>
   )
 }
 
