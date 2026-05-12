@@ -1600,21 +1600,26 @@ const MasterEngine = () => {
 
   /* ─── QR読み取り結果処理 ─── */
   const handleQrResult = (qrValue: string) => {
-    // 予約IDがQRに含まれているか検索（例: "reservation_id=ABC123" or "ABC123" など）
-    const idMatch = qrValue.match(/(?:reservation[_-]?id[=:]?\s*)([A-Za-z0-9-]+)/i)
-      || qrValue.match(/([A-Za-z0-9]{6,20})/)
-    const extractedId = idMatch?.[1] || qrValue.trim()
+    const raw = qrValue.trim()
 
-    if (extractedId && selectedReservation) {
-      // 予約が既に選択済み → チェックイン処理へ
+    // DMS管理番号: 英大文字+数字 8桁（例: A3BK9F2M）
+    // ※ 旧形式 DMS-XXXXXXXX も念のため対応
+    const dmsMatch = raw.match(/^(?:DMS-)?([A-Z0-9]{8})$/i)
+      // URLやJSON等に埋め込まれている場合のフォールバック
+      || raw.match(/[^A-Z0-9]([A-Z0-9]{8})[^A-Z0-9]/i)
+    const extractedId = dmsMatch?.[1]?.toUpperCase() || raw.toUpperCase()
+
+    if (!extractedId) {
+      setCameraError('QRコードからDMS管理番号を読み取れませんでした')
+      return
+    }
+
+    if (selectedReservation) {
       runCheckin()
-    } else if (extractedId) {
-      // 予約IDをQRから自動検索
+    } else {
       setSearchQuery(extractedId)
       setSearchMode('reservation')
       doSearchByQuery(extractedId)
-    } else {
-      setCameraError('QRコードから予約IDを読み取れませんでした')
     }
   }
 

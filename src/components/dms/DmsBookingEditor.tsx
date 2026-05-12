@@ -1,6 +1,7 @@
 ﻿import React, { useState, useEffect } from 'react'
-import { X, Save, User } from 'lucide-react'
+import { X, Save, User, QrCode } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { QRCodeSVG } from 'qrcode.react'
 
 interface DmsBookingEditorProps {
   booking?: any
@@ -8,10 +9,10 @@ interface DmsBookingEditorProps {
   onClose: () => void
 }
 
-/** DMS-XXXXXXXX 形式の予約番号を自動発行 */
+/** DMS管理番号を自動発行（英大文字+数字 8桁） */
 function generateDmsId(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-  let result = 'DMS-'
+  let result = ''
   for (let i = 0; i < 8; i++) result += chars[Math.floor(Math.random() * chars.length)]
   return result
 }
@@ -103,10 +104,23 @@ export default function DmsBookingEditor({ booking, onClose }: DmsBookingEditorP
 
         <div className="p-10 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
 
-          {/* PMS予約番号（自動発行・読み取り専用） */}
-          <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-xl px-5 py-3 flex items-center justify-between">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">PMS予約番号（自動発行）</span>
-            <span className="text-sm font-bold text-emerald-400 tracking-widest">{formData.pms_reservation_id}</span>
+          {/* DMS管理番号 + QRコード */}
+          <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-xl px-5 py-4 flex items-center justify-between gap-4">
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight block">DMS管理番号（自動発行）</span>
+              <span className="text-xl font-bold text-emerald-400 tracking-widest">{formData.pms_reservation_id}</span>
+              <p className="text-[10px] text-slate-600">このQRをゲストに提示 → KIOSKでスキャン</p>
+            </div>
+            {/* QRコード — 管理番号のみ埋め込む（DMS-プレフィックスなし） */}
+            <div className="p-2 rounded-xl bg-white shrink-0">
+              <QRCodeSVG
+                value={formData.pms_reservation_id}
+                size={96}
+                bgColor="#ffffff"
+                fgColor="#050507"
+                level="M"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
