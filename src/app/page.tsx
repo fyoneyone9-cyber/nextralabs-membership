@@ -295,7 +295,27 @@ export default function HomePage() {
       </section>
 
       {/* ===== 最終CTA ===== */}
-      <section className="py-24 border-t border-white/5 bg-[#080809]">
+      
+      {/* インタビューバナー */}
+      <section className="py-16 border-t border-white/5">
+        <div className="container mx-auto px-6">
+          <a
+            href="/interview"
+            className="group flex flex-col md:flex-row items-center gap-6 bg-[#0d1117] border border-white/5 hover:border-emerald-500/30 rounded-2xl px-8 py-8 transition-all duration-200 hover:bg-[#0d1117]/80 max-w-3xl mx-auto"
+          >
+            <div className="flex-shrink-0 w-16 h-16 rounded-full overflow-hidden border-2 border-emerald-500/40">
+              <img src="/interview/interview-ninja.png" alt="Ninja3" className="w-full h-full object-cover" />
+            </div>
+            <div className="flex-1 text-center md:text-left">
+              <p className="text-xs text-emerald-400 font-medium mb-1 uppercase tracking-wide">Special Interview</p>
+              <p className="text-white font-semibold text-lg leading-snug">Ninja3が語る「AIと生きる」という選択</p>
+              <p className="text-slate-400 text-sm mt-1">NextraLabsに込めた想い、本音を語ります。</p>
+            </div>
+            <span className="text-emerald-400 text-sm font-medium group-hover:translate-x-1 transition-transform">読む →</span>
+          </a>
+        </div>
+      </section>
+<section className="py-24 border-t border-white/5 bg-[#080809]">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl md:text-5xl font-semibold text-white mb-4 leading-tight tracking-tight">
             あなたのAIを、<span className="text-emerald-400">今すぐ。</span>
