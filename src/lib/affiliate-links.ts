@@ -120,6 +120,34 @@ export const AFFILIATE_LINKS: Record<string, AffiliateLink[]> = {
     { id: 'date-travel',   label: '🧳 デート用トラベルグッズ',  desc: 'お出かけをもっと快適にするアイテム',    url: AMZ('トラベルグッズ カップル おでかけ 便利') },
     { id: 'date-fashion',  label: '💍 デートアクセサリー',      desc: 'ペアルック・プレゼントに人気のアイテム', url: AMZ('ペアアクセサリー カップル プレゼント') },
   ],
+  'buzz-writer': [
+    { id: 'bw-writing',    label: '✍️ ライティング・文章術本',  desc: 'バズる文章の書き方・SEOライティング',   url: AMZ('ライティング 文章術 バズる SEO') },
+    { id: 'bw-sns',        label: '📱 SNSマーケティング本',     desc: 'フォロワーを増やすコンテンツ戦略',      url: AMZ('SNS マーケティング コンテンツ 拡散') },
+  ],
+  'closet-coach': [
+    { id: 'closet-storage',label: '👗 収納・クローゼット整理',  desc: '服をスッキリ管理する収納グッズ',        url: AMZ('クローゼット 収納 整理 衣類') },
+    { id: 'closet-book',   label: '📚 ファッション・整理本',    desc: 'ワードローブ整理・おしゃれ術の本',      url: AMZ('ファッション ワードローブ 断捨離 整理') },
+  ],
+  'comm-coach': [
+    { id: 'comm-book',     label: '💬 コミュニケーション本',    desc: '人間関係・話し方・聴き方の技術',        url: AMZ('コミュニケーション 話し方 人間関係 本') },
+    { id: 'comm-psych',    label: '🧠 心理学・対人関係本',      desc: '心理学で人間関係をスムーズに',          url: AMZ('心理学 対人関係 人付き合い 本') },
+  ],
+  'gift-advisor': [
+    { id: 'gift-wrap',     label: '🎁 ギフトラッピング用品',    desc: 'プレゼントをセンスよく包む',            url: AMZ('ギフト ラッピング プレゼント包装') },
+    { id: 'gift-popular',  label: '🛍 人気ギフト・贈り物',      desc: 'Amazonで人気のギフトセット',            url: AMZ('ギフトセット プレゼント 人気 贈り物') },
+  ],
+  'pet-translator': [
+    { id: 'pet-goods',     label: '🐾 ペット用品・おもちゃ',    desc: 'ペットが喜ぶグッズ・おもちゃ',          url: AMZ('ペット おもちゃ グッズ 猫 犬') },
+    { id: 'pet-health',    label: '🏥 ペット健康・ケア用品',    desc: 'ペットの健康を守るケアグッズ',          url: AMZ('ペット 健康 ケア サプリ 猫 犬') },
+  ],
+  'resignation-assistant': [
+    { id: 'resign-book',   label: '📖 転職・退職本',            desc: '退職・転職を成功に導く実践本',          url: AMZ('退職 転職 仕事 やめる 成功') },
+    { id: 'resign-biz',    label: '💼 ビジネス・自己啓発本',    desc: '次のキャリアに向けた自己投資',          url: AMZ('転職 自己啓発 キャリア ビジネス 本') },
+  ],
+  'shio-taiou': [
+    { id: 'shio-comm',     label: '💬 断り方・人間関係本',      desc: '上手な断り方・距離の置き方',            url: AMZ('断り方 人間関係 ストレス 距離感 本') },
+    { id: 'shio-stress',   label: '🧘 ストレス解消グッズ',      desc: 'メンタルケア・リラックスグッズ',        url: AMZ('ストレス解消 リラックス メンタル グッズ') },
+  ],
 }
 
 // トラッキングURL生成
