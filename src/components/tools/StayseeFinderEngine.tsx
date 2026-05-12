@@ -1844,7 +1844,7 @@ const MasterEngine = () => {
       />
 
       {/* ヘッダー: ロゴ + ステップ表示（全画面タブレット想定） */}
-      <div className="max-w-4xl mx-auto px-6 pt-6 pb-4">
+      <div className="w-full px-8 pt-6 pb-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'rgba(16,185,129,0.15)' }}>
@@ -1917,7 +1917,7 @@ const MasterEngine = () => {
         )}
       </div>
 
-      <div className="max-w-4xl mx-auto px-6 space-y-4">
+      <div className="w-full px-8 space-y-4">
 
         {/* ════ STEP 1: スタート ════ */}
         {activeTab === 'kiosk' && (
