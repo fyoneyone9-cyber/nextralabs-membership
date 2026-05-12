@@ -23,22 +23,22 @@ export const metadata: Metadata = {
   description: 'テキストや単元を入力するだけ。AIが予想問題・過去問スタイルの問題を自動生成し、苦手箇所をスコアで可視化。資格試験・入試・定期テスト対策に。月額¥1,980。',
   keywords: ['AI問題生成','予想問題AI','苦手分析AI','試験問題自動生成','テスト問題AI','資格試験問題AI','問題集AI','弱点克服AI','学習AI','NextraLabs問題生成'],
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/ai-exam-generator',
+    canonical: 'https://nextralab.jp/products/ai-exam-generator',
   },
   openGraph: {
     title: 'AI問題生成 & 苦手分析 | 予想問題を無限生成・弱点ポイントを可視化 | NextraLabs',
     description: 'テキストや単元を入力するだけ。AIが予想問題・過去問スタイルの問題を自動生成し、苦手箇所をスコアで可視化。資格試験・入試・定期テスト対策に。月額¥1,980。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/ai-exam-generator',
+    url: 'https://nextralab.jp/products/ai-exam-generator',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI問題生成 & 苦手分析 | 予想問題を無限生成・弱点ポイントを可視化 | NextraLabs' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'AI問題生成 & 苦手分析 | 予想問題を無限生成・弱点ポイントを可視化 | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI問題生成 & 苦手分析 | 予想問題を無限生成・弱点ポイントを可視化 | NextraLabs',
     description: 'テキストや単元を入力するだけ。AIが予想問題・過去問スタイルの問題を自動生成し、苦手箇所をスコアで可視化。資格試験・入試・定期テスト対策に。月額¥1,980。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -74,7 +74,7 @@ export default function ExamGeneratorPage() {
     description: 'テキストや単元を入力するだけ。AIが予想問題・過去問スタイルの問題を自動生成し、苦手箇所をスコアで可視化。',
     applicationCategory: 'EducationApplication',
     operatingSystem: 'Web',
-    url: 'https://membership-site-nextralabos.vercel.app/products/ai-exam-generator',
+    url: 'https://nextralab.jp/products/ai-exam-generator',
     offers: { '@type': 'Offer', price: '1980', priceCurrency: 'JPY' },
     publisher: { '@type': 'Organization', name: 'NextraLabs' },
   }

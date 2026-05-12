@@ -8,22 +8,22 @@ export const metadata: Metadata = {
   description: '持ち服を撮影するだけでAIがコーデ提案・不要品判定・フリマ出品サポートまで。クローゼット整理でお金も生み出す。NextraLabsライトプラン以上。',
   keywords: ["AI断捨離","クローゼット整理AI","コーデAI","フリマ出品AI","服整理"],
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/closet-coach',
+    canonical: 'https://nextralab.jp/products/closet-coach',
   },
   openGraph: {
     title: 'AIクローゼットコーチ | タンスの肥やしをゼロにする断捨離AI | NextraLabs',
     description: '持ち服を撮影するだけでAIがコーデ提案・不要品判定・フリマ出品サポートまで。クローゼット整理でお金も生み出す。NextraLabsライトプラン以上。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/closet-coach',
+    url: 'https://nextralab.jp/products/closet-coach',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AIクローゼットコーチ | タンスの肥やしをゼロにする断捨離AI' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'AIクローゼットコーチ | タンスの肥やしをゼロにする断捨離AI' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AIクローゼットコーチ | タンスの肥やしをゼロにする断捨離AI',
     description: '持ち服を撮影するだけでAIがコーデ提案・不要品判定・フリマ出品サポートまで。クローゼット整理でお金も生み出す。NextraLabsライトプラン以上。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 

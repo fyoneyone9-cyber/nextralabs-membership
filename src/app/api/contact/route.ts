@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseAdmin = createClient(
@@ -61,7 +61,7 @@ ${message}
         <p style="color: #9ca3af; font-size: 12px; margin: 0;">
           このメールは NextraLabs お問い合わせフォームから自動送信されています。<br />
           <a href="mailto:${email}">返信する</a> |
-          <a href="https://membership-site-nextralabos.vercel.app/admin">管理画面</a>
+          <a href="https://nextralab.jp/admin">管理画面</a>
         </p>
       </div>
     </div>

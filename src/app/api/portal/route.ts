@@ -1,4 +1,4 @@
-import { NextResponse, NextRequest } from 'next/server'
+﻿import { NextResponse, NextRequest } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe'
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
 
     const session = await stripe.billingPortal.sessions.create({
       customer: subscription.stripe_customer_id,
-      return_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://membership-site-nextralabos.vercel.app'}/profile`,
+      return_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://nextralab.jp'}/profile`,
     })
 
     return NextResponse.json({ url: session.url })

@@ -6,16 +6,16 @@ export const metadata: Metadata = {
     'NextraLabsの料金プランを比較。無料・ライト（980円）・スタンダード（1,980円）・プレミアム（2,980円）の4プランから選択。30種類以上のAIツールが使い放題。いつでも解約可能。',
   keywords: ['NextraLabs料金', 'AIツール月額料金', 'AIメンバーシップ価格', '980円AIツール', 'AIサービス比較'],
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/pricing',
+    canonical: 'https://nextralab.jp/pricing',
   },
   openGraph: {
     title: '料金プラン | NextraLabs AIツールメンバーシップ',
     description: '無料〜月額2,980円の4プラン。30種類以上のAIツールをお試し可能。いつでも解約OK。',
-    url: 'https://membership-site-nextralabos.vercel.app/pricing',
+    url: 'https://nextralab.jp/pricing',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630 }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630 }],
   },
 }
 

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 製品ページ用の構造化データ（JSON-LD）コンポーネント
  * 各製品LPページに追加して検索結果でのリッチスニペットを有効化する
  */
@@ -24,7 +24,7 @@ export function ProductJsonLd({
   priceCurrency = 'JPY',
   ratingValue = '4.8',
   reviewCount = '100',
-  image = 'https://membership-site-nextralabos.vercel.app/og-image.png',
+  image = 'https://nextralab.jp/og-image.png',
   category = 'AIツール',
   applicationCategory = 'ProductivityApplication',
 }: ProductJsonLdProps) {
@@ -46,7 +46,7 @@ export function ProductJsonLd({
       seller: {
         '@type': 'Organization',
         name: 'NextraLabs',
-        url: 'https://membership-site-nextralabos.vercel.app',
+        url: 'https://nextralab.jp',
       },
     },
     aggregateRating: {
@@ -61,7 +61,7 @@ export function ProductJsonLd({
       name: 'NextraLabs',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://membership-site-nextralabos.vercel.app/icon.png',
+        url: 'https://nextralab.jp/icon.png',
       },
     },
   }

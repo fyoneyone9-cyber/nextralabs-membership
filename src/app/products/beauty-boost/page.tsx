@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -12,12 +12,12 @@ export const metadata: Metadata = {
   ],
   robots: { index: true, follow: true },
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/beauty-boost',
+    canonical: 'https://nextralab.jp/products/beauty-boost',
   },
   openGraph: {
     title: 'お見合い垢抜けブースト | 会場周辺の美容院をAIが検索',
     description: 'お見合い日時・会場を入力するだけ。周辺の美容院をAIが検索し予約へ直接案内。逆算ロードマップ付き。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/beauty-boost',
+    url: 'https://nextralab.jp/products/beauty-boost',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',

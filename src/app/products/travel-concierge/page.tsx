@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -16,19 +16,19 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true },
   },
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/travel-concierge',
+    canonical: 'https://nextralab.jp/products/travel-concierge',
   },
   openGraph: {
     title: 'AI旅行コンシェルジュ | 楽天トラベル×Google Maps×Gemini AIで旅程を自動生成',
     description:
       '目的地・日程・予算を入力するだけ。楽天トラベルで宿を、Google Mapsで観光地を自動取得し、Gemini AIがオリジナル旅程を生成。月額¥980〜。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/travel-concierge',
+    url: 'https://nextralab.jp/products/travel-concierge',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
     images: [
       {
-        url: 'https://membership-site-nextralabos.vercel.app/og-image.png',
+        url: 'https://nextralab.jp/og-image.png',
         width: 1200,
         height: 630,
         alt: 'AI旅行コンシェルジュ',
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'AI旅行コンシェルジュ | 楽天トラベル×Google Maps×Gemini AI',
     description: '目的地・日程・予算を入力するだけでGemini AIが完全旅程を自動生成。月額¥980〜。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -105,7 +105,7 @@ export default function TravelConciergeLP() {
         applicationCategory: 'TravelApplication',
         operatingSystem: 'Web',
         description: '目的地・日程・予算を入力するだけ。楽天トラベルで宿を自動検索、Google Maps周辺スポットを収集し、Gemini AIが完全オリジナル旅行プランを生成。',
-        url: 'https://membership-site-nextralabos.vercel.app/products/travel-concierge',
+        url: 'https://nextralab.jp/products/travel-concierge',
         offers: {
           '@type': 'Offer',
           price: '980',
@@ -115,7 +115,7 @@ export default function TravelConciergeLP() {
         publisher: {
           '@type': 'Organization',
           name: 'NextraLabs',
-          url: 'https://membership-site-nextralabos.vercel.app',
+          url: 'https://nextralab.jp',
         },
       },
       {

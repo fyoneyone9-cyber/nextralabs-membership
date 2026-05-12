@@ -14,22 +14,22 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true },
   },
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/money-guard',
+    canonical: 'https://nextralab.jp/products/money-guard',
   },
   openGraph: {
     title: 'AI家計防衛シミュレーター | 衝動買い・無駄遣いをAIが阻止 | NextraLabs',
     description: '買う前に5秒で診断。AIが衝動買いリスクを判定し、代替案・節約アドバイスを即提示。月収・固定費から家計を自動分析。節約・家計管理アプリの決定版。月額¥980。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/money-guard',
+    url: 'https://nextralab.jp/products/money-guard',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI家計防衛シミュレーター | 衝動買い・無駄遣いをAIが阻止' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'AI家計防衛シミュレーター | 衝動買い・無駄遣いをAIが阻止' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI家計防衛シミュレーター | 衝動買い・無駄遣いをAIが阻止',
     description: '買う前に5秒で診断。AIが衝動買いリスクを判定。節約・家計管理アプリの決定版。月額¥980。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -72,7 +72,7 @@ const jsonLd = {
       applicationCategory: 'FinanceApplication',
       operatingSystem: 'Web',
       description: '買う前に5秒で診断。AIが衝動買いリスクを判定し、代替案・節約アドバイスを即提示。月収・固定費から家計を自動分析。',
-      url: 'https://membership-site-nextralabos.vercel.app/products/money-guard',
+      url: 'https://nextralab.jp/products/money-guard',
       offers: {
         '@type': 'Offer',
         price: '980',
@@ -82,7 +82,7 @@ const jsonLd = {
       publisher: {
         '@type': 'Organization',
         name: 'NextraLabs',
-        url: 'https://membership-site-nextralabos.vercel.app',
+        url: 'https://nextralab.jp',
       },
     },
     {

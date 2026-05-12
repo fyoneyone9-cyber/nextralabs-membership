@@ -6,22 +6,22 @@ export const metadata: Metadata = {
   keywords: ['YouTube楽天アフィリエイト','YouTube収益化AI','YouTube動画解析AI','楽天アフィリエイト自動化','YouTube概要欄AI','YouTube物販AI','アフィリエイトAI','YouTube収益最大化','動画収益AI','NextraLabsYouTube','YouTubeマネタイズ','楽天リンク自動生成'],
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/youtube-coordinator',
+    canonical: 'https://nextralab.jp/products/youtube-coordinator',
   },
   openGraph: {
     title: 'YouTube AI Sync | 動画解析×楽天アフィリエイトで収益を最大化 | NextraLabs',
     description: 'YouTube動画URLを入力するだけ。AIが動画内容を解析し、関連する楽天市場商品を自動抽出・アフィリエイトリンク生成。概要欄に貼るだけで収益化。月額¥1,980。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/youtube-coordinator',
+    url: 'https://nextralab.jp/products/youtube-coordinator',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'YouTube AI Sync | NextraLabs' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'YouTube AI Sync | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'YouTube AI Sync | 動画解析×楽天アフィリエイトで収益最大化',
     description: 'YouTube動画URLを入力するだけ。AIが楽天アフィリエイトリンクを自動生成して概要欄収益を底上げ。月額¥1,980。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -150,7 +150,7 @@ export default function YoutubeSyncLp() {
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Web',
     offers: { '@type': 'Offer', price: '1980', priceCurrency: 'JPY' },
-    publisher: { '@type': 'Organization', name: 'NextraLabs', url: 'https://membership-site-nextralabos.vercel.app' }
+    publisher: { '@type': 'Organization', name: 'NextraLabs', url: 'https://nextralab.jp' }
   }
   const faqLd = {
     '@context': 'https://schema.org',

@@ -23,21 +23,21 @@ export const metadata: Metadata = {
   description: '動画・画像・PDFを選択してボタンを押すだけ。MP4→MP3・JPG→PDF・PDF圧縮など50種類以上の変換に対応したAI搭載ファイル変換ツール。高速・高品質・セキュア。月額¥480のライトプランで利用可能。',
   keywords: ['ファイル変換AI','動画変換','画像変換AI','PDF変換AI','MP4変換','動画圧縮AI','画像圧縮AI','PDF圧縮','ファイル形式変換','NextraLabsコンバーター','MP4MP3変換','JPG PNG変換','オンライン変換ツール'],
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
-  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/universal-converter' },
+  alternates: { canonical: 'https://nextralab.jp/products/universal-converter' },
   openGraph: {
     title: '究極AIマルチコンバーター | 動画・画像・PDF変換を全自動 | NextraLabs',
     description: '動画・画像・PDFを選択してボタンを押すだけ。50種類以上の変換に対応。月額¥480。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/universal-converter',
+    url: 'https://nextralab.jp/products/universal-converter',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: '究極AIマルチコンバーター | NextraLabs' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: '究極AIマルチコンバーター | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: '究極AIマルチコンバーター | 動画・画像・PDF変換を全自動',
     description: '動画・画像・PDFを選択してボタンを押すだけ。50種類以上の変換。月額¥480。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -74,7 +74,7 @@ export default function UniversalConverterPage() {
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Web',
     offers: { '@type': 'Offer', price: '480', priceCurrency: 'JPY' },
-    publisher: { '@type': 'Organization', name: 'NextraLabs', url: 'https://membership-site-nextralabos.vercel.app' }
+    publisher: { '@type': 'Organization', name: 'NextraLabs', url: 'https://nextralab.jp' }
   }
   return (
     <>

@@ -25,7 +25,7 @@ const notoSansJP = Noto_Sans_JP({
   display: 'swap',
 })
 
-const BASE_URL = 'https://membership-site-nextralabos.vercel.app'
+const BASE_URL = 'https://nextralab.jp'
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),

@@ -26,7 +26,7 @@ export default function AiRecipeLandingPage() {
     description: '冷蔵庫の食材を入力するだけ。AIが栄養バランス・カロリー・予算を考慮した1週間の献立と詳細レシピを自動生成。',
     applicationCategory: 'LifestyleApplication',
     operatingSystem: 'Web',
-    url: 'https://membership-site-nextralabos.vercel.app/products/ai-recipe',
+    url: 'https://nextralab.jp/products/ai-recipe',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
     publisher: { '@type': 'Organization', name: 'NextraLabs' },
   }

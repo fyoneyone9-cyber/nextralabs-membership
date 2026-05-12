@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   title: 'AI引越し安心チェッカー | 治安・物件リスク・引越し費用をAIが徹底診断 | NextraLabs',
   description: '引越し先の住所を入力するだけ。AIが治安スコア・ハザードマップリスク・物件の問題点・引越し費用相場を自動診断。失敗しない引越しをAIがサポート。スタンダードプラン¥980。',
   keywords: ['引越しAI','治安診断AI','物件リスク診断','引越し費用AI','住みやすさ診断','引越し安心','ハザードマップAI','物件診断AI','引越し失敗防止','NextraLabs引越し'],
-  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/moving-checker' },
-  openGraph: { title: 'AI引越し安心チェッカー | 治安・物件リスク・引越し費用をAIが徹底診断 | NextraLabs', description: '引越し先の住所を入力するだけ。AIが治安スコア・ハザードマップリスク・物件の問題点・引越し費用相場を自動診断。失敗しない引越しをAIがサポート。スタンダードプラン¥980。', url: 'https://membership-site-nextralabos.vercel.app/products/moving-checker', type: 'website' },
+  alternates: { canonical: 'https://nextralab.jp/products/moving-checker' },
+  openGraph: { title: 'AI引越し安心チェッカー | 治安・物件リスク・引越し費用をAIが徹底診断 | NextraLabs', description: '引越し先の住所を入力するだけ。AIが治安スコア・ハザードマップリスク・物件の問題点・引越し費用相場を自動診断。失敗しない引越しをAIがサポート。スタンダードプラン¥980。', url: 'https://nextralab.jp/products/moving-checker', type: 'website' },
 }
 
 import { ToolLaunchButton } from '@/components/ToolLaunchButton'
@@ -131,7 +131,7 @@ export default function MovingCheckerPage() {
     description: '引越し先の住所を入力するだけ。AIが治安スコア・ハザードマップリスク・物件の問題点・引越し費用相場を自動診断。',
     applicationCategory: 'LifestyleApplication',
     operatingSystem: 'Web',
-    url: 'https://membership-site-nextralabos.vercel.app/products/moving-checker',
+    url: 'https://nextralab.jp/products/moving-checker',
     offers: { '@type': 'Offer', price: '980', priceCurrency: 'JPY' },
     publisher: { '@type': 'Organization', name: 'NextraLabs' },
   }

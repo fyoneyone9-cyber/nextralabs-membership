@@ -16,21 +16,21 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true },
   },
-  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/scam-defender' },
+  alternates: { canonical: 'https://nextralab.jp/products/scam-defender' },
   openGraph: {
     title: 'AI詐欺ディフェンダー | 詐欺メール・闇バイト・電話詐欺をAIが即判定 | NextraLabs',
     description: '不審なメール・SNS・電話の詐欺を貼り付けるだけでAI即判定。闇バイト判定・詐欺電話シミュレーター・家族見守りチェックリスト付き。月額¥1,980。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/scam-defender',
+    url: 'https://nextralab.jp/products/scam-defender',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI詐欺ディフェンダー' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'AI詐欺ディフェンダー' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI詐欺ディフェンダー | 詐欺メール・闇バイト・電話詐欺をAIが即判定',
     description: '不審なメール・SNS・電話をAIが即判定。闇バイト・特殊詐欺・フィッシング対策。月額¥1,980。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -195,7 +195,7 @@ const jsonLd = {
       applicationCategory: 'SecurityApplication',
       operatingSystem: 'Web',
       description: '不審なメール・SNS・電話の詐欺をAIが即判定。闇バイト判定・詐欺電話シミュレーター・家族見守りチェックリスト付き。特殊詐欺・フィッシング対策。',
-      url: 'https://membership-site-nextralabos.vercel.app/products/scam-defender',
+      url: 'https://nextralab.jp/products/scam-defender',
       offers: {
         '@type': 'Offer',
         price: '1980',
@@ -205,7 +205,7 @@ const jsonLd = {
       publisher: {
         '@type': 'Organization',
         name: 'NextraLabs',
-        url: 'https://membership-site-nextralabos.vercel.app',
+        url: 'https://nextralab.jp',
       },
     },
     {

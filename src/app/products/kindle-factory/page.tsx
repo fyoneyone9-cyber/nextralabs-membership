@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Kindle AI ファクトリー | AIが電子書籍の原稿を自動生成・KDP入稿まで完結 | NextraLabs',
@@ -6,22 +6,22 @@ export const metadata: Metadata = {
   keywords: ['Kindle出版AI','KDP自動生成','電子書籍AI','本の書き方AI','Kindle副業','Kindleセルフ出版','電子書籍作成','KDP原稿生成','AI執筆ツール','NextraLabs Kindle'],
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/kindle-factory',
+    canonical: 'https://nextralab.jp/products/kindle-factory',
   },
   openGraph: {
     title: 'Kindle AI ファクトリー | AIが電子書籍の原稿を自動生成・KDP入稿まで完結 | NextraLabs',
     description: 'テーマを入力するだけでAIが目次設計から本文執筆まで自動生成。KDP（Kindle Direct Publishing）入稿に必要なフォーマットで書き出し。副業・起業・情報発信に。月額¥1,980。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/kindle-factory',
+    url: 'https://nextralab.jp/products/kindle-factory',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'Kindle AI ファクトリー | NextraLabs' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'Kindle AI ファクトリー | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Kindle AI ファクトリー | AIが電子書籍の原稿を自動生成・KDP入稿まで完結 | NextraLabs',
     description: 'テーマを入力するだけでAIが目次設計から本文執筆まで自動生成。KDP入稿に必要なフォーマットで書き出し。月額¥1,980。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -67,7 +67,7 @@ export default function KindleFactoryLp() {
         name: 'Kindle AI ファクトリー',
         applicationCategory: 'BusinessApplication',
         operatingSystem: 'Web',
-        url: 'https://membership-site-nextralabos.vercel.app/products/kindle-factory',
+        url: 'https://nextralab.jp/products/kindle-factory',
         description: 'テーマを入力するだけでAIが目次設計から本文執筆まで自動生成。KDP入稿に必要なフォーマットで書き出し。副業・起業・情報発信に。',
         offers: {
           '@type': 'Offer',
@@ -75,7 +75,7 @@ export default function KindleFactoryLp() {
           priceCurrency: 'JPY',
           priceSpecification: { '@type': 'UnitPriceSpecification', price: '1980', priceCurrency: 'JPY', unitText: '月' },
         },
-        provider: { '@type': 'Organization', name: 'NextraLabs', url: 'https://membership-site-nextralabos.vercel.app' },
+        provider: { '@type': 'Organization', name: 'NextraLabs', url: 'https://nextralab.jp' },
       },
       {
         '@type': 'FAQPage',

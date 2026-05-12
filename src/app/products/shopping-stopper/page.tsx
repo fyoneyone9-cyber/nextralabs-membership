@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   title: 'AI買い物依存ストッパー | 衝動買いを止めるAI心理カウンセラー | NextraLabs',
   description: '「これ買っていい？」をAIに相談するだけ。衝動買いリスクスコア・心理的購買動機分析・クールダウン提案で無駄遣いを撲滅。借金体質改善にも。完全無料。',
   keywords: ['衝動買い防止','買い物依存AI','節約AI','浪費防止アプリ','買い物心理AI','無駄遣い防止','家計節約AI','購買判定AI','節約アドバイスAI','NextraLabs節約'],
-  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/shopping-stopper' },
-  openGraph: { title: 'AI買い物依存ストッパー | 衝動買いを止めるAI心理カウンセラー | NextraLabs', description: '「これ買っていい？」をAIに相談するだけ。衝動買いリスクスコア・心理的購買動機分析・クールダウン提案で無駄遣いを撲滅。借金体質改善にも。完全無料。', url: 'https://membership-site-nextralabos.vercel.app/products/shopping-stopper', type: 'website' },
+  alternates: { canonical: 'https://nextralab.jp/products/shopping-stopper' },
+  openGraph: { title: 'AI買い物依存ストッパー | 衝動買いを止めるAI心理カウンセラー | NextraLabs', description: '「これ買っていい？」をAIに相談するだけ。衝動買いリスクスコア・心理的購買動機分析・クールダウン提案で無駄遣いを撲滅。借金体質改善にも。完全無料。', url: 'https://nextralab.jp/products/shopping-stopper', type: 'website' },
 }
 import {
   Camera,
@@ -140,7 +140,7 @@ export default function ShoppingStopperPage() {
     description: '「これ買っていい？」をAIに相談するだけ。衝動買いリスクスコア・心理的購買動機分析・クールダウン提案で無駄遣いを撲滅。',
     applicationCategory: 'LifestyleApplication',
     operatingSystem: 'Web',
-    url: 'https://membership-site-nextralabos.vercel.app/products/shopping-stopper',
+    url: 'https://nextralab.jp/products/shopping-stopper',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
     publisher: { '@type': 'Organization', name: 'NextraLabs' },
   }

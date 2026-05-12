@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState } from 'react'
 import { Smartphone, Monitor, Tablet, RefreshCw, ExternalLink, ChevronDown } from 'lucide-react'
 
@@ -22,7 +22,7 @@ const PAGES = [
   { label: 'お問い合わせ',       path: '/contact' },
 ]
 
-const BASE_URL = 'https://membership-site-nextralabos.vercel.app'
+const BASE_URL = 'https://nextralab.jp'
 
 export default function MobilePreviewPage() {
   const [device, setDevice] = useState(DEVICES[1]) // iPhone 14 default

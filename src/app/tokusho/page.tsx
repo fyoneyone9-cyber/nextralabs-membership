@@ -28,7 +28,7 @@ export default function TokushoPage() {
             { label: '所在地', value: '神奈川県海老名市社家6-5-2-301' },
             { label: '電話番号', value: '080-3207-8422（平日10:00〜18:00）' },
             { label: 'メールアドレス', value: 'info@marriage-road.jp' },
-            { label: 'ウェブサイト', value: 'https://membership-site-nextralabos.vercel.app' },
+            { label: 'ウェブサイト', value: 'https://nextralab.jp' },
             {
               label: '販売価格',
               value: 'スタンダードプラン：¥980（税込）／月　プレミアムプラン：¥1,980（税込）／月　※各プランの詳細は料金ページをご確認ください。',

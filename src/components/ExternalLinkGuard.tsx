@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useEffect, useState } from 'react'
 import { ExternalLink, X, ArrowRight } from 'lucide-react'
 
@@ -18,7 +18,7 @@ export default function ExternalLinkGuard() {
       // 外部リンク判定: http/https で始まり、自サイトドメインでないもの
       const isExternal =
         (href.startsWith('http://') || href.startsWith('https://')) &&
-        !href.includes('membership-site-nextralabos.vercel.app') &&
+        !href.includes('nextralab.jp') &&
         !href.includes('localhost')
 
       if (!isExternal) return

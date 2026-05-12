@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -11,19 +11,19 @@ export const metadata: Metadata = {
     'NextraLabs', '即アポ', 'お見合い自動確定'
   ],
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
-  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/konkatsu-scheduler' },
+  alternates: { canonical: 'https://nextralab.jp/products/konkatsu-scheduler' },
   openGraph: {
     title: 'AI即アポ調整くん | Google Calendar連携でお見合い日程を自動確定',
     description: '双方のGoogleカレンダーから空き時間を自動抽出。候補3件をワンタップで確定。婚活の日程調整を完全自動化。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/konkatsu-scheduler',
+    url: 'https://nextralab.jp/products/konkatsu-scheduler',
     type: 'website', locale: 'ja_JP', siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI即アポ調整くん' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'AI即アポ調整くん' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI即アポ調整くん | Google Calendar × 婚活 日程自動確定',
     description: '双方のGoogleカレンダーから空き時間を抽出し、候補3件を自動提示。ワンタップでお見合い確定。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 

@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -11,12 +11,12 @@ export const metadata: Metadata = {
   ],
   robots: { index: true, follow: true },
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/omiai-room',
+    canonical: 'https://nextralab.jp/products/omiai-room',
   },
   openGraph: {
     title: 'オンラインお見合い盛り上げシステム | 結婚相談所向けエンタープライズ',
     description: 'ビデオ通話×懐メロBGM×AIトークサジェストで成婚率アップ。結婚相談所向け専用システム。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/omiai-room',
+    url: 'https://nextralab.jp/products/omiai-room',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
@@ -317,7 +317,7 @@ function ContactForm() {
     >
       <input type="hidden" name="_subject" value="【NextraLabs】オンラインお見合い盛り上げシステム お問い合わせ" />
       <input type="hidden" name="_captcha" value="false" />
-      <input type="hidden" name="_next" value="https://membership-site-nextralabos.vercel.app/products/omiai-room?thanks=1" />
+      <input type="hidden" name="_next" value="https://nextralab.jp/products/omiai-room?thanks=1" />
       <input type="text" name="_honey" style={{ display: 'none' }} />
 
       <div className="grid md:grid-cols-2 gap-6">

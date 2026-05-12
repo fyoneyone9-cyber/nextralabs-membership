@@ -45,7 +45,7 @@ const SKILLS = [
 const PROJECTS = [
   { category: "システム基盤", title: "Surveillance OS — 全能型監視パネル", desc: "F12不要。ブラウザの全ログジャック、操作追跡、API死活監視を一画面に統合。sessionStorageによる永続ログ保持を実現。", link: "#", label: "監視パネル v15.2 実装済み" },
   { category: "データ戦略", title: "Triple-Hybrid Speed Engine", desc: "GNews API、1時間以内速報RSS、トレンドRSSを三段構えで統合。情報のタイムラグをゼロにする高速解析エンジン。", link: "/products/trend-stock", label: "デモを見る ↗" },
-  { category: "会員制サービス", title: "NextraLabs — 会員制事業サイト", desc: "会員登録・ログイン・会員限定コンテンツ配信を備えた本格的な会員制WEBシステム。実際に稼働中の事業サイトです。", link: "https://membership-site-nextralabos.vercel.app/", label: "サイトを見る ↗" },
+  { category: "会員制サービス", title: "NextraLabs — 会員制事業サイト", desc: "会員登録・ログイン・会員限定コンテンツ配信を備えた本格的な会員制WEBシステム。実際に稼働中の事業サイトです。", link: "https://nextralab.jp/", label: "サイトを見る ↗" },
   { category: "リサーチ", title: "毎朝のニュース要約・配信", desc: "指定テーマのニュースを毎朝収集・まとめて、メールやSlackで定期配信する仕組みを作ります。", link: "/products/trends", label: "📰 サンプルを見る ↗" },
   { category: "分析", title: "競合調査・市場分析レポート", desc: "競合他社のWebサイト・SNS・ニュースを調査・分析し、わかりやすいレポートにまとめます。", link: "/products/trend-stock", label: "🔍 デモを見る ↗" },
   { category: "Web開発", title: "Webサイト構築・公開", desc: "要件を伝えるだけでサイトを設計・構築し、本番環境に公開します（このサイト自体がその実例）。", link: "/", label: "🌐 このサイトがデモ ↗" },

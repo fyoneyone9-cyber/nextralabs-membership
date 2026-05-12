@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useCallback } from 'react'
 import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 import {
@@ -176,7 +176,7 @@ export default function DateConcierge() {
       '',
       '──────────────────────',
       '生成: NextraLabs デートコース自動コンシェルジュ',
-      'https://membership-site-nextralabos.vercel.app/products/date-concierge/app',
+      'https://nextralab.jp/products/date-concierge/app',
     ].filter(l => l !== '')
     await navigator.clipboard.writeText(lines.join('\n'))
     setCopied(true)

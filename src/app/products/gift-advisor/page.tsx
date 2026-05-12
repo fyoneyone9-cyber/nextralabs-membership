@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -12,12 +12,12 @@ export const metadata: Metadata = {
   ],
   robots: { index: true, follow: true },
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/gift-advisor',
+    canonical: 'https://nextralab.jp/products/gift-advisor',
   },
   openGraph: {
     title: 'AI先回りギフトナビ | カレンダー連携×楽天×Gemini',
     description: '記念日を忘れない・マナーで失敗しない。AIが最適ギフトを楽天から提案します。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/gift-advisor',
+    url: 'https://nextralab.jp/products/gift-advisor',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',

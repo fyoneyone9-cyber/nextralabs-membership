@@ -105,7 +105,7 @@ export default function AiRecipeScope() {
   }, [closeCamera])
 
   const useSample = () => {
-    const url = 'https://membership-site-nextralabos.vercel.app/samples/fridge-sample.jpg'
+    const url = 'https://nextralab.jp/samples/fridge-sample.jpg'
     setImage(url)
     const a = document.createElement('a'); a.href = url; a.download = 'recipe_sample_image.jpg'; a.click()
   }

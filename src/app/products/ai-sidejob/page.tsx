@@ -6,22 +6,22 @@ export const metadata: Metadata = {
   keywords: ['副業AI','副業診断','副業ロードマップ','在宅副業AI','副業おすすめAI','副業収益AI','副業プランAI','サイドビジネスAI','フリーランスAI','NextraLabs副業'],
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/ai-sidejob',
+    canonical: 'https://nextralab.jp/products/ai-sidejob',
   },
   openGraph: {
     title: 'AI副業スタートダッシュ | 適性診断と収益ロードマップをAIが設計 | NextraLabs',
     description: 'スキル・時間・目標収入を入力するだけ。AIが最適な副業を提案し、収益化までのロードマップを自動設計。月1万円〜月50万円まで。副業初心者に最適。月額¥1,980。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/ai-sidejob',
+    url: 'https://nextralab.jp/products/ai-sidejob',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI副業スタートダッシュ | 適性診断と収益ロードマップをAIが設計 | NextraLabs' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'AI副業スタートダッシュ | 適性診断と収益ロードマップをAIが設計 | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI副業スタートダッシュ | 適性診断と収益ロードマップをAIが設計 | NextraLabs',
     description: 'スキル・時間・目標収入を入力するだけ。AIが最適な副業を提案し、収益化までのロードマップを自動設計。月1万円〜月50万円まで。副業初心者に最適。月額¥1,980。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -142,7 +142,7 @@ export default function SidejobLp() {
     description: 'スキル・時間・目標収入を入力するだけ。AIが最適な副業を提案し、収益化までのロードマップを自動設計。',
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Web',
-    url: 'https://membership-site-nextralabos.vercel.app/products/ai-sidejob',
+    url: 'https://nextralab.jp/products/ai-sidejob',
     offers: { '@type': 'Offer', price: '1980', priceCurrency: 'JPY' },
     publisher: { '@type': 'Organization', name: 'NextraLabs' },
   }

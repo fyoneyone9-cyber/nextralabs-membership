@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -12,12 +12,12 @@ export const metadata: Metadata = {
   ],
   robots: { index: true, follow: true },
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/pilgrimage-planner',
+    canonical: 'https://nextralab.jp/products/pilgrimage-planner',
   },
   openGraph: {
     title: '推し活聖地巡礼ツアープランナー | AI自動聖地特定×楽天トラベル',
     description: 'YouTube URLを貼るだけでAIが聖地を特定して旅程を自動生成。推し活専用AIツール。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/pilgrimage-planner',
+    url: 'https://nextralab.jp/products/pilgrimage-planner',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',

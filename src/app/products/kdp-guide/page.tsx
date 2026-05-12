@@ -23,11 +23,11 @@ export const metadata: Metadata = {
   title: 'Kindle出版完全ナビ | KDP登録から出版・販売まで全手順をAIがガイド | NextraLabs',
   description: 'Kindle出版を始めたい人向けの完全ガイド。KDPアカウント登録・原稿フォーマット・表紙作成・価格設定・ロイヤリティ計算まで全手順をAIがナビゲート。完全無料。',
   keywords: ['KDP出版ガイド','Kindle出版方法','KDP登録','電子書籍出版AI','Kindle自費出版','KDP価格設定','Kindleロイヤリティ','電子書籍販売AI','本の出版AI','NextraLabsKDP'],
-  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/kdp-guide' },
+  alternates: { canonical: 'https://nextralab.jp/products/kdp-guide' },
   openGraph: {
     title: 'Kindle出版完全ナビ | KDP登録から出版・販売まで全手順をAIがガイド | NextraLabs',
     description: 'Kindle出版を始めたい人向けの完全ガイド。KDPアカウント登録・原稿フォーマット・表紙作成・価格設定・ロイヤリティ計算まで全手順をAIがナビゲート。完全無料。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/kdp-guide',
+    url: 'https://nextralab.jp/products/kdp-guide',
     type: 'website',
   },
 }
@@ -139,7 +139,7 @@ export default function KdpGuidePage() {
     description: 'KDPアカウント登録・原稿フォーマット・表紙作成・価格設定・ロイヤリティ計算まで全手順をAIがナビゲート。',
     applicationCategory: 'EducationApplication',
     operatingSystem: 'Web',
-    url: 'https://membership-site-nextralabos.vercel.app/products/kdp-guide',
+    url: 'https://nextralab.jp/products/kdp-guide',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
     publisher: { '@type': 'Organization', name: 'NextraLabs' },
   }

@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Nextra AI | ホテル・旅館 無人チェックインKIOSK | NextraLabs',
@@ -14,22 +14,22 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true },
   },
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/nextra-ai',
+    canonical: 'https://nextralab.jp/products/nextra-ai',
   },
   openGraph: {
     title: 'Nextra AI | ホテル・旅館 無人チェックインKIOSK | NextraLabs',
     description: 'フロント不要で24時間チェックイン。身分証スキャン・電子署名・スマートロック連携・多言語（日英中韓）対応。旅館業法準拠のAIチェックインシステム。¥9,800〜/月で導入可能。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/nextra-ai',
+    url: 'https://nextralab.jp/products/nextra-ai',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'Nextra AI 無人チェックインKIOSKシステム' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'Nextra AI 無人チェックインKIOSKシステム' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Nextra AI | ホテル・旅館 無人チェックインKIOSK | NextraLabs',
     description: 'フロント不要で24時間チェックイン。身分証スキャン・スマートロック連携・旅館業法準拠。¥9,800〜/月。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -47,7 +47,7 @@ export default function Page() {
         applicationCategory: 'BusinessApplication',
         operatingSystem: 'Web',
         description: 'フロント不要で24時間チェックイン。身分証スキャン・電子署名・スマートロック連携・多言語（日英中韓）対応。旅館業法準拠のAIチェックインシステム。',
-        url: 'https://membership-site-nextralabos.vercel.app/products/nextra-ai',
+        url: 'https://nextralab.jp/products/nextra-ai',
         offers: {
           '@type': 'Offer',
           price: '9800',
@@ -62,7 +62,7 @@ export default function Page() {
         publisher: {
           '@type': 'Organization',
           name: 'NextraLabs',
-          url: 'https://membership-site-nextralabos.vercel.app',
+          url: 'https://nextralab.jp',
         },
       },
       {

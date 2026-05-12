@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect, useCallback } from 'react'
 import {
   Mail, Send, CheckCircle2, Building2, Heart, RefreshCw,
@@ -64,7 +64,7 @@ NextraLabs
 米山 文貴
 Email: info@marriage-road.jp
 Tel: 080-3207-8422
-https://membership-site-nextralabos.vercel.app
+https://nextralab.jp
 ━━━━━━━━━━━━━━━━`,
   },
   {
@@ -123,7 +123,7 @@ NextraLabs
 米山 文貴
 Email: info@marriage-road.jp
 Tel: 080-3207-8422
-https://membership-site-nextralabos.vercel.app
+https://nextralab.jp
 ━━━━━━━━━━━━━━━━`,
   },
   {
@@ -150,7 +150,7 @@ NextraLabs
 米山 文貴
 Email: info@marriage-road.jp
 Tel: 080-3207-8422
-https://membership-site-nextralabos.vercel.app
+https://nextralab.jp
 ━━━━━━━━━━━━━━━━`,
   },
 ]

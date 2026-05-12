@@ -23,8 +23,8 @@ async function rakutenSearch(keyword: string, usedFlag: 0 | 1, hits: number) {
 
   const res = await fetch(`${RAKUTEN_BASE_URL}?${params.toString()}`, {
     headers: {
-      'Origin': 'https://membership-site-nextralabos.vercel.app',
-      'Referer': 'https://membership-site-nextralabos.vercel.app/',
+      'Origin': 'https://nextralab.jp',
+      'Referer': 'https://nextralab.jp/',
       'User-Agent': 'Mozilla/5.0 (compatible; NextraLabs/1.0)',
     },
   });

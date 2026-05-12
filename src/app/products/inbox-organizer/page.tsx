@@ -14,22 +14,22 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true },
   },
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/inbox-organizer',
+    canonical: 'https://nextralab.jp/products/inbox-organizer',
   },
   openGraph: {
     title: 'Gmail AI Accelerator | 未読ゼロを最速で実現するGmailAI整理術 | NextraLabs',
     description: 'GmailにAIを直接接続。重要メールの自動判定・優先順位付け・返信ドラフト生成・ラベル自動整理。メール処理を最大80%削減。月額¥1,980。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/inbox-organizer',
+    url: 'https://nextralab.jp/products/inbox-organizer',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'Gmail AI Accelerator | 未読ゼロを最速で実現するGmailAI整理術' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'Gmail AI Accelerator | 未読ゼロを最速で実現するGmailAI整理術' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Gmail AI Accelerator | 未読ゼロを最速で実現するGmailAI整理術',
     description: 'GmailにAIを直接接続。返信ドラフト自動生成・ラベル整理。メール処理を最大80%削減。月額¥1,980。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -72,7 +72,7 @@ const jsonLd = {
       applicationCategory: 'ProductivityApplication',
       operatingSystem: 'Web',
       description: 'GmailにAIを直接接続。重要メールの自動判定・優先順位付け・返信ドラフト生成・ラベル自動整理。メール処理を最大80%削減。',
-      url: 'https://membership-site-nextralabos.vercel.app/products/inbox-organizer',
+      url: 'https://nextralab.jp/products/inbox-organizer',
       offers: {
         '@type': 'Offer',
         price: '1980',
@@ -82,7 +82,7 @@ const jsonLd = {
       publisher: {
         '@type': 'Organization',
         name: 'NextraLabs',
-        url: 'https://membership-site-nextralabos.vercel.app',
+        url: 'https://nextralab.jp',
       },
     },
     {

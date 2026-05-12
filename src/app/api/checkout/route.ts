@@ -1,4 +1,4 @@
-import { NextResponse, NextRequest } from 'next/server'
+﻿import { NextResponse, NextRequest } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe'
@@ -83,8 +83,8 @@ export async function POST(request: NextRequest) {
       mode: 'subscription',
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://membership-site-nextralabos.vercel.app'}/dashboard?checkout=success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://membership-site-nextralabos.vercel.app'}/pricing?checkout=cancel`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://nextralab.jp'}/dashboard?checkout=success`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://nextralab.jp'}/pricing?checkout=cancel`,
       metadata: { user_id: user.id, plan },
     })
 

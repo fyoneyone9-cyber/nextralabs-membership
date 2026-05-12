@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -10,21 +10,21 @@ export const metadata: Metadata = {
   description: '「静かで家賃7万以下・駅徒歩10分」など条件を入力するだけ。AIが最適エリア・物件候補・周辺環境スコアをリアルタイム分析。引越し・移住・開業場所探しに。月額¥980。',
   keywords: ['場所探しAI','物件AI','引越しエリア診断','住みやすい街AI','開業場所AI','移住先AI','エリア分析AI','物件探しAI','住まい選びAI','NextraLabsロケーション'],
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
-  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/location-finder' },
+  alternates: { canonical: 'https://nextralab.jp/products/location-finder' },
   openGraph: {
     title: 'AI Location Finder | 条件から最適な場所・物件・エリアをAIが瞬時に発見 | NextraLabs',
     description: '「静かで家賃7万以下・駅徒歩10分」など条件を入力するだけ。AIが最適エリア・物件候補・周辺環境スコアをリアルタイム分析。引越し・移住・開業場所探しに。月額¥980。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/location-finder',
+    url: 'https://nextralab.jp/products/location-finder',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI Location Finder | NextraLabs' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'AI Location Finder | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI Location Finder | 条件から最適な場所・物件・エリアをAIが瞬時に発見 | NextraLabs',
     description: '条件を入力するだけ。AIが最適エリア・物件候補・周辺環境スコアをリアルタイム分析。月額¥980。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -60,7 +60,7 @@ export default function LocationFinderPage() {
         name: 'AI Location Finder',
         applicationCategory: 'UtilitiesApplication',
         operatingSystem: 'Web',
-        url: 'https://membership-site-nextralabos.vercel.app/products/location-finder',
+        url: 'https://nextralab.jp/products/location-finder',
         description: '条件を入力するだけ。AIが最適エリア・物件候補・周辺環境スコアをリアルタイム分析。引越し・移住・開業場所探しに。',
         offers: {
           '@type': 'Offer',
@@ -68,7 +68,7 @@ export default function LocationFinderPage() {
           priceCurrency: 'JPY',
           priceSpecification: { '@type': 'UnitPriceSpecification', price: '980', priceCurrency: 'JPY', unitText: '月' },
         },
-        provider: { '@type': 'Organization', name: 'NextraLabs', url: 'https://membership-site-nextralabos.vercel.app' },
+        provider: { '@type': 'Organization', name: 'NextraLabs', url: 'https://nextralab.jp' },
       },
       {
         '@type': 'FAQPage',

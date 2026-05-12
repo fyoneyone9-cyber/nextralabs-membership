@@ -6,22 +6,22 @@ export const metadata: Metadata = {
   keywords: ['防災AIアプリ','避難ルートAI','備蓄リストAI','防災準備AI','ハザードマップ','家族防災AI','地震対策AI','防災計画AI','緊急連絡AI','NextraLabs防災'],
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/disaster-guard',
+    canonical: 'https://nextralab.jp/products/disaster-guard',
   },
   openGraph: {
     title: 'AI防災パーソナルガイド | 避難ルート・備蓄最適化・家族の安全をAIが守る | NextraLabs',
     description: '住所と家族構成を入力するだけ。AIがハザードマップ解析・最適避難ルート・家族構成に合わせた備蓄リスト・緊急連絡プランを自動生成。防災準備の決定版。月額¥980。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/disaster-guard',
+    url: 'https://nextralab.jp/products/disaster-guard',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI防災パーソナルガイド | 避難ルート・備蓄最適化・家族の安全をAIが守る | NextraLabs' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'AI防災パーソナルガイド | 避難ルート・備蓄最適化・家族の安全をAIが守る | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI防災パーソナルガイド | 避難ルート・備蓄最適化・家族の安全をAIが守る | NextraLabs',
     description: '住所と家族構成を入力するだけ。AIがハザードマップ解析・最適避難ルート・家族構成に合わせた備蓄リスト・緊急連絡プランを自動生成。防災準備の決定版。月額¥980。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -142,7 +142,7 @@ export default function DisasterGuardLp() {
     description: '住所と家族構成を入力するだけ。AIがハザードマップ解析・最適避難ルート・備蓄リスト・緊急連絡プランを自動生成。',
     applicationCategory: 'LifestyleApplication',
     operatingSystem: 'Web',
-    url: 'https://membership-site-nextralabos.vercel.app/products/disaster-guard',
+    url: 'https://nextralab.jp/products/disaster-guard',
     offers: { '@type': 'Offer', price: '980', priceCurrency: 'JPY' },
     publisher: { '@type': 'Organization', name: 'NextraLabs' },
   }

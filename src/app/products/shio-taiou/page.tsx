@@ -12,22 +12,22 @@ export const metadata: Metadata = {
   description: '迷惑な勧誘・しつこいLINE・断りにくい頼まれごとをスマートに断る文章をAIが生成。角が立たず・後腐れなし・でも確実に断れる魔法の言葉。',
   keywords: ["AI塩対応","断り方AI","迷惑対応AI","人間関係断り文句","LINEブロック文章AI"],
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/shio-taiou',
+    canonical: 'https://nextralab.jp/products/shio-taiou',
   },
   openGraph: {
     title: 'AI塩対応ジェネレーター | 面倒な人間関係をスマートに断る | NextraLabs',
     description: '迷惑な勧誘・しつこいLINE・断りにくい頼まれごとをスマートに断る文章をAIが生成。角が立たず・後腐れなし・でも確実に断れる魔法の言葉。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/shio-taiou',
+    url: 'https://nextralab.jp/products/shio-taiou',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI塩対応ジェネレーター | 面倒な人間関係をスマートに断る' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'AI塩対応ジェネレーター | 面倒な人間関係をスマートに断る' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI塩対応ジェネレーター | 面倒な人間関係をスマートに断る',
     description: '迷惑な勧誘・しつこいLINE・断りにくい頼まれごとをスマートに断る文章をAIが生成。角が立たず・後腐れなし・でも確実に断れる魔法の言葉。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 

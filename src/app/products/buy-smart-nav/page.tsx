@@ -6,22 +6,22 @@ export const metadata: Metadata = {
   keywords: ['中古vs新品AI','買い物比較AI','最安値AI','価格比較AI','メルカリ相場AI','楽天市場比較','商品購入AI','お得買い物AI','価格判定AI','NextraLabs買い物'],
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/buy-smart-nav',
+    canonical: 'https://nextralab.jp/products/buy-smart-nav',
   },
   openGraph: {
     title: '中古・新品AI比較ナビ | 損得勘定とAI市場判定で賢い買い物 | NextraLabs',
     description: '欲しい商品名を入力するだけ。AIが中古vs新品の損得を計算し、最安値・相場価格・おすすめ購入先を自動判定。楽天市場・メルカリ・ヤフオクの比較も。完全無料。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/buy-smart-nav',
+    url: 'https://nextralab.jp/products/buy-smart-nav',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: '中古・新品AI比較ナビ | 損得勘定とAI市場判定で賢い買い物 | NextraLabs' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: '中古・新品AI比較ナビ | 損得勘定とAI市場判定で賢い買い物 | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: '中古・新品AI比較ナビ | 損得勘定とAI市場判定で賢い買い物 | NextraLabs',
     description: '欲しい商品名を入力するだけ。AIが中古vs新品の損得を計算し、最安値・相場価格・おすすめ購入先を自動判定。楽天市場・メルカリ・ヤフオクの比較も。完全無料。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -141,7 +141,7 @@ export default function BuySmartNavLp() {
     description: '欲しい商品名を入力するだけ。AIが中古vs新品の損得を計算し、最安値・相場価格・おすすめ購入先を自動判定。',
     applicationCategory: 'ShoppingApplication',
     operatingSystem: 'Web',
-    url: 'https://membership-site-nextralabos.vercel.app/products/buy-smart-nav',
+    url: 'https://nextralab.jp/products/buy-smart-nav',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
     publisher: { '@type': 'Organization', name: 'NextraLabs' },
   }

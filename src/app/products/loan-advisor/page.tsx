@@ -6,22 +6,22 @@ export const metadata: Metadata = {
   keywords: ['借金おまとめAI','ローン一本化','返済シミュレーターAI','借金完済AI','債務整理AI','おまとめローン比較','借金相談AI','返済計画AI','金利比較AI','NextraLabs借金'],
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/loan-advisor',
+    canonical: 'https://nextralab.jp/products/loan-advisor',
   },
   openGraph: {
     title: 'AI借金完済・おまとめ診断 | 借金の一本化と完済への最短ルートをAIが設計 | NextraLabs',
     description: '借入先・金額・金利を入力するだけ。AIが最適なおまとめローン先・返済順序・完済スケジュールを自動計算。債務整理すべきか判定付き。完全無料・匿名OK。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/loan-advisor',
+    url: 'https://nextralab.jp/products/loan-advisor',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI借金完済・おまとめ診断 | 借金の一本化と完済への最短ルートをAIが設計 | NextraLabs' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'AI借金完済・おまとめ診断 | 借金の一本化と完済への最短ルートをAIが設計 | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI借金完済・おまとめ診断 | 借金の一本化と完済への最短ルートをAIが設計 | NextraLabs',
     description: '借入先・金額・金利を入力するだけ。AIが最適なおまとめローン先・返済順序・完済スケジュールを自動計算。債務整理すべきか判定付き。完全無料・匿名OK。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -37,7 +37,7 @@ export default function LoanAdvisorPromo() {
     description: '借入先・金額・金利を入力するだけ。AIが最適なおまとめローン先・返済順序・完済スケジュールを自動計算。',
     applicationCategory: 'FinanceApplication',
     operatingSystem: 'Web',
-    url: 'https://membership-site-nextralabos.vercel.app/products/loan-advisor',
+    url: 'https://nextralab.jp/products/loan-advisor',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
     publisher: { '@type': 'Organization', name: 'NextraLabs' },
   }

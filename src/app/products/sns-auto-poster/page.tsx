@@ -6,22 +6,22 @@ export const metadata: Metadata = {
   keywords: ['SNS投稿AI','Twitter自動投稿','Instagram投稿AI','バズる投稿','SNSマーケティングAI','ハッシュタグAI','SNS運用AI','コンテンツ自動生成','投稿文AI','NextraLabsSNS'],
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/sns-auto-poster',
+    canonical: 'https://nextralab.jp/products/sns-auto-poster',
   },
   openGraph: {
     title: 'AI SNSオートポスター | バズる投稿をAIが量産・全SNS一括生成 | NextraLabs',
     description: 'テーマを入力するだけでAIがX(Twitter)・Instagram・Facebook・TikTok向けに最適化されたバズる投稿文を一括生成。ハッシュタグ・投稿時間帯も自動提案。月額¥480。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/sns-auto-poster',
+    url: 'https://nextralab.jp/products/sns-auto-poster',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI SNSオートポスター | バズる投稿をAIが量産・全SNS一括生成 | NextraLabs' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'AI SNSオートポスター | バズる投稿をAIが量産・全SNS一括生成 | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI SNSオートポスター | バズる投稿をAIが量産・全SNS一括生成 | NextraLabs',
     description: 'テーマを入力するだけでAIがX(Twitter)・Instagram・Facebook・TikTok向けに最適化されたバズる投稿文を一括生成。ハッシュタグ・投稿時間帯も自動提案。月額¥480。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -146,7 +146,7 @@ export default function SnsAutoPosterLp() {
     description: 'テーマを入力するだけでAIがX(Twitter)・Instagram・Facebook・TikTok向けに最適化されたバズる投稿文を一括生成。',
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Web',
-    url: 'https://membership-site-nextralabos.vercel.app/products/sns-auto-poster',
+    url: 'https://nextralab.jp/products/sns-auto-poster',
     offers: { '@type': 'Offer', price: '480', priceCurrency: 'JPY' },
     publisher: { '@type': 'Organization', name: 'NextraLabs' },
   }

@@ -10,22 +10,22 @@ export const metadata: Metadata = {
   description: '退職届・退職理由・引き継ぎ書類・上司への伝え方までAIが完全サポート。円満退職を実現する文章テンプレートと段取りを提案。NextraLabs無料〜利用可能。',
   keywords: ["AI退職届","退職理由AI","円満退職AI","引き継ぎ書類AI","退職手続きAI"],
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/resignation-assistant',
+    canonical: 'https://nextralab.jp/products/resignation-assistant',
   },
   openGraph: {
     title: 'AI退職アシスタント | 退職届・引き継ぎ書類をAIが自動作成 | NextraLabs',
     description: '退職届・退職理由・引き継ぎ書類・上司への伝え方までAIが完全サポート。円満退職を実現する文章テンプレートと段取りを提案。NextraLabs無料〜利用可能。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/resignation-assistant',
+    url: 'https://nextralab.jp/products/resignation-assistant',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI退職アシスタント | 退職届・引き継ぎ書類をAIが自動作成' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'AI退職アシスタント | 退職届・引き継ぎ書類をAIが自動作成' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI退職アシスタント | 退職届・引き継ぎ書類をAIが自動作成',
     description: '退職届・退職理由・引き継ぎ書類・上司への伝え方までAIが完全サポート。円満退職を実現する文章テンプレートと段取りを提案。NextraLabs無料〜利用可能。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 import {

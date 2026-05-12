@@ -10,21 +10,21 @@ export const metadata: Metadata = {
   description: '育てたい植物・環境条件を入力するだけ。AIが最適な育て方・水やり頻度・肥料・病気診断・季節の作業カレンダーを自動提案。初心者から園芸上級者まで。月額¥980。',
   keywords: ['ガーデニングAI','植物育て方AI','家庭菜園AI','植物病気診断','水やり管理','栽培計画AI','ガーデニングアプリ','園芸AI','植物ケアAI','NextraLabsガーデニング'],
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
-  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/smart-gardening' },
+  alternates: { canonical: 'https://nextralab.jp/products/smart-gardening' },
   openGraph: {
     title: 'AIスマートガーデニング | AIが植物の育て方・病気診断・栽培計画を提案 | NextraLabs',
     description: '育てたい植物・環境条件を入力するだけ。AIが最適な育て方・水やり頻度・肥料・病気診断・季節の作業カレンダーを自動提案。初心者から園芸上級者まで。月額¥980。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/smart-gardening',
+    url: 'https://nextralab.jp/products/smart-gardening',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AIスマートガーデニング | NextraLabs' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'AIスマートガーデニング | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AIスマートガーデニング | AIが植物の育て方・病気診断・栽培計画を提案 | NextraLabs',
     description: '育てたい植物・環境条件を入力するだけ。AIが最適な育て方・水やり頻度・肥料・病気診断・季節の作業カレンダーを自動提案。月額¥980。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -66,7 +66,7 @@ export default function SmartGardeningLandingPage() {
         name: 'AIスマートガーデニング',
         applicationCategory: 'LifestyleApplication',
         operatingSystem: 'Web',
-        url: 'https://membership-site-nextralabos.vercel.app/products/smart-gardening',
+        url: 'https://nextralab.jp/products/smart-gardening',
         description: '育てたい植物・環境条件を入力するだけ。AIが最適な育て方・水やり頻度・肥料・病気診断・季節の作業カレンダーを自動提案。',
         offers: {
           '@type': 'Offer',
@@ -74,7 +74,7 @@ export default function SmartGardeningLandingPage() {
           priceCurrency: 'JPY',
           priceSpecification: { '@type': 'UnitPriceSpecification', price: '980', priceCurrency: 'JPY', unitText: '月' },
         },
-        provider: { '@type': 'Organization', name: 'NextraLabs', url: 'https://membership-site-nextralabos.vercel.app' },
+        provider: { '@type': 'Organization', name: 'NextraLabs', url: 'https://nextralab.jp' },
       },
       {
         '@type': 'FAQPage',

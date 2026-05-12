@@ -8,22 +8,22 @@ export const metadata: Metadata = {
   description: '苦手な人との会話・上司への報告・恋愛トーク・家族関係まで。AIがシチュエーション別の最適な言葉を提案。コミュ力を劇的に上げる。NextraLabsプラン。',
   keywords: ["AIコミュニケーション","人間関係AI","会話術AI","コミュ力向上","職場関係改善AI"],
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/comm-coach',
+    canonical: 'https://nextralab.jp/products/comm-coach',
   },
   openGraph: {
     title: 'AIコミュニケーションコーチ | 職場・恋愛・家族の人間関係をAIが改善 | NextraLabs',
     description: '苦手な人との会話・上司への報告・恋愛トーク・家族関係まで。AIがシチュエーション別の最適な言葉を提案。コミュ力を劇的に上げる。NextraLabsプラン。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/comm-coach',
+    url: 'https://nextralab.jp/products/comm-coach',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AIコミュニケーションコーチ | 職場・恋愛・家族の人間関係をAIが改善' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'AIコミュニケーションコーチ | 職場・恋愛・家族の人間関係をAIが改善' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AIコミュニケーションコーチ | 職場・恋愛・家族の人間関係をAIが改善',
     description: '苦手な人との会話・上司への報告・恋愛トーク・家族関係まで。AIがシチュエーション別の最適な言葉を提案。コミュ力を劇的に上げる。NextraLabsプラン。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 

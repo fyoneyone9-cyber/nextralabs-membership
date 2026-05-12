@@ -15,21 +15,21 @@ export const metadata: Metadata = {
   description: '「こんな画像が欲しい」をテキストで入力するだけ。AIがMidjourney・DALL-E・Stable Diffusionに最適化されたプロンプトを自動生成。クオリティ10倍向上。月額¥480。',
   keywords: ['プロンプト生成AI','Midjourneyプロンプト','DALL-Eプロンプト','Stable Diffusionプロンプト','画像生成AI','AIアート','プロンプトエンジニアリング','画像プロンプト自動生成','NextraLabsプロンプト','AI画像生成'],
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
-  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/prompt-master' },
+  alternates: { canonical: 'https://nextralab.jp/products/prompt-master' },
   openGraph: {
     title: 'AI画像プロンプトマスター | Midjourney・DALL-E・Stable Diffusion用プロンプトを瞬時生成 | NextraLabs',
     description: '「こんな画像が欲しい」をテキストで入力するだけ。AIがMidjourney・DALL-E・Stable Diffusionに最適化されたプロンプトを自動生成。クオリティ10倍向上。月額¥480。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/prompt-master',
+    url: 'https://nextralab.jp/products/prompt-master',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI画像プロンプトマスター | NextraLabs' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'AI画像プロンプトマスター | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI画像プロンプトマスター | Midjourney・DALL-E・Stable Diffusion用プロンプトを瞬時生成 | NextraLabs',
     description: '日本語で入力するだけで最適な画像生成AIプロンプトを自動生成。26カテゴリ対応。月額¥480。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -65,7 +65,7 @@ export default function PromptMasterPage() {
         name: 'AI画像プロンプトマスター',
         applicationCategory: 'MultimediaApplication',
         operatingSystem: 'Web',
-        url: 'https://membership-site-nextralabos.vercel.app/products/prompt-master',
+        url: 'https://nextralab.jp/products/prompt-master',
         description: '日本語で入力するだけで、Midjourney・DALL-E・Stable Diffusion向けの高品質プロンプトを自動生成。26カテゴリ対応。',
         offers: {
           '@type': 'Offer',
@@ -73,7 +73,7 @@ export default function PromptMasterPage() {
           priceCurrency: 'JPY',
           priceSpecification: { '@type': 'UnitPriceSpecification', price: '480', priceCurrency: 'JPY', unitText: '月' },
         },
-        provider: { '@type': 'Organization', name: 'NextraLabs', url: 'https://membership-site-nextralabos.vercel.app' },
+        provider: { '@type': 'Organization', name: 'NextraLabs', url: 'https://nextralab.jp' },
       },
       {
         '@type': 'FAQPage',

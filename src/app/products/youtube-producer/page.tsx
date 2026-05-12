@@ -10,22 +10,22 @@ export const metadata: Metadata = {
   description: '動画テーマを入力するだけ。AIが視聴者を引き込む台本・構成・サムネイル文言・SEOタイトル・概要欄まで全自動生成。YouTubeチャンネル成長を加速。月額¥1,980。',
   keywords: ['YouTube台本AI','YouTubeプロデューサーAI','YouTube構成自動生成','サムネイルAI','YouTube SEO','動画企画AI','YouTubeチャンネル成長','YouTube自動化AI','動画台本AI','NextraLabsYouTube'],
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/youtube-producer',
+    canonical: 'https://nextralab.jp/products/youtube-producer',
   },
   openGraph: {
     title: 'AI YouTubeプロデューサー | 全自動台本・構成・サムネイル案をAIが生成 | NextraLabs',
     description: '動画テーマを入力するだけ。AIが視聴者を引き込む台本・構成・サムネイル文言・SEOタイトル・概要欄まで全自動生成。YouTubeチャンネル成長を加速。月額¥1,980。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/youtube-producer',
+    url: 'https://nextralab.jp/products/youtube-producer',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AI YouTubeプロデューサー | 全自動台本・構成・サムネイル案をAIが生成 | NextraLabs' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'AI YouTubeプロデューサー | 全自動台本・構成・サムネイル案をAIが生成 | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI YouTubeプロデューサー | 全自動台本・構成・サムネイル案をAIが生成 | NextraLabs',
     description: '動画テーマを入力するだけ。AIが視聴者を引き込む台本・構成・サムネイル文言・SEOタイトル・概要欄まで全自動生成。YouTubeチャンネル成長を加速。月額¥1,980。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -37,7 +37,7 @@ export default function YoutubeProducerLp() {
     description: '動画テーマを入力するだけ。AIが台本・構成・サムネイル文言・SEOタイトル・概要欄まで全自動生成。',
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Web',
-    url: 'https://membership-site-nextralabos.vercel.app/products/youtube-producer',
+    url: 'https://nextralab.jp/products/youtube-producer',
     offers: { '@type': 'Offer', price: '1980', priceCurrency: 'JPY' },
     publisher: { '@type': 'Organization', name: 'NextraLabs' },
   }

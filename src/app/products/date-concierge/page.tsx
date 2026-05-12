@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -11,21 +11,21 @@ export const metadata: Metadata = {
     'デートしおり 自動生成', '中間地点 デート', '個室 レストラン 自動検索'
   ],
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
-  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/date-concierge' },
+  alternates: { canonical: 'https://nextralab.jp/products/date-concierge' },
   openGraph: {
     title: 'デートコース自動コンシェルジュ | 中間地点×楽天グルメ×Google Maps',
     description: '出発地を2つ入れるだけ。中間地点に最高のレストラン・スポット・タイムラインを自動生成。月額¥980〜。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/date-concierge',
+    url: 'https://nextralab.jp/products/date-concierge',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'デートコース自動コンシェルジュ' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'デートコース自動コンシェルジュ' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'デートコース自動コンシェルジュ | NextraLabs',
     description: '出発地2つで、中間地点×個室レストラン×夜景スポット×タイムラインを自動生成。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 

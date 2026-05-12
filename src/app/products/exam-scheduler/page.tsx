@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // 🔒 LOCKED — ExamScheduler product page
 // 完成済みツール。NextraLabs様の明示的な指示なしに
 // このファイルを編集・削除・移動することを禁止する。
@@ -32,21 +32,21 @@ export const metadata: Metadata = {
   description: '受験日と今の実力を入力するだけ。AIが合格までの最短学習ルートを自動設計。毎日の勉強量・優先科目・模試スケジュールを一括管理。月額¥980のスタンダードプラン。',
   keywords: ['資格試験AI','学習計画自動生成','試験スケジューラー','合格計画','勉強計画アプリ','逆算学習','資格取得AI','試験対策AI','学習管理ツール','NextraLabs資格'],
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
-  alternates: { canonical: 'https://membership-site-nextralabos.vercel.app/products/exam-scheduler' },
+  alternates: { canonical: 'https://nextralab.jp/products/exam-scheduler' },
   openGraph: {
     title: '資格試験AIスケジューラー | 試験日から逆算して学習計画を自動生成 | NextraLabs',
     description: '受験日と今の実力を入力するだけ。AIが合格までの最短学習ルートを自動設計。毎日の勉強量・優先科目・模試スケジュールを一括管理。月額¥980のスタンダードプラン。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/exam-scheduler',
+    url: 'https://nextralab.jp/products/exam-scheduler',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: '資格試験AIスケジューラー | NextraLabs' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: '資格試験AIスケジューラー | NextraLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: '資格試験AIスケジューラー | 試験日から逆算して学習計画を自動生成 | NextraLabs',
     description: '受験日と今の実力を入力するだけ。AIが合格までの最短学習ルートを自動設計。毎日の勉強量・優先科目・模試スケジュールを一括管理。月額¥980。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 
@@ -106,7 +106,7 @@ export default function ExamSchedulerPage() {
         name: '資格試験AIスケジューラー',
         applicationCategory: 'EducationalApplication',
         operatingSystem: 'Web',
-        url: 'https://membership-site-nextralabos.vercel.app/products/exam-scheduler',
+        url: 'https://nextralab.jp/products/exam-scheduler',
         description: '受験日と今の実力を入力するだけ。AIが合格までの最短学習ルートを自動設計。毎日の勉強量・優先科目・模試スケジュールを一括管理。',
         offers: {
           '@type': 'Offer',
@@ -114,7 +114,7 @@ export default function ExamSchedulerPage() {
           priceCurrency: 'JPY',
           priceSpecification: { '@type': 'UnitPriceSpecification', price: '980', priceCurrency: 'JPY', unitText: '月' },
         },
-        provider: { '@type': 'Organization', name: 'NextraLabs', url: 'https://membership-site-nextralabos.vercel.app' },
+        provider: { '@type': 'Organization', name: 'NextraLabs', url: 'https://nextralab.jp' },
       },
       {
         '@type': 'FAQPage',

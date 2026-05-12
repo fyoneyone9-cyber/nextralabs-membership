@@ -10,22 +10,22 @@ export const metadata: Metadata = {
   description: 'キーワードを入力するだけでSEO最適化済みのブログ記事・SNS投稿をAIが自動生成。Googleで上位表示されるコンテンツを最短5分で作成。NextraLabs会員限定。',
   keywords: ["AIライター","ブログ自動生成","SEOコンテンツAI","SNS投稿AI","バズるAI記事"],
   alternates: {
-    canonical: 'https://membership-site-nextralabos.vercel.app/products/buzz-writer',
+    canonical: 'https://nextralab.jp/products/buzz-writer',
   },
   openGraph: {
     title: 'AIバズライター（Buzz Writer）| バズるブログ記事・SNS投稿を一発生成 | NextraLabs',
     description: 'キーワードを入力するだけでSEO最適化済みのブログ記事・SNS投稿をAIが自動生成。Googleで上位表示されるコンテンツを最短5分で作成。NextraLabs会員限定。',
-    url: 'https://membership-site-nextralabos.vercel.app/products/buzz-writer',
+    url: 'https://nextralab.jp/products/buzz-writer',
     type: 'website',
     locale: 'ja_JP',
     siteName: 'NextraLabs',
-    images: [{ url: 'https://membership-site-nextralabos.vercel.app/og-image.png', width: 1200, height: 630, alt: 'AIバズライター（Buzz Writer）| バズるブログ記事・SNS投稿を一発生成' }],
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'AIバズライター（Buzz Writer）| バズるブログ記事・SNS投稿を一発生成' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AIバズライター（Buzz Writer）| バズるブログ記事・SNS投稿を一発生成',
     description: 'キーワードを入力するだけでSEO最適化済みのブログ記事・SNS投稿をAIが自動生成。Googleで上位表示されるコンテンツを最短5分で作成。NextraLabs会員限定。',
-    images: ['https://membership-site-nextralabos.vercel.app/og-image.png'],
+    images: ['https://nextralab.jp/og-image.png'],
   },
 }
 import {

@@ -1,7 +1,7 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import ProductsLayoutClient from './layout-client'
 
-const BASE = 'https://membership-site-nextralabos.vercel.app'
+const BASE = 'https://nextralab.jp'
 
 export const metadata: Metadata = {
   title: 'AIツール一覧 | NextraLabs — 30種類以上が月額980円〜使い放題',

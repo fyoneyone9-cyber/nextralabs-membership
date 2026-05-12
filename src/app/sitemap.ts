@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next'
 
-const BASE = 'https://membership-site-nextralabos.vercel.app'
+const BASE = 'https://nextralab.jp'
 
 // 全製品一覧（LP page + app page 両方）
 const PRODUCTS = [

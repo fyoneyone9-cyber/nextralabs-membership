@@ -101,8 +101,8 @@ export default function GuidePage() {
           <div className="space-y-6">
             <StepCard step={1} title="サイトにアクセス">
               <p>
-                <a href="https://membership-site-nextralabos.vercel.app" target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:underline font-medium">
-                  https://membership-site-nextralabos.vercel.app
+                <a href="https://nextralab.jp" target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:underline font-medium">
+                  https://nextralab.jp
                 </a>
                 {' '}にアクセスします。
               </p>

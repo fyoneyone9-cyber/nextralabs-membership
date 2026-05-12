@@ -103,8 +103,8 @@ async function searchRakutenItems(keyword: string) {
 
   const res = await fetch(url, {
     headers: {
-      'Referer': 'https://membership-site-nextralabos.vercel.app/',
-      'Origin': 'https://membership-site-nextralabos.vercel.app',
+      'Referer': 'https://nextralab.jp/',
+      'Origin': 'https://nextralab.jp',
       'User-Agent': 'NextraLabs/1.0',
     },
   });
