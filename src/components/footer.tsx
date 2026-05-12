@@ -44,7 +44,7 @@ export function Footer() {
         </div>
         <div className="mt-8 border-t pt-4 text-center text-sm text-muted-foreground flex flex-wrap items-center justify-center gap-3">
           <span>© {new Date().getFullYear()} NextraLabs. All rights reserved.</span>
-          <a href="https://dti-affiliate.vercel.app" target="_blank" rel="noopener noreferrer nofollow" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">アダルトナビ</a>
+          <a href="https://sensual-hub.vercel.app" target="_blank" rel="noopener noreferrer nofollow" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">18+</a>
         </div>
       </div>
     </footer>
