@@ -8,13 +8,14 @@ interface Props {
 }
 
 // ツールアプリ内フッターに表示するAmazonアフィリエイトバナー
+// ※ どのページ・コンポーネントに置いても正しく表示される自己完結型
 export default function AffiliateBanner({ toolId }: Props) {
   const links = AFFILIATE_LINKS[toolId]
   if (!links || links.length === 0) return null
 
   return (
-    <div className="mt-10 pt-8 border-t border-white/5">
-      <div>
+    <div className="w-full mt-10 border-t border-white/5">
+      <div className="max-w-3xl mx-auto px-4 py-8">
 
         {/* セクションヘッダー */}
         <div className="flex items-center gap-3 mb-5">
@@ -26,13 +27,13 @@ export default function AffiliateBanner({ toolId }: Props) {
             <p className="text-[10px] text-slate-600">このツールに関連するおすすめ商品</p>
           </div>
           <div className="ml-auto">
-            <span className="text-[9px] font-medium text-slate-600 bg-white/3 border border-white/5 rounded px-2 py-0.5">PR / Amazon</span>
+            <span className="text-[9px] font-medium text-slate-600 border border-white/5 rounded px-2 py-0.5">PR / Amazon</span>
           </div>
         </div>
 
         {/* リンクカード */}
         <div className={`grid gap-3 ${links.length === 1 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}>
-          {links.map((link, idx) => (
+          {links.map((link) => (
             <a
               key={link.id}
               href={trackUrl(link, toolId)}
@@ -41,7 +42,7 @@ export default function AffiliateBanner({ toolId }: Props) {
               className="group flex items-center gap-4 bg-[#13141f] border border-white/5 hover:border-emerald-500/30 hover:bg-[#0f1118] rounded-xl px-4 py-3.5 transition-all"
             >
               {/* アイコン枠 */}
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/4 border border-white/6 group-hover:bg-emerald-500/8 group-hover:border-emerald-500/15 transition-all">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/5 border border-white/10 group-hover:bg-emerald-500/10 group-hover:border-emerald-500/20 transition-all">
                 <Tag size={16} className="text-slate-500 group-hover:text-emerald-400 transition-colors" />
               </div>
 
