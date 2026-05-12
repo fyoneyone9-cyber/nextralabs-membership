@@ -134,7 +134,6 @@ export default function ShioTaiouPage() {
         </div>
       </section>
       <AffiliateBanner toolId="shio-taiou" />
-      </section>
 
       {/* ── 口コミ ── */}
       <section className="bg-[#0d1117] py-20 border-y border-white/5">
