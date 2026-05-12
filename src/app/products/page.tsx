@@ -11,7 +11,7 @@ import {
   FileText, ArrowRight, Network, Store, 
   ClipboardCheck, ShieldCheck, Wallet, Home, 
   Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, BookOpen, 
-  Sprout, Zap, Building2, Database, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils, Plane, Activity, CalendarHeart, CalendarCheck, Scissors
+  Sprout, Zap, Building2, Database, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils, Plane, Activity, CalendarHeart, CalendarCheck, Scissors, Mic
 } from 'lucide-react'
 
 // 管理者メール（このアドレスでログインしているユーザーのみ管理者リンクが見える）
@@ -61,6 +61,7 @@ const TOOLS = [
 
   // ── 🏨 宿泊・不動産DX（法人向け） ──
   { id: 'nextra-ai/app',            cat: 'hotel',     title: 'Nextra AI',                    sub: 'チェックイン・予約・解錠OS',                                      icon: Building2,     plan: 'お見積もり', lpUrl: '/products/nextra-ai', target: 'both' },
+  { id: 'voice-guest-assist/app',   cat: 'hotel',     title: 'AI多言語ゲストアシスト',        sub: '音声認識×自動翻訳でCRM精度を飛躍的に向上',                        icon: Mic,           plan: 'スタンダード', lpUrl: '/products/voice-guest-assist' },
 
   // ── 💕 婚活・結婚相談所DX ──
   { id: 'konkatsu-scheduler/app',   cat: 'konkatsu',  title: 'AI即アポ調整くん',              sub: 'Google Calendar連携でお見合い日程を自動確定',                     icon: CalendarCheck, plan: 'スタンダード', lpUrl: '/products/konkatsu-scheduler' },
