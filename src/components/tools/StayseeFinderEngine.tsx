@@ -1599,27 +1599,60 @@ const MasterEngine = () => {
   }
 
   /* ─── QR読み取り結果処理 ─── */
-  const handleQrResult = (qrValue: string) => {
-    const raw = qrValue.trim()
-
-    // DMS管理番号: 英大文字+数字 8桁（例: A3BK9F2M）
-    // ※ 旧形式 DMS-XXXXXXXX も念のため対応
-    const dmsMatch = raw.match(/^(?:DMS-)?([A-Z0-9]{8})$/i)
-      // URLやJSON等に埋め込まれている場合のフォールバック
-      || raw.match(/[^A-Z0-9]([A-Z0-9]{8})[^A-Z0-9]/i)
-    const extractedId = dmsMatch?.[1]?.toUpperCase() || raw.toUpperCase()
-
-    if (!extractedId) {
-      setCameraError('QRコードからDMS管理番号を読み取れませんでした')
+  // QRにはPMS予約番号をそのまま埋め込む
+  // PMS連動あり → PMSのID（例: 78-IY1594749917）
+  // 手動入力    → DMS自動発行ID（例: A3BK9F2M）
+  const handleQrResult = async (qrValue: string) => {
+    const reservationId = qrValue.trim()
+    if (!reservationId) {
+      setCameraError('QRコードからPMS予約番号を読み取れませんでした')
       return
     }
 
-    if (selectedReservation) {
-      runCheckin()
-    } else {
-      setSearchQuery(extractedId)
-      setSearchMode('reservation')
-      doSearchByQuery(extractedId)
+    // アクティブタブに応じてチェックインかチェックアウトかを判定
+    const isCheckoutFlow = activeTab === 'checkout'
+
+    // 検索実行
+    setSearching(true)
+    try {
+      let results: Reservation[] = []
+      if (pms === 'none') {
+        const q = reservationId.toLowerCase()
+        results = LOCAL_RESERVATIONS.filter(r =>
+          r.id.toLowerCase() === q ||
+          (r.pms_reservation_id || '').toLowerCase() === q ||
+          r.id.toLowerCase().includes(q)
+        )
+      } else {
+        const apiPath = pms === 'staysee' ? '/api/staysee/search' : `/api/pms/${pms}/search`
+        const res = await fetch(`${apiPath}?q=${encodeURIComponent(reservationId)}`)
+        const data = await res.json()
+        results = data.reservations || []
+      }
+
+      if (results.length === 1) {
+        // 1件ヒット → 自動選択して即フロー進行
+        const r = results[0]
+        if (isCheckoutFlow) {
+          setCheckoutTarget(r)
+          setCheckoutStep('confirm')
+        } else {
+          selectReservation(r)
+          // selectReservation内で setActiveTab('checkin') が呼ばれる
+        }
+      } else if (results.length === 0) {
+        setCameraError(`予約番号「${reservationId}」が見つかりませんでした`)
+        setSearchResults([])
+      } else {
+        // 複数ヒット → 一覧表示
+        setSearchQuery(reservationId)
+        setSearchResults(results)
+        if (!isCheckoutFlow) setActiveTab('search')
+      }
+    } catch {
+      setCameraError('検索中にエラーが発生しました')
+    } finally {
+      setSearching(false)
     }
   }
 

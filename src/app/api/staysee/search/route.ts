@@ -47,10 +47,12 @@ export async function GET(req: NextRequest) {
     let filtered = all
     if (q) {
       filtered = all.filter(r => {
-        const id    = (r.id || '').toLowerCase()
-        const name  = (r.name_kanji || r.name || '').toLowerCase()
-        const phone = (r.tel || '').replace(/-/g, '')
-        return id.includes(q) || name.includes(q) || phone.includes(q.replace(/-/g, ''))
+        const id      = (r.id || '').toLowerCase()
+        const pmsId   = (r.pms_reservation_id || r.reservation_id || r.ota_reservation_id || '').toLowerCase()
+        const name    = (r.name_kanji || r.name || '').toLowerCase()
+        const phone   = (r.tel || r.phone || '').replace(/-/g, '')
+        // PMS予約番号・OTA予約番号・氏名・電話番号で検索
+        return id.includes(q) || pmsId.includes(q) || name.includes(q) || phone.includes(q.replace(/-/g, ''))
       })
     }
     if (mode === 'checkin')  filtered = filtered.filter(r => r.start_date?.startsWith(today.toISOString().split('T')[0]))
