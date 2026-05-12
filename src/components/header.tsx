@@ -4,17 +4,19 @@ import { useRouter, usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
-import { Menu, X, User, LogOut, Twitter as TwitterIcon, Search, Download, Zap, Hotel, Share2, ShieldCheck, BookOpen, Briefcase, HeartHandshake, ChevronDown } from 'lucide-react'
+import { Menu, X, User, LogOut, Twitter as TwitterIcon, Search, Download, Zap, Hotel, Share2, ShieldCheck, BookOpen, Briefcase, HeartHandshake, ChevronDown, Brain, Wallet, Sprout, Plane } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 const GENRE_LINKS = [
-  { id: 'compress', label: 'AI変換', icon: Zap },
-  { id: 'hotel', label: '宿泊DX', icon: Hotel },
-  { id: 'sns', label: 'SNS', icon: Share2 },
-  { id: 'life', label: 'ライフ', icon: ShieldCheck },
-  { id: 'edu', label: '学習', icon: BookOpen },
-  { id: 'biz', label: 'ビジネス', icon: Briefcase },
-  { id: 'mind', label: '心理', icon: HeartHandshake },
+  { id: 'content',   label: 'SNS・制作',  icon: Share2         },
+  { id: 'publish',   label: '出版・AI',   icon: BookOpen       },
+  { id: 'biz',       label: 'ビジネス',   icon: Briefcase      },
+  { id: 'edu',       label: '学習・資格', icon: Brain          },
+  { id: 'money',     label: 'お金・防犯', icon: Wallet         },
+  { id: 'lifestyle', label: 'ライフ',     icon: Sprout         },
+  { id: 'travel',    label: '旅行',       icon: Plane          },
+  { id: 'hotel',     label: '宿泊DX',     icon: Hotel          },
+  { id: 'konkatsu',  label: '婚活',       icon: HeartHandshake },
 ]
 
 function InstallBanner() {
