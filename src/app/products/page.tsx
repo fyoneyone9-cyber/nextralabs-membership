@@ -7,12 +7,10 @@ import NewsletterBanner from '@/components/newsletter/NewsletterBanner'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { 
-  FileText, ArrowRight, Network, Store, 
-  ClipboardCheck, ShieldCheck, Wallet, Home, 
-  Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, BookOpen, 
-  Sprout, Zap, Building2, Database, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils, Plane, Activity, CalendarHeart, CalendarCheck, Scissors, Mic
-} from 'lucide-react'
+
+  $match = $args[0]
+  $match -replace "Mic", "Mic, CloudRain"
+
 
 // 管理者メール（このアドレスでログインしているユーザーのみ管理者リンクが見える）
 const ADMIN_EMAIL = 'f.yoneyone9@gmail.com'
@@ -61,6 +59,7 @@ const TOOLS = [
 
   // ── 🏨 宿泊・不動産DX（法人向け） ──
   { id: 'nextra-ai/app',            cat: 'hotel',     title: 'Nextra AI',                    sub: 'チェックイン・予約・解錠OS',                                      icon: Building2,     plan: 'お見積もり', lpUrl: '/products/nextra-ai', target: 'both' },
+  { id: 'weather-boost/app',        cat: 'hotel',     title: 'Google天気連動型 館内消費ブースト', sub: '悪天候を売上チャンスに変える自動クーポン配信',   icon: CloudRain,     plan: 'スタンダード', lpUrl: '/products/weather-boost' },
   { id: 'voice-guest-assist/app',   cat: 'hotel',     title: 'AI多言語ゲストアシスト',        sub: '音声認識×自動翻訳でCRM精度を飛躍的に向上',                        icon: Mic,           plan: 'スタンダード', lpUrl: '/products/voice-guest-assist' },
 
   // ── 💕 婚活・結婚相談所DX ──
@@ -103,8 +102,11 @@ function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
       <button
         onClick={e => onToggleFav(e, product.id)}
         className={`absolute top-4 right-4 z-20 p-1.5 rounded-xl transition-all ${
-          isFav ? 'text-emerald-400' : 'text-slate-700 opacity-0 group-hover:opacity-100 hover:text-emerald-400'
+          isFav
+            ? 'text-emerald-400'
+            : 'text-slate-600 opacity-40 group-hover:opacity-100 hover:text-emerald-400'
         }`}
+        title={isFav ? 'お気に入りを解除' : 'お気に入りに追加'}
       >
         <Star size={16} fill={isFav ? 'currentColor' : 'none'} />
       </button>
@@ -212,6 +214,7 @@ function ProductsList() {
   const [favorites, setFavorites] = useState<string[]>([])
   const [userId, setUserId] = useState<string | null>(null)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [showFavOnly, setShowFavOnly] = useState(false)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -254,39 +257,110 @@ function ProductsList() {
 
   if (!mounted) return null
 
+  const favTools = PUBLIC_TOOLS.filter(t => favorites.includes(t.id))
+
   return (
     <div className="min-h-screen bg-[#050507] text-slate-100 pb-10 font-sans">
-      <div className="max-w-6xl mx-auto px-4 pt-10 md:pt-20 text-center mb-10 md:mb-16 space-y-4">
+      <div className="max-w-6xl mx-auto px-4 pt-10 md:pt-20 text-center mb-6 md:mb-10 space-y-4">
         <div className="inline-flex items-center gap-2 border border-emerald-500/30 rounded-full px-4 py-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
           <span className="text-[11px] font-medium text-emerald-400 tracking-tight uppercase">Master Catalogue</span>
         </div>
         <h1 className="text-3xl md:text-5xl font-semibold text-white tracking-tight leading-[1.1]">AI ツールストア</h1>
       </div>
+
+      {/* お気に入りフィルターバー */}
+      {userId && (
+        <div className="max-w-6xl mx-auto px-4 mb-8 md:mb-12 flex items-center gap-3">
+          <button
+            onClick={() => setShowFavOnly(prev => !prev)}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-all ${
+              showFavOnly
+                ? 'bg-emerald-500/20 border-emerald-500/60 text-emerald-300'
+                : 'bg-white/5 border-white/10 text-slate-400 hover:border-emerald-500/40 hover:text-emerald-400'
+            }`}
+          >
+            <Star size={14} fill={showFavOnly ? 'currentColor' : 'none'} />
+            お気に入りのみ表示
+            {favorites.length > 0 && (
+              <span className={`ml-1 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${showFavOnly ? 'bg-emerald-500/30 text-emerald-300' : 'bg-white/10 text-slate-400'}`}>
+                {favorites.length}
+              </span>
+            )}
+          </button>
+          {showFavOnly && (
+            <span className="text-xs text-slate-500">クリックで全ツールに戻る</span>
+          )}
+        </div>
+      )}
+
       <div className="max-w-6xl mx-auto px-4 space-y-8 md:space-y-16">
-        <section>
-          <div className="flex items-center gap-3 mb-4 border-l-4 border-emerald-500 pl-4 md:pl-6 py-0.5">
-            <Sparkles className="w-5 h-5 text-emerald-400" />
-            <h2 className="text-lg md:text-xl font-semibold text-white tracking-tight">ピックアップ</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{pickupTools.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} isAdmin={isAdmin} />)}</div>
-        </section>
-        <section>
-          <div className="flex items-center gap-3 mb-4 border-l-4 border-emerald-500 pl-4 md:pl-6 py-0.5">
-            <Gift className="w-5 h-5 text-emerald-400" />
-            <h2 className="text-lg md:text-xl font-semibold text-white tracking-tight">無料トライアル</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{randomFree.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} isAdmin={isAdmin} />)}</div>
-        </section>
-        {CATEGORIES.map((cat) => (
-          <section key={cat.id} id={cat.id} style={{ scrollMarginTop: '5rem' }}>
-            <div className={"flex items-center gap-3 mb-4 border-l-4 " + cat.color + " pl-4 md:pl-6 py-0.5"}>
-              <cat.icon className="w-5 h-5 text-slate-400" />
-              <h2 className="text-lg md:text-xl font-semibold text-white tracking-tight">{cat.title}</h2>
+
+        {/* お気に入りのみ表示モード */}
+        {showFavOnly ? (
+          favTools.length > 0 ? (
+            <section>
+              <div className="flex items-center gap-3 mb-4 border-l-4 border-emerald-500 pl-4 md:pl-6 py-0.5">
+                <Star className="w-5 h-5 text-emerald-400" fill="currentColor" />
+                <h2 className="text-lg md:text-xl font-semibold text-white tracking-tight">お気に入り（{favTools.length}件）</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                {favTools.map(p => <ProductCard key={p.id} product={p} isFav={true} onToggleFav={handleToggleFav} isAdmin={isAdmin} />)}
+              </div>
+            </section>
+          ) : (
+            <div className="text-center py-20 space-y-3">
+              <Star className="w-10 h-10 text-slate-700 mx-auto" />
+              <p className="text-slate-500 text-sm">お気に入りがまだありません</p>
+              <p className="text-slate-600 text-xs">各ツールカードの ★ をクリックして追加できます</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{PUBLIC_TOOLS.filter(t => t.cat === cat.id).map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} isAdmin={isAdmin} />)}</div>
-          </section>
-        ))}
+          )
+        ) : (
+          <>
+            {/* お気に入りセクション（お気に入りがある場合だけ表示） */}
+            {favTools.length > 0 && (
+              <section>
+                <div className="flex items-center gap-3 mb-4 border-l-4 border-emerald-500 pl-4 md:pl-6 py-0.5">
+                  <Star className="w-5 h-5 text-emerald-400" fill="currentColor" />
+                  <h2 className="text-lg md:text-xl font-semibold text-white tracking-tight">お気に入り</h2>
+                  <button
+                    onClick={() => setShowFavOnly(true)}
+                    className="ml-auto text-[10px] text-emerald-500 hover:text-emerald-300 border border-emerald-500/30 hover:border-emerald-400/60 px-3 py-1 rounded-full transition-all"
+                  >
+                    すべて見る →
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                  {favTools.slice(0, 3).map(p => <ProductCard key={p.id} product={p} isFav={true} onToggleFav={handleToggleFav} isAdmin={isAdmin} />)}
+                </div>
+              </section>
+            )}
+
+            <section>
+              <div className="flex items-center gap-3 mb-4 border-l-4 border-emerald-500 pl-4 md:pl-6 py-0.5">
+                <Sparkles className="w-5 h-5 text-emerald-400" />
+                <h2 className="text-lg md:text-xl font-semibold text-white tracking-tight">ピックアップ</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{pickupTools.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} isAdmin={isAdmin} />)}</div>
+            </section>
+            <section>
+              <div className="flex items-center gap-3 mb-4 border-l-4 border-emerald-500 pl-4 md:pl-6 py-0.5">
+                <Gift className="w-5 h-5 text-emerald-400" />
+                <h2 className="text-lg md:text-xl font-semibold text-white tracking-tight">無料トライアル</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{randomFree.map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} isAdmin={isAdmin} />)}</div>
+            </section>
+            {CATEGORIES.map((cat) => (
+              <section key={cat.id} id={cat.id} style={{ scrollMarginTop: '5rem' }}>
+                <div className={"flex items-center gap-3 mb-4 border-l-4 " + cat.color + " pl-4 md:pl-6 py-0.5"}>
+                  <cat.icon className="w-5 h-5 text-slate-400" />
+                  <h2 className="text-lg md:text-xl font-semibold text-white tracking-tight">{cat.title}</h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">{PUBLIC_TOOLS.filter(t => t.cat === cat.id).map(p => <ProductCard key={p.id} product={p} isFav={favorites.includes(p.id)} onToggleFav={handleToggleFav} isAdmin={isAdmin} />)}</div>
+              </section>
+            ))}
+          </>
+        )}
       </div>
       {/* メルマガ登録バナー */}
       <div className="max-w-6xl mx-auto px-4 mt-16">
@@ -349,3 +423,5 @@ export default function ProductsPage() {
     </Suspense>
   )
 }
+
+
