@@ -348,19 +348,33 @@ const MasterEngine = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {tools.map(tool => (
-                  <a
+                  <div
                     key={tool.slug}
-                    href={`https://nextralab.jp/products/${tool.slug}/app`}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="group bg-[#0d1117] border border-white/5 p-6 rounded-2xl hover:border-emerald-500/30 hover:bg-[#13141f] transition-all flex flex-col gap-3"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <h3 className="text-base font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors">{tool.title}</h3>
-                      <ExternalLink size={14} className="text-slate-600 group-hover:text-emerald-500 transition-colors shrink-0 mt-0.5" />
                     </div>
-                    <p className="text-slate-500 text-xs leading-relaxed">{tool.desc}</p>
-                  </a>
+                    <p className="text-slate-500 text-xs leading-relaxed flex-1">{tool.desc}</p>
+                    <div className="flex gap-2 pt-1">
+                      <a
+                        href={`https://nextralab.jp/products/${tool.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 h-8 flex items-center justify-center gap-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-bold hover:bg-white/10 hover:text-white transition-all"
+                      >
+                        <FileText size={11} /> LP
+                      </a>
+                      <a
+                        href={`https://nextralab.jp/products/${tool.slug}/app`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 h-8 flex items-center justify-center gap-1 rounded-lg bg-emerald-600/20 border border-emerald-500/20 text-emerald-400 text-xs font-bold hover:bg-emerald-600/30 hover:border-emerald-500/40 transition-all"
+                      >
+                        <Zap size={11} /> アプリ
+                      </a>
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
