@@ -301,7 +301,7 @@ export default function KonkatsuScheduler() {
       {/* 💒 マリッジロードジャパン */}
       <div className="mt-8 mb-2 flex justify-center">
         <a
-          href="https://www.youtube.com/@marriage_road"
+          href="https://www.marriage-road.jp/"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-3 bg-[#0d1117] border border-emerald-500/40 rounded-xl px-5 py-3 hover:border-emerald-500/70 hover:shadow-[0_0_12px_rgba(16,185,129,0.2)] transition-all group w-full max-w-sm"
@@ -640,7 +640,7 @@ export function MarriageRoadBanner() {
   return (
     <div className="mt-8 mb-2 flex justify-center px-4">
       <a
-        href="https://www.youtube.com/@marriage_road"
+        href="https://www.marriage-road.jp/"
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center gap-3 bg-[#0d1117] border border-emerald-500/40 rounded-xl px-5 py-3 shadow-lg hover:border-emerald-500/70 hover:shadow-[0_0_12px_rgba(16,185,129,0.2)] transition-all group w-full max-w-sm"
