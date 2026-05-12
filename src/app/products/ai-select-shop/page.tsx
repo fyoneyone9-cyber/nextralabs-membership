@@ -203,7 +203,7 @@ const LPContent = () => {
       </section>
 
       {/* CTA */}
-      <section className="max-w-5xl mx-auto px-4 pb-24">
+      <section className="max-w-5xl mx-auto px-4 pt-16 pb-24">
         <div className="bg-[#1e293b] border border-emerald-500/20 rounded-2xl p-10 md:p-14 text-center space-y-6">
           <h2 className="text-3xl font-semibold text-white tracking-tight">
             あなたのブランドを、<br />
