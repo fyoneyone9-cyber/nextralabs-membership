@@ -1906,7 +1906,7 @@ const MasterEngine = () => {
               <p className="text-[10px] text-slate-600">スマートチェックインシステム</p>
             </div>
           </div>
-          {/* オンライン状態 + スタッフモード */}
+          {/* オンライン状態 + スタッフモード + ログアウト */}
           <div className="flex items-center gap-2">
             <span className="text-[10px] text-slate-600 flex items-center gap-1">
               <span className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-red-500'}`} />
@@ -1919,6 +1919,18 @@ const MasterEngine = () => {
                 🔓 スタッフ解除
               </button>
             )}
+            {/* ログアウトボタン — DMS再ログイン用 */}
+            <button
+              onClick={async () => {
+                await fetch('/api/dms/logout', { method: 'POST' }).catch(() => {})
+                window.location.href = '/dms'
+              }}
+              className="text-[10px] px-2 py-1 rounded-md transition-all"
+              style={{ background: 'rgba(239,68,68,0.08)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)' }}
+              title="DMSログアウト（設定を変更する場合に使用）"
+            >
+              ← DMS
+            </button>
           </div>
         </div>
 

@@ -1453,16 +1453,93 @@ export default function DmsEngine() {
 
           {/* 組織設定 */}
           {activeTab === 'org-settings' && (
-            <SettingsPanel
-              title="組織設定"
-              icon={<Database size={15} style={{ color: '#10b981' }} />}
-              fields={[
-                { key: 'org_name', label: '施設名', type: 'text', placeholder: '例：ビジネスホテルアップル' },
-                { key: 'org_email', label: '管理者メールアドレス', type: 'text', placeholder: 'admin@example.com' },
-                { key: 'daily_api_key', label: 'Daily.co API Key（通話機能）', type: 'password', placeholder: 'xxxxxxxxxxxxxxxxxxxxxxxxx' },
-              ]}
-              storagePrefix="dms_org"
-            />
+            <div className="space-y-6 max-w-2xl">
+
+              {/* ── フロント通話セットアップガイド ── */}
+              <div className="rounded-2xl p-5 space-y-4" style={{ background: '#0d0f1a', border: '1px solid rgba(16,185,129,0.2)' }}>
+                <div className="flex items-center gap-2">
+                  <Video size={14} style={{ color: '#10b981' }} />
+                  <span className="text-sm font-semibold text-slate-200">フロント通話（ビデオ通話）の使い方</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full font-medium ml-auto"
+                    style={{ background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.25)' }}>
+                    無料で使える
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  KIOSKの「フロントを呼び出す」ボタンを有効にするには、Daily.co APIキーが必要です。<br />
+                  以下の手順で5分以内に設定できます。
+                </p>
+
+                {/* ステップ */}
+                <div className="space-y-3">
+                  {[
+                    {
+                      num: '1',
+                      title: 'Daily.co アカウント作成（無料）',
+                      desc: 'dashboard.daily.co にアクセスして無料アカウントを作成',
+                      link: 'https://dashboard.daily.co',
+                      linkLabel: 'dashboard.daily.co を開く →',
+                    },
+                    {
+                      num: '2',
+                      title: 'APIキーを取得',
+                      desc: 'ログイン後：Developers → API keys → Generate key',
+                      link: null,
+                      linkLabel: null,
+                    },
+                    {
+                      num: '3',
+                      title: 'Vercel環境変数に設定',
+                      desc: 'Vercel → Settings → Environment Variables → DAILY_API_KEY に貼り付け → Save → Redeploy',
+                      link: 'https://vercel.com/dashboard',
+                      linkLabel: 'Vercel Dashboard を開く →',
+                    },
+                    {
+                      num: '4',
+                      title: 'KIOSKで確認',
+                      desc: 'KIOSKの「フロントを呼び出す」ボタンを押してビデオ通話が開始されれば完了',
+                      link: null,
+                      linkLabel: null,
+                    },
+                  ].map(step => (
+                    <div key={step.num} className="flex gap-3 p-3 rounded-xl" style={{ background: '#13141f' }}>
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-bold"
+                        style={{ background: 'rgba(16,185,129,0.15)', color: '#10b981' }}>
+                        {step.num}
+                      </div>
+                      <div className="space-y-0.5 flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-slate-200">{step.title}</p>
+                        <p className="text-[11px] text-slate-500 leading-relaxed">{step.desc}</p>
+                        {step.link && (
+                          <a href={step.link} target="_blank" rel="noreferrer"
+                            className="text-[11px] font-medium inline-flex items-center gap-1 mt-1"
+                            style={{ color: '#10b981' }}>
+                            {step.linkLabel}
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-start gap-2 p-3 rounded-xl text-[11px]"
+                  style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)', color: '#fbbf24' }}>
+                  ⚠️ APIキーはlocalStorageではなくVercel環境変数（サーバーサイド）に設定してください。クライアントには露出しません。
+                </div>
+              </div>
+
+              {/* 既存の設定フォーム */}
+              <SettingsPanel
+                title="組織設定"
+                icon={<Database size={15} style={{ color: '#10b981' }} />}
+                fields={[
+                  { key: 'org_name', label: '施設名', type: 'text', placeholder: '例：ビジネスホテルアップル' },
+                  { key: 'org_email', label: '管理者メールアドレス', type: 'text', placeholder: 'admin@example.com' },
+                  { key: 'daily_api_key', label: 'Daily.co API Key（通話機能）', type: 'password', placeholder: 'xxxxxxxxxxxxxxxxxxxxxxxxx' },
+                ]}
+                storagePrefix="dms_org"
+              />
+            </div>
           )}
 
         </div>
