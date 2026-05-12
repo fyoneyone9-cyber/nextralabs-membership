@@ -1912,7 +1912,7 @@ const MasterEngine = () => {
         {activeTab === 'checkout' && (
           <div className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)' }}>
             <LogOut size={13} style={{ color: '#818cf8' }} />
-            <span className="text-xs font-semibold text-indigo-300">スタッフモード — チェックアウト処理</span>
+            <span className="text-xs font-semibold text-indigo-300">{t.checkoutTitle || 'チェックアウト'}</span>
           </div>
         )}
       </div>
@@ -1945,28 +1945,54 @@ const MasterEngine = () => {
               ))}
             </div>
 
-            {/* メインCTA */}
-            <button onClick={() => gotoTab('search')}
-              className="w-72 h-72 rounded-[3rem] flex flex-col items-center justify-center gap-5 transition-all active:scale-95"
-              style={{
-                background: 'linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.04))',
-                border: '2px solid rgba(16,185,129,0.5)',
-                boxShadow: '0 0 60px rgba(16,185,129,0.12)',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.borderColor = '#10b981'
-                e.currentTarget.style.boxShadow = '0 0 80px rgba(16,185,129,0.25)'
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.borderColor = 'rgba(16,185,129,0.5)'
-                e.currentTarget.style.boxShadow = '0 0 60px rgba(16,185,129,0.12)'
-              }}>
-              <UserPlus size={72} style={{ color: '#10b981' }} />
-              <div className="text-center">
-                <p className="text-emerald-400 text-3xl font-bold">{t.checkin}</p>
-                <p className="text-slate-600 text-sm mt-1">{t.checkinSub}</p>
-              </div>
-            </button>
+            {/* メインCTA — チェックイン & チェックアウト並列 */}
+            <div className="flex flex-row gap-8 justify-center flex-wrap">
+              {/* チェックイン */}
+              <button onClick={() => gotoTab('search')}
+                className="w-64 h-64 rounded-[3rem] flex flex-col items-center justify-center gap-5 transition-all active:scale-95"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.04))',
+                  border: '2px solid rgba(16,185,129,0.5)',
+                  boxShadow: '0 0 60px rgba(16,185,129,0.12)',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = '#10b981'
+                  e.currentTarget.style.boxShadow = '0 0 80px rgba(16,185,129,0.25)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = 'rgba(16,185,129,0.5)'
+                  e.currentTarget.style.boxShadow = '0 0 60px rgba(16,185,129,0.12)'
+                }}>
+                <UserPlus size={64} style={{ color: '#10b981' }} />
+                <div className="text-center">
+                  <p className="text-emerald-400 text-2xl font-bold">{t.checkin}</p>
+                  <p className="text-slate-600 text-sm mt-1">{t.checkinSub}</p>
+                </div>
+              </button>
+
+              {/* チェックアウト */}
+              <button onClick={() => { setActiveTab('checkout'); setCheckoutStep('search'); setCheckoutQuery(''); setCheckoutResults([]); setCheckoutTarget(null); setCoMode('select') }}
+                className="w-64 h-64 rounded-[3rem] flex flex-col items-center justify-center gap-5 transition-all active:scale-95"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(99,102,241,0.12), rgba(99,102,241,0.04))',
+                  border: '2px solid rgba(99,102,241,0.4)',
+                  boxShadow: '0 0 60px rgba(99,102,241,0.08)',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = '#6366f1'
+                  e.currentTarget.style.boxShadow = '0 0 80px rgba(99,102,241,0.22)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = 'rgba(99,102,241,0.4)'
+                  e.currentTarget.style.boxShadow = '0 0 60px rgba(99,102,241,0.08)'
+                }}>
+                <LogOut size={64} style={{ color: '#818cf8' }} />
+                <div className="text-center">
+                  <p className="text-indigo-400 text-2xl font-bold">{t.checkoutTitle || 'チェックアウト'}</p>
+                  <p className="text-slate-600 text-sm mt-1">CHECK OUT</p>
+                </div>
+              </button>
+            </div>
 
 
             {/* フロント呼び出しボタン */}
@@ -2362,7 +2388,7 @@ const MasterEngine = () => {
                 <h2 className="text-2xl font-semibold text-slate-100">{t.checkoutTitle || 'チェックアウト'}</h2>
                 <p className="text-slate-500 text-sm mt-1">{t.checkoutSub || '予約番号・お名前・電話番号で予約を検索してください'}</p>
               </div>
-              <button onClick={() => { setStaffMode(false); gotoTab('kiosk') }}
+              <button onClick={() => gotoTab('kiosk')}
                 className="text-xs text-slate-600 hover:text-slate-400 transition-colors px-3 py-2 rounded-lg"
                 style={{ border: '1px solid #1e293b' }}>{t.back || '← 戻る'}</button>
             </div>
