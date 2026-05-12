@@ -340,9 +340,14 @@ export default function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         '@context': 'https://schema.org', '@type': 'FAQPage',
         mainEntity: [
-          { '@type': 'Question', name: 'NextraLabsは無料で使えますか？', acceptedAnswer: { '@type': 'Answer', text: 'はい、一部のツールは無料プランでご利用いただけます。クレジットカード不要です。' } },
-          { '@type': 'Question', name: 'NextraLabsのAIツールは何種類ありますか？', acceptedAnswer: { '@type': 'Answer', text: '2026年5月現在、30種類以上のAIツールをご用意しています。' } },
-          { '@type': 'Question', name: 'いつでも解約できますか？', acceptedAnswer: { '@type': 'Answer', text: 'はい、いつでも解約可能です。解約後も当月末まではサービスをご利用いただけます。' } },
+          { '@type': 'Question', name: 'NextraLabsは無料で使えますか？', acceptedAnswer: { '@type': 'Answer', text: 'はい、一部のツールは無料プランでご利用いただけます。クレジットカード不要・登録のみで今すぐ使えます。' } },
+          { '@type': 'Question', name: 'NextraLabsのAIツールは何種類ありますか？', acceptedAnswer: { '@type': 'Answer', text: '2026年5月現在、SNS・出版・家計・旅行・学習・副業・防犯・婚活など9ジャンル30種類以上のAIツールをご用意しています。' } },
+          { '@type': 'Question', name: 'いつでも解約できますか？', acceptedAnswer: { '@type': 'Answer', text: 'はい、いつでも解約可能です。解約後も当月末まではサービスをご利用いただけます。違約金・縛りは一切ありません。' } },
+          { '@type': 'Question', name: 'NextraLabsはどんな人向けですか？', acceptedAnswer: { '@type': 'Answer', text: '副業・在宅ワークをしたい方、家計を改善したい主婦・サラリーマン、Kindle出版に挑戦したい方、SNSマーケティングを効率化したい事業者、資格勉強を自動化したい学生など、幅広い方にご利用いただいています。' } },
+          { '@type': 'Question', name: 'NextraLabsで使えるAIはなんですか？', acceptedAnswer: { '@type': 'Answer', text: 'Google Gemini 2.5 Flash（最上位モデル）を主軸に、用途に応じて最適なAIを組み合わせて使用しています。' } },
+          { '@type': 'Question', name: 'スマホでも使えますか？', acceptedAnswer: { '@type': 'Answer', text: 'はい、スマートフォン・タブレット・PCすべてに対応しています。アプリのインストールも不要です。' } },
+          { '@type': 'Question', name: 'NextraLabsの料金プランを教えてください。', acceptedAnswer: { '@type': 'Answer', text: '無料プラン（一部ツール利用可）、ライトプラン月額980円、スタンダードプラン月額1,980円、プレミアムプラン月額2,980円の4プランをご用意しています。' } },
+          { '@type': 'Question', name: 'Kindle出版をAIでサポートしてもらえますか？', acceptedAnswer: { '@type': 'Answer', text: 'はい、「Kindle出版完全ナビ」と「Kindle AI ファクトリー」の2ツールで、テーマ入力からKDP入稿用原稿の自動生成まで一気通貫でサポートします。' } },
         ],
       })}} />
     </div>
