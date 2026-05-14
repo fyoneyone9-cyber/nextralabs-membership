@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 既存製品ページのSEOメタデータを強化するスクリプト
  * ロック済みツールは変更しない
  */
@@ -7,7 +7,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const BASE_URL = 'https://membership-site-nextralabos.vercel.app'
+const BASE_URL = 'https://nextralab.jp'
 const PRODUCTS_DIR = path.join(__dirname, '../src/app/products')
 
 // ロック済みツール（絶対に変更しない）

@@ -1,4 +1,4 @@
-const BASE_URL = 'https://membership-site-nextralabos.vercel.app/products';
+﻿const BASE_URL = 'https://nextralab.jp/products';
 
 const openTool = (id) => {
   chrome.tabs.create({ url: `${BASE_URL}/${id}/app` });

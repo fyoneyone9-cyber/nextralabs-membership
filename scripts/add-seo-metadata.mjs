@@ -1,9 +1,9 @@
-import fs from 'fs'
+﻿import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const BASE_URL = 'https://membership-site-nextralabos.vercel.app'
+const BASE_URL = 'https://nextralab.jp'
 const PRODUCTS_DIR = path.join(__dirname, '../src/app/products')
 
 // 各製品のSEOメタデータ定義
