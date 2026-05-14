@@ -24,6 +24,7 @@ export default function HomePage() {
   const [exitPopup, setExitPopup] = useState(false)
   const [showAllReviews, setShowAllReviews] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [authChecked, setAuthChecked] = useState(false)
   const exitFired = useRef(false)
 
   useEffect(() => {
@@ -35,6 +36,7 @@ export default function HomePage() {
     )
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) setIsLoggedIn(true)
+      setAuthChecked(true) // 確認完了フラグ
     })
     const onScroll = () => setScrolled(window.scrollY > 300)
     window.addEventListener('scroll', onScroll)
@@ -43,8 +45,9 @@ export default function HomePage() {
     }
   }, [])
 
-  // isLoggedIn が確定してからマウスリーブイベントを登録する（クロージャバグ修正）
+  // authChecked が true になってからイベント登録（ログイン確認前に発火させない）
   useEffect(() => {
+    if (!authChecked) return // 認証確認完了前は何もしない
     const onMouseLeave = (e: MouseEvent) => {
       if (e.clientY < 5 && !exitFired.current && !isLoggedIn) {
         exitFired.current = true
@@ -55,7 +58,7 @@ export default function HomePage() {
     return () => {
       document.removeEventListener('mouseleave', onMouseLeave)
     }
-  }, [isLoggedIn])
+  }, [authChecked, isLoggedIn])
 
   if (!mounted) return null
 
