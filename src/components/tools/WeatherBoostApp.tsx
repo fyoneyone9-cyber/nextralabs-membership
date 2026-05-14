@@ -809,7 +809,26 @@ export default function WeatherBoostApp() {
               {
                 step: '04',
                 title: 'LINE / メール送信を接続する',
-                desc: '実際にゲストへ通知を送るには、LINE Messaging APIまたはSendGridのAPIキーをサーバー側に設定する必要があります。設定後は天気トリガーが発動した際に自動でメッセージが配信されます。',
+                desc: `実際にゲストへ通知を送るには以下の設定が必要です。
+
+【LINE Messaging APIの場合】
+① LINE Developersコンソール（developers.line.biz）にログイン
+② 「新規プロバイダー作成」→「Messaging APIチャンネル作成」
+③ チャンネル設定画面から「チャンネルシークレット」と「チャンネルアクセストークン（長期）」を取得
+④ Vercel環境変数に以下を追加：
+   LINE_CHANNEL_SECRET=（取得した値）
+   LINE_CHANNEL_ACCESS_TOKEN=（取得した値）
+⑤ ゲストのLINE User IDを事前に取得し、送信先として登録
+
+【SendGrid（メール）の場合】
+① sendgrid.com でアカウント作成（無料プランあり）
+② 「Settings」→「API Keys」→「Create API Key」で取得
+③ Vercel環境変数に以下を追加：
+   SENDGRID_API_KEY=（取得した値）
+   SENDGRID_FROM_EMAIL=（送信元メールアドレス）
+④ ゲストのメールアドレスをSupabaseのguestsテーブルに登録
+
+設定後は天気トリガーが発動した際に /api/weather-alerts エンドポイントが自動で呼ばれ、メッセージが配信されます。`,
                 tag: 'バックエンド設定が必要',
                 tagColor: 'amber',
               },
@@ -834,7 +853,7 @@ export default function WeatherBoostApp() {
                       'bg-white/5 text-slate-500 border-white/10'
                     }`}>{item.tag}</span>
                   </div>
-                  <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
+                  <p className="text-slate-400 text-sm leading-relaxed whitespace-pre-line">{item.desc}</p>
                 </div>
               </div>
             ))}
