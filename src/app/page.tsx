@@ -1,11 +1,10 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { createClient } from '@supabase/supabase-js'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
-  Zap, BookOpen, Calculator, ShoppingBag, ArrowRight, Star, X
+  BookOpen, Calculator, ShoppingBag, ArrowRight, Star, X
 } from 'lucide-react'
 
 const REVIEWS = [
@@ -21,44 +20,16 @@ export default function HomePage() {
   const [mounted, setMounted] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [floatClosed, setFloatClosed] = useState(false)
-  const [exitPopup, setExitPopup] = useState(false)
   const [showAllReviews, setShowAllReviews] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [authChecked, setAuthChecked] = useState(false)
-  const exitFired = useRef(false)
 
   useEffect(() => {
     setMounted(true)
-    // ログイン状態確認
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) setIsLoggedIn(true)
-      setAuthChecked(true) // 確認完了フラグ
-    })
     const onScroll = () => setScrolled(window.scrollY > 300)
     window.addEventListener('scroll', onScroll)
     return () => {
       window.removeEventListener('scroll', onScroll)
     }
   }, [])
-
-  // authChecked が true になってからイベント登録（ログイン確認前に発火させない）
-  useEffect(() => {
-    if (!authChecked) return // 認証確認完了前は何もしない
-    const onMouseLeave = (e: MouseEvent) => {
-      if (e.clientY < 5 && !exitFired.current && !isLoggedIn) {
-        exitFired.current = true
-        setExitPopup(true)
-      }
-    }
-    document.addEventListener('mouseleave', onMouseLeave)
-    return () => {
-      document.removeEventListener('mouseleave', onMouseLeave)
-    }
-  }, [authChecked, isLoggedIn])
 
   if (!mounted) return null
 
@@ -72,30 +43,7 @@ export default function HomePage() {
         @keyframes emeraldPulse { 0%,100% { box-shadow: 0 4px 24px rgba(16,185,129,0.4); } 50% { box-shadow: 0 4px 32px rgba(16,185,129,0.65); } }
       `}</style>
 
-      {/* ===== Exit Intent（未ログインのみ表示） ===== */}
-      {exitPopup && !isLoggedIn && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4"
-          onClick={() => setExitPopup(false)}>
-          <div className="bg-[#0d1117] border border-emerald-500/40 rounded-2xl p-8 max-w-md w-full text-center relative shadow-[0_0_60px_rgba(16,185,129,0.15)]"
-            onClick={e => e.stopPropagation()}>
-            <button onClick={() => setExitPopup(false)} className="absolute top-4 right-4 text-slate-500 hover:text-slate-300 transition-colors">
-              <X size={18} />
-            </button>
-            <div className="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Zap size={28} className="text-emerald-400" />
-            </div>
-            <h3 className="text-xl font-bold text-white mb-2">ちょっと待って！</h3>
-            <p className="text-slate-400 text-sm mb-1">今なら<span className="text-emerald-400 font-bold">30のAIツールが使い放題</span></p>
-            <p className="text-slate-500 text-xs mb-6">無料プランで今すぐ試せます。クレジットカード不要。</p>
-            <div className="flex gap-3 flex-col sm:flex-row">
-              <Link href="/signup" className="flex-1">
-                <Button className="w-full h-11 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-sm">無料で始める →</Button>
-              </Link>
-              <button onClick={() => setExitPopup(false)} className="flex-1 h-11 rounded-xl border border-white/10 text-slate-500 text-sm hover:text-slate-300 transition-colors">後で</button>
-            </div>
-          </div>
-        </div>
-      )}
+
 
       {/* ===== フローティングCTA ===== */}
       {scrolled && !floatClosed && (
