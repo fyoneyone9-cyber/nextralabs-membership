@@ -19,19 +19,19 @@ const ADMIN_EMAIL = 'f.yoneyone9@gmail.com'
 
 const TOOLS = [
   // ── 📱 SNS・コンテンツ制作 ──
-  { id: 'sns-auto-poster/app',      cat: 'content',   title: 'AI SNSオートポスター',         sub: 'バズを量産するマルチSNS生成',                                     icon: Share2,        plan: 'ライト',     done: true },
+  { id: 'sns-auto-poster/app',      cat: 'content',   title: 'AI SNSオートポスター',         sub: 'X・Instagram・Threadsに一括投稿。AIが最適な投稿時間と文章を生成。',                                     icon: Share2,        plan: 'ライト',     done: true },
   { id: 'ai-select-shop/app',       cat: 'content',   title: 'AIセレクトショップ',            sub: 'トレンド解析とShopify連携',                                       icon: Store,         plan: 'プレミアム', done: true },
-  { id: 'youtube-producer/app',     cat: 'content',   title: 'AI YouTubeプロデューサー',      sub: '全自動台本・構成作成',                                            icon: Clapperboard,  plan: 'プレミアム', done: true },
+  { id: 'youtube-producer/app',     cat: 'content',   title: 'AI YouTubeプロデューサー',      sub: 'チャンネル分析からサムネイル提案まで。再生数を伸ばすAI戦略家。',                                            icon: Clapperboard,  plan: 'プレミアム', done: true },
   { id: 'youtube-coordinator/app',  cat: 'content',   title: 'YouTube AI Sync',              sub: '動画解析と楽天コーチ',                                            icon: Play,          plan: 'プレミアム', done: true },
-  { id: 'prompt-master/app',        cat: 'content',   title: 'AI画像プロンプトマスター',      sub: '究極 of 究極の画像パーツ工房',                                    icon: Wand2,         plan: 'ライト',     done: true },
+  { id: 'prompt-master/app',        cat: 'content',   title: 'AI画像プロンプトマスター',      sub: 'Midjourney・Flux・Runwayで使えるプロ品質プロンプトをAIが生成。',                                    icon: Wand2,         plan: 'ライト',     done: true },
 
   // ── 📖 出版・AI文章生成 ──
-  { id: 'kdp-guide/app',            cat: 'publish',   title: 'Kindle出版完全ナビ',            sub: '執筆から出版までの一気通貫',                                      icon: BookOpen,      plan: '無料',       done: true },
+  { id: 'kdp-guide/app',            cat: 'publish',   title: 'Kindle出版完全ナビ',            sub: '初めてのKDP出版を全工程AIがサポート。表紙から原稿まで完全お任せ。',                                      icon: BookOpen,      plan: '無料',       done: true },
   { id: 'kindle-factory/app',       cat: 'publish',   title: 'Kindle AI ファクトリー',        sub: 'AI解析でKDP入稿可能な原稿を自動生成',                             icon: Crown,         plan: 'プレミアム', done: true },
 
   // ── 💼 ビジネス・仕事効率化 ──
-  { id: 'inbox-organizer',          cat: 'biz',       title: 'Gmail AI Accelerator',         sub: '未読ゼロを最速で実現',                                            icon: Mail,          plan: 'プレミアム', done: true },
-  { id: 'ai-sidejob/app',           cat: 'biz',       title: 'AI副業スタートダッシュ',        sub: '適性診断と収益ロードマップ',                                      icon: Briefcase,     plan: 'プレミアム', done: true },
+  { id: 'inbox-organizer',          cat: 'biz',       title: 'Gmail AI Accelerator',         sub: 'メール対応時間を最大70%削減。AIが下書きから返信分類まで自動化。',                                            icon: Mail,          plan: 'プレミアム', done: true },
+  { id: 'ai-sidejob/app',           cat: 'biz',       title: 'AI副業スタートダッシュ',        sub: 'あなたのスキルと時間からAIが最適な副業プランを診断。今月から収入プラス。',                                      icon: Briefcase,     plan: 'プレミアム', done: true },
   { id: 'universal-converter/app',  cat: 'biz',       title: '究極AIマルチコンバーター',      sub: '動画・画像・PDFへの変換圧縮',                                    icon: Repeat,        plan: 'ライト',     done: true },
   { id: 'vercel-monitor/app',       cat: 'biz',       title: 'Vercel Fleet Monitor',         sub: 'システムのデプロイ状況をリアルタイム監視',                         icon: Activity,      plan: 'お見積もり', done: true, adminOnly: true },
 
@@ -40,7 +40,7 @@ const TOOLS = [
   { id: 'ai-exam-generator/app',    cat: 'edu',       title: 'AI問題生成 & 苦手分析',         sub: '予想問題を無限生成と弱点ポイント可視化',                          icon: Brain,         plan: 'プレミアム', done: true },
 
   // ── 💰 お金・節約・防犯 ──
-  { id: 'money-guard/app',          cat: 'money',     title: 'AI家計防衛シミュレーター',      sub: '衝動買いの心理的阻止',                                            icon: Wallet,        plan: 'スタンダード', done: true },
+  { id: 'money-guard/app',          cat: 'money',     title: 'AI家計防衛シミュレーター',      sub: '毎月の収支を入力するだけ。AIが節約ポイントと投資タイミングを提案。',                                            icon: Wallet,        plan: 'スタンダード', done: true },
   { id: 'loan-advisor/app',         cat: 'money',     title: 'AI借金完済・おまとめ診断',      sub: '借金の一本化と完済への最短ルート',                                icon: CreditCard,    plan: '無料',       done: true },
   { id: 'shopping-stopper/app',     cat: 'money',     title: 'AI買い物依存ストッパー',        sub: '散財の鎖を断ち切る',                                              icon: ShieldAlert,   plan: '無料',       done: true },
   { id: 'buy-smart-nav/app',        cat: 'money',     title: '中古・新品AI比較ナビ',          sub: '損得勘定とAI市場判定OS',                                          icon: Scale,         plan: '無料',       done: true },
@@ -49,7 +49,7 @@ const TOOLS = [
   // ── 🌿 ライフスタイル・日常 ──
   { id: 'ai-recipe/app',            cat: 'lifestyle', title: 'AIレシピ献立コーチ',            sub: '冷蔵庫の残り物と栄養最適化',                                      icon: Utensils,      plan: '無料',       done: true },
   { id: 'smart-gardening/app',      cat: 'lifestyle', title: 'AIスマートガーデニング',        sub: '植物の声を聴く育成アドバイザー',                                  icon: Sprout,        plan: 'スタンダード', done: true },
-  { id: 'disaster-guard/app',       cat: 'lifestyle', title: 'AI防災パーソナルガイド',        sub: '避難ルートと備蓄最適化',                                          icon: Shield,        plan: 'スタンダード', done: true },
+  { id: 'disaster-guard/app',       cat: 'lifestyle', title: 'AI防災パーソナルガイド',        sub: '家族構成・地域に合わせたオーダーメイドの防災計画をAIが作成。',                                          icon: Shield,        plan: 'スタンダード', done: true },
   { id: 'moving-checker/app',       cat: 'lifestyle', title: 'AI引越し安心チェッカー',        sub: '治安と物件リスクを徹底解析',                                      icon: Home,          plan: '無料',       done: true },
   { id: 'gift-advisor/app',         cat: 'lifestyle', title: 'AI先回りギフトナビ',            sub: 'カレンダー連携×楽天×Geminiで最適ギフトを先回り提案',              icon: CalendarHeart, plan: 'スタンダード', done: true },
 
@@ -65,7 +65,7 @@ const TOOLS = [
   { id: 'voice-guest-assist/app',   cat: 'hotel',     title: 'AI多言語ゲストアシスト',        sub: '音声認識×自動翻訳でCRM精度を飛躍的に向上',                        icon: Mic,           plan: 'スタンダード', lpUrl: '/products/voice-guest-assist' },
 
   // ── 💕 婚活・結婚相談所DX ──
-  { id: 'konkatsu-scheduler/app',   cat: 'konkatsu',  title: 'AI即アポ調整くん',              sub: 'Google Calendar連携でお見合い日程を自動確定',                     icon: CalendarCheck, plan: 'スタンダード', lpUrl: '/products/konkatsu-scheduler' },
+  { id: 'konkatsu-scheduler/app',   cat: 'konkatsu',  title: 'AI即アポ調整くん',              sub: '婚活の進捗をAIが管理。次の一手をタイムリーに提案してくれる。',                     icon: CalendarCheck, plan: 'スタンダード', lpUrl: '/products/konkatsu-scheduler' },
   { id: 'omiai-room/app',           cat: 'konkatsu',  title: 'オンラインお見合い盛り上げシステム', sub: 'BGM×AIトークサジェストで気まずい沈黙を解消',                icon: HeartHandshake, plan: 'お見積もり', lpUrl: '/products/omiai-room' },
   { id: 'beauty-boost/app',         cat: 'konkatsu',  title: 'お見合い垢抜けブースト',        sub: '会場周辺の美容院をAI検索 → 予約へ直接案内',                      icon: Scissors,      plan: 'スタンダード', lpUrl: '/products/beauty-boost' },
 ]
