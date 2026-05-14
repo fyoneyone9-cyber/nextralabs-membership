@@ -38,6 +38,13 @@ export default function HomePage() {
     })
     const onScroll = () => setScrolled(window.scrollY > 300)
     window.addEventListener('scroll', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+    }
+  }, [])
+
+  // isLoggedIn が確定してからマウスリーブイベントを登録する（クロージャバグ修正）
+  useEffect(() => {
     const onMouseLeave = (e: MouseEvent) => {
       if (e.clientY < 5 && !exitFired.current && !isLoggedIn) {
         exitFired.current = true
@@ -46,10 +53,9 @@ export default function HomePage() {
     }
     document.addEventListener('mouseleave', onMouseLeave)
     return () => {
-      window.removeEventListener('scroll', onScroll)
       document.removeEventListener('mouseleave', onMouseLeave)
     }
-  }, [])
+  }, [isLoggedIn])
 
   if (!mounted) return null
 
