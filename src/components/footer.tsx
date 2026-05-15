@@ -1,4 +1,5 @@
 ﻿import Link from 'next/link'
+import { Youtube } from 'lucide-react'
 
 export function Footer() {
   return (
@@ -12,6 +13,15 @@ export function Footer() {
             <p className="mt-2 text-sm text-muted-foreground">
               AIを活用した業務効率化・自動化ツールを開発・販売しています。
             </p>
+            <a
+              href="https://www.youtube.com/@NextraLab"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 mt-4 px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 hover:text-red-300 text-xs font-medium transition-all"
+            >
+              <Youtube size={14} />
+              公式YouTube チャンネル
+            </a>
           </div>
           <div>
             <h4 className="text-sm font-semibold mb-3">リンク</h4>

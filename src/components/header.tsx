@@ -4,7 +4,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
-import { Menu, X, User, LogOut, Twitter as TwitterIcon, Search, Download, Zap, Hotel, Share2, ShieldCheck, BookOpen, Briefcase, HeartHandshake, ChevronDown, Brain, Wallet, Sprout, Plane } from 'lucide-react'
+import { Menu, X, User, LogOut, Twitter as TwitterIcon, Search, Download, Zap, Hotel, Share2, ShieldCheck, Youtube, BookOpen, Briefcase, HeartHandshake, ChevronDown, Brain, Wallet, Sprout, Plane } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 const GENRE_LINKS = [
@@ -186,6 +186,15 @@ export function Header() {
             ) : (
               <Link href="/login"><Button variant="ghost" size="sm">ログイン</Button></Link>
             )}
+            <a
+              href="https://www.youtube.com/@NextraLab"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:flex items-center justify-center w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 hover:text-red-300 transition-all"
+              title="公式YouTubeチャンネル"
+            >
+              <Youtube size={15} />
+            </a>
 
           </nav>
 
