@@ -252,8 +252,8 @@ export default function DashboardClient({ user, profile, subscription }: any) {
                           </Link>
                           {(tool as any).hasVideo && !locked && (
                             <a
-                              href={tool.id === 'youtube-producer' ? '/products/youtube-producer#demo' : tool.id === 'ai-select-shop' ? 'https://www.youtube.com/watch?v=frDeVaGoqZ4' : '#'}
-                              target={tool.id === 'youtube-producer' ? '_self' : '_blank'}
+                              href={tool.id === 'youtube-producer' ? 'https://www.youtube.com/watch?v=OyNaIuDOjuE' : tool.id === 'ai-select-shop' ? 'https://www.youtube.com/watch?v=frDeVaGoqZ4' : '#'}
+                              target="_blank"
                               rel="noopener noreferrer"
                               onClick={e => e.stopPropagation()}
                               className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-md bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 transition-all"

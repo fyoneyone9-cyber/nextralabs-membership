@@ -146,7 +146,7 @@ export default function YoutubeProducerLp() {
         <div className="relative rounded-[2rem] overflow-hidden border-2 border-red-500/20 shadow-[0_0_60px_rgba(220,38,38,0.15)] bg-black aspect-video">
           <iframe
             className="w-full h-full"
-            src="https://www.youtube.com/embed/YOUR_VIDEO_ID?rel=0&modestbranding=1"
+            src="https://www.youtube.com/embed/OyNaIuDOjuE?rel=0&modestbranding=1"
             title="AI YouTubeプロデューサー 実演動画"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
