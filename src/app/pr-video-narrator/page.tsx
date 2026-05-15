@@ -54,9 +54,21 @@ export default function PrVideoNarratorPage() {
             <p className="text-xs text-emerald-400 font-medium">AI自動ナレーション合成ツール</p>
           </div>
         </div>
-        <p className="text-sm text-slate-400 mb-8 ml-1">
+        <p className="text-sm text-slate-400 mb-4 ml-1">
           動画ファイルのパスをOpenClawに送るだけ。ナレーション生成〜音声合成〜動画合成まで全自動。
         </p>
+
+        {/* 紹介文 */}
+        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 mb-8">
+          <p className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-2">🎙️ できること</p>
+          <p className="text-sm text-slate-300 leading-relaxed">
+            AIが動画を自動解析してシーンを把握し、内容にぴったり合ったナレーション原稿を生成。
+            <span className="text-emerald-400 font-semibold">VOICEVOXのずんだもん・四国めたん</span>など好きなキャラクターの声で音声を合成し、
+            立ち絵アニメーション（口パク演出）付きの動画として仕上げます。
+            日本語のキャラクターナレーションが、チャットに一言送るだけで完成。
+            スクリプト不要・編集ソフト不要。
+          </p>
+        </div>
 
         {/* パイプライン図 */}
         <div className="flex items-center gap-2 mb-8 overflow-x-auto pb-2">
@@ -105,7 +117,8 @@ export default function PrVideoNarratorPage() {
           <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">技術仕様</p>
           <div className="space-y-2 text-xs text-slate-400">
             <div className="flex justify-between"><span>動画解析</span><span className="text-slate-300">Genspark media-analyze</span></div>
-            <div className="flex justify-between"><span>TTS エンジン</span><span className="text-slate-300">Minimax Speech-2.8 HD</span></div>
+            <div className="flex justify-between"><span>TTS エンジン</span><span className="text-slate-300">VOICEVOX / Minimax Speech-2.8 HD</span></div>
+            <div className="flex justify-between"><span>対応キャラ</span><span className="text-slate-300">ずんだもん・四国めたん 他</span></div>
             <div className="flex justify-between"><span>動画合成</span><span className="text-slate-300">ffmpeg 8.1.1</span></div>
             <div className="flex justify-between"><span>出力形式</span><span className="text-slate-300">MP4（H.264）</span></div>
             <div className="flex justify-between"><span>出力先</span><span className="text-slate-300">デスクトップ</span></div>
