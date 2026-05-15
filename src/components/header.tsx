@@ -132,6 +132,15 @@ export function Header() {
             >
               <TwitterIcon className="h-5 w-5 text-slate-400 hover:text-blue-400" />
             </a>
+            <a
+              href="https://www.youtube.com/@NextraLab"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-red-400 transition-all relative z-[10000] ml-3"
+              style={{ pointerEvents: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              <Youtube className="h-5 w-5 text-slate-400 hover:text-red-400" />
+            </a>
           </div>
 
           {/* 検索バー */}
@@ -186,15 +195,6 @@ export function Header() {
             ) : (
               <Link href="/login"><Button variant="ghost" size="sm">ログイン</Button></Link>
             )}
-            <a
-              href="https://www.youtube.com/@NextraLab"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:flex items-center justify-center w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 hover:text-red-300 transition-all"
-              title="公式YouTubeチャンネル"
-            >
-              <Youtube size={15} />
-            </a>
 
           </nav>
 
