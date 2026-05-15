@@ -40,14 +40,20 @@ export function Footer() {
               <li><Link href="/privacy" className="hover:text-primary transition-colors">プライバシーポリシー</Link></li>
               <li><Link href="/tokusho" className="hover:text-primary transition-colors">特定商取引法に基づく表記</Link></li>
               <li><Link href="/contact" className="hover:text-primary transition-colors">お問い合わせ</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-sm font-semibold mb-3">関連サービス</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <button 
-                  type="button"
-                  data-nextra-port-trigger
-                  className="hover:text-primary transition-colors text-[10px] opacity-50 uppercase cursor-pointer"
-                >
-                  PORT
-                </button>
+                <a href="https://ai-adult.jp" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center gap-1">
+                  AIアダルトナビ ↗
+                </a>
+              </li>
+              <li>
+                <a href="https://marriage-road-site.vercel.app" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center gap-1">
+                  マレッジロードジャパン ↗
+                </a>
               </li>
             </ul>
           </div>
