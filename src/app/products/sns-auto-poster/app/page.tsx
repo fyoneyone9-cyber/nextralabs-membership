@@ -1,393 +1,397 @@
-﻿'use client'
+'use client'
 import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  Zap, Loader2, CheckCircle2, TrendingUp,
-  Share2, Clock, Copy, Sparkles, AlertCircle,
-  Twitter, Instagram, RefreshCw, Check
+  Copy, CheckCircle2, RefreshCw, Twitter, Instagram,
+  Video, MessageSquare, HeartHandshake, ExternalLink,
+  Sparkles, Zap, Share2, AlertCircle
 } from 'lucide-react'
 
-type Result = { content: string; strategy: string; bestTime: string }
+const SNS_PLATFORMS = [
+  { id: 'twitter',   label: 'X (Twitter)',    icon: Twitter,        prompt: 'あなたはプロのX運用担当者です。以下のトレンドと戦略を元に、インプレッションが最大化する140文字以内の投稿を3パターン作成してください。各パターンは「---」で区切り、投稿本文のみを出力してください。' },
+  { id: 'instagram', label: 'Instagram',      icon: Instagram,      prompt: 'あなたは人気インスタグラマーです。以下のトレンドと戦略を組み合わせて、情緒的なキャプションとハッシュタグ15個を3パターン作成してください。各パターンは「---」で区切り、本文とハッシュタグのみを出力してください。' },
+  { id: 'tiktok',    label: 'TikTok / Reels', icon: Video,          prompt: 'あなたはバズ動画作家です。以下のトレンドと戦略を元に、最初の3秒で惹きつける動画台本を3パターン作成してください。各パターンは「---」で区切り、台本のみを出力してください。' },
+  { id: 'threads',   label: 'Threads',        icon: MessageSquare,  prompt: 'あなたはコラムニストです。以下のトレンドと戦略について、深い共感を生む長文を3パターン作成してください。各パターンは「---」で区切り、本文のみを出力してください。' },
+  { id: 'konkatsu',  label: '婚活モード',     icon: HeartHandshake, prompt: 'あなたは婚活カウンセラーです。上級心理カウンセラーの知見を活かし、成婚意欲を高める投稿を3パターン作成してください。ターゲット：20〜40代の本気で結婚したい男女。各パターンは「---」で区切り、投稿本文のみを出力してください。' },
+]
+
+const STRATEGIES = [
+  { label: '🔥 本音・暴露系',   content: '業界の当たり前に疑問を呈し、皆が言いにくいことを代弁する鋭い言葉で。' },
+  { label: '💡 有益Tips',       content: '今日から使える業務効率化の神知識を、箇条書きを使って10秒で伝わる構成に。' },
+  { label: '😢 共感・エモ',     content: '深夜の独り言のような、挑戦の孤独と希望に寄り添うエモーショナルな文章。' },
+  { label: '🧵 スレッド誘導',   content: '続きが読みたくなる仕掛けを施し、深い知識へ誘導する導入文。' },
+  { label: '⚔️ 比較・検証',    content: 'AとBの違いを明確にし、独自の視点で結論を出すプロのレビュー。' },
+  { label: '📰 ニュース要約',   content: '複雑な時事ネタを中学生でもわかるレベルに噛み砕き、一言解説を添えて。' },
+  { label: '💬 質問・対話',     content: 'フォロワーが回答しやすい二択や質問を投げかけ、交流を生む。' },
+  { label: '💪 モチベーション', content: 'やる気が出ない人の背中を強力に押す、力強いメッセージとマインドセット。' },
+  { label: '💍 婚活・成婚',     content: '成婚のプロが教える、婚活の「残酷な真実」と「選ばれるための具体的アクション」。' },
+  { label: '🧠 心理・相性',     content: '上級心理カウンセラーの知見から、長く続くカップルの共通点と心理的安全性。' },
+  { label: '🤖 AI活用術',       content: 'AIツールを使いこなすための具体的なプロンプトや活用例を、初心者でも即実践できる形で。' },
+  { label: '💰 副業・収益化',   content: '月1万〜10万円を目指す副業の始め方を、失敗談も含めてリアルに。' },
+  { label: '📈 成長ストーリー', content: '過去の自分と今の自分を対比させ、変化と気づきを感情豊かに語る。' },
+  { label: '🎯 ターゲット刺し', content: '「〇〇な人にだけ読んでほしい」と特定ユーザーに刺さる限定感のある書き出しで。' },
+  { label: '🌅 朝活・習慣',     content: '毎朝続けることで人生が変わる習慣を、具体的なルーティンとともに紹介。' },
+]
+
+const PRESET_THEMES: { category: string; emoji: string; items: string[] }[] = [
+  {
+    category: 'AI・テック',
+    emoji: '🤖',
+    items: [
+      'ChatGPTで仕事が10倍速くなる方法',
+      'AI画像生成でSNS映え素材を量産',
+      '無料で使えるAIツール5選',
+      'プロンプトエンジニアリング入門',
+      'AIと人間の仕事の境界線',
+      'Gemini vs ChatGPT どっちが優秀？',
+      'AIで副業月5万円の作り方',
+    ],
+  },
+  {
+    category: 'ビジネス・副業',
+    emoji: '💼',
+    items: [
+      '会社員が副業で月10万稼いだリアル',
+      'フリーランス1年目が知っておくべき真実',
+      '価格交渉で失敗しない3つのコツ',
+      '朝1時間で人生が変わる理由',
+      'SNS集客で月100万達成した方法',
+      'ノースキルでも稼げる副業ランキング',
+      'Kindle出版してみた正直レビュー',
+    ],
+  },
+  {
+    category: '婚活・恋愛',
+    emoji: '💍',
+    items: [
+      '30代独身が結婚相談所で成婚した話',
+      'モテる人の共通点をカウンセラーが解説',
+      '婚活アプリで失敗する人の特徴',
+      '初デートで必ず好印象を残す方法',
+      '結婚相手の条件の優先順位',
+      '婚活疲れを感じたときの対処法',
+      '40代から始める婚活で結果を出す方法',
+    ],
+  },
+  {
+    category: '健康・ライフ',
+    emoji: '🌿',
+    items: [
+      '睡眠の質を劇的に改善する方法',
+      '忙しい人のための時短ダイエット術',
+      '肌荒れが止まった生活習慣の変化',
+      '1日5分で体が変わるストレッチ',
+      'ストレスゼロ生活を実現する思考法',
+      '節約しながら食費を豊かにする技',
+      'ミニマリストが手放してよかったもの',
+    ],
+  },
+  {
+    category: '時事・社会',
+    emoji: '🌍',
+    items: [
+      '物価高騰の今こそ見直すべき家計管理',
+      '日本の少子化問題をわかりやすく解説',
+      'SNSが社会に与えた意外な影響',
+      '2025年注目のビジネストレンド',
+      '若者が地方移住を選ぶ本当の理由',
+      '円安時代のお金の守り方',
+      '働き方改革で実際に変わったこと',
+    ],
+  },
+  {
+    category: 'エンタメ・趣味',
+    emoji: '🎮',
+    items: [
+      '推し活経済圏でお金を使わない方法',
+      '映画見放題サービス徹底比較2025',
+      '今すぐハマれるソロキャンプ入門',
+      'ゲームで稼ぐPlay to Earn最前線',
+      '読書1000冊で気づいた人生の真実',
+      'ひとり旅で得た人生観の変化',
+      'ドラマより面白いビジネス書3選',
+    ],
+  },
+]
 
 export default function SnsAutoPosterApp() {
   const router = useRouter()
-  const [topic, setTopic] = useState('')
-  const [targetSns, setTargetSns] = useState<'X' | 'Instagram'>('X')
-  const [isGenerating, setIsGenerating] = useState(false)
+  const [selectedTrend, setSelectedTrend]   = useState('')
+  const [selectedPreset, setSelectedPreset] = useState('')
+  const [selectedStrategy, setSelectedStrategy] = useState('')
+  const [customTheme, setCustomTheme]       = useState('')
+  const [selectedPlatform, setSelectedPlatform] = useState('twitter')
+  const [trends, setTrends]                 = useState<string[]>([])
   const [isLoadingTrends, setIsLoadingTrends] = useState(false)
-  const [trends, setTrends] = useState<string[]>([])
-  const [selectedTrend, setSelectedTrend] = useState<string | null>(null)
-  const [result, setResult] = useState<Result | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
+  const [trendSource, setTrendSource]       = useState('')
+  const [copied, setCopied]                 = useState(false)
+  const [activePresetCat, setActivePresetCat] = useState(0)
 
-  // ブラウザバック・マウスサイドボタン対応
-  useEffect(() => {
-    // 履歴スタックに現在ページを積む（popstate検知用）
-    window.history.pushState(null, '', window.location.href)
-    const handlePopState = () => {
-      const ok = window.confirm('ツールを終了しますか？')
-      if (ok) {
-        router.push('/dashboard')
-      } else {
-        window.history.pushState(null, '', window.location.href)
-      }
-    }
-    window.addEventListener('popstate', handlePopState)
-    return () => window.removeEventListener('popstate', handlePopState)
-  }, [router])
-
-  // タブ閉じ・URL直打ち対応
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault()
-      e.returnValue = ''
-    }
-    window.addEventListener('beforeunload', handleBeforeUnload)
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
-  }, [])
-
-  const handleBack = useCallback(() => {
-    const ok = window.confirm('ツールを終了しますか？')
-    if (ok) router.push('/dashboard')
-  }, [router])
+  useEffect(() => { fetchTrends() }, [])
 
   const fetchTrends = async () => {
     setIsLoadingTrends(true)
     try {
-      const r = await fetch('/api/tools/trend-stock', { cache: 'no-store' })
-      const d = await r.json()
-      if (d.items && d.items.length > 0) {
-        setTrends(d.items.slice(0, 6).map((item: any) => item.name))
+      const res = await fetch('/api/tools/trends', { cache: 'no-store' })
+      const data = await res.json()
+      if (data.trends && data.trends.length > 0) {
+        setTrends(data.trends.slice(0, 10).map((t: any) => t.title || t))
+        setTrendSource(data.source || '')
       } else {
-        setTrends(['AI活用', '時短術', '最新ガジェット', '副業術', '節約生活', 'ChatGPT'])
+        setTrends(['AI革命', '最新ガジェット', '働き方改革', 'SNSマーケティング', '副業ブーム', '節約術'])
+        setTrendSource('fallback')
       }
     } catch {
-      setTrends(['AI活用', '時短術', '最新ガジェット', '副業術', '節約生活', 'ChatGPT'])
+      setTrends(['AI革命', '最新ガジェット', '働き方改革', 'SNSマーケティング', '副業ブーム', '節約術'])
+      setTrendSource('fallback')
     } finally {
       setIsLoadingTrends(false)
     }
   }
 
-  useEffect(() => { fetchTrends() }, [])
+  const platform = SNS_PLATFORMS.find(p => p.id === selectedPlatform)!
 
-  const handleGenerate = async () => {
-    const finalTopic = topic.trim() || selectedTrend
-    if (!finalTopic) {
-      setError('テーマを入力するか、トレンドを選択してください。')
-      return
-    }
-    setIsGenerating(true)
-    setError(null)
-    setResult(null)
-    try {
-      const res = await fetch('/api/tools/sns-auto-poster', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic: finalTopic, sns: targetSns, trend: selectedTrend }),
-      })
-      if (res.status === 401) {
-        const errData = await res.json().catch(() => ({}))
-        if (errData.reason === 'unauthenticated') {
-          const current = encodeURIComponent(window.location.pathname)
-          window.location.href = `/auth/login?redirect=${current}`
-          return
-        }
-      }
-      if (res.status === 429) {
-        throw new Error('本日の利用制限に達しました。明日またご利用ください。')
-      }
-      const data = await res.json()
-      if (!data.success) throw new Error(data.error || '生成に失敗しました')
-      setResult(data)
-    } catch (e: any) {
-      setError(e.message || '生成に失敗しました。しばらく待って再試行してください。')
-    } finally {
-      setIsGenerating(false)
-    }
+  const effectiveTopic = (() => {
+    if (customTheme) return customTheme
+    if (selectedTrend && selectedPreset) return `${selectedTrend} × ${selectedPreset}`
+    if (selectedTrend) return selectedTrend
+    if (selectedPreset) return selectedPreset
+    return ''
+  })()
+
+  const buildPrompt = () => {
+    const strategyLine = selectedStrategy ? `\n【戦略】${selectedStrategy}` : ''
+    return `${platform.prompt}\n\n【テーマ】${effectiveTopic}${strategyLine}`.trim()
   }
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text)
+  const handleCopy = () => {
+    if (!effectiveTopic) return
+    navigator.clipboard.writeText(buildPrompt())
     setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    setTimeout(() => setCopied(false), 2500)
   }
 
-  const reset = () => {
-    setResult(null)
-    setError(null)
-    setTopic('')
-    setSelectedTrend(null)
-  }
+  const handleBack = useCallback(() => {
+    router.push('/dashboard')
+  }, [router])
 
   return (
-    <div
-      className="min-h-screen bg-[#0f172a] text-slate-100"
-      style={{ fontFamily: "'Inter','Noto Sans JP',sans-serif" }}
-    >
-      <div className="h-1 bg-emerald-500 w-full" />
+    <div className="min-h-screen bg-[#050507] text-slate-200" style={{ fontFamily: "'Inter','Noto Sans JP',sans-serif" }}>
+      <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, #10b981, #6366f1)' }} />
 
-      <div className="max-w-3xl mx-auto px-4 py-12 space-y-8">
+      <div className="max-w-5xl mx-auto px-4 py-10 space-y-6 pb-24">
 
         {/* ヘッダー */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between mb-1">
-            <button onClick={handleBack} className="flex items-center gap-1 text-xs text-slate-400 hover:text-emerald-400 transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
-              ダッシュボードへ戻る
-            </button>
-          </div>
+          <button onClick={handleBack} className="flex items-center gap-1 text-xs text-slate-500 hover:text-emerald-400 transition-colors mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+            ダッシュボードへ戻る
+          </button>
           <div className="flex items-center gap-2">
-            <Share2 size={18} className="text-emerald-400" />
+            <Share2 size={16} className="text-emerald-400" />
             <span className="text-xs font-medium text-emerald-400 tracking-wide">SNS × AI コンテンツ生成</span>
           </div>
-          <h1 className="text-4xl font-semibold text-white tracking-tight leading-[1.15]">
-            AI SNSオートポスター
+          <h1 className="text-4xl font-bold text-white tracking-tight">
+            AI SNS<span className="text-emerald-400">オートポスター</span>
           </h1>
-          <p className="text-slate-400 text-sm leading-relaxed max-w-lg">
-            トレンドキーワードをもとに、X・InstagramでバズるAI投稿文を即生成。コピーしてそのまま投稿できます。
-          </p>
+          <p className="text-slate-400 text-sm">トレンド×プリセット×戦略でバズる投稿プロンプトを自動生成。ChatGPT/Geminiにコピペするだけ。</p>
         </div>
 
-        {/* エラー */}
-        {error && (
-          <div className="flex items-start gap-3 bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-sm text-red-400">
-            <AlertCircle size={16} className="shrink-0 mt-0.5" />
-            <span>{error}</span>
-          </div>
-        )}
+        <div className="grid md:grid-cols-2 gap-6">
 
-        {/* ── 入力フォーム ── */}
-        {!result && (
+          {/* 左カラム */}
           <div className="space-y-5">
 
-            {/* Step 1: トレンド */}
-            <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-4">
+            {/* ① トレンド */}
+            <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-slate-950 text-xs font-bold">1</span>
-                  <span className="text-sm font-semibold text-white">トレンドから選ぶ</span>
+                  <p className="text-xs font-bold text-white">トレンドから選ぶ</p>
+                  {trendSource === 'rss_hybrid' && <span className="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full">リアルタイム</span>}
+                  {trendSource === 'gemini_fallback' && <span className="text-[9px] bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 px-2 py-0.5 rounded-full">AI生成</span>}
                 </div>
-                <button
-                  onClick={fetchTrends}
-                  disabled={isLoadingTrends}
-                  className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-emerald-400 transition-colors disabled:opacity-50"
-                >
-                  <RefreshCw size={12} className={isLoadingTrends ? 'animate-spin' : ''} />
-                  更新
+                <button onClick={fetchTrends} className="flex items-center gap-1 text-slate-500 hover:text-emerald-400 text-[10px] font-semibold transition-colors">
+                  <RefreshCw size={11} className={isLoadingTrends ? 'animate-spin' : ''} /> 更新
                 </button>
               </div>
-              {isLoadingTrends ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="h-10 bg-[#0f172a] rounded-lg animate-pulse border border-slate-700/50" />
-                  ))}
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {trends.map((t, i) => (
-                    <button
-                      key={i}
-                      onClick={() => {
-                        setSelectedTrend(t)
-                        setTopic('')
-                      }}
-                      className={`h-10 px-3 rounded-lg text-sm font-medium transition-all text-left truncate border ${
+              <div className="grid grid-cols-2 gap-2">
+                {isLoadingTrends
+                  ? Array(8).fill(0).map((_, i) => <div key={i} className="h-9 bg-white/5 rounded-lg animate-pulse" />)
+                  : trends.map((t, i) => (
+                    <button key={i}
+                      onClick={() => { setSelectedTrend(prev => prev === t ? '' : t); setCustomTheme('') }}
+                      className={`h-9 px-3 rounded-lg text-xs font-semibold text-left truncate transition-all border ${
                         selectedTrend === t
-                          ? 'bg-emerald-500 text-slate-950 border-emerald-500'
-                          : 'bg-[#0f172a] text-slate-300 border-slate-700/50 hover:border-emerald-500/50 hover:text-emerald-400'
-                      }`}
-                    >
+                          ? 'bg-emerald-600 border-emerald-500 text-white'
+                          : 'border-white/5 bg-black/30 text-slate-400 hover:text-white hover:border-white/20'
+                      }`}>
                       {t}
                     </button>
-                  ))}
+                  ))
+                }
+              </div>
+            </div>
+
+            {/* ② プリセット */}
+            <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-purple-500 text-white text-xs font-bold">2</span>
+                  <p className="text-xs font-bold text-white">プリセットテーマ（42種）</p>
+                </div>
+                {selectedTrend && selectedPreset && (
+                  <span className="text-[9px] bg-purple-500/20 text-purple-400 border border-purple-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <Zap size={9} /> 合成中
+                  </span>
+                )}
+              </div>
+              {/* カテゴリタブ */}
+              <div className="flex flex-wrap gap-1.5">
+                {PRESET_THEMES.map((cat, i) => (
+                  <button key={i} onClick={() => setActivePresetCat(i)}
+                    className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all border ${
+                      activePresetCat === i
+                        ? 'bg-purple-600 border-purple-500 text-white'
+                        : 'border-white/5 bg-black/30 text-slate-500 hover:text-white'
+                    }`}>
+                    {cat.emoji} {cat.category}
+                  </button>
+                ))}
+              </div>
+              {/* プリセット一覧 */}
+              <div className="space-y-1.5">
+                {PRESET_THEMES[activePresetCat].items.map((item, i) => (
+                  <button key={i}
+                    onClick={() => { setSelectedPreset(prev => prev === item ? '' : item); setCustomTheme('') }}
+                    className={`w-full h-9 px-3 rounded-lg text-xs font-semibold text-left truncate transition-all border ${
+                      selectedPreset === item
+                        ? 'bg-purple-600 border-purple-500 text-white'
+                        : 'border-white/5 bg-black/30 text-slate-400 hover:text-white hover:border-white/20'
+                    }`}>
+                    {item}
+                  </button>
+                ))}
+              </div>
+              {/* 合成プレビュー */}
+              {selectedTrend && selectedPreset && (
+                <div className="bg-purple-900/20 border border-purple-500/30 rounded-xl px-3 py-2 text-xs text-purple-300">
+                  <span className="text-purple-500 font-semibold">合成: </span>
+                  {selectedTrend} × {selectedPreset}
                 </div>
               )}
             </div>
 
-            {/* Step 2: 自由入力 */}
-            <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-3">
+            {/* ③ ターゲットSNS */}
+            <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
               <div className="flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-600 text-slate-300 text-xs font-bold">2</span>
-                <span className="text-sm font-semibold text-white">または自由にテーマを入力</span>
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-600 text-slate-300 text-xs font-bold">3</span>
+                <p className="text-xs font-bold text-white">ターゲットSNS</p>
               </div>
-              {/* プリセット */}
-              <div className="flex flex-wrap gap-2">
-                {[
-                  '朝活で人生が変わった話',
-                  'ChatGPTで時間を10倍に',
-                  '副業で月5万円稼ぐ方法',
-                  'AIツール5選まとめ',
-                  '節約術で年30万貯めた',
-                  '在宅ワークのコツ',
-                  'Kindle出版してみた',
-                  '習慣化に失敗する理由',
-                ].map((preset, i) => (
-                  <button
-                    key={i}
-                    onClick={() => { setTopic(preset); setSelectedTrend(null) }}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${topic === preset ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' : 'bg-[#0f172a] text-slate-400 border-slate-700/50 hover:border-emerald-500/50 hover:text-emerald-300'}`}
-                  >
-                    {preset}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {SNS_PLATFORMS.map(p => (
+                  <button key={p.id} onClick={() => setSelectedPlatform(p.id)}
+                    className={`flex items-center gap-2 h-10 px-3 rounded-xl text-xs font-semibold border transition-all ${
+                      selectedPlatform === p.id
+                        ? 'bg-emerald-600 border-emerald-500 text-white'
+                        : 'border-white/5 bg-black/30 text-slate-400 hover:text-white'
+                    }`}>
+                    <p.icon size={14} /> {p.label}
                   </button>
                 ))}
               </div>
-              <textarea
-                value={topic}
-                onChange={e => { setTopic(e.target.value); setSelectedTrend(null) }}
-                rows={3}
-                placeholder="例：ChatGPTで副業を始める方法、朝活の習慣化..."
-                className="w-full bg-[#0f172a] border border-slate-700 rounded-lg px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-emerald-500 outline-none transition-colors resize-none"
-              />
             </div>
+          </div>
 
-            {/* Step 3: SNS選択 */}
-            <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-3">
+          {/* 右カラム */}
+          <div className="space-y-5">
+
+            {/* ④ 戦略 */}
+            <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
               <div className="flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-600 text-slate-300 text-xs font-bold">3</span>
-                <span className="text-sm font-semibold text-white">ターゲットSNS</span>
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-600 text-slate-300 text-xs font-bold">4</span>
+                <p className="text-xs font-bold text-white">投稿戦略（15種）</p>
               </div>
-              <div className="flex gap-3">
-                {([
-                  { id: 'X', label: 'X (Twitter)', icon: Twitter },
-                  { id: 'Instagram', label: 'Instagram', icon: Instagram },
-                ] as { id: 'X' | 'Instagram'; label: string; icon: any }[]).map(s => (
-                  <button
-                    key={s.id}
-                    onClick={() => setTargetSns(s.id)}
-                    className={`flex-1 h-12 flex items-center justify-center gap-2 rounded-xl text-sm font-medium transition-all border ${
-                      targetSns === s.id
-                        ? 'bg-emerald-500 text-slate-950 border-emerald-500'
-                        : 'bg-[#0f172a] text-slate-400 border-slate-700/50 hover:border-slate-500 hover:text-slate-200'
-                    }`}
-                  >
-                    <s.icon size={16} />
+              <div className="grid grid-cols-3 gap-2">
+                {STRATEGIES.map(s => (
+                  <button key={s.label}
+                    onClick={() => setSelectedStrategy(prev => prev === s.content ? '' : s.content)}
+                    className={`h-10 px-2 rounded-lg text-[10px] font-semibold transition-all border leading-tight ${
+                      selectedStrategy === s.content
+                        ? 'bg-emerald-600 border-emerald-500 text-white'
+                        : 'border-white/5 bg-black/30 text-slate-400 hover:text-white'
+                    }`}>
                     {s.label}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* 生成ボタン */}
+            {/* ⑤ カスタム */}
+            <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-600 text-slate-300 text-xs font-bold">5</span>
+                <p className="text-xs font-bold text-white">完全カスタムテーマ（任意）</p>
+              </div>
+              <textarea
+                value={customTheme}
+                onChange={e => {
+                  setCustomTheme(e.target.value)
+                  if (e.target.value) { setSelectedTrend(''); setSelectedPreset('') }
+                }}
+                placeholder="独自のテーマを入力...（入力するとトレンド・プリセットより優先）"
+                rows={2}
+                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-emerald-500 transition-all resize-none placeholder:text-slate-600"
+              />
+            </div>
+
+            {/* プロンプトプレビュー */}
+            <div className="bg-[#0d0f1a] border border-white/5 rounded-2xl p-5 space-y-3">
+              <div className="flex items-center gap-2">
+                <Sparkles size={12} className="text-emerald-400" />
+                <p className="text-xs font-bold text-slate-400">生成プロンプトプレビュー</p>
+              </div>
+              <div className="bg-black/40 rounded-xl p-4 text-xs text-slate-400 leading-relaxed min-h-[80px] whitespace-pre-wrap">
+                {effectiveTopic
+                  ? buildPrompt()
+                  : <span className="text-slate-600">テーマを選択するとここにプロンプトが表示されます</span>
+                }
+              </div>
+            </div>
+
+            {/* コピーボタン */}
             <button
-              onClick={handleGenerate}
-              disabled={isGenerating || (!topic.trim() && !selectedTrend)}
-              className="w-full h-12 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-base rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(16,185,129,0.25)]"
-            >
-              {isGenerating ? (
-                <><Loader2 size={18} className="animate-spin" /> 生成中...</>
-              ) : (
-                <><Zap size={18} /> 投稿文を生成する</>
-              )}
+              onClick={handleCopy}
+              disabled={!effectiveTopic}
+              className={`w-full h-14 rounded-2xl font-bold text-base transition-all shadow-lg flex items-center justify-center gap-2 ${
+                copied
+                  ? 'bg-emerald-500 text-slate-950'
+                  : effectiveTopic
+                    ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                    : 'bg-white/5 text-slate-600 cursor-not-allowed'
+              }`}>
+              {copied ? <><CheckCircle2 size={18} /> コピーしました！</> : <><Copy size={18} /> プロンプトをコピー</>}
             </button>
 
-            {/* 生成中インジケーター */}
-            {isGenerating && (
-              <div className="bg-[#1e293b] border border-emerald-500/20 rounded-xl p-5 flex items-center gap-4">
-                <div className="relative flex-shrink-0">
-                  <Loader2 size={28} className="animate-spin text-emerald-500" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-white">AIが投稿文を生成しています</p>
-                  <p className="text-xs text-slate-400 mt-0.5">トレンドを分析して最適な文章を作成中...</p>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ── 結果表示 ── */}
-        {result && (
-          <div className="space-y-5">
-            {/* 成功ヘッダー */}
-            <div className="flex items-center justify-between bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4">
-              <div className="flex items-center gap-3">
-                <CheckCircle2 size={20} className="text-emerald-500" />
-                <div>
-                  <p className="text-sm font-semibold text-white">投稿文を生成しました</p>
-                  <p className="text-xs text-slate-400 mt-0.5">{targetSns} 向け最適化済み</p>
-                </div>
-              </div>
-              <button
-                onClick={reset}
-                className="text-xs text-slate-400 hover:text-emerald-400 transition-colors border border-slate-700/50 rounded-lg px-3 py-1.5"
-              >
-                やり直す
-              </button>
-            </div>
-
-            {/* 投稿本文 */}
-            <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <TrendingUp size={16} className="text-emerald-400" />
-                  <span className="text-sm font-semibold text-white">投稿文</span>
-                </div>
-                <button
-                  onClick={() => copyToClipboard(result.content)}
-                  className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-all ${
-                    copied
-                      ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
-                      : 'bg-[#0f172a] text-slate-400 border-slate-700/50 hover:text-emerald-400 hover:border-emerald-500/40'
-                  }`}
-                >
-                  {copied ? <><Check size={12} /> コピー済み</> : <><Copy size={12} /> コピー</>}
-                </button>
-              </div>
-              <div className="bg-[#0f172a] border border-slate-700/30 rounded-lg p-4 text-sm text-slate-200 leading-relaxed whitespace-pre-wrap min-h-[120px]">
-                {result.content}
-              </div>
-            </div>
-
-            {/* バズる理由 + 投稿時間 */}
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-2">
-                <div className="flex items-center gap-2">
-                  <Zap size={15} className="text-emerald-400" />
-                  <span className="text-xs font-semibold text-slate-300 uppercase tracking-wide">バズる理由</span>
-                </div>
-                <p className="text-sm text-slate-400 leading-relaxed">{result.strategy}</p>
-              </div>
-              <div className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-5 space-y-2">
-                <div className="flex items-center gap-2">
-                  <Clock size={15} className="text-emerald-400" />
-                  <span className="text-xs font-semibold text-slate-300 uppercase tracking-wide">推奨投稿時間</span>
-                </div>
-                <p className="text-2xl font-semibold text-white">{result.bestTime}</p>
-              </div>
-            </div>
-
-            {/* 次のアクション */}
-            <div className="grid grid-cols-3 gap-3">
+            {/* AIサービスへのリンク */}
+            <div className="grid grid-cols-3 gap-2">
               {[
-                { icon: Share2,    label: '即時投稿',  desc: 'コピーして投稿' },
-                { icon: TrendingUp, label: '反響分析', desc: 'インプ・エンゲージ' },
-                { icon: Zap,       label: '売上連動',  desc: 'アフィリ×SNS' },
-              ].map((s, i) => (
-                <div key={i} className="bg-[#1e293b] border border-slate-700/50 rounded-xl p-4 text-center space-y-1">
-                  <s.icon size={16} className="text-emerald-400 mx-auto" />
-                  <p className="text-xs font-semibold text-white">{s.label}</p>
-                  <p className="text-[11px] text-slate-500">{s.desc}</p>
-                </div>
+                { label: 'ChatGPT', url: 'https://chatgpt.com' },
+                { label: 'Gemini',  url: 'https://gemini.google.com' },
+                { label: 'Claude',  url: 'https://claude.ai' },
+              ].map(ai => (
+                <button key={ai.label} onClick={() => window.open(ai.url, '_blank')}
+                  className="flex items-center justify-center gap-1.5 h-10 bg-white/5 border border-white/10 hover:border-emerald-500/30 hover:bg-emerald-500/5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition-all">
+                  <ExternalLink size={11} /> {ai.label}
+                </button>
               ))}
             </div>
           </div>
-        )}
-
-        {/* フッター */}
-        <div className="pt-6 border-t border-slate-800 flex items-center justify-between text-xs text-slate-600">
-          <span>© 2026 NextraLabs</span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            Gemini 1.5 Flash × Real-time Trends
-          </span>
         </div>
       </div>
 
-      {/* Amazonアフィリエイト */}
       <AffiliateBanner toolId="sns-auto-poster" />
     </div>
   )
 }
-
