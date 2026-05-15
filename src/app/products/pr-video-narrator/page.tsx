@@ -189,12 +189,3 @@ export default function PrVideoNarratorLpPage() {
     </div>
   )
 }
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-    </div>
-  )
-}
