@@ -41,9 +41,7 @@ export function Footer() {
               <li><Link href="/tokusho" className="hover:text-primary transition-colors">特定商取引法に基づく表記</Link></li>
               <li><Link href="/contact" className="hover:text-primary transition-colors">お問い合わせ</Link></li>
             </ul>
-          </div>
-          <div>
-            <h4 className="text-sm font-semibold mb-3">関連サービス</h4>
+            <h4 className="text-sm font-semibold mt-6 mb-3">関連サービス</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <a href="https://ai-adult.jp" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center gap-1">
