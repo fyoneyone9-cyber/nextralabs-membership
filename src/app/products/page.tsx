@@ -89,7 +89,7 @@ function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
   onToggleFav: (e: React.MouseEvent, id: string) => void
   isAdmin?: boolean
 }) {
-  const planLabelMap: Record<string, string> = { '無料': 'FREE', 'ライト': 'LIGHT', 'スタンダード': 'STANDARD', 'プレミアム': 'MASTER', 'お見積もり': 'ENTERPRISE' }
+  const planLabelMap: Record<string, string> = { '無料': 'FREE', 'ライト': 'LIGHT', 'スタンダード': 'STANDARD', 'プレミアム': 'MASTER', 'お見積もり': 'ENTERPRISE', '法人・個人事業主': 'BUSINESS' }
   const displayBadge = planLabelMap[product.plan] || 'BASIC'
   const planBadgeColors: Record<string, string> = {
     '無料': 'bg-slate-500/20 text-slate-300 border-slate-500/40',
@@ -97,6 +97,7 @@ function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
     'スタンダード': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
     'プレミアム': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
     'お見積もり': 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+    '法人・個人事業主': 'bg-violet-500/20 text-violet-300 border-violet-500/40',
   }
   const badgeClass = "text-[9px] font-medium tracking-wide px-2 py-0.5 rounded-full border " + (planBadgeColors[product.plan] || planBadgeColors['無料'])
 
@@ -135,14 +136,14 @@ function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
           <p className="text-slate-400 text-xs font-normal leading-relaxed">{product.sub}</p>
         </div>
         <div className="pt-4 border-t border-white/5 flex flex-col gap-2.5 mt-auto">
-          {product.plan === 'お見積もり' ? (
+          {(product.plan === 'お見積もり' || product.plan === '法人・個人事業主') ? (
             <div className="flex flex-col gap-2 w-full">
-              <a href="mailto:f.yoneyone9@gmail.com?subject=Nextra AI お見積もり依頼" className="block w-full">
+              <Link href="/contact" className="block w-full">
                 <Button className="w-full h-10 md:h-11 font-semibold text-sm rounded-lg transition-all"
-                  style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#000' }}>
-                  お見積もりを依頼 →
+                  style={{ background: product.plan === '法人・個人事業主' ? 'linear-gradient(135deg, #7c3aed, #6d28d9)' : 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' }}>
+                  お問い合わせ・見積もり →
                 </Button>
-              </a>
+              </Link>
               {product.lpUrl && (
                 <Link href={product.lpUrl} className="block w-full">
                   <Button variant="outline" className="w-full h-8 font-medium text-xs rounded-lg border-white/10 text-slate-400 hover:text-white hover:border-white/20 transition-all">
@@ -165,6 +166,11 @@ function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
                 <span className="flex-1 text-center text-[9px] font-medium px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">法人向け</span>
                 <span className="flex-1 text-center text-[9px] font-medium px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">個人事業主向け</span>
               </div>
+            </div>
+          ) : product.plan === '法人・個人事業主' ? (
+            <div className="flex justify-between items-center px-2 py-1 bg-black/40 rounded-lg border border-white/5">
+              <span className={badgeClass}>法人・個人事業主 プラン</span>
+              <Lock className="h-2.5 w-2.5 text-violet-500/30" />
             </div>
           ) : (
             <div className="flex justify-between items-center px-2 py-1 bg-black/40 rounded-lg border border-white/5">
