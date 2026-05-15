@@ -279,13 +279,16 @@ export default function DashboardClient({ user, profile, subscription }: any) {
                 </Link>
 
                 {/* PR動画ナレーター */}
-                <div className="flex items-center gap-3 rounded-xl bg-[#0d1117] border border-white/10 px-4 py-3">
+                <Link
+                  href="/pr-video-narrator"
+                  className="flex items-center gap-3 rounded-xl bg-[#0d1117] border border-white/10 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all px-4 py-3 group"
+                >
                   <span className="text-lg">🎬</span>
                   <div>
-                    <p className="text-sm font-medium text-white">PR動画ナレーター</p>
+                    <p className="text-sm font-medium text-white group-hover:text-emerald-300 transition-colors">PR動画ナレーター</p>
                     <p className="text-[11px] text-slate-500">OpenClawに動画パスを送るだけで自動ナレーション合成</p>
                   </div>
-                </div>
+                </Link>
               </div>
             )}
           </div>
