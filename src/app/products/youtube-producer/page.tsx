@@ -133,6 +133,41 @@ export default function YoutubeProducerLp() {
           </div>
         </Card>
       </section>
+      {/* 🎬 実演動画セクション */}
+      <section id="demo" className="max-w-5xl mx-auto px-4 py-24 space-y-12">
+        <div className="text-center space-y-4">
+          <Badge className="bg-red-600/10 text-red-500 border-red-500/20 px-4 py-1 rounded-full text-xs font-bold uppercase">実演動画</Badge>
+          <h3 className="text-3xl md:text-4xl font-bold text-white tracking-tighter">
+            百聞は一見にしかず。<br/>
+            <span className="text-red-500">5分で動画が完成する</span>様子を見る
+          </h3>
+          <p className="text-slate-400 text-sm">台本→画像→BGM→SEOまで、実際の操作をそのまま公開</p>
+        </div>
+        <div className="relative rounded-[2rem] overflow-hidden border-2 border-red-500/20 shadow-[0_0_60px_rgba(220,38,38,0.15)] bg-black aspect-video">
+          <iframe
+            className="w-full h-full"
+            src="https://www.youtube.com/embed/YOUR_VIDEO_ID?rel=0&modestbranding=1"
+            title="AI YouTubeプロデューサー 実演動画"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+        <div className="grid grid-cols-3 gap-6 text-center">
+          <div className="bg-[#13141f] rounded-2xl p-6 border border-white/5">
+            <p className="text-3xl font-bold text-red-500">5分</p>
+            <p className="text-slate-400 text-xs mt-2 font-medium">企画〜SEOまで完成</p>
+          </div>
+          <div className="bg-[#13141f] rounded-2xl p-6 border border-white/5">
+            <p className="text-3xl font-bold text-red-500">0円</p>
+            <p className="text-slate-400 text-xs mt-2 font-medium">追加費用なし</p>
+          </div>
+          <div className="bg-[#13141f] rounded-2xl p-6 border border-white/5">
+            <p className="text-3xl font-bold text-red-500">全自動</p>
+            <p className="text-slate-400 text-xs mt-2 font-medium">台本・画像・BGM・SEO</p>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section className="py-16 bg-[#0d1117]">
         <div className="container mx-auto px-4 max-w-3xl">

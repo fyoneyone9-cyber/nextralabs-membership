@@ -101,9 +101,9 @@ const TOOL_CATEGORIES = [
     tools: [
       { id: 'nextra-ai',            name: 'Nextra AI (総合ホテルDX)', icon: Building2,    color: 'text-emerald-500', plan: 'premium' },
       { id: 'inbox-organizer',      name: 'Gmail AI Accelerator',    icon: Mail,         color: 'text-blue-400',    plan: 'premium' },
-      { id: 'youtube-producer',     name: 'AI YouTubeプロデューサー', icon: Youtube,      color: 'text-red-500',     plan: 'premium' },
+      { id: 'youtube-producer',     name: 'AI YouTubeプロデューサー', icon: Youtube,      color: 'text-red-500',     plan: 'premium', hasVideo: true },
       { id: 'ai-sidejob',           name: 'AI副業スタートダッシュ',   icon: Briefcase,    color: 'text-emerald-400',  plan: 'premium' },
-      { id: 'ai-select-shop',       name: 'AIセレクトショップ',       icon: ShoppingCart, color: 'text-pink-400',    plan: 'premium' },
+      { id: 'ai-select-shop',       name: 'AIセレクトショップ',       icon: ShoppingCart, color: 'text-pink-400',    plan: 'premium', hasVideo: true },
       { id: 'ai-exam-generator',    name: 'AI問題生成 & 苦手分析',    icon: Brain,        color: 'text-emerald-400',  plan: 'premium' },
 
       { id: 'scam-defender',         name: 'AI詐欺ディフェンダー',       icon: ShieldCheck,   color: 'text-red-400',     plan: 'premium' },
@@ -250,10 +250,10 @@ export default function DashboardClient({ user, profile, subscription }: any) {
                                <p className="text-[10px] text-slate-500">{locked ? 'アップグレードが必要' : '起動する →'}</p>
                             </div>
                           </Link>
-                          {tool.id === 'ai-select-shop' && !locked && (
+                          {(tool as any).hasVideo && !locked && (
                             <a
-                              href="https://www.youtube.com/watch?v=frDeVaGoqZ4"
-                              target="_blank"
+                              href={tool.id === 'youtube-producer' ? '/products/youtube-producer#demo' : tool.id === 'ai-select-shop' ? 'https://www.youtube.com/watch?v=frDeVaGoqZ4' : '#'}
+                              target={tool.id === 'youtube-producer' ? '_self' : '_blank'}
                               rel="noopener noreferrer"
                               onClick={e => e.stopPropagation()}
                               className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-md bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 transition-all"
