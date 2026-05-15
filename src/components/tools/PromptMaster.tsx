@@ -304,7 +304,7 @@ export default function PromptMaster() {
               <div className="text-xs font-medium text-slate-500 text-center">PROMPT COMMAND HUB</div>
 
               {/* Preview */}
-              {subject && (
+              {(subject || logoConcept || selectedTags.length > 0) && (
                 <div className="rounded-lg p-3 text-xs text-slate-400 leading-relaxed max-h-40 overflow-y-auto"
                   style={{ background: '#13141f', border: '1px solid #1e293b' }}>
                   {getCombinedPrompt()}
@@ -314,12 +314,12 @@ export default function PromptMaster() {
               {/* Copy button */}
               <Button
                 onClick={handleCopy}
-                disabled={!subject}
+                disabled={!subject && !logoConcept && selectedTags.length === 0}
                 className="w-full h-12 text-sm font-semibold rounded-lg transition-all"
                 style={
                   copied
                     ? { background: '#059669', color: '#fff' }
-                    : subject
+                    : (subject || logoConcept || selectedTags.length > 0)
                     ? { background: '#10b981', color: '#fff' }
                     : { background: '#1e293b', color: '#475569', cursor: 'not-allowed' }
                 }
