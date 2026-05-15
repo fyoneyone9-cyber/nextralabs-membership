@@ -203,12 +203,19 @@ const LPContent = () => {
       </section>
 
       {/* YouTube動画 */}
-      <section className="max-w-3xl mx-auto px-4 pb-16">
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-white tracking-tight flex items-center gap-2">
-            <span className="text-red-500">▶</span> 紹介動画を見る
-          </h2>
-          <div className="relative w-full rounded-2xl overflow-hidden border border-white/10" style={{ paddingTop: '56.25%' }}>
+      <section className="bg-[#0d1117] border-y border-white/5 py-20">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center mb-8 space-y-2">
+            <p className="text-xs font-bold text-red-400 uppercase tracking-widest flex items-center justify-center gap-2">
+              <span className="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              公式紹介動画
+            </p>
+            <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
+              実際の動作を<span className="text-emerald-400">動画で確認</span>
+            </h2>
+            <p className="text-slate-400 text-sm">キーワード選択からShopify出品まで、数分で完結する様子をご覧ください</p>
+          </div>
+          <div className="relative w-full rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.6)]" style={{ paddingTop: '56.25%' }}>
             <iframe
               className="absolute inset-0 w-full h-full"
               src="https://www.youtube.com/embed/frDeVaGoqZ4"
@@ -216,6 +223,17 @@ const LPContent = () => {
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
+          </div>
+          <div className="mt-6 text-center">
+            <a
+              href="https://www.youtube.com/@NextraLab"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-xs text-slate-500 hover:text-red-400 transition-colors"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              NextraLabs 公式YouTubeチャンネルを見る →
+            </a>
           </div>
         </div>
       </section>
