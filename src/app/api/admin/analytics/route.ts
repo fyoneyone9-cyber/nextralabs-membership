@@ -58,17 +58,24 @@ export async function GET(req: NextRequest) {
     .map(([date, count]) => ({ date, count }))
 
   // 流入元（referrer）集計
+  // ※ referer=null は「新規流入（直接アクセス or 初回訪問）」として別カウント
+  // ※ referer=自サイト は「サイト内回遊（同一セッション内ページ遷移）」としてスキップ（集計から除外）
+  let newVisits = 0  // referer なし = 新規流入
   const referrerCounts: Record<string, number> = {}
   for (const row of data || []) {
     const ref = row.referrer
     if (!ref) {
-      referrerCounts['(直接アクセス)'] = (referrerCounts['(直接アクセス)'] || 0) + 1
+      // refererなし = 直接アクセスまたは新規流入（ブックマーク・URL直打ち含む）
+      newVisits++
     } else {
       try {
         const url = new URL(ref)
-        // 自サイト内遷移は除外
-        if (url.hostname.includes('nextralabs') || url.hostname.includes('membership-site') || url.hostname.includes('nextralab')) {
-          referrerCounts['(サイト内遷移)'] = (referrerCounts['(サイト内遷移)'] || 0) + 1
+        if (
+          url.hostname.includes('nextralabs') ||
+          url.hostname.includes('membership-site') ||
+          url.hostname.includes('nextralab')
+        ) {
+          // 自サイト内遷移はスキップ（同一セッションの回遊なので流入元には含めない）
         } else {
           const domain = url.hostname.replace(/^www\./, '')
           referrerCounts[domain] = (referrerCounts[domain] || 0) + 1
@@ -77,6 +84,10 @@ export async function GET(req: NextRequest) {
         referrerCounts['(不明)'] = (referrerCounts['(不明)'] || 0) + 1
       }
     }
+  }
+  // 新規流入を先頭に追加
+  if (newVisits > 0) {
+    referrerCounts['(新規流入・直接アクセス)'] = newVisits
   }
 
   const referrers = Object.entries(referrerCounts)
