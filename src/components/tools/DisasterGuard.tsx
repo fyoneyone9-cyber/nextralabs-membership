@@ -178,15 +178,15 @@ const MasterEngine = () => {
   if (!isClient) return null;
 
   return (
-    <div className="max-w-4xl mx-auto p-2 md:p-10 space-y-4 md:space-y-10 min-h-screen text-slate-200 font-sans pb-32 bg-[#050507] text-left print:my-0 print:p-0">
+    <div className="max-w-4xl mx-auto p-2 md:p-10 space-y-4 md:space-y-10 min-h-screen text-foreground font-sans pb-32 bg-background text-left print:my-0 print:p-0">
 
       {/* カメラモーダル */}
       {isCameraOpen && (
         <div className="fixed inset-0 z-50 bg-black/95 flex flex-col items-center justify-center p-4">
           <div className="w-full max-w-lg space-y-4">
             <div className="flex items-center justify-between">
-              <p className="text-sky-400 font-black uppercase italic tracking-widest text-sm">📷 現場撮影</p>
-              <button onClick={closeCamera} className="text-slate-400 hover:text-white">
+              <p className="text-primary font-bold uppercase tracking-widest text-sm">📷 現場撮影</p>
+              <button onClick={closeCamera} className="text-muted-foreground hover:text-foreground">
                 <X size={28} />
               </button>
             </div>
@@ -195,19 +195,19 @@ const MasterEngine = () => {
               autoPlay
               playsInline
               muted
-              className="w-full rounded-2xl border-2 border-sky-500/30 bg-black"
+              className="w-full rounded-2xl border border-border bg-black"
             />
             <canvas ref={canvasRef} className="hidden" />
             <div className="flex gap-3">
               <button
                 onClick={flipCamera}
-                className="flex-1 h-14 bg-slate-800 border border-white/10 rounded-2xl text-slate-300 font-black text-sm hover:bg-slate-700 transition-all"
+                className="flex-1 h-14 bg-secondary border border-border rounded-2xl text-secondary-foreground font-bold text-sm hover:bg-accent transition-all"
               >
                 🔄 カメラ切替
               </button>
               <button
                 onClick={takePhoto}
-                className="flex-[2] h-14 bg-sky-600 hover:bg-sky-500 rounded-2xl text-white font-black text-lg transition-all active:scale-95 shadow-xl"
+                className="flex-[2] h-14 bg-primary hover:bg-primary/90 rounded-2xl text-primary-foreground font-bold text-lg transition-all active:scale-95 shadow-xl"
               >
                 📸 撮影
               </button>
@@ -216,78 +216,79 @@ const MasterEngine = () => {
         </div>
       )}
 
-      <div className="text-center space-y-1">
-        <Badge className="bg-sky-600 text-white font-black italic px-3 py-0.5 text-[8px] md:text-[10px] uppercase rounded-full">Survival Intelligence Hub</Badge>
-        <h1 className="text-2xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none drop-shadow-2xl">AI防災パーソナルガイド</h1>
-        <div className="inline-block bg-emerald-600 text-white font-black px-4 py-0.5 rounded-full uppercase italic text-[8px] md:text-[10px] tracking-widest shadow-lg">MASTERMODEL</div>
+      <div className="text-center space-y-2">
+        <Badge className="bg-primary/20 text-primary border border-primary/30 font-bold px-3 py-0.5 text-[10px] uppercase rounded-full">AI防災ツール</Badge>
+        <h1 className="text-2xl md:text-5xl font-black text-foreground tracking-tight leading-tight">AI防災パーソナルガイド</h1>
+        <p className="text-sm text-muted-foreground">あなたの居住環境に合わせた生存戦略をAIが生成します</p>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-8 md:gap-12 animate-in fade-in duration-700">
-        {/* LEFT: MISSION PARAMETERS */}
+      <div className="grid lg:grid-cols-2 gap-6 md:gap-10 animate-in fade-in duration-700">
+        {/* LEFT: 入力フォーム */}
         <div className="space-y-6">
-          <div className="bg-[#13141f] border-2 border-white/5 rounded-[2.5rem] p-6 md:p-10 shadow-2xl space-y-8 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-sky-500 to-transparent opacity-30" />
+          <div className="bg-card border border-border rounded-2xl p-6 md:p-8 shadow-lg space-y-6 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent opacity-60" />
 
             {/* GPS */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between px-2">
-                <p className="text-[10px] font-black text-sky-500 uppercase italic tracking-widest">#1 Environment Scan</p>
-                <div className={`px-3 py-1 rounded-full text-[8px] font-black uppercase ${location ? 'bg-emerald-500/20 text-emerald-500' : 'bg-slate-800 text-slate-500'}`}>
-                  {location ? "GPS_LOCKED" : "GPS_IDLE"}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-bold text-primary uppercase tracking-wider">① 現在地・天気を取得</p>
+                <div className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${location ? 'bg-[hsl(var(--gsk-emerald)/0.15)] text-[hsl(var(--gsk-emerald))]' : 'bg-muted text-muted-foreground'}`}>
+                  {location ? "取得済み" : "未取得"}
                 </div>
               </div>
               <button
                 onClick={getMyLocation}
                 disabled={isLocating}
-                className="w-full h-16 bg-white/5 hover:bg-white/10 border-2 border-white/10 text-white font-black rounded-2xl flex items-center justify-center gap-4 transition-all active:scale-95 group relative overflow-hidden"
+                className="w-full h-14 bg-secondary hover:bg-accent border border-border text-foreground font-bold rounded-xl flex items-center justify-center gap-3 transition-all active:scale-95 group"
               >
-                <MapPin className={`w-6 h-6 ${isLocating ? 'animate-ping' : 'group-hover:text-sky-400'}`} />
-                <span className="text-sm md:text-base uppercase italic">{isLocating ? "定位中..." : "GPSで現在地・天気を特定"}</span>
+                <MapPin className={`w-5 h-5 text-primary ${isLocating ? 'animate-ping' : ''}`} />
+                <span className="text-sm">{isLocating ? "位置情報を取得中..." : "GPSで現在地・天気を特定"}</span>
               </button>
 
               {location && (
                 <div className="grid grid-cols-2 gap-3 animate-in slide-in-from-top-2">
-                  <div className="bg-black/50 border border-white/5 p-4 rounded-xl text-center">
-                    <p className="text-[8px] font-black text-slate-500 uppercase mb-1 italic">Coordinates</p>
-                    <p className="text-xs font-mono text-sky-400">{location.lat.toFixed(4)}, {location.lng.toFixed(4)}</p>
+                  <div className="bg-muted border border-border p-3 rounded-xl text-center">
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">座標</p>
+                    <p className="text-xs font-mono text-primary">{location.lat.toFixed(4)}, {location.lng.toFixed(4)}</p>
                   </div>
-                  <div className="bg-black/50 border border-white/5 p-4 rounded-xl text-center">
-                    <p className="text-[8px] font-black text-slate-500 uppercase mb-1 italic">Realtime Weather</p>
-                    <p className="text-xs font-bold text-white uppercase italic">{weather ? `${weather.temperature}℃ / ${weather.windspeed}km/h` : "Syncing..."}</p>
+                  <div className="bg-muted border border-border p-3 rounded-xl text-center">
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">現在の天気</p>
+                    <p className="text-xs font-bold text-foreground">{weather ? `${weather.temperature}℃ / ${weather.windspeed}km/h` : "取得中..."}</p>
                   </div>
                 </div>
               )}
             </div>
 
             {/* フォーム */}
-            <div className="space-y-4 bg-black/40 p-6 rounded-[2rem] border border-white/5 shadow-inner">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-4 bg-muted/50 p-5 rounded-xl border border-border">
+              <p className="text-xs font-bold text-primary uppercase tracking-wider">② 居住環境を入力</p>
+              <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">都道府県</label>
-                  <input value={pref} onChange={(e) => setPref(e.target.value)} placeholder="神奈川県" className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-sky-500 outline-none transition-all" />
+                  <label className="text-xs font-medium text-muted-foreground px-1">都道府県</label>
+                  <input value={pref} onChange={(e) => setPref(e.target.value)} placeholder="神奈川県" className="w-full h-11 bg-input border border-border rounded-lg px-3 text-sm text-foreground focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">市区町村</label>
-                  <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="海老名市" className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-sky-500 outline-none transition-all" />
+                  <label className="text-xs font-medium text-muted-foreground px-1">市区町村</label>
+                  <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="海老名市" className="w-full h-11 bg-input border border-border rounded-lg px-3 text-sm text-foreground focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" />
                 </div>
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">備蓄状況（水・食料など）</label>
-                <input value={stock} onChange={(e) => setStock(e.target.value)} placeholder="例: 水10L, 非常食3日分あり" className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-sky-500 outline-none transition-all" />
+                <label className="text-xs font-medium text-muted-foreground px-1">備蓄状況（水・食料など）</label>
+                <input value={stock} onChange={(e) => setStock(e.target.value)} placeholder="例: 水10L, 非常食3日分あり" className="w-full h-11 bg-input border border-border rounded-lg px-3 text-sm text-foreground focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" />
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-500 uppercase px-3 italic">住居形態（木造・マンション等）</label>
-                <input value={housing} onChange={(e) => setHousing(e.target.value)} placeholder="例: 木造2階建て" className="w-full h-12 bg-[#0a0b14] border-2 border-white/5 rounded-xl px-4 text-sm text-white focus:border-sky-500 outline-none transition-all" />
+                <label className="text-xs font-medium text-muted-foreground px-1">住居形態（木造・マンション等）</label>
+                <input value={housing} onChange={(e) => setHousing(e.target.value)} placeholder="例: 木造2階建て" className="w-full h-11 bg-input border border-border rounded-lg px-3 text-sm text-foreground focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" />
               </div>
             </div>
 
             {/* ===== カメラセクション ===== */}
-            <div className="space-y-4 bg-black/40 p-6 rounded-[2rem] border border-sky-500/20 shadow-inner">
-              <div className="flex items-center justify-between px-1">
-                <p className="text-[10px] font-black text-sky-500 uppercase italic tracking-widest">#2 現場写真スキャン</p>
+            <div className="space-y-3 bg-muted/50 p-5 rounded-xl border border-border">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-bold text-primary uppercase tracking-wider">③ 現場写真（任意）</p>
                 {photos.length > 0 && (
-                  <span className="px-3 py-1 rounded-full text-[8px] font-black uppercase bg-sky-500/20 text-sky-400">
-                    {photos.length}枚撮影済み
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-primary/20 text-primary">
+                    {photos.length}枚追加済み
                   </span>
                 )}
               </div>
@@ -295,15 +296,15 @@ const MasterEngine = () => {
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={openCamera}
-                  className="h-14 bg-sky-600/20 hover:bg-sky-600 border-2 border-sky-500/40 rounded-2xl text-sky-400 hover:text-white font-black text-xs uppercase italic transition-all flex items-center justify-center gap-2 shadow-lg"
+                  className="h-12 bg-primary/10 hover:bg-primary border border-primary/40 rounded-xl text-primary hover:text-primary-foreground font-bold text-xs uppercase transition-all flex items-center justify-center gap-2"
                 >
-                  <Camera size={18} /> カメラ撮影
+                  <Camera size={16} /> カメラ撮影
                 </button>
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="h-14 bg-slate-700/40 hover:bg-slate-700 border-2 border-white/10 rounded-2xl text-slate-400 hover:text-white font-black text-xs uppercase italic transition-all flex items-center justify-center gap-2 shadow-lg"
+                  className="h-12 bg-secondary hover:bg-accent border border-border rounded-xl text-secondary-foreground font-bold text-xs uppercase transition-all flex items-center justify-center gap-2"
                 >
-                  <ImagePlus size={18} /> 画像選択
+                  <ImagePlus size={16} /> 画像選択
                 </button>
                 <input
                   ref={fileInputRef}
@@ -318,80 +319,81 @@ const MasterEngine = () => {
               {photos.length > 0 && (
                 <div className="grid grid-cols-3 gap-2 mt-2">
                   {photos.map((photo, i) => (
-                    <div key={i} className="relative group rounded-xl overflow-hidden border border-sky-500/30 aspect-video">
+                    <div key={i} className="relative group rounded-lg overflow-hidden border border-border aspect-video">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={photo} alt={`現場写真 ${i + 1}`} className="w-full h-full object-cover" />
                       <button
                         onClick={() => removePhoto(i)}
-                        className="absolute top-1 right-1 w-6 h-6 bg-red-600/80 hover:bg-red-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+                        className="absolute top-1 right-1 w-6 h-6 bg-destructive/80 hover:bg-destructive rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
                       >
-                        <X size={12} className="text-white" />
+                        <X size={12} className="text-destructive-foreground" />
                       </button>
-                      <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-[8px] font-black text-sky-400 text-center py-0.5 uppercase italic">
-                        Photo {i + 1}
-                      </div>
                     </div>
                   ))}
                 </div>
               )}
 
               {photos.length === 0 && (
-                <p className="text-center text-[10px] text-slate-600 font-black italic uppercase">
+                <p className="text-center text-xs text-muted-foreground">
                   自宅・備蓄・周辺環境を撮影するとAI診断の精度が向上します
                 </p>
               )}
             </div>
 
             {/* コピー・AIリンク */}
-            <div className="space-y-4">
+            <div className="space-y-3">
               <button
                 onClick={handleCopy}
-                className={`w-full h-20 text-xl font-black rounded-2xl transition-all shadow-2xl border-b-8 ${copied ? 'bg-emerald-500 border-emerald-800 text-slate-950 scale-95' : 'bg-sky-600 border-sky-800 text-white hover:bg-sky-500'}`}
+                className={`w-full h-16 text-base font-bold rounded-xl transition-all shadow-lg ${copied ? 'bg-[hsl(var(--gsk-emerald))] text-white scale-95' : 'bg-primary hover:bg-primary/90 text-primary-foreground'}`}
               >
-                {copied ? '✅ COPY COMPLETE' : '① 診断指示をコピー'}
+                {copied ? '✅ コピーしました！' : '① AIへの診断指示をコピー'}
               </button>
-              <div className="grid grid-cols-3 gap-3">
-                <button className="h-16 bg-white/5 border-2 border-emerald-500/30 rounded-2xl text-[10px] font-black uppercase italic text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://chatgpt.com', '_blank')}>
-                  <span className="text-xl">💬</span> CHATGPT
+              <p className="text-center text-xs text-muted-foreground">コピー後、下記のAIを開いて貼り付けてください</p>
+              <div className="grid grid-cols-3 gap-2">
+                <button className="h-14 bg-secondary hover:bg-accent border border-border rounded-xl text-xs font-bold text-foreground transition-all flex flex-col items-center justify-center gap-1" onClick={() => window.open('https://chatgpt.com', '_blank')}>
+                  <span className="text-lg">💬</span> ChatGPT
                 </button>
-                <button className="h-16 bg-white/5 border-2 border-blue-500/30 rounded-2xl text-[10px] font-black uppercase italic text-blue-400 hover:bg-blue-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://gemini.google.com', '_blank')}>
-                  <span className="text-xl">✨</span> GEMINI
+                <button className="h-14 bg-secondary hover:bg-accent border border-border rounded-xl text-xs font-bold text-foreground transition-all flex flex-col items-center justify-center gap-1" onClick={() => window.open('https://gemini.google.com', '_blank')}>
+                  <span className="text-lg">✨</span> Gemini
                 </button>
-                <button className="h-16 bg-white/5 border-2 border-orange-500/30 rounded-2xl text-[10px] font-black uppercase italic text-orange-400 hover:bg-orange-500 hover:text-white transition-all flex flex-col items-center justify-center gap-1 shadow-lg" onClick={() => window.open('https://claude.ai', '_blank')}>
-                  <span className="text-xl">❄️</span> CLAUDE
+                <button className="h-14 bg-secondary hover:bg-accent border border-border rounded-xl text-xs font-bold text-foreground transition-all flex flex-col items-center justify-center gap-1" onClick={() => window.open('https://claude.ai', '_blank')}>
+                  <span className="text-lg">❄️</span> Claude
                 </button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* RIGHT: COMMAND OUTPUT */}
-        <div className="flex flex-col gap-6">
-          <div className="bg-[#13141f] rounded-[3.5rem] p-10 border-2 border-white/5 shadow-2xl flex flex-col gap-6 relative overflow-hidden flex-1">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-30" />
-            <div className="flex items-center gap-4 mb-2">
-              <div className="w-12 h-12 rounded-xl bg-sky-600/10 flex items-center justify-center border-2 border-sky-500/30">
-                <ClipboardPaste className="text-sky-400" />
+        {/* RIGHT: 生存戦略レポート */}
+        <div className="flex flex-col gap-4">
+          <div className="bg-card border border-border rounded-2xl p-6 md:p-8 shadow-lg flex flex-col gap-4 relative overflow-hidden flex-1">
+            <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-[hsl(var(--gsk-emerald))] to-transparent opacity-60" />
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/30">
+                <ClipboardPaste className="text-primary w-5 h-5" />
               </div>
-              <h3 className="text-xl md:text-3xl font-black text-white italic uppercase tracking-tighter">② 生存戦略レポート</h3>
+              <div>
+                <h3 className="text-lg font-bold text-foreground">② 生存戦略レポート</h3>
+                <p className="text-xs text-muted-foreground">AIから受け取ったレポートをここに貼り付け</p>
+              </div>
             </div>
 
             <textarea
               value={report}
               onChange={(e) => setReport(e.target.value)}
               placeholder="AIからの戦略レポートをここにペースト..."
-              className="flex-1 bg-black border-2 border-white/5 rounded-[2.5rem] p-8 text-sm text-slate-300 focus:border-sky-500 outline-none font-mono italic shadow-inner leading-relaxed min-h-[400px]"
+              className="flex-1 bg-background border border-border rounded-xl p-4 text-sm text-foreground focus:border-primary focus:ring-1 focus:ring-primary outline-none leading-relaxed min-h-[400px] resize-none transition-all"
             />
 
             {report && (
-              <div className="p-6 bg-emerald-600 border-4 border-emerald-500 rounded-3xl shadow-[0_0_50px_rgba(16,185,129,0.3)] animate-in slide-in-from-bottom-4 flex items-center gap-4">
-                <ShieldCheck className="text-white w-8 h-8 shrink-0" />
-                <p className="text-white font-black italic text-sm uppercase tracking-widest">Survive Protocol Synchronized</p>
+              <div className="p-4 bg-[hsl(var(--gsk-emerald)/0.15)] border border-[hsl(var(--gsk-emerald)/0.4)] rounded-xl animate-in slide-in-from-bottom-4 flex items-center gap-3">
+                <ShieldCheck className="text-[hsl(var(--gsk-emerald))] w-6 h-6 shrink-0" />
+                <p className="text-[hsl(var(--gsk-emerald))] font-bold text-sm">レポートが入力されました</p>
               </div>
             )}
           </div>
-          <button onClick={() => window.print()} className="h-16 bg-white text-slate-950 font-black italic rounded-2xl shadow-xl hover:bg-sky-500 hover:text-white transition-all active:scale-95 uppercase tracking-widest flex items-center justify-center gap-3">
-            <ArrowRight size={20} /> Export Strategy (Print)
+          <button onClick={() => window.print()} className="h-14 bg-secondary hover:bg-accent border border-border text-foreground font-bold rounded-xl shadow transition-all active:scale-95 flex items-center justify-center gap-2 text-sm">
+            <ArrowRight size={18} /> レポートを印刷・保存する
           </button>
         </div>
       </div>
