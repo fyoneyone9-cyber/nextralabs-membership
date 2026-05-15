@@ -145,7 +145,7 @@ export default function PilgrimagePlannerLP() {
       {/* 紹介動画 */}
       {/* ▼ YouTube公開後にこのIDを差し替えるだけでOK ▼ */}
       {(() => {
-        const YOUTUBE_ID = '' // ← YouTube動画IDをここに入力（例: 'dQw4w9WgXcQ'）
+        const YOUTUBE_ID = 'yzCRqT_aztg'
         return YOUTUBE_ID ? (
           <section className="py-16 px-4 max-w-3xl mx-auto">
             <div className="text-center mb-8">

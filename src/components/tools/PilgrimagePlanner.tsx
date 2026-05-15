@@ -280,19 +280,8 @@ export default function PilgrimagePlanner() {
   const renderWorkTab = () => (
     <div className="space-y-4">
       <p className="text-xs text-slate-400">
-        作品をタップして選択してください（複数不可）
+        行きたい作品をタップして選択してください
       </p>
-
-      {/* フリー入力 */}
-      <div>
-        <input
-          type="text"
-          value={keyword}
-          onChange={(e) => { setKeyword(e.target.value); setSelectedPreset(null) }}
-          placeholder="作品名を直接入力（例：転スラ、僕のヒーロー...）"
-          className="w-full bg-[#0f1520] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 transition"
-        />
-      </div>
 
       {/* プリセット 4列 */}
       <div className="grid grid-cols-4 gap-2">
@@ -315,8 +304,8 @@ export default function PilgrimagePlanner() {
       {/* 次へボタン */}
       <button
         onClick={() => {
-          if (!keyword && !selectedPreset) {
-            setError('作品を選択するか、作品名を入力してください')
+          if (!selectedPreset) {
+            setError('作品を選択してください')
             return
           }
           setError('')
