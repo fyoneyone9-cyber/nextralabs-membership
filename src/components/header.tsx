@@ -245,7 +245,7 @@ export function Header() {
       {/* ジャンルバー（デスクトップ用） */}
       <div className="hidden md:block w-full border-b border-white/5 bg-background/80 backdrop-blur-sm">
         <div className="container mx-auto px-4">
-          <div className="flex items-center gap-1 h-9 overflow-x-auto scrollbar-none">
+          <div className="flex items-center justify-center gap-1 h-9 overflow-x-auto scrollbar-none">
             <Link
               href="/products"
               className="shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all"
