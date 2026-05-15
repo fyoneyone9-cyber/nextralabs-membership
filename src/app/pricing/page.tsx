@@ -343,13 +343,20 @@ export default function PricingPage() {
               </div>
             </div>
             <div className="shrink-0 md:text-right">
-              <div className="text-xl font-bold text-emerald-400 mb-1">要見積もり</div>
-              <p className="text-xs text-slate-500 mb-4">要件に応じて個別にご提案</p>
-              <Link href="/contact">
-                <Button className="h-11 px-6 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold rounded-xl gap-2 transition-all">
-                  お問い合わせ <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
+              <div className="text-xl font-bold text-emerald-400 mb-1">要別途お見積もり</div>
+              <p className="text-xs text-slate-500 mb-4">要件・規模に応じて個別にご提案</p>
+              <div className="flex flex-col sm:flex-row gap-3 md:justify-end">
+                <Link href="/corporate">
+                  <Button variant="outline" className="h-11 px-5 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 rounded-xl gap-2 transition-all">
+                    法人プランを見る <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link href="/contact">
+                  <Button className="h-11 px-6 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold rounded-xl gap-2 transition-all">
+                    お問い合わせ <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>

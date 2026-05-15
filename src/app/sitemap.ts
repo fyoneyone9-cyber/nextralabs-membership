@@ -59,6 +59,7 @@ const STATIC_PAGES = [
   { path: '', priority: 1.0, changeFreq: 'daily' as const },
   { path: '/products', priority: 0.95, changeFreq: 'daily' as const },
   { path: '/pricing', priority: 0.9, changeFreq: 'weekly' as const },
+  { path: '/corporate', priority: 0.85, changeFreq: 'weekly' as const },
   { path: '/guide', priority: 0.8, changeFreq: 'weekly' as const },
   { path: '/contact', priority: 0.6, changeFreq: 'monthly' as const },
   { path: '/privacy', priority: 0.4, changeFreq: 'yearly' as const },
