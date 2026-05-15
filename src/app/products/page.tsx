@@ -33,6 +33,7 @@ const TOOLS = [
   { id: 'inbox-organizer/app',      cat: 'biz',       title: 'Gmail AI Accelerator',         sub: 'メール対応時間を最大70%削減。AIが下書きから返信分類まで自動化。',                                            icon: Mail,          plan: 'プレミアム', done: true },
   { id: 'ai-sidejob/app',           cat: 'biz',       title: 'AI副業スタートダッシュ',        sub: 'あなたのスキルと時間からAIが最適な副業プランを診断。今月から収入プラス。',                                      icon: Briefcase,     plan: 'プレミアム', done: true },
   { id: 'universal-converter/app',  cat: 'biz',       title: '究極AIマルチコンバーター',      sub: '動画・画像・PDFへの変換圧縮',                                    icon: Repeat,        plan: 'ライト',     done: true },
+  { id: 'pr-video-narrator/app',    cat: 'biz',       title: 'PR動画ナレーター',              sub: '動画をアップするだけ。AIが内容を解析してVOICEVOXキャラのナレーション入り動画を自動生成。',  icon: Mic, plan: 'プレミアム', done: true, lpUrl: '/products/pr-video-narrator' },
   { id: 'vercel-monitor/app',       cat: 'biz',       title: 'Vercel Fleet Monitor',         sub: 'システムのデプロイ状況をリアルタイム監視',                         icon: Activity,      plan: 'お見積もり', done: true, adminOnly: true },
 
   // ── 🎓 学習・資格・自己研鑽 ──

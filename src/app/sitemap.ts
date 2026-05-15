@@ -78,6 +78,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority,
   }))
 
+  // PR動画ナレーターLP
+  const prVideoEntry: MetadataRoute.Sitemap = [{
+    url: `${BASE}/products/pr-video-narrator`,
+    lastModified: now,
+    changeFrequency: 'weekly' as const,
+    priority: 0.85,
+  }]
+
   // 各製品のLPページ
   const productLpEntries: MetadataRoute.Sitemap = PRODUCTS.map((id) => ({
     url: `${BASE}/products/${id}`,
@@ -88,5 +96,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // /app ページはログイン必須のため意図的にサイトマップから除外（noindex設定済み）
 
-  return [...staticEntries, ...productLpEntries]
+  return [...staticEntries, ...prVideoEntry, ...productLpEntries]
 }
