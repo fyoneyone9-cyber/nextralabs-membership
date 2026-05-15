@@ -142,6 +142,32 @@ export default function PilgrimagePlannerLP() {
         <p className="text-xs text-slate-600 mt-3">スタンダードプラン（月額¥980）で利用可能 • 1日5回</p>
       </section>
 
+      {/* 紹介動画 */}
+      {/* ▼ YouTube公開後にこのIDを差し替えるだけでOK ▼ */}
+      {(() => {
+        const YOUTUBE_ID = '' // ← YouTube動画IDをここに入力（例: 'dQw4w9WgXcQ'）
+        return YOUTUBE_ID ? (
+          <section className="py-16 px-4 max-w-3xl mx-auto">
+            <div className="text-center mb-8">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-medium mb-4">
+                🎬 紹介動画
+              </span>
+              <h2 className="text-2xl font-bold">使い方を3分で確認</h2>
+              <p className="text-slate-400 text-sm mt-2">めたん＆ずんだもんが実際の操作を解説</p>
+            </div>
+            <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-emerald-500/10">
+              <iframe
+                src={`https://www.youtube.com/embed/${YOUTUBE_ID}?rel=0&modestbranding=1`}
+                title="推し活聖地巡礼ツアープランナー 紹介動画"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+              />
+            </div>
+          </section>
+        ) : null
+      })()}
+
       {/* ユーザーフロー */}
       <section className="py-20 px-4 max-w-3xl mx-auto">
         <h2 className="text-2xl font-bold text-center mb-12">たった4ステップで聖地巡礼プラン完成</h2>
