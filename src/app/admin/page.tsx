@@ -8,6 +8,7 @@ import { Users, ShieldCheck, TrendingUp, MessageSquare, Zap, Cpu, Activity, Bell
 import ApiStatusBoard from '@/components/admin/ApiStatusBoard'
 import AnalyticsPanel from '@/components/admin/AnalyticsPanel'
 import AdminNotifications from '@/components/admin/AdminNotifications'
+import SitesMonitorPanel from '@/components/admin/SitesMonitorPanel'
 
 export default async function AdminPage() {
   const supabase = createServerSupabaseClient()
@@ -154,6 +155,8 @@ export default async function AdminPage() {
           </div>
 
           <div className="space-y-8">
+            {/* 🌐 3大サイト監視パネル */}
+            <SitesMonitorPanel />
             {/* 🔔 管理者通知パネル */}
             <AdminNotifications />
             {/* 🚀 API実稼働ステータスボード (完全見える化) */}
