@@ -250,6 +250,19 @@ export default function DashboardClient({ user, profile, subscription }: any) {
                                <p className="text-[10px] text-slate-500">{locked ? 'アップグレードが必要' : '起動する →'}</p>
                             </div>
                           </Link>
+                          {tool.id === 'ai-select-shop' && !locked && (
+                            <a
+                              href="https://www.youtube.com/watch?v=frDeVaGoqZ4"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={e => e.stopPropagation()}
+                              className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-md bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 transition-all"
+                              title="紹介動画を見る"
+                            >
+                              <Youtube size={12} className="text-red-400" />
+                              <span className="text-[10px] text-red-400 font-medium">動画</span>
+                            </a>
+                          )}
                         </div>
                       )
                     })}

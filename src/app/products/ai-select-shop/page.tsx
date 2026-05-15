@@ -202,6 +202,24 @@ const LPContent = () => {
         </div>
       </section>
 
+      {/* YouTube動画 */}
+      <section className="max-w-3xl mx-auto px-4 pb-16">
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-white tracking-tight flex items-center gap-2">
+            <span className="text-red-500">▶</span> 紹介動画を見る
+          </h2>
+          <div className="relative w-full rounded-2xl overflow-hidden border border-white/10" style={{ paddingTop: '56.25%' }}>
+            <iframe
+              className="absolute inset-0 w-full h-full"
+              src="https://www.youtube.com/embed/frDeVaGoqZ4"
+              title="NextraLabs AIセレクトショップ 紹介動画"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="max-w-5xl mx-auto px-4 pt-16 pb-24">
         <div className="bg-[#1e293b] border border-emerald-500/20 rounded-2xl p-10 md:p-14 text-center space-y-6">
