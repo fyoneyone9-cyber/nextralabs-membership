@@ -23,7 +23,7 @@ const FEATURES = [
   '複数キャラの掛け合い対応',
   '元音声との合成・音量バランス調整',
   'MP4（H.264）でダウンロード',
-  'プレミアムプランで利用可能',
+  '法人・個人事業主プランで利用可能',
 ]
 
 const USE_CASES = [
@@ -65,7 +65,7 @@ export default function PrVideoNarratorLpPage() {
               </Button>
             </Link>
           </div>
-          <p className="text-xs text-slate-600 mt-4">プレミアムプラン（¥1,980/月）で利用可能</p>
+          <p className="text-xs text-slate-600 mt-4">法人・個人事業主プランで利用可能</p>
         </div>
       </section>
 
@@ -170,7 +170,7 @@ export default function PrVideoNarratorLpPage() {
       <section className="py-20 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-2xl font-bold text-white mb-4">さっそく使ってみよう</h2>
-          <p className="text-slate-400 text-sm mb-8">プレミアムプラン（¥1,980/月）で今すぐ利用開始できます。</p>
+          <p className="text-slate-400 text-sm mb-8">法人・個人事業主プランで今すぐ利用開始できます。</p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link href="/pr-video-narrator">
               <Button className="h-12 px-8 bg-violet-600 hover:bg-violet-500 text-white font-semibold rounded-xl gap-2 transition-all">
@@ -180,6 +180,15 @@ export default function PrVideoNarratorLpPage() {
             <Link href="/pricing">
               <Button variant="outline" className="h-12 px-6 border-white/15 text-slate-300 hover:bg-white/5 rounded-xl">
                 料金プランを見る
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  )
+}
               </Button>
             </Link>
           </div>
