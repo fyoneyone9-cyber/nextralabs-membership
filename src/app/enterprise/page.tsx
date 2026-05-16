@@ -89,7 +89,7 @@ const CATEGORIES = [
       },
       {
         id: 'youtube-yukkuri',
-        title: 'YouTubeゆっくり系動画作成代行',
+        title: 'ゆっくり系動画作成代行',
         sub: 'PRしたい動画素材をご提供いただくだけ。ずんだもん・四国めたんが掛け合いでサービスを紹介。字幕・BGM・立ち絵アニメーション付きの完成動画を最短3営業日で納品。',
         icon: Youtube,
         price: '¥29,800〜（法人会員10%割引）',
