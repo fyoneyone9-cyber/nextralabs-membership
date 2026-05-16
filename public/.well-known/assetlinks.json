@@ -1,10 +1,12 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "jp.nextralabs.membership",
-    "sha256_cert_fingerprints": [
-      "PLACEHOLDER_REPLACE_AFTER_BUBBLEWRAP"
-    ]
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "jp.nextralab.twa",
+      "sha256_cert_fingerprints": [
+        "09:41:24:7C:25:36:1D:95:3C:E1:AA:39:F6:0F:75:CB:C1:1B:20:44:79:72:AF:D1:45:EE:14:59:F2:DE:69:E8"
+      ]
+    }
   }
-}]
+]
