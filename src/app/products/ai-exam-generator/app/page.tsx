@@ -1,8 +1,8 @@
-﻿'use client'
+'use client'
 import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, Suspense } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -10,7 +10,7 @@ import {
   Brain, ListChecks, ShieldAlert, FileText, FileDown,
   ClipboardPaste, Smartphone, Info, ExternalLink, CheckCircle2,
   Network, BookOpen, Stethoscope, Scale, Building2, Calculator,
-  Globe, Car, Leaf, Award, GraduationCap, Cpu
+  Globe, Car, Leaf, Award, GraduationCap, Cpu, AlertCircle
 } from 'lucide-react'
 
 const PRESET_CATEGORIES = [
@@ -78,7 +78,6 @@ const PRESET_CATEGORIES = [
   },
 ]
 
-// 後方互換（既存コードが使っているPRESETSフラット配列）
 const PRESETS = PRESET_CATEGORIES.flatMap(c => c.presets)
 
 const ROADMAP = [
@@ -87,10 +86,10 @@ const ROADMAP = [
   { title: '合格圏内', desc: 'AIの解説で正答率を高め本番へ。', icon: TrendingUp },
 ]
 
-export default function AiExamGeneratorApp() {
+function AiExamGeneratorInner() {
   const router = useRouter()
+  const searchParams = useSearchParams()
 
-  // ブラウザバック・マウスサイドボタン対応
   useEffect(() => {
     window.history.pushState(null, '', window.location.href)
     const handlePopState = () => {
@@ -105,9 +104,8 @@ export default function AiExamGeneratorApp() {
     return () => window.removeEventListener('popstate', handlePopState)
   }, [router])
 
-  // タブ閉じ・URL直打ち対応
   useEffect(() => {
-    const handleBeforeUnload = (e) => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault()
       e.returnValue = ''
     }
@@ -115,33 +113,75 @@ export default function AiExamGeneratorApp() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload)
   }, [])
 
-  const handleBack = useCallback(() => {
-    const ok = window.confirm('ツールを終了しますか？')
-    if (ok) router.push('/dashboard')
-  }, [router])
+  // URLパラメータからGoogle Docs結果を受け取る
+  useEffect(() => {
+    const gdocsUrl = searchParams.get('gdocs_url')
+    const gdocsError = searchParams.get('gdocs_error')
+
+    if (gdocsUrl) {
+      setDocUrl(decodeURIComponent(gdocsUrl))
+      setIsExporting(false)
+    }
+    if (gdocsError) {
+      setExportError(
+        gdocsError === 'access_denied'
+          ? 'Googleアカウントへのアクセスが拒否されました。'
+          : 'Googleドキュメントの作成に失敗しました。もう一度お試しください。'
+      )
+      setIsExporting(false)
+    }
+  }, [searchParams])
 
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
   const [inputData, setInputData] = useState('')
   const [result, setResult] = useState<string | null>(null)
+  const [generatedTitle, setGeneratedTitle] = useState<string>('')
+  const [generatedContent, setGeneratedContent] = useState<string>('')
   const [docUrl, setDocUrl] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [exportError, setExportError] = useState<string | null>(null)
 
+  // AIで本物の問題を生成
   const handleAnalyze = async () => {
     if (!inputData) return
     setIsAnalyzing(true)
     setResult(null)
     setDocUrl(null)
-    await new Promise(r => setTimeout(r, 2500))
-    setResult('ITパスポート過去問実データの解析が完了しました。あなたの弱点である「ネットワーク・セキュリティ」分野の予想問題を30問生成しました。Googleドキュメントへ出力可能です。')
-    setIsAnalyzing(false)
+    setExportError(null)
+
+    try {
+      const res = await fetch('/api/exam-generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject: inputData }),
+      })
+
+      if (!res.ok) throw new Error('生成API失敗')
+      const data = await res.json()
+
+      setGeneratedTitle(data.title || '模擬試験問題集')
+      setGeneratedContent(data.content || '')
+      setResult(`AIによる問題生成が完了しました。「${data.title}」として20問の模擬問題（解説付き）を作成しました。Googleドキュメントへ保存できます。`)
+    } catch (err) {
+      setResult('⚠️ 問題生成に失敗しました。もう一度お試しください。')
+    } finally {
+      setIsAnalyzing(false)
+    }
   }
 
-  const handleExportDocs = async () => {
+  // Google OAuth経由でドキュメント作成
+  const handleExportDocs = () => {
+    if (!generatedContent) return
     setIsExporting(true)
-    await new Promise(r => setTimeout(r, 3000))
-    setDocUrl('https://docs.google.com/document/d/example')
-    setIsExporting(false)
+    setExportError(null)
+
+    const params = new URLSearchParams({
+      title: generatedTitle,
+      content: generatedContent,
+    })
+    // OAuthフローへリダイレクト（コールバック後にdocUrlがセットされる）
+    window.location.href = `/api/auth/gdocs?${params.toString()}`
   }
 
   const copyPrompt = () => {
@@ -211,7 +251,7 @@ export default function AiExamGeneratorApp() {
                 {cat.presets.map(p => (
                   <button
                     key={p.id}
-                    onClick={() => { setInputData(p.content); setResult(null); setDocUrl(null) }}
+                    onClick={() => { setInputData(p.content); setResult(null); setDocUrl(null); setExportError(null) }}
                     className="flex items-center gap-3 p-3 rounded-xl text-left transition-all"
                     style={{
                       background: inputData === p.content ? 'rgba(16,185,129,0.1)' : '#0d1117',
@@ -253,7 +293,7 @@ export default function AiExamGeneratorApp() {
               }
             >
               {isAnalyzing
-                ? <><Loader2 size={16} className="animate-spin mr-2" />解析中...</>
+                ? <><Loader2 size={16} className="animate-spin mr-2" />AI生成中（30秒ほどかかります）...</>
                 : <><Zap size={16} className="mr-2" />AI解析・生成を始動</>}
             </Button>
             <Button
@@ -288,21 +328,44 @@ export default function AiExamGeneratorApp() {
                 AI Diagnostic Insight
               </div>
               <p className="text-sm text-slate-300 leading-relaxed">{result}</p>
+
+              {/* 生成内容プレビュー */}
+              {generatedContent && (
+                <div
+                  className="rounded-lg p-4 text-xs text-slate-400 leading-relaxed max-h-48 overflow-y-auto whitespace-pre-wrap"
+                  style={{ background: '#0d1117', border: '1px solid #1e293b' }}
+                >
+                  {generatedContent.slice(0, 800)}
+                  {generatedContent.length > 800 && '...\n\n（Googleドキュメントで全文を確認できます）'}
+                </div>
+              )}
+
+              {exportError && (
+                <div className="flex items-center gap-2 text-sm text-red-400">
+                  <AlertCircle size={14} />
+                  {exportError}
+                </div>
+              )}
+
               <div className="pt-2">
                 {!docUrl ? (
                   <Button
                     onClick={handleExportDocs}
-                    disabled={isExporting}
+                    disabled={isExporting || !generatedContent}
                     className="h-10 px-5 text-sm font-semibold rounded-lg flex items-center gap-2"
-                    style={{ background: '#fff', color: '#0f172a' }}
+                    style={
+                      isExporting || !generatedContent
+                        ? { background: '#1e293b', color: '#475569', cursor: 'not-allowed' }
+                        : { background: '#fff', color: '#0f172a' }
+                    }
                   >
                     {isExporting
-                      ? <><Loader2 size={14} className="animate-spin mr-1" />保存中...</>
+                      ? <><Loader2 size={14} className="animate-spin mr-1" />Googleに接続中...</>
                       : <><FileText size={14} className="mr-1" />Googleドキュメントへ保存</>}
                   </Button>
                 ) : (
                   <Button
-                    onClick={() => window.open(docUrl)}
+                    onClick={() => window.open(docUrl, '_blank')}
                     className="h-10 px-5 text-sm font-semibold rounded-lg flex items-center gap-2"
                     style={{ background: '#1a73e8', color: '#fff' }}
                   >
@@ -372,10 +435,17 @@ export default function AiExamGeneratorApp() {
           </div>
         )}
       </div>
-    
+
       {/* Amazonアフィリエイト */}
       <AffiliateBanner toolId="ai-exam-generator" />
-</div>
+    </div>
   )
 }
 
+export default function AiExamGeneratorApp() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#050507]" />}>
+      <AiExamGeneratorInner />
+    </Suspense>
+  )
+}
