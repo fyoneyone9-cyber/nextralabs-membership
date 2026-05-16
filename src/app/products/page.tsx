@@ -61,8 +61,8 @@ const TOOLS = [
 
   // ── 🏨 宿泊・不動産DX（法人向け） ──
 
-  { id: 'weather-boost/app',        cat: 'hotel',     title: 'Google天気連動型 館内消費ブースト', sub: '悪天候を売上チャンスに変える自動クーポン配信',   icon: CloudRain,     plan: 'スタンダード', lpUrl: '/products/weather-boost' },
-  { id: 'voice-guest-assist/app',   cat: 'hotel',     title: 'AI多言語ゲストアシスト',        sub: '音声認識×自動翻訳でCRM精度を飛躍的に向上',                        icon: Mic,           plan: 'スタンダード', lpUrl: '/products/voice-guest-assist' },
+  { id: 'weather-boost/app',        cat: 'hotel',     title: 'Google天気連動型 館内消費ブースト', sub: '悪天候を売上チャンスに変える自動クーポン配信',   icon: CloudRain,     plan: 'お見積もり',   lpUrl: '/products/weather-boost' },
+  { id: 'voice-guest-assist/app',   cat: 'hotel',     title: 'AI多言語ゲストアシスト',        sub: '音声認識×自動翻訳でCRM精度を飛躍的に向上',                        icon: Mic,           plan: 'お見積もり',   lpUrl: '/products/voice-guest-assist' },
 
   // ── 💕 婚活・結婚相談所DX ──
   { id: 'konkatsu-scheduler/app',   cat: 'konkatsu',  title: 'AI即アポ調整くん',              sub: '婚活の進捗をAIが管理。次の一手をタイムリーに提案してくれる。',                     icon: CalendarCheck, plan: 'スタンダード', lpUrl: '/products/konkatsu-scheduler' },

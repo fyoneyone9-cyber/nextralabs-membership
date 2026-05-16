@@ -16,6 +16,8 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 const ENTERPRISE_IDS = [
   'staysee-ai-finder',  // Nextra AI旧名 — PMS/スマートロック 法人向け
   'nextra-ai',          // Nextra AI KIOSK — ホテルDX 法人契約のみ
+  'weather-boost',      // Google天気連動型 館内消費ブースト — ホテル法人専用
+  'voice-guest-assist', // AI多言語ゲストアシスト — ホテル法人専用
 ]
 
 // 👑 プレミアム専用（重量級API: YouTube・SNS・Gmail・画像生成等）
