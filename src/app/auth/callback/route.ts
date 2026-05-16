@@ -12,10 +12,7 @@ export async function GET(request: Request) {
     if (!error) {
       return NextResponse.redirect(`${origin}${next}`)
     }
-    // エラー内容をURLに含めてデバッグ
-    const errorMsg = encodeURIComponent(error.message)
-    return NextResponse.redirect(`${origin}/login?error=auth&msg=${errorMsg}`)
   }
 
-  return NextResponse.redirect(`${origin}/login?error=auth&msg=no_code`)
+  return NextResponse.redirect(`${origin}/login?error=auth`)
 }
