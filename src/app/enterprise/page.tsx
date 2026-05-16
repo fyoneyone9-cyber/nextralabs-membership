@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { Building2, HeartHandshake, Mic, CloudRain, ArrowRight, CheckCircle2, Mail } from 'lucide-react'
+import { Building2, HeartHandshake, Mic, CloudRain, ArrowRight, CheckCircle2, Mail, Youtube, Video, Upload, Sparkles, BadgeCheck } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -86,6 +86,23 @@ const CATEGORIES = [
         tags: ['法人', '個人事業主', '動画制作'],
         lpUrl: '/products/pr-video-narrator',
         features: ['VOICEVOX音声自動生成', 'シーン解析', 'テロップ自動同期', 'YouTubeバズり構成'],
+      },
+      {
+        id: 'youtube-yukkuri',
+        title: 'YouTubeゆっくり系動画作成代行',
+        sub: 'PRしたい動画素材をご提供いただくだけ。ずんだもん・四国めたんが掛け合いでサービスを紹介。字幕・BGM・立ち絵アニメーション付きの完成動画を最短3営業日で納品。',
+        icon: Youtube,
+        price: '¥29,800〜（法人会員10%割引）',
+        tags: ['YouTube', 'ゆっくり動画', '動画制作代行'],
+        lpUrl: '/contact',
+        features: [
+          'ずんだもん＆四国めたん 掛け合いナレーション',
+          'AIシーン解析＆台本自動生成',
+          '立ち絵キャラアニメーション演出',
+          '字幕テロップ＋著作権フリーBGM',
+          'MP4納品（YouTube即アップ対応）',
+          '最短3営業日・修正1回対応',
+        ],
       },
     ],
   },
