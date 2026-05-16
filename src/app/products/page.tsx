@@ -277,26 +277,6 @@ function ProductsList() {
         <h1 className="text-3xl md:text-5xl font-semibold text-white tracking-tight leading-[1.1]">AI ツールストア</h1>
       </div>
 
-      {/* 🏢 法人・個人事業主向けバナー */}
-      <div className="max-w-6xl mx-auto px-4 mb-8">
-        <Link href="/enterprise">
-          <div className="flex items-center justify-between gap-4 bg-gradient-to-r from-amber-600/20 to-amber-500/5 border border-amber-500/30 rounded-2xl px-6 py-4 hover:border-amber-500/60 transition-all group cursor-pointer">
-            <div className="flex items-center gap-4">
-              <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 shrink-0">
-                <Building2 className="h-5 w-5 text-amber-400" />
-              </div>
-              <div>
-                <p className="text-sm font-bold text-amber-400">法人・個人事業主向けプランをお探しですか？</p>
-                <p className="text-xs text-slate-400 mt-0.5">宿泊DX・婚活DX・PR動画制作など、お見積もり対応のエンタープライズツールはこちら</p>
-              </div>
-            </div>
-            <div className="shrink-0 flex items-center gap-2 text-amber-400 text-sm font-bold group-hover:translate-x-1 transition-transform">
-              詳細を見る <ArrowRight className="h-4 w-4" />
-            </div>
-          </div>
-        </Link>
-      </div>
-
       {/* お気に入りフィルターバー */}
       {userId && (
         <div className="max-w-6xl mx-auto px-4 mb-8 md:mb-12 flex items-center gap-3">
