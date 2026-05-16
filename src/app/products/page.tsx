@@ -33,8 +33,7 @@ const TOOLS = [
   { id: 'inbox-organizer/app',      cat: 'biz',       title: 'Gmail AI Accelerator',         sub: 'メール対応時間を最大70%削減。AIが下書きから返信分類まで自動化。',                                            icon: Mail,          plan: 'プレミアム', done: true },
   { id: 'ai-sidejob/app',           cat: 'biz',       title: 'AI副業スタートダッシュ',        sub: 'あなたのスキルと時間からAIが最適な副業プランを診断。今月から収入プラス。',                                      icon: Briefcase,     plan: 'プレミアム', done: true },
   { id: 'universal-converter/app',  cat: 'biz',       title: '究極AIマルチコンバーター',      sub: '動画・画像・PDFへの変換圧縮',                                    icon: Repeat,        plan: 'ライト',     done: true },
-  { id: 'pr-video-narrator/app',    cat: 'biz',       title: 'PR動画ナレーター',              sub: '動画をアップするだけ。AIが内容を解析してVOICEVOXキャラのナレーション入り動画を自動生成。',  icon: Mic, plan: '法人・個人事業主', done: true, lpUrl: '/products/pr-video-narrator' },
-  { id: 'vercel-monitor/app',       cat: 'biz',       title: 'Vercel Fleet Monitor',         sub: 'システムのデプロイ状況をリアルタイム監視',                         icon: Activity,      plan: 'お見積もり', done: true, adminOnly: true },
+
 
   // ── 🎓 学習・資格・自己研鑽 ──
   { id: 'exam-scheduler/app',       cat: 'edu',       title: '資格試験AIスケジューラー',      sub: '試験日から逆算して学習計画を自動生成',                            icon: ClipboardCheck, plan: 'スタンダード', done: true },
@@ -61,13 +60,13 @@ const TOOLS = [
   { id: 'location-finder/app',      cat: 'travel',    title: 'AIロケーションファインダー',     sub: '出店・移住の最適地をデータ分析',                                  icon: MapPin,        plan: 'スタンダード', done: true },
 
   // ── 🏨 宿泊・不動産DX（法人向け） ──
-  { id: 'nextra-ai/app',            cat: 'hotel',     title: 'Nextra AI',                    sub: 'チェックイン・予約・解錠OS',                                      icon: Building2,     plan: 'お見積もり', lpUrl: '/products/nextra-ai', target: 'both' },
+
   { id: 'weather-boost/app',        cat: 'hotel',     title: 'Google天気連動型 館内消費ブースト', sub: '悪天候を売上チャンスに変える自動クーポン配信',   icon: CloudRain,     plan: 'スタンダード', lpUrl: '/products/weather-boost' },
   { id: 'voice-guest-assist/app',   cat: 'hotel',     title: 'AI多言語ゲストアシスト',        sub: '音声認識×自動翻訳でCRM精度を飛躍的に向上',                        icon: Mic,           plan: 'スタンダード', lpUrl: '/products/voice-guest-assist' },
 
   // ── 💕 婚活・結婚相談所DX ──
   { id: 'konkatsu-scheduler/app',   cat: 'konkatsu',  title: 'AI即アポ調整くん',              sub: '婚活の進捗をAIが管理。次の一手をタイムリーに提案してくれる。',                     icon: CalendarCheck, plan: 'スタンダード', lpUrl: '/products/konkatsu-scheduler' },
-  { id: 'omiai-room/app',           cat: 'konkatsu',  title: 'オンラインお見合い盛り上げシステム', sub: 'BGM×AIトークサジェストで気まずい沈黙を解消',                icon: HeartHandshake, plan: 'お見積もり', lpUrl: '/products/omiai-room' },
+
   { id: 'beauty-boost/app',         cat: 'konkatsu',  title: 'お見合い垢抜けブースト',        sub: '会場周辺の美容院をAI検索 → 予約へ直接案内',                      icon: Scissors,      plan: 'スタンダード', lpUrl: '/products/beauty-boost' },
 ]
 
@@ -276,6 +275,26 @@ function ProductsList() {
           <span className="text-[11px] font-medium text-emerald-400 tracking-tight uppercase">Master Catalogue</span>
         </div>
         <h1 className="text-3xl md:text-5xl font-semibold text-white tracking-tight leading-[1.1]">AI ツールストア</h1>
+      </div>
+
+      {/* 🏢 法人・個人事業主向けバナー */}
+      <div className="max-w-6xl mx-auto px-4 mb-8">
+        <Link href="/enterprise">
+          <div className="flex items-center justify-between gap-4 bg-gradient-to-r from-amber-600/20 to-amber-500/5 border border-amber-500/30 rounded-2xl px-6 py-4 hover:border-amber-500/60 transition-all group cursor-pointer">
+            <div className="flex items-center gap-4">
+              <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 shrink-0">
+                <Building2 className="h-5 w-5 text-amber-400" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-amber-400">法人・個人事業主向けプランをお探しですか？</p>
+                <p className="text-xs text-slate-400 mt-0.5">宿泊DX・婚活DX・PR動画制作など、お見積もり対応のエンタープライズツールはこちら</p>
+              </div>
+            </div>
+            <div className="shrink-0 flex items-center gap-2 text-amber-400 text-sm font-bold group-hover:translate-x-1 transition-transform">
+              詳細を見る <ArrowRight className="h-4 w-4" />
+            </div>
+          </div>
+        </Link>
       </div>
 
       {/* お気に入りフィルターバー */}
