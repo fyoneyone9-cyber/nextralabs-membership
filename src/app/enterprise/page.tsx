@@ -52,16 +52,6 @@ const ENTERPRISE_TOOLS = [
     lpUrl: '/products/weather-boost',
     features: ['天気API連携', 'クーポン自動配信', 'LINE/メール通知', '売上分析'],
   },
-  {
-    id: 'vercel-monitor',
-    title: 'Vercel Fleet Monitor',
-    sub: 'システムのデプロイ状況・エラー・パフォーマンスをリアルタイム監視。ITシステムの安定稼働を支援。',
-    icon: Activity,
-    price: '要お見積もり',
-    tags: ['IT', 'システム管理', 'モニタリング'],
-    lpUrl: null,
-    features: ['リアルタイム監視', 'エラー即時通知', 'パフォーマンス可視化', 'レポート自動生成'],
-  },
 ]
 
 export default function EnterprisePage() {
