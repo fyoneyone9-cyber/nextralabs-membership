@@ -103,22 +103,55 @@ type LoanOffer = {
 
 const LOAN_OFFERS: LoanOffer[] = [
   // ── 消費者金融・カードローン ──
-  { name: 'ハローハッピー',   desc: '安心のパートナー。審査柔軟なフリーローン。最短即日対応。',           url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+8NZE96+2EBI+5ZU29',  tags: ['card','urgent'],     badge: '即日OK' },
-  { name: 'セントラル',       desc: '来店不要・振込キャッシング。創業40年以上の老舗消費者金融。',         url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9N3YY2+363I+699KI',  tags: ['card','omatomе'],    badge: '老舗安心' },
-  { name: 'フクホー',         desc: '金利7.30％〜！銀行より低い独自審査。おまとめに強い。',               url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+AP7PNU+39OE+5YJRM',  tags: ['card','omatomе'],    badge: '低金利' },
-  { name: 'アロー',           desc: '最短即日振込。他社審査NGでも独自基準で挑戦できる。',                 url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+A0SXUY+2SHI+5ZMCH',  tags: ['card','urgent'],     badge: '独自審査' },
-  { name: 'プラン',           desc: '全国24時間ネット完結。スマホのみで申込〜振込まで完了。',             url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9X8C8A+3FWK+5YJRM',  tags: ['card'],              badge: 'スマホ完結' },
-  { name: 'いつも',           desc: '全国ご融資対応。丁寧なサポートで初めての方も安心。',                 url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9TNQLM+3EC6+601S1',  tags: ['card','urgent'] },
-  { name: 'キャレント',       desc: 'ネット完結・来店不要。働く方のためのキャッシング専門。',             url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9YF7FU+1LW6+HWXLD',  tags: ['card'] },
-  { name: 'アルコシステム',   desc: '振込キャッシングのパイオニア。長年の実績と信頼。',                   url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+8DV0YY+25IK+609HU',  tags: ['card','omatomе'] },
-  { name: 'フタバ',           desc: '借りやすくて返しやすい設計。女性専用窓口あり。',                     url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9NPEJU+38S6+614CX',  tags: ['card','female'] },
-  { name: 'デイリーキャッシング', desc: '全国対応。おまとめ・不動産担保ローンまで幅広く対応。',          url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+A5KEP6+4WSG+5YJRM',  tags: ['card','omatomе','housing'], badge: 'おまとめ得意' },
+  { name: 'フクホー',              desc: '金利7.30％〜！銀行より低い独自審査。おまとめに強い。',                   url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+AP7RZ6+39OE+5YJRM', tags: ['card','omatomе'],              badge: '低金利' },
+  { name: 'いつも',                desc: '全国ご融資対応。丁寧なサポートで初めての方も安心。',                     url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9TNSWY+3EC6+601S1', tags: ['card','urgent'] },
+  { name: 'アロー',                desc: '最短即日振込。他社審査NGでも独自基準で挑戦できる。',                     url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+A0T06A+2SHI+5ZMCH', tags: ['card','urgent'],               badge: '独自審査' },
+  { name: 'セントラル',            desc: '来店不要・振込キャッシング。創業40年以上の老舗消費者金融。',             url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9N419E+363I+699KI', tags: ['card','omatomе'],              badge: '老舗安心' },
+  { name: 'スカイオフィス',        desc: '柔軟な審査。急なお金の必要な方への即日キャッシング。',                   url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+AGA9WI+20EO+5YJRM', tags: ['card','urgent'] },
+  { name: 'hs1',                   desc: '手軽に借りられる。最短即日対応のネットキャッシング。',                   url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9Z0PCY+4S8A+5YJRM', tags: ['card','urgent'],               badge: '即日OK' },
+  { name: 'エムアールエフ',        desc: '個人事業主・法人向け。スピード審査のビジネスローン。',                   url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9XTU5E+33NG+5YJRM', tags: ['business','card'],             badge: '事業主向け' },
+  { name: 'プラン',                desc: '全国24時間ネット完結。スマホのみで申込〜振込まで完了。',                 url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9X8EJM+3FWK+5YJRM', tags: ['card'],                        badge: 'スマホ完結' },
+  { name: 'アクティブサポート',    desc: '簡単申込で丁寧な対応。はじめての方も安心のキャッシング。',             url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9UUO4I+4JGG+5YJRM', tags: ['card'] },
+  { name: 'キャレント',            desc: 'ネット完結・来店不要。働く方のためのキャッシング専門。',                 url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9YF9R6+1LW6+HWXLD', tags: ['card'] },
+  // ── おまとめ・フリーローン ──
+  { name: 'デイリーキャッシング',  desc: '全国対応。おまとめ・フリーローン・不動産担保ローンまで幅広く対応。',   url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+A5KH0I+4WSG+5YJRM', tags: ['card','omatomе','housing'],    badge: 'おまとめ得意' },
+  { name: 'ジャパンマネジメント',  desc: 'おまとめローンに強い。多重債務の一本化を丁寧にサポート。',             url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+AHH542+3V6A+5ZEMQ', tags: ['omatomе'],                     badge: 'おまとめ専門' },
+  { name: 'えんナビ',              desc: 'ローン比較・紹介サービス。自分に合った借入先を無料で案内。',             url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+A4DLSY+44CA+5YZ77', tags: ['card','omatomе'],              badge: '比較案内' },
+  { name: 'ラボル',                desc: '最短即日のファクタリング。フリーランス・個人事業主の資金調達に。',       url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+A3S676+40JM+TWTFL', tags: ['business'],                    badge: 'フリーランス向け' },
   // ── 女性向け ──
-  { name: 'マイレディス',     desc: '女性専用キャッシング。女性オペレーターが親身にサポート。',           url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9MIJCA+363I+BWVTE',  tags: ['card','female'],     badge: '女性専用' },
-  // ── ビジネス・個人事業主 ──
-  { name: 'ＭＲＦ',           desc: '個人事業主・法人向け。スピード審査のビジネスローン。',               url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9XTRU2+33NG+5YJRM',  tags: ['business'],          badge: '事業主向け' },
-  // ── 不動産担保・住宅 ──
-  { name: '不動産活用ローン', desc: '不動産を担保に低金利で借換え。高額融資にも対応。',                   url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+AZXIJU+OU6+601S2',   tags: ['housing','omatomе'], badge: '低金利借換え' },
+  { name: 'フタバ',                desc: '借りやすくて返しやすい設計。女性専用窓口あり。',                         url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9NPGV6+38S6+614CX', tags: ['card','female'] },
+  { name: 'マイレディス（セントラル女性専用）', desc: '女性専用キャッシング。女性オペレーターが親身にサポート。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9MILNM+363I+BWVTE', tags: ['card','female'],               badge: '女性専用' },
+  { name: 'ハローハッピー',        desc: '安心のパートナー。審査柔軟なフリーローン。最短即日対応。',               url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+8NZGKI+2EBI+5ZU29', tags: ['card','female','urgent'],      badge: '即日OK' },
+  // ── クレジットカード ──
+  { name: 'ニチデン（クレジット）', desc: 'クレジット専門の老舗。柔軟な審査で安定の信頼。',                       url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+A7Y7FM+2J9A+60H7M', tags: ['card'],                        badge: 'クレジット専門' },
+  { name: '金券ねっと',            desc: 'クレジットカードで現金化。急な出費の解決策に。',                         url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+ADB3VM+3J2Q+60OXE', tags: ['card','urgent'] },
+  // ── 不動産担保・住宅ローン ──
+  { name: '不動産活用ローン（日宝）', desc: '不動産を担保に低金利で借換え。高額融資にも対応。',                  url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+AZXKV6+OU6+601S2',  tags: ['housing','omatomе'],           badge: '低金利借換え' },
+  { name: 'ジェイエフシー',        desc: '不動産担保ローン。土地・建物を活用した高額融資に対応。',                 url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+ABIT2A+3GA6+639IQ', tags: ['housing'],                     badge: '不動産担保' },
+  { name: 'つばさコーポレーション', desc: '不動産担保ローン申込み受付中。審査柔軟・全国対応。',                   url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+ATZ8TE+311A+5Z6WZ', tags: ['housing'],                     badge: '不動産担保' },
+  { name: 'トラストホールディングス', desc: 'あらゆる資金ニーズにお応え。担保活用で幅広い融資。',                url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+AYQPNM+3XSG+5ZU2A', tags: ['housing','omatomе'] },
+  { name: 'MFS（INVASE）',         desc: 'プロが住宅ローン借換えをサポート。無料シミュレーション付き。',          url: 'https://px.a8.net/svt/ejp?a8mat=3HR7OT+C6SSF6+3SUE+TS3OI',  tags: ['housing'],                     badge: '借換えサポート' },
+  // ── 総合マネージメントサービス（複数プログラム） ──
+  { name: '総合マネージメントサービス（リースバック）', desc: '家を売りながら住み続けられるリースバック。老後資金・返済に。', url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+AIO0BM+1DEC+HVFKX', tags: ['housing'],             badge: 'リースバック' },
+  { name: '総合マネージメントサービス（融資相談）',    desc: 'ローン融資相談センター。多重債務・借換えの個別相談受付中。',  url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+AMU1K2+1DEC+BYLJL', tags: ['omatomе','housing'],           badge: '相談窓口' },
+  { name: '総合マネージメントサービス（不動産担保）',  desc: '不動産担保ローン。無料審査申込み受付中。',                   url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+AKGB4Y+1DEC+5YRHD', tags: ['housing'] },
+  // ── ビジネス・ファクタリング ──
+  { name: 'ネクストワン',          desc: '2社間・3社間ファクタリング。売掛金を最短即日に現金化。',                url: 'https://px.a8.net/svt/ejp?a8mat=3HR27W+1SWKIQ+4OCU+5Z6WX',  tags: ['business'],                    badge: '即日現金化' },
+  { name: 'エスコム',              desc: 'W契約方式で即現金化できるファクタリング。',                             url: 'https://px.a8.net/svt/ejp?a8mat=3HR27W+1QIU3M+4OCA+60OXE',  tags: ['business'] },
+  { name: '西日本ファクター',      desc: '借りずに資金調達。ファクタリングで売掛金を即現金化。',                   url: 'https://px.a8.net/svt/ejp?a8mat=3HR27W+1MCSV6+3XT0+614CX',  tags: ['business'] },
+  { name: 'JBL（ファクタリング）', desc: 'オンライン完結。最短2時間で売掛金の資金化が可能。',                    url: 'https://px.a8.net/svt/ejp?a8mat=3HR27W+1JZ2G2+4V1O+601S1',  tags: ['business'],                    badge: '最短2時間' },
+  { name: 'ZERO（ファクタリング）', desc: '融資ではなく資金調達。ZEROにお任せ。',                                url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+ASSDLU+4DJO+5ZMCH', tags: ['business'] },
+  { name: 'トップ・マネジメント',  desc: 'ファクタリングで事業資金を7秒で無料お見積り。',                         url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+AVRJMQ+3JLM+63H8I', tags: ['business'],                    badge: '7秒見積り' },
+  { name: 'No.1（ファクタリング）', desc: '即日資金調達可能なファクタリングサービス。',                           url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+AI2KPU+4EKW+61RIA', tags: ['business'] },
+  { name: 'PayToday',              desc: 'AIファクタリング。最速で売掛金を現金化。フリーランス向け。',             url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9OAWGY+4OPW+5Z6WX', tags: ['business'],                    badge: 'AI審査' },
+  { name: 'アリスエンターテイメント（キャッシング）', desc: 'キャッシングローン紹介。複数社から最適なご提案。',   url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+ANFH5U+1A0Y+5Z6WX', tags: ['card','omatomе'] },
+  // ── 債務整理・法律相談 ──
+  { name: 'イストワール法律事務所', desc: '借金・債務整理の無料相談。弁護士が丁寧に解決策を提案。',               url: 'https://px.a8.net/svt/ejp?a8mat=3HRD5E+9N419E+4FR4+5YRHE', tags: ['urgent','omatomе'],            badge: '無料法律相談' },
+  { name: 'トラストゲートウェイ',  desc: 'クラウド型ファクタリング。個人事業主の資金繰りを支援。',                url: 'https://px.a8.net/svt/ejp?a8mat=3HQYB0+9IY00Y+3RD2+5YJRM', tags: ['business','urgent'] },
+  // ── 保険・見直し（節約系） ──
+  { name: '保険見直しラボ',        desc: '保険の「見直し」と「新規加入」をプロが無料サポート。支出削減に。',       url: 'https://px.a8.net/svt/ejp?a8mat=3HR5CE+E39MZM+3JHQ+HV7V6', tags: ['omatomе'],                     badge: '支出削減' },
+  // ── その他 ──
+  { name: 'アーティスソリューションズ（貸付対策）', desc: 'ローンで困ったときの相談・対策情報サービス。',         url: 'https://px.a8.net/svt/ejp?a8mat=3HR5C6+FMMY8Y+3L4C+6DJW2', tags: ['urgent'] },
 ]
 
 // ── 診断結果に応じてタグフィルタリング ─────────────────────
