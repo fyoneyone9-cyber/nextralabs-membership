@@ -59,10 +59,7 @@ const TOOLS = [
   { id: 'date-concierge/app',       cat: 'travel',    title: 'デートコース自動コンシェルジュ', sub: '中間地点×楽天グルメ×Googleマップで最高のデートを自動設計',         icon: HeartHandshake, plan: 'スタンダード' },
   { id: 'location-finder/app',      cat: 'travel',    title: 'AIロケーションファインダー',     sub: '出店・移住の最適地をデータ分析',                                  icon: MapPin,        plan: 'スタンダード', done: true },
 
-  // ── 🏨 宿泊・不動産DX（法人向け） ──
-
-  { id: 'weather-boost/app',        cat: 'hotel',     title: 'Google天気連動型 館内消費ブースト', sub: '悪天候を売上チャンスに変える自動クーポン配信',   icon: CloudRain,     plan: 'お見積もり',   lpUrl: '/products/weather-boost' },
-  { id: 'voice-guest-assist/app',   cat: 'hotel',     title: 'AI多言語ゲストアシスト',        sub: '音声認識×自動翻訳でCRM精度を飛躍的に向上',                        icon: Mic,           plan: 'お見積もり',   lpUrl: '/products/voice-guest-assist' },
+  // ── 🏨 宿泊・不動産DX（法人向け） → エンタープライズページに移動 ──
 
   // ── 💕 婚活・結婚相談所DX ──
   { id: 'konkatsu-scheduler/app',   cat: 'konkatsu',  title: 'AI即アポ調整くん',              sub: '婚活の進捗をAIが管理。次の一手をタイムリーに提案してくれる。',                     icon: CalendarCheck, plan: 'スタンダード', lpUrl: '/products/konkatsu-scheduler' },
@@ -78,7 +75,7 @@ const CATEGORIES = [
   { id: 'money',     title: '💰 お金・節約・防犯',           icon: Wallet,       color: 'border-amber-500'   },
   { id: 'lifestyle', title: '🌿 ライフスタイル・日常',       icon: Sprout,       color: 'border-emerald-500' },
   { id: 'travel',    title: '✈️ 旅行・おでかけ・聖地巡礼',   icon: Plane,        color: 'border-sky-500'     },
-  { id: 'hotel',     title: '🏨 宿泊・不動産DX（法人向け）', icon: Hotel,        color: 'border-amber-500'   },
+  // hotel カテゴリはエンタープライズページに移動したため非表示
   { id: 'konkatsu',  title: '💕 婚活・結婚相談所DX',         icon: HeartHandshake, color: 'border-pink-500'  },
 ]
 
