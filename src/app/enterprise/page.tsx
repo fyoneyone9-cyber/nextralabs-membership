@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { Building2, HeartHandshake, Activity, ArrowRight, CheckCircle2, Mail, Phone, Mic, CloudRain } from 'lucide-react'
+import { Building2, HeartHandshake, Mic, CloudRain, ArrowRight, CheckCircle2, Mail } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -11,46 +11,83 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://nextralab.jp/enterprise' },
 }
 
-const ENTERPRISE_TOOLS = [
+const CATEGORIES = [
   {
-    id: 'nextra-ai',
-    title: 'Nextra AI',
-    sub: 'チェックイン・予約・解錠を全自動化。ホテル・民泊・ゲストハウスのフロント業務をAIが代替。人件費を最大60%削減。',
-    icon: Building2,
-    price: '要お見積もり',
-    tags: ['ホテル', '民泊', '不動産'],
-    lpUrl: '/products/nextra-ai',
-    features: ['多言語対応チェックイン', 'スマートロック連携', '予約管理自動化', 'レポート自動生成'],
+    id: 'hotel',
+    label: '🏨 宿泊・ホテルDX',
+    desc: 'チェックイン自動化・館内収益向上・多言語対応をAIで解決',
+    color: 'border-sky-500/40',
+    badgeColor: 'bg-sky-500/10 text-sky-400 border-sky-500/20',
+    tools: [
+      {
+        id: 'nextra-ai',
+        title: 'Nextra AI',
+        sub: 'チェックイン・予約・解錠を全自動化。ホテル・民泊・ゲストハウスのフロント業務をAIが代替。人件費を最大60%削減。',
+        icon: Building2,
+        price: '要お見積もり',
+        tags: ['ホテル', '民泊', '不動産'],
+        lpUrl: '/products/nextra-ai',
+        features: ['多言語対応チェックイン', 'スマートロック連携', '予約管理自動化', 'レポート自動生成'],
+      },
+      {
+        id: 'weather-boost',
+        title: 'Google天気連動型 館内消費ブースト',
+        sub: '悪天候を売上チャンスに変える。雨・台風・猛暑を検知して自動でクーポン・プッシュ通知を配信。',
+        icon: CloudRain,
+        price: '要お見積もり',
+        tags: ['ホテル', '飲食', '小売'],
+        lpUrl: '/products/weather-boost',
+        features: ['天気API連携', 'クーポン自動配信', 'LINE/メール通知', '売上分析'],
+      },
+      {
+        id: 'voice-guest-assist',
+        title: 'AI多言語ゲストアシスト',
+        sub: '語学力ゼロでも外国語ゲスト対応を完璧にこなせる。会話をリアルタイム翻訳＆CRM自動記録。',
+        icon: Mic,
+        price: '要お見積もり',
+        tags: ['ホテル', '旅館', '多言語'],
+        lpUrl: '/products/voice-guest-assist',
+        features: ['リアルタイム翻訳', 'アレルギー情報抽出', 'Stayseeメモ連携', '引き継ぎ自動化'],
+      },
+    ],
   },
   {
-    id: 'omiai-room',
-    title: 'オンラインお見合い盛り上げシステム',
-    sub: 'BGM×AIトークサジェストで気まずい沈黙を完全解消。成婚率を飛躍的に向上させる婚活DXシステム。',
-    icon: HeartHandshake,
-    price: '要お見積もり',
-    tags: ['結婚相談所', '婚活', 'DX'],
-    lpUrl: '/products/omiai-room',
-    features: ['AIトーク提案', 'BGM自動制御', 'オンライン対応', '成婚率レポート'],
+    id: 'konkatsu',
+    label: '💕 婚活・結婚相談所DX',
+    desc: 'お見合い成功率向上・業務自動化で相談所の差別化を実現',
+    color: 'border-pink-500/40',
+    badgeColor: 'bg-pink-500/10 text-pink-400 border-pink-500/20',
+    tools: [
+      {
+        id: 'omiai-room',
+        title: 'オンラインお見合い盛り上げシステム',
+        sub: 'BGM×AIトークサジェストで気まずい沈黙を完全解消。成婚率を飛躍的に向上させる婚活DXシステム。',
+        icon: HeartHandshake,
+        price: '要お見積もり',
+        tags: ['結婚相談所', '婚活', 'DX'],
+        lpUrl: '/products/omiai-room',
+        features: ['AIトーク提案', 'BGM自動制御', 'オンライン対応', '成婚率レポート'],
+      },
+    ],
   },
   {
-    id: 'pr-video-narrator',
-    title: 'PR動画ナレーター',
-    sub: '動画をアップするだけ。AIが内容を解析してVOICEVOXキャラのナレーション入り動画を自動生成。SNS・YouTube用PR動画を激安コストで量産。',
-    icon: Mic,
-    price: '法人・個人事業主プラン',
-    tags: ['法人', '個人事業主', '動画制作'],
-    lpUrl: '/products/pr-video-narrator',
-    features: ['VOICEVOX音声自動生成', 'シーン解析', 'テロップ自動同期', 'YouTubeバズり構成'],
-  },
-  {
-    id: 'weather-boost',
-    title: 'Google天気連動型 館内消費ブースト',
-    sub: '悪天候を売上チャンスに変える。雨・台風・猛暑を検知して自動でクーポン・プッシュ通知を配信。',
-    icon: CloudRain,
-    price: 'スタンダードプラン〜',
-    tags: ['ホテル', '飲食', '小売'],
-    lpUrl: '/products/weather-boost',
-    features: ['天気API連携', 'クーポン自動配信', 'LINE/メール通知', '売上分析'],
+    id: 'content',
+    label: '🎬 動画・コンテンツ制作',
+    desc: 'AI×VOICEVOXでPR動画制作コストを激減。個人事業主・法人どちらも対応',
+    color: 'border-emerald-500/40',
+    badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+    tools: [
+      {
+        id: 'pr-video-narrator',
+        title: 'PR動画ナレーター',
+        sub: '動画をアップするだけ。AIが内容を解析してVOICEVOXキャラのナレーション入り動画を自動生成。SNS・YouTube用PR動画を激安コストで量産。',
+        icon: Mic,
+        price: '法人・個人事業主プラン',
+        tags: ['法人', '個人事業主', '動画制作'],
+        lpUrl: '/products/pr-video-narrator',
+        features: ['VOICEVOX音声自動生成', 'シーン解析', 'テロップ自動同期', 'YouTubeバズり構成'],
+      },
+    ],
   },
 ]
 
@@ -68,7 +105,7 @@ export default function EnterprisePage() {
           <span className="text-amber-400">AIソリューション</span>
         </h1>
         <p className="text-xl text-slate-400 font-bold max-w-3xl mx-auto leading-relaxed">
-          宿泊・婚活・動画制作・システム管理。<br />
+          宿泊・婚活・動画制作。<br />
           貴社の課題に合わせたAIシステムをカスタム提供。<br />
           まずはお気軽にご相談ください。
         </p>
@@ -87,75 +124,76 @@ export default function EnterprisePage() {
         </div>
       </section>
 
-      {/* ツール一覧 */}
-      <section className="max-w-6xl mx-auto px-4 py-16 space-y-8">
-        <div className="text-center space-y-3 mb-12">
-          <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tighter">
-            提供中の<span className="text-amber-400">エンタープライズツール</span>
-          </h2>
-          <p className="text-slate-400 font-bold">業種・規模に合わせてカスタマイズ対応</p>
-        </div>
+      {/* ジャンル別ツール一覧 */}
+      <section className="max-w-6xl mx-auto px-4 py-16 space-y-20">
+        {CATEGORIES.map(cat => (
+          <div key={cat.id}>
+            {/* カテゴリヘッダー */}
+            <div className={`border-l-4 ${cat.color} pl-5 mb-8`}>
+              <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">{cat.label}</h2>
+              <p className="text-slate-400 text-sm mt-1">{cat.desc}</p>
+            </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {ENTERPRISE_TOOLS.map(tool => (
-            <Card key={tool.id} className="bg-[#13141f] border border-amber-500/20 rounded-[2rem] overflow-hidden hover:border-amber-500/50 transition-all group shadow-[0_0_30px_rgba(245,158,11,0.05)]">
-              <div className="p-8 space-y-5">
-                {/* ヘッダー */}
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 shrink-0">
-                    <tool.icon className="h-6 w-6 text-amber-400" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-white leading-snug">{tool.title}</h3>
-                    <div className="flex flex-wrap gap-1.5 mt-2">
-                      {tool.tags.map(tag => (
-                        <span key={tag} className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                          {tag}
-                        </span>
+            {/* ツールカード */}
+            <div className={`grid gap-6 ${cat.tools.length === 1 ? 'md:grid-cols-1 max-w-2xl' : 'md:grid-cols-2 lg:grid-cols-3'}`}>
+              {cat.tools.map(tool => (
+                <Card key={tool.id} className="bg-[#13141f] border border-white/5 hover:border-amber-500/40 rounded-[2rem] overflow-hidden transition-all group shadow-xl">
+                  <div className="p-7 space-y-5 flex flex-col h-full">
+                    {/* ヘッダー */}
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 shrink-0">
+                        <tool.icon className="h-6 w-6 text-amber-400" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-bold text-white leading-snug">{tool.title}</h3>
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                          {tool.tags.map(tag => (
+                            <span key={tag} className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${cat.badgeColor}`}>
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 説明 */}
+                    <p className="text-slate-400 text-sm leading-relaxed flex-1">{tool.sub}</p>
+
+                    {/* 機能リスト */}
+                    <ul className="space-y-1.5">
+                      {tool.features.map(f => (
+                        <li key={f} className="flex items-center gap-2 text-xs text-slate-300">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+                          {f}
+                        </li>
                       ))}
+                    </ul>
+
+                    {/* 価格・CTA */}
+                    <div className="pt-4 border-t border-white/5 space-y-3">
+                      <span className="text-amber-400 font-bold text-sm">{tool.price}</span>
+                      <div className="flex gap-3">
+                        <Link href="/contact" className="flex-1">
+                          <Button className="w-full h-10 font-bold text-sm rounded-xl"
+                            style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' }}>
+                            相談・見積もり →
+                          </Button>
+                        </Link>
+                        {tool.lpUrl && (
+                          <Link href={tool.lpUrl}>
+                            <Button variant="outline" className="h-10 px-4 text-sm rounded-xl border-white/10 text-slate-400 hover:text-white">
+                              詳細
+                            </Button>
+                          </Link>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-
-                {/* 説明 */}
-                <p className="text-slate-400 text-sm leading-relaxed">{tool.sub}</p>
-
-                {/* 機能リスト */}
-                <ul className="space-y-2">
-                  {tool.features.map(f => (
-                    <li key={f} className="flex items-center gap-2 text-sm text-slate-300">
-                      <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-
-                {/* 価格・CTA */}
-                <div className="pt-4 border-t border-white/5 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-amber-400 font-bold text-sm">{tool.price}</span>
-                    <span className="text-slate-500 text-xs">導入実績あり</span>
-                  </div>
-                  <div className="flex gap-3">
-                    <Link href="/contact" className="flex-1">
-                      <Button className="w-full h-10 font-bold text-sm rounded-xl"
-                        style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' }}>
-                        相談・見積もり →
-                      </Button>
-                    </Link>
-                    {tool.lpUrl && (
-                      <Link href={tool.lpUrl}>
-                        <Button variant="outline" className="h-10 px-4 text-sm rounded-xl border-white/10 text-slate-400 hover:text-white">
-                          詳細
-                        </Button>
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        ))}
       </section>
 
       {/* 導入フロー */}
