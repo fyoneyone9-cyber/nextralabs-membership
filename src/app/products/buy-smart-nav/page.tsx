@@ -105,6 +105,26 @@ const BuySmartLpContent = () => {
         </div>
       </section>
 
+      {/* 🎬 YouTube動画セクション */}
+      <section className="max-w-4xl mx-auto px-4 py-24 text-center">
+        <div className="space-y-6">
+          <span className="inline-block bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-6 py-1 rounded-full font-bold uppercase text-xs tracking-tight">実際に使ってみた</span>
+          <h3 className="text-3xl md:text-5xl font-bold text-white uppercase tracking-tighter">
+            AIの判定を<span className="text-emerald-500">動画で確認</span>
+          </h3>
+          <p className="text-slate-400 font-bold">ダイソン・iPhone・ルンバで検証。意外な判定結果に驚き！</p>
+        </div>
+        <div className="mt-10 relative w-full aspect-video rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
+          <iframe
+            src="https://www.youtube.com/embed/vCW0Ok1VqLQ"
+            title="AIが新品か中古か一発判定！ダイソン・iPhone・ルンバで検証してみた【NextraLabs AI比較ナビ】"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="absolute inset-0 w-full h-full"
+          />
+        </div>
+      </section>
+
       {/* 🚀 CTA Section */}
       <section className="max-w-5xl mx-auto px-4 pt-20 text-center text-center">
         <Card className="bg-gradient-to-br from-emerald-600 to-slate-900 border-0 rounded-[4rem] p-12 md:p-20 shadow-2xl relative overflow-hidden text-center space-y-10 text-center">
