@@ -52,14 +52,22 @@ export default function VoiceGuestAssistLPPage() {
             フロントのスマートデバイスで会話を聴き取り、アレルギー・要望・VIP情報を
             リアルタイム翻訳 + 自動抽出。Stayseeのゲストメモへワンタップでコピーします。
           </p>
+          <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold px-4 py-1.5 rounded-full mb-2">
+            🏨 エンタープライズ専用プラン
+          </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <Link
-              href="/products/voice-guest-assist/app"
+              href="/contact"
               className="flex items-center justify-center gap-2 h-12 px-8 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-sm transition-all shadow-lg shadow-emerald-500/20 w-full sm:w-auto"
             >
-              無料で試す <ArrowRight size={16} />
+              導入のご相談・お見積もり <ArrowRight size={16} />
             </Link>
-            <p className="text-xs text-slate-500">クレジットカード不要 · Chrome / Edge で動作</p>
+            <Link
+              href="/enterprise"
+              className="flex items-center justify-center gap-2 h-12 px-8 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 font-semibold text-sm transition-all w-full sm:w-auto"
+            >
+              エンタープライズプランを見る
+            </Link>
           </div>
         </div>
       </section>
@@ -208,19 +216,30 @@ export default function VoiceGuestAssistLPPage() {
       {/* ─── 最終CTA ─── */}
       <section className="py-20 px-4 bg-[#0d1117]">
         <div className="max-w-xl mx-auto text-center space-y-6">
+          <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold px-4 py-1.5 rounded-full">
+            🏨 エンタープライズ専用プラン
+          </div>
           <h2 className="text-2xl font-bold text-white tracking-tight">
-            今すぐ語学力ゼロの壁を取り除こう
+            語学力ゼロの壁を、法人契約で取り除こう
           </h2>
           <p className="text-slate-400 text-sm leading-relaxed">
             スタッフの語学力に頼らず、ゲストの声を正確に記録。<br />
-            CRM精度が飛躍的に向上します。
+            ホテル・旅館向けエンタープライズ契約にてご提供します。
           </p>
-          <Link
-            href="/products/voice-guest-assist/app"
-            className="inline-flex items-center justify-center gap-2 h-12 px-10 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-sm transition-all shadow-lg shadow-emerald-500/20"
-          >
-            無料で試してみる <ArrowRight size={16} />
-          </Link>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center gap-2 h-12 px-10 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-sm transition-all shadow-lg shadow-emerald-500/20"
+            >
+              導入のご相談・お見積もり <ArrowRight size={16} />
+            </Link>
+            <Link
+              href="/enterprise"
+              className="inline-flex items-center justify-center h-12 px-8 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 font-semibold text-sm transition-all"
+            >
+              エンタープライズプランを見る
+            </Link>
+          </div>
         </div>
       </section>
 
