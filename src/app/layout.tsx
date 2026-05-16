@@ -115,6 +115,8 @@ const jsonLdOrganization = {
   description: '日本最大級のAIツール使い放題メンバーシップ。Gemini 2.5 Flash搭載、30種類以上のAIツールが月額980円から。',
   sameAs: [
     'https://twitter.com/NextraLabs',
+    'https://www.youtube.com/@marriage_road',
+    'https://nextralab.jp',
   ],
   contactPoint: {
     '@type': 'ContactPoint',
