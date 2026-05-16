@@ -305,7 +305,7 @@ export default function HomePage() {
           </h2>
           <p className="text-slate-400 font-bold max-w-xl mx-auto">ツールの使い方・AI最新情報・副業活用事例など役立つコンテンツを毎週更新</p>
           <Link href="/blog">
-            <button className="h-12 px-10 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-base rounded-2xl transition-all shadow-lg">
+            <button className="mt-4 h-12 px-10 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-base rounded-2xl transition-all shadow-lg">
               ブログを読む →
             </button>
           </Link>
