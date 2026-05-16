@@ -262,7 +262,55 @@ export default function HomePage() {
       </section>
 
       {/* ===== 最終CTA ===== */}
-      
+
+      {/* 🎬 YouTube動画セクション */}
+      <section className="py-24 border-t border-white/5">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-12 space-y-4">
+            <span className="inline-block bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-6 py-1 rounded-full font-bold uppercase text-xs tracking-tight">実際に使ってみた</span>
+            <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tighter">
+              NextraLabsを<span className="text-emerald-400">動画で体験</span>
+            </h2>
+            <p className="text-slate-400 font-bold max-w-2xl mx-auto">AIツールの実力を動画でチェック。使い方から活用例まで一目でわかります。</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <div className="space-y-3">
+              <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.4)]">
+                <iframe
+                  src="https://www.youtube.com/embed/jQZDnKzf9wo"
+                  title="NextraLabs動画1"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                />
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.4)]">
+                <iframe
+                  src="https://www.youtube.com/embed/OyNaIuDOjuE?start=53"
+                  title="NextraLabs動画2"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                />
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.4)]">
+                <iframe
+                  src="https://www.youtube.com/embed/frDeVaGoqZ4"
+                  title="NextraLabs動画3"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* インタビューバナー */}
       <section className="py-16 border-t border-white/5">
         <div className="container mx-auto px-6">
