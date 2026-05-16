@@ -140,7 +140,7 @@ function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
             <div className="flex flex-col gap-2 w-full">
               <Link href="/contact" className="block w-full">
                 <Button className="w-full h-10 md:h-11 font-semibold text-sm rounded-lg transition-all"
-                  style={{ background: product.plan === '法人・個人事業主' ? 'linear-gradient(135deg, #7c3aed, #6d28d9)' : 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' }}>
+                  style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' }}>
                   お問い合わせ・見積もり →
                 </Button>
               </Link>
@@ -432,5 +432,6 @@ export default function ProductsPage() {
     </Suspense>
   )
 }
+
 
 
