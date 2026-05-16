@@ -94,7 +94,7 @@ const CATEGORIES = [
         icon: Youtube,
         price: '¥29,800〜（法人会員10%割引）',
         tags: ['YouTube', 'ゆっくり動画', '動画制作代行'],
-        lpUrl: '/contact',
+        lpUrl: '/products/youtube-yukkuri',
         features: [
           'ずんだもん＆四国めたん 掛け合いナレーション',
           'AIシーン解析＆台本自動生成',
