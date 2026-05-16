@@ -107,6 +107,7 @@ const PRESET_EXAMS: Omit<ExamConfig, 'id'>[] = PRESET_CATEGORIES.flatMap(c => c.
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''
 const GOOGLE_SCOPES = 'https://www.googleapis.com/auth/calendar.events'
+const GOOGLE_REDIRECT_URI = 'https://nextralab.jp/products/exam-scheduler/app'
 
 function newExam(preset = PRESET_EXAMS[0]): ExamConfig {
   return { ...preset, id: crypto.randomUUID() }
@@ -165,10 +166,11 @@ export default function ExamScheduler() {
     setAuthLoading(true)
     const params = new URLSearchParams({
       client_id: GOOGLE_CLIENT_ID,
-      redirect_uri: window.location.href.split('?')[0].split('#')[0],
+      redirect_uri: GOOGLE_REDIRECT_URI,
       response_type: 'token',
       scope: GOOGLE_SCOPES,
       prompt: 'consent',
+      access_type: 'online',
     })
     window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`
   }, [])
