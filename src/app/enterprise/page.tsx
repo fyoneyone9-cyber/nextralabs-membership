@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 
 export const metadata: Metadata = {
-  title: '法人・エンタープライズ向けAIソリューション | NextraLabs',
+  title: '法人・個人事業主様向けAIソリューション | NextraLabs',
   description: '宿泊・不動産DX・婚活相談所DX・業務効率化。貴社の課題に合わせたAIシステムをご提案。お見積もり無料。',
   alternates: { canonical: 'https://nextralab.jp/enterprise' },
 }
@@ -118,7 +118,7 @@ export default function EnterprisePage() {
           Enterprise & Business
         </Badge>
         <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tighter leading-tight">
-          法人・事業者向け<br />
+          法人・個人事業主様向け<br />
           <span className="text-amber-400">AIソリューション</span>
         </h1>
         <p className="text-xl text-slate-400 font-bold max-w-3xl mx-auto leading-relaxed">
