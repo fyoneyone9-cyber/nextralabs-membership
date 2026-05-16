@@ -11,6 +11,7 @@
     "sync": "ts-node -O \"{\\\"module\\\":\\\"commonjs\\\"}\" scripts/sync-knowledge.ts"
   },
   "dependencies": {
+    "@ducanh2912/next-pwa": "^10.2.9",
     "@ffmpeg/ffmpeg": "^0.12.10",
     "@ffmpeg/util": "^0.12.1",
     "@google/generative-ai": "^0.11.4",
@@ -27,6 +28,7 @@
     "html2canvas": "^1.4.1",
     "lucide-react": "^0.395.0",
     "next": "14.2.35",
+    "next-pwa": "^5.6.0",
     "next-themes": "^0.3.0",
     "openai": "^6.36.0",
     "qrcode.react": "^4.2.0",
@@ -41,6 +43,7 @@
     "sonner": "^1.5.0",
     "stripe": "^15.12.0",
     "tailwind-merge": "^2.3.0",
+    "workbox-window": "^7.4.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {
