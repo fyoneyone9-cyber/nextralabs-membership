@@ -273,39 +273,24 @@ export default function HomePage() {
             </h2>
             <p className="text-slate-400 font-bold max-w-2xl mx-auto">AIツールの実力を動画でチェック。使い方から活用例まで一目でわかります。</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            <div className="space-y-3">
-              <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.4)]">
-                <iframe
-                  src="https://www.youtube.com/embed/jQZDnKzf9wo"
-                  title="NextraLabs動画1"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="absolute inset-0 w-full h-full"
-                />
-              </div>
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.4)]">
+              <iframe
+                src="https://www.youtube.com/embed/jQZDnKzf9wo"
+                title="NextraLabs動画1"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+              />
             </div>
-            <div className="space-y-3">
-              <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.4)]">
-                <iframe
-                  src="https://www.youtube.com/embed/OyNaIuDOjuE?start=53"
-                  title="NextraLabs動画2"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="absolute inset-0 w-full h-full"
-                />
-              </div>
-            </div>
-            <div className="space-y-3">
-              <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.4)]">
-                <iframe
-                  src="https://www.youtube.com/embed/frDeVaGoqZ4"
-                  title="NextraLabs動画3"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="absolute inset-0 w-full h-full"
-                />
-              </div>
+            <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.4)]">
+              <iframe
+                src="https://www.youtube.com/embed/OyNaIuDOjuE?start=53"
+                title="NextraLabs動画2"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+              />
             </div>
           </div>
         </div>
