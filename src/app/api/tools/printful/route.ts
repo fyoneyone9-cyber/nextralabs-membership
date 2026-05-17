@@ -1,19 +1,20 @@
 import { checkApiLimit } from '@/lib/api-limit';
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { unstable_noStore as noStore } from 'next/cache'
 
 /**
  * 🛠️ Nextra Master E-commerce Engine v18.0 (Per-User Settings)
  * - ユーザーがShopify/Printful設定を登録していればそのアカウントで動作
- * - 未設定の場合はオーナー（NextraLabs）のデフォルト設定で動作
+ * - 未設定の場合は環境変数（NextraLabsオーナー設定）で動作
  */
 
-// ── オーナーデフォルト設定（未設定ユーザーはこれが使われる） ──
-const DEFAULT_PRINTFUL_API_KEY  = 'suHaJYIsHrfarAJXAApi6tetzLMmoZvD5qfZgaHN';
-const DEFAULT_PRINTFUL_STORE_ID = '18088076';
-const DEFAULT_SHOPIFY_DOMAIN    = 'z5ju1n-vs.myshopify.com';
-const DEFAULT_SHOPIFY_CLIENT_ID = '67b4f4e95c3a421925f45fffc42b7327';
-const DEFAULT_SHOPIFY_CLIENT_SECRET = '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';
+// ── オーナーデフォルト設定（環境変数から取得） ──
+const DEFAULT_PRINTFUL_API_KEY      = process.env.PRINTFUL_API_KEY || '';
+const DEFAULT_PRINTFUL_STORE_ID     = process.env.PRINTFUL_STORE_ID || '18088076';
+const DEFAULT_SHOPIFY_DOMAIN        = process.env.SHOPIFY_DOMAIN || 'z5ju1n-vs.myshopify.com';
+const DEFAULT_SHOPIFY_CLIENT_ID     = process.env.SHOPIFY_CLIENT_ID || '';
+const DEFAULT_SHOPIFY_CLIENT_SECRET = process.env.SHOPIFY_CLIENT_SECRET || '';
 
 const SUPABASE_URL         = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
@@ -51,6 +52,11 @@ async function getShopifyToken(domain: string, clientId: string, clientSecret: s
 }
 
 export async function POST(request: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // 🛡️ レート制限（1日10回）
   const limitCheck = await checkApiLimit('printful', 10);
   if (!limitCheck.allowed) {
@@ -73,10 +79,10 @@ export async function POST(request: NextRequest) {
     // ── ユーザー設定取得（あれば優先、なければデフォルト） ──
     const userSettings = userId ? await getUserShopSettings(userId) : null;
 
-    const PRINTFUL_API_KEY   = userSettings?.printful_api_key   || DEFAULT_PRINTFUL_API_KEY;
-    const PRINTFUL_STORE_ID  = userSettings?.printful_store_id  || DEFAULT_PRINTFUL_STORE_ID;
-    const SHOPIFY_DOMAIN     = userSettings?.shopify_domain     || DEFAULT_SHOPIFY_DOMAIN;
-    const SHOPIFY_CLIENT_ID  = userSettings?.shopify_client_id  || DEFAULT_SHOPIFY_CLIENT_ID;
+    const PRINTFUL_API_KEY      = userSettings?.printful_api_key      || DEFAULT_PRINTFUL_API_KEY;
+    const PRINTFUL_STORE_ID     = userSettings?.printful_store_id     || DEFAULT_PRINTFUL_STORE_ID;
+    const SHOPIFY_DOMAIN        = userSettings?.shopify_domain        || DEFAULT_SHOPIFY_DOMAIN;
+    const SHOPIFY_CLIENT_ID     = userSettings?.shopify_client_id     || DEFAULT_SHOPIFY_CLIENT_ID;
     const SHOPIFY_CLIENT_SECRET = userSettings?.shopify_client_secret || DEFAULT_SHOPIFY_CLIENT_SECRET;
 
     // ── 設定保存API ──
