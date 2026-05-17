@@ -3,10 +3,16 @@ import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { checkRateLimit } from '@/lib/rateLimit';
 import { NextRequest } from 'next/server';
+import { unstable_noStore as noStore } from 'next/cache'
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // 🛡️ レート制限（1日10回）
   const limitCheck = await checkApiLimit('smart-gardening', 10);
   if (!limitCheck.allowed) {

@@ -51,8 +51,13 @@ export default function LocationFinder() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [result, setResult] = useState<LocationResult | null>(null)
   const [error, setError] = useState('')
+  const [isMobile, setIsMobile] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const cameraInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent))
+  }, [])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -156,12 +161,18 @@ export default function LocationFinder() {
           <input ref={cameraInputRef} type="file" onChange={handleFileChange} className="hidden" accept="image/*" capture="environment" />
 
           <div className="flex gap-3">
-            <button
-              onClick={() => cameraInputRef.current?.click()}
-              className="flex-1 flex items-center justify-center gap-2 h-11 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-sm font-bold text-white transition-all shadow-lg"
-            >
-              <Camera size={15} /> カメラで撮影
-            </button>
+            {isMobile ? (
+              <button
+                onClick={() => cameraInputRef.current?.click()}
+                className="flex-1 flex items-center justify-center gap-2 h-11 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-sm font-bold text-white transition-all shadow-lg"
+              >
+                <Camera size={15} /> カメラで撮影
+              </button>
+            ) : (
+              <div className="flex-1 flex items-center justify-center gap-2 h-11 bg-[#0d0f1a] border border-white/10 rounded-xl text-xs text-slate-500 px-3 text-center">
+                📱 カメラはスマホでご利用ください
+              </div>
+            )}
             <button
               onClick={() => fileInputRef.current?.click()}
               className="flex-1 flex items-center justify-center gap-2 h-11 bg-[#0d0f1a] border border-white/10 hover:border-emerald-500/30 rounded-xl text-sm font-semibold text-slate-400 hover:text-white transition-all"

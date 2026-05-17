@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { unstable_noStore as noStore } from 'next/cache'
 
 // プラン別制限（憲法遵守：極小・安全）
 const PLAN_LIMITS: Record<string, { daily: number; maxSize: number }> = {
@@ -12,6 +13,11 @@ const PLAN_LIMITS: Record<string, { daily: number; maxSize: number }> = {
 };
 
 export async function POST(req: Request) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // 🛡️ レート制限（1日10回）
   const limitCheck = await checkApiLimit('pdf-compress', 10);
   if (!limitCheck.allowed) {

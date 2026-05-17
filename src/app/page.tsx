@@ -262,7 +262,56 @@ export default function HomePage() {
       </section>
 
       {/* ===== 最終CTA ===== */}
-      
+
+      {/* 🎬 YouTube動画セクション */}
+      <section className="py-24 border-t border-white/5">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-12 space-y-4">
+            <span className="inline-block bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-6 py-1 rounded-full font-bold uppercase text-xs tracking-tight">実際に使ってみた</span>
+            <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tighter">
+              NextraLabsを<span className="text-emerald-400">動画で体験</span>
+            </h2>
+            <p className="text-slate-400 font-bold max-w-2xl mx-auto">AIツールの実力を動画でチェック。使い方から活用例まで一目でわかります。</p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.4)]">
+              <iframe
+                src="https://www.youtube.com/embed/jQZDnKzf9wo"
+                title="NextraLabs動画1"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+              />
+            </div>
+            <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.4)]">
+              <iframe
+                src="https://www.youtube.com/embed/OyNaIuDOjuE?start=53"
+                title="NextraLabs動画2"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 📝 ブログ導線 */}
+      <section className="py-16 border-t border-white/5 bg-[#080809]">
+        <div className="container mx-auto px-6 text-center space-y-6">
+          <span className="inline-block bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-6 py-1 rounded-full font-bold uppercase text-xs tracking-tight">Blog</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tighter">
+            AI活用術・最新情報を<span className="text-emerald-400">ブログで発信中</span>
+          </h2>
+          <p className="text-slate-400 font-bold max-w-xl mx-auto">ツールの使い方・AI最新情報・副業活用事例など役立つコンテンツを毎週更新</p>
+          <Link href="/blog">
+            <button className="mt-4 h-12 px-10 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-base rounded-2xl transition-all shadow-lg">
+              ブログを読む →
+            </button>
+          </Link>
+        </div>
+      </section>
+
       {/* インタビューバナー */}
       <section className="py-16 border-t border-white/5">
         <div className="container mx-auto px-6">

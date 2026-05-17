@@ -5,6 +5,8 @@
 // Locked: 2026-05-10
 // ============================================================
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
+import { checkApiLimit } from '@/lib/api-limit'
 
 interface ExamConfig {
   name: string
@@ -123,6 +125,20 @@ async function generateSchedule(
 }
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
+  // 認証 + 1日3回制限（Google Calendar APIを使うため）
+  const limitCheck = await checkApiLimit('exam-scheduler', 3)
+  if (!limitCheck.allowed) {
+    if (limitCheck.reason === 'unauthenticated') {
+      return NextResponse.json({ error: 'ログインが必要です' }, { status: 401 })
+    }
+    return NextResponse.json({ error: '本日の利用上限（3回）に達しました。明日またお試しください。' }, { status: 429 })
+  }
+
   try {
     const body = await req.json() as {
       exams: ExamConfig[]

@@ -1,10 +1,13 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { unstable_noStore as noStore } from 'next/cache'
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabaseAdmin() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 const CATEGORY_LABELS: Record<string, string> = {
   general: '一般的なお問い合わせ',
@@ -95,6 +98,11 @@ ${message}
 }
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     const body = await req.json()
     const { name, email, category, message } = body
@@ -108,7 +116,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Save to Supabase
-    const { error } = await supabaseAdmin.from('contacts').insert({
+    const { error } = await getSupabaseAdmin().from('contacts').insert({
       name: name.trim(),
       email: email.trim(),
       category: category || 'general',

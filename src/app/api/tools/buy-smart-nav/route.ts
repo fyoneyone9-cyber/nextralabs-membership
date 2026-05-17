@@ -1,43 +1,22 @@
-﻿import { checkApiLimit } from '@/lib/api-limit';
+import { checkApiLimit } from '@/lib/api-limit';
+import { unstable_noStore as noStore } from 'next/cache'
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export const dynamic = 'force-dynamic';
 
-// 楽天API 2026年新仕様対応ヘルパー
-const RAKUTEN_APP_ID = '5b11580f-bdb5-4659-b89a-63db8ef20abf';
-const RAKUTEN_ACCESS_KEY = 'pk_FfxUYuFakO3oY9BEo0YxLAyRlMP6oeiwFk2lHMGwNiB';
-const RAKUTEN_BASE_URL = 'https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401';
-// ※ 2026年新APIエンドポイント（applicationId + accessKey + Referer 必須）
-
-async function rakutenSearch(keyword: string, usedFlag: 0 | 1, hits: number) {
-  const params = new URLSearchParams({
-    format: 'json',
-    keyword,
-    applicationId: RAKUTEN_APP_ID,
-    accessKey: RAKUTEN_ACCESS_KEY,
-    hits: String(hits),
-    sort: '+itemPrice',
-    usedFlag: String(usedFlag),
-  });
-
-  const res = await fetch(`${RAKUTEN_BASE_URL}?${params.toString()}`, {
-    headers: {
-      'Origin': 'https://nextralab.jp',
-      'Referer': 'https://nextralab.jp/',
-      'User-Agent': 'Mozilla/5.0 (compatible; NextraLabs/1.0)',
-    },
-  });
-
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`楽天API error ${res.status}: ${errText}`);
-  }
-
-  return res.json();
-}
+/**
+ * BuySmartNav API v3
+ * Gemini 2.5 Flash が市場価格を推定し、損得判定まで一気に行う。
+ * 外部APIに依存しないため常時安定動作。
+ */
 
 export async function POST(req: Request) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // 🛡️ レート制限（1日10回）
   const limitCheck = await checkApiLimit('buy-smart-nav', 10);
   if (!limitCheck.allowed) {
@@ -55,64 +34,81 @@ export async function POST(req: Request) {
 
   try {
     const { keyword } = await req.json();
-    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+    if (!keyword || keyword.trim() === '') {
+      return NextResponse.json({ success: false, error: '商品名を入力してください' }, { status: 400 });
+    }
 
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
     if (!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY is not configured');
 
-    // 1. 楽天API (新品検索)
-    const newData = await rakutenSearch(keyword, 0, 5);
-    const newItems = newData.Items || [];
-    const newPrice = newItems.length > 0 ? newItems[0].Item.itemPrice : 0;
-
-    // 2. 楽天API (中古検索)
-    const usedData = await rakutenSearch(keyword, 1, 10);
-    const usedItems = usedData.Items || [];
-    const usedPrices = usedItems.map((i: any) => i.Item.itemPrice);
-    const avgUsedPrice = usedPrices.length > 0
-      ? Math.floor(usedPrices.reduce((a: number, b: number) => a + b, 0) / usedPrices.length)
-      : 0;
-
-    // 3. Geminiによる解析
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const prompt = `
-あなたはプロの買い出しアドバイザーです。以下の楽天市場のリアルタイムデータを元に、「新品」と「中古」のどちらを買うべきか150文字以内でズバリ回答してください。
+あなたは日本の中古市場・新品市場に詳しいAIバイヤーです。
+「${keyword}」について、2025〜2026年の日本市場での価格と損得判定を行ってください。
 
-商品キーワード: ${keyword}
-新品最安値: ¥${newPrice.toLocaleString()}
-中古平均相場: ¥${avgUsedPrice.toLocaleString()}
+以下のJSON形式のみで回答してください（コードブロック・マークダウン不要、JSONのみ）:
 
-【指示】
-1. 価格差、リセールバリュー、状態のリスクを考慮してください。
-2. 「新品購入を推奨」または「中古購入を推奨」のどちらかを決めてください。
-3. その理由を、具体的かつ説得力のある言葉で述べてください。
-4. Markdown記号は含めず、プレーンな日本語で出力してください。
-    `;
+{
+  "newPrice": 新品の最安値相場（円・整数）,
+  "usedPrice": 中古の平均相場（円・整数）,
+  "verdict": "new" または "used" （どちらがお得か）,
+  "status": "新品購入を推奨" または "中古購入を推奨",
+  "reason": "判定理由（150文字以内、プレーンな日本語、Markdown記号なし）",
+  "items": [
+    {
+      "name": "具体的な商品名・グレード（50文字以内）",
+      "price": 価格（整数）,
+      "condition": "新品" または "中古",
+      "url": "https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}"
+    }
+  ]
+}
+
+ルール:
+- itemsは3〜5件（新品2件・中古2〜3件の混合）
+- 価格は現実の日本市場に近い具体的な数値
+- reasonは「新品推奨」「中古推奨」のどちらかを最初に明示し、理由を続ける
+- 価格差・保証・リセールバリュー・状態リスクを考慮すること
+- JSONのみ出力（説明文・前置き・コードブロック一切不要）
+`;
 
     const result = await model.generateContent(prompt);
-    const reason = (await result.response).text().trim();
+    const text = result.response.text().trim();
 
-    // 判定
-    const verdict = (newPrice > 0 && avgUsedPrice > 0 && avgUsedPrice < newPrice * 0.7) ? 'used' : 'new';
-    const status = verdict === 'used' ? '中古購入を推奨' : '新品購入を推奨';
+    // JSONを抽出（```json ブロックや前後のテキストを除去）
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      console.error('Gemini raw response:', text);
+      throw new Error('AI応答の解析に失敗しました。もう一度お試しください。');
+    }
 
-    const mergedItems = [...newItems, ...usedItems].slice(0, 6).map((i: any) => ({
-      name: i.Item.itemName,
-      price: i.Item.itemPrice,
-      url: i.Item.itemUrl,
-      img: i.Item.mediumImageUrls?.[0]?.imageUrl ?? '',
+    const parsed = JSON.parse(jsonMatch[0]);
+
+    const newPrice: number = Number(parsed.newPrice) || 0;
+    const avgUsedPrice: number = Number(parsed.usedPrice) || 0;
+    const verdict: string = parsed.verdict === 'used' ? 'used' : 'new';
+    const status: string = parsed.status || (verdict === 'used' ? '中古購入を推奨' : '新品購入を推奨');
+    const reason: string = parsed.reason || '判定理由がありません';
+
+    const items = (parsed.items || []).slice(0, 5).map((i: any) => ({
+      name: String(i.name || keyword).substring(0, 60),
+      price: Number(i.price) || 0,
+      url: i.url || `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}`,
+      img: '',
     }));
 
     return NextResponse.json({
       success: true,
       verdict,
       status,
-      reason,          // Gemini解析テキスト
+      reason,
+      dataSource: 'GEMINI_AI_MARKET',
       data: {
         minPrice: newPrice,
         avgPrice: avgUsedPrice,
-        items: mergedItems,
+        items,
       },
     });
 

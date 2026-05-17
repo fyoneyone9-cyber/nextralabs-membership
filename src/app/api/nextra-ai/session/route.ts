@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
@@ -9,6 +10,11 @@ import { cookies } from 'next/headers'
  */
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     const body = await req.json()
     const { type, reservationId, pms, ledger, hasSig, timestamp } = body
@@ -65,5 +71,10 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET() {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   return NextResponse.json({ status: 'Nextra AI Session API v1.0' })
 }

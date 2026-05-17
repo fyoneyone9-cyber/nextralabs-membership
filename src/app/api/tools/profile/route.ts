@@ -1,14 +1,22 @@
 ﻿import { checkApiLimit } from '@/lib/api-limit';
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { unstable_noStore as noStore } from 'next/cache'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 // GET: プロフィール取得
 export async function GET(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // 🛡️ レート制限（1日10回）
   const limitCheck = await checkApiLimit('profile', 10);
   if (!limitCheck.allowed) {
@@ -39,6 +47,11 @@ export async function GET(req: NextRequest) {
 
 // POST: 表示名更新
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // 🛡️ レート制限（1日10回）
   const limitCheck = await checkApiLimit('profile', 10);
   if (!limitCheck.allowed) {
@@ -68,6 +81,11 @@ export async function POST(req: NextRequest) {
 
 // PUT: アバター画像アップロード
 export async function PUT(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const formData = await req.formData()
   const file = formData.get('file') as File
   const userId = formData.get('user_id') as string
@@ -78,7 +96,7 @@ export async function PUT(req: NextRequest) {
   const filePath = `${userId}/avatar.${ext}`
   const buffer = Buffer.from(await file.arrayBuffer())
 
-  const { error: uploadError } = await supabase.storage
+  const { error: uploadError } = await getSupabase().storage
     .from('avatars')
     .upload(filePath, buffer, {
       contentType: file.type,
@@ -87,7 +105,7 @@ export async function PUT(req: NextRequest) {
 
   if (uploadError) return NextResponse.json({ error: uploadError.message }, { status: 500 })
 
-  const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath)
+  const { data: { publicUrl } } = getSupabase().storage.from('avatars').getPublicUrl(filePath)
 
   await supabase
     .from('profiles')

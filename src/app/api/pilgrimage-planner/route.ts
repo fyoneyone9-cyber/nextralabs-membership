@@ -1,5 +1,6 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { unstable_noStore as noStore } from 'next/cache'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!
 const RAKUTEN_APP_ID = process.env.RAKUTEN_APP_ID ?? ''
@@ -682,6 +683,11 @@ ${daySchedule}
 // ─── メインハンドラ ────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     const supabase = createServerSupabaseClient()
     const { data: { user } } = await supabase.auth.getUser()

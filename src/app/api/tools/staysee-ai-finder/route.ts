@@ -1,8 +1,14 @@
 ﻿import { NextResponse } from 'next/server';
 import { handleAiRequest } from '@/lib/ai-cache';
 import { checkApiLimit } from '@/lib/api-limit';
+import { unstable_noStore as noStore } from 'next/cache'
 
 export async function POST(req: Request) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     // クレジット保護：1日20回制限（B2Bのためやや多めに設定）
     const limitCheck = await checkApiLimit('staysee-ai-finder', 20);

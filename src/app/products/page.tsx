@@ -11,7 +11,7 @@ import {
   FileText, ArrowRight, Network, Store, 
   ClipboardCheck, ShieldCheck, Wallet, Home, 
   Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, BookOpen, 
-  Sprout, Zap, Building2, Database, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils, Plane, Activity, CalendarHeart, CalendarCheck, Scissors, Mic, CloudRain
+  Sprout, Zap, Building2, Database, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils, Plane, Activity, CalendarHeart, CalendarCheck, Scissors, Mic, CloudRain, Phone
 } from 'lucide-react'
 
 // 管理者メール（このアドレスでログインしているユーザーのみ管理者リンクが見える）
@@ -30,11 +30,11 @@ const TOOLS = [
   { id: 'kindle-factory/app',       cat: 'publish',   title: 'Kindle AI ファクトリー',        sub: 'AI解析でKDP入稿可能な原稿を自動生成',                             icon: Crown,         plan: 'プレミアム', done: true },
 
   // ── 💼 ビジネス・仕事効率化 ──
+  { id: 'ai-teleapo/app',           cat: 'biz',       title: 'AIテレアポくん',                sub: '法人営業の架電台本と見積もりをAIが自動生成。アポ率3倍を目指す営業支援ツール。',                              icon: Phone,         plan: 'ライト',     done: true },
   { id: 'inbox-organizer/app',      cat: 'biz',       title: 'Gmail AI Accelerator',         sub: 'メール対応時間を最大70%削減。AIが下書きから返信分類まで自動化。',                                            icon: Mail,          plan: 'プレミアム', done: true },
   { id: 'ai-sidejob/app',           cat: 'biz',       title: 'AI副業スタートダッシュ',        sub: 'あなたのスキルと時間からAIが最適な副業プランを診断。今月から収入プラス。',                                      icon: Briefcase,     plan: 'プレミアム', done: true },
   { id: 'universal-converter/app',  cat: 'biz',       title: '究極AIマルチコンバーター',      sub: '動画・画像・PDFへの変換圧縮',                                    icon: Repeat,        plan: 'ライト',     done: true },
-  { id: 'pr-video-narrator/app',    cat: 'biz',       title: 'PR動画ナレーター',              sub: '動画をアップするだけ。AIが内容を解析してVOICEVOXキャラのナレーション入り動画を自動生成。',  icon: Mic, plan: '法人・個人事業主', done: true, lpUrl: '/products/pr-video-narrator' },
-  { id: 'vercel-monitor/app',       cat: 'biz',       title: 'Vercel Fleet Monitor',         sub: 'システムのデプロイ状況をリアルタイム監視',                         icon: Activity,      plan: 'お見積もり', done: true, adminOnly: true },
+
 
   // ── 🎓 学習・資格・自己研鑽 ──
   { id: 'exam-scheduler/app',       cat: 'edu',       title: '資格試験AIスケジューラー',      sub: '試験日から逆算して学習計画を自動生成',                            icon: ClipboardCheck, plan: 'スタンダード', done: true },
@@ -60,14 +60,11 @@ const TOOLS = [
   { id: 'date-concierge/app',       cat: 'travel',    title: 'デートコース自動コンシェルジュ', sub: '中間地点×楽天グルメ×Googleマップで最高のデートを自動設計',         icon: HeartHandshake, plan: 'スタンダード' },
   { id: 'location-finder/app',      cat: 'travel',    title: 'AIロケーションファインダー',     sub: '出店・移住の最適地をデータ分析',                                  icon: MapPin,        plan: 'スタンダード', done: true },
 
-  // ── 🏨 宿泊・不動産DX（法人向け） ──
-  { id: 'nextra-ai/app',            cat: 'hotel',     title: 'Nextra AI',                    sub: 'チェックイン・予約・解錠OS',                                      icon: Building2,     plan: 'お見積もり', lpUrl: '/products/nextra-ai', target: 'both' },
-  { id: 'weather-boost/app',        cat: 'hotel',     title: 'Google天気連動型 館内消費ブースト', sub: '悪天候を売上チャンスに変える自動クーポン配信',   icon: CloudRain,     plan: 'スタンダード', lpUrl: '/products/weather-boost' },
-  { id: 'voice-guest-assist/app',   cat: 'hotel',     title: 'AI多言語ゲストアシスト',        sub: '音声認識×自動翻訳でCRM精度を飛躍的に向上',                        icon: Mic,           plan: 'スタンダード', lpUrl: '/products/voice-guest-assist' },
+  // ── 🏨 宿泊・不動産DX（法人向け） → エンタープライズページに移動 ──
 
   // ── 💕 婚活・結婚相談所DX ──
   { id: 'konkatsu-scheduler/app',   cat: 'konkatsu',  title: 'AI即アポ調整くん',              sub: '婚活の進捗をAIが管理。次の一手をタイムリーに提案してくれる。',                     icon: CalendarCheck, plan: 'スタンダード', lpUrl: '/products/konkatsu-scheduler' },
-  { id: 'omiai-room/app',           cat: 'konkatsu',  title: 'オンラインお見合い盛り上げシステム', sub: 'BGM×AIトークサジェストで気まずい沈黙を解消',                icon: HeartHandshake, plan: 'お見積もり', lpUrl: '/products/omiai-room' },
+
   { id: 'beauty-boost/app',         cat: 'konkatsu',  title: 'お見合い垢抜けブースト',        sub: '会場周辺の美容院をAI検索 → 予約へ直接案内',                      icon: Scissors,      plan: 'スタンダード', lpUrl: '/products/beauty-boost' },
 ]
 
@@ -79,7 +76,7 @@ const CATEGORIES = [
   { id: 'money',     title: '💰 お金・節約・防犯',           icon: Wallet,       color: 'border-amber-500'   },
   { id: 'lifestyle', title: '🌿 ライフスタイル・日常',       icon: Sprout,       color: 'border-emerald-500' },
   { id: 'travel',    title: '✈️ 旅行・おでかけ・聖地巡礼',   icon: Plane,        color: 'border-sky-500'     },
-  { id: 'hotel',     title: '🏨 宿泊・不動産DX（法人向け）', icon: Hotel,        color: 'border-amber-500'   },
+  // hotel カテゴリはエンタープライズページに移動したため非表示
   { id: 'konkatsu',  title: '💕 婚活・結婚相談所DX',         icon: HeartHandshake, color: 'border-pink-500'  },
 ]
 

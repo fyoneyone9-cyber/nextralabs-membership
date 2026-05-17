@@ -65,6 +65,19 @@ export default function LoanAdvisorPromo() {
           </div>
         </div>
 
+        {/* ── YouTube 動画 ── */}
+        <div className="mt-16">
+          <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
+            <iframe
+              className="absolute inset-0 w-full h-full rounded-[2rem]"
+              src="https://www.youtube.com/embed/BK5C2yn9Hw8?rel=0"
+              title="AI借金完済・おまとめ診断 紹介動画"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-24">
           {[
             { icon: <TrendingDown className="text-emerald-500" />, title: '金利を軽減', desc: '一本化することで月々の返済額と総支払額を大幅にカット。' },

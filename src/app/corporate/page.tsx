@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Check, ArrowRight, Building2, Users, Zap, Shield, HeadphonesIcon, FileText } from 'lucide-react'
+import { Check, ArrowRight, Building2, Users, Zap, Shield, HeadphonesIcon, FileText, Video, Youtube, Upload, Sparkles, BadgeCheck } from 'lucide-react'
 
 const plans = [
   {
@@ -246,6 +246,137 @@ export default function CorporatePage() {
               )
             })}
           </div>
+        </div>
+      </section>
+
+      {/* YouTube ゆっくり動画作成代行 - 目玉サービス */}
+      <section className="py-20 px-4">
+        <div className="max-w-5xl mx-auto">
+
+          {/* 目立つタイトルバナー */}
+          <div className="relative overflow-hidden rounded-3xl border border-red-500/40 bg-gradient-to-br from-red-950/40 via-[#0d1117] to-orange-950/30 p-1 mb-10 shadow-[0_0_80px_rgba(239,68,68,0.2)]">
+            <div className="rounded-[20px] bg-[#0d1117]/80 backdrop-blur-sm p-8 md:p-12">
+              <div className="flex flex-col md:flex-row items-center gap-8">
+                <div className="flex-1 text-center md:text-left">
+                  {/* 注目バッジ */}
+                  <div className="inline-flex items-center gap-2 bg-red-500/15 border border-red-500/40 rounded-full px-4 py-1.5 mb-5">
+                    <Sparkles className="w-3.5 h-3.5 text-red-400 animate-pulse" />
+                    <span className="text-[11px] font-bold text-red-400 tracking-widest uppercase">🔥 NEW SERVICE — 法人向け特別サービス</span>
+                  </div>
+
+                  <h2 className="text-3xl md:text-5xl font-black text-white mb-3 leading-tight">
+                    <span className="text-red-400">YouTube</span>
+                    <br />
+                    <span className="text-2xl md:text-4xl">ゆっくり系動画</span>
+                    <br />
+                    <span className="text-xl md:text-3xl text-slate-300">作成代行</span>
+                  </h2>
+                  <p className="text-slate-400 text-sm md:text-base leading-relaxed max-w-xl">
+                    PRしたい動画素材をご提供いただくだけ。<br />
+                    ずんだもん・四国めたんなどの人気キャラクターが<br className="hidden md:block" />
+                    あなたのサービスを魅力的にナレーション。完成品を納品します。
+                  </p>
+
+                  <div className="flex flex-wrap gap-3 mt-6 justify-center md:justify-start">
+                    <Link href="/contact">
+                      <Button className="h-12 px-8 bg-red-500 hover:bg-red-400 text-white font-bold rounded-xl gap-2 text-base transition-all shadow-[0_0_30px_rgba(239,68,68,0.4)] hover:shadow-[0_0_50px_rgba(239,68,68,0.6)]">
+                        <Youtube className="h-5 w-5" />
+                        今すぐ相談する
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+
+                {/* 右側：キャラアイコンエリア */}
+                <div className="flex-shrink-0 relative">
+                  <div className="w-48 h-48 md:w-56 md:h-56 rounded-full bg-gradient-to-br from-red-500/20 to-orange-500/10 border border-red-500/30 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-6xl mb-2">🎬</div>
+                      <p className="text-xs text-red-400 font-bold">ずんだもん<br />＆めたん</p>
+                    </div>
+                  </div>
+                  <div className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-black px-2 py-1 rounded-full">NEW</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* サービス詳細 3カラム */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
+            <div className="bg-[#0d1117] border border-red-500/20 rounded-2xl p-6 hover:border-red-500/40 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-4">
+                <Upload className="h-5 w-5 text-red-400" />
+              </div>
+              <h3 className="text-base font-semibold text-white mb-2">① 動画素材を送るだけ</h3>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                PRしたい動画（会社紹介・製品説明・サービス紹介など）をご提供ください。それだけでOK。
+              </p>
+            </div>
+
+            <div className="bg-[#0d1117] border border-orange-500/20 rounded-2xl p-6 hover:border-orange-500/40 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mb-4">
+                <Sparkles className="h-5 w-5 text-orange-400" />
+              </div>
+              <h3 className="text-base font-semibold text-white mb-2">② AIが台本＆音声を生成</h3>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                ずんだもん・四国めたんなどの人気ゆっくりキャラが掛け合いでPR内容を解説。AIで高品質に生成。
+              </p>
+            </div>
+
+            <div className="bg-[#0d1117] border border-yellow-500/20 rounded-2xl p-6 hover:border-yellow-500/40 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center mb-4">
+                <Video className="h-5 w-5 text-yellow-400" />
+              </div>
+              <h3 className="text-base font-semibold text-white mb-2">③ 完成動画を納品</h3>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                字幕・BGM・立ち絵アニメーション付きの完成動画をmp4形式で納品。そのままYouTubeにアップ可能。
+              </p>
+            </div>
+          </div>
+
+          {/* 含まれる内容リスト */}
+          <div className="bg-[#0d1117] border border-red-500/20 rounded-2xl p-6 md:p-8">
+            <h3 className="text-lg font-bold text-white mb-5 flex items-center gap-2">
+              <BadgeCheck className="h-5 w-5 text-red-400" />
+              納品物に含まれるもの
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[
+                'ずんだもん＆四国めたん 掛け合いナレーション',
+                'AIによるシーン解析＆台本自動生成',
+                '立ち絵キャラクターのアニメーション演出',
+                '字幕テロップ（見やすいデザイン）',
+                'BGM（著作権フリー）',
+                'MP4形式での完成動画（YouTube即アップ対応）',
+                '修正1回対応（内容・台本の微調整）',
+                '納期：ご依頼から最短3営業日',
+              ].map((item) => (
+                <div key={item} className="flex items-start gap-2.5">
+                  <Check className="h-4 w-4 text-red-400 mt-0.5 shrink-0" />
+                  <span className="text-sm text-slate-300">{item}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 pt-6 border-t border-white/8 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <p className="text-xs text-slate-500 mb-1">料金（1本あたり）</p>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl font-black text-red-400">¥29,800〜</span>
+                  <span className="text-sm text-slate-500">（動画尺・内容による）</span>
+                </div>
+                <p className="text-xs text-slate-600 mt-1">※ 法人会員様は10%割引</p>
+              </div>
+              <Link href="/contact">
+                <Button className="h-12 px-8 bg-red-500 hover:bg-red-400 text-white font-bold rounded-xl gap-2 transition-all shadow-[0_0_25px_rgba(239,68,68,0.35)] hover:shadow-[0_0_40px_rgba(239,68,68,0.5)]">
+                  <Youtube className="h-4 w-4" />
+                  無料相談・見積もり依頼
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+
         </div>
       </section>
 

@@ -2,8 +2,14 @@
 import { createClient } from '@supabase/supabase-js'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe'
+import { unstable_noStore as noStore } from 'next/cache'
 
 export async function POST(request: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     const body = await request.json().catch(() => ({}))
     const accessToken = body?.access_token

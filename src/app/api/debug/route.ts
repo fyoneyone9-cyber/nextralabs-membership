@@ -1,6 +1,17 @@
 import { NextResponse } from "next/server";
+import { unstable_noStore as noStore } from 'next/cache'
 
 export async function GET() {
+  noStore()
+  // 本番環境では無効化（情報漏洩防止）
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Not available' }, { status: 403 })
+  }
+
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // システム全体の健康診断情報を私(AI)に伝えるためのエンドポイント
   const diagnostics = {
     timestamp: new Date().toISOString(),

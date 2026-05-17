@@ -1,17 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 const ADMIN_EMAIL = 'f.yoneyone9@gmail.com'
 const FROM_EMAIL  = process.env.RESEND_FROM_EMAIL || 'NextraLabs <newsletter@nextralabs.jp>'
 const RESEND_API_KEY = process.env.RESEND_API_KEY || ''
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // 管理者チェック
   if (req.headers.get('x-admin-email') !== ADMIN_EMAIL) {
     return NextResponse.json({ ok: false, message: '権限がありません' }, { status: 403 })
@@ -80,7 +88,7 @@ NextraLabs メルマガ
   }
 
   // 送信履歴を保存
-  await supabase.from('newsletter_campaigns').insert({
+  await getSupabase().from('newsletter_campaigns').insert({
     subject,
     body,
     tag_filter: tagFilter || null,

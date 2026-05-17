@@ -4,8 +4,14 @@ import {
   Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType
 } from 'docx'
 import { checkApiLimit } from '@/lib/api-limit'
+import { unstable_noStore as noStore } from 'next/cache'
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     // 認証 + 1日3回制限（Kindle原稿生成は重いため厳しめに設定）
     const limitCheck = await checkApiLimit('kindle-generate', 3)

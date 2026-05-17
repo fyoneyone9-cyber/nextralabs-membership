@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { unstable_noStore as noStore } from 'next/cache'
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { checkApiLimit } from '@/lib/api-limit';
 
@@ -18,6 +19,11 @@ const FALLBACK_ITEMS = [
 ];
 
 export async function GET() {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // クレジット保護：1日15回制限
   const limitCheck = await checkApiLimit('trend-stock', 15);
   if (!limitCheck.allowed) {

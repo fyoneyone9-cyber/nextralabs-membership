@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 
 // =============================================
@@ -16,6 +17,8 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 const ENTERPRISE_IDS = [
   'staysee-ai-finder',  // Nextra AI旧名 — PMS/スマートロック 法人向け
   'nextra-ai',          // Nextra AI KIOSK — ホテルDX 法人契約のみ
+  'weather-boost',      // Google天気連動型 館内消費ブースト — ホテル法人専用
+  'voice-guest-assist', // AI多言語ゲストアシスト — ホテル法人専用
 ]
 
 // 👑 プレミアム専用（重量級API: YouTube・SNS・Gmail・画像生成等）
@@ -70,6 +73,11 @@ const LIGHT_IDS = [
 //       pet-translator, universal-converter, loan-advisor, etc.
 
 export async function POST(request: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     const { productId } = await request.json()
     const supabase = createServerSupabaseClient()

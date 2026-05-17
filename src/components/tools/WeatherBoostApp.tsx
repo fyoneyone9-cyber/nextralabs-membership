@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import {
   CloudRain, Wind, Thermometer, Zap, Gift, Bell, BarChart3,
   Settings, Plus, Trash2, CheckCircle2, Clock, Send, Eye,
@@ -119,8 +119,68 @@ const DEFAULT_SETTINGS: SavedSettings = {
   locationCity: 'tokyo',
 }
 
+// ─── アクセスガードラッパー ────────────────────────────
+function WeatherBoostGuard({ children }: { children: React.ReactNode }) {
+  const [accessChecked, setAccessChecked] = useState(false)
+  const [hasAccess, setHasAccess] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/check-access', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productId: 'weather-boost' }),
+    })
+      .then(r => r.json())
+      .then(d => { setHasAccess(d.hasAccess); setAccessChecked(true) })
+      .catch(() => setAccessChecked(true))
+  }, [])
+
+  if (!accessChecked) {
+    return (
+      <div className="min-h-screen bg-[#050507] flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  if (!hasAccess) {
+    return (
+      <div className="min-h-screen bg-[#050507] flex flex-col items-center justify-center px-6 text-center gap-6">
+        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30">
+          <CloudRain className="h-10 w-10 text-amber-400 mx-auto" />
+        </div>
+        <div>
+          <p className="text-xs text-amber-400 font-semibold uppercase tracking-widest mb-2">🏨 エンタープライズ専用</p>
+          <h1 className="text-2xl font-bold text-white mb-3">このツールは法人契約限定です</h1>
+          <p className="text-slate-400 text-sm leading-relaxed max-w-sm mx-auto">
+            Google天気連動型 館内消費ブーストは、ホテル・旅館向けのエンタープライズプラン専用ツールです。<br />導入のご相談はお問い合わせよりお気軽にどうぞ。
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <a href="/contact">
+            <button className="h-11 px-7 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg transition-all text-sm flex items-center gap-2">
+              導入のご相談・お見積もり →
+            </button>
+          </a>
+          <a href="/enterprise">
+            <button className="h-11 px-7 bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 font-semibold rounded-lg transition-all text-sm">
+              エンタープライズプランを見る
+            </button>
+          </a>
+        </div>
+      </div>
+    )
+  }
+
+  return <>{children}</>
+}
+
 // ─── メインコンポーネント ─────────────────────────────
 export default function WeatherBoostApp() {
+  return <WeatherBoostGuard><WeatherBoostAppInner /></WeatherBoostGuard>
+}
+
+function WeatherBoostAppInner() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'trigger' | 'offer' | 'history' | 'guide'>('dashboard')
   const [settings, setSettings] = useState<SavedSettings>(DEFAULT_SETTINGS)
   const [selectedPresets, setSelectedPresets] = useState<string[]>(DEFAULT_SETTINGS.selectedPresets)

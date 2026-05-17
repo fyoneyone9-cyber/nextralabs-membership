@@ -47,11 +47,13 @@ const PRODUCTS = [
   'omiai-room',
   'beauty-boost',
   // その他
-  'ai-recipe',
   'pet-translator',
   'closet-coach',
   'comm-coach',
   'shio-taiou',
+  'vintage-hunter',
+  'voice-guest-assist',
+  'weather-boost',
 ]
 
 // 静的ページ

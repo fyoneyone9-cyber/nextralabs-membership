@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 // Cookieからテナント情報を取得
 function getTenantId(req: NextRequest): string | null {
@@ -18,6 +21,11 @@ function getTenantId(req: NextRequest): string | null {
 
 // GET: テナント別物件一覧取得
 export async function GET(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const tenantId = getTenantId(req)
   if (!tenantId) return NextResponse.json({ error: '未認証' }, { status: 401 })
 
@@ -33,6 +41,11 @@ export async function GET(req: NextRequest) {
 
 // POST: 物件新規作成（テナントID自動付与）
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const tenantId = getTenantId(req)
   if (!tenantId) return NextResponse.json({ error: '未認証' }, { status: 401 })
 
@@ -60,6 +73,11 @@ export async function POST(req: NextRequest) {
 
 // PUT: 物件バルクUPSERT（テナントID自動付与）
 export async function PUT(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const tenantId = getTenantId(req)
   if (!tenantId) return NextResponse.json({ error: '未認証' }, { status: 401 })
 
@@ -85,6 +103,11 @@ export async function PUT(req: NextRequest) {
 
 // DELETE: 物件削除（自テナントのみ）
 export async function DELETE(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const tenantId = getTenantId(req)
   if (!tenantId) return NextResponse.json({ error: '未認証' }, { status: 401 })
 

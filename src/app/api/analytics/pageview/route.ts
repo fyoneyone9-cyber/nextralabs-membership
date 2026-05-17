@@ -1,13 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { unstable_noStore as noStore } from 'next/cache'
 
 export const dynamic = 'force-dynamic'
 
 // service_role で直書き（RLSをバイパスして確実にINSERT）
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 // bot判定（UA文字列チェック）
 function isBot(ua: string): boolean {
@@ -15,6 +18,17 @@ function isBot(ua: string): boolean {
 }
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
+  // service_role でクライアント生成（ハンドラ内で遅延初期化 → ビルド時エラー回避）
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
   try {
     const { path } = await req.json()
     if (!path || typeof path !== 'string') {
@@ -34,7 +48,7 @@ export async function POST(req: NextRequest) {
     const country = req.headers.get('x-vercel-ip-country') || null
     const referrer = req.headers.get('referer') || null
 
-    const { error } = await supabase.from('page_views').insert({
+    const { error } = await getSupabase().from('page_views').insert({
       path,
       referrer,
       user_agent: ua.slice(0, 200),

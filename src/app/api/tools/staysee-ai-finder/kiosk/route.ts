@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { unstable_noStore as noStore } from 'next/cache'
 
 /**
  * 🤖 Kiosk Automation API (MASTERMODEL)
@@ -6,6 +7,11 @@ import { NextResponse } from 'next/server';
  */
 
 export async function POST(req: Request) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     const { action, matchData, shippingInfo } = await req.json();
 

@@ -19,7 +19,7 @@ export default function PrivacyPage() {
         </Link>
 
         <h1 className="text-3xl font-bold text-white mb-2">🔒 プライバシーポリシー</h1>
-        <p className="text-sm text-slate-400 mb-8">最終更新日: 2026年4月29日</p>
+        <p className="text-sm text-slate-400 mb-8">最終更新日: 2026年5月17日</p>
 
         <div className="prose prose-sm dark:prose-invert max-w-none space-y-8">
           <section>
@@ -58,6 +58,25 @@ export default function PrivacyPage() {
               <p className="text-slate-400">
                 各AIツールで入力されたデータ（メッセージ、診断回答、チェックリスト等）は、すべてお使いのブラウザ内（localStorage）にのみ保存されます。
                 当社のサーバーに送信・保存されることはありません。
+              </p>
+            </div>
+
+            <h3 className="text-lg font-semibold mt-6 mb-2 text-white">2.5 Google APIの利用について（資格試験AIスケジューラー）</h3>
+            <div className="bg-sky-500/10 border border-sky-500/30 rounded-xl p-4 text-sm space-y-3">
+              <p className="font-bold text-sky-400">📅 Googleカレンダー連携機能</p>
+              <p className="text-slate-400">
+                「資格試験AIスケジューラー」ツールは、ユーザーの同意のもとGoogleカレンダーへの書き込み権限（<code className="text-sky-300 bg-white/5 px-1 rounded">https://www.googleapis.com/auth/calendar.events</code>）をリクエストします。
+              </p>
+              <ul className="list-disc pl-5 text-slate-400 space-y-1">
+                <li><strong className="text-slate-200">取得する権限:</strong> Googleカレンダーへのイベント追加のみ</li>
+                <li><strong className="text-slate-200">利用目的:</strong> AIが生成した学習スケジュールをユーザーのGoogleカレンダーに自動登録するため</li>
+                <li><strong className="text-slate-200">データの保存:</strong> 取得したアクセストークンはブラウザのメモリ内にのみ保持し、当社サーバーには一切保存しません</li>
+                <li><strong className="text-slate-200">第三者への共有:</strong> 取得したGoogleアカウント情報・カレンダーデータを第三者に提供・販売することは一切ありません</li>
+                <li><strong className="text-slate-200">権限の取り消し:</strong> Googleアカウントの「セキュリティ」→「第三者アクセス」からいつでも権限を取り消すことができます</li>
+              </ul>
+              <p className="text-slate-500 text-xs">
+                本機能はGoogle API Services User Data Policyに準拠しています。<br />
+                参照: https://developers.google.com/terms/api-services-user-data-policy
               </p>
             </div>
 
@@ -123,6 +142,16 @@ export default function PrivacyPage() {
                     <td className="py-2 px-3">Resend</td>
                     <td className="py-2 px-3">Resend Inc.</td>
                     <td className="py-2 px-3">メール送信</td>
+                  </tr>
+                  <tr className="border-b border-white/10">
+                    <td className="py-2 px-3">Google Calendar API</td>
+                    <td className="py-2 px-3">Google LLC</td>
+                    <td className="py-2 px-3">学習スケジュールのカレンダー登録（ユーザー同意のもと）</td>
+                  </tr>
+                  <tr className="border-b border-white/10">
+                    <td className="py-2 px-3">Google Gemini API</td>
+                    <td className="py-2 px-3">Google LLC</td>
+                    <td className="py-2 px-3">AIテキスト生成・分析</td>
                   </tr>
                 </tbody>
               </table>

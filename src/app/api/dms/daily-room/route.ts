@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 /**
  * Daily.co APIキーの解決順:
@@ -60,6 +63,11 @@ async function resolveApiKey(req: NextRequest, propertyId?: string): Promise<str
 }
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const body = await req.json().catch(() => ({}))
   const { propertyName = 'フロント', property_id } = body
 
@@ -102,7 +110,7 @@ export async function POST(req: NextRequest) {
 
   // Supabaseにイベント保存 → CallsEngineがRealtimeで検知して通知
   try {
-    await supabase.from('dms_call_events').insert({
+    await getSupabase().from('dms_call_events').insert({
       room_name: room.name,
       room_url:  room.url,
       property_name: propertyName,
@@ -123,6 +131,11 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const body = await req.json().catch(() => ({}))
   const { roomName, property_id } = body
 
@@ -135,7 +148,7 @@ export async function DELETE(req: NextRequest) {
   })
 
   try {
-    await supabase.from('dms_call_events').update({ status: 'ended' }).eq('room_name', roomName)
+    await getSupabase().from('dms_call_events').update({ status: 'ended' }).eq('room_name', roomName)
   } catch { /* 無視 */ }
 
   return NextResponse.json({ ok: true })

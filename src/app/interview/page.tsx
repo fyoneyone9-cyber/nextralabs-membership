@@ -263,6 +263,20 @@ export default function InterviewPage() {
         ))}
       </section>
 
+      {/* Vol.2 導線 */}
+      <section className="max-w-3xl mx-auto px-4 pb-12">
+        <a href="/interview-vol2" className="flex items-center justify-between gap-4 bg-[#0d1117] border border-emerald-500/20 hover:border-emerald-500/50 rounded-2xl px-6 py-5 transition-all group">
+          <div>
+            <p className="text-xs text-emerald-400 font-medium mb-1">続編が公開されました</p>
+            <p className="text-white font-medium group-hover:text-emerald-400 transition-colors">
+              Vol.2「AI最前線2026」を読む →
+            </p>
+            <p className="text-xs text-slate-500 mt-1">エージェントAI・個人開発者の戦略・NextraLabsの次の一手</p>
+          </div>
+          <div className="flex-shrink-0 text-2xl">🚀</div>
+        </a>
+      </section>
+
       {/* エンディング */}
       <section className="bg-[#0d1117] border-t border-white/5 py-16">
         <div className="max-w-3xl mx-auto px-4 text-center space-y-6">

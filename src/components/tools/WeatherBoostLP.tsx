@@ -78,11 +78,21 @@ export default function WeatherBoostLP() {
           天気APIと自動通知が連携し、悪天候のたびにゲストへクーポンを送信。<br className="hidden md:block" />
           「不運な天気」をホテルの収益チャンスに変えます。
         </p>
-        <Link href="/products/weather-boost/app">
-          <button className="h-12 px-8 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105 flex items-center gap-2 mx-auto">
-            ダッシュボードを開く <ArrowRight size={18} />
-          </button>
-        </Link>
+        <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold px-4 py-1.5 rounded-full mb-6">
+          🏨 エンタープライズ専用プラン
+        </div>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Link href="/contact">
+            <button className="h-12 px-8 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105 flex items-center gap-2 mx-auto">
+              導入のご相談・お見積もり <ArrowRight size={18} />
+            </button>
+          </Link>
+          <Link href="/enterprise">
+            <button className="h-12 px-8 bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 hover:border-white/20 font-semibold rounded-lg transition-all duration-200 flex items-center gap-2 mx-auto">
+              エンタープライズプランを見る
+            </button>
+          </Link>
+        </div>
       </section>
 
       {/* 課題訴求 */}
@@ -256,17 +266,28 @@ export default function WeatherBoostLP() {
 
       {/* CTA */}
       <section className="py-24 px-4 text-center">
+        <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold px-4 py-1.5 rounded-full mb-6">
+          🏨 エンタープライズ専用プラン
+        </div>
         <h2 className="text-3xl font-semibold tracking-tight mb-4">
           次の雨の日から、<span className="text-emerald-400">売上が変わります</span>
         </h2>
         <p className="text-slate-400 mb-8 max-w-md mx-auto leading-relaxed">
-          設定10分で全自動稼働。天気に振り回されるのをやめて、天気を味方にしましょう。
+          法人・ホテル向けエンタープライズ契約のみ。<br />
+          導入施設のご状況に合わせてカスタムご提案します。
         </p>
-        <Link href="/products/weather-boost/app">
-          <button className="h-12 px-10 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105 flex items-center gap-2 mx-auto">
-            今すぐ設定を始める <ArrowRight size={18} />
-          </button>
-        </Link>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Link href="/contact">
+            <button className="h-12 px-10 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105 flex items-center gap-2 mx-auto">
+              導入のご相談・お見積もり <ArrowRight size={18} />
+            </button>
+          </Link>
+          <Link href="/enterprise">
+            <button className="h-12 px-8 bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 hover:border-white/20 font-semibold rounded-lg transition-all duration-200 flex items-center gap-2 mx-auto">
+              エンタープライズプランを見る
+            </button>
+          </Link>
+        </div>
       </section>
 
     </div>

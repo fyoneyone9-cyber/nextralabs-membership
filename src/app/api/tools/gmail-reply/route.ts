@@ -1,10 +1,16 @@
 ﻿import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { checkApiLimit } from "@/lib/api-limit";
+import { unstable_noStore as noStore } from 'next/cache'
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function POST(req: Request) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     // クレジット保護：1日10回制限
     const limitCheck = await checkApiLimit('gmail-reply', 10);

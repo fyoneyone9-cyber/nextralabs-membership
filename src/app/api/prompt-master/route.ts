@@ -1,8 +1,14 @@
 ﻿import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { checkApiLimit } from "@/lib/api-limit";
+import { unstable_noStore as noStore } from 'next/cache'
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     // 認証 + 1日10回制限
     const limitCheck = await checkApiLimit('prompt-master', 10)

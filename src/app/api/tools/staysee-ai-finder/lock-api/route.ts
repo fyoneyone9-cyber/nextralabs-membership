@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { unstable_noStore as noStore } from 'next/cache'
 
 /**
  * 🔒 錠デバイスAPI：自動鍵発行エンジン (NextraLabs IoT Integration)
@@ -6,6 +7,11 @@ import { NextResponse } from 'next/server';
  * ゲスト専用の入館パスコードを生成・通知する。
  */
 export async function POST(req: Request) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     const { action, bookingData } = await req.json();
 

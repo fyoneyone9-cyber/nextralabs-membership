@@ -1,6 +1,7 @@
 ﻿import { checkApiLimit } from '@/lib/api-limit';
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { unstable_noStore as noStore } from 'next/cache'
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -95,9 +96,10 @@ async function analyzeFashionWithGemini(
 
 // 楽天商品検索API（新API 2026-04-01版）
 async function searchRakutenItems(keyword: string) {
-  const appId = '5b11580f-bdb5-4659-b89a-63db8ef20abf';
-  const accessKey = 'pk_FfxUYuFakO3oY9BEo0YxLAyRlMP6oeiwFk2lHMGwNiB';
+  const appId = process.env.RAKUTEN_APP_ID;
+  const accessKey = process.env.RAKUTEN_ACCESS_KEY;
   const affiliateId = process.env.RAKUTEN_AFFILIATE_ID || '534e3725.64346793.534e3726.d5412af4';
+  if (!appId || !accessKey) return [];
   const encodedKeyword = encodeURIComponent(keyword);
   const url = `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?format=json&applicationId=${appId}&accessKey=${accessKey}&affiliateId=${affiliateId}&keyword=${encodedKeyword}&hits=3&sort=-reviewCount&imageFlag=1`;
 
@@ -127,6 +129,11 @@ async function searchRakutenItems(keyword: string) {
 }
 
 export async function POST(req: Request) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // 🛡️ レート制限（1日10回）
   const limitCheck = await checkApiLimit('youtube-coordinator', 10);
   if (!limitCheck.allowed) {

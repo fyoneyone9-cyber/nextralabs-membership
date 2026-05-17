@@ -19,6 +19,8 @@ const GENRE_LINKS = [
   { id: 'konkatsu',  label: '婚活',       icon: HeartHandshake },
 ]
 
+const ENTERPRISE_LINK = { href: '/enterprise', label: '🏢 法人向け', accent: true }
+
 function InstallBanner() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
   const [show, setShow] = useState(false)
@@ -160,7 +162,9 @@ export function Header() {
             <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors">ツール一覧</Link>
             <Link href="/tool-guide" className="text-sm font-medium hover:text-primary transition-colors">ツール説明</Link>
             <Link href="/pricing" className="text-sm font-medium hover:text-primary transition-colors">料金プラン</Link>
-            <Link href="/contact" className="text-sm font-medium hover:text-primary transition-colors">📩 お問い合わせ</Link>
+            <Link href="/blog" className="text-sm font-medium hover:text-primary transition-colors">ブログ</Link>
+            <Link href="/enterprise" className="text-sm font-bold text-amber-400 hover:text-amber-300 transition-colors border border-amber-500/30 px-3 py-1 rounded-lg hover:border-amber-500/60">🏢 法人向け</Link>
+            <Link href="/enterprise" className="text-sm font-medium hover:text-primary transition-colors">📩 お問い合わせ</Link>
 
             {user ? (
               <>

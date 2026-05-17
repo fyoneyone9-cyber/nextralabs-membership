@@ -1,5 +1,6 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { unstable_noStore as noStore } from 'next/cache'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!
 const GEOCODING_API_KEY = process.env.GOOGLE_GEOCODING_API_KEY!
@@ -113,6 +114,11 @@ async function searchPlace(query: string, lat: number, lng: number): Promise<{ n
 }
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     // 認証チェック
     const supabase = createServerSupabaseClient()
