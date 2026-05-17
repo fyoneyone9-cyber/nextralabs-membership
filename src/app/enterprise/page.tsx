@@ -84,7 +84,7 @@ const CATEGORIES = [
         icon: BadgeCheck,
         price: '要お見積もり',
         tags: ['口コミ', 'レビュー', '運用代行'],
-        lpUrl: '/contact',
+        lpUrl: '/products/review-flow',
         features: ['満足度チェック自動送信', '高評価/低評価の自動分岐', 'Googleレビュー導線', '月次レポートと改善提案'],
       },
     ],
