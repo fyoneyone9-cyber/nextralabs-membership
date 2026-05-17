@@ -2,6 +2,7 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 
 export async function POST(req: Request) {
   noStore()

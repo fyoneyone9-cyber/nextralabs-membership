@@ -1,6 +1,7 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import {
+import { unstable_noStore as noStore } from 'next/cache'
   Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType
 } from 'docx'
 import { checkApiLimit } from '@/lib/api-limit'

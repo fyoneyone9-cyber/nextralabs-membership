@@ -1,5 +1,6 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { unstable_noStore as noStore } from 'next/cache'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!
 const GEOCODING_API_KEY = process.env.GOOGLE_GEOCODING_API_KEY!

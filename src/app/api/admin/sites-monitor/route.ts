@@ -1,6 +1,7 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { unstable_noStore as noStore } from 'next/cache'
 
 export const dynamic = 'force-dynamic'
 

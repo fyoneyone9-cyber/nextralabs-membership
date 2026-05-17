@@ -2,6 +2,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import OpenAI from 'openai'
 import { checkApiLimit } from '@/lib/api-limit'
+import { unstable_noStore as noStore } from 'next/cache'
 
 export async function POST(req: NextRequest) {
   noStore()

@@ -1,6 +1,7 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { checkApiLimit } from '@/lib/api-limit';
 import { checkYoutubeLimit, recordYoutubeUsage } from '@/lib/youtube-rate-limit'
+import { unstable_noStore as noStore } from 'next/cache'
 
 // 全APIに共通で付与するシステム前置き
 const COMMON_SYSTEM_PREFIX = `【重要ルール】

@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { unstable_noStore as noStore } from 'next/cache'
 
 // プラン別制限（憲法遵守：極小・安全）
 const PLAN_LIMITS: Record<string, { daily: number; maxSize: number }> = {

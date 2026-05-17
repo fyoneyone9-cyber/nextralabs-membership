@@ -2,6 +2,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe'
+import { unstable_noStore as noStore } from 'next/cache'
 
 export async function POST(request: NextRequest) {
   noStore()

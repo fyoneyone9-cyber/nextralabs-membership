@@ -1,5 +1,6 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { unstable_noStore as noStore } from 'next/cache'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!
 const RAKUTEN_APP_ID = process.env.RAKUTEN_APP_ID ?? ''

@@ -1,5 +1,6 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { checkApiLimit } from '@/lib/api-limit';
+import { unstable_noStore as noStore } from 'next/cache'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60

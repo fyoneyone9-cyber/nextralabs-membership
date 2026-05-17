@@ -5,6 +5,7 @@
 // Locked: 2026-05-10
 // ============================================================
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 
 interface ExamConfig {
   name: string

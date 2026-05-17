@@ -1,6 +1,7 @@
 ﻿import { checkApiLimit } from '@/lib/api-limit';
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { unstable_noStore as noStore } from 'next/cache'
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 

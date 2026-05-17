@@ -1,6 +1,7 @@
 ﻿import { NextResponse } from 'next/server';
 import { handleAiRequest } from '@/lib/ai-cache';
 import { checkApiLimit } from '@/lib/api-limit';
+import { unstable_noStore as noStore } from 'next/cache'
 
 export async function POST(req: Request) {
   noStore()

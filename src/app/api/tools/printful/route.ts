@@ -1,6 +1,7 @@
 ﻿import { checkApiLimit } from '@/lib/api-limit';
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { unstable_noStore as noStore } from 'next/cache'
 
 /**
  * 🛠️ Nextra Master E-commerce Engine v17.0 (TRUE RESTORATION)

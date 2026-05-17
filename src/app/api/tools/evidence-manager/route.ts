@@ -1,6 +1,7 @@
 ﻿import { checkApiLimit } from '@/lib/api-limit';
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { unstable_noStore as noStore } from 'next/cache'
 
 /**
  * 🛠️ Master Evidence Engine (サブスク実績管理システム)

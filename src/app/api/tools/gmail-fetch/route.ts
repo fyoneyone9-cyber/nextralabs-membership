@@ -1,5 +1,6 @@
 ﻿import { checkApiLimit } from '@/lib/api-limit';
 import { NextResponse } from 'next/server';
+import { unstable_noStore as noStore } from 'next/cache'
 
 async function extractBody(payload: any): Promise<string> {
   if (payload.parts) {
