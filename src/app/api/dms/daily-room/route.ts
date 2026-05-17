@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 /**
  * Daily.co APIキーの解決順:
@@ -102,7 +104,7 @@ export async function POST(req: NextRequest) {
 
   // Supabaseにイベント保存 → CallsEngineがRealtimeで検知して通知
   try {
-    await supabase.from('dms_call_events').insert({
+    await getSupabase().from('dms_call_events').insert({
       room_name: room.name,
       room_url:  room.url,
       property_name: propertyName,
@@ -135,7 +137,7 @@ export async function DELETE(req: NextRequest) {
   })
 
   try {
-    await supabase.from('dms_call_events').update({ status: 'ended' }).eq('room_name', roomName)
+    await getSupabase().from('dms_call_events').update({ status: 'ended' }).eq('room_name', roomName)
   } catch { /* 無視 */ }
 
   return NextResponse.json({ ok: true })

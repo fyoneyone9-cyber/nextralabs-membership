@@ -2,10 +2,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 // GET: プロフィール取得
 export async function GET(req: NextRequest) {
@@ -78,7 +80,7 @@ export async function PUT(req: NextRequest) {
   const filePath = `${userId}/avatar.${ext}`
   const buffer = Buffer.from(await file.arrayBuffer())
 
-  const { error: uploadError } = await supabase.storage
+  const { error: uploadError } = await getSupabase().storage
     .from('avatars')
     .upload(filePath, buffer, {
       contentType: file.type,
@@ -87,7 +89,7 @@ export async function PUT(req: NextRequest) {
 
   if (uploadError) return NextResponse.json({ error: uploadError.message }, { status: 500 })
 
-  const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath)
+  const { data: { publicUrl } } = getSupabase().storage.from('avatars').getPublicUrl(filePath)
 
   await supabase
     .from('profiles')

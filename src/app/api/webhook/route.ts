@@ -3,10 +3,12 @@ import { stripe } from '@/lib/stripe'
 import { createClient } from '@supabase/supabase-js'
 
 // Supabase admin client (uses service role key for direct DB writes)
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabaseAdmin() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 export async function POST(request: NextRequest) {
   const body = await request.text()
@@ -40,7 +42,7 @@ export async function POST(request: NextRequest) {
           )
 
           const plan = session.metadata?.plan || 'standard'
-          await supabaseAdmin.from('subscriptions').upsert({
+          await getSupabaseAdmin().from('subscriptions').upsert({
             user_id: userId,
             stripe_customer_id: session.customer as string,
             stripe_subscription_id: subscriptionData.id,
@@ -53,7 +55,7 @@ export async function POST(request: NextRequest) {
           // 管理者通知: 新規有料会員登録
           const customerEmail = session.customer_details?.email || session.customer_email || '不明'
           const planLabel = plan === 'premium' ? 'プレミアム' : plan === 'light' ? 'ライト' : 'スタンダード'
-          await supabaseAdmin.from('admin_notifications').insert({
+          await getSupabaseAdmin().from('admin_notifications').insert({
             type: 'new_subscription',
             title: '🎉 新規有料会員登録',
             message: `${customerEmail} が ${planLabel}プランに登録しました`,
@@ -64,7 +66,7 @@ export async function POST(request: NextRequest) {
           // 単品購入完了 — purchases テーブルに記録
           const productId = session.metadata?.product_id
           if (productId) {
-            await supabaseAdmin.from('purchases').upsert({
+            await getSupabaseAdmin().from('purchases').upsert({
               user_id: userId,
               product_id: productId,
               stripe_session_id: session.id,
@@ -93,7 +95,7 @@ export async function POST(request: NextRequest) {
           if (priceId === process.env.STRIPE_PREMIUM_PRICE_ID) updatedPlan = 'premium'
           else if (priceId === process.env.STRIPE_LIGHT_PRICE_ID) updatedPlan = 'light'
           else updatedPlan = 'standard'
-          await supabaseAdmin.from('subscriptions').update({
+          await getSupabaseAdmin().from('subscriptions').update({
             status: subUpdated.status,
             plan: updatedPlan,
             current_period_start: new Date(subUpdated.current_period_start * 1000).toISOString(),
@@ -107,7 +109,7 @@ export async function POST(request: NextRequest) {
         const subDeleted: any = event.data.object
         const customerId = subDeleted.customer as string
 
-        await supabaseAdmin.from('subscriptions').update({
+        await getSupabaseAdmin().from('subscriptions').update({
           status: 'canceled',
         }).eq('stripe_customer_id', customerId)
         break
@@ -117,7 +119,7 @@ export async function POST(request: NextRequest) {
         const invoice: any = event.data.object
         const subscriptionId = invoice.subscription as string
         if (subscriptionId) {
-          await supabaseAdmin.from('subscriptions').update({
+          await getSupabaseAdmin().from('subscriptions').update({
             status: 'active',
           }).eq('stripe_subscription_id', subscriptionId)
         }
@@ -128,7 +130,7 @@ export async function POST(request: NextRequest) {
         const invoiceFailed: any = event.data.object
         const subscriptionId = invoiceFailed.subscription as string
         if (subscriptionId) {
-          await supabaseAdmin.from('subscriptions').update({
+          await getSupabaseAdmin().from('subscriptions').update({
             status: 'past_due',
           }).eq('stripe_subscription_id', subscriptionId)
         }

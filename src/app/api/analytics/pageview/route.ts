@@ -1,7 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 export const dynamic = 'force-dynamic'
+
+// service_role で直書き（RLSをバイパスして確実にINSERT）
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 // bot判定（UA文字列チェック）
 function isBot(ua: string): boolean {
@@ -34,7 +42,7 @@ export async function POST(req: NextRequest) {
     const country = req.headers.get('x-vercel-ip-country') || null
     const referrer = req.headers.get('referer') || null
 
-    const { error } = await supabase.from('page_views').insert({
+    const { error } = await getSupabase().from('page_views').insert({
       path,
       referrer,
       user_agent: ua.slice(0, 200),

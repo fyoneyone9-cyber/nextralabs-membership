@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 const ADMIN_EMAIL = 'f.yoneyone9@gmail.com'
 const FROM_EMAIL  = process.env.RESEND_FROM_EMAIL || 'NextraLabs <newsletter@nextralabs.jp>'
@@ -80,7 +82,7 @@ NextraLabs メルマガ
   }
 
   // 送信履歴を保存
-  await supabase.from('newsletter_campaigns').insert({
+  await getSupabase().from('newsletter_campaigns').insert({
     subject,
     body,
     tag_filter: tagFilter || null,

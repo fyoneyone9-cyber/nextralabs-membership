@@ -4,10 +4,12 @@ import { createClient } from '@supabase/supabase-js'
 
 const TRIAL_LIMIT = 3 // 月3回まで無料体験
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabaseAdmin() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 // GET: トライアル残回数を確認
 export async function GET(request: NextRequest) {
@@ -63,7 +65,7 @@ export async function POST(request: NextRequest) {
 
   if (!usage || isReset) {
     // 新規 or リセット後 → 1回目として挿入
-    await supabaseAdmin.from('trial_usage').upsert({
+    await getSupabaseAdmin().from('trial_usage').upsert({
       user_id: user.id,
       product_id: productId,
       used_count: 1,
