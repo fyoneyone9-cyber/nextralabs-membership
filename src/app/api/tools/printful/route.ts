@@ -1,31 +1,45 @@
-﻿import { checkApiLimit } from '@/lib/api-limit';
+import { checkApiLimit } from '@/lib/api-limit';
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 /**
- * 🛠️ Nextra Master E-commerce Engine v17.0 (TRUE RESTORATION)
- * 数日前に成功していた「本物のロジック」を完全復元。
- * shopifyClientId + shopifyClientSecret を使った OAuth 認証で
- * Shopify Admin APIに接続し、商品を直接出品する。
+ * 🛠️ Nextra Master E-commerce Engine v18.0 (Per-User Settings)
+ * - ユーザーがShopify/Printful設定を登録していればそのアカウントで動作
+ * - 未設定の場合はオーナー（NextraLabs）のデフォルト設定で動作
  */
 
-const PRINTFUL_API_KEY = 'suHaJYIsHrfarAJXAApi6tetzLMmoZvD5qfZgaHN';
-const PRINTFUL_STORE_ID = '18088076';
-const SHOPIFY_DOMAIN = 'z5ju1n-vs.myshopify.com';
-const SHOPIFY_CLIENT_ID = '67b4f4e95c3a421925f45fffc42b7327';
-const SHOPIFY_CLIENT_SECRET = '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';
+// ── オーナーデフォルト設定（未設定ユーザーはこれが使われる） ──
+const DEFAULT_PRINTFUL_API_KEY  = 'suHaJYIsHrfarAJXAApi6tetzLMmoZvD5qfZgaHN';
+const DEFAULT_PRINTFUL_STORE_ID = '18088076';
+const DEFAULT_SHOPIFY_DOMAIN    = 'z5ju1n-vs.myshopify.com';
+const DEFAULT_SHOPIFY_CLIENT_ID = '67b4f4e95c3a421925f45fffc42b7327';
+const DEFAULT_SHOPIFY_CLIENT_SECRET = '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';
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const SUPABASE_URL         = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
-async function getShopifyToken(): Promise<string | null> {
+// ── Supabaseからユーザー設定を取得 ──
+async function getUserShopSettings(userId: string) {
+  if (!userId || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) return null;
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+  const { data, error } = await supabase
+    .from('user_shop_settings')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+  if (error || !data) return null;
+  return data;
+}
+
+// ── Shopifyアクセストークン取得 ──
+async function getShopifyToken(domain: string, clientId: string, clientSecret: string): Promise<string | null> {
   try {
-    const res = await fetch(`https://${SHOPIFY_DOMAIN}/admin/oauth/access_token`, {
+    const res = await fetch(`https://${domain}/admin/oauth/access_token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        client_id: SHOPIFY_CLIENT_ID,
-        client_secret: SHOPIFY_CLIENT_SECRET,
+        client_id: clientId,
+        client_secret: clientSecret,
         grant_type: 'client_credentials',
       }),
     });
@@ -54,7 +68,42 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { action, keyword, style, mockupUrl, tshirtColor, sizes } = body;
+    const { action, keyword, style, mockupUrl, tshirtColor, sizes, userId } = body;
+
+    // ── ユーザー設定取得（あれば優先、なければデフォルト） ──
+    const userSettings = userId ? await getUserShopSettings(userId) : null;
+
+    const PRINTFUL_API_KEY   = userSettings?.printful_api_key   || DEFAULT_PRINTFUL_API_KEY;
+    const PRINTFUL_STORE_ID  = userSettings?.printful_store_id  || DEFAULT_PRINTFUL_STORE_ID;
+    const SHOPIFY_DOMAIN     = userSettings?.shopify_domain     || DEFAULT_SHOPIFY_DOMAIN;
+    const SHOPIFY_CLIENT_ID  = userSettings?.shopify_client_id  || DEFAULT_SHOPIFY_CLIENT_ID;
+    const SHOPIFY_CLIENT_SECRET = userSettings?.shopify_client_secret || DEFAULT_SHOPIFY_CLIENT_SECRET;
+
+    // ── 設定保存API ──
+    if (action === 'save-settings') {
+      if (!userId) return NextResponse.json({ error: 'ログインが必要です' }, { status: 401 });
+      const { shopifyDomain, shopifyClientId, shopifyClientSecret, printfulApiKey, printfulStoreId } = body;
+      const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+      const { error } = await supabase
+        .from('user_shop_settings')
+        .upsert({
+          user_id: userId,
+          shopify_domain: shopifyDomain || null,
+          shopify_client_id: shopifyClientId || null,
+          shopify_client_secret: shopifyClientSecret || null,
+          printful_api_key: printfulApiKey || null,
+          printful_store_id: printfulStoreId || null,
+        }, { onConflict: 'user_id' });
+      if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ success: true });
+    }
+
+    // ── 設定取得API ──
+    if (action === 'get-settings') {
+      if (!userId) return NextResponse.json({ settings: null });
+      const settings = await getUserShopSettings(userId);
+      return NextResponse.json({ settings });
+    }
 
     if (action === 'create-product') {
       let finalImageUrl = mockupUrl;
@@ -82,7 +131,7 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify({
           sync_product: { name: `Nextra Edition: ${keyword}`, thumbnail: finalImageUrl },
           sync_variants: [{
-            variant_id: 4012, 
+            variant_id: 4012,
             retail_price: "35.00",
             files: [{ type: "default", url: finalImageUrl }]
           }]
@@ -90,9 +139,9 @@ export async function POST(request: NextRequest) {
       });
       const pData = await pRes.json();
 
-      // 3. Shopify 出品 (数日前の成功ロジック: OAuth access_token 方式)
-      const shopifyToken = await getShopifyToken();
-      
+      // 3. Shopify 出品（OAuth access_token 方式）
+      const shopifyToken = await getShopifyToken(SHOPIFY_DOMAIN, SHOPIFY_CLIENT_ID, SHOPIFY_CLIENT_SECRET);
+
       let shopifyProduct = null;
       if (shopifyToken) {
         const sRes = await fetch(`https://${SHOPIFY_DOMAIN}/admin/api/2024-01/products.json`, {
@@ -127,15 +176,16 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      return NextResponse.json({ 
-        success: true, 
+      return NextResponse.json({
+        success: true,
         result: pData.result,
-        shopify: shopifyProduct || { url: `https://${SHOPIFY_DOMAIN}/admin/products` }
+        shopify: shopifyProduct || { url: `https://${SHOPIFY_DOMAIN}/admin/products` },
+        usedDefaultSettings: !userSettings,
       });
     }
 
     if (action === 'shopify-test') {
-      const token = await getShopifyToken();
+      const token = await getShopifyToken(SHOPIFY_DOMAIN, SHOPIFY_CLIENT_ID, SHOPIFY_CLIENT_SECRET);
       if (!token) return NextResponse.json({ result: { name: 'Auth Failed', domain: SHOPIFY_DOMAIN, status: 'ERROR' }});
       const sRes = await fetch(`https://${SHOPIFY_DOMAIN}/admin/api/2024-01/shop.json`, {
         headers: { 'X-Shopify-Access-Token': token }

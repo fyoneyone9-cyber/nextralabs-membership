@@ -1595,6 +1595,99 @@ const AISelectShopApp = ({ onBack }: { onBack?: () => void }) => {
   const [publishResult, setPublishResult] = useState<{ url?: string; error?: string } | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
+  // ── API設定パネル ──
+  const [showSettings, setShowSettings] = useState(false)
+  const [settingsSaved, setSettingsSaved] = useState(false)
+  const [isSavingSettings, setIsSavingSettings] = useState(false)
+  const [settingsError, setSettingsError] = useState('')
+  const [shopifyDomain, setShopifyDomain] = useState('')
+  const [shopifyClientId, setShopifyClientId] = useState('')
+  const [shopifyClientSecret, setShopifyClientSecret] = useState('')
+  const [printfulApiKey, setPrintfulApiKey] = useState('')
+  const [printfulStoreId, setPrintfulStoreId] = useState('')
+  const [userId, setUserId] = useState<string | null>(null)
+
+  // Supabaseからユーザー情報と設定を取得
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        // セッションからuser_idを取得
+        const { createClient } = await import('@supabase/supabase-js')
+        const supabase = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        )
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session?.user?.id) return
+        setUserId(session.user.id)
+
+        // 保存済み設定を取得
+        const res = await fetch('/api/tools/printful', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'get-settings', userId: session.user.id }),
+        })
+        const data = await res.json()
+        if (data.settings) {
+          setShopifyDomain(data.settings.shopify_domain || '')
+          setShopifyClientId(data.settings.shopify_client_id || '')
+          setShopifyClientSecret(data.settings.shopify_client_secret || '')
+          setPrintfulApiKey(data.settings.printful_api_key || '')
+          setPrintfulStoreId(data.settings.printful_store_id || '')
+          setSettingsSaved(true)
+        }
+      } catch {}
+    }
+    loadSettings()
+  }, [])
+
+  // 設定保存
+  const handleSaveSettings = async () => {
+    if (!userId) { setSettingsError('ログインが必要です'); return }
+    setIsSavingSettings(true)
+    setSettingsError('')
+    try {
+      const res = await fetch('/api/tools/printful', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'save-settings',
+          userId,
+          shopifyDomain,
+          shopifyClientId,
+          shopifyClientSecret,
+          printfulApiKey,
+          printfulStoreId,
+        }),
+      })
+      const data = await res.json()
+      if (data.error) { setSettingsError(data.error); return }
+      setSettingsSaved(true)
+      setShowSettings(false)
+    } catch (e: any) {
+      setSettingsError(e.message || '保存に失敗しました')
+    } finally {
+      setIsSavingSettings(false)
+    }
+  }
+
+  // 設定クリア
+  const handleClearSettings = async () => {
+    if (!userId) return
+    setShopifyDomain(''); setShopifyClientId(''); setShopifyClientSecret('')
+    setPrintfulApiKey(''); setPrintfulStoreId('')
+    await fetch('/api/tools/printful', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'save-settings', userId,
+        shopifyDomain: '', shopifyClientId: '', shopifyClientSecret: '',
+        printfulApiKey: '', printfulStoreId: '',
+      }),
+    })
+    setSettingsSaved(false)
+  }
+
   // ── トレンド取得 ──
   const fetchTrends = async () => {
     setIsLoadingTrends(true)
@@ -1766,6 +1859,7 @@ const AISelectShopApp = ({ onBack }: { onBack?: () => void }) => {
           mockupUrl: mockupDataUrl,
           tshirtColor: tshirtColorId,
           sizes: selectedSizes,
+          userId: userId || undefined,
         }),
       })
       const data = await res.json()
@@ -1814,6 +1908,136 @@ const AISelectShopApp = ({ onBack }: { onBack?: () => void }) => {
           <p className="text-slate-400 text-sm max-w-xl leading-relaxed">
             トレンドを選んでデザインを生成。Shopifyへ自動出品して在庫ゼロで販売をはじめましょう。
           </p>
+        </div>
+
+        {/* ⚙️ API設定パネル */}
+        <div className="rounded-2xl border border-slate-700/50 bg-[#1e293b] overflow-hidden">
+          {/* 設定ヘッダー（常に表示） */}
+          <button
+            onClick={() => setShowSettings(v => !v)}
+            className="w-full flex items-center justify-between px-5 py-4 hover:bg-slate-700/30 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+              <span className="text-sm font-medium text-slate-200">自分のShopify / Printfulで出品する（任意）</span>
+              {settingsSaved && (
+                <span className="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full">設定済み ✓</span>
+              )}
+              {!settingsSaved && (
+                <span className="text-xs bg-slate-700/50 text-slate-400 border border-slate-600/30 px-2 py-0.5 rounded-full">NextraLabsデフォルト使用中</span>
+              )}
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`text-slate-400 transition-transform ${showSettings ? 'rotate-180' : ''}`}><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+
+          {/* 設定フォーム（展開時のみ） */}
+          {showSettings && (
+            <div className="px-5 pb-6 space-y-6 border-t border-slate-700/50">
+
+              {/* 説明 */}
+              <div className="mt-4 p-4 rounded-xl bg-slate-800/60 border border-slate-700/40 text-xs text-slate-400 leading-relaxed space-y-1">
+                <p className="text-slate-300 font-medium mb-2">📌 この設定について</p>
+                <p>• <span className="text-slate-200">未設定の場合</span>：NextraLabsのShopify/Printfulアカウントで出品されます（オーナーの在庫として管理）</p>
+                <p>• <span className="text-slate-200">設定した場合</span>：あなた自身のShopify/Printfulアカウントで出品されます（完全に独立した運営が可能）</p>
+                <p>• 設定値はクラウド（Supabase）に暗号化して保存されます。他のユーザーからは見えません</p>
+              </div>
+
+              {/* Shopify設定 */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">Shopify</span>
+                  <div className="flex-1 h-px bg-slate-700/50" />
+                  <a href="https://partners.shopify.com" target="_blank" rel="noopener noreferrer" className="text-xs text-emerald-400 hover:underline">パートナーダッシュボード →</a>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs text-slate-400">ショップドメイン</label>
+                  <input
+                    type="text"
+                    placeholder="例: yourshop.myshopify.com"
+                    value={shopifyDomain}
+                    onChange={e => setShopifyDomain(e.target.value)}
+                    className="w-full bg-[#0f172a] border border-slate-700/60 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/60"
+                  />
+                  <p className="text-xs text-slate-600">Shopifyストアの myshopify.com ドメインを入力してください</p>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs text-slate-400">Client ID</label>
+                  <input
+                    type="text"
+                    placeholder="Shopify Custom AppのClient ID"
+                    value={shopifyClientId}
+                    onChange={e => setShopifyClientId(e.target.value)}
+                    className="w-full bg-[#0f172a] border border-slate-700/60 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/60"
+                  />
+                  <p className="text-xs text-slate-600">Shopify管理画面 → Apps → Develop apps → あなたのアプリ → API credentials</p>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs text-slate-400">Client Secret</label>
+                  <input
+                    type="password"
+                    placeholder="Shopify Custom AppのClient Secret"
+                    value={shopifyClientSecret}
+                    onChange={e => setShopifyClientSecret(e.target.value)}
+                    className="w-full bg-[#0f172a] border border-slate-700/60 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/60"
+                  />
+                  <p className="text-xs text-slate-600">Client IDと同じ画面に表示されるシークレットキー</p>
+                </div>
+              </div>
+
+              {/* Printful設定 */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">Printful</span>
+                  <div className="flex-1 h-px bg-slate-700/50" />
+                  <a href="https://www.printful.com/dashboard/settings/api" target="_blank" rel="noopener noreferrer" className="text-xs text-emerald-400 hover:underline">API設定ページ →</a>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs text-slate-400">APIキー</label>
+                  <input
+                    type="password"
+                    placeholder="Printful APIキー"
+                    value={printfulApiKey}
+                    onChange={e => setPrintfulApiKey(e.target.value)}
+                    className="w-full bg-[#0f172a] border border-slate-700/60 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/60"
+                  />
+                  <p className="text-xs text-slate-600">Printful管理画面 → Settings → API → Generate API key</p>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs text-slate-400">Store ID</label>
+                  <input
+                    type="text"
+                    placeholder="例: 12345678"
+                    value={printfulStoreId}
+                    onChange={e => setPrintfulStoreId(e.target.value)}
+                    className="w-full bg-[#0f172a] border border-slate-700/60 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/60"
+                  />
+                  <p className="text-xs text-slate-600">Printful管理画面 → Settings → Stores に表示されるID番号</p>
+                </div>
+              </div>
+
+              {settingsError && (
+                <p className="text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">{settingsError}</p>
+              )}
+
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleSaveSettings}
+                  disabled={isSavingSettings}
+                  className="flex-1 h-10 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-semibold text-sm rounded-xl transition-colors"
+                >
+                  {isSavingSettings ? '保存中...' : '設定を保存する'}
+                </button>
+                {settingsSaved && (
+                  <button
+                    onClick={handleClearSettings}
+                    className="h-10 px-4 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/50 text-slate-400 text-sm rounded-xl transition-colors"
+                  >
+                    設定をリセット
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* ステップナビ */}
