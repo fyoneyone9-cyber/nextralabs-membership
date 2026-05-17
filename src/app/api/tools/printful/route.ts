@@ -10,11 +10,11 @@ import { unstable_noStore as noStore } from 'next/cache'
  * Shopify Admin APIに接続し、商品を直接出品する。
  */
 
-const PRINTFUL_API_KEY = 'suHaJYIsHrfarAJXAApi6tetzLMmoZvD5qfZgaHN';
-const PRINTFUL_STORE_ID = '18088076';
-const SHOPIFY_DOMAIN = 'z5ju1n-vs.myshopify.com';
-const SHOPIFY_CLIENT_ID = '67b4f4e95c3a421925f45fffc42b7327';
-const SHOPIFY_CLIENT_SECRET = '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';
+const PRINTFUL_API_KEY = process.env.PRINTFUL_API_KEY || '';
+const PRINTFUL_STORE_ID = process.env.PRINTFUL_STORE_ID || '18088076';
+const SHOPIFY_DOMAIN = process.env.SHOPIFY_DOMAIN || 'z5ju1n-vs.myshopify.com';
+const SHOPIFY_CLIENT_ID = process.env.SHOPIFY_CLIENT_ID || '';
+const SHOPIFY_CLIENT_SECRET = process.env.SHOPIFY_CLIENT_SECRET || '';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';

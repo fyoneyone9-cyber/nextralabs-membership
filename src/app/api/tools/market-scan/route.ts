@@ -42,9 +42,12 @@ export async function POST(req: Request) {
       keyword = targetUrl;
     }
 
-    // 🔑 楽天AppID & AccessKey (NextraLabs様提供の確定値)
-    const RAKUTEN_APP_ID = process.env.RAKUTEN_APP_ID || '3ae4deb7-eb42-46a4-8123-d4cf632ccea2';
-    const RAKUTEN_ACCESS_KEY = process.env.RAKUTEN_ACCESS_KEY || 'pk_ED4qEbhFwiIxiaOuBlWLbFo7wb6pudVCO8khdRLcsmz'; 
+    // 🔑 楽天AppID & AccessKey（環境変数から取得）
+    const RAKUTEN_APP_ID = process.env.RAKUTEN_APP_ID;
+    const RAKUTEN_ACCESS_KEY = process.env.RAKUTEN_ACCESS_KEY;
+    if (!RAKUTEN_APP_ID || !RAKUTEN_ACCESS_KEY) {
+      return NextResponse.json({ error: '楽天APIキーが設定されていません' }, { status: 500 });
+    }
 
     // 【重要】楽天市場商品検索API (v2) のエンドポイントを使用
     // 古い 20220601 に戻し、applicationId のみを送信（最新版 2026-04-01 はまだ一部のIDで不安定な可能性があるため）

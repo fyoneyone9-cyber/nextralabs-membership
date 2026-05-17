@@ -24,7 +24,8 @@ export async function POST(req: Request) {
     );
   }
 
-  const apiKey = process.env.GEMINI_API_KEY || 'AIzaSyCMbtu9IJIGbml2KOv1Yjit9QP7TkmIgiA';
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return NextResponse.json({ error: 'GEMINI_API_KEY が設定されていません' }, { status: 500 });
 
   try {
     const { topic, sns, trend } = await req.json();

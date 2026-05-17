@@ -23,7 +23,10 @@ export async function GET() {
     );
   }
 
-  const API_KEY = process.env.GNEWS_API_KEY || '0d64d6796845143fe7f3759f1366bf2f';
+  const API_KEY = process.env.GNEWS_API_KEY;
+  if (!API_KEY) {
+    return NextResponse.json({ error: 'GNEWS_API_KEY が設定されていません' }, { status: 500 });
+  }
   // 日本国内の最新ニュースを「時間順」で検索
   const url = `https://gnews.io/api/v4/search?q=日本&lang=ja&country=jp&max=10&sortby=publishedAt&apikey=${API_KEY}`;
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { unstable_noStore as noStore } from 'next/cache'
+import { checkApiLimit } from '@/lib/api-limit'
 
 // ── 型定義 ──────────────────────────────────────────────────────────────────
 
@@ -352,6 +353,15 @@ export async function POST(req: NextRequest) {
   noStore()
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
     return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
+  // 認証 + 1日5回制限
+  const limitCheck = await checkApiLimit('date-concierge', 5)
+  if (!limitCheck.allowed) {
+    if (limitCheck.reason === 'unauthenticated') {
+      return NextResponse.json({ error: 'ログインが必要です' }, { status: 401 })
+    }
+    return NextResponse.json({ error: '本日の利用上限（5回）に達しました。明日またお試しください。' }, { status: 429 })
   }
 
   try {

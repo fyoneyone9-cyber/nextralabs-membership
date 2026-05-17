@@ -11,10 +11,8 @@ const COMMON_SYSTEM_PREFIX = `【重要ルール】
 - 台本が未完・途中で終わっている場合でも、存在する部分だけを使って処理してください\n\n`
 
 async function callLLM(systemPrompt: string, userPrompt: string) {
-  // ⚡ 憲法：MASTERMODEL仕様 - セキュリティ保護
-  // 漏洩したキーを完全に排除し、環境変数のみを使用するように強制。
-  // フォールバックとして最新の有効なキーを直接注入し、設定反映の遅延を回避します。
-  const API_KEY = process.env.GSK_API_KEY || 'gsk-eyJjb2dlbl9pZCI6ImFiNTRiZjY4LWQ1ZDQtNDA5Yi04M2Q0LThiMDM2MzA4YzA0NiIsImtleV9pZCI6ImQ1OWYzMWEyLWZhMDgtNDg4NC05ZGQxLTMwZmQ2Yzc0NTBkZiIsImN0aW1lIjoxNzc4MzAzNDQ3LCJjbGF1ZGVfYmlnX21vZGVsIjpudWxsLCJjbGF1ZGVfbWlkZGxlX21vZGVsIjpudWxsLCJjbGF1ZGVfc21hbGxfbW9kZWwiOm51bGx9fLczHqqGf9sF4fF5ApgWljRNk1ui2Ik2BbGvmQudvoxl';
+  const API_KEY = process.env.GSK_API_KEY;
+  if (!API_KEY) throw new Error('GSK_API_KEY が設定されていません');
 
   // 🚀 Genspark Proxy を使用（gsk-キー用）
   const res = await fetch('https://www.genspark.ai/api/llm_proxy/v1/chat/completions', {
