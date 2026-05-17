@@ -1924,7 +1924,7 @@ const AISelectShopApp = ({ onBack }: { onBack?: () => void }) => {
                 <span className="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full">設定済み ✓</span>
               )}
               {!settingsSaved && (
-                <span className="text-xs bg-slate-700/50 text-slate-400 border border-slate-600/30 px-2 py-0.5 rounded-full">NextraLabsデフォルト使用中</span>
+                <span className="text-xs bg-slate-700/50 text-slate-400 border border-slate-600/30 px-2 py-0.5 rounded-full">未設定（デモ用共有ショップで出品）</span>
               )}
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`text-slate-400 transition-transform ${showSettings ? 'rotate-180' : ''}`}><path d="m6 9 6 6 6-6"/></svg>
@@ -1935,22 +1935,26 @@ const AISelectShopApp = ({ onBack }: { onBack?: () => void }) => {
             <div className="px-5 pb-6 space-y-6 border-t border-slate-700/50">
 
               {/* 説明 */}
-              <div className="mt-4 p-4 rounded-xl bg-slate-800/60 border border-slate-700/40 text-xs text-slate-400 leading-relaxed space-y-1">
-                <p className="text-slate-300 font-medium mb-2">📌 この設定について</p>
-                <p>• <span className="text-slate-200">未設定の場合</span>：NextraLabsのShopify/Printfulアカウントで出品されます（オーナーの在庫として管理）</p>
-                <p>• <span className="text-slate-200">設定した場合</span>：あなた自身のShopify/Printfulアカウントで出品されます（完全に独立した運営が可能）</p>
-                <p>• 設定値はクラウド（Supabase）に暗号化して保存されます。他のユーザーからは見えません</p>
+              <div className="mt-4 p-4 rounded-xl bg-slate-800/60 border border-slate-700/40 text-xs leading-relaxed space-y-3">
+                <p className="text-slate-200 font-semibold text-sm">🛍️ 自分のショップで本格運営したい方へ</p>
+                <p className="text-slate-400">このツールはデフォルトでもすぐ使えますが、<span className="text-white font-medium">自分のShopify＋Printfulを連携すると売上が直接自分のアカウントに入ります。</span>在庫ゼロ・印刷はPrintfulが自動対応するので、設定だけすれば完全自動で物販ができます。</p>
+                <div className="space-y-1.5">
+                  <p className="text-slate-300 font-medium">必要なもの（2つだけ）</p>
+                  <p className="text-slate-400">① <span className="text-white">Shopifyアカウント</span>（月$5〜）→ ネットショップの器。商品ページ・決済・顧客管理がここに集まります</p>
+                  <p className="text-slate-400">② <span className="text-white">Printfulアカウント</span>（無料）→ 注文が入るたびTシャツを自動印刷・発送してくれる工場の役割</p>
+                </div>
+                <p className="text-slate-500">💾 入力した情報はあなたのアカウントにのみ紐づいて保存されます。他のユーザーには見えません。</p>
               </div>
 
               {/* Shopify設定 */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">Shopify</span>
+                  <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">① Shopify</span>
                   <div className="flex-1 h-px bg-slate-700/50" />
-                  <a href="https://partners.shopify.com" target="_blank" rel="noopener noreferrer" className="text-xs text-emerald-400 hover:underline">パートナーダッシュボード →</a>
+                  <a href="https://www.shopify.com/jp" target="_blank" rel="noopener noreferrer" className="text-xs text-emerald-400 hover:underline">アカウント作成 →</a>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs text-slate-400">ショップドメイン</label>
+                  <label className="text-xs text-slate-300 font-medium">ショップドメイン</label>
                   <input
                     type="text"
                     placeholder="例: yourshop.myshopify.com"
@@ -1958,52 +1962,52 @@ const AISelectShopApp = ({ onBack }: { onBack?: () => void }) => {
                     onChange={e => setShopifyDomain(e.target.value)}
                     className="w-full bg-[#0f172a] border border-slate-700/60 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/60"
                   />
-                  <p className="text-xs text-slate-600">Shopifyストアの myshopify.com ドメインを入力してください</p>
+                  <p className="text-xs text-slate-500">Shopify管理画面のURLに含まれる「〇〇.myshopify.com」の部分をそのまま入力</p>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs text-slate-400">Client ID</label>
+                  <label className="text-xs text-slate-300 font-medium">Client ID</label>
                   <input
                     type="text"
-                    placeholder="Shopify Custom AppのClient ID"
+                    placeholder="例: 67b4f4e95c3a421925f4..."
                     value={shopifyClientId}
                     onChange={e => setShopifyClientId(e.target.value)}
                     className="w-full bg-[#0f172a] border border-slate-700/60 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/60"
                   />
-                  <p className="text-xs text-slate-600">Shopify管理画面 → Apps → Develop apps → あなたのアプリ → API credentials</p>
+                  <p className="text-xs text-slate-500">取得場所：Shopify管理画面 → 設定 → アプリと販売チャネル → アプリを開発する → アプリを作成 → APIキーとシークレット</p>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs text-slate-400">Client Secret</label>
+                  <label className="text-xs text-slate-300 font-medium">Client Secret</label>
                   <input
                     type="password"
-                    placeholder="Shopify Custom AppのClient Secret"
+                    placeholder="shpss_xxxxxxxxxx..."
                     value={shopifyClientSecret}
                     onChange={e => setShopifyClientSecret(e.target.value)}
                     className="w-full bg-[#0f172a] border border-slate-700/60 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/60"
                   />
-                  <p className="text-xs text-slate-600">Client IDと同じ画面に表示されるシークレットキー</p>
+                  <p className="text-xs text-slate-500">Client IDと同じ画面に「APIシークレットキー」として表示されます</p>
                 </div>
               </div>
 
               {/* Printful設定 */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">Printful</span>
+                  <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">② Printful</span>
                   <div className="flex-1 h-px bg-slate-700/50" />
-                  <a href="https://www.printful.com/dashboard/settings/api" target="_blank" rel="noopener noreferrer" className="text-xs text-emerald-400 hover:underline">API設定ページ →</a>
+                  <a href="https://www.printful.com/jp" target="_blank" rel="noopener noreferrer" className="text-xs text-emerald-400 hover:underline">アカウント作成（無料） →</a>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs text-slate-400">APIキー</label>
+                  <label className="text-xs text-slate-300 font-medium">APIキー</label>
                   <input
                     type="password"
-                    placeholder="Printful APIキー"
+                    placeholder="Printful APIキーを貼り付け"
                     value={printfulApiKey}
                     onChange={e => setPrintfulApiKey(e.target.value)}
                     className="w-full bg-[#0f172a] border border-slate-700/60 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/60"
                   />
-                  <p className="text-xs text-slate-600">Printful管理画面 → Settings → API → Generate API key</p>
+                  <p className="text-xs text-slate-500">取得場所：Printfulダッシュボード → 設定 → ストア → APIキーを生成</p>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs text-slate-400">Store ID</label>
+                  <label className="text-xs text-slate-300 font-medium">Store ID</label>
                   <input
                     type="text"
                     placeholder="例: 12345678"
@@ -2011,7 +2015,7 @@ const AISelectShopApp = ({ onBack }: { onBack?: () => void }) => {
                     onChange={e => setPrintfulStoreId(e.target.value)}
                     className="w-full bg-[#0f172a] border border-slate-700/60 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/60"
                   />
-                  <p className="text-xs text-slate-600">Printful管理画面 → Settings → Stores に表示されるID番号</p>
+                  <p className="text-xs text-slate-500">取得場所：Printfulダッシュボード → 設定 → ストア → ストアIDの数字</p>
                 </div>
               </div>
 
