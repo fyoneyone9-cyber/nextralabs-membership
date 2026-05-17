@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 
 function getSupabase() {
@@ -9,6 +10,11 @@ function getSupabase() {
 }
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     const { email, name, tags } = await req.json()
 

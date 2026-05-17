@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 
@@ -14,6 +15,11 @@ const FROM_EMAIL  = process.env.RESEND_FROM_EMAIL || 'NextraLabs <newsletter@nex
 const RESEND_API_KEY = process.env.RESEND_API_KEY || ''
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // 管理者チェック
   if (req.headers.get('x-admin-email') !== ADMIN_EMAIL) {
     return NextResponse.json({ ok: false, message: '権限がありません' }, { status: 403 })

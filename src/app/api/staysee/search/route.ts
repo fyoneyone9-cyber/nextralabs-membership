@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 
 const STAYSEE_API_KEY = process.env.STAYSEE_API_KEY || 'sk_b54ca47f884c30d98dc429d3cbbbc29c'
 const BASE = 'https://api.staysee.jp/v1'
@@ -10,6 +11,11 @@ const headers = () => ({
 
 /** Staysee から日付範囲で予約一覧取得して検索 */
 export async function GET(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const { searchParams } = new URL(req.url)
   const q     = (searchParams.get('q') || '').trim().toLowerCase()
   const mode  = searchParams.get('mode') || 'all'  // all | checkin | checkout
@@ -66,6 +72,11 @@ export async function GET(req: NextRequest) {
 
 /** チェックイン完了をStayseeに通知（チェックイン済みフラグ更新） */
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     const body = await req.json()
     const { reservationId, action, ledger } = body  // action: 'checkin' | 'checkout'

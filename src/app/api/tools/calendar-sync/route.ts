@@ -4,6 +4,11 @@ import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // 🛡️ レート制限（1日10回）
   const limitCheck = await checkApiLimit('calendar-sync', 10);
   if (!limitCheck.allowed) {

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!
@@ -148,6 +149,11 @@ async function extractEmailFromWebsite(url: string): Promise<string | null> {
 
 // ── メインハンドラ ──────────────────────────────────────
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     // 管理者のみアクセス可能（Google Places APIは高額なため）
     const supabase = createServerSupabaseClient()

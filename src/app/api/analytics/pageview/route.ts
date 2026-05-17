@@ -17,6 +17,11 @@ function isBot(ua: string): boolean {
 }
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // service_role でクライアント生成（ハンドラ内で遅延初期化 → ビルド時エラー回避）
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

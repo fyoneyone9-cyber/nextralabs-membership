@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { stripe } from '@/lib/stripe'
 import { createClient } from '@supabase/supabase-js'
 
@@ -11,6 +12,11 @@ function getSupabaseAdmin() {
 }
 
 export async function POST(request: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const body = await request.text()
   const sig = request.headers.get('stripe-signature')!
 

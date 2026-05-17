@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 
 // ── 型定義 ──────────────────────────────────────────────────────────────────
 
@@ -348,6 +349,11 @@ JSONのみ返してください:
 // ── メインハンドラ ────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     const body = await req.json()
     const {

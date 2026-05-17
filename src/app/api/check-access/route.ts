@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 
 // =============================================
@@ -72,6 +73,11 @@ const LIGHT_IDS = [
 //       pet-translator, universal-converter, loan-advisor, etc.
 
 export async function POST(request: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     const { productId } = await request.json()
     const supabase = createServerSupabaseClient()

@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 
 export async function GET(request: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const { searchParams } = new URL(request.url)
   const code = searchParams.get('code')
   const state = searchParams.get('state')

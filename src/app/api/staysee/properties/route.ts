@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 
 const STAYSEE_BASE = 'https://api.staysee.jp/v1'
 
@@ -8,6 +9,11 @@ function getTenantApiKey(req: NextRequest): string {
 }
 
 export async function GET(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const apiKey = getTenantApiKey(req)
   if (!apiKey) {
     return NextResponse.json({ error: 'Staysee APIキーが設定されていません。PMS設定から入力してください。' }, { status: 400 })

@@ -7,6 +7,11 @@ import { createServerSupabaseClient } from '@/lib/supabase/server';
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // エンタープライズ認証チェック
   const supabase = createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();

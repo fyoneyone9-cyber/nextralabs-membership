@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 import bcrypt from 'bcryptjs'
 
@@ -24,6 +25,11 @@ const cookieOpts = (env: string) => ({
 })
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const { login_id, password } = await req.json()
 
   if (!login_id || !password) {

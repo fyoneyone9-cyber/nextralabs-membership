@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { unstable_noStore as noStore } from 'next/cache'
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { checkApiLimit } from '@/lib/api-limit';
@@ -6,6 +7,11 @@ import { checkApiLimit } from '@/lib/api-limit';
 const execPromise = promisify(exec);
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // 【憲法8条】API呼び出しツールは会員登録必須
   const limitCheck = await checkApiLimit('ai-sidejob', 10);
   if (!limitCheck.allowed) {

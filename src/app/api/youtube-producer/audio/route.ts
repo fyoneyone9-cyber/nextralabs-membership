@@ -4,6 +4,11 @@ import { checkApiLimit } from '@/lib/api-limit';
 const GSK_BASE = 'https://www.genspark.ai'
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
   // 【憲法8条】API呼び出しツールは会員登録必須
   const limitCheck = await checkApiLimit('youtube-producer-audio', 5);

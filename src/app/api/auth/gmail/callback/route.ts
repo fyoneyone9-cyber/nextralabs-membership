@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 
 // Gmail OAuth callback — exchange code for tokens, redirect to inbox-organizer with token in hash
 export async function GET(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const code = req.nextUrl.searchParams.get('code')
   const error = req.nextUrl.searchParams.get('error')
 

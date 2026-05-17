@@ -7,6 +7,11 @@ import { NextRequest } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // 🛡️ レート制限（1日10回）
   const limitCheck = await checkApiLimit('smart-gardening', 10);
   if (!limitCheck.allowed) {

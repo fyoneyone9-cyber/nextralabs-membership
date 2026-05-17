@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 
 function getSupabase() {
@@ -17,6 +18,11 @@ async function verifyAdmin(req: NextRequest) {
 
 // GET: 読者一覧取得
 export async function GET(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   if (!await verifyAdmin(req)) {
     return NextResponse.json({ ok: false, message: '権限がありません' }, { status: 403 })
   }
@@ -41,6 +47,11 @@ export async function GET(req: NextRequest) {
 
 // DELETE: 読者削除
 export async function DELETE(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   if (!await verifyAdmin(req)) {
     return NextResponse.json({ ok: false, message: '権限がありません' }, { status: 403 })
   }
@@ -56,6 +67,11 @@ export async function DELETE(req: NextRequest) {
 
 // PATCH: タグ更新
 export async function PATCH(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   if (!await verifyAdmin(req)) {
     return NextResponse.json({ ok: false, message: '権限がありません' }, { status: 403 })
   }

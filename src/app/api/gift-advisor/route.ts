@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!
@@ -275,6 +276,11 @@ function buildSearchKeyword(relation: string, occasion: string): string {
 // ─── メインハンドラ ────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     const supabase = createServerSupabaseClient()
     const {

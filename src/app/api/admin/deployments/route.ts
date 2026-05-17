@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 
 const VERCEL_TOKEN = process.env.VERCEL_TOKEN || 'vcp_7fOOK0MRM13q7oHT4vkHljgJBsSPmHZ2JDwuUw9RHggEqApOEr09hz77'
 const PROJECT_ID = 'prj_yaUSZdabp1yiMBuVALpqm2rgjV7D'
 const TEAM_ID = 'team_T4YEOSuj882rQycFBmlrGDay'
 
 export async function GET(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // 管理者チェック（簡易）
   const adminKey = req.headers.get('x-admin-key')
   if (adminKey !== 'nextra-admin-2026' && adminKey !== process.env.DMS_ADMIN_KEY) {

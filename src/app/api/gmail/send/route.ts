@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 
 // Send an email via Gmail API using OAuth2 Bearer token
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const authHeader = req.headers.get('authorization')
   if (!authHeader?.startsWith('Bearer ')) {
     return NextResponse.json({ error: 'Missing authorization' }, { status: 401 })

@@ -113,6 +113,11 @@ async function searchPlace(query: string, lat: number, lng: number): Promise<{ n
 }
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     // 認証チェック
     const supabase = createServerSupabaseClient()

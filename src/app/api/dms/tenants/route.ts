@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 import bcrypt from 'bcryptjs'
 
@@ -19,6 +20,11 @@ function isAdmin(req: NextRequest): boolean {
 
 /* ── GET: テナント一覧 ── */
 export async function GET(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   if (!isAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { data, error } = await supabase
@@ -32,6 +38,11 @@ export async function GET(req: NextRequest) {
 
 /* ── POST: テナント新規作成 ── */
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   if (!isAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await req.json()
@@ -70,6 +81,11 @@ export async function POST(req: NextRequest) {
 
 /* ── PATCH: テナント更新 ── */
 export async function PATCH(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   if (!isAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await req.json()
@@ -95,6 +111,11 @@ export async function PATCH(req: NextRequest) {
 
 /* ── DELETE: テナント削除 ── */
 export async function DELETE(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   if (!isAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { searchParams } = new URL(req.url)

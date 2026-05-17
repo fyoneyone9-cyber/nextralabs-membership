@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { createClient } from '@supabase/supabase-js'
 
@@ -13,6 +14,11 @@ function getSupabaseAdmin() {
 
 // GET: トライアル残回数を確認
 export async function GET(request: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const { searchParams } = new URL(request.url)
   const productId = searchParams.get('productId')
   if (!productId) return NextResponse.json({ error: 'productId required' }, { status: 400 })
@@ -44,6 +50,11 @@ export async function GET(request: NextRequest) {
 
 // POST: トライアル使用を記録（ツール起動時に呼ぶ）
 export async function POST(request: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const { productId } = await request.json()
   if (!productId) return NextResponse.json({ error: 'productId required' }, { status: 400 })
 

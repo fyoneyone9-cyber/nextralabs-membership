@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 
 // 気象庁の地域コードマッピング (都道府県名 → area code)
 const PREF_CODES: Record<string, string> = {
@@ -25,6 +26,11 @@ interface AlertInfo {
 }
 
 export async function GET(request: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const prefecture = request.nextUrl.searchParams.get('prefecture') || '神奈川県'
   const code = PREF_CODES[prefecture]
 

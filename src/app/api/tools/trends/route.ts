@@ -1,4 +1,5 @@
 import { checkApiLimit } from '@/lib/api-limit';
+import { unstable_noStore as noStore } from 'next/cache'
 import { NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
@@ -87,6 +88,11 @@ JSONのみで返答（説明文不要）:
 }
 
 export async function GET() {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const limitCheck = await checkApiLimit('trends', 30);
   if (!limitCheck.allowed) {
     if (limitCheck.reason === 'unauthenticated') {

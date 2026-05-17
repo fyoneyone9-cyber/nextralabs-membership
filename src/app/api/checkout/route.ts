@@ -16,6 +16,11 @@ const PRICE_IDS = {
 };
 
 export async function POST(request: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     const body = await request.json().catch(() => ({}))
     const plan = body.plan || 'standard'

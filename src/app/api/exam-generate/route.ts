@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import OpenAI from 'openai'
 
 const openai = new OpenAI({
@@ -6,6 +7,11 @@ const openai = new OpenAI({
 })
 
 export async function POST(request: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     const { subject, context } = await request.json()
 

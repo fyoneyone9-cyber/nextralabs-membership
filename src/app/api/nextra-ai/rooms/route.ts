@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 
 /**
  * GET /api/nextra-ai/rooms
@@ -6,6 +7,11 @@ import { NextRequest, NextResponse } from 'next/server'
  * APIキーなし or エラー時はエラーを返す（クライアント側でローカルにフォールバック）
  */
 export async function GET(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   // PMS APIキーをヘッダーから受け取るか、環境変数からフォールバック
   const authHeader = req.headers.get('x-pms-api-key') || ''
 

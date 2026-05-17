@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 
 function getSupabase() {
@@ -11,6 +12,11 @@ function getSupabase() {
 const ADMIN_EMAIL = 'f.yoneyone9@gmail.com'
 
 export async function GET(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   if (req.headers.get('x-admin-email') !== ADMIN_EMAIL) {
     return NextResponse.json({ ok: false, message: '権限がありません' }, { status: 403 })
   }

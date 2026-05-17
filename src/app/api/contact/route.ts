@@ -97,6 +97,11 @@ ${message}
 }
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     const body = await req.json()
     const { name, email, category, message } = body

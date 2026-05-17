@@ -48,6 +48,11 @@ function getSession(req: NextRequest): { id: string; role: string } | null {
 
 /* ── GET: 設定取得 ── */
 export async function GET(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const session = getSession(req)
   if (!session) return NextResponse.json({ error: '未認証' }, { status: 401 })
 
@@ -84,6 +89,11 @@ export async function GET(req: NextRequest) {
 
 /* ── POST: 設定保存 ── */
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const session = getSession(req)
   if (!session) return NextResponse.json({ error: '未認証' }, { status: 401 })
 

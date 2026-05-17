@@ -1,6 +1,12 @@
 import { NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 
 export async function GET() {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   try {
     const feedUrl = 'https://trends.google.co.jp/trending/rss?geo=JP'
 

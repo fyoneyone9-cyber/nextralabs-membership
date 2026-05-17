@@ -357,6 +357,11 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { type: string } }
 ) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const pmsType = params.type.toLowerCase()
   const { searchParams } = new URL(req.url)
   const q          = (searchParams.get('q') || '').trim()

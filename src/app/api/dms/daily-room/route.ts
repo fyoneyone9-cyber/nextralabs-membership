@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 
 function getSupabase() {
@@ -62,6 +63,11 @@ async function resolveApiKey(req: NextRequest, propertyId?: string): Promise<str
 }
 
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const body = await req.json().catch(() => ({}))
   const { propertyName = 'フロント', property_id } = body
 
@@ -125,6 +131,11 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const body = await req.json().catch(() => ({}))
   const { roomName, property_id } = body
 

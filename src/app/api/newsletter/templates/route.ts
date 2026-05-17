@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 
 function getSupabase() {
@@ -16,6 +17,11 @@ async function verifyAdmin(req: NextRequest) {
 
 // GET: テンプレート一覧
 export async function GET(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   if (!await verifyAdmin(req)) return NextResponse.json({ ok: false }, { status: 403 })
 
   const { data, error } = await supabase
@@ -29,6 +35,11 @@ export async function GET(req: NextRequest) {
 
 // POST: テンプレート保存
 export async function POST(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   if (!await verifyAdmin(req)) return NextResponse.json({ ok: false }, { status: 403 })
 
   const { id, title, subject, body } = await req.json()
@@ -58,6 +69,11 @@ export async function POST(req: NextRequest) {
 
 // DELETE: テンプレート削除
 export async function DELETE(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   if (!await verifyAdmin(req)) return NextResponse.json({ ok: false }, { status: 403 })
 
   const { id } = await req.json()

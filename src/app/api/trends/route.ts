@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { unstable_noStore as noStore } from 'next/cache'
 
 export const dynamic = 'force-dynamic';
 
@@ -36,6 +37,11 @@ function parseGoogleTrendsRSS(xml: string): string[] {
 }
 
 export async function GET() {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const month = new Date().getMonth() + 1;
   const season = getSeason(month);
 

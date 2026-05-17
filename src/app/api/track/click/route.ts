@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 
 function getSupabase() {
@@ -11,6 +12,11 @@ function getSupabase() {
 // GET /api/track/click?id=ai-recipe-cooking&tool=ai-recipe&label=🍳調理器具&url=https://...
 // → クリックを記録してAmazonへリダイレクト
 export async function GET(req: NextRequest) {
+  noStore()
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json({ error: 'Not configured' }, { status: 503 })
+  }
+
   const { searchParams } = new URL(req.url)
   const linkId = searchParams.get('id')
   const toolId = searchParams.get('tool')
