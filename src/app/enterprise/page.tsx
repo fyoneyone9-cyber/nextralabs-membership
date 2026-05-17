@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card'
 
 export const metadata: Metadata = {
   title: '法人・個人事業主様向けAIソリューション | NextraLabs',
-  description: '宿泊・不動産DX・婚活相談所DX・業務効率化。貴社の課題に合わせたAIシステムをご提案。お見積もり無料。',
+  description: '宿泊・不動産DX・婚活相談所DX・口コミ/顧客の声収集・業務効率化。貴社の課題に合わせたAIシステムをご提案。お見積もり無料。',
   alternates: { canonical: 'https://nextralab.jp/enterprise' },
 }
 
@@ -71,6 +71,25 @@ const CATEGORIES = [
     ],
   },
   {
+    id: 'reputation',
+    label: '⭐ 口コミ・顧客の声DX',
+    desc: '実体験者の声を自然に集め、公開レビューと社内改善を自動で分岐',
+    color: 'border-amber-500/40',
+    badgeColor: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    tools: [
+      {
+        id: 'review-flow',
+        title: '口コミ運用まるごと代行プラン',
+        sub: '顧客満足の確認からレビュー導線、返信テンプレ、月次レポートまで一括運用。高評価は公開レビューへ、低評価は社内改善へ自動分岐。',
+        icon: BadgeCheck,
+        price: '要お見積もり',
+        tags: ['口コミ', 'レビュー', '運用代行'],
+        lpUrl: '/contact',
+        features: ['満足度チェック自動送信', '高評価/低評価の自動分岐', 'Googleレビュー導線', '月次レポートと改善提案'],
+      },
+    ],
+  },
+  {
     id: 'content',
     label: '🎬 動画・コンテンツ制作',
     desc: 'AI×VOICEVOXでPR動画制作コストを激減。個人事業主・法人どちらも対応',
@@ -122,7 +141,7 @@ export default function EnterprisePage() {
           <span className="text-amber-400">AIソリューション</span>
         </h1>
         <p className="text-xl text-slate-400 font-bold max-w-3xl mx-auto leading-relaxed">
-          宿泊・婚活・動画制作。<br />
+          宿泊・婚活・動画制作・口コミ運用代行。<br />
           貴社の課題に合わせたAIシステムをカスタム提供。<br />
           まずはお気軽にご相談ください。
         </p>
@@ -220,9 +239,9 @@ export default function EnterprisePage() {
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
           {[
-            { step: '01', title: '無料相談', desc: 'お問い合わせフォームまたはZoomで現状の課題をヒアリング。完全無料・守秘義務あり。' },
+            { step: '01', title: '無料相談', desc: 'お問い合わせフォームまたはZoomで現状の課題をヒアリング。口コミ導線、顧客アンケート、レビュー返信まで整理します。' },
             { step: '02', title: 'お見積もり', desc: '貴社の規模・要件に合わせたカスタムプランをご提案。初期費用・月額費用を明記。' },
-            { step: '03', title: '導入・運用', desc: '最短1週間で導入開始。運用後もサポート継続。全国対応・ZOOM可。' },
+            { step: '03', title: '導入・運用', desc: '最短1週間で導入開始。配信設定、分岐、レポート運用までサポート継続。全国対応・ZOOM可。' },
           ].map(s => (
             <div key={s.step} className="space-y-4 text-left">
               <div className="text-6xl font-bold text-amber-500/20">{s.step}</div>
