@@ -3,18 +3,18 @@ import { createClient } from '@supabase/supabase-js'
 
 export const dynamic = 'force-dynamic'
 
-// service_role で直書き（RLSをバイパスして確実にINSERT）
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
 // bot判定（UA文字列チェック）
 function isBot(ua: string): boolean {
   return /bot|crawl|spider|slurp|lighthouse|prerender|vercel|checker/i.test(ua)
 }
 
 export async function POST(req: NextRequest) {
+  // service_role でクライアント生成（ハンドラ内で遅延初期化 → ビルド時エラー回避）
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
   try {
     const { path } = await req.json()
     if (!path || typeof path !== 'string') {
