@@ -146,7 +146,7 @@ export default function EnterprisePage() {
           まずはお気軽にご相談ください。
         </p>
         <div className="flex flex-wrap justify-center gap-4 pt-4">
-          <Link href="/contact">
+          <Link href="#contact">
             <Button className="h-14 px-10 font-bold text-lg rounded-2xl"
               style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' }}>
               無料相談・お見積もり →
@@ -253,18 +253,18 @@ export default function EnterprisePage() {
       </section>
 
       {/* CTA */}
-      <section className="max-w-4xl mx-auto px-4 py-16">
+      <section id="contact" className="max-w-4xl mx-auto px-4 py-16">
         <div className="bg-gradient-to-br from-amber-600/20 to-slate-900 border border-amber-500/20 rounded-[3rem] p-12 text-center space-y-6">
           <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tighter">
             まずはお気軽に<br /><span className="text-amber-400">ご相談ください</span>
           </h2>
           <p className="text-slate-400 font-bold">神奈川県海老名市 / ZOOM全国対応 / 無料相談・お見積もり</p>
           <div className="flex flex-wrap justify-center gap-4 pt-4">
-            <Link href="/contact">
+            <Link href="/pricing">
               <Button className="h-14 px-10 font-bold text-lg rounded-2xl"
                 style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' }}>
                 <Mail className="mr-2 h-5 w-5" />
-                お問い合わせ・見積もり
+                料金プランを見る
               </Button>
             </Link>
           </div>
