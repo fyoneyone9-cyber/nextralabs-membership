@@ -168,8 +168,8 @@ export default function EnterprisePage() {
           <span className="text-amber-400">AIソリューション</span>
         </h1>
         <p className="text-xl text-slate-400 font-bold max-w-3xl mx-auto leading-relaxed">
-          宿泊・婚活・動画制作・口コミ運用代行。<br />
-          貴社の課題に合わせたAIシステムをカスタム提供。<br />
+          宿泊・観光・婚活・口コミ・動画制作まで。<br />
+          課題に合わせて、AIシステムを1件ずつ丁寧にカスタム提供します。<br />
           まずはお気軽にご相談ください。
         </p>
         <div className="flex flex-wrap justify-center gap-4 pt-4">
@@ -190,18 +190,18 @@ export default function EnterprisePage() {
       {/* ジャンル別ツール一覧 */}
       <section className="max-w-6xl mx-auto px-4 py-16 space-y-20">
         {CATEGORIES.map(cat => (
-          <div key={cat.id}>
+          <div key={cat.id} className="space-y-5">
             {/* カテゴリヘッダー */}
-            <div className={`border-l-4 ${cat.color} pl-5 mb-8`}>
+            <div className={`border-l-4 ${cat.color} pl-5 mb-2`}>
               <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">{cat.label}</h2>
-              <p className="text-slate-400 text-sm mt-1">{cat.desc}</p>
+              <p className="text-slate-400 text-sm mt-1 max-w-3xl">{cat.desc}</p>
             </div>
 
             {/* ツールカード */}
-            <div className={`grid gap-6 ${cat.tools.length === 1 ? 'md:grid-cols-1 max-w-2xl' : 'md:grid-cols-2 lg:grid-cols-3'}`}>
+            <div className="grid grid-cols-1 gap-6 max-w-4xl">
               {cat.tools.map(tool => (
                 <Card key={tool.id} className="bg-[#13141f] border border-white/5 hover:border-amber-500/40 rounded-[2rem] overflow-hidden transition-all group shadow-xl">
-                  <div className="p-7 space-y-5 flex flex-col h-full">
+                  <div className="p-8 md:p-10 space-y-6 flex flex-col h-full">
                     {/* ヘッダー */}
                     <div className="flex items-start gap-4">
                       <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 shrink-0">
@@ -223,28 +223,43 @@ export default function EnterprisePage() {
                     <p className="text-slate-400 text-sm leading-relaxed flex-1">{tool.sub}</p>
 
                     {/* 機能リスト */}
-                    <ul className="space-y-1.5">
+                    <ul className="space-y-2">
                       {tool.features.map(f => (
-                        <li key={f} className="flex items-center gap-2 text-xs text-slate-300">
-                          <CheckCircle2 className="h-3.5 w-3.5 text-amber-400 shrink-0" />
-                          {f}
+                        <li key={f} className="flex items-start gap-2 text-sm text-slate-300 leading-relaxed">
+                          <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
+                          <span>{f}</span>
                         </li>
                       ))}
                     </ul>
 
+                    {/* 導入効果 */}
+                    <div className="bg-white/5 border border-white/5 rounded-2xl p-4 space-y-2">
+                      <div className="text-xs font-bold text-amber-400 uppercase tracking-widest">導入効果</div>
+                      <p className="text-sm text-slate-300 leading-relaxed">
+                        {tool.id === 'nextra-ai' && '人件費削減・チェックイン待ち時間短縮・多言語対応を一括で実現。'}
+                        {tool.id === 'weather-boost' && '悪天候時の館内消費を底上げし、売上の波を平準化。'}
+                        {tool.id === 'voice-guest-assist' && '多言語対応の属人化を防ぎ、接客品質を均一化。'}
+                        {tool.id === 'omiai-room' && '沈黙ストレスを減らし、お見合いの会話満足度を改善。'}
+                        {tool.id === 'review-flow' && 'レビュー収集と社内改善を分離し、口コミ運用を自動化。'}
+                        {tool.id === 'overtourism-navi' && '混雑を分散しつつ、地元消費を増やす観光導線を作成。'}
+                        {tool.id === 'pr-video-narrator' && '動画PRを量産し、営業素材の制作コストを圧縮。'}
+                        {tool.id === 'youtube-yukkuri' && '短納期で見栄えする動画納品を実現し、SNS施策を高速化。'}
+                      </p>
+                    </div>
+
                     {/* 価格・CTA */}
-                    <div className="pt-4 border-t border-white/5 space-y-3">
+                    <div className="pt-2 border-t border-white/5 space-y-3">
                       <span className="text-amber-400 font-bold text-sm">{tool.price}</span>
-                      <div className="flex gap-3">
+                      <div className="flex flex-col sm:flex-row gap-3">
                         <Link href="/contact" className="flex-1">
-                          <Button className="w-full h-10 font-bold text-sm rounded-xl"
+                          <Button className="w-full h-11 font-bold text-sm rounded-xl"
                             style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' }}>
                             相談・見積もり →
                           </Button>
                         </Link>
                         {tool.lpUrl && (
                           <Link href={tool.lpUrl}>
-                            <Button variant="outline" className="h-10 px-4 text-sm rounded-xl border-white/10 text-slate-400 hover:text-white">
+                            <Button variant="outline" className="h-11 px-4 text-sm rounded-xl border-white/10 text-slate-400 hover:text-white">
                               詳細
                             </Button>
                           </Link>
