@@ -45,7 +45,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <a href="https://ai-adult.jp" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center gap-1">
-                  AIアダルトナビ ↗
+                  NextraLabsAdult ↗
                 </a>
               </li>
               <li>
