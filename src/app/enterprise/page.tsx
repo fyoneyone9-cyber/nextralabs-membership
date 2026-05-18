@@ -1,13 +1,13 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { Building2, HeartHandshake, Mic, CloudRain, ArrowRight, CheckCircle2, Mail, Youtube, Video, Upload, Sparkles, BadgeCheck } from 'lucide-react'
+import { Building2, HeartHandshake, Mic, CloudRain, ArrowRight, CheckCircle2, Mail, Youtube, Video, Upload, Sparkles, BadgeCheck, MapPin, Navigation, Ticket } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 
 export const metadata: Metadata = {
   title: '法人・個人事業主様向けAIソリューション | NextraLabs',
-  description: '宿泊・不動産DX・婚活相談所DX・口コミ/顧客の声収集・業務効率化。貴社の課題に合わせたAIシステムをご提案。お見積もり無料。',
+  description: '宿泊・観光インバウンド・婚活DX・口コミ運用・動画制作。オーバーツーリズム緩和ナビ（混雑分散AIナビ）含む、貴社課題に合わせたAIシステムをご提案。お見積もり無料。',
   alternates: { canonical: 'https://nextralab.jp/enterprise' },
 }
 
@@ -86,6 +86,33 @@ const CATEGORIES = [
         tags: ['口コミ', 'レビュー', '運用代行'],
         lpUrl: '/products/review-flow',
         features: ['満足度チェック自動送信', '高評価/低評価の自動分岐', 'Googleレビュー導線', '月次レポートと改善提案'],
+      },
+    ],
+  },
+  {
+    id: 'tourism',
+    label: '🗺️ 観光・インバウンドDX',
+    desc: '混雑分散・穴場誘導・クーポン連動でオーバーツーリズムを解決。自治体・観光協会・ホテル向け',
+    color: 'border-teal-500/40',
+    badgeColor: 'bg-teal-500/10 text-teal-400 border-teal-500/20',
+    tools: [
+      {
+        id: 'overtourism-navi',
+        title: 'オーバーツーリズム緩和ナビ',
+        sub: '観光地が限界混雑に達した瞬間、AIがユーザーへ「今すぐ行ける隠れ名所 + 周辺飲食クーポン」を提示。混雑を分散しながら地域消費を最大化。',
+        icon: Navigation,
+        price: '要お見積もり',
+        tags: ['観光協会', '自治体', 'ホテル・旅館', 'インバウンド'],
+        lpUrl: '/products/overtourism-navi',
+        features: [
+          'リアルタイム混雑スコア（Google Places API連携）',
+          'AI穴場スポット自動提案（GPT-4o）',
+          '周辺飲食店クーポン連動配信',
+          'Google Maps 経路ナビ統合',
+          '多言語対応（日/英/中/韓）',
+          'LINE・プッシュ通知連携',
+          '自治体・観光協会向け管理ダッシュボード',
+        ],
       },
     ],
   },
