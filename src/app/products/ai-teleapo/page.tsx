@@ -10,21 +10,21 @@ const AiTeleapoLpContent = () => {
       {/* 🚀 ヒーローセクション */}
       <section className="max-w-6xl mx-auto px-4 pt-24 pb-20 text-center space-y-10">
         <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 px-6 py-1 rounded-full font-bold text-xs tracking-tight">
-          法人営業AIアシスタント
+          法人営業支援ツール
         </Badge>
         <h1 className="text-4xl md:text-7xl font-bold text-white tracking-tighter leading-[1.1]">
-          AIテレアポくん<br />
-          <span className="text-blue-400">AI架電台本</span>＆<span className="text-cyan-400">法人見積もり</span><br />
-          自動生成
+          AIテレアポ自動システム<br />
+          <span className="text-blue-400">アポ率3倍</span>を目指す<br />
+          営業支援ツール
         </h1>
         <h2 className="text-xl md:text-3xl font-bold text-slate-300 max-w-4xl mx-auto leading-relaxed px-4 text-center">
-          営業電話の台本と見積もりをAIが瞬時に生成。<br className="hidden md:block" />
-          法人アポ率を3倍に。
+          架電台本・営業シナリオ・提案要点をAIが瞬時に整理。<br className="hidden md:block" />
+          法人プランは別途お見積りでご提案します。
         </h2>
         <div className="flex flex-wrap justify-center gap-6 pt-6">
-          <Link href="/products/ai-teleapo/app">
+          <Link href="/contact">
             <button className="h-16 px-12 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold text-xl rounded-2xl shadow-[0_20px_50px_rgba(59,130,246,0.3)] transition-all active:scale-95 leading-none">
-              今すぐ使う ➔
+              無料相談・見積もりへ ➔
             </button>
           </Link>
         </div>
@@ -95,13 +95,13 @@ const AiTeleapoLpContent = () => {
               アポ率3倍へ。
             </h3>
             <p className="text-blue-100 text-lg font-bold leading-relaxed max-w-2xl mx-auto px-4 text-center">
-              AIが最適な架電台本と見積もりを生成。<br />
-              あなたの法人営業を次のステージへ。
+              AIが営業シナリオと架電要点を整理。<br />
+              法人プランは別途お見積りで最適化します。
             </p>
             <div className="flex flex-wrap justify-center gap-6 pt-6 text-center">
-              <Link href="/products/ai-teleapo/app">
+              <Link href="/contact">
                 <button className="h-16 px-12 bg-white text-blue-700 font-bold text-xl rounded-2xl shadow-xl hover:bg-blue-50 transition-all active:scale-95 leading-none flex items-center gap-2">
-                  今すぐ使う <ArrowRight size={20} />
+                  無料相談・見積もり <ArrowRight size={20} />
                 </button>
               </Link>
             </div>
@@ -121,12 +121,12 @@ export default function AiTeleapoLp() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'AIテレアポくん',
-    description: '法人営業の架電台本と見積もりをAIが自動生成。アポ率3倍を目指す営業支援ツール。',
+    name: 'AIテレアポ自動システム',
+    description: '法人営業の架電台本と営業シナリオをAIが自動整理。アポ率3倍を目指す営業支援ツール。',
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Web',
     url: 'https://nextralab.jp/products/ai-teleapo',
-    offers: { '@type': 'Offer', price: '480', priceCurrency: 'JPY' },
+    offers: { '@type': 'Offer', price: '要お見積り', priceCurrency: 'JPY' },
     publisher: { '@type': 'Organization', name: 'NextraLabs' },
   }
   return (
