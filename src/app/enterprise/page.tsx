@@ -22,31 +22,34 @@ const CATEGORIES = [
       {
         id: 'nextra-ai',
         title: 'Nextra AI',
-        sub: 'チェックイン・予約・解錠を全自動化。ホテル・民泊・ゲストハウスのフロント業務をAIが代替。人件費を最大60%削減。',
+        sub: '宿泊施設の受付・予約・解錠をまとめて自動化。フロント工数を圧縮し、少人数運営でも安定した接客を実現します。',
         icon: Building2,
         price: '要お見積もり',
         tags: ['ホテル', '民泊', '不動産'],
         lpUrl: '/products/nextra-ai',
+        stats: ['受付工数 -60%', '多言語対応', '無人運営支援'],
         features: ['多言語対応チェックイン', 'スマートロック連携', '予約管理自動化', 'レポート自動生成'],
       },
       {
         id: 'weather-boost',
         title: 'Google天気連動型 館内消費ブースト',
-        sub: '悪天候を売上チャンスに変える。雨・台風・猛暑を検知して自動でクーポン・プッシュ通知を配信。',
+        sub: '悪天候のタイミングを売上機会に変換。宿泊ゲストへ自動で館内導線を提案し、飲食・売店の利用を伸ばします。',
         icon: CloudRain,
         price: '要お見積もり',
         tags: ['ホテル', '飲食', '小売'],
         lpUrl: '/products/weather-boost',
+        stats: ['館内消費 +32%', '自動配信', '売上改善'],
         features: ['天気API連携', 'クーポン自動配信', 'LINE/メール通知', '売上分析'],
       },
       {
         id: 'voice-guest-assist',
         title: 'AI多言語ゲストアシスト',
-        sub: '語学力ゼロでも外国語ゲスト対応を完璧にこなせる。会話をリアルタイム翻訳＆CRM自動記録。',
+        sub: '外国語対応を属人化させず、フロントの案内品質を統一。現場オペレーションを崩さずに多言語接客を実現します。',
         icon: Mic,
         price: '要お見積もり',
         tags: ['ホテル', '旅館', '多言語'],
         lpUrl: '/products/voice-guest-assist',
+        stats: ['対応漏れ -80%', '4言語対応', '引継ぎ自動化'],
         features: ['リアルタイム翻訳', 'アレルギー情報抽出', 'Stayseeメモ連携', '引き継ぎ自動化'],
       },
     ],
@@ -61,11 +64,12 @@ const CATEGORIES = [
       {
         id: 'omiai-room',
         title: 'オンラインお見合い盛り上げシステム',
-        sub: 'BGM×AIトークサジェストで気まずい沈黙を完全解消。成婚率を飛躍的に向上させる婚活DXシステム。',
+        sub: '会話の間をAIが埋めて、成婚につながる空気をつくる。オンラインお見合いの離脱を抑え、提案品質を標準化します。',
         icon: HeartHandshake,
         price: '要お見積もり',
         tags: ['結婚相談所', '婚活', 'DX'],
         lpUrl: '/products/omiai-room',
+        stats: ['会話継続率 +41%', '提案自動化', '離脱抑制'],
         features: ['AIトーク提案', 'BGM自動制御', 'オンライン対応', '成婚率レポート'],
       },
     ],
@@ -80,11 +84,12 @@ const CATEGORIES = [
       {
         id: 'review-flow',
         title: '口コミ運用まるごと代行プラン',
-        sub: '顧客満足の確認からレビュー導線、返信テンプレ、月次レポートまで一括運用。高評価は公開レビューへ、低評価は社内改善へ自動分岐。',
+        sub: '顧客満足の確認からレビュー導線まで一気通貫。レビュー獲得率を底上げし、低評価はすぐ改善に回せる運用へ。',
         icon: BadgeCheck,
         price: '要お見積もり',
         tags: ['口コミ', 'レビュー', '運用代行'],
         lpUrl: '/products/review-flow',
+        stats: ['レビュー獲得率 +2.3倍', '自動分岐', '改善高速化'],
         features: ['満足度チェック自動送信', '高評価/低評価の自動分岐', 'Googleレビュー導線', '月次レポートと改善提案'],
       },
     ],
@@ -99,11 +104,12 @@ const CATEGORIES = [
       {
         id: 'overtourism-navi',
         title: 'オーバーツーリズム緩和ナビ',
-        sub: '観光地が限界混雑に達した瞬間、AIがユーザーへ「今すぐ行ける隠れ名所 + 周辺飲食クーポン」を提示。混雑を分散しながら地域消費を最大化。',
+        sub: '混雑ピークを検知した瞬間に、AIが代替ルートと穴場スポットを提示。観光公害を抑えながら、地元経済に送客します。',
         icon: Navigation,
         price: '要お見積もり',
         tags: ['観光協会', '自治体', 'ホテル・旅館', 'インバウンド'],
         lpUrl: '/products/overtourism-navi',
+        stats: ['分散誘導 +28%', '多言語対応', '送客最適化'],
         features: [
           'リアルタイム混雑スコア（Google Places API連携）',
           'AI穴場スポット自動提案（GPT-4o）',
@@ -126,21 +132,23 @@ const CATEGORIES = [
       {
         id: 'pr-video-narrator',
         title: 'PR動画ナレーター',
-        sub: '動画をアップするだけ。AIが内容を解析してVOICEVOXキャラのナレーション入り動画を自動生成。SNS・YouTube用PR動画を激安コストで量産。',
+        sub: '動画1本から営業素材を量産。AIが内容を解析して、提案用のナレーション動画を短納期で作成します。',
         icon: Mic,
         price: '法人・個人事業主プラン',
         tags: ['法人', '個人事業主', '動画制作'],
         lpUrl: '/products/pr-video-narrator',
+        stats: ['制作工数 -70%', '短納期', '営業資料化'],
         features: ['VOICEVOX音声自動生成', 'シーン解析', 'テロップ自動同期', 'YouTubeバズり構成'],
       },
       {
         id: 'youtube-yukkuri',
         title: 'ゆっくり系動画作成代行',
-        sub: 'PRしたい動画素材をご提供いただくだけ。ずんだもん・四国めたんが掛け合いでサービスを紹介。字幕・BGM・立ち絵アニメーション付きの完成動画を最短3営業日で納品。',
+        sub: 'PR素材を渡すだけで、営業・採用・説明動画までまとめて納品。YouTubeやSNS向けに見栄えよく仕上げます。',
         icon: Youtube,
         price: '¥29,800〜（法人会員10%割引）',
         tags: ['YouTube', 'ゆっくり動画', '動画制作代行'],
         lpUrl: '/products/youtube-yukkuri',
+        stats: ['最短3営業日', '修正1回', 'SNS転用'],
         features: [
           'ずんだもん＆四国めたん 掛け合いナレーション',
           'AIシーン解析＆台本自動生成',
@@ -175,8 +183,8 @@ export default function EnterprisePage() {
         <div className="flex flex-wrap justify-center gap-4 pt-4">
           <Link href="#contact">
             <Button className="h-14 px-10 font-bold text-lg rounded-2xl"
-              style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' }}>
-              無料相談・お見積もり →
+              style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff', boxShadow: '0 20px 50px rgba(245,158,11,0.25)' }}>
+              今すぐ相談して見積もりを取る →
             </Button>
           </Link>
           <Link href="/products">
@@ -184,6 +192,11 @@ export default function EnterprisePage() {
               全ツール一覧を見る
             </Button>
           </Link>
+        </div>
+        <div className="flex flex-wrap justify-center gap-3 mt-8 text-xs text-slate-400">
+          <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10">導入実績ベースの提案</span>
+          <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10">営業資料そのまま使える</span>
+          <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10">ZOOM全国対応</span>
         </div>
       </section>
 
@@ -221,6 +234,17 @@ export default function EnterprisePage() {
 
                     {/* 説明 */}
                     <p className="text-slate-400 text-sm leading-relaxed flex-1">{tool.sub}</p>
+
+                    {/* 数値バッジ */}
+                    {'stats' in tool && tool.stats && (
+                      <div className="flex flex-wrap gap-2">
+                        {tool.stats.map((stat: string) => (
+                          <span key={stat} className="text-[11px] font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                            {stat}
+                          </span>
+                        ))}
+                      </div>
+                    )}
 
                     {/* 機能リスト */}
                     <ul className="space-y-2">
@@ -298,15 +322,16 @@ export default function EnterprisePage() {
       <section id="contact" className="max-w-4xl mx-auto px-4 py-16">
         <div className="bg-gradient-to-br from-amber-600/20 to-slate-900 border border-amber-500/20 rounded-[3rem] p-12 text-center space-y-6">
           <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tighter">
-            まずはお気軽に<br /><span className="text-amber-400">ご相談ください</span>
+            まずは<span className="text-amber-400">見積もり</span>から
+            <br />導入イメージを固めましょう
           </h2>
-          <p className="text-slate-400 font-bold">神奈川県海老名市 / ZOOM全国対応 / 無料相談・お見積もり</p>
+          <p className="text-slate-400 font-bold">神奈川県海老名市 / ZOOM全国対応 / 初回相談無料</p>
           <div className="flex flex-wrap justify-center gap-4 pt-4">
-            <Link href="/pricing">
+            <Link href="/contact">
               <Button className="h-14 px-10 font-bold text-lg rounded-2xl"
-                style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' }}>
+                style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff', boxShadow: '0 20px 50px rgba(245,158,11,0.25)' }}>
                 <Mail className="mr-2 h-5 w-5" />
-                料金プランを見る
+                今すぐ相談する
               </Button>
             </Link>
           </div>
