@@ -1,4 +1,5 @@
-﻿'use client'
+'use client'
+import { AccessGate } from '@/components/tools/AccessGate'
 import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 import { useRouter } from 'next/navigation'
 
@@ -32,7 +33,7 @@ import { fetchFile, toBlobURL } from '@ffmpeg/util'
 // ⚡ 憲法：SSR無効化 (FFmpeg.wasmなどのブラウザ専用機能を使用するため)
 const YoutubeProducerAppInner = dynamic(() => Promise.resolve(YoutubeProducerApp), { ssr: false })
 
-export default function YoutubeProducerAppPage() {
+function YoutubeProducerAppPageInner() {
   const router = useRouter()
 
   // ブラウザバック・マウスサイドボタン対応
@@ -454,5 +455,10 @@ function YoutubeProducerApp() {
 </div>
   )
 }
-
-
+export default function YoutubeProducerAppPage() {
+  return (
+    <AccessGate productId="youtube-producer">
+      <YoutubeProducerAppPageInner />
+    </AccessGate>
+  )
+}

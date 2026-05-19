@@ -1,4 +1,5 @@
 'use client'
+import { AccessGate } from '@/components/tools/AccessGate'
 import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 import { useRouter, useSearchParams } from 'next/navigation'
 
@@ -442,10 +443,17 @@ function AiExamGeneratorInner() {
   )
 }
 
-export default function AiExamGeneratorApp() {
+function AiExamGeneratorAppInner() {
   return (
     <Suspense fallback={<div className="min-h-screen bg-[#050507]" />}>
       <AiExamGeneratorInner />
     </Suspense>
+  )
+}
+export default function AiExamGeneratorApp() {
+  return (
+    <AccessGate productId="ai-exam-generator">
+      <AiExamGeneratorAppInner />
+    </AccessGate>
   )
 }

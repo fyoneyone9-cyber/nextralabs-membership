@@ -1,4 +1,5 @@
 'use client'
+import { AccessGate } from '@/components/tools/AccessGate'
 import AffiliateBanner from '@/components/affiliate/AffiliateBanner'
 import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
@@ -115,7 +116,7 @@ const PRESET_THEMES: { category: string; emoji: string; items: string[] }[] = [
   },
 ]
 
-export default function SnsAutoPosterApp() {
+function SnsAutoPosterAppInner() {
   const router = useRouter()
   const [selectedTrend, setSelectedTrend]   = useState('')
   const [selectedPreset, setSelectedPreset] = useState('')
@@ -393,5 +394,12 @@ export default function SnsAutoPosterApp() {
 
       <AffiliateBanner toolId="sns-auto-poster" />
     </div>
+  )
+}
+export default function SnsAutoPosterApp() {
+  return (
+    <AccessGate productId="sns-auto-poster">
+      <SnsAutoPosterAppInner />
+    </AccessGate>
   )
 }

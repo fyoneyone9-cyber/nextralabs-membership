@@ -1,4 +1,5 @@
-﻿'use client'
+'use client'
+import { AccessGate } from '@/components/tools/AccessGate'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
@@ -2405,7 +2406,7 @@ const AISelectShopApp = ({ onBack }: { onBack?: () => void }) => {
 }
 
 const NoSSR = dynamic(() => Promise.resolve(AISelectShopApp), { ssr: false })
-export default function AISelectShopPage() {
+function AISelectShopPageInner() {
   const router = useRouter()
 
   // ブラウザバック・マウスサイドボタン対応
@@ -2440,4 +2441,10 @@ export default function AISelectShopPage() {
 
   return <NoSSR onBack={handleBack} />
 }
-
+export default function AISelectShopPage() {
+  return (
+    <AccessGate productId="ai-select-shop">
+      <AISelectShopPageInner />
+    </AccessGate>
+  )
+}
