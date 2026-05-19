@@ -1,4 +1,4 @@
-﻿import dynamic from 'next/dynamic'
+import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { CheckCircle2, Phone, FileText, TrendingUp, ArrowRight } from 'lucide-react'
