@@ -1,9 +1,9 @@
-﻿import { createClient } from '@supabase/supabase-js';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { createClient } from '@supabase/supabase-js';
+import { callGeminiSDKWithRotation } from './gemini-rotate';
 
 /**
- * AI Engine v1.2.1 - Clean Build Version (Gemini Only for now)
- * Anthropic dependency removed to ensure build stability until SDK is properly added.
+ * AI Engine v1.3.0 - Gemini 3-key rotation
+ * GEMINI_API_KEY_1/2/3 をローテーションして呼び出す
  */
 export async function nextraAiEngine({
   prompt,
@@ -20,7 +20,6 @@ export async function nextraAiEngine({
 }) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const geminiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY1;
 
   if (!supabaseUrl || !supabaseKey) return { response: "Supabase Error", model: "none", cached: false };
 
@@ -38,20 +37,13 @@ export async function nextraAiEngine({
   let responseText = "";
   let finalModel = "";
 
-  // 2. Gemini 1.5 Pro 呼び出し (メインエンジンとして統合)
-  if (geminiKey) {
-    try {
-      const genAI = new GoogleGenerativeAI(geminiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash", systemInstruction });
-      const result = await model.generateContent(prompt);
-      responseText = result.response.text();
-      finalModel = "Gemini 1.5 Pro";
-    } catch (error) {
-      console.error("Gemini Engine Error:", error);
-      return { response: "AI Engine Error", model: "error", cached: false };
-    }
-  } else {
-    return { response: "API Key missing", model: "none", cached: false };
+  // 2. Gemini呼び出し（3キーローテーション）
+  try {
+    responseText = await callGeminiSDKWithRotation(prompt, systemInstruction, 'gemini-2.5-flash');
+    finalModel = "Gemini 2.5 Flash";
+  } catch (error) {
+    console.error("Gemini Engine Error:", error);
+    return { response: "AI Engine Error", model: "error", cached: false };
   }
 
   // 3. キャッシュ保存
