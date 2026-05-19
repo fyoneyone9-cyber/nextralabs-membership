@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import React, { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
@@ -6,15 +6,15 @@ import { Loader2, ShieldAlert, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 // =============================================
-// 🔒 プラン別ツール分類 (MEMORY.md 正式版と統一)
+// ?? プラン別ツール分類 (MEMORY.md 正式版と統一)
 // =============================================
 
 // =============================================
-// ⚠️ このリストは check-access/route.ts と必ず同期すること
+// ?? このリストは check-access/route.ts と必ず同期すること
 // 最終更新: 2026-05-11
 // =============================================
 
-// 👑 プレミアム専用 (¥1,980/月)
+// ?? プレミアム専用 (\1,980/月)
 const PREMIUM_IDS = [
   'inbox-organizer',        // Gmail AI Accelerator
   'youtube-producer',       // AI YouTubeプロデューサー
@@ -25,7 +25,7 @@ const PREMIUM_IDS = [
   'prompt-master',          // AI画像プロンプトマスター
 ]
 
-// ⚡ スタンダード以上 (¥980/月〜)
+// ? スタンダード以上 (\980/月?)
 const STANDARD_IDS = [
   'ai-sidejob',             // AI副業スタートダッシュ
   'disaster-guard',         // AI防災パーソナルガイド
@@ -50,15 +50,16 @@ const STANDARD_IDS = [
   'repair-parts-finder',    // AI修理パーツ診断くん
   'ai-exam-generator',      // AI問題生成＆苦手分析
   'konkatsu-scheduler',     // AI婚活スケジューラー
+  'nostalgic-recom',        // あの頃の僕へ タイムトラベルレコメンド
 ]
 
-// 🔵 ライト以上 (¥480/月〜)
+// ?? ライト以上 (\480/月?)
 const LIGHT_IDS = [
   'expense-sync',           // Expense AI Sync
   'contact-sync',           // Contact AI Sync
 ]
 
-// 🆓 FREE（ログインのみ・プラン不要）
+// ?? FREE（ログインのみ・プラン不要）
 // kdp-guide, shopping-stopper, resignation-assistant, shio-taiou,
 // pet-translator, universal-converter, loan-advisor など上記に含まれないもの
 
@@ -85,7 +86,7 @@ export function AccessGate({ children, productId }: { children: React.ReactNode,
 
         const user = session.user
 
-        // 👑 管理者は常に全パス通過
+        // ?? 管理者は常に全パス通過
         if (user.email === 'f.yoneyone9@gmail.com') {
           setStatus('authorized')
           return
@@ -177,7 +178,7 @@ export function AccessGate({ children, productId }: { children: React.ReactNode,
           )}
         </div>
         <div className="flex flex-col w-full max-w-xs gap-3">
-          <Button onClick={() => router.push('/pricing')} className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold h-12 rounded-2xl text-base shadow-xl transition-all active:scale-95">プランを見る（¥980/月〜）</Button>
+          <Button onClick={() => router.push('/pricing')} className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold h-12 rounded-2xl text-base shadow-xl transition-all active:scale-95">プランを見る（\980/月?）</Button>
           <Button onClick={() => router.push('/products')} variant="ghost" className="text-slate-600 hover:text-white font-bold text-xs tracking-tight underline">ツール一覧に戻る</Button>
         </div>
       </div>
@@ -192,7 +193,7 @@ export function AccessGate({ children, productId }: { children: React.ReactNode,
           <div className="flex items-center gap-3">
             <Sparkles className="h-5 w-5 text-emerald-400 shrink-0" />
             <p className="text-sm text-emerald-300 font-medium">
-              無料体験中 — 今月あと <span className="font-bold text-white">{trialRemaining}回</span> 使えます
+              無料体験中 ? 今月あと <span className="font-bold text-white">{trialRemaining}回</span> 使えます
             </p>
           </div>
           <Button
