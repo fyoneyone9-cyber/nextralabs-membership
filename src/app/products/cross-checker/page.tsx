@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { GitCompareArrows, CheckCircle2, Zap, ShieldCheck, Brain, Repeat } from 'lucide-react'
 
 export const metadata = {
@@ -91,6 +92,45 @@ export default function CrossCheckerLP() {
           <Zap className="h-4 w-4" />
           クロスチェッカーを起動する →
         </Link>
+      </div>
+
+      {/* YouTube動画 */}
+      <div className="max-w-4xl mx-auto px-4 py-16">
+        <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-4">
+          実際の動作を動画で確認
+        </h2>
+        <p className="text-center text-slate-400 mb-8 text-sm">
+          ずんだもん×四国めたんが使い方をわかりやすく解説！
+        </p>
+        <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_40px_rgba(16,185,129,0.15)]">
+          <iframe
+            src="https://www.youtube.com/embed/tYEAzOsDAy4"
+            title="AIクロスチェッカー 使い方解説"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="absolute inset-0 w-full h-full"
+          />
+        </div>
+      </div>
+
+      {/* チートシート画像 */}
+      <div className="max-w-5xl mx-auto px-4 py-16">
+        <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-4">
+          使い方チートシート
+        </h2>
+        <p className="text-center text-slate-400 mb-8 text-sm">
+          機能概要・使い方ステップ・活用シーンを一枚にまとめました
+        </p>
+        <div className="rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_40px_rgba(16,185,129,0.1)]">
+          <Image
+            src="/cross-checker-cheatsheet.png"
+            alt="AIクロスチェッカー チートシート"
+            width={1920}
+            height={1080}
+            className="w-full h-auto"
+            priority
+          />
+        </div>
       </div>
 
       <div className="text-center opacity-20 pb-10 font-medium tracking-tight text-[10px] text-slate-500">Nextra Labs · 2026</div>
