@@ -1,41 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 export const maxDuration = 60
 
 async function callGemini(prompt: string, input: string): Promise<string> {
   const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) throw new Error('GEMINI_API_KEY is not set')
 
-  // モデル優先順位: 2.5-flash → 2.0-flash → 1.5-flash
-  const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash']
+  const genAI = new GoogleGenerativeAI(apiKey)
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
-  for (const model of models) {
-    try {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: `${prompt}\n\n---\n${input}` }] }],
-            generationConfig: { temperature: 0.3, maxOutputTokens: 1024 },
-          }),
-        }
-      )
-      if (res.status === 503 || res.status === 429) {
-        console.warn(`Gemini ${model} returned ${res.status}, trying next model...`)
-        continue
-      }
-      if (!res.ok) throw new Error(`Gemini API error: ${res.status}`)
-      const data = await res.json()
-      return data.candidates?.[0]?.content?.parts?.[0]?.text ?? '(回答なし)'
-    } catch (e) {
-      if (model === models[models.length - 1]) throw e
-      console.warn(`Gemini ${model} failed, trying next...`, e)
-    }
-  }
-  throw new Error('Gemini API: all models unavailable')
+  const result = await model.generateContent(`${prompt}\n\n---\n${input}`)
+  return result.response.text() ?? '(回答なし)'
 }
 
 async function callGPT(prompt: string, input: string): Promise<string> {
