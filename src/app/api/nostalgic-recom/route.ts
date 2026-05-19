@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY!
+
 export async function POST(req: Request) {
   try {
     const { yearsAgo, genres, description } = await req.json() as {
@@ -9,23 +11,17 @@ export async function POST(req: Request) {
     }
 
     const targetYear = 2026 - yearsAgo
-    const eraHeiseiOrReiwa = targetYear >= 2019
-      ? `令和${targetYear - 2018}年`
-      : targetYear >= 1989
-        ? `平成${targetYear - 1988}年`
-        : `昭和${targetYear - 1925}年`
-
-    const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY
+    const eraHeiseiOrReiwa =
+      targetYear >= 2019
+        ? `令和${targetYear - 2018}年`
+        : targetYear >= 1989
+          ? `平成${targetYear - 1988}年`
+          : `昭和${targetYear - 1925}年`
 
     // APIキーなし → モックデータ
-    if (!apiKey) {
+    if (!GEMINI_API_KEY) {
       return NextResponse.json(getMockData(yearsAgo, targetYear, genres, eraHeiseiOrReiwa))
     }
-
-    // Gemini API呼び出し
-    const { GoogleGenerativeAI } = await import('@google/generative-ai')
-    const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
 
     const genresText = genres.join('・')
     const userContext = description ? `ユーザーの当時の状況: ${description}` : '追加情報なし'
@@ -42,20 +38,40 @@ ${userContext}
       "year": 発売または放映年（数値のみ）,
       "description": "この作品が${targetYear}年頃になぜ流行したかの解説（100文字以内）",
       "whyYou": "なぜあなたの青春に響くかのパーソナルメッセージ（50文字以内、温かい口調で）",
-      "rakutenUrl": "https://search.rakuten.co.jp/search/mall/タイトルをURLエンコード/",
-      "amazonUrl": "https://www.amazon.co.jp/s?k=タイトルをURLエンコード"
+      "rakutenUrl": "https://search.rakuten.co.jp/search/mall/${encodeURIComponent('タイトル')}/",
+      "amazonUrl": "https://www.amazon.co.jp/s?k=${encodeURIComponent('タイトル')}"
     }
   ],
   "era": "${targetYear}年（${eraHeiseiOrReiwa}）頃",
   "eraLabel": "この時代を表すキャッチーな一言ラベル（例: ゆとり世代の青春・バブル景気の輝き）",
   "message": "あの頃へのタイムトラベルを祝う温かい一言（30文字以内）"
-}`
+}
 
-    const result = await model.generateContent(prompt)
-    const text = result.response.text().trim()
+※ rakutenUrlとamazonUrlは実際のタイトルをURLエンコードした正確なURLにしてください。`
 
-    // JSONパース（コードブロックが含まれる場合を除去）
-    const jsonText = text.replace(/^```json?\s*/i, '').replace(/\s*```$/, '').trim()
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.7, maxOutputTokens: 2048 },
+        }),
+      }
+    )
+
+    if (!res.ok) {
+      const errText = await res.text()
+      console.error('[nostalgic-recom] Gemini error:', res.status, errText)
+      return NextResponse.json({ error: 'AI生成に失敗しました' }, { status: 500 })
+    }
+
+    const json = await res.json()
+    const text: string = json.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
+
+    // コードブロック除去
+    const jsonText = text.replace(/^```json?\s*/i, '').replace(/\s*```$/i, '').trim()
     const data = JSON.parse(jsonText)
 
     return NextResponse.json(data)
@@ -66,7 +82,12 @@ ${userContext}
   }
 }
 
-function getMockData(yearsAgo: number, targetYear: number, genres: string[], era: string) {
+function getMockData(
+  yearsAgo: number,
+  targetYear: number,
+  genres: string[],
+  era: string,
+) {
   const MOCK_ITEMS: Record<string, { title: string; genre: string; year: number; desc: string; why: string }[]> = {
     '音楽': [
       { title: 'Can You Celebrate? / 安室奈美恵', genre: '音楽', year: 1997, desc: '結婚式の定番曲として社会現象に。アムラー旋風が日本中を席巻した。', why: 'あの頃、どこに行っても流れていたあの声がきっと蘇ります。' },
@@ -92,24 +113,31 @@ function getMockData(yearsAgo: number, targetYear: number, genres: string[], era
     ],
   }
 
-  const items = genres.flatMap(g => MOCK_ITEMS[g] || []).slice(0, 10).map(item => ({
-    ...item,
-    description: item.desc,
-    whyYou: item.why,
-    rakutenUrl: `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(item.title)}/`,
-    amazonUrl: `https://www.amazon.co.jp/s?k=${encodeURIComponent(item.title)}`,
-  }))
+  const items = genres
+    .flatMap(g => MOCK_ITEMS[g] ?? [])
+    .slice(0, 10)
+    .map(item => ({
+      title: item.title,
+      genre: item.genre,
+      year: item.year,
+      description: item.desc,
+      whyYou: item.why,
+      rakutenUrl: `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(item.title)}/`,
+      amazonUrl: `https://www.amazon.co.jp/s?k=${encodeURIComponent(item.title)}`,
+    }))
 
   return {
-    items: items.length > 0 ? items : [{
-      title: 'サンプル作品',
-      genre: genres[0] || '音楽',
-      year: targetYear,
-      description: 'この時代を代表する名作です。',
-      whyYou: 'あなたの青春に響いた作品。',
-      rakutenUrl: `https://search.rakuten.co.jp/search/mall/${encodeURIComponent('名作')}/`,
-      amazonUrl: `https://www.amazon.co.jp/s?k=${encodeURIComponent('名作')}`,
-    }],
+    items: items.length > 0 ? items : [
+      {
+        title: 'サンプル作品',
+        genre: genres[0] ?? '音楽',
+        year: targetYear,
+        description: 'この時代を代表する名作です。',
+        whyYou: 'あなたの青春に響いた作品。',
+        rakutenUrl: `https://search.rakuten.co.jp/search/mall/${encodeURIComponent('名作')}/`,
+        amazonUrl: `https://www.amazon.co.jp/s?k=${encodeURIComponent('名作')}`,
+      },
+    ],
     era: `${targetYear}年（${era}）頃`,
     eraLabel: `${yearsAgo}年前の青春`,
     message: 'あの頃の名作との再会をお楽しみください。（開発モード）',
