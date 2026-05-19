@@ -5,18 +5,36 @@ export const runtime = 'nodejs'
 export const maxDuration = 60
 
 async function callGemini(prompt: string, input: string): Promise<string | null> {
-  const apiKey = process.env.Last_GEMINI_API_KEY || process.env.AICrossChecker_GEMINI_API_KEY || process.env.GEMINI_API_KEY
-  if (!apiKey) return null
+  // 複数キーをローテーション。429/503は次のキーへ
+  const keys = [
+    process.env.Last_GEMINI_API_KEY,
+    process.env.GEMINI_API_KEY,
+    process.env.AICrossChecker_GEMINI_API_KEY,
+  ].filter(Boolean) as string[]
 
-  try {
-    const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
-    const result = await model.generateContent(`${prompt}\n\n---\n${input}`)
-    return result.response.text() ?? null
-  } catch (e: unknown) {
-    console.warn('Gemini unavailable, falling back to GPT only:', e instanceof Error ? e.message : e)
-    return null
+  if (keys.length === 0) return null
+
+  for (const apiKey of keys) {
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey)
+      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
+      const result = await model.generateContent(`${prompt}\n\n---\n${input}`)
+      return result.response.text() ?? null
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e)
+      // クォータ超過・サービス障害は次のキーへ
+      if (msg.includes('429') || msg.includes('503') || msg.includes('quota')) {
+        console.warn(`Gemini key ...${apiKey.slice(-6)} quota/error, trying next key...`)
+        continue
+      }
+      // その他のエラーはfallback
+      console.warn('Gemini unavailable:', msg)
+      return null
+    }
   }
+
+  console.warn('Gemini: all keys exhausted')
+  return null
 }
 
 async function callGPT(prompt: string, input: string): Promise<string> {
