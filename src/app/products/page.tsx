@@ -11,7 +11,7 @@ import {
   FileText, ArrowRight, Network, Store, 
   ClipboardCheck, ShieldCheck, Wallet, Home, 
   Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, BookOpen, 
-  Sprout, Zap, Building2, Database, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils, Plane, Activity, CalendarHeart, CalendarCheck, Scissors, Mic, CloudRain, BookMarked
+  Sprout, Zap, Building2, Database, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils, Plane, Activity, CalendarHeart, CalendarCheck, Scissors, Mic, CloudRain, BookMarked, GitCompareArrows
 } from 'lucide-react'
 
 // 管理者メール（このアドレスでログインしているユーザーのみ管理者リンクが見える）
@@ -28,6 +28,9 @@ const TOOLS = [
   // ── 📖 出版・AI文章生成 ──
   { id: 'kdp-guide/app',            cat: 'publish',   title: 'Kindle出版完全ナビ',            sub: '初めてのKDP出版を全工程AIがサポート。表紙から原稿まで完全お任せ。',                                      icon: BookOpen,      plan: '無料',       done: true },
   { id: 'kindle-factory/app',       cat: 'publish',   title: 'Kindle AI ファクトリー',        sub: 'AI解析でKDP入稿可能な原稿を自動生成',                             icon: Crown,         plan: 'プレミアム', done: true },
+
+  // ── 🔍 検証・クロスチェック ──
+  { id: 'cross-checker/app',        cat: 'biz',       title: 'AI クロスチェッカー',           sub: 'GeminiとGPT-4oが同時に回答。2つのAIが合意した情報だけを確定回答として出力。ハルシネーション最小化。',          icon: GitCompareArrows, plan: 'ライト', done: true },
 
   // ── 💼 ビジネス・仕事効率化 ──
   { id: 'inbox-organizer/app',      cat: 'biz',       title: 'Gmail AI Accelerator',         sub: 'メール対応時間を最大70%削減。AIが下書きから返信分類まで自動化。',                                            icon: Mail,          plan: 'プレミアム', done: true },
