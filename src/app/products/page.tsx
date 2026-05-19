@@ -66,106 +66,6 @@ const TOOLS = [
   { id: 'konkatsu-scheduler/app',   cat: 'konkatsu',  title: 'AI即アポ調整くん',              sub: '婚活の進捗をAIが管理。次の一手をタイムリーに提案してくれる。',                     icon: CalendarCheck, plan: 'スタンダード', lpUrl: '/products/konkatsu-scheduler' },
 
   { id: 'beauty-boost/app',         cat: 'konkatsu',  title: 'お見合い垢抜けブースト',        sub: '会場周辺の美容院をAI検索 → 予約へ直接案内',                      icon: Scissors,      plan: 'スタンダード', lpUrl: '/products/beauty-boost' },
-
-  // ── 📚 Kindle電子書籍 ──
-  {
-    id: 'kindle-aitools',  cat: 'kindle',
-    title: 'AIツール・サブスク構築術',
-    sub: '1日10円のコストで働かないストックを量産する技術。副業ゼロ起業の全記録。',
-    icon: BookMarked, plan: '電子書籍', done: true,
-    target: 'https://www.amazon.co.jp/dp/B0DGNBFDBB',
-  },
-  {
-    id: 'kindle-ai2',  cat: 'kindle',
-    title: 'AIと2人で起業した',
-    sub: 'AIに全部任せてもらった話。副業ゼロ起業の全記録。個人開発者が1人でサービスをリリースした実録。',
-    icon: BookMarked, plan: '電子書籍', done: true,
-    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
-  },
-  {
-    id: 'kindle-hotel',  cat: 'kindle',
-    title: 'ホテルのフロントをAIで置き換えた日',
-    sub: 'KIOSKシステムをゼロから作った開発者のリアル記録。AIによる無人フロント構築の全工程。',
-    icon: BookMarked, plan: '電子書籍', done: true,
-    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
-  },
-  {
-    id: 'kindle-api',  cat: 'kindle',
-    title: '廃止APIに気づいた朝、世界は14言語で動いていた',
-    sub: '個人開発者が一日で乗り越えたAPI危機とグローバル対応の全記録。',
-    icon: BookMarked, plan: '電子書籍', done: true,
-    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
-  },
-  {
-    id: 'kindle-fukugyou',  cat: 'kindle',
-    title: '【月10万達成】副業で自由を掴む完全ロードマップ',
-    sub: '会社員のための副業入門。スキル・時間・マインドで月収アップを実現する。',
-    icon: BookMarked, plan: '電子書籍', done: true,
-    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
-  },
-  {
-    id: 'kindle-manga1',  cat: 'kindle',
-    title: '人妻・熟女 〜禁じられた恋の温度〜 Vol.002',
-    sub: '大人の官能コミック。Kindle Unlimited対応。NextraLabs Comicsシリーズ。',
-    icon: BookMarked, plan: '電子書籍', done: true,
-    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
-  },
-  {
-    id: 'kindle-manga2',  cat: 'kindle',
-    title: '妻が堕ちた夜〜俺の知らない女の顔〜',
-    sub: 'NTR禁断シリーズ。Kindle Unlimited対応。',
-    icon: BookMarked, plan: '電子書籍', done: true,
-    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
-  },
-  {
-    id: 'kindle-manga3',  cat: 'kindle',
-    title: '禁じられた愛の果てに: 人妻と禁断の恋',
-    sub: 'NextraLabs大人の漫画シリーズ。Kindle Unlimited対応。',
-    icon: BookMarked, plan: '電子書籍', done: true,
-    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
-  },
-  {
-    id: 'kindle-ai-gravure',  cat: 'kindle',
-    title: 'AIグラビア 絶対領域 競泳水着の極上ボディ Vol.1',
-    sub: '競泳部OGの秘密プールサイド。みなみシリーズ。NextraLabs AIグラビア。',
-    icon: BookMarked, plan: '電子書籍', done: true,
-    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
-  },
-  {
-    id: 'kindle-ai-gravure9',  cat: 'kindle',
-    title: 'AIグラビア 宵待みの夜に Vol.9',
-    sub: '隣の席の女子大生が泊まることになった…な。AI生成グラビア写真集 素朴系女子大生 宵待み編。',
-    icon: BookMarked, plan: '電子書籍', done: true,
-    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
-  },
-  {
-    id: 'kindle-omegaverse',  cat: 'kindle',
-    title: 'α様のつがい: 囚われた私の本能',
-    sub: 'オメガバースシリーズ。Kindle Unlimited対応。NextraLabs。',
-    icon: BookMarked, plan: '電子書籍', done: true,
-    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
-  },
-  {
-    id: 'kindle-saimin',  cat: 'kindle',
-    title: '眠れ、愛しき彼女よ 催眠異能シリーズ',
-    sub: '俺の声で全てが溶ける。NextraLabs Comics。Kindle Unlimited対応。',
-    icon: BookMarked, plan: '電子書籍', done: true,
-    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
-  },
-  {
-    id: 'kindle-monster',  cat: 'kindle',
-    title: '異形の契約〜魔物に捧げられた乙女の夜〜',
-    sub: 'ダーク系ファンタジー。Kindle Unlimited対応。NextraLabs。',
-    icon: BookMarked, plan: '電子書籍', done: true,
-    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
-  },
-  {
-    id: 'kindle-kimi',  cat: 'kindle',
-    title: '君だけを溺愛する CEOの執着愛に囚われて',
-    sub: '溺愛執着シリーズ。Kindle Unlimited対応。NextraLabs。',
-    icon: BookMarked, plan: '電子書籍', done: true,
-    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
-  },
 ]
 
 const CATEGORIES = [
@@ -178,7 +78,6 @@ const CATEGORIES = [
   { id: 'travel',    title: '✈️ 旅行・おでかけ・聖地巡礼',   icon: Plane,        color: 'border-sky-500'     },
   // hotel カテゴリはエンタープライズページに移動したため非表示
   { id: 'konkatsu',  title: '💕 婚活・結婚相談所DX',         icon: HeartHandshake, color: 'border-pink-500'  },
-  { id: 'kindle',    title: '📚 Kindle電子書籍',              icon: BookMarked,     color: 'border-violet-500' },
 ]
 
 function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
@@ -387,6 +286,17 @@ function ProductsList() {
           <span className="text-[11px] font-medium text-emerald-400 tracking-tight uppercase">Master Catalogue</span>
         </div>
         <h1 className="text-3xl md:text-5xl font-semibold text-white tracking-tight leading-[1.1]">AI ツールストア</h1>
+        <div className="flex items-center justify-center gap-3 mt-2">
+          <a
+            href="https://www.amazon.co.jp/s?k=nextralab&i=digital-text"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold transition-all"
+            style={{ background: 'rgba(124,58,237,0.15)', border: '1px solid rgba(124,58,237,0.4)', color: '#a78bfa' }}
+          >
+            📚 Kindle電子書籍はこちら →
+          </a>
+        </div>
       </div>
 
       {/* お気に入りフィルターバー */}

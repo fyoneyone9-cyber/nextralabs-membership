@@ -17,7 +17,6 @@ const GENRE_LINKS = [
   { id: 'travel',    label: '旅行',       icon: Plane          },
   { id: 'hotel',     label: '宿泊DX',     icon: Hotel          },
   { id: 'konkatsu',  label: '婚活',       icon: HeartHandshake },
-  { id: 'kindle',    label: '電子書籍',   icon: BookMarked     },
 ]
 
 const ENTERPRISE_LINK = { href: '/enterprise', label: '🏢 法人向け', accent: true }
