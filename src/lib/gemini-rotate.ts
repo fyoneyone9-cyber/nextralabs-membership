@@ -12,7 +12,7 @@ const GEMINI_KEYS = [
 
 export async function callGeminiWithRotation(
   prompt: string,
-  model = 'gemini-2.0-flash'
+  model = 'gemini-2.5-flash'
 ): Promise<string> {
   if (GEMINI_KEYS.length === 0) {
     return '(Gemini API key not set: add GEMINI_API_KEY_1/2/3 to env)'
@@ -51,7 +51,7 @@ export async function callGeminiWithRotation(
 export async function callGeminiSDKWithRotation(
   prompt: string,
   systemInstruction?: string,
-  model = 'gemini-2.0-flash'
+  model = 'gemini-2.5-flash'
 ): Promise<string> {
   if (GEMINI_KEYS.length === 0) {
     throw new Error('Gemini API key not set: add GEMINI_API_KEY_1/2/3')
