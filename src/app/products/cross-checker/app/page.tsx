@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { GitCompareArrows, Zap, Copy, CheckCircle2, AlertCircle, Loader2, ChevronDown } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { GitCompareArrows, Zap, Copy, CheckCircle2, AlertCircle, Loader2, ChevronDown, Lock } from 'lucide-react'
 
 const PRESETS = [
   { id: 'fact',     label: '📋 ファクトチェック',     prompt: '以下の内容について、事実・数値・情報の正確性を検証してください。不正確な点があれば指摘してください。' },
@@ -22,6 +23,25 @@ type Result = {
 }
 
 export default function CrossCheckerApp() {
+  const router = useRouter()
+  const [accessChecked, setAccessChecked] = useState(false)
+  const [hasAccess, setHasAccess] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/check-access', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productId: 'cross-checker' }),
+    })
+      .then(r => r.json())
+      .then(d => {
+        setHasAccess(d.hasAccess)
+        setAccessChecked(true)
+        if (!d.hasAccess) router.replace('/pricing?from=cross-checker')
+      })
+      .catch(() => { setHasAccess(false); setAccessChecked(true) })
+  }, [router])
+
   const [input, setInput] = useState('')
   const [selectedPreset, setSelectedPreset] = useState(PRESETS[0])
   const [customPrompt, setCustomPrompt] = useState('')
@@ -30,6 +50,16 @@ export default function CrossCheckerApp() {
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
   const [showPresets, setShowPresets] = useState(false)
+
+  if (!accessChecked) {
+    return (
+      <div className="min-h-screen bg-[#050507] flex items-center justify-center">
+        <Loader2 className="h-8 w-8 text-emerald-400 animate-spin" />
+      </div>
+    )
+  }
+
+  if (!hasAccess) return null
 
   const handleRun = async () => {
     if (!input.trim()) { setError('テキストを入力してください'); return }

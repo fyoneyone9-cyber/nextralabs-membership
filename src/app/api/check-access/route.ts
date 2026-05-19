@@ -58,6 +58,8 @@ const STANDARD_IDS = [
   'repair-parts-finder',    // AI修理パーツ診断くん — Gemini
   'ai-exam-generator',      // AI問題生成＆苦手分析 — Gemini
   'konkatsu-scheduler',     // AI婚活スケジューラー — Gemini
+  // 2026-05-20 追加（登録漏れ修正）
+  'cross-checker',          // AIクロスチェッカー — Gemini + GPT-4o
 ]
 
 // 🔵 ライト以上（軽めAPIツール）
