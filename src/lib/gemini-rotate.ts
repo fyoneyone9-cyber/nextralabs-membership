@@ -26,7 +26,7 @@ export function getGeminiKey(): string | null {
  */
 export async function callGeminiWithRotation(
   prompt: string,
-  model = 'gemini-1.5-flash'
+  model = 'gemini-2.0-flash'
 ): Promise<string> {
   if (GEMINI_KEYS.length === 0) {
     return '（Gemini APIキー未設定: GEMINI_API_KEY_1/2/3 を環境変数に追加してください）'
