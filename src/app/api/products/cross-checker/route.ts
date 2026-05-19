@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { callGeminiWithRotation } from '@/lib/gemini-rotate'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 export const maxDuration = 60
 
 async function callGemini(prompt: string, input: string): Promise<string> {
