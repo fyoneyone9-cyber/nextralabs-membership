@@ -15,7 +15,7 @@ export async function callGeminiWithRotation(
   model = 'gemini-2.5-flash'
 ): Promise<string> {
   if (GEMINI_KEYS.length === 0) {
-    return '(Gemini API key not set: add GEMINI_API_KEY_1/2/3 to env)'
+    return '(Gemini APIキー未設定: GEMINI_API_KEY_1/2/3 を環境変数に追加してください)'
   }
   const errors: string[] = []
   for (let i = 0; i < GEMINI_KEYS.length; i++) {
@@ -27,6 +27,7 @@ export async function callGeminiWithRotation(
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            system_instruction: { parts: [{ text: 'You are a helpful assistant. Always respond in Japanese.' }] },
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: { temperature: 0.3, maxOutputTokens: 1024 },
           }),
@@ -36,16 +37,16 @@ export async function callGeminiWithRotation(
         const status = res.status
         if (status === 429 || status === 503) { errors.push(`Key${i + 1}:${status}`); continue }
         errors.push(`Key${i + 1}:HTTP${status}`)
-        return `(Gemini API error: ${errors.join(', ')})`
+        return `(Gemini APIエラー: ${errors.join(', ')})`
       }
       const data = await res.json()
-      return data.candidates?.[0]?.content?.parts?.[0]?.text ?? '(no answer)'
+      return data.candidates?.[0]?.content?.parts?.[0]?.text ?? '(回答なし)'
     } catch (e: any) {
       errors.push(`Key${i + 1}:${e.message ?? 'network error'}`)
       continue
     }
   }
-  return `(Gemini all keys failed: ${errors.join(', ')})`
+  return `(Gemini 全キー失敗: ${errors.join(', ')})`
 }
 
 export async function callGeminiSDKWithRotation(
@@ -54,15 +55,16 @@ export async function callGeminiSDKWithRotation(
   model = 'gemini-2.5-flash'
 ): Promise<string> {
   if (GEMINI_KEYS.length === 0) {
-    throw new Error('Gemini API key not set: add GEMINI_API_KEY_1/2/3')
+    throw new Error('Gemini APIキー未設定: GEMINI_API_KEY_1/2/3 を環境変数に追加してください')
   }
   const { GoogleGenerativeAI } = await import('@google/generative-ai')
+  const si = systemInstruction ?? 'Always respond in Japanese.'
   const errors: string[] = []
   for (let i = 0; i < GEMINI_KEYS.length; i++) {
     const key = GEMINI_KEYS[i]
     try {
       const genAI = new GoogleGenerativeAI(key)
-      const geminiModel = genAI.getGenerativeModel({ model, systemInstruction })
+      const geminiModel = genAI.getGenerativeModel({ model, systemInstruction: si })
       const result = await geminiModel.generateContent(prompt)
       return result.response.text()
     } catch (e: any) {
@@ -73,5 +75,5 @@ export async function callGeminiSDKWithRotation(
       throw new Error(`Gemini SDK Error (Key${i + 1}): ${msg}`)
     }
   }
-  throw new Error(`Gemini all keys failed: ${errors.join(', ')}`)
+  throw new Error(`Gemini 全キー失敗: ${errors.join(', ')}`)
 }
