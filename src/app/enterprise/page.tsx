@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { Building2, HeartHandshake, Mic, CloudRain, ArrowRight, CheckCircle2, Mail, Youtube, Video, Upload, Sparkles, BadgeCheck, MapPin, Navigation, Ticket } from 'lucide-react'
+import { Building2, HeartHandshake, Mic, CloudRain, ArrowRight, CheckCircle2, Mail, Youtube, Video, Upload, Sparkles, BadgeCheck, MapPin, Navigation, Ticket, Phone } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -119,6 +119,26 @@ const CATEGORIES = [
           'LINE・プッシュ通知連携',
           '自治体・観光協会向け管理ダッシュボード',
         ],
+      },
+    ],
+  },
+  {
+    id: 'sales',
+    label: '📞 営業・テレアポDX',
+    desc: 'AI架電台本・法人見積もり自動生成でアポ率を最大化',
+    color: 'border-blue-500/40',
+    badgeColor: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+    tools: [
+      {
+        id: 'ai-teleapo',
+        title: 'AIテレアポ代行さん',
+        sub: '業種・商材・担当者情報を入力するだけでAIが最適な架電台本を生成。トーク結果に応じた法人向け見積書も自動作成。法人アポ率3倍を目指す営業支援ツール。',
+        icon: Phone,
+        price: '要お見積もり',
+        tags: ['法人営業', 'テレアポ', '見積もり自動化'],
+        lpUrl: '/products/ai-teleapo',
+        stats: ['アポ率 3倍目標', '架電台本自動生成', '見積書即時作成'],
+        features: ['架電台本AI生成', 'トーク結果記録', '法人見積書自動生成', '営業シナリオ最適化'],
       },
     ],
   },
