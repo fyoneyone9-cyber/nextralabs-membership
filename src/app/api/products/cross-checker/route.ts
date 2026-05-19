@@ -4,15 +4,19 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 export const runtime = 'nodejs'
 export const maxDuration = 60
 
-async function callGemini(prompt: string, input: string): Promise<string> {
+async function callGemini(prompt: string, input: string): Promise<string | null> {
   const apiKey = process.env.GEMINI_API_KEY
-  if (!apiKey) throw new Error('GEMINI_API_KEY is not set')
+  if (!apiKey) return null
 
-  const genAI = new GoogleGenerativeAI(apiKey)
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
-
-  const result = await model.generateContent(`${prompt}\n\n---\n${input}`)
-  return result.response.text() ?? '(回答なし)'
+  try {
+    const genAI = new GoogleGenerativeAI(apiKey)
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
+    const result = await model.generateContent(`${prompt}\n\n---\n${input}`)
+    return result.response.text() ?? null
+  } catch (e: unknown) {
+    console.warn('Gemini unavailable, falling back to GPT only:', e instanceof Error ? e.message : e)
+    return null
+  }
 }
 
 async function callGPT(prompt: string, input: string): Promise<string> {
@@ -98,6 +102,17 @@ export async function POST(req: NextRequest) {
       callGemini(finalPrompt, input),
       callGPT(finalPrompt, input),
     ])
+
+    // Geminiが使えない場合はGPT単体で返す
+    if (geminiResult === null) {
+      return NextResponse.json({
+        gemini: '（Gemini APIクォータ超過のため利用不可）',
+        gpt: gptResult,
+        verdict: gptResult,
+        matchScore: 50,
+        notice: 'Gemini APIのクォータ超過のため、GPT-4o-miniのみの結果を表示しています。',
+      })
+    }
 
     const { verdict, matchScore } = await generateVerdict(geminiResult, gptResult, input)
 
