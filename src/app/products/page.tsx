@@ -11,7 +11,7 @@ import {
   FileText, ArrowRight, Network, Store, 
   ClipboardCheck, ShieldCheck, Wallet, Home, 
   Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, BookOpen, 
-  Sprout, Zap, Building2, Database, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils, Plane, Activity, CalendarHeart, CalendarCheck, Scissors, Mic, CloudRain, Phone
+  Sprout, Zap, Building2, Database, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils, Plane, Activity, CalendarHeart, CalendarCheck, Scissors, Mic, CloudRain, Phone, BookMarked
 } from 'lucide-react'
 
 // 管理者メール（このアドレスでログインしているユーザーのみ管理者リンクが見える）
@@ -66,6 +66,106 @@ const TOOLS = [
   { id: 'konkatsu-scheduler/app',   cat: 'konkatsu',  title: 'AI即アポ調整くん',              sub: '婚活の進捗をAIが管理。次の一手をタイムリーに提案してくれる。',                     icon: CalendarCheck, plan: 'スタンダード', lpUrl: '/products/konkatsu-scheduler' },
 
   { id: 'beauty-boost/app',         cat: 'konkatsu',  title: 'お見合い垢抜けブースト',        sub: '会場周辺の美容院をAI検索 → 予約へ直接案内',                      icon: Scissors,      plan: 'スタンダード', lpUrl: '/products/beauty-boost' },
+
+  // ── 📚 Kindle電子書籍 ──
+  {
+    id: 'kindle-aitools',  cat: 'kindle',
+    title: 'AIツール・サブスク構築術',
+    sub: '1日10円のコストで働かないストックを量産する技術。副業ゼロ起業の全記録。',
+    icon: BookMarked, plan: '電子書籍', done: true,
+    target: 'https://www.amazon.co.jp/dp/B0DGNBFDBB',
+  },
+  {
+    id: 'kindle-ai2',  cat: 'kindle',
+    title: 'AIと2人で起業した',
+    sub: 'AIに全部任せてもらった話。副業ゼロ起業の全記録。個人開発者が1人でサービスをリリースした実録。',
+    icon: BookMarked, plan: '電子書籍', done: true,
+    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
+  },
+  {
+    id: 'kindle-hotel',  cat: 'kindle',
+    title: 'ホテルのフロントをAIで置き換えた日',
+    sub: 'KIOSKシステムをゼロから作った開発者のリアル記録。AIによる無人フロント構築の全工程。',
+    icon: BookMarked, plan: '電子書籍', done: true,
+    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
+  },
+  {
+    id: 'kindle-api',  cat: 'kindle',
+    title: '廃止APIに気づいた朝、世界は14言語で動いていた',
+    sub: '個人開発者が一日で乗り越えたAPI危機とグローバル対応の全記録。',
+    icon: BookMarked, plan: '電子書籍', done: true,
+    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
+  },
+  {
+    id: 'kindle-fukugyou',  cat: 'kindle',
+    title: '【月10万達成】副業で自由を掴む完全ロードマップ',
+    sub: '会社員のための副業入門。スキル・時間・マインドで月収アップを実現する。',
+    icon: BookMarked, plan: '電子書籍', done: true,
+    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
+  },
+  {
+    id: 'kindle-manga1',  cat: 'kindle',
+    title: '人妻・熟女 〜禁じられた恋の温度〜 Vol.002',
+    sub: '大人の官能コミック。Kindle Unlimited対応。NextraLabs Comicsシリーズ。',
+    icon: BookMarked, plan: '電子書籍', done: true,
+    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
+  },
+  {
+    id: 'kindle-manga2',  cat: 'kindle',
+    title: '妻が堕ちた夜〜俺の知らない女の顔〜',
+    sub: 'NTR禁断シリーズ。Kindle Unlimited対応。',
+    icon: BookMarked, plan: '電子書籍', done: true,
+    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
+  },
+  {
+    id: 'kindle-manga3',  cat: 'kindle',
+    title: '禁じられた愛の果てに: 人妻と禁断の恋',
+    sub: 'NextraLabs大人の漫画シリーズ。Kindle Unlimited対応。',
+    icon: BookMarked, plan: '電子書籍', done: true,
+    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
+  },
+  {
+    id: 'kindle-ai-gravure',  cat: 'kindle',
+    title: 'AIグラビア 絶対領域 競泳水着の極上ボディ Vol.1',
+    sub: '競泳部OGの秘密プールサイド。みなみシリーズ。NextraLabs AIグラビア。',
+    icon: BookMarked, plan: '電子書籍', done: true,
+    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
+  },
+  {
+    id: 'kindle-ai-gravure9',  cat: 'kindle',
+    title: 'AIグラビア 宵待みの夜に Vol.9',
+    sub: '隣の席の女子大生が泊まることになった…な。AI生成グラビア写真集 素朴系女子大生 宵待み編。',
+    icon: BookMarked, plan: '電子書籍', done: true,
+    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
+  },
+  {
+    id: 'kindle-omegaverse',  cat: 'kindle',
+    title: 'α様のつがい: 囚われた私の本能',
+    sub: 'オメガバースシリーズ。Kindle Unlimited対応。NextraLabs。',
+    icon: BookMarked, plan: '電子書籍', done: true,
+    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
+  },
+  {
+    id: 'kindle-saimin',  cat: 'kindle',
+    title: '眠れ、愛しき彼女よ 催眠異能シリーズ',
+    sub: '俺の声で全てが溶ける。NextraLabs Comics。Kindle Unlimited対応。',
+    icon: BookMarked, plan: '電子書籍', done: true,
+    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
+  },
+  {
+    id: 'kindle-monster',  cat: 'kindle',
+    title: '異形の契約〜魔物に捧げられた乙女の夜〜',
+    sub: 'ダーク系ファンタジー。Kindle Unlimited対応。NextraLabs。',
+    icon: BookMarked, plan: '電子書籍', done: true,
+    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
+  },
+  {
+    id: 'kindle-kimi',  cat: 'kindle',
+    title: '君だけを溺愛する CEOの執着愛に囚われて',
+    sub: '溺愛執着シリーズ。Kindle Unlimited対応。NextraLabs。',
+    icon: BookMarked, plan: '電子書籍', done: true,
+    target: 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text',
+  },
 ]
 
 const CATEGORIES = [
@@ -78,6 +178,7 @@ const CATEGORIES = [
   { id: 'travel',    title: '✈️ 旅行・おでかけ・聖地巡礼',   icon: Plane,        color: 'border-sky-500'     },
   // hotel カテゴリはエンタープライズページに移動したため非表示
   { id: 'konkatsu',  title: '💕 婚活・結婚相談所DX',         icon: HeartHandshake, color: 'border-pink-500'  },
+  { id: 'kindle',    title: '📚 Kindle電子書籍',              icon: BookMarked,     color: 'border-violet-500' },
 ]
 
 function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
@@ -86,7 +187,7 @@ function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
   onToggleFav: (e: React.MouseEvent, id: string) => void
   isAdmin?: boolean
 }) {
-  const planLabelMap: Record<string, string> = { '無料': 'FREE', 'ライト': 'LIGHT', 'スタンダード': 'STANDARD', 'プレミアム': 'MASTER', 'お見積もり': 'ENTERPRISE', '法人・個人事業主': 'BUSINESS' }
+  const planLabelMap: Record<string, string> = { '無料': 'FREE', 'ライト': 'LIGHT', 'スタンダード': 'STANDARD', 'プレミアム': 'MASTER', 'お見積もり': 'ENTERPRISE', '法人・個人事業主': 'BUSINESS', '電子書籍': 'KINDLE' }
   const displayBadge = planLabelMap[product.plan] || 'BASIC'
   const planBadgeColors: Record<string, string> = {
     '無料': 'bg-slate-500/20 text-slate-300 border-slate-500/40',
@@ -95,6 +196,7 @@ function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
     'プレミアム': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
     'お見積もり': 'bg-amber-500/20 text-amber-300 border-amber-500/40',
     '法人・個人事業主': 'bg-violet-500/20 text-violet-300 border-violet-500/40',
+    '電子書籍': 'bg-violet-500/20 text-violet-300 border-violet-500/40',
   }
   const badgeClass = "text-[9px] font-medium tracking-wide px-2 py-0.5 rounded-full border " + (planBadgeColors[product.plan] || planBadgeColors['無料'])
 
@@ -149,6 +251,18 @@ function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
                 </Link>
               )}
             </div>
+          ) : product.plan === '電子書籍' ? (
+            <a
+              href={product.target || 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full"
+            >
+              <Button className="w-full h-10 md:h-12 font-semibold text-sm rounded-lg transition-all"
+                style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)', color: '#fff' }}>
+                Amazonで購入 →
+              </Button>
+            </a>
           ) : (
             <Link href={"/products/" + product.id} className="block w-full">
               <Button className="w-full h-10 md:h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-sm rounded-lg shadow-[0_0_16px_rgba(16,185,129,0.15)] hover:shadow-[0_0_24px_rgba(16,185,129,0.3)] transition-all">起動する →</Button>
