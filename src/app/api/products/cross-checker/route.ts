@@ -5,7 +5,7 @@ export const runtime = 'nodejs'
 export const maxDuration = 60
 
 async function callGemini(prompt: string, input: string): Promise<string | null> {
-  const apiKey = process.env.AICrossChecker_GEMINI_API_KEY || process.env.GEMINI_API_KEY
+  const apiKey = process.env.Last_GEMINI_API_KEY || process.env.AICrossChecker_GEMINI_API_KEY || process.env.GEMINI_API_KEY
   if (!apiKey) return null
 
   try {
