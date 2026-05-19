@@ -49,6 +49,8 @@ const TOOLS = [
   // ── 🌿 ライフスタイル・日常 ──
   { id: 'ai-recipe/app',            cat: 'lifestyle', title: 'AIレシピ献立コーチ',            sub: '冷蔵庫の残り物と栄養最適化',                                      icon: Utensils,      plan: '無料',       done: true },
   { id: 'smart-gardening/app',      cat: 'lifestyle', title: 'AIスマートガーデニング',        sub: '植物の声を聴く育成アドバイザー',                                  icon: Sprout,        plan: 'スタンダード', done: true },
+
+  { id: 'nostalgic-recom/app',    cat: 'lifestyle', title: 'あの頃の僕へ タイムトラベルレコメンド', sub: '青春時代の名作をAIが発掘。○年前のあなたが夢中になった作品たちに再会しよう。', icon: Clock, plan: 'スタンダード', done: true },
   { id: 'disaster-guard/app',       cat: 'lifestyle', title: 'AI防災パーソナルガイド',        sub: '家族構成・地域に合わせたオーダーメイドの防災計画をAIが作成。',                                          icon: Shield,        plan: 'スタンダード', done: true },
   { id: 'moving-checker/app',       cat: 'lifestyle', title: 'AI引越し安心チェッカー',        sub: '治安と物件リスクを徹底解析',                                      icon: Home,          plan: '無料',       done: true },
   { id: 'gift-advisor/app',         cat: 'lifestyle', title: 'AI先回りギフトナビ',            sub: 'カレンダー連携×楽天×Geminiで最適ギフトを先回り提案',              icon: CalendarHeart, plan: 'スタンダード', done: true },

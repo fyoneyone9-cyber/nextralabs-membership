@@ -1,0 +1,124 @@
+nextralab.jpのNextraLabsメンバーシップサイトに「あの頃の僕へ」タイムトラベルレコメンド機能を実装してください。
+
+## 実装ファイル一覧
+
+### 1. src/app/products/nostalgic-recom/page.tsx
+overtourism-naviパターン（src/app/products/overtourism-navi/page.tsx参照）でLPページ作成。
+Metadataとdynamic importでNostalgicRecomLPコンポーネントを呼び出す。
+
+### 2. src/components/tools/NostalgicRecomLP.tsx
+NextraLabsダークテーマ(bg-[#050507] text-slate-200)のLPコンポーネント。
+- ヒーローセクション: タイトル「あの頃の僕へ」/ サブコピー「○年前の青春を、AIが今に蘇らせる」/ CTAボタン
+- 機能説明カード3つ: 「年代を選ぶ」「ジャンルを選ぶ」「AIが発掘する」
+- 使い方STEP1〜4（スライダー→ジャンル→AI生成→結果）
+- /products/nostalgic-recom/app へのリンクボタン（emerald-500）
+- 上部のプリセット紹介（バブル/ガラケー/ゲーム黄金期/ゆとり世代）
+
+### 3. src/app/products/nostalgic-recom/app/page.tsx
+AccessGate（src/components/tools/AccessGate.tsx参照）でアクセス制御。
+NostalgicRecomAppをdynamic importする。
+
+### 4. src/components/tools/NostalgicRecomApp.tsx
+'use client'コンポーネント。
+
+UIの構成:
+A) プリセットボタン（横並び、上部）:
+   - 「🎌 バブル時代」→ yearsAgo:35, genres:['音楽','映画']
+   - 「📱 ガラケー全盛期」→ yearsAgo:20, genres:['音楽','アニメ']
+   - 「🎮 ゲーム黄金期」→ yearsAgo:25, genres:['ゲーム','マンガ']
+   - 「🌸 ゆとり世代」→ yearsAgo:15, genres:['ドラマ','音楽']
+
+B) STEP1: 「何年前に戻る？」
+   - 数値入力またはスライダー（min:5, max:40, step:5）
+   - 5/10/15/20/25/30/35/40年のボタン
+   - 世代ラベル表示（例: 20年前→「2006年頃 / ゆとり世代の青春」）
+
+C) STEP2: ジャンル選択（複数選択可、トグルボタン）
+   🎵音楽 / 🎬映画 / 📺ドラマ / 🌸アニメ / 🎮ゲーム / 📚マンガ / 📖本
+
+D) STEP3: 任意テキスト「当時の自分について（例: 中学生だった、部活をやっていた）」
+   placeholderで例を表示
+
+E) 「あの頃に戻る ✨」ボタン
+   - disabled: yearsAgo未設定 or genres空
+   - 押したらPOST /api/nostalgic-recom
+   - ローディング中: 「${yearsAgo}年前の記憶を呼び起こしています...」
+
+F) 結果表示（モーション付き）:
+   - era / eraLabel / messageを上部に表示
+   - カードグリッド（最大10件）
+   - 各カード: タイトル / ジャンルバッジ / year / description / whyYou / 楽天・Amazonリンクボタン
+   - 「シェアする」ボタン（テキストをクリップボードにコピー）
+   - 「もう一度試す」ボタン
+
+アクセントカラーはamber-500（懐かしさ演出）をメインに使う。
+
+### 5. src/app/api/nostalgic-recom/route.ts
+```typescript
+import { NextResponse } from 'next/server'
+import { GoogleGenerativeAI } from '@google/generative-ai'
+
+export async function POST(req: Request) {
+  const { yearsAgo, genres, description } = await req.json()
+  const targetYear = 2026 - yearsAgo
+  
+  const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY
+  
+  if (!apiKey) {
+    // モックデータを返す
+    return NextResponse.json({
+      items: [
+        { title: 'サンプル作品1', genre: genres[0] || '音楽', year: targetYear, description: 'この時代を代表する名作です。', whyYou: 'あなたの青春に響いた作品。', rakutenUrl: 'https://search.rakuten.co.jp/search/mall/%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB/', amazonUrl: 'https://www.amazon.co.jp/s?k=%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB' },
+      ],
+      era: `${targetYear}年（平成${targetYear - 1988}年）頃`,
+      eraLabel: `${yearsAgo}年前の青春`,
+      message: 'あの頃の名作との再会をお楽しみください。（開発モード）'
+    })
+  }
+  
+  const genAI = new GoogleGenerativeAI(apiKey)
+  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+  
+  const prompt = `${yearsAgo}年前（${targetYear}年頃）の日本で大ヒットした${genres.join('・')}ジャンルの名作を10作品教えてください。
+ユーザーの当時の情報: ${description || '情報なし'}
+
+以下のJSON形式で返答してください（コードブロックなし、純粋なJSONのみ）:
+{
+  "items": [
+    {
+      "title": "作品タイトル",
+      "genre": "ジャンル",
+      "year": 発売/放映年(数値),
+      "description": "この作品が当時なぜ流行したかの解説（100文字以内）",
+      "whyYou": "なぜあなたの青春に響くかのパーソナルメッセージ（50文字以内）",
+      "rakutenUrl": "https://search.rakuten.co.jp/search/mall/タイトルをURLエンコード/",
+      "amazonUrl": "https://www.amazon.co.jp/s?k=タイトルをURLエンコード"
+    }
+  ],
+  "era": "${targetYear}年（平成${targetYear - 1988}年）頃",
+  "eraLabel": "世代を表すキャッチーなラベル（例: ゆとり世代の青春）",
+  "message": "あの頃へのタイムトラベルをサポートする一言メッセージ"
+}`
+
+  try {
+    const result = await model.generateContent(prompt)
+    const text = result.response.text()
+    const data = JSON.parse(text)
+    return NextResponse.json(data)
+  } catch (e) {
+    return NextResponse.json({ error: 'AI生成に失敗しました' }, { status: 500 })
+  }
+}
+```
+
+### 6. src/app/products/page.tsx の修正
+TOOLSリストのlifestyleカテゴリ（smart-gardeningの直後あたり）に以下を追加:
+{ id: 'nostalgic-recom/app', cat: 'lifestyle', title: 'あの頃の僕へ タイムトラベルレコメンド', sub: '青春時代の名作をAIが発掘。○年前のあなたが夢中になった作品たちに再会しよう。', icon: Clock, plan: 'スタンダード', done: true }
+
+また、importのlucide-reactにClockを追加（まだ含まれていない場合）。
+
+## 実装上の注意
+- 全ファイルに必要な場合'use client'を先頭に記述
+- TypeScriptの型定義はコンポーネント内に書く
+- framer-motionのmotion.divでフェードイン演出
+- 実装後にnpx tsc --noEmitを実行してエラーがあれば修正すること
