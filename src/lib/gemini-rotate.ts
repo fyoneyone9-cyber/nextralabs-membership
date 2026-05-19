@@ -29,7 +29,7 @@ export async function callGeminiWithRotation(
           body: JSON.stringify({
             system_instruction: { parts: [{ text: 'You are a helpful assistant. Always respond in Japanese.' }] },
             contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.3, maxOutputTokens: 1024 },
+            generationConfig: { temperature: 0.3, maxOutputTokens: 4096 },
           }),
         }
       )
