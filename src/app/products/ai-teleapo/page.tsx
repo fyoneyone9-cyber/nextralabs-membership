@@ -1,4 +1,4 @@
-import dynamic from 'next/dynamic'
+﻿import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { CheckCircle2, Phone, FileText, TrendingUp, ArrowRight } from 'lucide-react'
@@ -13,12 +13,12 @@ const AiTeleapoLpContent = () => {
           雎慕ｩゑｽｺ・ｺ陜滂ｽｶ隶鯉ｽｭ隰ｾ・ｯ隰・ｴ郢昴・繝ｻ郢晢ｽｫ
         </Badge>
         <h1 className="text-4xl md:text-7xl font-bold text-white tracking-tighter leading-[1.1]">
-          AIテレアポくん（架電・自動化支援）br />
-          <span className="text-blue-400">郢ｧ・｢郢晄刮邏ｫ3陋溘・/span>郢ｧ蝣､蟯ｼ隰悶・笘・br />
+          AIテレアポくん（架電・自動化支援）<br />
+          <span className="text-blue-400">郢ｧ・｢郢晄刮邏ｫ3陋溘・</span>郢ｧ蝣､蟯ｼ隰悶・笘・<br />
           陜滂ｽｶ隶鯉ｽｭ隰ｾ・ｯ隰・ｴ郢昴・繝ｻ郢晢ｽｫ
         </h1>
         <h2 className="text-xl md:text-3xl font-bold text-slate-300 max-w-4xl mx-auto leading-relaxed px-4 text-center">
-          隴ｫ・ｶ鬮ｮ・ｻ陷ｿ・ｰ隴幢ｽｬ郢晢ｽｻ陜滂ｽｶ隶鯉ｽｭ郢ｧ・ｷ郢晉ｿｫﾎ懃ｹｧ・ｪ郢晢ｽｻ隰蜈茨ｽ｡驛・ｽｦ竏ｫ縺帷ｹｧ菴・邵ｺ讙取､ｪ隴弱ｅ竊楢ｬｨ・ｴ騾・・ﾂ繝ｻbr className="hidden md:block" />
+          隴ｫ・ｶ鬮ｮ・ｻ陷ｿ・ｰ隴幢ｽｬ郢晢ｽｻ陜滂ｽｶ隶鯉ｽｭ郢ｧ・ｷ郢晉ｿｫﾎ懃ｹｧ・ｪ郢晢ｽｻ隰蜈茨ｽ｡驛・ｽｦ竏ｫ縺帷ｹｧ菴・邵ｺ讙取､ｪ隴弱ｅ竊楢ｬｨ・ｴ騾・・ﾂ繝ｻ<br className="hidden md:block" />
           雎慕ｩゑｽｺ・ｺ郢晏干ﾎ帷ｹ晢ｽｳ邵ｺ・ｯ陋ｻ・･鬨ｾ譁絶凰髫慕距・ｩ髦ｪ・顔ｸｺ・ｧ邵ｺ逍ｲ鄂ｲ隴ｯ蛹ｻ・邵ｺ・ｾ邵ｺ蜷ｶﾂ繝ｻ
         </h2>
         <div className="flex flex-wrap justify-center gap-6 pt-6">
@@ -72,7 +72,7 @@ const AiTeleapoLpContent = () => {
             <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
               <TrendingUp size={24} />
             </div>
-            <h4 className="text-xl font-bold text-white">AI郢ｧ・｢郢晏ｳｨ繝ｰ郢ｧ・､郢ｧ・ｹ繝ｻ繝ｻ髫ｼ陜溘・鄂ｲ隴ｯ繝ｻ/h4>
+            <h4 className="text-xl font-bold text-white">AI郢ｧ・｢郢晏ｳｨ繝ｰ郢ｧ・､郢ｧ・ｹ繝ｻ繝ｻ髫ｼ陜溘・鄂ｲ隴ｯ繝ｻ</h4>
             <p className="text-slate-400 text-sm leading-relaxed">
               隹ｺ・｡陜玲ｨ頑･秘ｫｮ・ｻ邵ｺ・ｮ郢晏生縺帷ｹ晏現縺｡郢ｧ・､郢晄ｺ佩ｦ郢ｧ・ｰ邵ｺ・ｨ隰ｾ・ｹ陜溘・縺・ｹ晏ｳｨ繝ｰ郢ｧ・､郢ｧ・ｹ郢ｧ菴・邵ｺ譴ｧ鄂ｲ隴ｯ蛹ｻﾂ繧域･秘ｫｮ・ｻ髫ｪ蛟ｬ鮖ｸ郢ｧ螳壼｡倬→髦ｪ・邵ｺ・ｦ郢ｧ・｢郢晄刮邏ｫ郢ｧ蝣､・ｶ蜥擾ｽｶ螟ょ飭邵ｺ・ｫ陷ｷ蜿ｰ・ｸ鄙ｫﾂ繝ｻ
             </p>
@@ -95,7 +95,7 @@ const AiTeleapoLpContent = () => {
               郢ｧ・｢郢晄刮邏ｫ3陋滄亂竏育ｸｲ繝ｻ
             </h3>
             <p className="text-blue-100 text-lg font-bold leading-relaxed max-w-2xl mx-auto px-4 text-center">
-              AI邵ｺ謔滄悸隶鯉ｽｭ郢ｧ・ｷ郢晉ｿｫﾎ懃ｹｧ・ｪ邵ｺ・ｨ隴ｫ・ｶ鬮ｮ・ｻ髫補悪縺帷ｹｧ蜻育ｴ幃・・ﾂ繝ｻbr />
+              AI邵ｺ謔滄悸隶鯉ｽｭ郢ｧ・ｷ郢晉ｿｫﾎ懃ｹｧ・ｪ邵ｺ・ｨ隴ｫ・ｶ鬮ｮ・ｻ髫補悪縺帷ｹｧ蜻育ｴ幃・・ﾂ繝ｻ<br />
               雎慕ｩゑｽｺ・ｺ郢晏干ﾎ帷ｹ晢ｽｳ邵ｺ・ｯ陋ｻ・･鬨ｾ譁絶凰髫慕距・ｩ髦ｪ・顔ｸｺ・ｧ隴崢鬩包ｽｩ陋ｹ謔ｶ・邵ｺ・ｾ邵ｺ蜷ｶﾂ繝ｻ
             </p>
             <div className="flex flex-wrap justify-center gap-6 pt-6 text-center">
@@ -136,3 +136,4 @@ export default function AiTeleapoLp() {
     </>
   )
 }
+

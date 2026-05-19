@@ -4,7 +4,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
-import { Menu, X, User, LogOut, Twitter as TwitterIcon, Search, Download, Zap, Hotel, Share2, ShieldCheck, Youtube, BookOpen, Briefcase, HeartHandshake, ChevronDown, Brain, Wallet, Sprout, Plane } from 'lucide-react'
+import { Building2, HeartHandshake, Mic, CloudRain, ArrowRight, CheckCircle2, Mail, Youtube, Video, Upload, Sparkles, BadgeCheck, Menu, X, User, LogOut, Twitter as TwitterIcon, Search, Download, Zap, Hotel, Share2, ShieldCheck, BookOpen, Briefcase, ChevronDown, Brain, Wallet, Sprout, Plane, BookMarked } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 const GENRE_LINKS = [

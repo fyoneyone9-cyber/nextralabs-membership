@@ -11,7 +11,7 @@ import {
   FileText, ArrowRight, Network, Store, 
   ClipboardCheck, ShieldCheck, Wallet, Home, 
   Shield, Wand2, Briefcase, Clapperboard, Mail, Share2, MapPin, BookOpen, 
-  Sprout, Zap, Building2, Database, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils, Plane, Activity, CalendarHeart, CalendarCheck, Scissors, Mic, CloudRain, Phone
+  Sprout, Zap, Building2, Database, Hotel, Lock, CreditCard, Sparkles, Archive, UserPlus, Table, Sofa, Play, TrendingUp, LineChart, Scale, Crown, Gift, HeartHandshake, Star, Brain, Repeat, ShieldAlert, Utensils, Plane, Activity, CalendarHeart, CalendarCheck, Scissors, Mic, CloudRain, BookMarked, GitCompareArrows
 } from 'lucide-react'
 
 // 管理者メール（このアドレスでログインしているユーザーのみ管理者リンクが見える）
@@ -29,8 +29,10 @@ const TOOLS = [
   { id: 'kdp-guide/app',            cat: 'publish',   title: 'Kindle出版完全ナビ',            sub: '初めてのKDP出版を全工程AIがサポート。表紙から原稿まで完全お任せ。',                                      icon: BookOpen,      plan: '無料',       done: true },
   { id: 'kindle-factory/app',       cat: 'publish',   title: 'Kindle AI ファクトリー',        sub: 'AI解析でKDP入稿可能な原稿を自動生成',                             icon: Crown,         plan: 'プレミアム', done: true },
 
+  // ── 🔍 検証・クロスチェック ──
+  { id: 'cross-checker/app',        cat: 'biz',       title: 'AI クロスチェッカー',           sub: 'GeminiとGPT-4oが同時に回答。2つのAIが合意した情報だけを確定回答として出力。ハルシネーション最小化。',          icon: GitCompareArrows, plan: 'ライト', done: true },
+
   // ── 💼 ビジネス・仕事効率化 ──
-  { id: 'ai-teleapo/app',           cat: 'biz',       title: 'AIテレアポくん',                sub: '法人営業の架電台本と見積もりをAIが自動生成。アポ率3倍を目指す営業支援ツール。',                              icon: Phone,         plan: 'ライト',     done: true },
   { id: 'inbox-organizer/app',      cat: 'biz',       title: 'Gmail AI Accelerator',         sub: 'メール対応時間を最大70%削減。AIが下書きから返信分類まで自動化。',                                            icon: Mail,          plan: 'プレミアム', done: true },
   { id: 'ai-sidejob/app',           cat: 'biz',       title: 'AI副業スタートダッシュ',        sub: 'あなたのスキルと時間からAIが最適な副業プランを診断。今月から収入プラス。',                                      icon: Briefcase,     plan: 'プレミアム', done: true },
   { id: 'universal-converter/app',  cat: 'biz',       title: '究極AIマルチコンバーター',      sub: '動画・画像・PDFへの変換圧縮',                                    icon: Repeat,        plan: 'ライト',     done: true },
@@ -50,6 +52,8 @@ const TOOLS = [
   // ── 🌿 ライフスタイル・日常 ──
   { id: 'ai-recipe/app',            cat: 'lifestyle', title: 'AIレシピ献立コーチ',            sub: '冷蔵庫の残り物と栄養最適化',                                      icon: Utensils,      plan: '無料',       done: true },
   { id: 'smart-gardening/app',      cat: 'lifestyle', title: 'AIスマートガーデニング',        sub: '植物の声を聴く育成アドバイザー',                                  icon: Sprout,        plan: 'スタンダード', done: true },
+
+  { id: 'nostalgic-recom/app',    cat: 'lifestyle', title: 'あの頃の僕へ タイムトラベルレコメンド', sub: '青春時代の名作をAIが発掘。○年前のあなたが夢中になった作品たちに再会しよう。', icon: Clock, plan: 'スタンダード', done: true },
   { id: 'disaster-guard/app',       cat: 'lifestyle', title: 'AI防災パーソナルガイド',        sub: '家族構成・地域に合わせたオーダーメイドの防災計画をAIが作成。',                                          icon: Shield,        plan: 'スタンダード', done: true },
   { id: 'moving-checker/app',       cat: 'lifestyle', title: 'AI引越し安心チェッカー',        sub: '治安と物件リスクを徹底解析',                                      icon: Home,          plan: '無料',       done: true },
   { id: 'gift-advisor/app',         cat: 'lifestyle', title: 'AI先回りギフトナビ',            sub: 'カレンダー連携×楽天×Geminiで最適ギフトを先回り提案',              icon: CalendarHeart, plan: 'スタンダード', done: true },
@@ -86,7 +90,7 @@ function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
   onToggleFav: (e: React.MouseEvent, id: string) => void
   isAdmin?: boolean
 }) {
-  const planLabelMap: Record<string, string> = { '無料': 'FREE', 'ライト': 'LIGHT', 'スタンダード': 'STANDARD', 'プレミアム': 'MASTER', 'お見積もり': 'ENTERPRISE', '法人・個人事業主': 'BUSINESS' }
+  const planLabelMap: Record<string, string> = { '無料': 'FREE', 'ライト': 'LIGHT', 'スタンダード': 'STANDARD', 'プレミアム': 'MASTER', 'お見積もり': 'ENTERPRISE', '法人・個人事業主': 'BUSINESS', '電子書籍': 'KINDLE' }
   const displayBadge = planLabelMap[product.plan] || 'BASIC'
   const planBadgeColors: Record<string, string> = {
     '無料': 'bg-slate-500/20 text-slate-300 border-slate-500/40',
@@ -95,6 +99,7 @@ function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
     'プレミアム': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
     'お見積もり': 'bg-amber-500/20 text-amber-300 border-amber-500/40',
     '法人・個人事業主': 'bg-violet-500/20 text-violet-300 border-violet-500/40',
+    '電子書籍': 'bg-violet-500/20 text-violet-300 border-violet-500/40',
   }
   const badgeClass = "text-[9px] font-medium tracking-wide px-2 py-0.5 rounded-full border " + (planBadgeColors[product.plan] || planBadgeColors['無料'])
 
@@ -149,6 +154,18 @@ function ProductCard({ product, isFav, onToggleFav, isAdmin }: {
                 </Link>
               )}
             </div>
+          ) : product.plan === '電子書籍' ? (
+            <a
+              href={product.target || 'https://www.amazon.co.jp/s?k=nextralab&i=digital-text'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full"
+            >
+              <Button className="w-full h-10 md:h-12 font-semibold text-sm rounded-lg transition-all"
+                style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)', color: '#fff' }}>
+                Amazonで購入 →
+              </Button>
+            </a>
           ) : (
             <Link href={"/products/" + product.id} className="block w-full">
               <Button className="w-full h-10 md:h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-sm rounded-lg shadow-[0_0_16px_rgba(16,185,129,0.15)] hover:shadow-[0_0_24px_rgba(16,185,129,0.3)] transition-all">起動する →</Button>
@@ -273,6 +290,17 @@ function ProductsList() {
           <span className="text-[11px] font-medium text-emerald-400 tracking-tight uppercase">Master Catalogue</span>
         </div>
         <h1 className="text-3xl md:text-5xl font-semibold text-white tracking-tight leading-[1.1]">AI ツールストア</h1>
+        <div className="flex items-center justify-center gap-3 mt-2">
+          <a
+            href="https://www.amazon.co.jp/s?k=nextralab&i=digital-text"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold transition-all"
+            style={{ background: 'rgba(124,58,237,0.15)', border: '1px solid rgba(124,58,237,0.4)', color: '#a78bfa' }}
+          >
+            📚 Kindle電子書籍はこちら →
+          </a>
+        </div>
       </div>
 
       {/* お気に入りフィルターバー */}
