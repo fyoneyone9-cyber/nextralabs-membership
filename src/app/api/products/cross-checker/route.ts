@@ -1,42 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { callGeminiWithRotation } from '@/lib/gemini-rotate'
 
 export const runtime = 'edge'
 export const maxDuration = 60
 
 async function callGemini(prompt: string, input: string): Promise<string> {
-  const apiKey = process.env.GEMINI_API_KEY
-  if (!apiKey) return '（Gemini APIキー未設定）'
-
-  try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: `${prompt}\n\n---\n${input}`
-            }]
-          }],
-          generationConfig: { temperature: 0.3, maxOutputTokens: 1024 }
-        }),
-      }
-    )
-
-    if (!res.ok) {
-      const errBody = await res.text().catch(() => '')
-      // クォータ超過（429）やサービス停止（503）などはfallback扱い
-      if (res.status === 429) return '（Gemini APIクォータ超過のため利用不可）'
-      if (res.status === 503) return '（Gemini APIが一時停止中）'
-      return `（Gemini APIエラー: ${res.status}）`
-    }
-
-    const data = await res.json()
-    return data.candidates?.[0]?.content?.parts?.[0]?.text ?? '(回答なし)'
-  } catch (e: any) {
-    return `（Gemini呼び出しエラー: ${e.message ?? 'unknown'}）`
-  }
+  return callGeminiWithRotation(`${prompt}\n\n---\n${input}`)
 }
 
 async function callGPT(prompt: string, input: string): Promise<string> {
