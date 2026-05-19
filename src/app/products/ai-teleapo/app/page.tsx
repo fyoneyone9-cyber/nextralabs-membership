@@ -76,10 +76,10 @@ export default function AiTeleapoApp() {
         body: JSON.stringify({ action: 'script', ...scriptForm }),
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'エラーが発生しました)
+      if (!res.ok) throw new Error(data.error || 'エラーが発生しました')
       setScriptResult(data.script)
     } catch (e: unknown) {
-      setScriptError(e instanceof Error ? e.message : 'エラーが発生しました)
+      setScriptError(e instanceof Error ? e.message : 'エラーが発生しました')
     } finally {
       setScriptLoading(false)
     }
