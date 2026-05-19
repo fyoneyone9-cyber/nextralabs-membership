@@ -1,78 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { unstable_noStore as noStore } from 'next/cache'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { ENTERPRISE_IDS, PREMIUM_IDS, STANDARD_IDS, LIGHT_IDS } from '@/lib/plan-ids'
 
-// =============================================
-// プラン別ツールアクセス管理
-// 更新: 2026-05-10 新プラン構成
-//
-// 🆓 FREE        : ローカル完結・面白系（ログイン不要）
-// 🔵 LIGHT       : ¥480/月 — 軽めAPIツール
-// ⚡ STANDARD    : ¥980/月 — GeminiテキストAI系
-// 👑 PREMIUM     : ¥1,980/月 — YouTube/SNS/Gmail等重量級
-// 🏨 ENTERPRISE  : 別見積もり専用 — Nextra AI（法人契約のみ・プレミアムでもアクセス不可）
-// =============================================
-
-// 🏨 エンタープライズ専用（別見積もり・直接契約のみ）
-const ENTERPRISE_IDS = [
-  'staysee-ai-finder',  // Nextra AI旧名 — PMS/スマートロック 法人向け
-  'nextra-ai',          // Nextra AI KIOSK — ホテルDX 法人契約のみ
-  'weather-boost',      // Google天気連動型 館内消費ブースト — ホテル法人専用
-  'voice-guest-assist', // AI多言語ゲストアシスト — ホテル法人専用
-]
-
-// 👑 プレミアム専用（重量級API: YouTube・SNS・Gmail・画像生成等）
-const PREMIUM_IDS = [
-  'inbox-organizer',        // Gmail AI Accelerator — Gmail API + Gemini
-  'youtube-producer',       // AI YouTubeプロデューサー — YouTube + 音声生成
-  'youtube-coordinator',    // YouTube AI Sync — YouTube + 楽天
-  'sns-auto-poster',        // AI SNSオートポスター — 複数SNS API + Gemini
-  'ai-select-shop',         // AIセレクトショップ — Shopify/Printful + Gemini
-  'trend-stock',            // SNSトレンドAI分析 — 楽天 + Gemini
-  'prompt-master',          // AI画像プロンプトマスター — Gemini + 画像生成
-]
-
-// ⚡ スタンダード以上（GeminiテキストAI系・中程度API）
-const STANDARD_IDS = [
-  'ai-sidejob',             // AI副業スタートダッシュ — Gemini
-  'disaster-guard',         // AI防災パーソナルガイド — Gemini
-  'scam-defender',          // AI詐欺ディフェンダー — Gemini + 楽天
-  'money-guard',            // AI家計防衛シミュレーター — Gemini
-  'moving-checker',         // AI引越し安心チェッカー — Gemini
-  'buy-smart-nav',          // 中古・新品AI比較ナビ — 楽天 + Gemini
-  'location-finder',        // AI Location Finder — Gemini + 位置情報
-  'ai-recipe',              // AIレシピ献立コーチ — Gemini
-  'ai-konkatsu',            // AI婚活コーチ — Gemini
-  'exam-scheduler',         // AI試験スケジューラー — Gemini
-  'kindle-factory',         // Kindle AI Factory — Gemini
-  'smart-gardening',        // AIスマートガーデニング — Gemini
-  'buzz-writer',            // BuzzWriter — Gemini
-  'closet-coach',           // ClosetCoach — Gemini
-  'comm-coach',             // CommCoach — Gemini
-  'evidence-manager',       // エビデンスAIマネージャー — Gemini
-  // 2026-05-11 追加（登録漏れ修正）
-  'gift-advisor',           // AIギフトアドバイザー — Gemini
-  'travel-concierge',       // AI旅行コンシェルジュ — Gemini
-  'pilgrimage-planner',     // 推し活聖地巡礼プランナー — Gemini
-  'kindle-ai-factory',      // Kindle AI ファクトリー — Gemini
-  'repair-parts-finder',    // AI修理パーツ診断くん — Gemini
-  'ai-exam-generator',      // AI問題生成＆苦手分析 — Gemini
-  'konkatsu-scheduler',     // AI婚活スケジューラー — Gemini
-  // 2026-05-20 追加（登録漏れ修正）
-  'cross-checker',          // AIクロスチェッカー — Gemini + GPT-4o
-]
-
-// 🔵 ライト以上（軽めAPIツール）
-const LIGHT_IDS = [
-  'expense-sync',           // Expense AI Sync — 楽天API軽め
-  'contact-sync',           // Contact AI Sync — カメラ + ローカル処理
-  'price-tracker',          // Price Tracker — 楽天API
-]
-
-// 🆓 FREE（ログイン不要・ローカル完結）
-// 上記リストに含まれないツールは全てfree扱い
-// 該当: kdp-guide, shopping-stopper, resignation-assistant, shio-taiou,
-//       pet-translator, universal-converter, loan-advisor, etc.
+// IDリストは src/lib/plan-ids.ts で一元管理。ここは編集しない。
 
 export async function POST(request: NextRequest) {
   noStore()

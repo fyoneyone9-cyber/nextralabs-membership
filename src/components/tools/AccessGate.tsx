@@ -4,64 +4,9 @@ import { useRouter, usePathname } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
 import { Loader2, ShieldAlert, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { PREMIUM_IDS, STANDARD_IDS, LIGHT_IDS } from '@/lib/plan-ids'
 
-// =============================================
-// ?? プラン別ツール分類 (MEMORY.md 正式版と統一)
-// =============================================
-
-// =============================================
-// ?? このリストは check-access/route.ts と必ず同期すること
-// 最終更新: 2026-05-11
-// =============================================
-
-// ?? プレミアム専用 (\1,980/月)
-const PREMIUM_IDS = [
-  'inbox-organizer',        // Gmail AI Accelerator
-  'youtube-producer',       // AI YouTubeプロデューサー
-  'youtube-coordinator',    // YouTube AI Sync
-  'sns-auto-poster',        // AI SNSオートポスター
-  'ai-select-shop',         // AIセレクトショップ
-  'trend-stock',            // SNSトレンドAI分析
-  'prompt-master',          // AI画像プロンプトマスター
-]
-
-// ? スタンダード以上 (\980/月?)
-const STANDARD_IDS = [
-  'ai-sidejob',             // AI副業スタートダッシュ
-  'disaster-guard',         // AI防災パーソナルガイド
-  'scam-defender',          // AI詐欺ディフェンダー
-  'money-guard',            // AI家計防衛シミュレーター
-  'moving-checker',         // AI引越し安心チェッカー
-  'buy-smart-nav',          // 中古・新品AI比較ナビ
-  'location-finder',        // AI Location Finder
-  'ai-recipe',              // AIレシピ献立コーチ
-  'ai-konkatsu',            // AI婚活コーチ
-  'exam-scheduler',         // AI試験スケジューラー
-  'kindle-factory',         // Kindle AI Factory
-  'smart-gardening',        // AIスマートガーデニング
-  'buzz-writer',            // BuzzWriter
-  'closet-coach',           // ClosetCoach
-  'comm-coach',             // CommCoach
-  'evidence-manager',       // エビデンスAIマネージャー
-  'gift-advisor',           // AIギフトアドバイザー
-  'travel-concierge',       // AI旅行コンシェルジュ
-  'pilgrimage-planner',     // 推し活聖地巡礼プランナー
-  'kindle-ai-factory',      // Kindle AI ファクトリー
-  'repair-parts-finder',    // AI修理パーツ診断くん
-  'ai-exam-generator',      // AI問題生成＆苦手分析
-  'konkatsu-scheduler',     // AI婚活スケジューラー
-  'nostalgic-recom',        // あの頃の僕へ タイムトラベルレコメンド
-]
-
-// ?? ライト以上 (\480/月?)
-const LIGHT_IDS = [
-  'expense-sync',           // Expense AI Sync
-  'contact-sync',           // Contact AI Sync
-]
-
-// ?? FREE（ログインのみ・プラン不要）
-// kdp-guide, shopping-stopper, resignation-assistant, shio-taiou,
-// pet-translator, universal-converter, loan-advisor など上記に含まれないもの
+// IDリストは src/lib/plan-ids.ts で一元管理。ここは編集しない。
 
 export function AccessGate({ children, productId }: { children: React.ReactNode, productId: string }) {
   const [status, setStatus] = useState<'loading' | 'authorized' | 'trial' | 'unauthorized' | 'trial_limit'>('loading')
