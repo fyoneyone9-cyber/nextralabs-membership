@@ -95,8 +95,9 @@ async function generateSchedule(
 
 学習セッションは週${sessionsPerWeek}回（火・木・土など間隔を空けて）配置。試験本番日も必ず含めてください。`
 
+  const geminiKey = process.env.Gemini_API_1st || process.env.Gemini_API_2nd || process.env.Gemini_API_3rd
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
