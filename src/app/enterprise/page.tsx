@@ -123,6 +123,33 @@ const CATEGORIES = [
     ],
   },
   {
+    id: 'inbound',
+    label: '🕌 インバウンド宗教・食習慣対応DX',
+    desc: '予約名・国籍からハラール/ベジタリアン等の配慮をGemini AIが自動推定。フロントの申し送りを自動生成し、対応漏れをゼロに。',
+    color: 'border-green-500/40',
+    badgeColor: 'bg-green-500/10 text-green-400 border-green-500/20',
+    tools: [
+      {
+        id: 'halal-checker',
+        title: 'halal-checker',
+        sub: '予約者の名前と国籍を入力するだけで、ムスリム・ヴィーガン・コーシャ等の宗教・食習慣をGemini AIが自動推定。確信度スコア付きでフロントへの申し送り文を自動生成します。チェックイン前に対応が完了し、スタッフの判断ばらつきをなくします。',
+        icon: Building2,
+        price: '¥9,800/月〜（フリープランあり）',
+        tags: ['ホテル', '旅館', 'インバウンド', '宗教対応'],
+        lpUrl: '/halal-checker',
+        stats: ['対応漏れ ほぼゼロ', '30秒で申し送り完成', 'ムスリム/ヴィーガン/コーシャ対応'],
+        features: [
+          'Gemini AIによる宗教・食習慣の自動推定',
+          '確信度スコア（0〜100%）で優先度を可視化',
+          'ハラール/ベジタリアン/コーシャ等10種以上のプリセット',
+          'そのまま使えるフロント申し送り文の自動生成',
+          '礼拝マット・キブラ案内等の宗教配慮プリセット',
+          '対応履歴の蓄積とフィードバック学習（Proプラン）',
+        ],
+      },
+    ],
+  },
+  {
     id: 'sales',
     label: '📞 営業・テレアポDX',
     desc: 'AI架電台本・法人見積もり自動生成でアポ率を最大化',
@@ -288,6 +315,7 @@ export default function EnterprisePage() {
                         {tool.id === 'overtourism-navi' && '混雑を分散しつつ、地元消費を増やす観光導線を作成。'}
                         {tool.id === 'pr-video-narrator' && '動画PRを量産し、営業素材の制作コストを圧縮。'}
                         {tool.id === 'youtube-yukkuri' && '短納期で見栄えする動画納品を実現し、SNS施策を高速化。'}
+                        {tool.id === 'halal-checker' && '宗教・食習慣の対応漏れを防ぎ、外国人ゲストの満足度と口コミ評価を向上。'}
                       </p>
                     </div>
 
