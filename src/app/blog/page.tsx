@@ -14,6 +14,14 @@ export default function BlogPage() {
     <main className="min-h-screen bg-[#050507] text-slate-200">
       <div className="max-w-4xl mx-auto px-6 py-16">
 
+        {/* TOPナビ */}
+        <nav className="mb-8 flex justify-between items-center">
+          <Link href="/" className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 text-sm font-semibold border border-emerald-500/40 rounded-full px-4 py-1.5 bg-emerald-500/5 transition-colors no-underline">
+            ← TOPページに戻る
+          </Link>
+          <span className="text-xs text-slate-500">nextralab.jp</span>
+        </nav>
+
         {/* ヘッダー */}
         <div className="mb-12 text-center">
           <div className="inline-flex items-center gap-2 border border-emerald-500/30 rounded-full px-4 py-1.5 mb-6">
