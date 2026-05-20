@@ -1,9 +1,10 @@
-import { Metadata } from 'next'
+﻿import { Metadata } from 'next'
 import Link from 'next/link'
 import { Building2, HeartHandshake, Mic, CloudRain, ArrowRight, CheckCircle2, Mail, Youtube, Video, Upload, Sparkles, BadgeCheck, MapPin, Navigation, Ticket, Phone } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import EnterpriseCategoryBar from '@/components/enterprise/EnterpriseCategoryBar'
 
 export const metadata: Metadata = {
   title: '法人・個人事業主様向けAIソリューション | NextraLabs',
@@ -247,10 +248,13 @@ export default function EnterprisePage() {
         </div>
       </section>
 
+      {/* ジャンル別ショートカットバー */}
+      <EnterpriseCategoryBar />
+
       {/* ジャンル別ツール一覧 */}
       <section className="max-w-6xl mx-auto px-4 py-16 space-y-20">
         {CATEGORIES.map(cat => (
-          <div key={cat.id} className="space-y-5">
+          <div key={cat.id} id={cat.id} className="space-y-5" style={{ scrollMarginTop: `110px` }}>
             {/* カテゴリヘッダー */}
             <div className={`border-l-4 ${cat.color} pl-5 mb-2`}>
               <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">{cat.label}</h2>
