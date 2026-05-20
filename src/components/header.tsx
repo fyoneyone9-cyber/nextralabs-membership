@@ -4,7 +4,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
-import { HeartHandshake, Mic, CloudRain, ArrowRight, CheckCircle2, Mail, Youtube, Video, Upload, Sparkles, BadgeCheck, Menu, X, User, LogOut, Twitter as TwitterIcon, Search, Download, Zap, Hotel, Share2, ShieldCheck, BookOpen, Briefcase, ChevronDown, Brain, Wallet, Sprout, Plane, BookMarked } from 'lucide-react'
+import { Building2, HeartHandshake, Mic, CloudRain, ArrowRight, CheckCircle2, Mail, Youtube, Video, Upload, Sparkles, BadgeCheck, Menu, X, User, LogOut, Twitter as TwitterIcon, Search, Download, Zap, Hotel, Share2, ShieldCheck, BookOpen, Briefcase, ChevronDown, Brain, Wallet, Sprout, Plane, BookMarked } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 const GENRE_LINKS = [
@@ -233,6 +233,14 @@ export function Header() {
                   <span className="text-[10px] text-slate-400 group-hover:text-emerald-300 font-medium leading-none">{label}</span>
                 </Link>
               ))}
+              <Link
+                href="/enterprise"
+                onClick={() => setMenuOpen(false)}
+                className="flex flex-col items-center gap-1 py-2 px-1 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 hover:border-amber-500/60 transition-all group"
+              >
+                <Building2 className="h-4 w-4 text-amber-400 group-hover:text-amber-300" />
+                <span className="text-[10px] text-amber-400 group-hover:text-amber-300 font-bold leading-none">法人向け</span>
+              </Link>
             </div>
             <Link href="/products" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>ツール一覧</Link>
             <Link href="/contact" className="block text-sm font-medium py-2" onClick={() => setMenuOpen(false)}>📩 お問い合わせ</Link>
@@ -266,6 +274,14 @@ export function Header() {
                 {label}
               </Link>
             ))}
+            <span className="text-white/10">|</span>
+            <Link
+              href="/enterprise"
+              className="shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all whitespace-nowrap"
+            >
+              <Building2 className="h-3 w-3" />
+              法人向け
+            </Link>
           </div>
         </div>
       </div>
