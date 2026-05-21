@@ -49,6 +49,47 @@ export async function callGeminiWithRotation(
   return `(Gemini 全キー失敗: ${errors.join(', ')})`
 }
 
+/**
+ * Vision対応：画像（inlineData）+ テキストプロンプトでGeminiを呼ぶ
+ * youtube-coordinatorなど画像解析用
+ */
+export async function callGeminiVisionWithRotation(
+  imageBase64: string,
+  mimeType: string,
+  prompt: string,
+  model = 'gemini-2.5-flash'
+): Promise<string> {
+  if (GEMINI_KEYS.length === 0) {
+    throw new Error('Gemini APIキー未設定: GEMINI_API_KEY_1/2/3 を環境変数に追加してください')
+  }
+  const { GoogleGenerativeAI } = await import('@google/generative-ai')
+  const errors: string[] = []
+  for (let i = 0; i < GEMINI_KEYS.length; i++) {
+    const key = GEMINI_KEYS[i]
+    try {
+      const genAI = new GoogleGenerativeAI(key)
+      const geminiModel = genAI.getGenerativeModel({ model })
+      const result = await geminiModel.generateContent([
+        { inlineData: { data: imageBase64, mimeType } },
+        prompt,
+      ])
+      return result.response.text()
+    } catch (e: any) {
+      const msg = e?.message ?? 'unknown'
+      if (
+        msg.includes('429') ||
+        msg.includes('quota') ||
+        msg.includes('RESOURCE_EXHAUSTED') ||
+        msg.includes('503')
+      ) {
+        errors.push(`Key${i + 1}:quota`); continue
+      }
+      throw new Error(`Gemini Vision Error (Key${i + 1}): ${msg}`)
+    }
+  }
+  throw new Error(`Gemini Vision 全キー失敗: ${errors.join(', ')}`)
+}
+
 export async function callGeminiSDKWithRotation(
   prompt: string,
   systemInstruction?: string,

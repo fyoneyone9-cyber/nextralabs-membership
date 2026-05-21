@@ -1,9 +1,7 @@
 ﻿import { checkApiLimit } from '@/lib/api-limit';
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { callGeminiVisionWithRotation } from '@/lib/gemini-rotate';
 import { unstable_noStore as noStore } from 'next/cache'
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 // YouTube動画IDを抽出
 function extractVideoId(url: string): string | null {
@@ -55,14 +53,12 @@ async function imageUrlToBase64(url: string): Promise<{ data: string; mimeType: 
   }
 }
 
-// GeminiでファッションアイテムをJSON抽出
+// GeminiでファッションアイテムをJSON抽出（3キーローテーション対応）
 async function analyzeFashionWithGemini(
   imageBase64: string,
   mimeType: string,
   videoTitle: string
 ): Promise<string[]> {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-
   const prompt = `この画像はYouTube動画「${videoTitle}」のサムネイルです。
 画像に写っているファッションアイテム（服・靴・バッグ・アクセサリー等）を日本語で列挙してください。
 以下のJSON配列形式のみで回答してください（説明不要）：
@@ -71,17 +67,7 @@ async function analyzeFashionWithGemini(
 ファッションアイテムが見当たらない場合は空配列 [] を返してください。
 必ず有効なJSON配列のみを返してください。`;
 
-  const result = await model.generateContent([
-    {
-      inlineData: {
-        data: imageBase64,
-        mimeType: mimeType,
-      },
-    },
-    prompt,
-  ]);
-
-  const text = result.response.text().trim();
+  const text = (await callGeminiVisionWithRotation(imageBase64, mimeType, prompt)).trim();
   // JSON配列を抽出
   const match = text.match(/\[.*\]/s);
   if (match) {
