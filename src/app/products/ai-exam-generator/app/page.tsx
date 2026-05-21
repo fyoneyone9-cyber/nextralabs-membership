@@ -200,17 +200,27 @@ function AiExamGeneratorInner() {
   }
 
   // Google OAuth経由でドキュメント作成
-  const handleExportDocs = () => {
+  const handleExportDocs = async () => {
     if (!generatedContent) return
     setIsExporting(true)
     setExportError(null)
 
-    const params = new URLSearchParams({
-      title: generatedTitle,
-      content: generatedContent,
-    })
-    // OAuthフローへリダイレクト（コールバック後にdocUrlがセットされる）
-    window.location.href = `/api/auth/gdocs?${params.toString()}`
+    try {
+      // contentをサーバーに一時保存してkeyを取得（URLに含めるとOAuth state上限超過のため）
+      const tempRes = await fetch('/api/exam-temp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: generatedTitle, content: generatedContent }),
+      })
+      if (!tempRes.ok) throw new Error('一時保存失敗')
+      const { key } = await tempRes.json()
+
+      const params = new URLSearchParams({ title: generatedTitle, key })
+      window.location.href = `/api/auth/gdocs?${params.toString()}`
+    } catch {
+      setExportError('Googleドキュメントへの保存準備に失敗しました。もう一度お試しください。')
+      setIsExporting(false)
+    }
   }
 
   const copyPrompt = () => {
@@ -321,24 +331,32 @@ function AiExamGeneratorInner() {
               if (!tags || tags.length === 0) return null
               return (
                 <div className="flex flex-wrap gap-1.5 pb-1">
-                  {tags.map(tag => (
-                    <button
-                      key={tag}
-                      onClick={() => setWeakPoints(prev => {
-                        const already = prev.split('、').map(s => s.trim()).filter(Boolean)
-                        if (already.includes(tag)) return prev
-                        return already.length > 0 ? prev + '、' + tag : tag
-                      })}
-                      className="px-2.5 py-1 rounded-full text-xs font-medium transition-all"
-                      style={{
-                        background: weakPoints.includes(tag) ? 'rgba(16,185,129,0.15)' : '#13141f',
-                        border: weakPoints.includes(tag) ? '1px solid rgba(16,185,129,0.5)' : '1px solid #334155',
-                        color: weakPoints.includes(tag) ? '#34d399' : '#94a3b8',
-                      }}
-                    >
-                      {tag}
-                    </button>
-                  ))}
+                  {tags.map(tag => {
+                    const selected = weakPoints.split('、').map(s => s.trim()).filter(Boolean).includes(tag)
+                    return (
+                      <button
+                        key={tag}
+                        onClick={() => setWeakPoints(prev => {
+                          const items = prev.split('、').map(s => s.trim()).filter(Boolean)
+                          if (items.includes(tag)) {
+                            // すでに選択済み → 除去
+                            return items.filter(i => i !== tag).join('、')
+                          } else {
+                            // 未選択 → 追加
+                            return [...items, tag].join('、')
+                          }
+                        })}
+                        className="px-2.5 py-1 rounded-full text-xs font-medium transition-all"
+                        style={{
+                          background: selected ? 'rgba(16,185,129,0.15)' : '#13141f',
+                          border: selected ? '1px solid rgba(16,185,129,0.5)' : '1px solid #334155',
+                          color: selected ? '#34d399' : '#94a3b8',
+                        }}
+                      >
+                        {selected && <span className="mr-1">✓</span>}{tag}
+                      </button>
+                    )
+                  })}
                 </div>
               )
             })()}

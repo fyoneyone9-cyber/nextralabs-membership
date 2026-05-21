@@ -15,18 +15,18 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url)
   const examTitle = searchParams.get('title') || ''
-  const examContent = searchParams.get('content') || ''
+  const examKey   = searchParams.get('key') || ''   // exam-tempのキー
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
   const redirectUri = `${baseUrl}/api/auth/gdocs/callback`
 
   const scopes = [
-    'https://www.googleapis.com/auth/documents',       // Google Docs 読み書き
-    'https://www.googleapis.com/auth/drive.file',      // 自分が作ったファイルのみアクセス
+    'https://www.googleapis.com/auth/documents',
+    'https://www.googleapis.com/auth/drive.file',
   ].join(' ')
 
-  // stateにタイトルとコンテンツを含めてcallbackに渡す
-  const state = Buffer.from(JSON.stringify({ title: examTitle, content: examContent })).toString('base64url')
+  // stateにtitleとkeyを入れてcallbackに渡す
+  const state = Buffer.from(JSON.stringify({ title: examTitle, key: examKey })).toString('base64url')
 
   const params = new URLSearchParams({
     client_id: clientId,

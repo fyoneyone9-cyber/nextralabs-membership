@@ -18,15 +18,28 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${baseUrl}/products/ai-exam-generator/app?gdocs_error=access_denied`)
   }
 
-  // stateからタイトル・コンテンツを復元
+  // stateからタイトル・keyを復元
   let title = 'AI模擬試験問題集'
-  let content = ''
+  let tempKey = ''
   try {
     const decoded = JSON.parse(Buffer.from(state || '', 'base64url').toString())
     title = decoded.title || title
-    content = decoded.content || ''
+    tempKey = decoded.key || ''
   } catch {
     // stateパース失敗は無視
+  }
+
+  // exam-tempからcontentを取得
+  let content = ''
+  if (tempKey) {
+    try {
+      const tempRes = await fetch(`${baseUrl}/api/exam-temp?key=${tempKey}`)
+      if (tempRes.ok) {
+        const tempData = await tempRes.json()
+        content = tempData.content || ''
+        title = tempData.title || title
+      }
+    } catch { /* ignore */ }
   }
 
   try {
