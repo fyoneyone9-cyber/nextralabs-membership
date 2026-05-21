@@ -105,8 +105,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(
       `${baseUrl}/products/ai-exam-generator/app?gdocs_url=${encodeURIComponent(docUrl)}`
     )
-  } catch (err) {
+  } catch (err: any) {
     console.error('Google Docs callback error:', err)
-    return NextResponse.redirect(`${baseUrl}/products/ai-exam-generator/app?gdocs_error=server_error`)
+    const msg = encodeURIComponent((err?.message || 'unknown').slice(0, 200))
+    return NextResponse.redirect(`${baseUrl}/products/ai-exam-generator/app?gdocs_error=server_error&gdocs_msg=${msg}`)
   }
 }

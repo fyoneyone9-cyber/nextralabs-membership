@@ -150,10 +150,11 @@ function AiExamGeneratorInner() {
       setIsExporting(false)
     }
     if (gdocsError) {
+      const gdocsMsg = searchParams.get('gdocs_msg')
       setExportError(
         gdocsError === 'access_denied'
           ? 'Googleアカウントへのアクセスが拒否されました。'
-          : 'Googleドキュメントの作成に失敗しました。もう一度お試しください。'
+          : `Googleドキュメントの作成に失敗しました。${gdocsMsg ? `（${decodeURIComponent(gdocsMsg)}）` : 'もう一度お試しください。'}`
       )
       setIsExporting(false)
     }
