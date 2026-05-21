@@ -136,6 +136,7 @@ function AiExamGeneratorInner() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
   const [inputData, setInputData] = useState('')
+  const [weakPoints, setWeakPoints] = useState('')
   const [result, setResult] = useState<string | null>(null)
   const [generatedTitle, setGeneratedTitle] = useState<string>('')
   const [generatedContent, setGeneratedContent] = useState<string>('')
@@ -155,7 +156,7 @@ function AiExamGeneratorInner() {
       const res = await fetch('/api/exam-generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subject: inputData }),
+        body: JSON.stringify({ subject: inputData, context: weakPoints || undefined }),
       })
 
       if (!res.ok) throw new Error('生成API失敗')
@@ -272,16 +273,30 @@ function AiExamGeneratorInner() {
 
         {/* 入力フォーム */}
         <Card style={{ background: '#0d1117', border: '2px solid #10b981', boxShadow: '0 0 20px rgba(16,185,129,0.1)' }} className="rounded-xl p-6 space-y-4">
-          <label className="text-xs font-medium text-slate-500">学習コンテキスト・苦手分野</label>
-          <textarea
-            value={inputData}
-            onChange={e => setInputData(e.target.value)}
-            className="w-full h-36 rounded-lg px-4 py-3 text-sm text-slate-200 placeholder-slate-600 outline-none resize-none transition-colors"
-            style={{ background: '#13141f', border: '1px solid #334155' }}
-            placeholder="例：ITパスポートのセキュリティ分野を強化したい。"
-            onFocus={e => (e.target.style.borderColor = '#10b981')}
-            onBlur={e => (e.target.style.borderColor = '#334155')}
-          />
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-slate-400">① 学習したい科目・試験</label>
+            <textarea
+              value={inputData}
+              onChange={e => setInputData(e.target.value)}
+              className="w-full h-28 rounded-lg px-4 py-3 text-sm text-slate-200 placeholder-slate-600 outline-none resize-none transition-colors"
+              style={{ background: '#13141f', border: '1px solid #334155' }}
+              placeholder="例：ITパスポート試験のシラバスに基づき、選択問題を生成してください。"
+              onFocus={e => (e.target.style.borderColor = '#10b981')}
+              onBlur={e => (e.target.style.borderColor = '#334155')}
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-slate-400">② 苦手・重点強化したい分野 <span className="text-slate-600">（任意）</span></label>
+            <textarea
+              value={weakPoints}
+              onChange={e => setWeakPoints(e.target.value)}
+              className="w-full h-20 rounded-lg px-4 py-3 text-sm text-slate-200 placeholder-slate-600 outline-none resize-none transition-colors"
+              style={{ background: '#13141f', border: '1px solid #334155' }}
+              placeholder="例：セキュリティ分野が苦手。法務・知的財産を重点的に出してほしい。"
+              onFocus={e => (e.target.style.borderColor = '#10b981')}
+              onBlur={e => (e.target.style.borderColor = '#334155')}
+            />
+          </div>
           <div className="grid md:grid-cols-2 gap-3">
             <Button
               onClick={handleAnalyze}
@@ -348,7 +363,7 @@ function AiExamGeneratorInner() {
                 </div>
               )}
 
-              <div className="pt-2">
+              <div className="pt-2 space-y-3">
                 {!docUrl ? (
                   <Button
                     onClick={handleExportDocs}
@@ -365,14 +380,26 @@ function AiExamGeneratorInner() {
                       : <><FileText size={14} className="mr-1" />Googleドキュメントへ保存</>}
                   </Button>
                 ) : (
-                  <Button
-                    onClick={() => window.open(docUrl, '_blank')}
-                    className="h-10 px-5 text-sm font-semibold rounded-lg flex items-center gap-2"
-                    style={{ background: '#1a73e8', color: '#fff' }}
-                  >
-                    <FileDown size={14} className="mr-1" />ドキュメントを開く
-                    <ExternalLink size={12} />
-                  </Button>
+                  <div className="space-y-2">
+                    <div
+                      className="flex items-center gap-3 rounded-xl p-4"
+                      style={{ background: 'rgba(26,115,232,0.1)', border: '1px solid rgba(26,115,232,0.4)' }}
+                    >
+                      <FileDown size={18} style={{ color: '#1a73e8' }} className="shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-slate-400 mb-0.5">Googleドキュメントに保存しました</p>
+                        <p className="text-xs text-slate-500 truncate">{docUrl}</p>
+                      </div>
+                      <Button
+                        onClick={() => window.open(docUrl, '_blank')}
+                        className="h-9 px-4 text-sm font-semibold rounded-lg flex items-center gap-1.5 shrink-0"
+                        style={{ background: '#1a73e8', color: '#fff' }}
+                      >
+                        開く
+                        <ExternalLink size={12} />
+                      </Button>
+                    </div>
+                  </div>
                 )}
               </div>
             </Card>
