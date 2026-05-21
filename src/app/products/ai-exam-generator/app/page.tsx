@@ -148,6 +148,8 @@ function AiExamGeneratorInner() {
     if (gdocsUrl) {
       setDocUrl(decodeURIComponent(gdocsUrl))
       setIsExporting(false)
+      // リダイレクト後はstateがリセットされるのでresultだけ復元して保存完了を示す
+      setResult('__gdocs_saved__')
     }
     if (gdocsError) {
       const gdocsMsg = searchParams.get('gdocs_msg')
@@ -240,6 +242,27 @@ function AiExamGeneratorInner() {
       className="min-h-screen text-slate-100 pb-24"
       style={{ background: '#050507', fontFamily: "'Inter', 'Noto Sans JP', sans-serif" }}
     >
+      {/* Googleドキュメント保存完了バナー（ページ最上部・常時表示） */}
+      {docUrl && (
+        <div
+          className="sticky top-0 z-50 w-full flex items-center justify-between gap-3 px-5 py-3"
+          style={{ background: '#1a73e8', boxShadow: '0 2px 12px rgba(26,115,232,0.5)' }}
+        >
+          <div className="flex items-center gap-2 min-w-0">
+            <FileDown size={16} className="text-white shrink-0" />
+            <span className="text-sm font-semibold text-white">Googleドキュメントに保存しました</span>
+            <span className="text-xs text-blue-200 truncate hidden md:block">{docUrl}</span>
+          </div>
+          <button
+            onClick={() => window.open(docUrl, '_blank')}
+            className="shrink-0 flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-bold transition-all"
+            style={{ background: '#fff', color: '#1a73e8' }}
+          >
+            開く <ExternalLink size={13} />
+          </button>
+        </div>
+      )}
+
       {/* Hero */}
       <div className="max-w-4xl mx-auto px-6 pt-16 pb-10 space-y-5">
         <div className="flex items-start justify-between gap-4 flex-wrap">
