@@ -19,62 +19,88 @@ const PRESET_CATEGORIES = [
     label: 'IT・情報処理',
     color: '#3b82f6',
     presets: [
-      { id: 'itpass',   label: 'ITパスポート',         icon: Smartphone, content: 'ITパスポート試験のシラバス（テクノロジ・マネジメント・ストラテジ）に基づき、過去問実物データから頻出の選択問題を解説付きで生成してください。' },
-      { id: 'fe',       label: '基本情報技術者',        icon: Cpu,        content: '基本情報技術者試験の科目A形式で、アルゴリズムと情報セキュリティの重要問題を実データに基づき生成してください。' },
-      { id: 'ap',       label: '応用情報技術者',        icon: Brain,      content: '応用情報技術者試験の午前問題形式で、データベース・ネットワーク・経営戦略など幅広い分野の頻出問題を生成してください。' },
-      { id: 'security', label: '情報処理安全確保支援士', icon: ShieldAlert, content: '情報処理安全確保支援士試験向けに、最新のサイバー攻撃手法と防御策に関する応用問題を生成してください。' },
-      { id: 'nw',       label: 'ネットワークスペシャリスト', icon: Network, content: 'ネットワークスペシャリスト試験向けに、TCP/IP・ルーティング・セキュリティプロトコルの高難度問題を生成してください。' },
-      { id: 'db',       label: 'データベーススペシャリスト', icon: FileText, content: 'データベーススペシャリスト試験向けに、SQL・正規化・トランザクション管理の実践的な問題を生成してください。' },
+      { id: 'itpass',   label: 'ITパスポート',         icon: Smartphone, content: 'ITパスポート試験のシラバス（テクノロジ・マネジメント・ストラテジ）に基づき、過去問実物データから頻出の選択問題を解説付きで生成してください。',
+        weakPresets: ['セキュリティ・暗号技術', '法務・知的財産', 'システム開発手法', 'ネットワーク基礎', '経営戦略・マーケティング', 'プロジェクトマネジメント'] },
+      { id: 'fe',       label: '基本情報技術者',        icon: Cpu,        content: '基本情報技術者試験の科目A形式で、アルゴリズムと情報セキュリティの重要問題を実データに基づき生成してください。',
+        weakPresets: ['アルゴリズム・データ構造', '2進数・論理回路', '情報セキュリティ', 'データベース（SQL）', 'ネットワーク', 'ソフトウェア設計'] },
+      { id: 'ap',       label: '応用情報技術者',        icon: Brain,      content: '応用情報技術者試験の午前問題形式で、データベース・ネットワーク・経営戦略など幅広い分野の頻出問題を生成してください。',
+        weakPresets: ['経営戦略・会計', 'データベース設計', 'ネットワーク・TCP/IP', 'セキュリティ管理', 'システム監査', '記述式対策'] },
+      { id: 'security', label: '情報処理安全確保支援士', icon: ShieldAlert, content: '情報処理安全確保支援士試験向けに、最新のサイバー攻撃手法と防御策に関する応用問題を生成してください。',
+        weakPresets: ['暗号・認証技術', 'インシデント対応', 'ファイアウォール・IDS', 'Web脆弱性（XSS/SQLi）', 'セキュリティ法規', 'リスクマネジメント'] },
+      { id: 'nw',       label: 'ネットワークスペシャリスト', icon: Network, content: 'ネットワークスペシャリスト試験向けに、TCP/IP・ルーティング・セキュリティプロトコルの高難度問題を生成してください。',
+        weakPresets: ['ルーティング・OSPF/BGP', 'VLAN・スイッチング', 'IPv6', 'VPN・IPsec', 'DNS・DHCP', '無線LAN（Wi-Fi）'] },
+      { id: 'db',       label: 'データベーススペシャリスト', icon: FileText, content: 'データベーススペシャリスト試験向けに、SQL・正規化・トランザクション管理の実践的な問題を生成してください。',
+        weakPresets: ['正規化（第3・BCNF）', 'SQL（副問い合わせ）', 'トランザクション・ロック', 'インデックス・性能', 'ER図・概念設計', '分散データベース'] },
     ]
   },
   {
     label: 'ビジネス・資格',
     color: '#f59e0b',
     presets: [
-      { id: 'biz2',     label: '簿記2級',               icon: Calculator, content: '日商簿記2級の商業簿記・工業簿記を網羅した頻出仕訳問題と計算問題を解説付きで生成してください。' },
-      { id: 'biz3',     label: '簿記3級',               icon: Calculator, content: '日商簿記3級の基本仕訳・決算処理・精算表の穴埋め問題を初学者向けに解説付きで生成してください。' },
-      { id: 'fp2',      label: 'FP2級',                 icon: TrendingUp, content: 'FP2級試験向けに、ライフプランニング・タックスプランニング・相続の頻出計算問題を生成してください。' },
-      { id: 'fp3',      label: 'FP3級',                 icon: TrendingUp, content: 'FP3級試験向けに、保険・年金・税金の基礎知識を問う選択問題を解説付きで生成してください。' },
-      { id: 'gyosei',   label: '行政書士',               icon: Scale,      content: '行政書士試験の行政法・民法・憲法の頻出問題と記述式対策問題を生成してください。' },
-      { id: 'syaroushi',label: '社会保険労務士',         icon: Building2,  content: '社会保険労務士試験の労働基準法・社会保険・雇用保険の選択式・択一式問題を生成してください。' },
+      { id: 'biz2',     label: '簿記2級',               icon: Calculator, content: '日商簿記2級の商業簿記・工業簿記を網羅した頻出仕訳問題と計算問題を解説付きで生成してください。',
+        weakPresets: ['工業簿記・原価計算', '連結会計', '税効果会計', '本支店会計', '製造間接費の配賦', 'CVP分析'] },
+      { id: 'biz3',     label: '簿記3級',               icon: Calculator, content: '日商簿記3級の基本仕訳・決算処理・精算表の穴埋め問題を初学者向けに解説付きで生成してください。',
+        weakPresets: ['決算整理仕訳', '精算表・貸借対照表', '現金過不足・小口現金', '売掛金・買掛金管理', '減価償却', '試算表'] },
+      { id: 'fp2',      label: 'FP2級',                 icon: TrendingUp, content: 'FP2級試験向けに、ライフプランニング・タックスプランニング・相続の頻出計算問題を生成してください。',
+        weakPresets: ['タックスプランニング（所得税）', '相続・贈与税の計算', '不動産取得・譲渡', 'リスク管理・保険', '金融資産運用', 'ライフプランニング計算'] },
+      { id: 'fp3',      label: 'FP3級',                 icon: TrendingUp, content: 'FP3級試験向けに、保険・年金・税金の基礎知識を問う選択問題を解説付きで生成してください。',
+        weakPresets: ['公的年金（老齢・障害）', '生命保険・損害保険', '所得税の基礎', '相続の基礎', '住宅ローン・金利', '社会保険（医療・介護）'] },
+      { id: 'gyosei',   label: '行政書士',               icon: Scale,      content: '行政書士試験の行政法・民法・憲法の頻出問題と記述式対策問題を生成してください。',
+        weakPresets: ['行政手続法・行政不服申立て', '行政事件訴訟法', '民法（物権・契約）', '憲法・基本的人権', '記述式対策', '会社法・商法'] },
+      { id: 'syaroushi',label: '社会保険労務士',         icon: Building2,  content: '社会保険労務士試験の労働基準法・社会保険・雇用保険の選択式・択一式問題を生成してください。',
+        weakPresets: ['労働基準法（労働時間・休暇）', '健康保険法', '厚生年金保険法', '雇用保険法', '労働安全衛生法', '選択式対策'] },
     ]
   },
   {
     label: '語学・英語',
     color: '#8b5cf6',
     presets: [
-      { id: 'toeic',    label: 'TOEIC L&R 900点',       icon: Globe,      content: 'TOEIC L&R 900点突破を目指し、Part5文法問題・Part6長文穴埋め・Part7読解の頻出パターンを生成してください。' },
-      { id: 'toeic700', label: 'TOEIC L&R 700点',       icon: Globe,      content: 'TOEIC L&R 700点レベルの文法・語彙・読解問題を解説付きで生成してください。' },
-      { id: 'eiken2',   label: '英検2級',               icon: BookOpen,   content: '英検2級の語彙・文法・長文読解・英作文の頻出問題を解説付きで生成してください。' },
-      { id: 'eiken1',   label: '英検準1級',             icon: BookOpen,   content: '英検準1級の語彙・長文読解・英作文の難問を解説付きで生成してください。' },
+      { id: 'toeic',    label: 'TOEIC L&R 900点',       icon: Globe,      content: 'TOEIC L&R 900点突破を目指し、Part5文法問題・Part6長文穴埋め・Part7読解の頻出パターンを生成してください。',
+        weakPresets: ['Part5 品詞問題', 'Part5 接続詞・前置詞', 'Part6 文挿入問題', 'Part7 ダブル・トリプルパッセージ', 'ビジネス語彙', '時制・仮定法'] },
+      { id: 'toeic700', label: 'TOEIC L&R 700点',       icon: Globe,      content: 'TOEIC L&R 700点レベルの文法・語彙・読解問題を解説付きで生成してください。',
+        weakPresets: ['基本文法（動詞・時制）', 'Part5 語彙問題', 'Part7 単文読解', 'リスニング（Part2）', '前置詞・接続詞', '頻出ビジネス表現'] },
+      { id: 'eiken2',   label: '英検2級',               icon: BookOpen,   content: '英検2級の語彙・文法・長文読解・英作文の頻出問題を解説付きで生成してください。',
+        weakPresets: ['語彙・熟語（2級レベル）', '長文読解', '英作文（意見論述）', 'リスニング・会話', '文法（分詞・関係詞）', 'Eメール読解'] },
+      { id: 'eiken1',   label: '英検準1級',             icon: BookOpen,   content: '英検準1級の語彙・長文読解・英作文の難問を解説付きで生成してください。',
+        weakPresets: ['難単語・語彙（準1級）', '長文読解（論説文）', '英作文（要約・意見）', 'リスニング（インタビュー）', '空所補充問題', '熟語・コロケーション'] },
     ]
   },
   {
     label: '医療・福祉',
     color: '#ef4444',
     presets: [
-      { id: 'kangoshi',  label: '看護師国家試験',        icon: Stethoscope, content: '看護師国家試験の必修問題・一般問題・状況設定問題の頻出パターンを解説付きで生成してください。' },
-      { id: 'kaigo',     label: '介護福祉士',            icon: Award,       content: '介護福祉士国家試験の介護・医療的ケア・社会の理解の頻出問題を生成してください。' },
-      { id: 'yakuzai',   label: '薬剤師国家試験',        icon: Stethoscope, content: '薬剤師国家試験の薬理・薬剤・衛生・法規の頻出問題を解説付きで生成してください。' },
+      { id: 'kangoshi',  label: '看護師国家試験',        icon: Stethoscope, content: '看護師国家試験の必修問題・一般問題・状況設定問題の頻出パターンを解説付きで生成してください。',
+        weakPresets: ['循環器・心疾患', '呼吸器系疾患', '薬理・与薬', '母性看護・産科', '精神看護', '状況設定問題（思考過程）'] },
+      { id: 'kaigo',     label: '介護福祉士',            icon: Award,       content: '介護福祉士国家試験の介護・医療的ケア・社会の理解の頻出問題を生成してください。',
+        weakPresets: ['医療的ケア（吸引・経管栄養）', '認知症の理解', '介護過程・記録', '障害の理解', '社会保障制度', 'こころとからだのしくみ'] },
+      { id: 'yakuzai',   label: '薬剤師国家試験',        icon: Stethoscope, content: '薬剤師国家試験の薬理・薬剤・衛生・法規の頻出問題を解説付きで生成してください。',
+        weakPresets: ['薬理（受容体・作用機序）', '薬剤（製剤・吸収）', '病態・薬物治療', '衛生（毒性・環境）', '薬事法規', '化学（構造活性相関）'] },
     ]
   },
   {
     label: '法律・公務員',
     color: '#06b6d4',
     presets: [
-      { id: 'koumu',    label: '公務員試験（教養）',     icon: GraduationCap, content: '公務員試験の教養科目（文章理解・数的処理・社会科学・人文科学）の頻出問題を解説付きで生成してください。' },
-      { id: 'shiho',    label: '司法書士',               icon: Scale,         content: '司法書士試験の民法・不動産登記法・商業登記法・刑法の頻出問題を生成してください。' },
-      { id: 'kenteishi',label: '宅地建物取引士（宅建）', icon: Building2,     content: '宅建試験の権利関係・法令上の制限・宅建業法・税金の頻出問題を解説付きで生成してください。' },
+      { id: 'koumu',    label: '公務員試験（教養）',     icon: GraduationCap, content: '公務員試験の教養科目（文章理解・数的処理・社会科学・人文科学）の頻出問題を解説付きで生成してください。',
+        weakPresets: ['数的推理・判断推理', '資料解釈', '文章理解（現代文）', '憲法・行政法', '経済原論・財政学', '社会・時事問題'] },
+      { id: 'shiho',    label: '司法書士',               icon: Scale,         content: '司法書士試験の民法・不動産登記法・商業登記法・刑法の頻出問題を生成してください。',
+        weakPresets: ['不動産登記法（申請手続き）', '民法（物権変動・抵当権）', '商業登記法', '会社法（機関設計）', '刑法・刑事訴訟法', '記述式対策'] },
+      { id: 'kenteishi',label: '宅地建物取引士（宅建）', icon: Building2,     content: '宅建試験の権利関係・法令上の制限・宅建業法・税金の頻出問題を解説付きで生成してください。',
+        weakPresets: ['宅建業法（重要事項説明）', '権利関係（民法・借地借家）', '都市計画法・建築基準法', '不動産登記法', '税・その他（印紙税等）', '35条・37条書面'] },
     ]
   },
   {
     label: 'その他・技術',
     color: '#10b981',
     presets: [
-      { id: 'kiken',    label: '危険物取扱者（乙4）',    icon: ShieldAlert,   content: '危険物取扱者乙種第4類の物理化学・危険物の性質・法令の頻出問題を生成してください。' },
-      { id: 'denki',    label: '電気工事士（2種）',      icon: Zap,           content: '第二種電気工事士の筆記試験（電気理論・施工法・法規）の頻出問題を生成してください。' },
-      { id: 'kankyou',  label: '環境計量士',             icon: Leaf,           content: '環境計量士（濃度関係）の計量法・化学分析・環境関連法の頻出問題を生成してください。' },
-      { id: 'driver',   label: '普通自動車免許',          icon: Car,           content: '普通自動車免許の学科試験（交通ルール・標識・安全運転）の頻出問題を生成してください。' },
+      { id: 'kiken',    label: '危険物取扱者（乙4）',    icon: ShieldAlert,   content: '危険物取扱者乙種第4類の物理化学・危険物の性質・法令の頻出問題を生成してください。',
+        weakPresets: ['危険物の性質・品名', '消火方法・火災予防', '法令（貯蔵・取扱い基準）', '物理化学（引火点・発火点）', '標識・掲示板', '保安距離・保有空地'] },
+      { id: 'denki',    label: '電気工事士（2種）',      icon: Zap,           content: '第二種電気工事士の筆記試験（電気理論・施工法・法規）の頻出問題を生成してください。',
+        weakPresets: ['電気理論（オームの法則・回路）', '配線設計・幹線計算', '電気工事材料・工具', '施工方法（接地・漏電）', '電気法規・基準', '配線図記号'] },
+      { id: 'kankyou',  label: '環境計量士',             icon: Leaf,           content: '環境計量士（濃度関係）の計量法・化学分析・環境関連法の頻出問題を生成してください。',
+        weakPresets: ['計量法・計量管理', '化学分析（滴定・クロマト）', '大気汚染分析', '水質分析', '環境基準・排水基準', '統計・誤差論'] },
+      { id: 'driver',   label: '普通自動車免許',          icon: Car,           content: '普通自動車免許の学科試験（交通ルール・標識・安全運転）の頻出問題を生成してください。',
+        weakPresets: ['標識・標示の意味', '速度・車間距離', '追い越し・追い抜き', '交差点の通行方法', '駐停車禁止場所', '緊急自動車・路面電車'] },
     ]
   },
 ]
@@ -137,6 +163,7 @@ function AiExamGeneratorInner() {
   const [isExporting, setIsExporting] = useState(false)
   const [inputData, setInputData] = useState('')
   const [weakPoints, setWeakPoints] = useState('')
+  const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null)
   const [result, setResult] = useState<string | null>(null)
   const [generatedTitle, setGeneratedTitle] = useState<string>('')
   const [generatedContent, setGeneratedContent] = useState<string>('')
@@ -253,7 +280,7 @@ function AiExamGeneratorInner() {
                 {cat.presets.map(p => (
                   <button
                     key={p.id}
-                    onClick={() => { setInputData(p.content); setResult(null); setDocUrl(null); setExportError(null) }}
+                    onClick={() => { setInputData(p.content); setSelectedPresetId(p.id); setWeakPoints(''); setResult(null); setDocUrl(null); setExportError(null) }}
                     className="flex items-center gap-3 p-3 rounded-xl text-left transition-all"
                     style={{
                       background: inputData === p.content ? 'rgba(16,185,129,0.1)' : '#0d1117',
@@ -287,6 +314,34 @@ function AiExamGeneratorInner() {
           </div>
           <div className="space-y-2">
             <label className="text-xs font-medium text-slate-400">② 苦手・重点強化したい分野 <span className="text-slate-600">（任意）</span></label>
+            {/* 選択中の試験に対応した苦手分野プリセットタグ */}
+            {selectedPresetId && (() => {
+              const preset = PRESETS.find(p => p.id === selectedPresetId)
+              const tags = (preset as any)?.weakPresets as string[] | undefined
+              if (!tags || tags.length === 0) return null
+              return (
+                <div className="flex flex-wrap gap-1.5 pb-1">
+                  {tags.map(tag => (
+                    <button
+                      key={tag}
+                      onClick={() => setWeakPoints(prev => {
+                        const already = prev.split('、').map(s => s.trim()).filter(Boolean)
+                        if (already.includes(tag)) return prev
+                        return already.length > 0 ? prev + '、' + tag : tag
+                      })}
+                      className="px-2.5 py-1 rounded-full text-xs font-medium transition-all"
+                      style={{
+                        background: weakPoints.includes(tag) ? 'rgba(16,185,129,0.15)' : '#13141f',
+                        border: weakPoints.includes(tag) ? '1px solid rgba(16,185,129,0.5)' : '1px solid #334155',
+                        color: weakPoints.includes(tag) ? '#34d399' : '#94a3b8',
+                      }}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              )
+            })()}
             <textarea
               value={weakPoints}
               onChange={e => setWeakPoints(e.target.value)}
