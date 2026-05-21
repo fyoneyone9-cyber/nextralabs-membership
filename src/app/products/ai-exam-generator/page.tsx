@@ -119,6 +119,28 @@ export default function ExamGeneratorPage() {
             </div>
           </div>
 
+          {/* YouTube PR動画 */}
+          <div className="max-w-3xl mx-auto mb-16">
+            <div className="text-center mb-6">
+              <Badge className="mb-3 bg-red-500/10 text-red-400 border-red-500/20 px-4 py-1 text-xs font-bold uppercase tracking-tighter">
+                ▶ 動画で見る
+              </Badge>
+              <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">
+                実際の使い方を動画でチェック
+              </h2>
+              <p className="text-slate-400 text-sm mt-2">AIが弱点に特化した問題を自動生成する様子をご覧ください</p>
+            </div>
+            <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
+              <iframe
+                className="absolute inset-0 w-full h-full rounded-2xl border border-white/10 shadow-2xl"
+                src="https://www.youtube.com/embed/3g6zyJ2O4ig"
+                title="AI模擬試験ジェネレーター 使い方紹介"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            </div>
+          </div>
+
           {/* MASTERMODEL Quality (Emerald Border) */}
           <div className="max-w-5xl mx-auto">
             <div className="relative group">
