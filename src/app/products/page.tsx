@@ -23,6 +23,7 @@ const TOOLS = [
   { id: 'ai-select-shop/app',       cat: 'content',   title: 'AIセレクトショップ',            sub: 'トレンド解析とShopify連携',                                       icon: Store,         plan: 'プレミアム', done: true },
   { id: 'youtube-producer/app',     cat: 'content',   title: 'AI YouTubeプロデューサー',      sub: 'チャンネル分析からサムネイル提案まで。再生数を伸ばすAI戦略家。',                                            icon: Clapperboard,  plan: 'プレミアム', done: true },
   { id: 'youtube-coordinator/app',  cat: 'content',   title: 'YouTube AI Sync',              sub: '動画解析と楽天コーチ',                                            icon: Play,          plan: 'プレミアム', done: true },
+  { id: 'youtube-affiliate-vlog',   cat: 'content',   title: 'AIアフィリエイトVlogYT',        sub: '楽天×AI動画×YouTube全自動。毎日10本のShortsをAIが台本・音声・投稿まで勝手に稼ぐ。',  icon: TrendingUp,    plan: 'プレミアム', done: true, lpUrl: '/products/youtube-affiliate-vlog' },
   { id: 'prompt-master/app',        cat: 'content',   title: 'AI画像プロンプトマスター',      sub: 'Midjourney・Flux・Runwayで使えるプロ品質プロンプトをAIが生成。',                                    icon: Wand2,         plan: 'ライト',     done: true },
 
   // ── 📖 出版・AI文章生成 ──
