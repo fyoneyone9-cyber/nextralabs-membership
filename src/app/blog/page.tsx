@@ -36,6 +36,26 @@ export default function BlogPage() {
           </p>
         </div>
 
+        {/* インタビュー記事リンク */}
+        <div className="mb-10 flex flex-col gap-3">
+          <Link href="/interview" className="group flex items-center gap-4 bg-[#0d1117] border border-emerald-500/25 hover:border-emerald-500/50 rounded-2xl px-6 py-4 transition-all hover:bg-emerald-500/5 no-underline">
+            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-400 text-lg">🎙️</div>
+            <div className="flex-1">
+              <p className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest mb-0.5">Special Interview Vol.1</p>
+              <p className="text-white font-semibold text-sm">Ninja3が語る「AIと生きる」という選択</p>
+            </div>
+            <span className="text-emerald-400 text-sm font-medium group-hover:translate-x-1 transition-transform shrink-0">読む →</span>
+          </Link>
+          <Link href="/interview-vol2" className="group flex items-center gap-4 bg-[#0d1117] border border-emerald-500/25 hover:border-emerald-500/50 rounded-2xl px-6 py-4 transition-all hover:bg-emerald-500/5 no-underline">
+            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-400 text-lg">🎙️</div>
+            <div className="flex-1">
+              <p className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest mb-0.5">Special Interview Vol.2</p>
+              <p className="text-white font-semibold text-sm">Ninja3が語る「AI最前線2026」</p>
+            </div>
+            <span className="text-emerald-400 text-sm font-medium group-hover:translate-x-1 transition-transform shrink-0">読む →</span>
+          </Link>
+        </div>
+
         {/* 記事一覧 */}
         {posts.length === 0 ? (
           <p className="text-center text-slate-500">記事がまだありません。</p>
