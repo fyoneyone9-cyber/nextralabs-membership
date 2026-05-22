@@ -1,5 +1,29 @@
 'use client'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: '無料登録|NextraLabs - 今すぐAIツールを使い始める',
+  description: 'NextraLabsに無料登録してAIツール30種類以上をお試し。メールアドレスだけで今すぐ始められます。月額980円〜の有料プランはいつでも開始可能。',
+  alternates: { canonical: 'https://nextralab.jp/signup' },
+  openGraph: {
+    title: '無料登録|NextraLabs - 今すぐAIツールを使い始める',
+    description: 'NextraLabsに無料登録してAIツール30種類以上をお試し。メールアドレスだけで今すぐ始められます。月額980円〜の有料プランはいつでも開始可能。',
+    url: 'https://nextralab.jp/signup',
+    siteName: 'NextraLabs',
+    locale: 'ja_JP',
+    type: 'website',
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'NextraLabs - AIツール使い放題' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '無料登録|NextraLabs - 今すぐAIツールを使い始める',
+    description: 'NextraLabsに無料登録してAIツール30種類以上をお試し。メールアドレスだけで今すぐ始められます。月額980円〜の有料プランはいつでも開始可能。',
+    images: ['https://nextralab.jp/og-image.png'],
+  },
+}
+
+
 import { useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'

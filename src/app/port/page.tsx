@@ -1,4 +1,28 @@
 'use client'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'ポートフォリオ|NextraLabs',
+  description: 'NextraLabsのポートフォリオ展示',
+  alternates: { canonical: 'https://nextralab.jp/port' },
+  openGraph: {
+    title: 'ポートフォリオ|NextraLabs',
+    description: 'NextraLabsのポートフォリオ展示',
+    url: 'https://nextralab.jp/port',
+    siteName: 'NextraLabs',
+    locale: 'ja_JP',
+    type: 'website',
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'NextraLabs - AIツール使い放題' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ポートフォリオ|NextraLabs',
+    description: 'NextraLabsのポートフォリオ展示',
+    images: ['https://nextralab.jp/og-image.png'],
+  },
+}
+
+
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'

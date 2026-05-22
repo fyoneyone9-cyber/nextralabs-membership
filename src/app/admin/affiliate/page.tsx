@@ -1,4 +1,12 @@
 'use client'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'アフィリエイト管理|NextraLabs',
+  robots: { index: false, follow: false },
+}
+
+
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { createBrowserClient } from '@supabase/ssr'

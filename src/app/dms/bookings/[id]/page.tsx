@@ -1,4 +1,12 @@
 'use client'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: '予約詳細|NextraLabs DMS',
+  robots: { index: false, follow: false },
+}
+
+
 import React, { useState, useEffect, useCallback } from 'react'
 import {
   ArrowLeft, Trash2, Save, ChevronRight, Loader2,

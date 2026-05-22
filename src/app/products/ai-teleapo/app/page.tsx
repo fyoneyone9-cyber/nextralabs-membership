@@ -1,5 +1,13 @@
 'use client'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'AIアプリ|NextraLabs',
+  robots: { index: false, follow: false },
+}
+
+
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Phone, FileText, ClipboardList, Plus, Trash2, Copy, Check, Loader2, AlertCircle } from 'lucide-react'

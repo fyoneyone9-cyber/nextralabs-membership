@@ -1,4 +1,12 @@
 'use client'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'DMSログイン|NextraLabs',
+  robots: { index: false, follow: false },
+}
+
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Lock, Building2, ShieldCheck, AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react'

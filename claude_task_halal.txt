@@ -1,0 +1,179 @@
+﻿以下の作業を nextralabs-membership-git プロジェクトに対して行ってください。
+
+作業ディレクトリ: C:\Users\fyone\Desktop\nextralabs-membership-git
+
+## 作業1: /api/halal-check API ルートを作成
+
+ファイル: src/app/api/halal-check/route.ts
+
+```typescript
+import { NextRequest, NextResponse } from 'next/server'
+import { callGeminiWithRotation } from '@/lib/gemini-rotate'
+
+export const runtime = 'nodejs'
+
+export async function POST(req: NextRequest) {
+  try {
+    const { name, nationality, request: guestRequest } = await req.json()
+    if (!name || !nationality) {
+      return NextResponse.json({ error: '予約者名と国籍は必須です' }, { status: 400 })
+    }
+
+    const prompt = `あなたはホテル・旅館のフロントスタッフ向けアシスタントです。
+以下の予約情報から、ゲストの宗教・食習慣・文化的配慮事項を推定してください。
+
+予約者名: ${name}
+国籍・出身地: ${nationality}
+特別リクエスト: ${guestRequest || 'なし'}
+
+以下のJSON形式のみで回答してください（余分なテキスト・コードブロック不要）:
+{
+  "religion": "推定宗教（不明の場合は「不明」）",
+  "dietType": "食事タイプ（ハラール/ベジタリアン/ヴィーガン/コーシャ/仏教食/制限なし/不明）",
+  "confidence": 確信度（0-100の整数）,
+  "presets": ["対応項目1", "対応項目2"],
+  "notes": "スタッフへの説明文（なぜそう判断したか根拠を含む・2〜3文）",
+  "handover": "申し送り文（そのままフロントで使える形式・改行あり）"
+}
+
+presetsは以下から該当するものを選択:
+ハラール食対応, アルコール不提供, 豚肉除去, 牛肉除去, ベジタリアン対応, ヴィーガン対応, グルテンフリー対応, ナッツアレルギー確認, 礼拝マット準備, 礼拝方向（キブラ）案内, コーラン・聖典配慮, 英語対応スタッフ配置, 中国語対応スタッフ配置, 韓国語対応スタッフ配置
+
+JSONのみ返してください。`
+
+    const raw = await callGeminiWithRotation(prompt)
+
+    // JSONパース（コードブロック除去）
+    const cleaned = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+    let result
+    try {
+      result = JSON.parse(cleaned)
+    } catch {
+      return NextResponse.json({ error: 'Gemini応答のパースに失敗しました', raw }, { status: 500 })
+    }
+
+    return NextResponse.json(result)
+  } catch (e: any) {
+    return NextResponse.json({ error: e.message ?? '不明なエラー' }, { status: 500 })
+  }
+}
+```
+
+## 作業2: halal-checker 専用LP を作成
+
+ファイル: src/app/halal-checker/page.tsx
+
+このページは nextralab.jp/halal-checker として公開される独立したLPです。
+以下の仕様で実装してください：
+
+### デザイン
+- 既存サイトと同じダークテーマ（bg-[#050507]）
+- アクセントカラー: グリーン系（green-400, green-500）※ハラール・自然・安心感
+- TailwindCSSのみ（外部UIライブラリはBadge/Button/Cardのみ可）
+
+### セクション構成
+
+**1. ヒーローセクション**
+- バッジ: 「🕌 インバウンド × AI 宗教・食習慣対応」
+- H1: 「予約名と国籍を入れるだけで ハラール・宗教対応を自動提案」
+- サブコピー: 「チェックイン前に申し送り完了。フロントの対応漏れをゼロに。」
+- CTAボタン2つ: 「無料デモを試す↓」（同ページ内アンカー #demo）、「法人プランを見る」（/enterprise）
+
+**2. 課題セクション（3カード）**
+- 「ムスリムゲストに豚肉料理を出してしまった」
+- 「ヴィーガンゲストへの配慮が事前にわからなかった」
+- 「スタッフによって対応がバラバラ」
+
+**3. デモセクション（id="demo"）**
+- 予約者名テキスト入力（プレースホルダー: "例: Ahmed Al-Rashid"）
+- 国籍テキスト入力（プレースホルダー: "例: UAE、サウジアラビア、インド"）
+- 特別リクエスト任意入力（プレースホルダー: "例: No pork please"）
+- 「AIで分析する」ボタン → /api/halal-check にPOST → 結果表示
+- 結果表示エリア:
+  - 推定宗教・食事タイプ（大きく表示）
+  - 確信度バー（confidence値をパーセントで色付き表示: 80+は緑, 50-79は黄, 50未満は灰）
+  - プリセットタグ一覧（緑のバッジ）
+  - 説明文（notes）
+  - 申し送り文テキストエリア（handover・コピーボタン付き）
+- ローディング表示あり（「AIが分析中...」）
+- エラー表示あり
+
+**4. 機能紹介セクション（4カード）**
+- 🤖 Gemini AIによる高精度推定
+- 📋 ワンクリックプリセット対応
+- 📝 そのまま使える申し送り文
+- 📊 対応履歴・フィードバック（近日対応）
+
+**5. 料金プランセクション**
+| フリー | スタンダード | プロ | エンタープライズ |
+|¥0|¥9,800/月|¥29,800/月|要見積|
+- フリー: 月30件・手動入力
+- スタンダード: 月500件・予約システム連携1社・メール通知
+- プロ: 月2,000件・連携3社・スタッフ10名・フィードバック学習
+- エンタープライズ: 無制限・複数施設・ホワイトラベル・SLA
+
+**6. CTAセクション**
+- 「法人プランのご相談・見積もりはこちら」
+- /enterprise へのリンクボタン（アンバー色）
+- /contact へのリンクボタン
+
+### メタデータ
+```typescript
+export const metadata = {
+  title: 'halal-checker | インバウンド宗教・食習慣対応AI | NextraLabs',
+  description: '予約者名と国籍を入力するだけで、ハラール・ベジタリアン・コーシャ等の宗教・食習慣配慮をGemini AIが自動推定。フロントの申し送りを3秒で作成。',
+  alternates: { canonical: 'https://nextralab.jp/halal-checker' },
+}
+```
+
+## 作業3: /enterprise ページに新カテゴリを追加
+
+ファイル: src/app/enterprise/page.tsx
+
+既存の CATEGORIES 配列に以下を追加（tourismカテゴリの直後に挿入）:
+
+```typescript
+{
+  id: 'inbound',
+  label: '🕌 インバウンド宗教・食習慣対応DX',
+  desc: '予約名・国籍からハラール/ベジタリアン等の配慮をAIが自動推定。フロントの申し送りを自動生成。',
+  color: 'border-green-500/40',
+  badgeColor: 'bg-green-500/10 text-green-400 border-green-500/20',
+  tools: [
+    {
+      id: 'halal-checker',
+      title: 'halal-checker',
+      sub: '予約者の名前と国籍を入力するだけで、ムスリム・ヴィーガン・コーシャ等の宗教・食習慣をGemini AIが自動推定。確信度スコア付きでフロントへの申し送り文を自動生成します。',
+      icon: Building2,
+      price: '¥9,800/月〜（フリープランあり）',
+      tags: ['ホテル', '旅館', 'インバウンド', '宗教対応'],
+      lpUrl: '/halal-checker',
+      stats: ['対応漏れ ほぼゼロ', '30秒で申し送り完成', 'ムスリム/ヴィーガン/コーシャ対応'],
+      features: [
+        'Gemini AIによる宗教・食習慣の自動推定',
+        '確信度スコア（0〜100%）で優先度を可視化',
+        'ハラール/ベジタリアン/コーシャ等10種以上のプリセット',
+        'そのまま使えるフロント申し送り文の自動生成',
+        '礼拝マット・キブラ案内等の宗教配慮プリセット',
+        '対応履歴の蓄積とフィードバック学習（Proプラン）',
+      ],
+    },
+  ],
+},
+```
+
+enterpriseページの導入効果セクション（tool.id ===の部分）にも追加:
+```
+{tool.id === 'halal-checker' && '宗教・食習慣の対応漏れを防ぎ、外国人ゲストの満足度と口コミ評価を向上。'}
+```
+
+## 作業4: ビルド確認
+
+npm run build を実行して、エラーがないことを確認してください。
+エラーがあれば修正してください。
+
+## 完了報告形式
+作成・変更したファイル一覧と npm run build の結果を報告してください。
+
+完全に終わったら以下を実行してください:
+& "C:\Users\fyone\AppData\Roaming\Genspark Claw\bundled-resources\openclaw\node_modules\.bin\openclaw.cmd" system event --text "halal-checker実装完了: /halal-checker LP + /api/halal-check + /enterprise新カテゴリ追加。ビルド結果を確認してください。" --mode now

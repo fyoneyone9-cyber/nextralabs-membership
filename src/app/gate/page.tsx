@@ -1,3 +1,10 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'ゲート|NextraLabs',
+  robots: { index: false, follow: false },
+}
+
 ﻿'use client'
 
 import { useEffect, useState } from 'react'

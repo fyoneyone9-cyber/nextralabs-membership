@@ -1,4 +1,12 @@
 'use client'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: '通話記録|NextraLabs DMS',
+  robots: { index: false, follow: false },
+}
+
+
 import dynamic from 'next/dynamic'
 
 // SSR無効でCallsEngineを直接レンダリング

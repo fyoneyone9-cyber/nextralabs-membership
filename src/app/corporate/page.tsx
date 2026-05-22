@@ -1,5 +1,29 @@
 'use client'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: '法人・企業向けAI導入支援|NextraLabs Enterprise',
+  description: 'NextraLabsの法人向けサービス。チームでAIツールを使い放題のエンタープライズプランをご提供。AI導入支援・研修・カスタマイズも対応。',
+  alternates: { canonical: 'https://nextralab.jp/corporate' },
+  openGraph: {
+    title: '法人・企業向けAI導入支援|NextraLabs Enterprise',
+    description: 'NextraLabsの法人向けサービス。チームでAIツールを使い放題のエンタープライズプランをご提供。AI導入支援・研修・カスタマイズも対応。',
+    url: 'https://nextralab.jp/corporate',
+    siteName: 'NextraLabs',
+    locale: 'ja_JP',
+    type: 'website',
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'NextraLabs - AIツール使い放題' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '法人・企業向けAI導入支援|NextraLabs Enterprise',
+    description: 'NextraLabsの法人向けサービス。チームでAIツールを使い放題のエンタープライズプランをご提供。AI導入支援・研修・カスタマイズも対応。',
+    images: ['https://nextralab.jp/og-image.png'],
+  },
+}
+
+
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Check, ArrowRight, Building2, Users, Zap, Shield, HeadphonesIcon, FileText, Video, Youtube, Upload, Sparkles, BadgeCheck } from 'lucide-react'

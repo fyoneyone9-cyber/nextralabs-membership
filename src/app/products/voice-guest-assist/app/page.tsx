@@ -1,5 +1,13 @@
 'use client'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'AIアプリ|NextraLabs',
+  robots: { index: false, follow: false },
+}
+
+
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import {
   Mic, MicOff, Square, Copy, Mail, Save, ChevronDown, ChevronUp,

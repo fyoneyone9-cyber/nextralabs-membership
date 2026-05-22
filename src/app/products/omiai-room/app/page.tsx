@@ -1,3 +1,10 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'AIアプリ|NextraLabs',
+  robots: { index: false, follow: false },
+}
+
 export default function OmiaiRoomAppPage() {
   return (
     <div className="min-h-screen bg-[#050507] text-slate-100 flex items-center justify-center" style={{ fontFamily: "'Inter', 'Noto Sans JP', sans-serif" }}>

@@ -1,5 +1,13 @@
 'use client'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'プロフィール編集|NextraLabs',
+  robots: { index: false, follow: false },
+}
+
+
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'

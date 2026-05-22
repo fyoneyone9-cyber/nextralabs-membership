@@ -1,3 +1,26 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'AIツール一覧|NextraLabs - 30種類以上のAIツール',
+  description: 'NextraLabsのAIツール一覧。副業支援・画像生成・動画制作・Kindle出版・婚活サポートなど30種類以上のAIツールが月額980円から使い放題。',
+  alternates: { canonical: 'https://nextralab.jp/products' },
+  openGraph: {
+    title: 'AIツール一覧|NextraLabs - 30種類以上のAIツール',
+    description: 'NextraLabsのAIツール一覧。副業支援・画像生成・動画制作・Kindle出版・婚活サポートなど30種類以上のAIツールが月額980円から使い放題。',
+    url: 'https://nextralab.jp/products',
+    siteName: 'NextraLabs',
+    locale: 'ja_JP',
+    type: 'website',
+    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'NextraLabs - AIツール使い放題' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AIツール一覧|NextraLabs - 30種類以上のAIツール',
+    description: 'NextraLabsのAIツール一覧。副業支援・画像生成・動画制作・Kindle出版・婚活サポートなど30種類以上のAIツールが月額980円から使い放題。',
+    images: ['https://nextralab.jp/og-image.png'],
+  },
+}
+
 ﻿'use client'
 import { useSearchParams } from 'next/navigation'
 import React, { useState, useEffect, Suspense } from 'react'

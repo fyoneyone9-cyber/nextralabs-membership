@@ -1,3 +1,10 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'AIアプリ|NextraLabs',
+  robots: { index: false, follow: false },
+}
+
 ﻿// ============================================================
 // 🔒 LOCKED — ExamScheduler app/page
 // 完成済みツール。NextraLabs様の明示的な指示なしに

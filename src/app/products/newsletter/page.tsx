@@ -1,4 +1,12 @@
 'use client'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'AIアプリ|NextraLabs',
+  robots: { index: false, follow: false },
+}
+
+
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { Mail, CheckCircle2, ArrowRight, Zap, Bell, Star, Shield } from 'lucide-react'
