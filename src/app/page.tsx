@@ -382,6 +382,11 @@ export default function HomePage() {
       <footer className="border-t border-white/5 py-8">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
           <span className="text-xs text-slate-600">© 2026 NextraLabs</span>
+          <a href="https://note.com/marriage_road" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-white transition-colors" aria-label="note">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.5 0h-11C4.02 0 2 2.02 2 4.5v15C2 21.98 4.02 24 6.5 24h11c2.48 0 4.5-2.02 4.5-4.5v-15C22 2.02 19.98 0 17.5 0zm-1.25 18.25H7.75a.75.75 0 010-1.5h8.5a.75.75 0 010 1.5zm0-4H7.75a.75.75 0 010-1.5h8.5a.75.75 0 010 1.5zm-4-4H7.75a.75.75 0 010-1.5h4.5a.75.75 0 010 1.5z"/>
+            </svg>
+          </a>
           <div className="flex items-center gap-1">
             <Link href="/privacy" className="text-xs text-slate-500 hover:text-slate-300 py-2 px-3 rounded-lg transition-colors">プライバシーポリシー</Link>
             <span className="text-slate-700">·</span>
