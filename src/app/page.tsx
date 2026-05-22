@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 
 const REVIEWS = [
-  { name: '田中 裕子', job: 'フリーランスデザイナー', rating: 5, text: 'SNS投稿が完全自動化できて、週4時間の作業が消えました。', avatar: '田' },
+  { name: '田中 裕子', job: 'フリーランスデザイナー', rating: 5, text: 'SNS投稿が完全自動化できて、毎日4時間の作業が消えました。', avatar: '田' },
   { name: '山本 健太', job: '不動産エージェント', rating: 5, text: 'お客様への提案資料をAIが作ってくれる。競合と差がつきすぎて怖いくらいです。', avatar: '山' },
   { name: '佐藤 美咲', job: '副業OL', rating: 5, text: 'Kindle出版ナビで初めての電子書籍を出版できました！', avatar: '佐' },
   { name: '鈴木 大輔', job: 'ホテル経営者', rating: 5, text: 'チェックインの自動化で夜間スタッフが不要になりました。', avatar: '鈴' },
@@ -76,10 +76,10 @@ export default function HomePage() {
           {/* メインコピー */}
           <h1 className="text-5xl md:text-7xl font-semibold text-white tracking-tight mb-6 leading-[1.1]">
             AIツールで、<br />
-            <span className="text-emerald-400">業務を自動化。</span>
+            <span className="text-emerald-400">業務を自動化</span>
           </h1>
           <p className="text-base md:text-lg text-slate-400 max-w-md mx-auto mb-10 leading-relaxed">
-            指示したら、あとは全部やってくれる。<br />30のAIツールが、あなたの時間を取り戻す。
+            登録したら、あとは全部やってくれる。<br />30のAIツールが、あなたの時間を取り戻す。
           </p>
 
           {/* CTA */}
@@ -102,7 +102,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* 統計 — ヒーロー内に統合 */}
+          {/* 統計（ヒーロー内統計） */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/5 rounded-2xl overflow-hidden border border-white/5 max-w-2xl mx-auto">
             {[
               { value: '2,847', label: '登録ユーザー' },
@@ -168,7 +168,7 @@ export default function HomePage() {
               {
                 name: 'プレミアム', price: '¥1,980', period: '/月',
                 badge: '一番人気',
-                features: ['全ツール30本以上 使い放題', 'YouTube・SNS・Gmail AI連携', '画像生成・プロンプト最適化', '優先サポート'],
+                features: ['全ツール30本以上使い放題', 'YouTube・SNS・Gmail AI連携', '画像生成・プロンプト最適化', '優先サポート'],
                 cta: '今すぐ始める', href: '/signup?plan=premium', accent: true,
                 note: null,
               },
@@ -195,7 +195,7 @@ export default function HomePage() {
                   {plan.price}<span className="text-sm text-slate-500 font-normal ml-1">{plan.period}</span>
                 </p>
                 {plan.accent && (
-                  <p className="text-[10px] text-slate-500 mb-4">年払いで2ヶ月分お得</p>
+                  <p className="text-[10px] text-slate-500 mb-4">年払いで2ヶ月分おトク</p>
                 )}
                 {!plan.accent && <div className="mb-4" />}
                 <ul className="space-y-2.5 mb-6">
@@ -254,7 +254,7 @@ export default function HomePage() {
             <div className="text-center mt-8">
               <button onClick={() => setShowAllReviews(true)}
                 className="text-xs text-slate-500 hover:text-emerald-400 border border-white/10 hover:border-emerald-500/30 rounded-xl px-6 py-2.5 transition-all">
-                すべての口コミを見る ({REVIEWS.length}件) ↓
+                すべての口コミを見る ({REVIEWS.length}件) →
               </button>
             </div>
           )}
@@ -301,7 +301,7 @@ export default function HomePage() {
         <div className="container mx-auto px-6 text-center space-y-6">
           <span className="inline-block bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-6 py-1 rounded-full font-bold uppercase text-xs tracking-tight">Blog</span>
           <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tighter">
-            AI活用術・最新情報を<span className="text-emerald-400">ブログで発信中</span>
+            AI活用術の最新情報を<span className="text-emerald-400">ブログで発信中</span>
           </h2>
           <p className="text-slate-400 font-bold max-w-xl mx-auto">ツールの使い方・AI最新情報・副業活用事例など役立つコンテンツを毎週更新</p>
           <Link href="/blog">
@@ -325,16 +325,17 @@ export default function HomePage() {
             <div className="flex-1 text-center md:text-left">
               <p className="text-xs text-emerald-400 font-medium mb-1 uppercase tracking-wide">Special Interview</p>
               <p className="text-white font-semibold text-lg leading-snug">Ninja3が語る「AIと生きる」という選択</p>
-              <p className="text-slate-400 text-sm mt-1">NextraLabsに込めた想い、本音を語ります。</p>
+              <p className="text-slate-400 text-sm mt-1">NextraLabsに込めた想いと本音を語ります。</p>
             </div>
             <span className="text-emerald-400 text-sm font-medium group-hover:translate-x-1 transition-transform">読む →</span>
           </a>
         </div>
       </section>
-<section className="py-24 border-t border-white/5 bg-[#080809]">
+
+      <section className="py-24 border-t border-white/5 bg-[#080809]">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl md:text-5xl font-semibold text-white mb-4 leading-tight tracking-tight">
-            あなたのAIを、<span className="text-emerald-400">今すぐ。</span>
+            あなたのAIを、<span className="text-emerald-400">今すぐ</span>
           </h2>
           <p className="text-slate-500 text-sm mb-10">2,847名がすでに業務を自動化中。</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -379,10 +380,10 @@ export default function HomePage() {
           { '@type': 'Question', name: 'NextraLabsは無料で使えますか？', acceptedAnswer: { '@type': 'Answer', text: 'はい、一部のツールは無料プランでご利用いただけます。クレジットカード不要・登録のみで今すぐ使えます。' } },
           { '@type': 'Question', name: 'NextraLabsのAIツールは何種類ありますか？', acceptedAnswer: { '@type': 'Answer', text: '2026年5月現在、SNS・出版・家計・旅行・学習・副業・防犯・婚活など9ジャンル30種類以上のAIツールをご用意しています。' } },
           { '@type': 'Question', name: 'いつでも解約できますか？', acceptedAnswer: { '@type': 'Answer', text: 'はい、いつでも解約可能です。解約後も当月末まではサービスをご利用いただけます。違約金・縛りは一切ありません。' } },
-          { '@type': 'Question', name: 'NextraLabsはどんな人向けですか？', acceptedAnswer: { '@type': 'Answer', text: '副業・在宅ワークをしたい方、家計を改善したい主婦・サラリーマン、Kindle出版に挑戦したい方、SNSマーケティングを効率化したい事業者、資格勉強を自動化したい学生など、幅広い方にご利用いただいています。' } },
+          { '@type': 'Question', name: 'NextraLabsはどんな人向けですか？', acceptedAnswer: { '@type': 'Answer', text: '副業・在宅ワークをしたい方、家計を改善したい主婦・サラリーマン、Kindle出版に挑戦したい方、SNSマーケティングを効率化したい事業者、資格勉強を自動化したい学生など、幅広い方にご利用いただけます。' } },
           { '@type': 'Question', name: 'NextraLabsで使えるAIはなんですか？', acceptedAnswer: { '@type': 'Answer', text: 'Google Gemini 2.5 Flash（最上位モデル）を主軸に、用途に応じて最適なAIを組み合わせて使用しています。' } },
           { '@type': 'Question', name: 'スマホでも使えますか？', acceptedAnswer: { '@type': 'Answer', text: 'はい、スマートフォン・タブレット・PCすべてに対応しています。アプリのインストールも不要です。' } },
-          { '@type': 'Question', name: 'NextraLabsの料金プランを教えてください。', acceptedAnswer: { '@type': 'Answer', text: '無料プラン（一部ツール利用可）、ライトプラン月額980円、スタンダードプラン月額1,980円、プレミアムプラン月額2,980円の4プランをご用意しています。' } },
+          { '@type': 'Question', name: 'NextraLabsの料金プランを教えてください。', acceptedAnswer: { '@type': 'Answer', text: '無料プラン（一部ツール利用可）、ライトプラン月額980円、スタンダードプラン月額980円、プレミアムプラン月額1,980円の4プランをご用意しています。' } },
           { '@type': 'Question', name: 'Kindle出版をAIでサポートしてもらえますか？', acceptedAnswer: { '@type': 'Answer', text: 'はい、「Kindle出版完全ナビ」と「Kindle AI ファクトリー」の2ツールで、テーマ入力からKDP入稿用原稿の自動生成まで一気通貫でサポートします。' } },
         ],
       })}} />
