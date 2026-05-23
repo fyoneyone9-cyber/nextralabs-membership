@@ -1,4 +1,12 @@
-'use client'
+﻿'use client'
+
+import { useState, useEffect, useRef } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Check, Crown, Loader2, Wrench, ArrowRight, Zap, Star } from 'lucide-react'
+import Link from 'next/link'
+import { toast } from 'sonner'
 
 const pricingJsonLd = {
   '@context': 'https://schema.org',
@@ -45,13 +53,6 @@ const pricingJsonLd = {
   },
 }
 
-import { useState, useEffect, useRef } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Check, Crown, Loader2, Wrench, ArrowRight, Zap, Star } from 'lucide-react'
-import Link from 'next/link'
-import { toast } from 'sonner'
 
 const plans = [
   {
@@ -417,5 +418,7 @@ export default function PricingPage() {
         </div>
 
       </div>
-    </div>\n    </>\n  )
+    </div>
+    </>
+  )
 }
