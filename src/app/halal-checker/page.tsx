@@ -1,28 +1,5 @@
 'use client'
 
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'ハラールフードチェッカー|NextraLabs - AI食品成分判定',
-  description: 'AIがハラール食品かどうかを瞬時に判定。食品成分表・添加物・アレルギー情報を解析して安全な食品選びをサポート。NextraLabsのAIツール。',
-  alternates: { canonical: 'https://nextralab.jp/halal-checker' },
-  openGraph: {
-    title: 'ハラールフードチェッカー|NextraLabs - AI食品成分判定',
-    description: 'AIがハラール食品かどうかを瞬時に判定。食品成分表・添加物・アレルギー情報を解析して安全な食品選びをサポート。NextraLabsのAIツール。',
-    url: 'https://nextralab.jp/halal-checker',
-    siteName: 'NextraLabs',
-    locale: 'ja_JP',
-    type: 'website',
-    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'NextraLabs - AIツール使い放題' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'ハラールフードチェッカー|NextraLabs - AI食品成分判定',
-    description: 'AIがハラール食品かどうかを瞬時に判定。食品成分表・添加物・アレルギー情報を解析して安全な食品選びをサポート。NextraLabsのAIツール。',
-    images: ['https://nextralab.jp/og-image.png'],
-  },
-}
-
 
 import { useState } from 'react'
 import Link from 'next/link'

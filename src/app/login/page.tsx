@@ -1,12 +1,5 @@
 'use client'
 
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'ログイン|NextraLabs',
-  robots: { index: false, follow: false },
-}
-
 
 import { useState } from 'react'
 import Link from 'next/link'

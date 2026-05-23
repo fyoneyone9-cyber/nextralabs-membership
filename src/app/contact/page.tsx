@@ -1,26 +1,3 @@
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'お問い合わせ|NextraLabs',
-  description: 'NextraLabsへのお問い合わせ。サービスに関するご質問・不具合報告・ご要望はこちらからどうぞ。',
-  alternates: { canonical: 'https://nextralab.jp/contact' },
-  openGraph: {
-    title: 'お問い合わせ|NextraLabs',
-    description: 'NextraLabsへのお問い合わせ。サービスに関するご質問・不具合報告・ご要望はこちらからどうぞ。',
-    url: 'https://nextralab.jp/contact',
-    siteName: 'NextraLabs',
-    locale: 'ja_JP',
-    type: 'website',
-    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'NextraLabs - AIツール使い放題' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'お問い合わせ|NextraLabs',
-    description: 'NextraLabsへのお問い合わせ。サービスに関するご質問・不具合報告・ご要望はこちらからどうぞ。',
-    images: ['https://nextralab.jp/og-image.png'],
-  },
-}
-
 ﻿'use client'
 
 import { useState } from 'react'

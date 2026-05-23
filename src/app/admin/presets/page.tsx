@@ -1,12 +1,5 @@
 'use client'
 
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'プリセット管理|NextraLabs',
-  robots: { index: false, follow: false },
-}
-
 
 import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'

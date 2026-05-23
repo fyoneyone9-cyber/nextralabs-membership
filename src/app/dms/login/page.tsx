@@ -1,11 +1,4 @@
 'use client'
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'DMSログイン|NextraLabs',
-  robots: { index: false, follow: false },
-}
-
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'

@@ -1,10 +1,3 @@
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'モバイルプレビュー|NextraLabs',
-  robots: { index: false, follow: false },
-}
-
 ﻿'use client'
 import { useState } from 'react'
 import { Smartphone, Monitor, Tablet, RefreshCw, ExternalLink, ChevronDown } from 'lucide-react'

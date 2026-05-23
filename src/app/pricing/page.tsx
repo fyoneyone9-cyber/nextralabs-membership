@@ -44,29 +44,6 @@
 }
 'use client'
 
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: '料金プラン|NextraLabs - 月額980円〜AIツール使い放題',
-  description: 'NextraLabsの料金プラン。ライト(月980円)・スタンダード(月1,980円)・プレミアム(月2,980円)の3プラン。AIツール30種類以上が使い放題。今すぐ無料登録。',
-  alternates: { canonical: 'https://nextralab.jp/pricing' },
-  openGraph: {
-    title: '料金プラン|NextraLabs - 月額980円〜AIツール使い放題',
-    description: 'NextraLabsの料金プラン。ライト(月980円)・スタンダード(月1,980円)・プレミアム(月2,980円)の3プラン。AIツール30種類以上が使い放題。今すぐ無料登録。',
-    url: 'https://nextralab.jp/pricing',
-    siteName: 'NextraLabs',
-    locale: 'ja_JP',
-    type: 'website',
-    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'NextraLabs - AIツール使い放題' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: '料金プラン|NextraLabs - 月額980円〜AIツール使い放題',
-    description: 'NextraLabsの料金プラン。ライト(月980円)・スタンダード(月1,980円)・プレミアム(月2,980円)の3プラン。AIツール30種類以上が使い放題。今すぐ無料登録。',
-    images: ['https://nextralab.jp/og-image.png'],
-  },
-}
-
 
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'

@@ -1,11 +1,4 @@
 'use client'
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'Gmail認証|NextraLabs',
-  robots: { index: false, follow: false },
-}
-
 
 import { useEffect } from 'react'
 

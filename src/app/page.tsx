@@ -1,29 +1,4 @@
 'use client'
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'NextraLabs | 日本最強AIツール使い放題メンバーシップ【月額980円〜】',
-  description: 'NextraLabsはGemini 2.5 Flash搭載の最新AIツール30種類以上が月額980円から使い放題の日本最強AIメンバーシップ。副業・仕事効率化・Kindle出版・動画制作まで、今すぐ無料登録。',
-  alternates: {
-    canonical: 'https://nextralab.jp/',
-  },
-  openGraph: {
-    title: 'NextraLabs | 日本最強AIツール使い放題メンバーシップ【月額980円〜】',
-    description: 'NextraLabsはGemini 2.5 Flash搭載の最新AIツール30種類以上が月額980円から使い放題の日本最強AIメンバーシップ。副業・仕事効率化・Kindle出版・動画制作まで、今すぐ無料登録。',
-    url: 'https://nextralab.jp/',
-    siteName: 'NextraLabs',
-    locale: 'ja_JP',
-    type: 'website',
-    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'NextraLabs - AIツール使い放題' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'NextraLabs | 日本最強AIツール使い放題メンバーシップ【月額980円〜】',
-    description: 'NextraLabsはGemini 2.5 Flash搭載の最新AIツール30種類以上が月額980円から使い放題の日本最強AIメンバーシップ。副業・仕事効率化・Kindle出版・動画制作まで、今すぐ無料登録。',
-    images: ['https://nextralab.jp/og-image.png'],
-  },
-}
-
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'

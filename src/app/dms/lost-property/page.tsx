@@ -1,10 +1,3 @@
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: '遺失物管理|NextraLabs DMS',
-  robots: { index: false, follow: false },
-}
-
 ﻿'use client'
 import React, { useState, useEffect } from 'react'
 import { Badge } from '@/components/ui/badge'

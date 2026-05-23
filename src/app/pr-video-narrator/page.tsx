@@ -1,27 +1,4 @@
 'use client'
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'PR動画ナレーターAI|NextraLabs - 自動ナレーション生成',
-  description: 'AIが自動でPR動画にナレーションを追加するツール。動画をアップするだけで自然な日本語ナレーションが完成。NextraLabs会員限定機能。',
-  alternates: { canonical: 'https://nextralab.jp/pr-video-narrator' },
-  openGraph: {
-    title: 'PR動画ナレーターAI|NextraLabs - 自動ナレーション生成',
-    description: 'AIが自動でPR動画にナレーションを追加するツール。動画をアップするだけで自然な日本語ナレーションが完成。NextraLabs会員限定機能。',
-    url: 'https://nextralab.jp/pr-video-narrator',
-    siteName: 'NextraLabs',
-    locale: 'ja_JP',
-    type: 'website',
-    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'NextraLabs - AIツール使い放題' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'PR動画ナレーターAI|NextraLabs - 自動ナレーション生成',
-    description: 'AIが自動でPR動画にナレーションを追加するツール。動画をアップするだけで自然な日本語ナレーションが完成。NextraLabs会員限定機能。',
-    images: ['https://nextralab.jp/og-image.png'],
-  },
-}
-
 
 import { useState } from 'react'
 import { Video, Copy, CheckCheck, ChevronRight } from 'lucide-react'
