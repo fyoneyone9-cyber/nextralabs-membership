@@ -1,24 +1,3 @@
-export const metadata: Metadata = {
-  title: 'NextraLabsブログ | AI活用法・最新情報・副業ノウハウ',
-  description: 'NextraLabsの公式ブログ。AI活用法・副業ノウハウ・最新AIツール情報を毎週更新。Gemini・Claude・GPT最新情報も掲載。',
-  alternates: { canonical: 'https://nextralab.jp/blog' },
-  openGraph: {
-    title: 'NextraLabsブログ | AI活用法・最新情報・副業ノウハウ',
-    description: 'NextraLabsの公式ブログ。AI活用法・副業ノウハウ・最新AIツール情報を毎週更新。Gemini・Claude・GPT最新情報も掲載。',
-    url: 'https://nextralab.jp/blog',
-    siteName: 'NextraLabs',
-    locale: 'ja_JP',
-    type: 'website',
-    images: [{ url: 'https://nextralab.jp/og-image.png', width: 1200, height: 630, alt: 'NextraLabs - AIツール使い放題' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'NextraLabsブログ | AI活用法・最新情報・副業ノウハウ',
-    description: 'NextraLabsの公式ブログ。AI活用法・副業ノウハウ・最新AIツール情報を毎週更新。Gemini・Claude・GPT最新情報も掲載。',
-    images: ['https://nextralab.jp/og-image.png'],
-  },
-}
-
 import { getPostData, getAllPostSlugs } from '@/lib/blog'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'

@@ -1,4 +1,6 @@
-﻿const pricingJsonLd = {
+'use client'
+
+const pricingJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: 'NextraLabs',
@@ -42,8 +44,6 @@
     bestRating: '5',
   },
 }
-'use client'
-
 
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -146,6 +146,14 @@ export default function PricingPage() {
   const [isPaid, setIsPaid] = useState(false)
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
   const lockRef = useRef(false)
+
+  useEffect(() => {
+    const script = document.createElement('script')
+    script.type = 'application/ld+json'
+    script.text = JSON.stringify(pricingJsonLd)
+    document.head.appendChild(script)
+    return () => { document.head.removeChild(script) }
+  }, [])
 
   useEffect(() => {
     const check = async () => {
@@ -266,7 +274,7 @@ export default function PricingPage() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingJsonLd) }} />
+      {/* JSON-LD injected via useEffect */}
       <div className="min-h-screen bg-[#050507] text-slate-100 font-sans">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-24">
 
