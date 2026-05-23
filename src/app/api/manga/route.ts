@@ -1,8 +1,17 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
+import { createServerSupabaseClient } from '@/lib/supabase/server'
 
 const LOCAL_API = 'http://127.0.0.1:8000'
+const ALLOWED_EMAIL = 'f.yoneyone9@gmail.com'
+
+async function checkAuth() {
+  const supabase = createServerSupabaseClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user || user.email !== ALLOWED_EMAIL) return null
+  return user
+}
 
 // ローカル ComfyUI API への中継
 async function proxyLocal(path: string, options: RequestInit = {}) {
@@ -25,6 +34,9 @@ async function proxyLocal(path: string, options: RequestInit = {}) {
 }
 
 export async function GET(req: NextRequest) {
+  const user = await checkAuth()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
   const { searchParams } = new URL(req.url)
   const action = searchParams.get('action') || 'status'
 
@@ -59,6 +71,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const user = await checkAuth()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
   const body = await req.json()
   const action = body.action
 
