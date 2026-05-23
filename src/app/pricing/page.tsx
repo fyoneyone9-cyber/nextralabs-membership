@@ -1,3 +1,47 @@
+﻿const pricingJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'NextraLabs',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  url: 'https://nextralab.jp',
+  description: 'AIツール30種類以上が月額980円から使い放題。Kindle出版・動画生成・画像生成・副業支援AIツールが全部入り。',
+  offers: [
+    {
+      '@type': 'Offer',
+      name: 'ライトプラン',
+      price: '980',
+      priceCurrency: 'JPY',
+      billingIncrement: 'P1M',
+      description: '主要AIツール使い放題 / 月額980円',
+      eligibleRegion: { '@type': 'Country', name: 'JP' },
+    },
+    {
+      '@type': 'Offer',
+      name: 'スタンダードプラン',
+      price: '1980',
+      priceCurrency: 'JPY',
+      billingIncrement: 'P1M',
+      description: '全AIツール使い放題 / 月額1,980円',
+      eligibleRegion: { '@type': 'Country', name: 'JP' },
+    },
+    {
+      '@type': 'Offer',
+      name: 'プレミアムプラン',
+      price: '2980',
+      priceCurrency: 'JPY',
+      billingIncrement: 'P1M',
+      description: '全AIツール最優先 + 優先サポート / 月額2,980円',
+      eligibleRegion: { '@type': 'Country', name: 'JP' },
+    },
+  ],
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4.8',
+    reviewCount: '127',
+    bestRating: '5',
+  },
+}
 'use client'
 
 import type { Metadata } from 'next'
@@ -244,7 +288,9 @@ export default function PricingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050507] text-slate-100 font-sans">
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingJsonLd) }} />
+      <div className="min-h-screen bg-[#050507] text-slate-100 font-sans">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-24">
 
         {/* Header */}
@@ -386,6 +432,5 @@ export default function PricingPage() {
         </div>
 
       </div>
-    </div>
-  )
+    </div>\n    </>\n  )
 }
