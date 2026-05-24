@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { unstable_noStore as noStore } from 'next/cache'
 import { checkApiLimit } from '@/lib/api-limit'
 import OpenAI from 'openai'
+import { guardPlan } from '@/lib/guard'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -23,6 +24,10 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+  // --- plan guard (server-side) ---
+  const guard = await guardPlan('ai-exam-generator')
+  if (!guard.ok) return NextResponse.json({ error: guard.error }, { status: guard.status })
+  // --- end plan guard ---
     const { subject, context } = await request.json()
 
     if (!subject) {

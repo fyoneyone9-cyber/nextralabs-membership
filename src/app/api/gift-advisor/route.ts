@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { unstable_noStore as noStore } from 'next/cache'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { guardPlan } from '@/lib/guard'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!
 const RAKUTEN_APP_ID = process.env.RAKUTEN_APP_ID || ''
@@ -41,6 +42,10 @@ async function searchRakutenItems(
   }
 
   try {
+  // --- plan guard (server-side) ---
+  const guard = await guardPlan('gift-advisor')
+  if (!guard.ok) return NextResponse.json({ error: guard.error }, { status: guard.status })
+  // --- end plan guard ---
     const params = new URLSearchParams({
       applicationId: RAKUTEN_APP_ID,
       affiliateId: RAKUTEN_AFFILIATE_ID,

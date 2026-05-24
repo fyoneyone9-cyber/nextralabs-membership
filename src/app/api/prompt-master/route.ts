@@ -1,7 +1,8 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { checkApiLimit } from "@/lib/api-limit";
 import { unstable_noStore as noStore } from 'next/cache'
+import { guardPlan } from '@/lib/guard'
 
 export async function POST(req: NextRequest) {
   noStore()
@@ -10,6 +11,10 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+  // --- plan guard (server-side) ---
+  const guard = await guardPlan('prompt-master')
+  if (!guard.ok) return NextResponse.json({ error: guard.error }, { status: guard.status })
+  // --- end plan guard ---
     // 認証 + 1日10回制限
     const limitCheck = await checkApiLimit('prompt-master', 10)
     if (!limitCheck.allowed) {

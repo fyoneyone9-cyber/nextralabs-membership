@@ -1,6 +1,7 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { checkApiLimit } from '@/lib/api-limit';
 import { unstable_noStore as noStore } from 'next/cache'
+import { guardPlan } from '@/lib/guard'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -14,6 +15,10 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+  // --- plan guard (server-side) ---
+  const guard = await guardPlan('youtube-producer')
+  if (!guard.ok) return NextResponse.json({ error: guard.error }, { status: guard.status })
+  // --- end plan guard ---
   // 【憲法8条】API呼び出しツールは会員登録必須
   const limitCheck = await checkApiLimit('youtube-producer-transcribe', 5);
   if (!limitCheck.allowed) {

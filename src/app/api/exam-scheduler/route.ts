@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { unstable_noStore as noStore } from 'next/cache'
 import { checkApiLimit } from '@/lib/api-limit'
+import { guardPlan } from '@/lib/guard'
 
 interface ExamConfig {
   name: string
@@ -27,6 +28,10 @@ interface ScheduleEvent {
 // RSSから試験日を取得
 async function fetchExamDate(rssUrl: string): Promise<string | null> {
   try {
+  // --- plan guard (server-side) ---
+  const guard = await guardPlan('exam-scheduler')
+  if (!guard.ok) return NextResponse.json({ error: guard.error }, { status: guard.status })
+  // --- end plan guard ---
     const res = await fetch(rssUrl, {
       headers: { 'User-Agent': 'NextraLabs-ExamScheduler/1.0' },
       signal: AbortSignal.timeout(8000),

@@ -1,9 +1,14 @@
 import { NextResponse } from 'next/server'
+import { guardPlan } from '@/lib/guard'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!
 
 export async function POST(req: Request) {
   try {
+  // --- plan guard (server-side) ---
+  const guard = await guardPlan('nostalgic-recom')
+  if (!guard.ok) return NextResponse.json({ error: guard.error }, { status: guard.status })
+  // --- end plan guard ---
     const { yearsAgo, genres, description } = await req.json() as {
       yearsAgo: number
       genres: string[]

@@ -1,7 +1,8 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { checkApiLimit } from '@/lib/api-limit';
 import { checkYoutubeLimit, recordYoutubeUsage } from '@/lib/youtube-rate-limit'
 import { unstable_noStore as noStore } from 'next/cache'
+import { guardPlan } from '@/lib/guard'
 
 // 全APIに共通で付与するシステム前置き
 const COMMON_SYSTEM_PREFIX = `【重要ルール】
@@ -44,6 +45,10 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
   const jsonStr = jsonMatch ? jsonMatch[1].trim() : content.trim()
 
   try {
+  // --- plan guard (server-side) ---
+  const guard = await guardPlan('youtube-producer')
+  if (!guard.ok) return NextResponse.json({ error: guard.error }, { status: guard.status })
+  // --- end plan guard ---
     return JSON.parse(jsonStr)
   } catch {
     // より広範なJSONマッチを試みる

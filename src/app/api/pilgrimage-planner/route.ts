@@ -1,6 +1,7 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { unstable_noStore as noStore } from 'next/cache'
+import { guardPlan } from '@/lib/guard'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!
 const RAKUTEN_APP_ID = process.env.RAKUTEN_APP_ID ?? ''
@@ -662,6 +663,10 @@ ${daySchedule}
 - おすすめ持ち物：`
 
   try {
+  // --- plan guard (server-side) ---
+  const guard = await guardPlan('pilgrimage-planner')
+  if (!guard.ok) return NextResponse.json({ error: guard.error }, { status: guard.status })
+  // --- end plan guard ---
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
       {

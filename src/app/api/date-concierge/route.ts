@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { unstable_noStore as noStore } from 'next/cache'
 import { checkApiLimit } from '@/lib/api-limit'
+import { guardPlan } from '@/lib/guard'
 
 // ── 型定義 ──────────────────────────────────────────────────────────────────
 
@@ -66,6 +67,10 @@ async function geocode(address: string, apiKey: string): Promise<GeoResult | nul
   }
 
   try {
+  // --- plan guard (server-side) ---
+  const guard = await guardPlan('ai-konkatsu')
+  if (!guard.ok) return NextResponse.json({ error: guard.error }, { status: guard.status })
+  // --- end plan guard ---
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}&language=ja&region=JP`
     const res = await fetch(url, { signal: AbortSignal.timeout(8000) })
     const data = await res.json()
