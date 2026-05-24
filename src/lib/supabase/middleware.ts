@@ -45,8 +45,12 @@ export async function updateSession(request: NextRequest) {
   const isAdminRoute = adminRoutes.some(route => request.nextUrl.pathname.startsWith(route))
   const isAuthRoute = authRoutes.some(route => request.nextUrl.pathname.startsWith(route))
 
-  if (isProtectedRoute && !user) {
-    return NextResponse.redirect(new URL('/login', request.url))
+  // /products/*/app は全てログイン必須（プラン判定はAccessGate/guardPlanが行う）
+  const isProductApp = /^\/products\/[^/]+\/app/.test(request.nextUrl.pathname)
+
+  if ((isProtectedRoute || isProductApp) && !user) {
+    const returnTo = encodeURIComponent(request.nextUrl.pathname + request.nextUrl.search)
+    return NextResponse.redirect(new URL(`/login?returnTo=${returnTo}`, request.url))
   }
 
   if (isAdminRoute) {
