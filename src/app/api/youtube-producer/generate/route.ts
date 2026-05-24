@@ -45,10 +45,6 @@ async function callLLM(systemPrompt: string, userPrompt: string) {
   const jsonStr = jsonMatch ? jsonMatch[1].trim() : content.trim()
 
   try {
-  // --- plan guard (server-side) ---
-  const guard = await guardPlan('youtube-producer')
-  if (!guard.ok) return NextResponse.json({ error: guard.error }, { status: guard.status })
-  // --- end plan guard ---
     return JSON.parse(jsonStr)
   } catch {
     // より広範なJSONマッチを試みる
@@ -73,6 +69,10 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+  // --- plan guard (server-side) ---
+  const guard = await guardPlan('youtube-producer')
+  if (!guard.ok) return NextResponse.json({ error: guard.error }, { status: guard.status })
+  // --- end plan guard ---
   // 【憲法8条】API呼び出しツールは会員登録必須
   const limitCheck = await checkApiLimit('youtube-producer-generate', 5);
   if (!limitCheck.allowed) {
