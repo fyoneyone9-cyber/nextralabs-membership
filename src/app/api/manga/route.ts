@@ -47,10 +47,31 @@ export async function GET(req: NextRequest) {
     return proxyLocal('/api/pages')
   }
   if (action === 'templates') {
-    return proxyLocal('/api/templates')
+    // ローカルAPIが落ちていても直接ファイルから返す
+    try {
+      const { readFileSync } = await import('fs')
+      const raw = readFileSync('C:\\AI\\ComfyUI\\templates.json', 'utf-8')
+      return NextResponse.json(JSON.parse(raw))
+    } catch {
+      return proxyLocal('/api/templates')
+    }
   }
   if (action === 'models') {
-    return proxyLocal('/api/models')
+    // ローカルAPIが落ちていても直接ファイルシステムから返す
+    try {
+      const { readdirSync } = await import('fs')
+      const ckptDir = 'C:\\AI\\ComfyUI\\models\\checkpoints'
+      const loraDir = 'C:\\AI\\ComfyUI\\models\\loras'
+      const checkpoints = readdirSync(ckptDir)
+        .filter((f: string) => f.endsWith('.safetensors'))
+        .sort()
+      const loras = readdirSync(loraDir)
+        .filter((f: string) => f.endsWith('.safetensors'))
+        .sort()
+      return NextResponse.json({ checkpoints, loras })
+    } catch {
+      return proxyLocal('/api/models')
+    }
   }
   if (action === 'download') {
     const prefix = searchParams.get('prefix') || 'manga_preview'
