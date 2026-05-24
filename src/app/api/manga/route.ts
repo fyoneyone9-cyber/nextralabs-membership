@@ -49,6 +49,9 @@ export async function GET(req: NextRequest) {
   if (action === 'templates') {
     return proxyLocal('/api/templates')
   }
+  if (action === 'models') {
+    return proxyLocal('/api/models')
+  }
   if (action === 'download') {
     const prefix = searchParams.get('prefix') || 'manga_preview'
     try {
