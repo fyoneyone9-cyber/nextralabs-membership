@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import {
-  Copy, Check, Trash2, Palette, Sun, Maximize, Wind, Layers, Monitor, Wand2, Sparkles, LayoutGrid, ExternalLink
+  Copy, Check, Trash2, Palette, Sun, Maximize, Wind, Layers, Monitor, Wand2, Sparkles, LayoutGrid, ExternalLink, Heart, Flame
 } from 'lucide-react'
 
 const PRESET_TAGS = {

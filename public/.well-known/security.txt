@@ -1,0 +1,5 @@
+Contact: mailto:f.yoneyone9@gmail.com
+Expires: 2027-05-25T00:00:00.000Z
+Preferred-Languages: ja, en
+Canonical: https://nextralab.jp/.well-known/security.txt
+Policy: https://nextralab.jp/privacy

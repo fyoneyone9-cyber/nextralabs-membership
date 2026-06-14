@@ -49,6 +49,19 @@ const nextConfig = {
             value: 'strict-origin-when-cross-origin',
           },
           {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://pagead2.googlesyndication.com https://partner.googleadservices.com https://tpc.googlesyndication.com https://www.googletagservices.com https://js.stripe.com https://checkout.stripe.com",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "font-src 'self' https://fonts.gstatic.com",
+              "img-src 'self' data: blob: https:",
+              "connect-src 'self' https://generativelanguage.googleapis.com https://*.supabase.co wss://*.supabase.co https://trends.google.co.jp https://app.rakuten.co.jp https://api.openai.com",
+              "frame-src https://js.stripe.com https://checkout.stripe.com",
+              "frame-ancestors 'none'",
+            ].join('; '),
+          },
+          {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(self)',
           },
