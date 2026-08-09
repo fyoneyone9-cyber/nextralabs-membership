@@ -62,7 +62,6 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
   alternates: {
     canonical: BASE_URL,
-    languages: { 'ja-JP': BASE_URL },
   },
   openGraph: {
     type: 'website',

@@ -4,6 +4,9 @@ import { ArrowLeft } from 'lucide-react'
 export const metadata = {
   title: '利用規約 | NextraLabs',
   description: 'NextraLabs AIツールストアの利用規約',
+  alternates: {
+    canonical: 'https://nextralab.jp/terms',
+  },
 }
 
 export default function TermsPage() {

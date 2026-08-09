@@ -4,6 +4,9 @@ import { ArrowLeft } from 'lucide-react'
 export const metadata = {
   title: '特定商取引法に基づく表記 | NextraLabs',
   description: 'NextraLabs の特定商取引法に基づく表記ページです。',
+  alternates: {
+    canonical: 'https://nextralab.jp/tokusho',
+  },
 }
 
 export default function TokushoPage() {

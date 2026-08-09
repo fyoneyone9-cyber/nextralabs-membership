@@ -4,6 +4,9 @@ import { ArrowLeft } from 'lucide-react'
 export const metadata = {
   title: 'プライバシーポリシー | NextraLabs',
   description: 'NextraLabs AIツールストアのプライバシーポリシー',
+  alternates: {
+    canonical: 'https://nextralab.jp/privacy',
+  },
 }
 
 export default function PrivacyPage() {

@@ -4,6 +4,9 @@ import Image from 'next/image'
 export const metadata: Metadata = {
   title: '特別インタビュー — Ninja3が語る「AIと生きる」という選択 | NextraLabs',
   description: 'AIツール開発者・Ninja3氏への独占インタビュー。なぜAIと向き合い続けるのか、NextraLabsに込めた思い、これからの時代を語る。',
+  alternates: {
+    canonical: 'https://nextralab.jp/interview',
+  },
   openGraph: {
     title: '特別インタビュー — Ninja3が語る「AIと生きる」という選択',
     description: 'NextraLabs代表・Ninja3氏への独占インタビュー',
