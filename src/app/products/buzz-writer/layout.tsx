@@ -16,7 +16,6 @@ export const metadata: Metadata = {
     images: [{ url: `${BASE}/og-image.png`, width: 1200, height: 630 }],
   },
   twitter: { card: 'summary_large_image', title: 'AIバズライター | NextraLabs', description: 'AIがバズるブログ記事・SNS投稿を自動生成' },
-/products/buzz-writer` },
 }
 
 const breadcrumb = {

@@ -16,7 +16,6 @@ export const metadata: Metadata = {
     images: [{ url: `${BASE}/og-image.png`, width: 1200, height: 630 }],
   },
   twitter: { card: 'summary_large_image', title: 'NextraAI | NextraLabs', description: 'ホテル・旅館の予約管理をAIで自動化' },
-/products/nextra-ai` },
 }
 
 const breadcrumb = {

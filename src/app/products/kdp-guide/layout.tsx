@@ -16,7 +16,6 @@ export const metadata: Metadata = {
     images: [{ url: `${BASE}/og-image.png`, width: 1200, height: 630 }],
   },
   twitter: { card: 'summary_large_image', title: 'Kindle出版完全ナビ | NextraLabs', description: 'KDP電子書籍出版をAIが完全サポート' },
-/products/kdp-guide` },
 }
 
 const breadcrumb = {
