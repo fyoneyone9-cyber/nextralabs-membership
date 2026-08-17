@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     images: [{ url: `${BASE}/og-image.png`, width: 1200, height: 630 }],
   },
   twitter: { card: 'summary_large_image', title: 'AI詐欺対策 | NextraLabs', description: 'AIがフィッシング・詐欺をリアルタイム検出' },
-  alternates: { canonical: `${BASE}/products/scam-defender` },
+/products/scam-defender` },
 }
 
 const breadcrumb = {

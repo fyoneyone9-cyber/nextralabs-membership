@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     images: [{ url: `${BASE}/og-image.png`, width: 1200, height: 630 }],
   },
   twitter: { card: 'summary_large_image', title: 'AIYouTubeプロデューサー | NextraLabs', description: 'AIがYouTubeチャンネル戦略・動画企画をサポート' },
-  alternates: { canonical: `${BASE}/products/youtube-producer` },
+/products/youtube-producer` },
 }
 
 const breadcrumb = {
